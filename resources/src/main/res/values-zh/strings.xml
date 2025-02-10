@@ -18,7 +18,7 @@
     <string name="select_all">全选</string>
     <string name="select_nothing">不选择任何内容</string>
     <string name="no_data">没有数据</string>
-    <string name="general_error">出了点问题，请重试或重新启动应用程序</string>
+    <string name="general_error">出了点问题。请重试或重新启动应用程序</string>
     <string name="copied_to_clipboard">已复制到剪贴板</string>
 
     <!--  Range selection  -->
