@@ -72,7 +72,7 @@
 
     <!--  Statistics  -->
     <string name="statistics_total_tracked">总追踪时长</string>
-    <string name="statistics_total_tracked_short">全部的</string>
+    <string name="statistics_total_tracked_short">总时长</string>
     <string name="statistics_hint">点击卡片查看详细统计</string>
     <string name="statistics_daily_calendar_hint">每日日历</string>
     <string name="no_statistics_exist">统计信息将在此处显示</string>
@@ -227,8 +227,8 @@
     <string name="csv_export_settings_filename_default">默认</string>
     <string name="csv_export_settings_hint">选择时间范围或导出所有记录</string>
 
-    <string name="schedule_exact_alarms">应为此应用启用系统设置，以便安排准确的闹钟和提醒</string>
-    <string name="post_notifications">应为此应用程序启用系统设置才能显示通知提醒</string>
+    <string name="schedule_exact_alarms">为此应用启用系统设置，以便安排准确的闹钟和提醒</string>
+    <string name="post_notifications">为此应用程序启用系统设置以显示提醒</string>
     <string name="schedule_exact_alarms_open_settings">启用</string>
 
     <string name="default_types_selection_title">选择要添加的活动</string>
@@ -268,7 +268,7 @@
     <string name="settings_sort_order_tag">按标签排序</string>
     <string name="settings_sort_by_name">名称</string>
     <string name="settings_sort_by_color">颜色</string>
-    <string name="settings_sort_manually">手动</string>
+    <string name="settings_sort_manually">自定义</string>
     <string name="settings_sort_activity">活动顺序</string>
     <string name="settings_first_day_of_week">一周的第一天</string>
     <string name="settings_show_repeat_button">在首页上显示重复按钮</string>
