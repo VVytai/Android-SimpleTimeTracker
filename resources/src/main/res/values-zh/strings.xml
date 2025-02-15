@@ -451,9 +451,9 @@ csv 文件必须包含以逗号分隔的这些列：<br/>
     <string name="statistics_detail_legend_hour_suffix">h</string>
     <string name="statistics_detail_chart_split">按活动划分</string>
 
-    <string name="statistics_detail_range_averages_title">期间平均: %s</string>
-    <string name="statistics_detail_range_averages">对于整个范围</string>
-    <string name="statistics_detail_range_averages_non_empty">没有空期</string>
+    <string name="statistics_detail_range_averages_title">期间平均值: %s</string>
+    <string name="statistics_detail_range_averages">全时段</string>
+    <string name="statistics_detail_range_averages_non_empty">无间断</string>
 
     <string name="statistics_detail_total_duration">总时长</string>
     <string name="statistics_detail_record_length">记录长度</string>
