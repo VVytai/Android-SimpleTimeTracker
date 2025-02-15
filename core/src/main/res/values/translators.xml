@@ -82,7 +82,7 @@
     <string name="settings_hindi_language" translatable="false">हिन्दी</string>
     <string name="settings_hindi_tag" translatable="false">hi</string>
 
-    <string name="settings_chinese_simplified_translators" translatable="false">超级大咸鱼</string>
+    <string name="settings_chinese_simplified_translators" translatable="false">超级大咸鱼, coyoteshkw</string>
     <string name="settings_chinese_simplified_language" translatable="false">简体中文</string>
     <string name="settings_chinese_simplified_tag" translatable="false">zh</string>
 
