@@ -43,7 +43,7 @@
             style="@style/EditScreenControlButtonText"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_marginHorizontal="48dp"
+            android:layout_marginStart="48dp"
             android:textColor="?appLightTextColor"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

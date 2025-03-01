@@ -28,6 +28,7 @@
             style="@style/EditScreenControlButtonImage"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_marginEnd="4dp"
             android:tint="?appLightTextColor"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/tvRecordQuickActionsButtonBig"
