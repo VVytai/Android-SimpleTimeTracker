@@ -14,6 +14,7 @@ import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.domain.record.interactor.AddRunningRecordMediator
 import com.example.util.simpletimetracker.domain.activityFilter.interactor.ChangeSelectedActivityFilterMediator
 import com.example.util.simpletimetracker.domain.base.UNTRACKED_ITEM_ID
+import com.example.util.simpletimetracker.domain.darkMode.interactor.ThemeChangedInteractor
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTypeInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.RemoveRunningRecordMediator
@@ -59,6 +60,7 @@ class RunningRecordsViewModel @Inject constructor(
     private val updateRunningRecordFromChangeScreenInteractor: UpdateRunningRecordFromChangeScreenInteractor,
     private val recordTypeInteractor: RecordTypeInteractor,
     private val getChangeRecordNavigationParamsInteractor: GetChangeRecordNavigationParamsInteractor,
+    private val themeChangedInteractor: ThemeChangedInteractor,
 ) : ViewModel() {
 
     val runningRecords: LiveData<List<ViewHolderType>> by lazy {
@@ -271,9 +273,10 @@ class RunningRecordsViewModel @Inject constructor(
 
     private fun subscribeToUpdates() {
         viewModelScope.launch {
-            updateRunningRecordFromChangeScreenInteractor.dataUpdated.collect {
-                onUpdateReceived(it)
-            }
+            updateRunningRecordFromChangeScreenInteractor.dataUpdated.collect { onUpdateReceived(it) }
+        }
+        viewModelScope.launch {
+            themeChangedInteractor.themeChanged.collect { updateRunningRecords() }
         }
     }
 

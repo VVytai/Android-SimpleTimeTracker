@@ -9,6 +9,7 @@ import com.example.util.simpletimetracker.core.extension.set
 import com.example.util.simpletimetracker.core.interactor.SharingInteractor
 import com.example.util.simpletimetracker.core.interactor.StatisticsDetailNavigationInteractor
 import com.example.util.simpletimetracker.core.model.NavigationTab
+import com.example.util.simpletimetracker.domain.darkMode.interactor.ThemeChangedInteractor
 import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
@@ -36,6 +37,7 @@ class StatisticsViewModel @Inject constructor(
     private val prefsInteractor: PrefsInteractor,
     private val statisticsDetailNavigationInteractor: StatisticsDetailNavigationInteractor,
     private val statisticsDetailTotalNavigator: StatisticsDetailTotalNavigator,
+    private val themeChangedInteractor: ThemeChangedInteractor,
 ) : ViewModel() {
 
     var extra: StatisticsExtra? = null
@@ -53,6 +55,10 @@ class StatisticsViewModel @Inject constructor(
     private var isChartFilterOpened: Boolean = false
     private var timerJob: Job? = null
     private val shift: Int get() = extra?.shift.orZero()
+
+    init {
+        subscribeToUpdates()
+    }
 
     fun onVisible() {
         isVisible = true
@@ -137,6 +143,12 @@ class StatisticsViewModel @Inject constructor(
     fun onTabReselected(tab: NavigationTab?) {
         if (isVisible && tab is NavigationTab.Statistics) {
             resetScreen.set(Unit)
+        }
+    }
+
+    private fun subscribeToUpdates() {
+        viewModelScope.launch {
+            themeChangedInteractor.themeChanged.collect { updateStatistics() }
         }
     }
 

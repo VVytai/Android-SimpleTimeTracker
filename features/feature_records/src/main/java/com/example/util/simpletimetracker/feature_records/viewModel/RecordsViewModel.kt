@@ -11,6 +11,7 @@ import com.example.util.simpletimetracker.core.interactor.GetChangeRecordNavigat
 import com.example.util.simpletimetracker.core.interactor.SharingInteractor
 import com.example.util.simpletimetracker.core.mapper.RangeViewDataMapper
 import com.example.util.simpletimetracker.core.model.NavigationTab
+import com.example.util.simpletimetracker.domain.darkMode.interactor.ThemeChangedInteractor
 import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.RecordsShareUpdateInteractor
@@ -53,6 +54,7 @@ class RecordsViewModel @Inject constructor(
     private val recordsViewDataMapper: RecordsViewDataMapper,
     private val updateRunningRecordFromChangeScreenInteractor: UpdateRunningRecordFromChangeScreenInteractor,
     private val getChangeRecordNavigationParamsInteractor: GetChangeRecordNavigationParamsInteractor,
+    private val themeChangedInteractor: ThemeChangedInteractor,
 ) : ViewModel() {
 
     var extra: RecordsExtra? = null
@@ -200,19 +202,16 @@ class RecordsViewModel @Inject constructor(
 
     private fun subscribeToUpdates() {
         viewModelScope.launch {
-            recordsUpdateInteractor.dataUpdated.collect {
-                if (isVisible) updateRecords()
-            }
+            recordsUpdateInteractor.dataUpdated.collect { if (isVisible) updateRecords() }
         }
         viewModelScope.launch {
-            recordsShareUpdateInteractor.shareClicked.collect {
-                if (isVisible) onShareClicked()
-            }
+            recordsShareUpdateInteractor.shareClicked.collect { if (isVisible) onShareClicked() }
         }
         viewModelScope.launch {
-            updateRunningRecordFromChangeScreenInteractor.dataUpdated.collect {
-                onUpdateReceived(it)
-            }
+            updateRunningRecordFromChangeScreenInteractor.dataUpdated.collect { onUpdateReceived(it) }
+        }
+        viewModelScope.launch {
+            themeChangedInteractor.themeChanged.collect { updateRecords() }
         }
     }
 

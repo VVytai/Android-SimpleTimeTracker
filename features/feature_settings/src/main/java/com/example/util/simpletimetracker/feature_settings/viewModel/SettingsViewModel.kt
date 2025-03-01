@@ -7,6 +7,7 @@ import com.example.util.simpletimetracker.core.base.SingleLiveEvent
 import com.example.util.simpletimetracker.core.extension.lazySuspend
 import com.example.util.simpletimetracker.core.extension.set
 import com.example.util.simpletimetracker.core.model.NavigationTab
+import com.example.util.simpletimetracker.domain.darkMode.interactor.ThemeChangedInteractor
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_settings.api.SettingsBlock
 import com.example.util.simpletimetracker.domain.statistics.interactor.SettingsDataUpdateInteractor
@@ -43,6 +44,7 @@ class SettingsViewModel @Inject constructor(
     private val translatorsDelegate: SettingsTranslatorsViewModelDelegate,
     private val contributorsDelegate: SettingsContributorsViewModelDelegate,
     private val settingsDataUpdateInteractor: SettingsDataUpdateInteractor,
+    private val themeChangedInteractor: ThemeChangedInteractor,
 ) : BaseViewModel(), SettingsParent {
 
     val content: LiveData<List<ViewHolderType>> by lazySuspend { loadContent() }
@@ -139,6 +141,10 @@ class SettingsViewModel @Inject constructor(
         if (tab is NavigationTab.Settings) {
             resetScreen.set(Unit)
         }
+    }
+
+    fun onThemeChanged() = viewModelScope.launch {
+        themeChangedInteractor.send()
     }
 
     override fun openDateTimeDialog(

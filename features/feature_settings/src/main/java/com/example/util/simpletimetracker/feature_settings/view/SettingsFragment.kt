@@ -124,6 +124,7 @@ class SettingsFragment :
             activity?.recreate()
             // TODO fix fade and save scroll
             activity?.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+            viewModel.onThemeChanged()
         }
     }
 
