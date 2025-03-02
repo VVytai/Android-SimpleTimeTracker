@@ -13,6 +13,7 @@ import com.example.util.simpletimetracker.core.viewData.SelectLastDaysViewData
 import com.example.util.simpletimetracker.core.viewData.SelectRangeViewData
 import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
+import com.example.util.simpletimetracker.domain.statistics.extension.canBeSwiped
 import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
 import com.example.util.simpletimetracker.feature_views.spinner.CustomSpinner
 import com.example.util.simpletimetracker.navigation.Router
@@ -196,10 +197,7 @@ class StatisticsContainerViewModel @Inject constructor(
     }
 
     private suspend fun loadNavButtonsVisibility(): Boolean {
-        return when (getRangeLength()) {
-            is RangeLength.All, is RangeLength.Custom, is RangeLength.Last -> false
-            else -> true
-        }
+        return getRangeLength().canBeSwiped()
     }
 
     companion object {

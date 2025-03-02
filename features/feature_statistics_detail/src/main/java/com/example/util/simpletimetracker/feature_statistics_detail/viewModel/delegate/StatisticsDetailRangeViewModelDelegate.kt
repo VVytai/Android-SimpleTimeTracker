@@ -18,6 +18,7 @@ import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteracto
 import com.example.util.simpletimetracker.domain.record.model.Range
 import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
 import com.example.util.simpletimetracker.domain.record.model.RecordsFilter
+import com.example.util.simpletimetracker.domain.statistics.extension.canBeSwiped
 import com.example.util.simpletimetracker.feature_views.spinner.CustomSpinner
 import com.example.util.simpletimetracker.navigation.Router
 import com.example.util.simpletimetracker.navigation.params.screen.CustomRangeSelectionParams
@@ -217,13 +218,7 @@ class StatisticsDetailRangeViewModelDelegate @Inject constructor(
     }
 
     private fun loadButtonsVisibility(): Boolean {
-        return when (rangeLength) {
-            is RangeLength.All,
-            is RangeLength.Custom,
-            is RangeLength.Last,
-            -> false
-            else -> true
-        }
+        return rangeLength.canBeSwiped()
     }
 
     companion object {

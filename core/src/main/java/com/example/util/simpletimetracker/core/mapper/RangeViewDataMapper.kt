@@ -60,7 +60,7 @@ class RangeViewDataMapper @Inject constructor(
             is RangeLength.Month -> timeMapper.toMonthTitle(position, startOfDayShift)
             is RangeLength.Year -> timeMapper.toYearTitle(position, startOfDayShift)
             is RangeLength.All -> resourceRepo.getString(R.string.range_overall)
-            is RangeLength.Last -> mapToLastDaysTitle(rangeLength.days)
+            is RangeLength.Last -> mapToLastDaysTitle(rangeLength.days, position, startOfDayShift, firstDayOfWeek)
             is RangeLength.Custom -> if (useShortCustomRange) {
                 mapToSelectRangeName()
             } else {
@@ -140,6 +140,24 @@ class RangeViewDataMapper @Inject constructor(
 
     private fun mapToLastDaysTitle(days: Int): String {
         return resourceRepo.getQuantityString(R.plurals.range_last, days, days)
+    }
+
+    private fun mapToLastDaysTitle(
+        days: Int,
+        position: Int,
+        startOfDayShift: Long,
+        firstDayOfWeek: DayOfWeek,
+    ): String {
+        return if (position == 0) {
+            mapToLastDaysTitle(days)
+        } else {
+            timeMapper.getRangeStartAndEnd(
+                rangeLength = RangeLength.Last(days),
+                shift = position,
+                firstDayOfWeek = firstDayOfWeek,
+                startOfDayShift = startOfDayShift,
+            ).let(::mapToCustomRangeTitle)
+        }
     }
 
     companion object {
