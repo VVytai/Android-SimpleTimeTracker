@@ -18,6 +18,7 @@ import com.example.util.simpletimetracker.domain.record.interactor.RecordInterac
 import com.example.util.simpletimetracker.domain.recordTag.interactor.RecordTypeToTagInteractor
 import com.example.util.simpletimetracker.domain.favourite.model.FavouriteComment
 import com.example.util.simpletimetracker.domain.record.model.Record
+import com.example.util.simpletimetracker.domain.recordTag.interactor.RecordTagInteractor
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.button.ButtonViewData
 import com.example.util.simpletimetracker.feature_base_adapter.category.CategoryViewData
@@ -55,6 +56,7 @@ abstract class ChangeRecordBaseViewModel(
     private val recordTagViewDataInteractor: RecordTagViewDataInteractor,
     private val changeRecordViewDataInteractor: ChangeRecordViewDataInteractor,
     private val recordInteractor: RecordInteractor,
+    private val recordTagInteractor: RecordTagInteractor,
     private val recordTypeToTagInteractor: RecordTypeToTagInteractor,
     private val favouriteCommentInteractor: FavouriteCommentInteractor,
     private val changeRecordActionsDelegate: ChangeRecordActionsDelegateImpl,
@@ -285,11 +287,7 @@ abstract class ChangeRecordBaseViewModel(
 
             // Close type selection after type is selected
             onTypeChooserClick()
-            // If type has any record tags - open tag selection
-            if (recordTypeToTagInteractor.getTags(newTypeId).isNotEmpty()) {
-                delay(300)
-                onCategoryChooserClick()
-            }
+            openTagSelectionIfNeeded()
         }
     }
 
@@ -455,6 +453,19 @@ abstract class ChangeRecordBaseViewModel(
                 }
                 router.back()
             }
+        }
+    }
+
+    private suspend fun openTagSelectionIfNeeded() {
+        // If type has any record tags - open tag selection
+        val tags = recordTagInteractor.getAll().associateBy { it.id }
+        val tagsForThisType = recordTypeToTagInteractor.getTags(newTypeId)
+            .mapNotNull(tags::get)
+            .filterNot { it.archived }
+
+        if (tagsForThisType.isNotEmpty()) {
+            delay(300)
+            onCategoryChooserClick()
         }
     }
 

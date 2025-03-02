@@ -21,6 +21,7 @@ import com.example.util.simpletimetracker.domain.statistics.model.ChartFilterTyp
 import com.example.util.simpletimetracker.domain.daysOfWeek.model.DayOfWeek
 import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
 import com.example.util.simpletimetracker.domain.record.model.Record
+import com.example.util.simpletimetracker.domain.recordTag.interactor.RecordTagInteractor
 import com.example.util.simpletimetracker.feature_change_record.interactor.ChangeRecordViewDataInteractor
 import com.example.util.simpletimetracker.feature_change_record.viewData.ChangeRecordViewData
 import com.example.util.simpletimetracker.navigation.Router
@@ -38,6 +39,7 @@ class ChangeRecordViewModel @Inject constructor(
     recordTagViewDataInteractor: RecordTagViewDataInteractor,
     snackBarMessageNavigationInteractor: SnackBarMessageNavigationInteractor,
     changeRecordActionsDelegate: ChangeRecordActionsDelegateImpl,
+    recordTagInteractor: RecordTagInteractor,
     recordTypeToTagInteractor: RecordTypeToTagInteractor,
     favouriteCommentInteractor: FavouriteCommentInteractor,
     private val prefsInteractor: PrefsInteractor,
@@ -56,6 +58,7 @@ class ChangeRecordViewModel @Inject constructor(
     recordTagViewDataInteractor = recordTagViewDataInteractor,
     changeRecordViewDataInteractor = changeRecordViewDataInteractor,
     recordInteractor = recordInteractor,
+    recordTagInteractor = recordTagInteractor,
     recordTypeToTagInteractor = recordTypeToTagInteractor,
     favouriteCommentInteractor = favouriteCommentInteractor,
     changeRecordActionsDelegate = changeRecordActionsDelegate,

@@ -20,6 +20,7 @@ import com.example.util.simpletimetracker.domain.record.interactor.RunningRecord
 import com.example.util.simpletimetracker.domain.record.interactor.UpdateRunningRecordFromChangeScreenInteractor
 import com.example.util.simpletimetracker.domain.statistics.model.ChartFilterType
 import com.example.util.simpletimetracker.domain.record.model.RunningRecord
+import com.example.util.simpletimetracker.domain.recordTag.interactor.RecordTagInteractor
 import com.example.util.simpletimetracker.feature_change_record.interactor.ChangeRecordViewDataInteractor
 import com.example.util.simpletimetracker.feature_change_record.viewData.ChangeRecordChooserState
 import com.example.util.simpletimetracker.feature_change_record.viewModel.ChangeRecordActionsDelegateImpl
@@ -50,6 +51,7 @@ class ChangeRunningRecordViewModel @Inject constructor(
     changeRecordViewDataInteractor: ChangeRecordViewDataInteractor,
     changeRecordActionsDelegate: ChangeRecordActionsDelegateImpl,
     recordInteractor: RecordInteractor,
+    recordTagInteractor: RecordTagInteractor,
     recordTypeToTagInteractor: RecordTypeToTagInteractor,
     favouriteCommentInteractor: FavouriteCommentInteractor,
     snackBarMessageNavigationInteractor: SnackBarMessageNavigationInteractor,
@@ -70,6 +72,7 @@ class ChangeRunningRecordViewModel @Inject constructor(
     recordTagViewDataInteractor = recordTagViewDataInteractor,
     changeRecordViewDataInteractor = changeRecordViewDataInteractor,
     recordInteractor = recordInteractor,
+    recordTagInteractor = recordTagInteractor,
     recordTypeToTagInteractor = recordTypeToTagInteractor,
     favouriteCommentInteractor = favouriteCommentInteractor,
     changeRecordActionsDelegate = changeRecordActionsDelegate,
