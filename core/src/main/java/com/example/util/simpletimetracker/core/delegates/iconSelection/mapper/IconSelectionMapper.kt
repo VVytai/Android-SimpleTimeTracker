@@ -102,7 +102,8 @@ class IconSelectionMapper @Inject constructor(
 
             val iconsViewData = categoryImages.mapNotNull {
                 if (isSearching) {
-                    if (!containsSearch(actualSearch, it.iconName, it.iconSearch)) {
+                    val iconName = it.iconName.prepareIconName()
+                    if (!containsSearch(actualSearch, iconName, it.iconSearch)) {
                         return@mapNotNull null
                     }
                 }
@@ -299,5 +300,9 @@ class IconSelectionMapper @Inject constructor(
         return searchParts.all { part ->
             searchableField.any { it.contains(part) }
         }
+    }
+
+    private fun String.prepareIconName(): String {
+        return this.removePrefix("ic_").removeSuffix("_24px")
     }
 }
