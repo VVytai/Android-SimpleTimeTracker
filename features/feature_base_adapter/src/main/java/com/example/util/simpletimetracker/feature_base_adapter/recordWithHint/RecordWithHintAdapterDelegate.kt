@@ -1,10 +1,13 @@
 package com.example.util.simpletimetracker.feature_base_adapter.recordWithHint
 
 import com.example.util.simpletimetracker.feature_base_adapter.createRecyclerBindingAdapterDelegate
+import com.example.util.simpletimetracker.feature_views.extension.setOnLongClick
 import com.example.util.simpletimetracker.feature_base_adapter.databinding.ItemRecordWithHintLayoutBinding as Binding
 import com.example.util.simpletimetracker.feature_base_adapter.recordWithHint.RecordWithHintViewData as ViewData
 
-fun createRecordWithHintAdapterDelegate() = createRecyclerBindingAdapterDelegate<ViewData, Binding>(
+fun createRecordWithHintAdapterDelegate(
+    onItemLongClick: ((ViewData) -> Unit) = { _ -> },
+) = createRecyclerBindingAdapterDelegate<ViewData, Binding>(
     Binding::inflate,
 ) { binding, item, _ ->
 
@@ -21,5 +24,7 @@ fun createRecordWithHintAdapterDelegate() = createRecyclerBindingAdapterDelegate
             itemDuration = item.duration
             itemComment = item.comment
         }
+
+        setOnLongClick { onItemLongClick(item) }
     }
 }

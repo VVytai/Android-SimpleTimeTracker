@@ -27,6 +27,7 @@ import com.example.util.simpletimetracker.feature_base_adapter.loader.LoaderView
 import com.example.util.simpletimetracker.feature_base_adapter.record.RecordViewData
 import com.example.util.simpletimetracker.feature_base_adapter.recordType.RecordTypeViewData
 import com.example.util.simpletimetracker.feature_base_adapter.recordTypeSpecial.RunningRecordTypeSpecialViewData
+import com.example.util.simpletimetracker.feature_base_adapter.recordWithHint.RecordWithHintViewData
 import com.example.util.simpletimetracker.feature_base_adapter.runningRecord.RunningRecordViewData
 import com.example.util.simpletimetracker.feature_running_records.interactor.RunningRecordsViewDataInteractor
 import com.example.util.simpletimetracker.navigation.Router
@@ -157,6 +158,27 @@ class RunningRecordsViewModel @Inject constructor(
                 ?.let { removeRunningRecordMediator.removeWithRecordAdd(it) }
             updateRunningRecords()
         }
+    }
+
+    fun onRecordLongClick(
+        item: RecordWithHintViewData,
+    ) = viewModelScope.launch {
+        val useMilitaryTimeFormat = prefsInteractor.getUseMilitaryTimeFormat()
+        val showSeconds = prefsInteractor.getShowSeconds()
+
+        val params = getChangeRecordNavigationParamsInteractor.execute(
+            item = item.record,
+            from = ChangeRecordParams.From.Records,
+            shift = 0,
+            useMilitaryTimeFormat = useMilitaryTimeFormat,
+            showSeconds = showSeconds,
+            // Doesn't have transitions because untracked edit also doesn't have them.
+            sharedElements = null,
+        )
+
+        router.navigate(
+            data = ChangeRecordFromMainParams(params = params),
+        )
     }
 
     fun onRunningRecordLongClick(

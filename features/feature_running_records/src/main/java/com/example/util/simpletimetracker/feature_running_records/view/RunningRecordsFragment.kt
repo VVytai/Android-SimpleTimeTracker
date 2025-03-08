@@ -74,7 +74,7 @@ class RunningRecordsFragment :
                 onItemClick = viewModel::onRecordTypeClick,
                 onItemLongClick = viewModel::onRecordTypeLongClick,
             ),
-            createRecordWithHintAdapterDelegate(),
+            createRecordWithHintAdapterDelegate(throttle(viewModel::onRecordLongClick)),
             createRunningRecordTypeSpecialAdapterDelegate(throttle(viewModel::onSpecialRecordTypeClick)),
             createActivityFilterAdapterDelegate(viewModel::onActivityFilterClick, viewModel::onActivityFilterLongClick),
             createActivityFilterAddAdapterDelegate(throttle(viewModel::onAddActivityFilterClick)),
