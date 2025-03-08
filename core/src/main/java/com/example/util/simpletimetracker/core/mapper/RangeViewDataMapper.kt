@@ -64,7 +64,7 @@ class RangeViewDataMapper @Inject constructor(
             is RangeLength.Custom -> if (useShortCustomRange) {
                 mapToSelectRangeName()
             } else {
-                mapToCustomRangeTitle(rangeLength.range)
+                mapToCustomRangeTitle(rangeLength.range, position, startOfDayShift, firstDayOfWeek)
             }
         }
     }
@@ -131,6 +131,21 @@ class RangeViewDataMapper @Inject constructor(
         return timeMapper.formatDate(range.timeStarted) +
             " - " +
             timeMapper.formatDate(range.timeEnded - 1)
+    }
+
+    private fun mapToCustomRangeTitle(
+        range: Range,
+        position: Int,
+        startOfDayShift: Long,
+        firstDayOfWeek: DayOfWeek,
+    ): String {
+        val shiftedRange = timeMapper.getRangeStartAndEnd(
+            rangeLength = RangeLength.Custom(range),
+            shift = position,
+            firstDayOfWeek = firstDayOfWeek,
+            startOfDayShift = startOfDayShift,
+        )
+        return mapToCustomRangeTitle(shiftedRange)
     }
 
     private fun mapToSelectLastDays(days: Int): SelectLastDaysViewData {

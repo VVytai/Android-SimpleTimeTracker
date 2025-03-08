@@ -329,11 +329,11 @@ class StatisticsDetailChartInteractor @Inject constructor(
             is RangeLength.Month,
             is RangeLength.Year,
             is RangeLength.Last,
+            is RangeLength.Custom,
             -> timeMapper.getRangeStartAndEnd(
                 rangeLength, rangePosition, firstDayOfWeek, 0,
             ).timeEnded - 1
             is RangeLength.All -> System.currentTimeMillis()
-            is RangeLength.Custom -> rangeLength.range.timeEnded - 1
         }
 
         val numberOfGroups: Int = when (rangeLength) {

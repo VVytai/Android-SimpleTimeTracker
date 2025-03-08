@@ -4,9 +4,7 @@ import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
 
 fun RangeLength.canBeSwiped(): Boolean {
     return when (this) {
-        is RangeLength.All,
-        is RangeLength.Custom,
-        -> false
+        is RangeLength.All -> false
         else -> true
     }
 }

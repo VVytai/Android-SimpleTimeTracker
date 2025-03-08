@@ -431,8 +431,16 @@ class TimeMapper @Inject constructor(
             }
 
             is RangeLength.Custom -> {
-                rangeStart = rangeLength.range.timeStarted
-                rangeEnd = rangeLength.range.timeEnded
+                val daysBetween = toTimestampShift(
+                    fromTime = rangeLength.range.timeStarted,
+                    toTime = rangeLength.range.timeEnded,
+                    range = RangeLength.Day,
+                    firstDayOfWeek = firstDayOfWeek,
+                ).toInt()
+                calendar.timeInMillis = rangeLength.range.timeStarted
+                calendar.add(Calendar.DATE, shift * daysBetween)
+                rangeStart = calendar.timeInMillis
+                rangeEnd = calendar.apply { add(Calendar.DATE, daysBetween) }.timeInMillis
             }
 
             is RangeLength.Last -> {
