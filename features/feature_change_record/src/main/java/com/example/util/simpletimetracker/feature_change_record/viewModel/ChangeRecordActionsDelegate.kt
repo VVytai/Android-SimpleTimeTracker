@@ -12,6 +12,8 @@ interface ChangeRecordActionsDelegate {
 
         fun updateViewData()
 
+        fun checkIfTypeSelected(): Boolean
+
         fun onRecordChangeButtonClick(
             onProceed: suspend () -> Unit,
             checkTypeSelected: Boolean = true,
@@ -27,6 +29,7 @@ interface ChangeRecordActionsDelegate {
             val baseParams: BaseParams,
             val splitParams: SplitParams,
             val duplicateParams: DuplicateParams,
+            val moveParams: MoveParams,
             val continueParams: ContinueParams,
             val repeatParams: RepeatParams,
             val adjustParams: AdjustParams,
@@ -49,6 +52,10 @@ interface ChangeRecordActionsDelegate {
             )
 
             data class DuplicateParams(
+                val isAvailable: Boolean,
+            )
+
+            data class MoveParams(
                 val isAvailable: Boolean,
             )
 

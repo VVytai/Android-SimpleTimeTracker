@@ -10,6 +10,7 @@ import com.example.util.simpletimetracker.core.extension.toViewData
 import com.example.util.simpletimetracker.core.interactor.StatisticsDetailNavigationInteractor
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.domain.base.UNTRACKED_ITEM_ID
+import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.recordAction.interactor.RecordActionContinueMediator
 import com.example.util.simpletimetracker.domain.recordAction.interactor.RecordActionDuplicateMediator
 import com.example.util.simpletimetracker.domain.recordAction.interactor.RecordActionMergeMediator
@@ -26,6 +27,8 @@ import com.example.util.simpletimetracker.feature_dialogs.recordQuickActions.mod
 import com.example.util.simpletimetracker.feature_dialogs.recordQuickActions.model.RecordQuickActionsState
 import com.example.util.simpletimetracker.navigation.Router
 import com.example.util.simpletimetracker.navigation.params.notification.SnackBarParams
+import com.example.util.simpletimetracker.navigation.params.screen.DateTimeDialogParams
+import com.example.util.simpletimetracker.navigation.params.screen.DateTimeDialogType
 import com.example.util.simpletimetracker.navigation.params.screen.RecordQuickActionsParams
 import com.example.util.simpletimetracker.navigation.params.screen.RecordQuickActionsParams.Type
 import com.example.util.simpletimetracker.navigation.params.screen.TypesSelectionDialogParams
@@ -37,6 +40,7 @@ import javax.inject.Inject
 class RecordQuickActionsViewModel @Inject constructor(
     private val router: Router,
     private val resourceRepo: ResourceRepo,
+    private val prefsInteractor: PrefsInteractor,
     private val recordInteractor: RecordInteractor,
     private val recordQuickActionsViewDataInteractor: RecordQuickActionsViewDataInteractor,
     private val recordQuickActionsInteractor: RecordQuickActionsInteractor,
@@ -68,6 +72,8 @@ class RecordQuickActionsViewModel @Inject constructor(
                 onButtonClick(onProceed = ::onRepeat)
             RecordQuickActionsButton.DUPLICATE ->
                 onButtonClick(onProceed = ::onDuplicate)
+            RecordQuickActionsButton.MOVE ->
+                onButtonClick(delayBlock = true, onProceed = ::onMove)
             RecordQuickActionsButton.MERGE ->
                 onButtonClick(onProceed = ::onMerge)
             RecordQuickActionsButton.STOP ->
@@ -163,6 +169,22 @@ class RecordQuickActionsViewModel @Inject constructor(
         exit()
     }
 
+    private suspend fun onMove() {
+        val record = getTrackedRecord() ?: return
+        val useMilitaryTime = prefsInteractor.getUseMilitaryTimeFormat()
+        val firstDayOfWeek = prefsInteractor.getFirstDayOfWeek()
+        val showSeconds = prefsInteractor.getShowSeconds()
+
+        DateTimeDialogParams(
+            tag = RECORD_QUICK_MOVE_TIME_SELECTION_TAG,
+            timestamp = record.timeStarted,
+            type = DateTimeDialogType.DATETIME(),
+            useMilitaryTime = useMilitaryTime,
+            firstDayOfWeek = firstDayOfWeek,
+            showSeconds = showSeconds,
+        ).let(router::navigate)
+    }
+
     private suspend fun onMerge() {
         val record = extra.type as? Type.RecordUntracked ?: return
         val prevRecord = recordInteractor.getPrev(timeStarted = record.timeStarted)
@@ -227,6 +249,17 @@ class RecordQuickActionsViewModel @Inject constructor(
         }
     }
 
+    fun onDateTimeSet(timestamp: Long, tag: String?) = viewModelScope.launch {
+        val params = extra.type ?: return@launch
+        when (tag) {
+            RECORD_QUICK_MOVE_TIME_SELECTION_TAG -> {
+                buttonsBlocked = true
+                recordQuickActionsInteractor.move(params, timestamp)
+                exit()
+            }
+        }
+    }
+
     private suspend fun getTrackedRecord(): Record? {
         val recordId = (extra.type as? Type.RecordTracked)?.id
             ?: return null
@@ -267,5 +300,6 @@ class RecordQuickActionsViewModel @Inject constructor(
     companion object {
         private const val RECORD_QUICK_ACTIONS_TYPE_SELECTION_TAG = "RECORD_QUICK_ACTIONS_TYPE_SELECTION_TAG"
         private const val RECORD_QUICK_ACTIONS_TAG_SELECTION_TAG = "RECORD_QUICK_ACTIONS_TAG_SELECTION_TAG"
+        private const val RECORD_QUICK_MOVE_TIME_SELECTION_TAG = "RECORD_QUICK_MOVE_TIME_SELECTION_TAG"
     }
 }

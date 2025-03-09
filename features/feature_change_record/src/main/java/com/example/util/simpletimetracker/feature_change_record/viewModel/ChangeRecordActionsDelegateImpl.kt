@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import com.example.util.simpletimetracker.core.base.ViewModelDelegate
 import com.example.util.simpletimetracker.core.extension.lazySuspend
 import com.example.util.simpletimetracker.core.extension.set
+import com.example.util.simpletimetracker.domain.extension.orFalse
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.button.ButtonViewData
 import com.example.util.simpletimetracker.feature_base_adapter.divider.DividerViewData
@@ -84,6 +85,7 @@ class ChangeRecordActionsDelegateImpl @Inject constructor(
             ChangeRecordActionsBlock.ContinueButton -> onContinueClick()
             ChangeRecordActionsBlock.RepeatButton -> onRepeatClick()
             ChangeRecordActionsBlock.DuplicateButton -> onDuplicateClick()
+            ChangeRecordActionsBlock.MoveButton -> onMoveClick()
             ChangeRecordActionsBlock.MergeButton -> onMergeClick()
             else -> {
                 // Do nothing.
@@ -114,6 +116,13 @@ class ChangeRecordActionsDelegateImpl @Inject constructor(
         parent?.onRecordChangeButtonClick(
             onProceed = delegateHolder.duplicateDelegate::onDuplicateClickDelegate,
         )
+    }
+
+    private fun onMoveClick() {
+        if (!parent?.checkIfTypeSelected().orFalse()) return
+        delegateScope.launch {
+            delegateHolder.moveDelegate.onMoveClickDelegate()
+        }
     }
 
     private fun onMergeClick() {

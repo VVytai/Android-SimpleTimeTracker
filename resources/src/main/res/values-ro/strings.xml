@@ -123,6 +123,8 @@
     <string name="change_record_repeat_hint">Va repeta urmărirea acestei activități</string>
     <string name="change_record_duplicate">Duplică</string>
     <string name="change_record_duplicate_hint">Va crea o copie a acestei înregistrări</string>
+    <string name="change_record_move">Muta</string>
+    <string name="change_record_move_hint">Va schimba ora de început fără a modifica durata</string>
     <string name="change_record_merge">Combină</string>
     <string name="change_record_merge_hint">Va adauga acest timp la înregistrarea anterioară</string>
     <string name="change_record_adjust">Modifică</string>

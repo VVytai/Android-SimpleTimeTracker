@@ -13,5 +13,6 @@ enum class ChangeRecordActionsBlock {
     ContinueButton,
     RepeatButton,
     DuplicateButton,
+    MoveButton,
     MergeButton,
 }

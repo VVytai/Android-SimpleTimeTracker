@@ -69,6 +69,7 @@ class RecordQuickActionsViewDataInteractor @Inject constructor(
             RecordQuickActionsButton.CONTINUE,
             RecordQuickActionsButton.REPEAT,
             RecordQuickActionsButton.DUPLICATE,
+            RecordQuickActionsButton.MOVE,
             RecordQuickActionsButton.MERGE,
             RecordQuickActionsButton.STOP,
             RecordQuickActionsButton.CHANGE_ACTIVITY,
@@ -108,6 +109,7 @@ class RecordQuickActionsViewDataInteractor @Inject constructor(
                 RecordQuickActionsButton.CONTINUE.takeIf { canContinue },
                 RecordQuickActionsButton.REPEAT,
                 RecordQuickActionsButton.DUPLICATE,
+                RecordQuickActionsButton.MOVE,
                 RecordQuickActionsButton.CHANGE_ACTIVITY,
                 RecordQuickActionsButton.CHANGE_TAG.takeIf { hasTags },
             )
@@ -163,6 +165,7 @@ class RecordQuickActionsViewDataInteractor @Inject constructor(
             RecordQuickActionsButton.CONTINUE -> RecordQuickAction.CONTINUE
             RecordQuickActionsButton.REPEAT -> RecordQuickAction.REPEAT
             RecordQuickActionsButton.DUPLICATE -> RecordQuickAction.DUPLICATE
+            RecordQuickActionsButton.MOVE -> RecordQuickAction.MOVE
             RecordQuickActionsButton.MERGE -> RecordQuickAction.MERGE
             RecordQuickActionsButton.STOP -> RecordQuickAction.STOP
             RecordQuickActionsButton.CHANGE_ACTIVITY -> RecordQuickAction.CHANGE_ACTIVITY

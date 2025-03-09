@@ -6,6 +6,7 @@ enum class RecordQuickActionsButton {
     CONTINUE,
     REPEAT,
     DUPLICATE,
+    MOVE,
     MERGE,
     STOP,
     CHANGE_ACTIVITY,

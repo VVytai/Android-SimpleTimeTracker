@@ -100,6 +100,21 @@ class RecordQuickActionsInteractor @Inject constructor(
         }
     }
 
+    suspend fun move(
+        params: Type,
+        timestamp: Long,
+    ) {
+        val recordId = (params as? Type.RecordTracked)?.id ?: return
+        val record = recordInteractor.get(recordId) ?: return
+        val currentDuration = record.duration
+        record.copy(
+            timeStarted = timestamp,
+            timeEnded = timestamp + currentDuration
+        ).let {
+            addRecordMediator.add(it)
+        }
+    }
+
     private suspend fun changeRecord(
         old: Record,
         newTypeId: Long,

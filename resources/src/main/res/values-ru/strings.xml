@@ -123,6 +123,8 @@
     <string name="change_record_repeat_hint">Повторит отслеживание этой активности</string>
     <string name="change_record_duplicate">Дублировать</string>
     <string name="change_record_duplicate_hint">Создаст копию этой записи</string>
+    <string name="change_record_move">Переместить</string>
+    <string name="change_record_move_hint">Изменит время начала, не изменяя продолжительность</string>
     <string name="change_record_merge">Объединить</string>
     <string name="change_record_merge_hint">Добавит это время к предыдущей записи</string>
     <string name="change_record_adjust">Изменить</string>

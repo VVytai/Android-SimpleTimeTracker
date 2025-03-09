@@ -123,6 +123,8 @@
     <string name="change_record_repeat_hint">ردیابی این فعالیت را تکرار خواهد کرد</string>
     <string name="change_record_duplicate">تکثیر</string>
     <string name="change_record_duplicate_hint">از این تاریخچه نسخه کپی می سازد</string>
+    <string name="change_record_move">جابه‌جا کردن</string>
+    <string name="change_record_move_hint">زمان شروع را تغییر می‌دهد بدون اینکه مدت زمان تغییر کند</string>
     <string name="change_record_merge">تریکب</string>
     <string name="change_record_merge_hint">این زمان را به تاریخچه قبلی اضاف می کند</string>
     <string name="change_record_adjust">تغییر</string>

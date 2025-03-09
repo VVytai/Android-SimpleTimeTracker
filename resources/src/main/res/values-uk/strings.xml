@@ -123,6 +123,8 @@
     <string name="change_record_repeat_hint">Буде повторено відстеження цієї активності</string>
     <string name="change_record_duplicate">Дублювати</string>
     <string name="change_record_duplicate_hint">Буде створено копію цього запису</string>
+    <string name="change_record_move">Перемістити</string>
+    <string name="change_record_move_hint">Змінить час початку, не змінюючи тривалість</string>
     <string name="change_record_merge">Об’єднати</string>
     <string name="change_record_merge_hint">Додасть цей час до попереднього запису</string>
     <string name="change_record_adjust">Змінити</string>

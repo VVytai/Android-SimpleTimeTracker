@@ -390,6 +390,16 @@ abstract class ChangeRecordBaseViewModel(
                         onTimeSplitChanged()
                     }
                 }
+                ChangeRecordActionsMoveDelegate.MOVE_TIME_STARTED_TAG -> {
+                    onRecordChangeButtonClick(
+                        onProceed = {
+                            val currentDuration = (newTimeEnded - newTimeStarted).coerceAtLeast(0)
+                            newTimeStarted = timestamp
+                            newTimeEnded = newTimeStarted + currentDuration
+                            onSaveClickDelegate()
+                        },
+                    )
+                }
             }
         }
     }
@@ -508,13 +518,21 @@ abstract class ChangeRecordBaseViewModel(
         onTimeSplitChanged()
     }
 
+    private fun checkIfTypeSelected(): Boolean {
+        return if (newTypeId == 0L) {
+            showMessage(R.string.change_record_message_choose_type)
+            false
+        } else {
+            true
+        }
+    }
+
     private fun onRecordChangeButtonClick(
         onProceed: suspend () -> Unit,
         checkTypeSelected: Boolean = true,
     ) {
-        if (checkTypeSelected && newTypeId == 0L) {
-            showMessage(R.string.change_record_message_choose_type)
-            return
+        if (checkTypeSelected) {
+            if (!checkIfTypeSelected()) return
         }
         viewModelScope.launch {
             val canProceed = saveButtonEnabled.value.orFalse()
@@ -753,6 +771,9 @@ abstract class ChangeRecordBaseViewModel(
                     duplicateParams = ChangeRecordActionsDelegate.Parent.ViewDataParams.DuplicateParams(
                         isAvailable = isAdditionalActionsAvailable,
                     ),
+                    moveParams = ChangeRecordActionsDelegate.Parent.ViewDataParams.MoveParams(
+                        isAvailable = isAdditionalActionsAvailable,
+                    ),
                     continueParams = ChangeRecordActionsDelegate.Parent.ViewDataParams.ContinueParams(
                         originalRecordId = originalRecordId,
                         isAvailable = isAdditionalActionsAvailable,
@@ -779,6 +800,10 @@ abstract class ChangeRecordBaseViewModel(
 
             override fun updateViewData() {
                 changeRecordActionsDelegate.updateViewData()
+            }
+
+            override fun checkIfTypeSelected(): Boolean {
+                return this@ChangeRecordBaseViewModel.checkIfTypeSelected()
             }
 
             override fun onRecordChangeButtonClick(

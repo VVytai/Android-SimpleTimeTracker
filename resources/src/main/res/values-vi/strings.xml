@@ -123,6 +123,8 @@
     <string name="change_record_repeat_hint">Sẽ lặp lại việc theo dõi hoạt động này</string>
     <string name="change_record_duplicate">Nhân đôi</string>
     <string name="change_record_duplicate_hint">Sẽ tạo một bản sao của bản ghi này</string>
+    <string name="change_record_move">Di chuyển</string>
+    <string name="change_record_move_hint">Sẽ thay đổi thời gian bắt đầu mà không thay đổi thời lượng</string>
     <string name="change_record_merge">Hợp nhất</string>
     <string name="change_record_merge_hint">Sẽ thêm thời gian này vào bản ghi trước đó</string>
     <string name="change_record_adjust">Thay đổi</string>

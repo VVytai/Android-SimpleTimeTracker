@@ -123,6 +123,8 @@
     <string name="change_record_repeat_hint">Zal het volgen van deze activiteit herhalen</string>
     <string name="change_record_duplicate">Duplicaat</string>
     <string name="change_record_duplicate_hint">Zal een kopie van dit record maken</string>
+    <string name="change_record_move">Verplaatsen</string>
+    <string name="change_record_move_hint">Zal de starttijd wijzigen zonder de duur te veranderen</string>
     <string name="change_record_merge">Samenvoegen</string>
     <string name="change_record_merge_hint">Zal deze tijd toevoegen aan het vorige record</string>
     <string name="change_record_adjust">Verandering</string>

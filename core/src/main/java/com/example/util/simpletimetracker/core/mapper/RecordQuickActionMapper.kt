@@ -11,6 +11,7 @@ import com.example.util.simpletimetracker.domain.recordAction.model.RecordQuickA
 import com.example.util.simpletimetracker.domain.recordAction.model.RecordQuickAction.CONTINUE
 import com.example.util.simpletimetracker.domain.recordAction.model.RecordQuickAction.DUPLICATE
 import com.example.util.simpletimetracker.domain.recordAction.model.RecordQuickAction.MERGE
+import com.example.util.simpletimetracker.domain.recordAction.model.RecordQuickAction.MOVE
 import com.example.util.simpletimetracker.domain.recordAction.model.RecordQuickAction.REPEAT
 import com.example.util.simpletimetracker.domain.recordAction.model.RecordQuickAction.SPLIT
 import com.example.util.simpletimetracker.domain.recordAction.model.RecordQuickAction.STOP
@@ -25,6 +26,7 @@ class RecordQuickActionMapper @Inject constructor(
             CONTINUE -> R.string.change_record_continue
             REPEAT -> R.string.change_record_repeat
             DUPLICATE -> R.string.change_record_duplicate
+            MOVE -> R.string.change_record_move
             MERGE -> R.string.change_record_merge
             SPLIT -> R.string.change_record_split
             ADJUST -> R.string.change_record_adjust
@@ -40,6 +42,7 @@ class RecordQuickActionMapper @Inject constructor(
             CONTINUE -> R.drawable.action_continue
             REPEAT -> R.drawable.repeat
             DUPLICATE -> R.drawable.action_copy
+            MOVE -> R.drawable.action_move
             MERGE -> R.drawable.action_merge
             SPLIT -> R.drawable.action_divide
             ADJUST -> R.drawable.action_change
@@ -54,6 +57,7 @@ class RecordQuickActionMapper @Inject constructor(
             CONTINUE -> R.color.red_300
             REPEAT -> R.color.purple_300
             DUPLICATE -> R.color.indigo_300
+            MOVE -> R.color.indigo_300
             MERGE -> R.color.light_blue_300
             STOP -> R.color.teal_300
             CHANGE_ACTIVITY, CHANGE_TAG -> R.color.green_300

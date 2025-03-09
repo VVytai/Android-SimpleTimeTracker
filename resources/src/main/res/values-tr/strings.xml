@@ -123,6 +123,8 @@
     <string name="change_record_repeat_hint">Bu etkinliği izlemeyi tekrarlayacak</string>
     <string name="change_record_duplicate">Kopyalamak</string>
     <string name="change_record_duplicate_hint">Bu kaydın bir kopyasını oluşturacak</string>
+    <string name="change_record_move">Taşı</string>
+    <string name="change_record_move_hint">Süreyi değiştirmeden başlangıç saatini değiştirecek</string>
     <string name="change_record_merge">Birleştirmek</string>
     <string name="change_record_merge_hint">Bu sefer önceki rekora eklenecek</string>
     <string name="change_record_adjust">Değiştirmek</string>

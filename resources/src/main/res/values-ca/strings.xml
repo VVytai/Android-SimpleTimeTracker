@@ -123,6 +123,8 @@
     <string name="change_record_repeat_hint">Repetirà el seguiment d\'aquesta activitat</string>
     <string name="change_record_duplicate">Duplicat</string>
     <string name="change_record_duplicate_hint">Crearà una còpia d\'aquest registre</string>
+    <string name="change_record_move">Moure</string>
+    <string name="change_record_move_hint">Canviarà l\'hora d\'inici sense canviar la durada</string>
     <string name="change_record_merge">Uneix</string>
     <string name="change_record_merge_hint">Afegirà la durada d\'aquest enregistrament a l\'anterior</string>
     <string name="change_record_adjust">Canvi</string>

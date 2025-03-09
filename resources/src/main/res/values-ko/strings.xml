@@ -123,6 +123,8 @@
     <string name="change_record_repeat_hint">이 활동을 반복적으로 추적합니다</string>
     <string name="change_record_duplicate">복사</string>
     <string name="change_record_duplicate_hint">이 기록의 사본을 만듭니다</string>
+    <string name="change_record_move">이동</string>
+    <string name="change_record_move_hint">지속 시간을 변경하지 않고 시작 시간을 변경합니다</string>
     <string name="change_record_merge">병합</string>
     <string name="change_record_merge_hint">이 기록을 이전 기록으로 병합합니다</string>
     <string name="change_record_adjust">변경</string>

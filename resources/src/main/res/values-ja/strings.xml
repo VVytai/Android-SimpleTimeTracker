@@ -123,6 +123,8 @@
     <string name="change_record_repeat_hint">このアクティビティの追跡を繰り返します</string>
     <string name="change_record_duplicate">複製</string>
     <string name="change_record_duplicate_hint">このレコードのコピーを作成します</string>
+    <string name="change_record_move">移動</string>
+    <string name="change_record_move_hint">継続時間を変更せずに開始時間を変更します</string>
     <string name="change_record_merge">マージ</string>
     <string name="change_record_merge_hint">現在の記録を前の記録に追加します</string>
     <string name="change_record_adjust">変更する</string>

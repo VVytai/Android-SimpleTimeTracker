@@ -4,6 +4,7 @@ enum class RecordQuickAction {
     CONTINUE,
     REPEAT,
     DUPLICATE,
+    MOVE,
     MERGE,
     SPLIT,
     ADJUST,

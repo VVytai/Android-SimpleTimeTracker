@@ -123,6 +123,8 @@
     <string name="change_record_repeat_hint">Repetirá o rastreamento desta atividade</string>
     <string name="change_record_duplicate">Duplicada</string>
     <string name="change_record_duplicate_hint">Irá criar uma cópia deste registro</string>
+    <string name="change_record_move">Mover</string>
+    <string name="change_record_move_hint">Irá mudar o horário de início sem alterar a duração</string>
     <string name="change_record_merge">Mesclar</string>
     <string name="change_record_merge_hint">Irá adicionar este tempo ao recorde anterior</string>
     <string name="change_record_adjust">Mudar</string>

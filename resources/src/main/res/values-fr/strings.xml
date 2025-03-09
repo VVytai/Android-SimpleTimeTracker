@@ -123,6 +123,8 @@
     <string name="change_record_repeat_hint">Je vais répéter le suivi de cette activité</string>
     <string name="change_record_duplicate">Dupliquer</string>
     <string name="change_record_duplicate_hint">Créer une copie de cet enregistrement</string>
+    <string name="change_record_move">Déplacer</string>
+    <string name="change_record_move_hint">Changera l\'heure de début sans changer la durée</string>
     <string name="change_record_merge">Fusionner</string>
     <string name="change_record_merge_hint">Ajoutera cette fois à l\'enregistrement précédent</string>
     <string name="change_record_adjust">Changement</string>

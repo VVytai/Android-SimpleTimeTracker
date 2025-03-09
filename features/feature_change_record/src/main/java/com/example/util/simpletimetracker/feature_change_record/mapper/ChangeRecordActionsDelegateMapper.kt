@@ -6,6 +6,7 @@ import com.example.util.simpletimetracker.feature_change_record.viewModel.Change
 import com.example.util.simpletimetracker.feature_change_record.viewModel.ChangeRecordActionsDelegate.Parent.ViewDataParams
 import com.example.util.simpletimetracker.feature_change_record.viewModel.ChangeRecordActionsDuplicateDelegate
 import com.example.util.simpletimetracker.feature_change_record.viewModel.ChangeRecordActionsMergeDelegate
+import com.example.util.simpletimetracker.feature_change_record.viewModel.ChangeRecordActionsMoveDelegate
 import com.example.util.simpletimetracker.feature_change_record.viewModel.ChangeRecordActionsRepeatDelegate
 import com.example.util.simpletimetracker.feature_change_record.viewModel.ChangeRecordActionsSplitDelegate
 import javax.inject.Inject
@@ -111,6 +112,21 @@ class ChangeRecordActionsDelegateMapper @Inject constructor() {
         }
     }
 
+    fun getMoveActionsDelegateParent(
+        parent: ChangeRecordActionsDelegate.Parent?,
+        updateViewData: () -> Unit,
+    ): ChangeRecordActionsMoveDelegate.Parent {
+        return object : ChangeRecordActionsMoveDelegate.Parent {
+            override fun getViewDataParams(): ChangeRecordActionsMoveDelegate.Parent.ViewDataParams? {
+                return parent?.getViewDataParams()?.mapMoveParams()
+            }
+
+            override fun update() {
+                updateViewData()
+            }
+        }
+    }
+
     fun getMergeDelegateParent(
         parent: ChangeRecordActionsDelegate.Parent?,
         updateViewData: () -> Unit,
@@ -186,6 +202,14 @@ class ChangeRecordActionsDelegateMapper @Inject constructor() {
             newComment = baseParams.newComment,
             newCategoryIds = baseParams.newCategoryIds,
             isAvailable = duplicateParams.isAvailable,
+            isButtonEnabled = baseParams.isButtonEnabled,
+        )
+    }
+
+    private fun ViewDataParams.mapMoveParams(): ChangeRecordActionsMoveDelegate.Parent.ViewDataParams {
+        return ChangeRecordActionsMoveDelegate.Parent.ViewDataParams(
+            newTimeStarted = baseParams.newTimeStarted,
+            isAvailable = moveParams.isAvailable,
             isButtonEnabled = baseParams.isButtonEnabled,
         )
     }

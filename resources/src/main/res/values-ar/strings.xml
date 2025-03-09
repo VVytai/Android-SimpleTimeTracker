@@ -123,6 +123,8 @@
     <string name="change_record_repeat_hint">سوف نكرر تتبع هذا النشاط</string>
     <string name="change_record_duplicate">مضاعفة</string>
     <string name="change_record_duplicate_hint">سينشئ نسخة مكررة من هذا التتبع</string>
+    <string name="change_record_move">نقل</string>
+    <string name="change_record_move_hint">سيغير وقت البدء دون تغيير المدة</string>
     <string name="change_record_merge">دمج</string>
     <string name="change_record_merge_hint">سيدمج هذا الوقت إلى التتبع السابق</string>
     <string name="change_record_adjust">تغيير</string>

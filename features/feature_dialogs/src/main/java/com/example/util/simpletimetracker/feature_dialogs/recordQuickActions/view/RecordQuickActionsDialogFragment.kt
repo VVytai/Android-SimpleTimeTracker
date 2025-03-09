@@ -9,6 +9,7 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.util.simpletimetracker.core.base.BaseBottomSheetFragment
 import com.example.util.simpletimetracker.core.di.BaseViewModelFactory
+import com.example.util.simpletimetracker.core.dialog.DateTimeDialogListener
 import com.example.util.simpletimetracker.core.dialog.RecordQuickActionDialogListener
 import com.example.util.simpletimetracker.core.dialog.TypesSelectionDialogListener
 import com.example.util.simpletimetracker.core.extension.findListener
@@ -33,7 +34,8 @@ import com.example.util.simpletimetracker.feature_dialogs.databinding.RecordQuic
 @AndroidEntryPoint
 class RecordQuickActionsDialogFragment :
     BaseBottomSheetFragment<Binding>(),
-    TypesSelectionDialogListener {
+    TypesSelectionDialogListener,
+    DateTimeDialogListener {
 
     override val inflater: (LayoutInflater, ViewGroup?, Boolean) -> Binding =
         Binding::inflate
@@ -85,6 +87,10 @@ class RecordQuickActionsDialogFragment :
 
     override fun onDataSelected(dataIds: List<Long>, tag: String?) {
         viewModel.onTypesSelected(dataIds, tag)
+    }
+
+    override fun onDateTimeSet(timestamp: Long, tag: String?) {
+        viewModel.onDateTimeSet(timestamp, tag)
     }
 
     private fun updateState(state: RecordQuickActionsState) {

@@ -10,6 +10,7 @@ class ChangeRecordActionsDelegateHolder @Inject constructor(
     val continueDelegate: ChangeRecordActionsContinueDelegate,
     val repeatDelegate: ChangeRecordActionsRepeatDelegate,
     val duplicateDelegate: ChangeRecordActionsDuplicateDelegate,
+    val moveDelegate: ChangeRecordActionsMoveDelegate,
     private val changeRecordActionsDelegateMapper: ChangeRecordActionsDelegateMapper,
 ) {
 
@@ -19,6 +20,7 @@ class ChangeRecordActionsDelegateHolder @Inject constructor(
         continueDelegate,
         repeatDelegate,
         duplicateDelegate,
+        moveDelegate,
         mergeDelegate,
     )
 
@@ -30,6 +32,7 @@ class ChangeRecordActionsDelegateHolder @Inject constructor(
         continueDelegate.attach(getContinueActionsDelegateParent(parent))
         repeatDelegate.attach(getRepeatActionsDelegateParent(parent))
         duplicateDelegate.attach(getDuplicateActionsDelegateParent(parent))
+        moveDelegate.attach(getMoveActionsDelegateParent(parent))
         mergeDelegate.attach(getMergeDelegateParent(parent))
     }
 
@@ -73,6 +76,15 @@ class ChangeRecordActionsDelegateHolder @Inject constructor(
         parent: ChangeRecordActionsDelegate.Parent,
     ): ChangeRecordActionsDuplicateDelegate.Parent {
         return changeRecordActionsDelegateMapper.getDuplicateActionsDelegateParent(
+            parent = parent,
+            updateViewData = parent::updateViewData,
+        )
+    }
+
+    private fun getMoveActionsDelegateParent(
+        parent: ChangeRecordActionsDelegate.Parent,
+    ): ChangeRecordActionsMoveDelegate.Parent {
+        return changeRecordActionsDelegateMapper.getMoveActionsDelegateParent(
             parent = parent,
             updateViewData = parent::updateViewData,
         )
