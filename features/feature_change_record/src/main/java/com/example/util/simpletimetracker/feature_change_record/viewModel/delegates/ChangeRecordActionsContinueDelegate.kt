@@ -1,4 +1,4 @@
-package com.example.util.simpletimetracker.feature_change_record.viewModel
+package com.example.util.simpletimetracker.feature_change_record.viewModel.delegates
 
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.domain.extension.plusAssign
@@ -9,6 +9,8 @@ import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.hint.HintViewData
 import com.example.util.simpletimetracker.feature_change_record.R
 import com.example.util.simpletimetracker.feature_change_record.mapper.ChangeRecordViewDataMapper
+import com.example.util.simpletimetracker.feature_change_record.viewModel.base.ChangeRecordDelegateBridge
+import com.example.util.simpletimetracker.feature_change_record.viewModel.base.ChangeRecordActionsSubDelegate
 import com.example.util.simpletimetracker.navigation.Router
 import javax.inject.Inject
 
@@ -18,13 +20,13 @@ class ChangeRecordActionsContinueDelegate @Inject constructor(
     private val prefsInteractor: PrefsInteractor,
     private val recordActionContinueMediator: RecordActionContinueMediator,
     private val changeRecordViewDataMapper: ChangeRecordViewDataMapper,
-) : ChangeRecordActionsSubDelegate<ChangeRecordActionsContinueDelegate.Parent> {
+) : ChangeRecordActionsSubDelegate {
 
-    private var parent: Parent? = null
+    private var bridge: ChangeRecordDelegateBridge? = null
     private var viewData: List<ViewHolderType> = emptyList()
 
-    override fun attach(parent: Parent) {
-        this.parent = parent
+    override fun attach(bridge: ChangeRecordDelegateBridge) {
+        this.bridge = bridge
     }
 
     override fun getViewData(): List<ViewHolderType> {
@@ -33,28 +35,28 @@ class ChangeRecordActionsContinueDelegate @Inject constructor(
 
     override suspend fun updateViewData() {
         viewData = loadContinueViewData()
-        parent?.update()
+        bridge?.send(ChangeRecordDelegateBridge.Action.UpdateViewData)
     }
 
     suspend fun onContinueClickDelegate() {
-        val params = parent?.getViewDataParams() ?: return
+        val params = bridge?.getParams() ?: return
         recordActionContinueMediator.execute(
-            recordId = params.originalRecordId,
-            typeId = params.newTypeId,
-            timeStarted = params.newTimeStarted,
-            comment = params.newComment,
-            tagIds = params.newCategoryIds,
+            recordId = params.continueParams.originalRecordId,
+            typeId = params.baseParams.newTypeId,
+            timeStarted = params.baseParams.newTimeStarted,
+            comment = params.baseParams.newComment,
+            tagIds = params.baseParams.newCategoryIds,
         )
         // Exit.
         router.back()
     }
 
-    fun canContinue(): Boolean {
-        val params = parent?.getViewDataParams() ?: return false
+    suspend fun canContinue(): Boolean {
+        val params = bridge?.getParams() ?: return false
 
         // Can't continue future record
-        return if (params.newTimeStarted > System.currentTimeMillis()) {
-            parent?.showMessage(R.string.cannot_be_in_the_future)
+        return if (params.baseParams.newTimeStarted > System.currentTimeMillis()) {
+            bridge?.send(ChangeRecordDelegateBridge.Action.ShowMessage(R.string.cannot_be_in_the_future))
             false
         } else {
             true
@@ -62,9 +64,8 @@ class ChangeRecordActionsContinueDelegate @Inject constructor(
     }
 
     private suspend fun loadContinueViewData(): List<ViewHolderType> {
-        val params = parent?.getViewDataParams()
-            ?: return emptyList()
-        if (!params.isAvailable) return emptyList()
+        val params = bridge?.getParams() ?: return emptyList()
+        if (!params.continueParams.isAvailable) return emptyList()
         if (prefsInteractor.getRetroactiveTrackingMode()) return emptyList()
         val isDarkTheme = prefsInteractor.getDarkMode()
 
@@ -74,27 +75,9 @@ class ChangeRecordActionsContinueDelegate @Inject constructor(
         )
         result += changeRecordViewDataMapper.mapRecordActionButton(
             action = RecordQuickAction.CONTINUE,
-            isEnabled = params.isButtonEnabled,
+            isEnabled = params.baseParams.isButtonEnabled,
             isDarkTheme = isDarkTheme,
         )
         return result
-    }
-
-    interface Parent {
-
-        fun getViewDataParams(): ViewDataParams?
-        fun update()
-        suspend fun onSaveClickDelegate()
-        fun showMessage(stringResId: Int)
-
-        data class ViewDataParams(
-            val originalRecordId: Long,
-            val newTypeId: Long,
-            val newTimeStarted: Long,
-            val newComment: String,
-            val newCategoryIds: List<Long>,
-            val isAvailable: Boolean,
-            val isButtonEnabled: Boolean,
-        )
     }
 }

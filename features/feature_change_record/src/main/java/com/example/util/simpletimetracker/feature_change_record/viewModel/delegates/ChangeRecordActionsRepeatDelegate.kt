@@ -1,4 +1,4 @@
-package com.example.util.simpletimetracker.feature_change_record.viewModel
+package com.example.util.simpletimetracker.feature_change_record.viewModel.delegates
 
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.domain.extension.plusAssign
@@ -9,6 +9,8 @@ import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.hint.HintViewData
 import com.example.util.simpletimetracker.feature_change_record.R
 import com.example.util.simpletimetracker.feature_change_record.mapper.ChangeRecordViewDataMapper
+import com.example.util.simpletimetracker.feature_change_record.viewModel.base.ChangeRecordDelegateBridge
+import com.example.util.simpletimetracker.feature_change_record.viewModel.base.ChangeRecordActionsSubDelegate
 import javax.inject.Inject
 
 class ChangeRecordActionsRepeatDelegate @Inject constructor(
@@ -16,13 +18,13 @@ class ChangeRecordActionsRepeatDelegate @Inject constructor(
     private val prefsInteractor: PrefsInteractor,
     private val recordActionRepeatMediator: RecordActionRepeatMediator,
     private val changeRecordViewDataMapper: ChangeRecordViewDataMapper,
-) : ChangeRecordActionsSubDelegate<ChangeRecordActionsRepeatDelegate.Parent> {
+) : ChangeRecordActionsSubDelegate {
 
-    private var parent: Parent? = null
+    private var bridge: ChangeRecordDelegateBridge? = null
     private var viewData: List<ViewHolderType> = emptyList()
 
-    override fun attach(parent: Parent) {
-        this.parent = parent
+    override fun attach(bridge: ChangeRecordDelegateBridge) {
+        this.bridge = bridge
     }
 
     override fun getViewData(): List<ViewHolderType> {
@@ -31,27 +33,27 @@ class ChangeRecordActionsRepeatDelegate @Inject constructor(
 
     override suspend fun updateViewData() {
         viewData = loadRepeatViewData()
-        parent?.update()
+        bridge?.send(ChangeRecordDelegateBridge.Action.UpdateViewData)
     }
 
     suspend fun onRepeatClickDelegate() {
-        val params = parent?.getViewDataParams() ?: return
+        val params = bridge?.getParams() ?: return
         // Exit.
-        parent?.onSaveClickDelegate(
+        ChangeRecordDelegateBridge.Action.OnSaveClickDelegate(
             doAfter = {
                 recordActionRepeatMediator.execute(
-                    typeId = params.newTypeId,
-                    comment = params.newComment,
-                    tagIds = params.newCategoryIds,
+                    typeId = params.baseParams.newTypeId,
+                    comment = params.baseParams.newComment,
+                    tagIds = params.baseParams.newCategoryIds,
                 )
             },
-        )
+        ).let { bridge?.send(it) }
     }
 
     private suspend fun loadRepeatViewData(): List<ViewHolderType> {
-        val params = parent?.getViewDataParams()
+        val params = bridge?.getParams()
             ?: return emptyList()
-        if (!params.isAvailable) return emptyList()
+        if (!params.repeatParams.isAvailable) return emptyList()
         val isDarkTheme = prefsInteractor.getDarkMode()
 
         val result = mutableListOf<ViewHolderType>()
@@ -60,24 +62,9 @@ class ChangeRecordActionsRepeatDelegate @Inject constructor(
         )
         result += changeRecordViewDataMapper.mapRecordActionButton(
             action = RecordQuickAction.REPEAT,
-            isEnabled = params.isButtonEnabled,
+            isEnabled = params.baseParams.isButtonEnabled,
             isDarkTheme = isDarkTheme,
         )
         return result
-    }
-
-    interface Parent {
-
-        fun getViewDataParams(): ViewDataParams?
-        fun update()
-        suspend fun onSaveClickDelegate(doAfter: suspend () -> Unit)
-
-        data class ViewDataParams(
-            val newTypeId: Long,
-            val newComment: String,
-            val newCategoryIds: List<Long>,
-            val isAvailable: Boolean,
-            val isButtonEnabled: Boolean,
-        )
     }
 }

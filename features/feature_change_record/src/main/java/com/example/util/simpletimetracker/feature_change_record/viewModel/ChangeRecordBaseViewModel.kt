@@ -37,6 +37,10 @@ import com.example.util.simpletimetracker.feature_change_record.model.ChangeReco
 import com.example.util.simpletimetracker.feature_change_record.model.TimeAdjustmentState
 import com.example.util.simpletimetracker.feature_change_record.viewData.ChangeRecordChooserState
 import com.example.util.simpletimetracker.feature_change_record.viewData.ChangeRecordTagsViewData
+import com.example.util.simpletimetracker.feature_change_record.viewModel.base.ChangeRecordDelegateBridge
+import com.example.util.simpletimetracker.feature_change_record.viewModel.base.ChangeRecordDelegateBridge.Action
+import com.example.util.simpletimetracker.feature_change_record.viewModel.base.ChangeRecordDelegateBridge.ViewDataParams
+import com.example.util.simpletimetracker.feature_change_record.viewModel.delegates.ChangeRecordActionsMoveDelegate
 import com.example.util.simpletimetracker.navigation.Router
 import com.example.util.simpletimetracker.navigation.params.screen.ChangeRecordTagFromScreen
 import com.example.util.simpletimetracker.navigation.params.screen.ChangeTagData
@@ -60,8 +64,7 @@ abstract class ChangeRecordBaseViewModel(
     private val recordTypeToTagInteractor: RecordTypeToTagInteractor,
     private val favouriteCommentInteractor: FavouriteCommentInteractor,
     private val changeRecordActionsDelegate: ChangeRecordActionsDelegateImpl,
-) : ViewModel(),
-    ChangeRecordActionsDelegate by changeRecordActionsDelegate {
+) : ViewModel() {
 
     val types: LiveData<List<ViewHolderType>> by lazy {
         return@lazy MutableLiveData<List<ViewHolderType>>().let { initial ->
@@ -99,6 +102,7 @@ abstract class ChangeRecordBaseViewModel(
             previous = ChangeRecordChooserState.State.Closed,
         ),
     )
+    val actionsViewData: LiveData<List<ViewHolderType>> by changeRecordActionsDelegate::actionsViewData
     val saveButtonEnabled: LiveData<Boolean> = MutableLiveData(true)
     val keyboardVisibility: LiveData<Boolean> = MutableLiveData(false)
     val timeEndedVisibility: LiveData<Boolean> by lazy { MutableLiveData(isTimeEndedAvailable) }
@@ -141,7 +145,11 @@ abstract class ChangeRecordBaseViewModel(
     private var searchLoadJob: Job? = null
 
     init {
-        changeRecordActionsDelegate.attach(getActionsDelegateParent())
+        val bridge = ChangeRecordDelegateBridge(
+            actionConsumer = getDelegateActionsConsumer(),
+            paramsProvider = getDelegateParamsProvider(),
+        )
+        changeRecordActionsDelegate.attach(bridge)
     }
 
     override fun onCleared() {
@@ -518,27 +526,24 @@ abstract class ChangeRecordBaseViewModel(
         onTimeSplitChanged()
     }
 
-    private fun checkIfTypeSelected(): Boolean {
-        return if (newTypeId == 0L) {
-            showMessage(R.string.change_record_message_choose_type)
-            false
-        } else {
-            true
-        }
-    }
-
     private fun onRecordChangeButtonClick(
         onProceed: suspend () -> Unit,
         checkTypeSelected: Boolean = true,
+        delayBlock: Boolean = false,
     ) {
         if (checkTypeSelected) {
-            if (!checkIfTypeSelected()) return
+            if (newTypeId == 0L) {
+                showMessage(R.string.change_record_message_choose_type)
+                return
+            }
         }
         viewModelScope.launch {
             val canProceed = saveButtonEnabled.value.orFalse()
             if (!canProceed) return@launch
-            saveButtonEnabled.set(false)
-            updateActionsData()
+            if (!delayBlock) {
+                saveButtonEnabled.set(false)
+                updateActionsData()
+            }
             onProceed()
         }
     }
@@ -751,11 +756,40 @@ abstract class ChangeRecordBaseViewModel(
         updateActionsData()
     }
 
-    private fun getActionsDelegateParent(): ChangeRecordActionsDelegate.Parent {
-        return object : ChangeRecordActionsDelegate.Parent {
-            override fun getViewDataParams(): ChangeRecordActionsDelegate.Parent.ViewDataParams {
-                return ChangeRecordActionsDelegate.Parent.ViewDataParams(
-                    baseParams = ChangeRecordActionsDelegate.Parent.ViewDataParams.BaseParams(
+    private fun getDelegateActionsConsumer(): ChangeRecordDelegateBridge.ActionConsumer {
+        return object : ChangeRecordDelegateBridge.ActionConsumer {
+            override suspend fun onAction(action: Action) {
+                when (action) {
+                    is Action.UpdateViewData -> {
+                        changeRecordActionsDelegate.updateViewData()
+                    }
+                    is Action.OnSaveClickDelegate -> {
+                        this@ChangeRecordBaseViewModel.onSaveClickDelegate(action.doAfter)
+                    }
+                    is Action.ShowMessage -> {
+                        this@ChangeRecordBaseViewModel.showMessage(action.messageResId)
+                    }
+                    is Action.OnSplitComplete -> {
+                        newTimeStarted = newTimeSplit
+                        this@ChangeRecordBaseViewModel.onSaveClickDelegate()
+                    }
+                    is Action.OnRecordChangeButtonClick -> {
+                        this@ChangeRecordBaseViewModel.onRecordChangeButtonClick(
+                            onProceed = action.onProceed,
+                            checkTypeSelected = action.checkTypeSelected,
+                            delayBlock = action.delayBlock,
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    private fun getDelegateParamsProvider(): ChangeRecordDelegateBridge.ParamsProvider {
+        return object : ChangeRecordDelegateBridge.ParamsProvider {
+            override fun getParams(): ViewDataParams {
+                return ViewDataParams(
+                    baseParams = ViewDataParams.BaseParams(
                         newTypeId = newTypeId,
                         newTimeStarted = newTimeStarted,
                         newTimeEnded = newTimeEnded,
@@ -763,25 +797,25 @@ abstract class ChangeRecordBaseViewModel(
                         newCategoryIds = newCategoryIds,
                         isButtonEnabled = saveButtonEnabled.value.orFalse(),
                     ),
-                    splitParams = ChangeRecordActionsDelegate.Parent.ViewDataParams.SplitParams(
+                    splitParams = ViewDataParams.SplitParams(
                         newTimeSplit = newTimeSplit,
                         splitPreviewTimeEnded = previewTimeEnded,
                         showTimeEndedOnSplitPreview = showTimeEndedOnSplitPreview,
                     ),
-                    duplicateParams = ChangeRecordActionsDelegate.Parent.ViewDataParams.DuplicateParams(
+                    duplicateParams = ViewDataParams.DuplicateParams(
                         isAvailable = isAdditionalActionsAvailable,
                     ),
-                    moveParams = ChangeRecordActionsDelegate.Parent.ViewDataParams.MoveParams(
+                    moveParams = ViewDataParams.MoveParams(
                         isAvailable = isAdditionalActionsAvailable,
                     ),
-                    continueParams = ChangeRecordActionsDelegate.Parent.ViewDataParams.ContinueParams(
+                    continueParams = ViewDataParams.ContinueParams(
                         originalRecordId = originalRecordId,
                         isAvailable = isAdditionalActionsAvailable,
                     ),
-                    repeatParams = ChangeRecordActionsDelegate.Parent.ViewDataParams.RepeatParams(
+                    repeatParams = ViewDataParams.RepeatParams(
                         isAvailable = isAdditionalActionsAvailable,
                     ),
-                    adjustParams = ChangeRecordActionsDelegate.Parent.ViewDataParams.AdjustParams(
+                    adjustParams = ViewDataParams.AdjustParams(
                         originalRecordId = originalRecordId,
                         originalTypeId = originalTypeId,
                         originalTimeStarted = originalTimeStarted,
@@ -791,42 +825,11 @@ abstract class ChangeRecordBaseViewModel(
                         showTimeEndedOnAdjustPreview = showTimeEndedOnAdjustPreview,
                         isTimeEndedAvailable = isTimeEndedAvailable,
                     ),
-                    mergeParams = ChangeRecordActionsDelegate.Parent.ViewDataParams.MergeParams(
+                    mergeParams = ViewDataParams.MergeParams(
                         mergeAvailable = mergeAvailable,
                         prevRecord = prevRecord,
                     ),
                 )
-            }
-
-            override fun updateViewData() {
-                changeRecordActionsDelegate.updateViewData()
-            }
-
-            override fun checkIfTypeSelected(): Boolean {
-                return this@ChangeRecordBaseViewModel.checkIfTypeSelected()
-            }
-
-            override fun onRecordChangeButtonClick(
-                onProceed: suspend () -> Unit,
-                checkTypeSelected: Boolean,
-            ) {
-                this@ChangeRecordBaseViewModel.onRecordChangeButtonClick(
-                    onProceed = onProceed,
-                    checkTypeSelected = checkTypeSelected,
-                )
-            }
-
-            override suspend fun onSaveClickDelegate(doAfter: suspend () -> Unit) {
-                this@ChangeRecordBaseViewModel.onSaveClickDelegate(doAfter)
-            }
-
-            override suspend fun onSplitComplete() {
-                newTimeStarted = newTimeSplit
-                onSaveClickDelegate()
-            }
-
-            override fun showMessage(stringResId: Int) {
-                this@ChangeRecordBaseViewModel.showMessage(stringResId)
             }
         }
     }

@@ -109,7 +109,7 @@ class RecordQuickActionsInteractor @Inject constructor(
         val currentDuration = record.duration
         record.copy(
             timeStarted = timestamp,
-            timeEnded = timestamp + currentDuration
+            timeEnded = timestamp + currentDuration,
         ).let {
             addRecordMediator.add(it)
         }

@@ -4,47 +4,43 @@ import androidx.lifecycle.LiveData
 import com.example.util.simpletimetracker.core.base.ViewModelDelegate
 import com.example.util.simpletimetracker.core.extension.lazySuspend
 import com.example.util.simpletimetracker.core.extension.set
-import com.example.util.simpletimetracker.domain.extension.orFalse
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.button.ButtonViewData
-import com.example.util.simpletimetracker.feature_base_adapter.divider.DividerViewData
 import com.example.util.simpletimetracker.feature_change_record.adapter.ChangeRecordChangePreviewViewData
 import com.example.util.simpletimetracker.feature_change_record.adapter.ChangeRecordTimeDoublePreviewViewData
 import com.example.util.simpletimetracker.feature_change_record.model.ChangeRecordActionsBlock
 import com.example.util.simpletimetracker.feature_change_record.viewData.ChangeRecordQuickActionsButtonViewData
+import com.example.util.simpletimetracker.feature_change_record.viewModel.base.ChangeRecordActionsDelegateHolder
+import com.example.util.simpletimetracker.feature_change_record.viewModel.base.ChangeRecordDelegateBridge
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ChangeRecordActionsDelegateImpl @Inject constructor(
     private val delegateHolder: ChangeRecordActionsDelegateHolder,
-) : ChangeRecordActionsDelegate, ViewModelDelegate() {
+) : ViewModelDelegate() {
 
-    override val actionsViewData: LiveData<List<ViewHolderType>> by lazySuspend { loadViewData() }
+    val actionsViewData: LiveData<List<ViewHolderType>> by lazySuspend { loadViewData() }
 
     val timeChangeAdjustmentState get() = delegateHolder.adjustDelegate.timeChangeAdjustmentState
 
-    private var parent: ChangeRecordActionsDelegate.Parent? = null
+    private var bridge: ChangeRecordDelegateBridge? = null
     private var updateJob: Job? = null
 
-    fun attach(parent: ChangeRecordActionsDelegate.Parent) {
-        this.parent = parent
-        delegateHolder.attach(parent)
+    fun attach(bridge: ChangeRecordDelegateBridge) {
+        this.bridge = bridge
+        delegateHolder.attach(bridge)
     }
 
     override fun clear() {
-        delegateHolder.delegatesList.forEach {
-            (it as? ViewModelDelegate)?.clear()
-        }
+        delegateHolder.clear()
         super.clear()
     }
 
     fun updateData() {
         updateJob?.cancel()
         updateJob = delegateScope.launch {
-            delegateHolder.delegatesList.forEach { delegate ->
-                launch { delegate.updateViewData() }
-            }
+            delegateHolder.updateViewData()
         }
     }
 
@@ -77,8 +73,8 @@ class ChangeRecordActionsDelegateImpl @Inject constructor(
         delegateHolder.adjustDelegate.onChangePreviewCheckClick(item)
     }
 
-    fun onItemButtonClick(viewData: ButtonViewData) {
-        val id = viewData.id as? ChangeRecordQuickActionsButtonViewData ?: return
+    fun onItemButtonClick(viewData: ButtonViewData) = delegateScope.launch {
+        val id = viewData.id as? ChangeRecordQuickActionsButtonViewData ?: return@launch
         when (id.block) {
             ChangeRecordActionsBlock.SplitButton -> onSplitClick()
             ChangeRecordActionsBlock.AdjustButton -> onAdjustClick()
@@ -93,64 +89,68 @@ class ChangeRecordActionsDelegateImpl @Inject constructor(
         }
     }
 
-    private fun onAdjustClick() {
-        parent?.onRecordChangeButtonClick(
+    private suspend fun onAdjustClick() {
+        onRecordChangeButtonClick(
             onProceed = delegateHolder.adjustDelegate::onAdjustClickDelegate,
         )
     }
 
-    private fun onContinueClick() {
+    private suspend fun onContinueClick() {
         if (!delegateHolder.continueDelegate.canContinue()) return
-        parent?.onRecordChangeButtonClick(
+        onRecordChangeButtonClick(
             onProceed = delegateHolder.continueDelegate::onContinueClickDelegate,
         )
     }
 
-    private fun onRepeatClick() {
-        parent?.onRecordChangeButtonClick(
+    private suspend fun onRepeatClick() {
+        onRecordChangeButtonClick(
             onProceed = delegateHolder.repeatDelegate::onRepeatClickDelegate,
         )
     }
 
-    private fun onDuplicateClick() {
-        parent?.onRecordChangeButtonClick(
+    private suspend fun onDuplicateClick() {
+        onRecordChangeButtonClick(
             onProceed = delegateHolder.duplicateDelegate::onDuplicateClickDelegate,
         )
     }
 
-    private fun onMoveClick() {
-        if (!parent?.checkIfTypeSelected().orFalse()) return
-        delegateScope.launch {
-            delegateHolder.moveDelegate.onMoveClickDelegate()
-        }
+    private suspend fun onMoveClick() {
+        onRecordChangeButtonClick(
+            onProceed = delegateHolder.moveDelegate::onMoveClickDelegate,
+            delayBlock = true,
+        )
     }
 
-    private fun onMergeClick() {
-        parent?.onRecordChangeButtonClick(
+    private suspend fun onMergeClick() {
+        onRecordChangeButtonClick(
             onProceed = delegateHolder.mergeDelegate::onMergeClickDelegate,
             checkTypeSelected = false,
         )
     }
 
-    private fun onSplitClick() {
-        parent?.onRecordChangeButtonClick(
+    private suspend fun onSplitClick() {
+        onRecordChangeButtonClick(
             onProceed = {
                 delegateHolder.splitDelegate.onSplitClickDelegate()
             },
         )
     }
 
+    private suspend fun onRecordChangeButtonClick(
+        onProceed: suspend () -> Unit,
+        checkTypeSelected: Boolean = true,
+        delayBlock: Boolean = false,
+    ) {
+        bridge?.send(
+            ChangeRecordDelegateBridge.Action.OnRecordChangeButtonClick(
+                onProceed = onProceed,
+                checkTypeSelected = checkTypeSelected,
+                delayBlock = delayBlock,
+            ),
+        )
+    }
+
     private fun loadViewData(): List<ViewHolderType> {
-        val result = mutableListOf<ViewHolderType>()
-
-        delegateHolder.delegatesList.map {
-            it.getViewData()
-        }.forEachIndexed { index, items ->
-            if (items.isEmpty()) return@forEachIndexed
-            if (index != 0) result += DividerViewData(index.toLong())
-            result += items
-        }
-
-        return result
+        return delegateHolder.loadViewData()
     }
 }

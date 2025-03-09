@@ -1,4 +1,4 @@
-package com.example.util.simpletimetracker.feature_change_record.viewModel
+package com.example.util.simpletimetracker.feature_change_record.viewModel.delegates
 
 import com.example.util.simpletimetracker.core.base.ViewModelDelegate
 import com.example.util.simpletimetracker.domain.extension.addOrRemove
@@ -26,6 +26,8 @@ import com.example.util.simpletimetracker.feature_change_record.model.ChangeReco
 import com.example.util.simpletimetracker.feature_change_record.model.TimeAdjustmentState
 import com.example.util.simpletimetracker.feature_change_record.viewData.ChangeRecordAdjustState
 import com.example.util.simpletimetracker.feature_change_record.viewData.ChangeRecordPreview
+import com.example.util.simpletimetracker.feature_change_record.viewModel.base.ChangeRecordDelegateBridge
+import com.example.util.simpletimetracker.feature_change_record.viewModel.base.ChangeRecordActionsSubDelegate
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -40,16 +42,16 @@ class ChangeRecordActionsAdjustDelegate @Inject constructor(
     private val timeMapper: TimeMapper,
     private val prefsInteractor: PrefsInteractor,
 ) : ViewModelDelegate(),
-    ChangeRecordActionsSubDelegate<ChangeRecordActionsAdjustDelegate.Parent> {
+    ChangeRecordActionsSubDelegate {
 
     var timeChangeAdjustmentState: TimeAdjustmentState = TimeAdjustmentState.TIME_STARTED
 
-    private var parent: Parent? = null
+    private var bridge: ChangeRecordDelegateBridge? = null
     private var viewData: List<ViewHolderType> = emptyList()
     private var recordsUnmarkedFromAdjustment: List<Long> = emptyList()
 
-    override fun attach(parent: Parent) {
-        this.parent = parent
+    override fun attach(bridge: ChangeRecordDelegateBridge) {
+        this.bridge = bridge
     }
 
     override fun getViewData(): List<ViewHolderType> {
@@ -58,7 +60,7 @@ class ChangeRecordActionsAdjustDelegate @Inject constructor(
 
     override suspend fun updateViewData() {
         viewData = loadViewData()
-        parent?.update()
+        bridge?.send(ChangeRecordDelegateBridge.Action.UpdateViewData)
     }
 
     fun onAdjustTimeStartedClick() {
@@ -85,29 +87,28 @@ class ChangeRecordActionsAdjustDelegate @Inject constructor(
     }
 
     private suspend fun loadViewData(): List<ViewHolderType> {
-        val params = parent?.getViewDataParams()
-            ?: return emptyList()
+        val params = bridge?.getParams() ?: return emptyList()
         val useMilitaryTime = prefsInteractor.getUseMilitaryTimeFormat()
         val showSeconds = prefsInteractor.getShowSeconds()
         val isDarkTheme = prefsInteractor.getDarkMode()
 
         val result = mutableListOf<ViewHolderType>()
-        val hintText = if (params.isTimeEndedAvailable) {
+        val hintText = if (params.adjustParams.isTimeEndedAvailable) {
             R.string.change_record_change_adjacent_records
         } else {
             R.string.change_record_change_prev_record
         }.let(resourceRepo::getString)
         result += HintViewData(hintText)
         val state = loadViewData(
-            recordId = params.originalRecordId,
-            adjustNextRecordAvailable = params.adjustNextRecordAvailable,
-            newTypeId = params.newTypeId,
-            newTimeStarted = params.newTimeStarted,
-            adjustPreviewTimeEnded = params.adjustPreviewTimeEnded,
-            originalTypeId = params.originalTypeId,
-            originalTimeStarted = params.originalTimeStarted,
-            originalTimeEnded = params.adjustPreviewOriginalTimeEnded,
-            showTimeEnded = params.showTimeEndedOnAdjustPreview,
+            recordId = params.adjustParams.originalRecordId,
+            adjustNextRecordAvailable = params.adjustParams.adjustNextRecordAvailable,
+            newTypeId = params.baseParams.newTypeId,
+            newTimeStarted = params.baseParams.newTimeStarted,
+            adjustPreviewTimeEnded = params.adjustParams.adjustPreviewTimeEnded,
+            originalTypeId = params.adjustParams.originalTypeId,
+            originalTimeStarted = params.adjustParams.originalTimeStarted,
+            originalTimeEnded = params.adjustParams.adjustPreviewOriginalTimeEnded,
+            showTimeEnded = params.adjustParams.showTimeEndedOnAdjustPreview,
         )
         val previewData = state.currentData
         result += ChangeRecordChangePreviewViewData(
@@ -123,16 +124,16 @@ class ChangeRecordActionsAdjustDelegate @Inject constructor(
         result += ChangeRecordTimeDoublePreviewViewData(
             block = ChangeRecordActionsBlock.AdjustTimePreview,
             dateTimeStarted = timeMapper.getFormattedDateTime(
-                time = params.newTimeStarted,
+                time = params.baseParams.newTimeStarted,
                 useMilitaryTime = useMilitaryTime,
                 showSeconds = showSeconds,
             ).time,
             dateTimeFinished = timeMapper.getFormattedDateTime(
-                time = params.adjustPreviewTimeEnded,
+                time = params.adjustParams.adjustPreviewTimeEnded,
                 useMilitaryTime = useMilitaryTime,
                 showSeconds = showSeconds,
             ).time,
-            isTimeEndedAvailable = params.isTimeEndedAvailable,
+            isTimeEndedAvailable = params.adjustParams.isTimeEndedAvailable,
             state = timeChangeAdjustmentState,
         )
         if (timeChangeAdjustmentState != TimeAdjustmentState.HIDDEN) {
@@ -144,20 +145,20 @@ class ChangeRecordActionsAdjustDelegate @Inject constructor(
         result += state.changesPreview
         result += changeRecordViewDataMapper.mapRecordActionButton(
             action = RecordQuickAction.ADJUST,
-            isEnabled = params.isButtonEnabled,
+            isEnabled = params.baseParams.isButtonEnabled,
             isDarkTheme = isDarkTheme,
         )
         return result
     }
 
     suspend fun onAdjustClickDelegate() {
-        val params = parent?.getViewDataParams() ?: return
+        val params = bridge?.getParams() ?: return
 
         val adjacentRecords = getAdjacentRecords(
-            recordId = params.originalRecordId,
-            newTimeStarted = params.newTimeStarted,
-            newTimeEnded = params.newTimeEnded,
-            adjustNextRecordAvailable = params.adjustNextRecordAvailable,
+            recordId = params.adjustParams.originalRecordId,
+            newTimeStarted = params.baseParams.newTimeStarted,
+            newTimeEnded = params.baseParams.newTimeEnded,
+            adjustNextRecordAvailable = params.adjustParams.adjustNextRecordAvailable,
         )
 
         adjacentRecords.previous
@@ -165,7 +166,7 @@ class ChangeRecordActionsAdjustDelegate @Inject constructor(
             .forEach { prevRecord ->
                 getChangedPrevRecord(
                     record = prevRecord,
-                    newTimeStarted = params.newTimeStarted,
+                    newTimeStarted = params.baseParams.newTimeStarted,
                 ).let { addRecordMediator.add(it) }
             }
 
@@ -183,11 +184,11 @@ class ChangeRecordActionsAdjustDelegate @Inject constructor(
             .forEach { nextRecord ->
                 getChangedNextRecord(
                     record = nextRecord,
-                    newTimeEnded = params.newTimeEnded,
+                    newTimeEnded = params.baseParams.newTimeEnded,
                 ).let { addRecordMediator.add(it) }
             }
 
-        parent?.onAdjustComplete()
+        bridge?.send(ChangeRecordDelegateBridge.Action.OnSaveClickDelegate())
     }
 
     private suspend fun loadViewData(
@@ -439,26 +440,4 @@ class ChangeRecordActionsAdjustDelegate @Inject constructor(
         val overlapped: List<Record>,
         val next: List<Record>,
     )
-
-    interface Parent {
-
-        fun getViewDataParams(): ViewDataParams?
-        fun update()
-        suspend fun onAdjustComplete()
-
-        data class ViewDataParams(
-            val originalRecordId: Long,
-            val adjustNextRecordAvailable: Boolean,
-            val newTypeId: Long,
-            val newTimeStarted: Long,
-            val newTimeEnded: Long,
-            val adjustPreviewTimeEnded: Long,
-            val originalTypeId: Long,
-            val originalTimeStarted: Long,
-            val adjustPreviewOriginalTimeEnded: Long,
-            val showTimeEndedOnAdjustPreview: Boolean,
-            val isTimeEndedAvailable: Boolean,
-            val isButtonEnabled: Boolean,
-        )
-    }
 }

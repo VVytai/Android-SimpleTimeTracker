@@ -1,4 +1,4 @@
-package com.example.util.simpletimetracker.feature_change_record.viewModel
+package com.example.util.simpletimetracker.feature_change_record.viewModel.delegates
 
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.domain.extension.plusAssign
@@ -18,6 +18,8 @@ import com.example.util.simpletimetracker.feature_change_record.mapper.ChangeRec
 import com.example.util.simpletimetracker.feature_change_record.model.ChangeRecordActionsBlock
 import com.example.util.simpletimetracker.feature_change_record.model.ChangeRecordDateTimeFieldsState
 import com.example.util.simpletimetracker.feature_change_record.viewData.ChangeRecordPreview
+import com.example.util.simpletimetracker.feature_change_record.viewModel.base.ChangeRecordDelegateBridge
+import com.example.util.simpletimetracker.feature_change_record.viewModel.base.ChangeRecordActionsSubDelegate
 import kotlinx.coroutines.coroutineScope
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -29,13 +31,13 @@ class ChangeRecordActionsSplitDelegate @Inject constructor(
     private val changeRecordViewDataInteractor: ChangeRecordViewDataInteractor,
     private val addRecordMediator: AddRecordMediator,
     private val changeRecordViewDataMapper: ChangeRecordViewDataMapper,
-) : ChangeRecordActionsSubDelegate<ChangeRecordActionsSplitDelegate.Parent> {
+) : ChangeRecordActionsSubDelegate {
 
-    private var parent: Parent? = null
+    private var bridge: ChangeRecordDelegateBridge? = null
     private var viewData: List<ViewHolderType> = emptyList()
 
-    override fun attach(parent: Parent) {
-        this.parent = parent
+    override fun attach(bridge: ChangeRecordDelegateBridge) {
+        this.bridge = bridge
     }
 
     override fun getViewData(): List<ViewHolderType> {
@@ -46,34 +48,34 @@ class ChangeRecordActionsSplitDelegate @Inject constructor(
         coroutineScope {
             viewData = loadViewData()
             ensureActive()
-            parent?.update()
+            bridge?.send(ChangeRecordDelegateBridge.Action.UpdateViewData)
         }
     }
 
     suspend fun onSplitClickDelegate() {
-        val params = parent?.getViewDataParams() ?: return
+        val params = bridge?.getParams() ?: return
 
         Record(
             id = 0L, // Zero id creates new record
-            typeId = params.newTypeId,
-            timeStarted = params.newTimeStarted,
-            timeEnded = params.newTimeSplit,
-            comment = params.newComment,
-            tagIds = params.newCategoryIds,
+            typeId = params.baseParams.newTypeId,
+            timeStarted = params.baseParams.newTimeStarted,
+            timeEnded = params.splitParams.newTimeSplit,
+            comment = params.baseParams.newComment,
+            tagIds = params.baseParams.newCategoryIds,
         ).let {
             addRecordMediator.add(it)
         }
-        parent?.onSplitComplete()
+        bridge?.send(ChangeRecordDelegateBridge.Action.OnSplitComplete)
     }
 
     private suspend fun loadViewData(): List<ViewHolderType> {
-        val params = parent?.getViewDataParams()
+        val params = bridge?.getParams()
             ?: return emptyList()
-        val newTimeSplit = params.newTimeSplit
-        val newTypeId = params.newTypeId
-        val newTimeStarted = params.newTimeStarted
-        val newTimeEnded = params.splitPreviewTimeEnded
-        val showTimeEnded = params.showTimeEndedOnSplitPreview
+        val newTimeSplit = params.splitParams.newTimeSplit
+        val newTypeId = params.baseParams.newTypeId
+        val newTimeStarted = params.baseParams.newTimeStarted
+        val newTimeEnded = params.splitParams.splitPreviewTimeEnded
+        val showTimeEnded = params.splitParams.showTimeEndedOnSplitPreview
         val isDarkTheme = prefsInteractor.getDarkMode()
 
         val result = mutableListOf<ViewHolderType>()
@@ -111,7 +113,7 @@ class ChangeRecordActionsSplitDelegate @Inject constructor(
         )
         result += changeRecordViewDataMapper.mapRecordActionButton(
             action = RecordQuickAction.SPLIT,
-            isEnabled = params.isButtonEnabled,
+            isEnabled = params.baseParams.isButtonEnabled,
             isDarkTheme = isDarkTheme,
         )
         return result
@@ -171,24 +173,6 @@ class ChangeRecordActionsSplitDelegate @Inject constructor(
                 timeStartedChanged = true,
                 timeEndedChanged = false,
             ),
-        )
-    }
-
-    interface Parent {
-
-        fun getViewDataParams(): ViewDataParams?
-        fun update()
-        suspend fun onSplitComplete()
-
-        data class ViewDataParams(
-            val newTimeSplit: Long,
-            val newTypeId: Long,
-            val newTimeStarted: Long,
-            val splitPreviewTimeEnded: Long,
-            val newComment: String,
-            val newCategoryIds: List<Long>,
-            val showTimeEndedOnSplitPreview: Boolean,
-            val isButtonEnabled: Boolean,
         )
     }
 }

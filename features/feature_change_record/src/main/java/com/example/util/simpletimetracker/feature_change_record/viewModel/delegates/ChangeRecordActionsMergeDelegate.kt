@@ -1,10 +1,10 @@
-package com.example.util.simpletimetracker.feature_change_record.viewModel
+package com.example.util.simpletimetracker.feature_change_record.viewModel.delegates
 
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.domain.extension.plusAssign
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
-import com.example.util.simpletimetracker.domain.recordAction.interactor.RecordActionMergeMediator
 import com.example.util.simpletimetracker.domain.record.model.Record
+import com.example.util.simpletimetracker.domain.recordAction.interactor.RecordActionMergeMediator
 import com.example.util.simpletimetracker.domain.recordAction.model.RecordQuickAction
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.hint.HintViewData
@@ -14,6 +14,8 @@ import com.example.util.simpletimetracker.feature_change_record.interactor.Chang
 import com.example.util.simpletimetracker.feature_change_record.mapper.ChangeRecordViewDataMapper
 import com.example.util.simpletimetracker.feature_change_record.model.ChangeRecordDateTimeFieldsState
 import com.example.util.simpletimetracker.feature_change_record.viewData.ChangeRecordPreview
+import com.example.util.simpletimetracker.feature_change_record.viewModel.base.ChangeRecordDelegateBridge
+import com.example.util.simpletimetracker.feature_change_record.viewModel.base.ChangeRecordActionsSubDelegate
 import com.example.util.simpletimetracker.navigation.Router
 import javax.inject.Inject
 
@@ -24,13 +26,13 @@ class ChangeRecordActionsMergeDelegate @Inject constructor(
     private val changeRecordViewDataInteractor: ChangeRecordViewDataInteractor,
     private val recordActionMergeMediator: RecordActionMergeMediator,
     private val changeRecordViewDataMapper: ChangeRecordViewDataMapper,
-) : ChangeRecordActionsSubDelegate<ChangeRecordActionsMergeDelegate.Parent> {
+) : ChangeRecordActionsSubDelegate {
 
-    private var parent: Parent? = null
+    private var bridge: ChangeRecordDelegateBridge? = null
     private var viewData: List<ViewHolderType> = emptyList()
 
-    override fun attach(parent: Parent) {
-        this.parent = parent
+    override fun attach(bridge: ChangeRecordDelegateBridge) {
+        this.bridge = bridge
     }
 
     override fun getViewData(): List<ViewHolderType> {
@@ -39,19 +41,18 @@ class ChangeRecordActionsMergeDelegate @Inject constructor(
 
     override suspend fun updateViewData() {
         viewData = loadViewData()
-        parent?.update()
+        bridge?.send(ChangeRecordDelegateBridge.Action.UpdateViewData)
     }
 
     private suspend fun loadViewData(): List<ViewHolderType> {
-        val params = parent?.getViewDataParams()
-            ?: return emptyList()
-        if (!params.mergeAvailable) return emptyList()
+        val params = bridge?.getParams() ?: return emptyList()
+        if (!params.mergeParams.mergeAvailable) return emptyList()
         val isDarkTheme = prefsInteractor.getDarkMode()
 
         val result = mutableListOf<ViewHolderType>()
         val previewData = loadMergePreviewViewData(
-            prevRecord = params.prevRecord,
-            newTimeEnded = params.newTimeEnded,
+            prevRecord = params.mergeParams.prevRecord,
+            newTimeEnded = params.baseParams.newTimeEnded,
         )
         if (previewData != null) {
             result += HintViewData(
@@ -69,7 +70,7 @@ class ChangeRecordActionsMergeDelegate @Inject constructor(
             )
             result += changeRecordViewDataMapper.mapRecordActionButton(
                 action = RecordQuickAction.MERGE,
-                isEnabled = params.isButtonEnabled,
+                isEnabled = params.baseParams.isButtonEnabled,
                 isDarkTheme = isDarkTheme,
             )
         }
@@ -77,10 +78,10 @@ class ChangeRecordActionsMergeDelegate @Inject constructor(
     }
 
     suspend fun onMergeClickDelegate() {
-        val params = parent?.getViewDataParams() ?: return
+        val params = bridge?.getParams() ?: return
         recordActionMergeMediator.execute(
-            prevRecord = params.prevRecord,
-            newTimeEnded = params.newTimeEnded,
+            prevRecord = params.mergeParams.prevRecord,
+            newTimeEnded = params.baseParams.newTimeEnded,
             onMergeComplete = { router.back() },
         )
     }
@@ -124,19 +125,6 @@ class ChangeRecordActionsMergeDelegate @Inject constructor(
                 timeStartedChanged = changedRecord.timeStarted != prevRecord.timeStarted,
                 timeEndedChanged = changedRecord.timeEnded != prevRecord.timeEnded,
             ),
-        )
-    }
-
-    interface Parent {
-
-        fun getViewDataParams(): ViewDataParams?
-        fun update()
-
-        data class ViewDataParams(
-            val mergeAvailable: Boolean,
-            val prevRecord: Record?,
-            val newTimeEnded: Long,
-            val isButtonEnabled: Boolean,
         )
     }
 }
