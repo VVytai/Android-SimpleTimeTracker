@@ -11,6 +11,7 @@ import com.example.util.simpletimetracker.domain.model.WearCurrentState
 import com.example.util.simpletimetracker.domain.model.WearLastRecord
 import com.example.util.simpletimetracker.domain.model.WearRecordRepeatResult
 import com.example.util.simpletimetracker.domain.model.WearSettings
+import com.example.util.simpletimetracker.domain.model.WearStatistics
 import com.example.util.simpletimetracker.domain.model.WearTag
 import com.example.util.simpletimetracker.wear_api.WearActivityDTO
 import com.example.util.simpletimetracker.wear_api.WearCurrentActivityDTO
@@ -18,6 +19,7 @@ import com.example.util.simpletimetracker.wear_api.WearCurrentStateDTO
 import com.example.util.simpletimetracker.wear_api.WearLastRecordDTO
 import com.example.util.simpletimetracker.wear_api.WearRecordRepeatResponse
 import com.example.util.simpletimetracker.wear_api.WearSettingsDTO
+import com.example.util.simpletimetracker.wear_api.WearStatisticsDTO
 import com.example.util.simpletimetracker.wear_api.WearTagDTO
 import javax.inject.Inject
 
@@ -45,6 +47,16 @@ class WearDataLocalMapper @Inject constructor() {
             id = dto.id,
             startedAt = dto.startedAt,
             tags = dto.tags.map(::map),
+        )
+    }
+
+    fun map(dto: WearStatisticsDTO): WearStatistics {
+        return WearStatistics(
+            id = dto.id,
+            name = dto.name,
+            icon = dto.icon,
+            color = dto.color,
+            duration = dto.duration,
         )
     }
 

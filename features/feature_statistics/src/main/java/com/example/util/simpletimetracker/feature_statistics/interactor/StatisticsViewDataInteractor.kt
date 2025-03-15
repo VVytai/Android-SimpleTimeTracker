@@ -45,10 +45,10 @@ class StatisticsViewDataInteractor @Inject constructor(
 ) {
 
     suspend fun getViewData(
-        rangeLength: RangeLength,
         shift: Int,
         forSharing: Boolean,
     ): List<ViewHolderType> = withContext(Dispatchers.Default) {
+        val rangeLength = prefsInteractor.getStatisticsRange()
         val filterType = prefsInteractor.getChartFilterType()
         val isDarkTheme = prefsInteractor.getDarkMode()
         val useProportionalMinutes = prefsInteractor.getUseProportionalMinutes()

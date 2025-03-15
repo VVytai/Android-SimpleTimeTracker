@@ -7,16 +7,21 @@ package com.example.util.simpletimetracker.data
 
 import com.example.util.simpletimetracker.complication.WearComplicationManager
 import com.example.util.simpletimetracker.domain.model.WearActivity
+import com.example.util.simpletimetracker.domain.model.WearChartFilterType
 import com.example.util.simpletimetracker.domain.model.WearCurrentState
 import com.example.util.simpletimetracker.domain.model.WearRecordRepeatResult
 import com.example.util.simpletimetracker.domain.model.WearSettings
+import com.example.util.simpletimetracker.domain.model.WearStatistics
 import com.example.util.simpletimetracker.domain.model.WearTag
 import com.example.util.simpletimetracker.notification.WearNotificationManager
 import com.example.util.simpletimetracker.wear_api.WearActivityDTO
+import com.example.util.simpletimetracker.wear_api.WearChartFilterTypeDTO
 import com.example.util.simpletimetracker.wear_api.WearCurrentStateDTO
 import com.example.util.simpletimetracker.wear_api.WearSettingsDTO
 import com.example.util.simpletimetracker.wear_api.WearShouldShowTagSelectionRequest
 import com.example.util.simpletimetracker.wear_api.WearStartActivityRequest
+import com.example.util.simpletimetracker.wear_api.WearStatisticsDTO
+import com.example.util.simpletimetracker.wear_api.WearStatisticsRequest
 import com.example.util.simpletimetracker.wear_api.WearStopActivityRequest
 import dagger.Lazy
 import kotlinx.coroutines.Deferred
@@ -48,6 +53,7 @@ class WearDataRepo @Inject constructor(
     )
 
     private var activitiesCache: List<WearActivityDTO>? = null
+    private var statisticsCache: List<WearStatisticsDTO>? = null
     private var currentActivitiesCache: WearCurrentStateDTO? = null
     private var settingsCache: WearSettingsDTO? = null
     private val mutex: Mutex = Mutex()
@@ -86,6 +92,27 @@ class WearDataRepo @Inject constructor(
                 ?: wearRPCClient.queryCurrentActivities()
                     .also { currentActivitiesCache = it }
             data.let(wearDataLocalMapper::map)
+        }
+    }
+
+    suspend fun loadStatistics(
+        forceReload: Boolean,
+        shift: Int,
+        filterType: WearChartFilterType,
+    ): Result<List<WearStatistics>> = mutex.withLock {
+        return runCatching {
+            val request = WearStatisticsRequest(
+                shift = shift,
+                filterType = when (filterType) {
+                    WearChartFilterType.ACTIVITY -> WearChartFilterTypeDTO.ACTIVITY
+                    WearChartFilterType.CATEGORY -> WearChartFilterTypeDTO.CATEGORY
+                    WearChartFilterType.RECORD_TAG -> WearChartFilterTypeDTO.RECORD_TAG
+                },
+            )
+            val data = statisticsCache.takeUnless { forceReload }
+                ?: wearRPCClient.queryStatistics(request)
+                    .also { statisticsCache = it }
+            data.map(wearDataLocalMapper::map)
         }
     }
 

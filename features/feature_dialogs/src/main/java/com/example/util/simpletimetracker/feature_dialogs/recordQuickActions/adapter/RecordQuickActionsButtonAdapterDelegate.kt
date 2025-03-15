@@ -1,6 +1,5 @@
 package com.example.util.simpletimetracker.feature_dialogs.recordQuickActions.adapter
 
-import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.createRecyclerBindingAdapterDelegate

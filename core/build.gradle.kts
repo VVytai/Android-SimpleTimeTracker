@@ -21,6 +21,7 @@ dependencies {
     api(project(":resources"))
     api(project(":feature_base_adapter"))
     api(project(":feature_views"))
+    api(project(":core:common"))
 
     api(libs.androidx.appcompat)
     api(libs.androidx.recyclerView)

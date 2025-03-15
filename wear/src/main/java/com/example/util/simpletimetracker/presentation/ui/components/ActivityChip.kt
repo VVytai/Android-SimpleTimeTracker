@@ -7,8 +7,6 @@ package com.example.util.simpletimetracker.presentation.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -92,13 +90,11 @@ fun ActivityChip(
             }
         },
         label = {
-            Row(modifier = Modifier.height(IntrinsicSize.Min)) {
-                Text(
-                    text = state.name,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
-            }
+            Text(
+                text = state.name,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
         },
         secondaryLabel = {
             Column {
@@ -155,15 +151,7 @@ fun ActivityChip(
 
 @Preview(device = WearDevices.LARGE_ROUND)
 @Composable
-fun SampleCooking() {
-    ActivityChip(
-        ActivityChipState(0, "Cooking", WearActivityIcon.Text("🎉"), 0xFF123456),
-    )
-}
-
-@Preview(device = WearDevices.LARGE_ROUND)
-@Composable
-fun Sample() {
+private fun Sample() {
     ActivityChip(
         ActivityChipState(0, "Cooking", WearActivityIcon.Text("🎉"), 0xFF123456),
     )
@@ -171,7 +159,7 @@ fun Sample() {
 
 @Preview(device = WearDevices.LARGE_ROUND, fontScale = 2f)
 @Composable
-fun SampleFontScale() {
+private fun SampleFontScale() {
     ActivityChip(
         ActivityChipState(0, "Cooking", WearActivityIcon.Text("🎉"), 0xFF123456),
     )
@@ -179,7 +167,7 @@ fun SampleFontScale() {
 
 @Preview(device = WearDevices.LARGE_ROUND)
 @Composable
-fun SampleSleep() {
+private fun SampleSleep() {
     ActivityChip(
         ActivityChipState(0, "Sleeping", WearActivityIcon.Text("🛏️"), 0xFF123456),
     )
@@ -187,7 +175,7 @@ fun SampleSleep() {
 
 @Preview(device = WearDevices.LARGE_ROUND)
 @Composable
-fun SampleText() {
+private fun SampleText() {
     ActivityChip(
         ActivityChipState(0, "Sleeping", WearActivityIcon.Text("Zzzz"), 0xFF123456),
     )
@@ -195,7 +183,7 @@ fun SampleText() {
 
 @Preview(device = WearDevices.LARGE_ROUND)
 @Composable
-fun SampleIcon() {
+private fun SampleIcon() {
     ActivityChip(
         ActivityChipState(0, "Sleeping", WearActivityIcon.Image(R.drawable.ic_hotel_24px), 0xFF123456),
     )
@@ -203,7 +191,33 @@ fun SampleIcon() {
 
 @Preview(device = WearDevices.LARGE_ROUND)
 @Composable
-fun SampleLoading() {
+private fun SampleLongName() {
+    ActivityChip(
+        ActivityChipState(
+            0,
+            "Some very long activity name",
+            WearActivityIcon.Image(R.drawable.ic_hotel_24px),
+            0xFF123456,
+        ),
+    )
+}
+
+@Preview(device = WearDevices.LARGE_ROUND, fontScale = 2f)
+@Composable
+private fun SampleLongNameFontScale() {
+    ActivityChip(
+        ActivityChipState(
+            0,
+            "Some very long activity name",
+            WearActivityIcon.Image(R.drawable.ic_hotel_24px),
+            0xFF123456,
+        ),
+    )
+}
+
+@Preview(device = WearDevices.LARGE_ROUND)
+@Composable
+private fun SampleLoading() {
     ActivityChip(
         ActivityChipState(
             0, "Sleeping", WearActivityIcon.Image(R.drawable.ic_hotel_24px), 0xFF123456,
@@ -214,7 +228,7 @@ fun SampleLoading() {
 
 @Preview(device = WearDevices.LARGE_ROUND)
 @Composable
-fun White() {
+private fun White() {
     // TODO handle the look of light colored chips
     // Note: A white color is only possible when using the RGB color picker.
     // The default color options in the phone app are mostly darker shades.
@@ -225,7 +239,7 @@ fun White() {
 
 @Preview(device = WearDevices.LARGE_ROUND)
 @Composable
-fun CurrentlyRunning() {
+private fun CurrentlyRunning() {
     ActivityChip(
         ActivityChipState(
             0, "Sleeping", WearActivityIcon.Text("🛏️"), 0xFF123456,
@@ -238,7 +252,7 @@ fun CurrentlyRunning() {
 
 @Preview(device = WearDevices.LARGE_ROUND, fontScale = 2f)
 @Composable
-fun CurrentlyRunningFontScale() {
+private fun CurrentlyRunningFontScale() {
     ActivityChip(
         ActivityChipState(
             0, "Sleeping", WearActivityIcon.Text("🛏️"), 0xFF123456,
@@ -251,7 +265,7 @@ fun CurrentlyRunningFontScale() {
 
 @Preview(device = WearDevices.LARGE_ROUND)
 @Composable
-fun CurrentlyRunningLoading() {
+private fun CurrentlyRunningLoading() {
     ActivityChip(
         ActivityChipState(
             0, "Sleeping", WearActivityIcon.Text("🛏️"), 0xFF123456,
@@ -265,7 +279,7 @@ fun CurrentlyRunningLoading() {
 
 @Preview(device = WearDevices.LARGE_ROUND)
 @Composable
-fun CurrentlyRunningWithTags() {
+private fun CurrentlyRunningWithTags() {
     ActivityChip(
         ActivityChipState(
             0, "Sleeping", WearActivityIcon.Text("🛏️"), 0xFF123456,
@@ -279,7 +293,7 @@ fun CurrentlyRunningWithTags() {
 
 @Preview(device = WearDevices.LARGE_ROUND, fontScale = 2f)
 @Composable
-fun CurrentlyRunningWithTagsFontScale() {
+private fun CurrentlyRunningWithTagsFontScale() {
     ActivityChip(
         ActivityChipState(
             0, "Sleeping", WearActivityIcon.Text("🛏️"), 0xFF123456,
@@ -293,7 +307,7 @@ fun CurrentlyRunningWithTagsFontScale() {
 
 @Preview(device = WearDevices.LARGE_ROUND)
 @Composable
-fun CurrentlyRunningWithTagsLoading() {
+private fun CurrentlyRunningWithTagsLoading() {
     ActivityChip(
         ActivityChipState(
             0, "Sleeping", WearActivityIcon.Text("🛏️"), 0xFF123456,
@@ -308,7 +322,7 @@ fun CurrentlyRunningWithTagsLoading() {
 
 @Preview(device = WearDevices.LARGE_ROUND)
 @Composable
-fun Duration() {
+private fun Duration() {
     ActivityChip(
         ActivityChipState(
             0, "Sleeping", WearActivityIcon.Text("🛏️"), 0xFF123456,
@@ -321,7 +335,7 @@ fun Duration() {
 
 @Preview(device = WearDevices.LARGE_ROUND)
 @Composable
-fun WithHint() {
+private fun WithHint() {
     ActivityChip(
         ActivityChipState(
             0, "Sleeping", WearActivityIcon.Text("🛏️"), 0xFF123456,
@@ -335,7 +349,7 @@ fun WithHint() {
 
 @Preview(device = WearDevices.LARGE_ROUND, fontScale = 2f)
 @Composable
-fun WithHintFontScale() {
+private fun WithHintFontScale() {
     ActivityChip(
         ActivityChipState(
             0, "Sleeping", WearActivityIcon.Text("🛏️"), 0xFF123456,
@@ -349,7 +363,7 @@ fun WithHintFontScale() {
 
 @Preview(device = WearDevices.LARGE_ROUND)
 @Composable
-fun WithHintTags() {
+private fun WithHintTags() {
     ActivityChip(
         ActivityChipState(
             0, "Sleeping", WearActivityIcon.Text("🛏️"), 0xFF123456,
@@ -364,7 +378,7 @@ fun WithHintTags() {
 
 @Preview(device = WearDevices.LARGE_ROUND, fontScale = 2f)
 @Composable
-fun WithHintTagsFontScale() {
+private fun WithHintTagsFontScale() {
     ActivityChip(
         ActivityChipState(
             0, "Sleeping", WearActivityIcon.Text("🛏️"), 0xFF123456,

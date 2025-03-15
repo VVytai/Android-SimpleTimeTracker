@@ -14,6 +14,8 @@ import com.example.util.simpletimetracker.wear_api.WearSettingsDTO
 import com.example.util.simpletimetracker.wear_api.WearShouldShowTagSelectionRequest
 import com.example.util.simpletimetracker.wear_api.WearShouldShowTagSelectionResponse
 import com.example.util.simpletimetracker.wear_api.WearStartActivityRequest
+import com.example.util.simpletimetracker.wear_api.WearStatisticsDTO
+import com.example.util.simpletimetracker.wear_api.WearStatisticsRequest
 import com.example.util.simpletimetracker.wear_api.WearStopActivityRequest
 import com.example.util.simpletimetracker.wear_api.WearTagDTO
 import com.google.gson.Gson
@@ -40,6 +42,14 @@ class WearRPCClient @Inject constructor(
     override suspend fun queryCurrentActivities(): WearCurrentStateDTO {
         val response: WearCurrentStateDTO? = messenger
             .send(WearRequests.QUERY_CURRENT_ACTIVITIES)
+            ?.let(::mapFromBytes)
+
+        return response ?: throw WearRPCException
+    }
+
+    override suspend fun queryStatistics(request: WearStatisticsRequest): List<WearStatisticsDTO> {
+        val response: List<WearStatisticsDTO>? = messenger
+            .send(WearRequests.QUERY_STATISTICS, mapToBytes(request))
             ?.let(::mapFromBytes)
 
         return response ?: throw WearRPCException

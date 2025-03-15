@@ -12,6 +12,7 @@ include(
     "app",
     "domain",
     "core",
+    "core:common",
     "navigation",
     "data_local",
     "resources",

@@ -7,14 +7,15 @@ package com.example.util.simpletimetracker.data
 
 import android.content.Context
 import androidx.annotation.StringRes
+import com.example.util.simpletimetracker.core.common.repo.BaseResourceRepo
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
 class WearResourceRepo @Inject constructor(
     @ApplicationContext private val context: Context,
-) {
+) : BaseResourceRepo {
 
-    fun getString(@StringRes stringResId: Int): String {
+    override fun getString(@StringRes stringResId: Int): String {
         return context.getString(stringResId)
     }
 }

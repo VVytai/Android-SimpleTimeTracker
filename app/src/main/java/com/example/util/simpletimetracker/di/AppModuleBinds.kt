@@ -1,10 +1,12 @@
 package com.example.util.simpletimetracker.di
 
+import com.example.util.simpletimetracker.core.common.repo.BaseResourceRepo
 import com.example.util.simpletimetracker.core.interactor.GetCurrentDayInteractorImpl
 import com.example.util.simpletimetracker.core.interactor.IsSystemInDarkModeInteractorImpl
 import com.example.util.simpletimetracker.core.interactor.GetUntrackedRecordsInteractorImpl
 import com.example.util.simpletimetracker.core.mapper.AppColorMapperImpl
 import com.example.util.simpletimetracker.core.provider.ApplicationDataProvider
+import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.domain.color.mapper.AppColorMapper
 import com.example.util.simpletimetracker.domain.daysOfWeek.interactor.GetCurrentDayInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.GetUntrackedRecordsInteractor
@@ -23,6 +25,10 @@ interface AppModuleBinds {
     @Binds
     @Singleton
     fun bindAppColorMapper(impl: AppColorMapperImpl): AppColorMapper
+
+    @Binds
+    @Singleton
+    fun bindResourceRepo(impl: ResourceRepo): BaseResourceRepo
 
     @Binds
     @Singleton

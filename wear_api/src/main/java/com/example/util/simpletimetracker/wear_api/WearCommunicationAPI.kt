@@ -21,6 +21,13 @@ interface WearCommunicationAPI {
     suspend fun queryCurrentActivities(): WearCurrentStateDTO
 
     /**
+     * [WearRequests.QUERY_STATISTICS]
+     *
+     * Retrieves a list of statistics
+     */
+    suspend fun queryStatistics(request: WearStatisticsRequest): List<WearStatisticsDTO>
+
+    /**
      * [WearRequests.START_ACTIVITY]
      *
      * Starts new timer.

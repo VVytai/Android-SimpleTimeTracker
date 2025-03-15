@@ -12,6 +12,7 @@ object WearRequests {
     // Same strings are set in the android_wear_capabilities manifest
     const val QUERY_ACTIVITIES = "$PATH/QUERY_ACTIVITIES"
     const val QUERY_CURRENT_ACTIVITIES = "$PATH/QUERY_CURRENT_ACTIVITIES"
+    const val QUERY_STATISTICS = "$PATH/QUERY_STATISTICS"
     const val START_ACTIVITY = "$PATH/START_ACTIVITY"
     const val STOP_ACTIVITY = "$PATH/STOP_ACTIVITY"
     const val REPEAT_ACTIVITY = "$PATH/REPEAT_ACTIVITY"

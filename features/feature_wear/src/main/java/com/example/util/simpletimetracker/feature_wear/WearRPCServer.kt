@@ -11,6 +11,7 @@ import com.example.util.simpletimetracker.wear_api.WearRequests
 import com.example.util.simpletimetracker.wear_api.WearSettingsDTO
 import com.example.util.simpletimetracker.wear_api.WearShouldShowTagSelectionRequest
 import com.example.util.simpletimetracker.wear_api.WearStartActivityRequest
+import com.example.util.simpletimetracker.wear_api.WearStatisticsRequest
 import com.example.util.simpletimetracker.wear_api.WearStopActivityRequest
 import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.Wearable
@@ -35,6 +36,7 @@ class WearRPCServer @Inject constructor(
             when (path) {
                 WearRequests.QUERY_ACTIVITIES -> onQueryActivities()
                 WearRequests.QUERY_CURRENT_ACTIVITIES -> onQueryCurrentActivities()
+                WearRequests.QUERY_STATISTICS -> onQueryStatistics(request)
                 WearRequests.START_ACTIVITY -> onStartActivity(request)
                 WearRequests.STOP_ACTIVITY -> onStopActivity(request)
                 WearRequests.REPEAT_ACTIVITY -> onRepeatActivity()
@@ -107,6 +109,11 @@ class WearRPCServer @Inject constructor(
 
     private suspend fun onQueryCurrentActivities(): ByteArray {
         return mapToBytes(repo.queryCurrentActivities())
+    }
+
+    private suspend fun onQueryStatistics(request: ByteArray): ByteArray? {
+        val data: WearStatisticsRequest = mapFromBytes(request) ?: return null
+        return mapToBytes(repo.queryStatistics(data))
     }
 
     private suspend fun onQuerySettings(): ByteArray {

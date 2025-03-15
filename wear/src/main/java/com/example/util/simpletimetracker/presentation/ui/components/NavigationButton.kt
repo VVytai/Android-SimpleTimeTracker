@@ -5,6 +5,7 @@
  */
 package com.example.util.simpletimetracker.presentation.ui.components
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -18,7 +19,8 @@ import com.example.util.simpletimetracker.R
 import com.example.util.simpletimetracker.presentation.theme.ColorInactive
 
 @Composable
-fun SettingsButton(
+fun NavigationButton(
+    @DrawableRes drawableResId: Int,
     onClick: () -> Unit = {},
 ) {
     Button(
@@ -26,7 +28,7 @@ fun SettingsButton(
         onClick = onClick,
         content = {
             Icon(
-                painter = painterResource(id = R.drawable.wear_settings),
+                painter = painterResource(id = drawableResId),
                 contentDescription = null,
             )
         },
@@ -39,5 +41,5 @@ fun SettingsButton(
 @Preview
 @Composable
 private fun Preview() {
-    SettingsButton()
+    NavigationButton(R.drawable.wear_settings)
 }

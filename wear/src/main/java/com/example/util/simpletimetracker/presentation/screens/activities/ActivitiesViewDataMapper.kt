@@ -9,6 +9,8 @@ import androidx.compose.ui.graphics.toArgb
 import com.example.util.simpletimetracker.R
 import com.example.util.simpletimetracker.data.WearIconMapper
 import com.example.util.simpletimetracker.data.WearResourceRepo
+import com.example.util.simpletimetracker.domain.base.REPEAT_BUTTON_ITEM_ID
+import com.example.util.simpletimetracker.domain.base.UNTRACKED_ITEM_ID
 import com.example.util.simpletimetracker.domain.model.WearActivity
 import com.example.util.simpletimetracker.domain.model.WearActivityIcon
 import com.example.util.simpletimetracker.domain.model.WearCurrentActivity
@@ -171,7 +173,7 @@ class ActivitiesViewDataMapper @Inject constructor(
 
     private fun mapRepeatItem(): ActivitiesListState.Content.Item {
         return ActivityChipState(
-            id = REPEAT_ITEM_ID,
+            id = REPEAT_BUTTON_ITEM_ID,
             name = resourceRepo.getString(R.string.running_records_repeat),
             icon = WearActivityIcon.Image(R.drawable.wear_repeat),
             color = ColorInactive.toArgb().toLong(),
@@ -205,10 +207,5 @@ class ActivitiesViewDataMapper @Inject constructor(
             .takeUnless { it.isEmpty() }
             ?.joinToString(separator = ", ")
             .orEmpty()
-    }
-
-    companion object {
-        private const val UNTRACKED_ITEM_ID = -1L
-        private const val REPEAT_ITEM_ID = -2L
     }
 }

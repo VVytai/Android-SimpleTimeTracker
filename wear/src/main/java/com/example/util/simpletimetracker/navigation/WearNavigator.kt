@@ -12,12 +12,14 @@ import androidx.wear.compose.navigation.rememberSwipeDismissableNavController
 import com.example.util.simpletimetracker.presentation.screens.activities.ActivitiesScreen
 import com.example.util.simpletimetracker.presentation.screens.dialog.MessageDialog
 import com.example.util.simpletimetracker.presentation.screens.settings.SettingsScreen
+import com.example.util.simpletimetracker.presentation.screens.statistics.StatisticsScreen
 import com.example.util.simpletimetracker.presentation.screens.tagsSelection.TagsScreen
 import com.example.util.simpletimetracker.utils.getString
 
 object Route {
     const val ACTIVITIES = "activities"
     const val TAGS = "activities/{id}/tags"
+    const val STATISTICS = "statistics"
     const val SETTINGS = "settings"
     const val ALERT = "alert/{textResId}"
 }
@@ -34,6 +36,9 @@ fun WearNavigator() {
                 onRequestTagSelection = {
                     val route = Route.TAGS.replace("{id}", it.toString())
                     navigation.navigate(route)
+                },
+                onStatisticsClick = {
+                    navigation.navigate(Route.STATISTICS)
                 },
                 onSettingsClick = {
                     navigation.navigate(Route.SETTINGS)
@@ -56,6 +61,9 @@ fun WearNavigator() {
                     navigation.popBackStack()
                 },
             )
+        }
+        composable(Route.STATISTICS) {
+            StatisticsScreen()
         }
         composable(Route.SETTINGS) {
             SettingsScreen()

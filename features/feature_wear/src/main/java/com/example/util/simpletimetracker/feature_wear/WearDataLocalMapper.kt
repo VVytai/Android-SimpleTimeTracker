@@ -7,17 +7,20 @@ package com.example.util.simpletimetracker.feature_wear
 
 import com.example.util.simpletimetracker.core.interactor.RecordRepeatInteractor
 import com.example.util.simpletimetracker.core.mapper.RecordTagViewDataMapper
+import com.example.util.simpletimetracker.core.viewData.StatisticsDataHolder
 import com.example.util.simpletimetracker.domain.color.mapper.AppColorMapper
 import com.example.util.simpletimetracker.domain.color.model.AppColor
 import com.example.util.simpletimetracker.domain.record.model.Record
+import com.example.util.simpletimetracker.domain.record.model.RunningRecord
 import com.example.util.simpletimetracker.domain.recordTag.model.RecordTag
 import com.example.util.simpletimetracker.domain.recordType.model.RecordType
-import com.example.util.simpletimetracker.domain.record.model.RunningRecord
+import com.example.util.simpletimetracker.domain.statistics.model.Statistics
 import com.example.util.simpletimetracker.wear_api.WearActivityDTO
 import com.example.util.simpletimetracker.wear_api.WearCurrentActivityDTO
 import com.example.util.simpletimetracker.wear_api.WearLastRecordDTO
 import com.example.util.simpletimetracker.wear_api.WearRecordRepeatResponse
 import com.example.util.simpletimetracker.wear_api.WearSettingsDTO
+import com.example.util.simpletimetracker.wear_api.WearStatisticsDTO
 import com.example.util.simpletimetracker.wear_api.WearTagDTO
 import javax.inject.Inject
 
@@ -71,6 +74,19 @@ class WearDataLocalMapper @Inject constructor(
                 tag = recordTag,
                 types = types,
             ).let(::mapColor),
+        )
+    }
+
+    fun map(
+        statistics: Statistics,
+        dataHolder: StatisticsDataHolder?,
+    ): WearStatisticsDTO {
+        return WearStatisticsDTO(
+            id = statistics.id,
+            name = dataHolder?.name,
+            icon = dataHolder?.icon,
+            color = dataHolder?.color?.let(::mapColor),
+            duration = statistics.data.duration,
         )
     }
 

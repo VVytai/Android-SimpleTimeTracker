@@ -13,13 +13,14 @@ import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import com.example.util.simpletimetracker.core.R
+import com.example.util.simpletimetracker.core.common.repo.BaseResourceRepo
 import com.example.util.simpletimetracker.core.provider.ContextProvider
 import com.example.util.simpletimetracker.feature_views.extension.pxToDp
 import javax.inject.Inject
 
 class ResourceRepo @Inject constructor(
     private val contextProvider: ContextProvider,
-) {
+) : BaseResourceRepo {
 
     private val context: Context get() = contextProvider.get()
 
@@ -27,7 +28,7 @@ class ResourceRepo @Inject constructor(
         return ContextCompat.getColor(context, colorResId)
     }
 
-    fun getString(@StringRes stringResId: Int): String {
+    override fun getString(@StringRes stringResId: Int): String {
         return context.getString(stringResId)
     }
 

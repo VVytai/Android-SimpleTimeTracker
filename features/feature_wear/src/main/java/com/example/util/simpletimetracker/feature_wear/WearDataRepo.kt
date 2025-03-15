@@ -6,6 +6,8 @@
 package com.example.util.simpletimetracker.feature_wear
 
 import com.example.util.simpletimetracker.core.interactor.RecordRepeatInteractor
+import com.example.util.simpletimetracker.core.interactor.StatisticsMediator
+import com.example.util.simpletimetracker.core.mapper.TimeMapper
 import com.example.util.simpletimetracker.domain.activitySuggestion.interactor.GetCurrentActivitySuggestionsInteractor
 import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.domain.record.interactor.AddRunningRecordMediator
@@ -23,8 +25,11 @@ import com.example.util.simpletimetracker.domain.widget.interactor.WidgetInterac
 import com.example.util.simpletimetracker.domain.record.model.RecordDataSelectionDialogResult
 import com.example.util.simpletimetracker.domain.recordTag.model.RecordTag
 import com.example.util.simpletimetracker.domain.recordType.model.RecordType
+import com.example.util.simpletimetracker.domain.statistics.model.ChartFilterType
+import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
 import com.example.util.simpletimetracker.domain.widget.model.WidgetType
 import com.example.util.simpletimetracker.navigation.Router
+import com.example.util.simpletimetracker.wear_api.WearChartFilterTypeDTO
 import com.example.util.simpletimetracker.wear_api.WearActivityDTO
 import com.example.util.simpletimetracker.wear_api.WearCommunicationAPI
 import com.example.util.simpletimetracker.wear_api.WearCurrentStateDTO
@@ -33,6 +38,8 @@ import com.example.util.simpletimetracker.wear_api.WearSettingsDTO
 import com.example.util.simpletimetracker.wear_api.WearShouldShowTagSelectionRequest
 import com.example.util.simpletimetracker.wear_api.WearShouldShowTagSelectionResponse
 import com.example.util.simpletimetracker.wear_api.WearStartActivityRequest
+import com.example.util.simpletimetracker.wear_api.WearStatisticsDTO
+import com.example.util.simpletimetracker.wear_api.WearStatisticsRequest
 import com.example.util.simpletimetracker.wear_api.WearStopActivityRequest
 import com.example.util.simpletimetracker.wear_api.WearTagDTO
 import dagger.Lazy
@@ -51,10 +58,12 @@ class WearDataRepo @Inject constructor(
     private val recordRepeatInteractor: Lazy<RecordRepeatInteractor>,
     private val updateExternalViewsInteractor: Lazy<UpdateExternalViewsInteractor>,
     private val router: Router,
+    private val timeMapper: TimeMapper,
     private val widgetInteractor: WidgetInteractor,
     private val settingsDataUpdateInteractor: SettingsDataUpdateInteractor,
     private val wearDataLocalMapper: WearDataLocalMapper,
     private val getCurrentActivitySuggestionsInteractor: GetCurrentActivitySuggestionsInteractor,
+    private val statisticsMediator: StatisticsMediator,
 ) : WearCommunicationAPI {
 
     override suspend fun queryActivities(): List<WearActivityDTO> {
@@ -97,6 +106,50 @@ class WearDataRepo @Inject constructor(
             lastRecords = prevRecordsData,
             suggestionIds = suggestionsData,
         )
+    }
+
+    override suspend fun queryStatistics(request: WearStatisticsRequest): List<WearStatisticsDTO> {
+        val filterType = when (request.filterType){
+            WearChartFilterTypeDTO.ACTIVITY -> ChartFilterType.ACTIVITY
+            WearChartFilterTypeDTO.CATEGORY -> ChartFilterType.CATEGORY
+            WearChartFilterTypeDTO.RECORD_TAG -> ChartFilterType.RECORD_TAG
+        }
+        val shift = request.shift
+        val rangeLength = RangeLength.Day
+        val firstDayOfWeek = prefsInteractor.getFirstDayOfWeek()
+        val startOfDayShift = prefsInteractor.getStartOfDayShift()
+        val types = recordTypeInteractor.getAll().associateBy(RecordType::id)
+
+        val filteredIds = when (filterType) {
+            ChartFilterType.ACTIVITY -> prefsInteractor.getFilteredTypes()
+            ChartFilterType.CATEGORY -> prefsInteractor.getFilteredCategories()
+            ChartFilterType.RECORD_TAG -> prefsInteractor.getFilteredTags()
+        }
+
+        val dataHolders = statisticsMediator.getDataHolders(
+            filterType = filterType,
+            types = types,
+        )
+        val range = timeMapper.getRangeStartAndEnd(
+            rangeLength = rangeLength,
+            shift = shift,
+            firstDayOfWeek = firstDayOfWeek,
+            startOfDayShift = startOfDayShift,
+        )
+        val statistics = statisticsMediator.getStatistics(
+            filterType = filterType,
+            filteredIds = filteredIds,
+            range = range,
+        ).filterNot {
+            it.id in filteredIds
+        }
+
+        return statistics.map {
+            wearDataLocalMapper.map(
+                statistics = it,
+                dataHolder = dataHolders[it.id],
+            )
+        }
     }
 
     override suspend fun startActivity(request: WearStartActivityRequest) {

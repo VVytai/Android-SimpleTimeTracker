@@ -48,6 +48,28 @@ data class WearCurrentActivityDTO(
 ) : Parcelable
 
 @Parcelize
+data class WearStatisticsRequest(
+    @SerializedName("shift")
+    val shift: Int,
+    @SerializedName("filterType")
+    val filterType: WearChartFilterTypeDTO
+) : Parcelable
+
+@Parcelize
+data class WearStatisticsDTO(
+    @SerializedName("id")
+    val id: Long,
+    @SerializedName("name")
+    val name: String?,
+    @SerializedName("icon")
+    val icon: String?,
+    @SerializedName("color")
+    val color: Long?,
+    @SerializedName("duration")
+    val duration: Long,
+) : Parcelable
+
+@Parcelize
 data class WearLastRecordDTO(
     @SerializedName("activityId")
     val activityId: Long,
@@ -118,4 +140,15 @@ data class WearRecordRepeatResponse(
         NO_PREVIOUS_FOUND,
         ALREADY_TRACKING,
     }
+}
+
+enum class WearChartFilterTypeDTO {
+    @SerializedName("ACTIVITY")
+    ACTIVITY,
+
+    @SerializedName("CATEGORY")
+    CATEGORY,
+
+    @SerializedName("RECORD_TAG")
+    RECORD_TAG,
 }

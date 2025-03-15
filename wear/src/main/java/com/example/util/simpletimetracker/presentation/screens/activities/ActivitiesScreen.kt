@@ -17,6 +17,7 @@ import com.example.util.simpletimetracker.utils.collectEffects
 @Composable
 fun ActivitiesScreen(
     onRequestTagSelection: (activityId: Long) -> Unit,
+    onStatisticsClick: () -> Unit,
     onSettingsClick: () -> Unit,
     onShowMessage: (Int) -> Unit,
 ) {
@@ -38,6 +39,7 @@ fun ActivitiesScreen(
         onItemClick = viewModel::onItemClick,
         onRefresh = viewModel::onRefresh,
         onOpenOnPhone = viewModel::onOpenOnPhone,
+        onStatisticsClick = onStatisticsClick,
         onSettingsClick = onSettingsClick,
     )
 }

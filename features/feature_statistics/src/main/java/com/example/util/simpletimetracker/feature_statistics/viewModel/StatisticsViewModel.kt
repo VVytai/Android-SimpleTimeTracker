@@ -168,7 +168,6 @@ class StatisticsViewModel @Inject constructor(
 
     private suspend fun loadStatisticsViewData(forSharing: Boolean = false): List<ViewHolderType> {
         return statisticsViewDataInteractor.getViewData(
-            rangeLength = prefsInteractor.getStatisticsRange(),
             shift = shift,
             forSharing = forSharing,
         )

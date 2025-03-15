@@ -1,4 +1,4 @@
-package com.example.util.simpletimetracker.domain.statistics.mapper
+package com.example.util.simpletimetracker.core.common.mapper
 
 import javax.inject.Inject
 import kotlin.math.roundToLong

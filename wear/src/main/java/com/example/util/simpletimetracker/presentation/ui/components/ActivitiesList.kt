@@ -67,6 +67,7 @@ fun ActivitiesList(
     onItemClick: (item: ActivityChipState) -> Unit = {},
     onRefresh: () -> Unit = {},
     onOpenOnPhone: () -> Unit = {},
+    onStatisticsClick: () -> Unit = {},
     onSettingsClick: () -> Unit = {},
 ) {
     ScaffoldedScrollingColumn(
@@ -86,6 +87,7 @@ fun ActivitiesList(
                 renderContent(
                     state = state,
                     onItemClick = onItemClick,
+                    onStatisticsClick = onStatisticsClick,
                     onSettingsClick = onSettingsClick,
                 )
                 item { RefreshButton(onRefresh) }
@@ -145,10 +147,22 @@ private fun ScalingLazyListScope.renderEmpty(
 private fun ScalingLazyListScope.renderContent(
     state: ActivitiesListState.Content,
     onItemClick: (item: ActivityChipState) -> Unit,
+    onStatisticsClick: () -> Unit,
     onSettingsClick: () -> Unit,
 ) {
     item {
-        SettingsButton(onSettingsClick)
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+        ) {
+            NavigationButton(
+                drawableResId = R.drawable.wear_statistics,
+                onClick = onStatisticsClick,
+            )
+            NavigationButton(
+                drawableResId = R.drawable.wear_settings,
+                onClick = onSettingsClick,
+            )
+        }
     }
     if (state.isCompact) {
         renderContentCompact(
