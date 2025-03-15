@@ -36,16 +36,16 @@ class GetCurrentActivitySuggestionsInteractor @Inject constructor(
     private suspend fun execute(
         runningRecords: List<RunningRecord>,
     ): Set<Long> {
-        val currentOrLast = runningRecords.minByOrNull { it.timeStarted }
-            ?: recordInteractor.getAllPrev(System.currentTimeMillis()).firstOrNull()
+        val currentOrLast = runningRecords.takeIf { it.isNotEmpty() }
+            ?: recordInteractor.getAllPrev(System.currentTimeMillis())
 
-        val currentOrLastTypeId = currentOrLast?.typeIds?.firstOrNull()
+        val currentOrLastTypeIds = currentOrLast.mapNotNull { it.typeIds.firstOrNull() }
 
-        return currentOrLastTypeId
-            ?.let { activitySuggestionInteractor.getByTypeId(it) }
-            ?.firstOrNull()
-            ?.suggestionIds
-            .orEmpty()
+        return currentOrLastTypeIds
+            .mapNotNull {
+                activitySuggestionInteractor.getByTypeId(it).firstOrNull()?.suggestionIds
+            }
+            .flatten()
             .toSet()
     }
 }
