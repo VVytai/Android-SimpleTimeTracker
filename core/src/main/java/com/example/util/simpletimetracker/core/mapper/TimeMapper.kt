@@ -440,7 +440,9 @@ class TimeMapper @Inject constructor(
                 calendar.timeInMillis = rangeLength.range.timeStarted
                 calendar.add(Calendar.DATE, shift * daysBetween)
                 rangeStart = calendar.timeInMillis
-                rangeEnd = calendar.apply { add(Calendar.DATE, daysBetween) }.timeInMillis
+                calendar.timeInMillis = rangeLength.range.timeEnded
+                calendar.add(Calendar.DATE, shift * daysBetween)
+                rangeEnd = calendar.timeInMillis
             }
 
             is RangeLength.Last -> {
