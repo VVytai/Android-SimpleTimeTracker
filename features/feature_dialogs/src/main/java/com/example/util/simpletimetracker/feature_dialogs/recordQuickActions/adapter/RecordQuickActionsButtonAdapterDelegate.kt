@@ -21,7 +21,6 @@ fun createRecordQuickActionsButtonAdapterDelegate(
 
         tvRecordQuickActionsButton.text = item.text
         ivRecordQuickActionsButton.setImageResource(item.icon)
-        cardRecordQuickActionsButton.setCardBackgroundColor(item.iconColor)
         itemRecordQuickActionsButton.setOnClickWith(item.block, onClick)
     }
 }
@@ -31,7 +30,6 @@ data class RecordQuickActionsButtonViewData(
     override val width: Width = Width.Small,
     val text: String,
     @DrawableRes val icon: Int,
-    @ColorInt val iconColor: Int,
 ) : ViewHolderType,
     RecordQuickActionsBlockHolder,
     RecordQuickActionsWidthHolder {

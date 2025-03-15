@@ -1,6 +1,5 @@
 package com.example.util.simpletimetracker.core.mapper
 
-import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import com.example.util.simpletimetracker.core.R
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
@@ -49,20 +48,5 @@ class RecordQuickActionMapper @Inject constructor(
             STOP -> R.drawable.action_stop
             CHANGE_ACTIVITY, CHANGE_TAG -> R.drawable.action_change_item
         }
-    }
-
-    @ColorInt
-    fun mapColor(data: RecordQuickAction): Int {
-        return when (data) {
-            CONTINUE -> R.color.red_300
-            REPEAT -> R.color.purple_300
-            DUPLICATE -> R.color.indigo_300
-            MOVE -> R.color.indigo_300
-            MERGE -> R.color.light_blue_300
-            STOP -> R.color.teal_300
-            CHANGE_ACTIVITY, CHANGE_TAG -> R.color.green_300
-            SPLIT -> R.color.pink_300
-            ADJUST -> R.color.amber_300
-        }.let(resourceRepo::getColor)
     }
 }

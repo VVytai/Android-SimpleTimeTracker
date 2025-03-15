@@ -92,7 +92,6 @@ class RecordQuickActionsViewDataInteractor @Inject constructor(
                 block = it,
                 text = recordQuickActionMapper.mapText(action),
                 icon = recordQuickActionMapper.mapIcon(action),
-                iconColor = recordQuickActionMapper.mapColor(action),
             )
         }
     }

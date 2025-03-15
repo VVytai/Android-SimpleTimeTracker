@@ -133,8 +133,8 @@ class ChangeRecordViewDataMapper @Inject constructor(
             text = recordQuickActionMapper.mapText(action),
             icon = ButtonViewData.Icon.Present(
                 icon = recordQuickActionMapper.mapIcon(action),
-                iconColor = resourceRepo.getThemedAttr(R.attr.appCardBackgroundColor, isDarkTheme),
-                iconBackgroundColor = recordQuickActionMapper.mapColor(action),
+                iconColor = resourceRepo.getThemedAttr(R.attr.appLightTextColor, isDarkTheme),
+                iconBackgroundColor = resourceRepo.getThemedAttr(R.attr.appInactiveColor, isDarkTheme),
             ),
             backgroundColor = resourceRepo.getThemedAttr(R.attr.appActiveColor, isDarkTheme),
             isEnabled = isEnabled,
