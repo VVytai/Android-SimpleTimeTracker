@@ -6,35 +6,32 @@
 package com.example.util.simpletimetracker.features.statistics.screen
 
 import androidx.annotation.StringRes
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.foundation.lazy.ScalingLazyListScope
-import androidx.wear.compose.material.CircularProgressIndicator
-import androidx.wear.compose.material.Icon
 import androidx.wear.compose.material.Text
 import androidx.wear.tooling.preview.devices.WearDevices
 import com.example.util.simpletimetracker.R
 import com.example.util.simpletimetracker.domain.model.WearActivityIcon
-import com.example.util.simpletimetracker.presentation.layout.ScaffoldedScrollingColumn
-import com.example.util.simpletimetracker.presentation.ui.RefreshButton
 import com.example.util.simpletimetracker.features.statistics.ui.StatisticsChip
 import com.example.util.simpletimetracker.features.statistics.ui.StatisticsChipState
+import com.example.util.simpletimetracker.presentation.layout.ScaffoldedScrollingColumn
+import com.example.util.simpletimetracker.presentation.ui.ErrorState
+import com.example.util.simpletimetracker.presentation.ui.RenderLoading
+import com.example.util.simpletimetracker.presentation.ui.renderError
 import com.example.util.simpletimetracker.utils.getString
 import java.util.UUID
 
 sealed interface StatisticsListState {
+
     data object Loading : StatisticsListState
 
     data class Error(
-        @StringRes val messageResId: Int,
+        val error: ErrorState,
     ) : StatisticsListState
 
     data class Empty(
@@ -57,15 +54,16 @@ fun StatisticsList(
     state: StatisticsListState,
     onRefresh: () -> Unit = {},
 ) {
-    ScaffoldedScrollingColumn(
-        startItemIndex = 0,
-    ) {
+    ScaffoldedScrollingColumn {
         when (state) {
             is StatisticsListState.Loading -> item {
                 RenderLoading()
             }
-            is StatisticsListState.Error -> item {
-                RenderError(state, onRefresh)
+            is StatisticsListState.Error -> {
+                renderError(
+                    state = state.error,
+                    onRefresh = onRefresh,
+                )
             }
             is StatisticsListState.Empty -> item {
                 RenderEmptyState(state)
@@ -74,36 +72,6 @@ fun StatisticsList(
                 renderContent(state)
             }
         }
-    }
-}
-
-// TODO move to outer element, replace in other screens.
-// TODO same for error.
-@Composable
-private fun RenderLoading() {
-    CircularProgressIndicator(
-        modifier = Modifier.width(64.dp),
-    )
-}
-
-@Composable
-private fun RenderError(
-    state: StatisticsListState.Error,
-    onRefresh: () -> Unit,
-) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        Icon(
-            painter = painterResource(R.drawable.wear_connection_error),
-            contentDescription = null,
-        )
-        Text(
-            text = getString(stringResId = state.messageResId),
-            modifier = Modifier.padding(8.dp),
-            textAlign = TextAlign.Center,
-        )
-        RefreshButton(onRefresh)
     }
 }
 
@@ -120,6 +88,7 @@ private fun RenderEmptyState(
 private fun ScalingLazyListScope.renderContent(
     state: StatisticsListState.Content,
 ) {
+    item { Spacer(Modifier) }
     for (itemState in state.items) {
         when (itemState) {
             is StatisticsListState.Content.Item.Statistics -> {
@@ -148,7 +117,9 @@ private fun Loading() {
 @Composable
 private fun Error() {
     StatisticsList(
-        state = StatisticsListState.Error(R.string.wear_loading_error),
+        state = StatisticsListState.Error(
+            ErrorState(R.string.wear_loading_error),
+        ),
     )
 }
 

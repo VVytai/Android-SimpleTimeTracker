@@ -7,19 +7,21 @@ package com.example.util.simpletimetracker.features.settings.mapper
 
 import com.example.util.simpletimetracker.BuildConfig
 import com.example.util.simpletimetracker.R
+import com.example.util.simpletimetracker.core.ErrorStateMapper
 import com.example.util.simpletimetracker.data.WearResourceRepo
 import com.example.util.simpletimetracker.domain.model.WearSettings
-import com.example.util.simpletimetracker.features.settings.ui.SettingsItemType
-import com.example.util.simpletimetracker.features.settings.ui.SettingsItem
 import com.example.util.simpletimetracker.features.settings.screen.SettingsListState
+import com.example.util.simpletimetracker.features.settings.ui.SettingsItem
+import com.example.util.simpletimetracker.features.settings.ui.SettingsItemType
 import javax.inject.Inject
 
 class SettingsViewDataMapper @Inject constructor(
     private val resourceRepo: WearResourceRepo,
+    private val errorStateMapper: ErrorStateMapper,
 ) {
 
     fun mapErrorState(): SettingsListState.Error {
-        return SettingsListState.Error(R.string.wear_loading_error)
+        return SettingsListState.Error(errorStateMapper.map())
     }
 
     fun mapContentState(

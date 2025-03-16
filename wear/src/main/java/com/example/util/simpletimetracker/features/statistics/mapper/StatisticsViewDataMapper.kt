@@ -7,6 +7,7 @@ package com.example.util.simpletimetracker.features.statistics.mapper
 
 import androidx.compose.ui.graphics.toArgb
 import com.example.util.simpletimetracker.R
+import com.example.util.simpletimetracker.core.ErrorStateMapper
 import com.example.util.simpletimetracker.core.common.mapper.StatisticsMapper
 import com.example.util.simpletimetracker.core.common.mapper.TimeMapper
 import com.example.util.simpletimetracker.data.WearIconMapper
@@ -16,9 +17,9 @@ import com.example.util.simpletimetracker.domain.base.UNTRACKED_ITEM_ID
 import com.example.util.simpletimetracker.domain.model.WearActivityIcon
 import com.example.util.simpletimetracker.domain.model.WearChartFilterType
 import com.example.util.simpletimetracker.domain.model.WearStatistics
-import com.example.util.simpletimetracker.presentation.theme.ColorInactive
-import com.example.util.simpletimetracker.features.statistics.ui.StatisticsChipState
 import com.example.util.simpletimetracker.features.statistics.screen.StatisticsListState
+import com.example.util.simpletimetracker.features.statistics.ui.StatisticsChipState
+import com.example.util.simpletimetracker.presentation.theme.ColorInactive
 import javax.inject.Inject
 
 class StatisticsViewDataMapper @Inject constructor(
@@ -26,12 +27,11 @@ class StatisticsViewDataMapper @Inject constructor(
     private val resourceRepo: WearResourceRepo,
     private val timeMapper: TimeMapper,
     private val statisticsMapper: StatisticsMapper,
+    private val errorStateMapper: ErrorStateMapper,
 ) {
 
-    // TODO remove
-    // TODO move StatisticsList to separate package, split other classes to packages
     fun mapErrorState(): StatisticsListState.Error {
-        return StatisticsListState.Error(R.string.wear_loading_error)
+        return StatisticsListState.Error(errorStateMapper.map())
     }
 
     fun mapEmptyState(): StatisticsListState.Empty {

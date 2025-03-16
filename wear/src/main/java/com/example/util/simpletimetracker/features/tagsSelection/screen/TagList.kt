@@ -6,36 +6,33 @@
 package com.example.util.simpletimetracker.features.tagsSelection.screen
 
 import androidx.annotation.StringRes
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.foundation.lazy.ScalingLazyListScope
 import androidx.wear.compose.material.CircularProgressIndicator
-import androidx.wear.compose.material.Icon
 import androidx.wear.compose.material.Text
 import androidx.wear.tooling.preview.devices.WearDevices
 import com.example.util.simpletimetracker.R
-import com.example.util.simpletimetracker.presentation.layout.ScaffoldedScrollingColumn
-import com.example.util.simpletimetracker.presentation.ui.RefreshButton
 import com.example.util.simpletimetracker.features.tagsSelection.ui.TagChip
 import com.example.util.simpletimetracker.features.tagsSelection.ui.TagChipState
 import com.example.util.simpletimetracker.features.tagsSelection.ui.TagSelectionButton
 import com.example.util.simpletimetracker.features.tagsSelection.ui.TagSelectionButtonState
+import com.example.util.simpletimetracker.presentation.layout.ScaffoldedScrollingColumn
+import com.example.util.simpletimetracker.presentation.ui.ErrorState
+import com.example.util.simpletimetracker.presentation.ui.renderError
 import com.example.util.simpletimetracker.utils.getString
 
 sealed interface TagListState {
 
-    object Loading : TagListState
+    data object Loading : TagListState
 
     data class Error(
-        @StringRes val messageResId: Int,
+        val error: ErrorState,
     ) : TagListState
 
     data class Empty(
@@ -69,15 +66,16 @@ fun TagList(
     onToggleClick: (Long) -> Unit = {},
     onRefresh: () -> Unit = {},
 ) {
-    ScaffoldedScrollingColumn(
-        startItemIndex = 0,
-    ) {
+    ScaffoldedScrollingColumn {
         when (state) {
             is TagListState.Loading -> item {
                 RenderLoadingState()
             }
-            is TagListState.Error -> item {
-                RenderErrorState(state, onRefresh)
+            is TagListState.Error -> {
+                renderError(
+                    state = state.error,
+                    onRefresh = onRefresh,
+                )
             }
             is TagListState.Empty -> item {
                 RenderEmptyState(state)
@@ -101,27 +99,6 @@ private fun RenderLoadingState() {
 }
 
 @Composable
-private fun RenderErrorState(
-    state: TagListState.Error,
-    onRefresh: () -> Unit,
-) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        Icon(
-            painter = painterResource(R.drawable.wear_connection_error),
-            contentDescription = null,
-        )
-        Text(
-            text = getString(stringResId = state.messageResId),
-            modifier = Modifier.padding(8.dp),
-            textAlign = TextAlign.Center,
-        )
-        RefreshButton(onRefresh)
-    }
-}
-
-@Composable
 private fun RenderEmptyState(
     state: TagListState.Empty,
 ) {
@@ -136,6 +113,7 @@ private fun ScalingLazyListScope.renderContentState(
     onButtonClick: (TagListState.Item.ButtonType) -> Unit = {},
     onToggleClick: (Long) -> Unit = {},
 ) {
+    item { Spacer(Modifier) }
     for (itemState in state.items) {
         when (itemState) {
             is TagListState.Item.Tag -> item {
@@ -166,7 +144,9 @@ private fun Loading() {
 @Composable
 private fun Error() {
     TagList(
-        state = TagListState.Error(R.string.wear_loading_error),
+        state = TagListState.Error(
+            ErrorState(R.string.wear_loading_error),
+        ),
     )
 }
 

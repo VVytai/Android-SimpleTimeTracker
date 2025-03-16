@@ -7,6 +7,7 @@ package com.example.util.simpletimetracker.features.activities.mapper
 
 import androidx.compose.ui.graphics.toArgb
 import com.example.util.simpletimetracker.R
+import com.example.util.simpletimetracker.core.ErrorStateMapper
 import com.example.util.simpletimetracker.data.WearIconMapper
 import com.example.util.simpletimetracker.data.WearResourceRepo
 import com.example.util.simpletimetracker.domain.base.REPEAT_BUTTON_ITEM_ID
@@ -17,20 +18,21 @@ import com.example.util.simpletimetracker.domain.model.WearCurrentActivity
 import com.example.util.simpletimetracker.domain.model.WearLastRecord
 import com.example.util.simpletimetracker.domain.model.WearSettings
 import com.example.util.simpletimetracker.domain.model.WearTag
-import com.example.util.simpletimetracker.presentation.theme.ColorInactive
 import com.example.util.simpletimetracker.features.activities.screen.ActivitiesListState
 import com.example.util.simpletimetracker.features.activities.ui.ActivityChipState
 import com.example.util.simpletimetracker.features.activities.ui.ActivityChipType
+import com.example.util.simpletimetracker.presentation.theme.ColorInactive
 import com.example.util.simpletimetracker.utils.orZero
 import javax.inject.Inject
 
 class ActivitiesViewDataMapper @Inject constructor(
     private val wearIconMapper: WearIconMapper,
     private val resourceRepo: WearResourceRepo,
+    private val errorStateMapper: ErrorStateMapper,
 ) {
 
     fun mapErrorState(): ActivitiesListState.Error {
-        return ActivitiesListState.Error(R.string.wear_loading_error)
+        return ActivitiesListState.Error(errorStateMapper.map())
     }
 
     fun mapEmptyState(): ActivitiesListState.Empty {

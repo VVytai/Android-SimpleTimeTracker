@@ -14,18 +14,14 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.foundation.lazy.ScalingLazyListScope
-import androidx.wear.compose.material.CircularProgressIndicator
-import androidx.wear.compose.material.Icon
 import androidx.wear.compose.material.Text
 import androidx.wear.tooling.preview.devices.WearDevices
 import com.example.util.simpletimetracker.R
@@ -35,25 +31,29 @@ import com.example.util.simpletimetracker.features.activities.ui.ActivityChipCom
 import com.example.util.simpletimetracker.features.activities.ui.ActivityChipCompatState
 import com.example.util.simpletimetracker.features.activities.ui.ActivityChipState
 import com.example.util.simpletimetracker.features.activities.ui.ActivityChipType
-import com.example.util.simpletimetracker.presentation.theme.ColorInactive
-import com.example.util.simpletimetracker.presentation.layout.ScaffoldedScrollingColumn
-import com.example.util.simpletimetracker.presentation.ui.ACTIVITY_LIST_COMPACT_CHIP_COUNT
-import com.example.util.simpletimetracker.presentation.ui.Divider
-import com.example.util.simpletimetracker.presentation.ui.Hint
-import com.example.util.simpletimetracker.presentation.ui.HintState
 import com.example.util.simpletimetracker.features.activities.ui.NavigationButton
 import com.example.util.simpletimetracker.features.activities.ui.OpenOnPhoneButton
+import com.example.util.simpletimetracker.presentation.layout.ScaffoldedScrollingColumn
+import com.example.util.simpletimetracker.presentation.theme.ColorInactive
+import com.example.util.simpletimetracker.presentation.ui.ACTIVITY_LIST_COMPACT_CHIP_COUNT
+import com.example.util.simpletimetracker.presentation.ui.Divider
+import com.example.util.simpletimetracker.presentation.ui.ErrorState
+import com.example.util.simpletimetracker.presentation.ui.Hint
+import com.example.util.simpletimetracker.presentation.ui.HintState
 import com.example.util.simpletimetracker.presentation.ui.RefreshButton
+import com.example.util.simpletimetracker.presentation.ui.RenderLoading
+import com.example.util.simpletimetracker.presentation.ui.renderError
 import com.example.util.simpletimetracker.utils.getString
 import com.example.util.simpletimetracker.utils.orZero
 import java.time.Instant
 import java.util.UUID
 
 sealed interface ActivitiesListState {
-    object Loading : ActivitiesListState
+
+    data object Loading : ActivitiesListState
 
     data class Error(
-        @StringRes val messageResId: Int,
+        val error: ErrorState,
     ) : ActivitiesListState
 
     data class Empty(
@@ -82,18 +82,22 @@ fun ActivitiesList(
     onStatisticsClick: () -> Unit = {},
     onSettingsClick: () -> Unit = {},
 ) {
-    ScaffoldedScrollingColumn(
-        startItemIndex = 1,
-    ) {
+    ScaffoldedScrollingColumn {
         when (state) {
             is ActivitiesListState.Loading -> item {
                 RenderLoading()
             }
             is ActivitiesListState.Error -> {
-                renderError(state, onRefresh)
+                renderError(
+                    state = state.error,
+                    onRefresh = onRefresh,
+                )
             }
             is ActivitiesListState.Empty -> {
-                renderEmpty(state, onOpenOnPhone)
+                renderEmpty(
+                    state = state,
+                    onOpenOnPhone = onOpenOnPhone,
+                )
             }
             is ActivitiesListState.Content -> {
                 renderContent(
@@ -105,35 +109,6 @@ fun ActivitiesList(
                 item { RefreshButton(onRefresh) }
             }
         }
-    }
-}
-
-@Composable
-private fun RenderLoading() {
-    CircularProgressIndicator(
-        modifier = Modifier.width(64.dp),
-    )
-}
-
-private fun ScalingLazyListScope.renderError(
-    state: ActivitiesListState.Error,
-    onRefresh: () -> Unit,
-) {
-    item {
-        Icon(
-            painter = painterResource(R.drawable.wear_connection_error),
-            contentDescription = null,
-        )
-    }
-    item {
-        Text(
-            text = getString(stringResId = state.messageResId),
-            modifier = Modifier.padding(horizontal = 8.dp),
-            textAlign = TextAlign.Center,
-        )
-    }
-    item {
-        RefreshButton(onRefresh)
     }
 }
 
@@ -312,7 +287,9 @@ private fun Loading() {
 @Composable
 private fun Error() {
     ActivitiesList(
-        state = ActivitiesListState.Error(R.string.wear_loading_error),
+        state = ActivitiesListState.Error(
+            ErrorState(R.string.wear_loading_error),
+        ),
     )
 }
 

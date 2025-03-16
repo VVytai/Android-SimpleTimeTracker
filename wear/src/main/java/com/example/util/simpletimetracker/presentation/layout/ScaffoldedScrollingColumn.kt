@@ -13,7 +13,8 @@ import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
 
 @Composable
 fun ScaffoldedScrollingColumn(
-    startItemIndex: Int,
+    // Add spacer if first needs to be in the center.
+    startItemIndex: Int = 1,
     spacedBy: Dp = 10.dp,
     content: ScalingLazyListScope.() -> Unit,
 ) {

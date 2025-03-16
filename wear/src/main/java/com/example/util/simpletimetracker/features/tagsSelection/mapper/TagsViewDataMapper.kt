@@ -8,23 +8,25 @@ package com.example.util.simpletimetracker.features.tagsSelection.mapper
 import androidx.annotation.StringRes
 import androidx.compose.ui.graphics.Color
 import com.example.util.simpletimetracker.R
+import com.example.util.simpletimetracker.core.ErrorStateMapper
 import com.example.util.simpletimetracker.data.WearResourceRepo
 import com.example.util.simpletimetracker.domain.model.WearSettings
 import com.example.util.simpletimetracker.domain.model.WearTag
+import com.example.util.simpletimetracker.features.tagsSelection.screen.TagListState
+import com.example.util.simpletimetracker.features.tagsSelection.ui.TagChipState
+import com.example.util.simpletimetracker.features.tagsSelection.ui.TagSelectionButtonState
 import com.example.util.simpletimetracker.features.tagsSelection.ui.TagsLoadingState
 import com.example.util.simpletimetracker.presentation.theme.ColorActive
 import com.example.util.simpletimetracker.presentation.theme.ColorInactive
-import com.example.util.simpletimetracker.features.tagsSelection.ui.TagChipState
-import com.example.util.simpletimetracker.features.tagsSelection.screen.TagListState
-import com.example.util.simpletimetracker.features.tagsSelection.ui.TagSelectionButtonState
 import javax.inject.Inject
 
 class TagsViewDataMapper @Inject constructor(
     private val resourceRepo: WearResourceRepo,
+    private val errorStateMapper: ErrorStateMapper,
 ) {
 
     fun mapErrorState(): TagListState.Error {
-        return TagListState.Error(R.string.wear_loading_error)
+        return TagListState.Error(errorStateMapper.map())
     }
 
     fun mapState(
