@@ -6,7 +6,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.math.abs
 
-class TimeMapper @Inject constructor(
+class CommonTimeMapper @Inject constructor(
     private val resourceRepo: BaseResourceRepo,
 ) {
 

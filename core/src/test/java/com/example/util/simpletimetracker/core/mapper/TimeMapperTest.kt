@@ -1,7 +1,7 @@
 package com.example.util.simpletimetracker.core.mapper
 
 import com.example.util.simpletimetracker.core.R
-import com.example.util.simpletimetracker.core.common.mapper.TimeMapper
+import com.example.util.simpletimetracker.core.common.mapper.CommonTimeMapper
 import com.example.util.simpletimetracker.core.mapper.TimeMapperTest.Subject.hourInMs
 import com.example.util.simpletimetracker.core.mapper.TimeMapperTest.Subject.localeProvider
 import com.example.util.simpletimetracker.core.mapper.TimeMapperTest.Subject.minuteInMs
@@ -51,7 +51,7 @@ class TimeMapperTest {
         fun formatInterval() {
             `when`(localeProvider.get()).thenReturn(Locale.getDefault())
 
-            val subject = TimeMapper(
+            val subject = CommonTimeMapper(
                 resourceRepo = resourceRepo,
             )
 
@@ -103,7 +103,7 @@ class TimeMapperTest {
         fun formatInterval() {
             `when`(localeProvider.get()).thenReturn(Locale.getDefault())
 
-            val subject = TimeMapper(
+            val subject = CommonTimeMapper(
                 resourceRepo = resourceRepo,
             )
 
@@ -169,7 +169,7 @@ class TimeMapperTest {
         fun formatInterval() {
             `when`(localeProvider.get()).thenReturn(Locale.getDefault())
 
-            val subject = TimeMapper(
+            val subject = CommonTimeMapper(
                 resourceRepo = resourceRepo,
             )
 

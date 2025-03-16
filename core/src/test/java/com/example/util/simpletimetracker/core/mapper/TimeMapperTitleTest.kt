@@ -1,6 +1,7 @@
 package com.example.util.simpletimetracker.core.mapper
 
 import com.example.util.simpletimetracker.core.R
+import com.example.util.simpletimetracker.core.common.mapper.CommonTimeMapper
 import com.example.util.simpletimetracker.core.mapper.TimeMapperTitleTest.Subject.commonTimeMapper
 import com.example.util.simpletimetracker.core.mapper.TimeMapperTitleTest.Subject.currentTimestampProvider
 import com.example.util.simpletimetracker.core.mapper.TimeMapperTitleTest.Subject.hourInMs
@@ -23,7 +24,6 @@ import org.mockito.Mockito.`when`
 import java.util.Locale
 import java.util.TimeZone
 import java.util.concurrent.TimeUnit
-import com.example.util.simpletimetracker.core.common.mapper.TimeMapper as CommonTimeMapper
 
 @RunWith(Enclosed::class)
 class TimeMapperTitleTest {

@@ -28,6 +28,7 @@ class StatisticsViewModel @Inject constructor(
     private val _state: MutableStateFlow<StatisticsListState> = MutableStateFlow(StatisticsListState.Loading)
 
     private var isInitialized = false
+    private var shift: Int = 0
 
     fun init() {
         if (isInitialized) return
@@ -39,11 +40,21 @@ class StatisticsViewModel @Inject constructor(
         loadData()
     }
 
+    fun onPrevClick() = viewModelScope.launch {
+        shift -= 1
+        loadData()
+    }
+
+    fun onNextClick() = viewModelScope.launch {
+        shift += 1
+        loadData()
+    }
+
     private suspend fun loadData() {
         val filterType = WearChartFilterType.ACTIVITY
         val statistics = wearDataRepo.loadStatistics(
             forceReload = true,
-            shift = 0,
+            shift = shift,
             filterType = filterType,
         )
 

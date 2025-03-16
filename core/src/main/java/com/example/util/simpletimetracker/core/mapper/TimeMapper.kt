@@ -1,7 +1,7 @@
 package com.example.util.simpletimetracker.core.mapper
 
 import com.example.util.simpletimetracker.core.R
-import com.example.util.simpletimetracker.core.common.mapper.TimeMapper
+import com.example.util.simpletimetracker.core.common.mapper.CommonTimeMapper
 import com.example.util.simpletimetracker.core.extension.setToStartOfDay
 import com.example.util.simpletimetracker.core.extension.setWeekToFirstDay
 import com.example.util.simpletimetracker.core.extension.shift
@@ -22,7 +22,7 @@ class TimeMapper @Inject constructor(
     localeProvider: LocaleProvider,
     private val resourceRepo: ResourceRepo,
     private val currentTimestampProvider: CurrentTimestampProvider,
-    private val commonTimeMapper: TimeMapper,
+    private val commonTimeMapper: CommonTimeMapper,
 ) {
 
     private val locale: Locale by lazy { localeProvider.get() }

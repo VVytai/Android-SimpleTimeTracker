@@ -9,7 +9,7 @@ import androidx.compose.ui.graphics.toArgb
 import com.example.util.simpletimetracker.R
 import com.example.util.simpletimetracker.core.ErrorStateMapper
 import com.example.util.simpletimetracker.core.common.mapper.StatisticsMapper
-import com.example.util.simpletimetracker.core.common.mapper.TimeMapper
+import com.example.util.simpletimetracker.core.common.mapper.CommonTimeMapper
 import com.example.util.simpletimetracker.data.WearIconMapper
 import com.example.util.simpletimetracker.data.WearResourceRepo
 import com.example.util.simpletimetracker.domain.base.UNCATEGORIZED_ITEM_ID
@@ -25,7 +25,7 @@ import javax.inject.Inject
 class StatisticsViewDataMapper @Inject constructor(
     private val wearIconMapper: WearIconMapper,
     private val resourceRepo: WearResourceRepo,
-    private val timeMapper: TimeMapper,
+    private val timeMapper: CommonTimeMapper,
     private val statisticsMapper: StatisticsMapper,
     private val errorStateMapper: ErrorStateMapper,
 ) {

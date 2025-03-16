@@ -17,6 +17,7 @@ import androidx.wear.compose.material.Text
 import androidx.wear.tooling.preview.devices.WearDevices
 import com.example.util.simpletimetracker.R
 import com.example.util.simpletimetracker.domain.model.WearActivityIcon
+import com.example.util.simpletimetracker.features.statistics.ui.StatisticsButtons
 import com.example.util.simpletimetracker.features.statistics.ui.StatisticsChip
 import com.example.util.simpletimetracker.features.statistics.ui.StatisticsChipState
 import com.example.util.simpletimetracker.presentation.layout.ScaffoldedScrollingColumn
@@ -53,6 +54,8 @@ sealed interface StatisticsListState {
 fun StatisticsList(
     state: StatisticsListState,
     onRefresh: () -> Unit = {},
+    onPrevClick: () -> Unit = {},
+    onNextClick: () -> Unit = {},
 ) {
     ScaffoldedScrollingColumn {
         when (state) {
@@ -65,30 +68,56 @@ fun StatisticsList(
                     onRefresh = onRefresh,
                 )
             }
-            is StatisticsListState.Empty -> item {
-                RenderEmptyState(state)
+            is StatisticsListState.Empty -> {
+                renderEmptyState(
+                    state = state,
+                    onPrevClick = onPrevClick,
+                    onNextClick = onNextClick,
+                )
             }
             is StatisticsListState.Content -> {
-                renderContent(state)
+                renderContent(
+                    state = state,
+                    onPrevClick = onPrevClick,
+                    onNextClick = onNextClick,
+                )
             }
         }
     }
 }
 
-@Composable
-private fun RenderEmptyState(
+private fun ScalingLazyListScope.renderEmptyState(
     state: StatisticsListState.Empty,
+    onPrevClick: () -> Unit,
+    onNextClick: () -> Unit,
 ) {
-    Text(
-        text = getString(state.messageResId),
-        modifier = Modifier.padding(8.dp),
-    )
+    item { Spacer(Modifier) }
+    item {
+        StatisticsButtons(
+            onPrevClick = onPrevClick,
+            onNextClick = onNextClick,
+        )
+    }
+    item {
+        Text(
+            text = getString(state.messageResId),
+            modifier = Modifier.padding(8.dp),
+        )
+    }
 }
 
 private fun ScalingLazyListScope.renderContent(
     state: StatisticsListState.Content,
+    onPrevClick: () -> Unit,
+    onNextClick: () -> Unit,
 ) {
     item { Spacer(Modifier) }
+    item {
+        StatisticsButtons(
+            onPrevClick = onPrevClick,
+            onNextClick = onNextClick,
+        )
+    }
     for (itemState in state.items) {
         when (itemState) {
             is StatisticsListState.Content.Item.Statistics -> {
