@@ -109,7 +109,7 @@ class WearDataRepo @Inject constructor(
     }
 
     override suspend fun queryStatistics(request: WearStatisticsRequest): List<WearStatisticsDTO> {
-        val filterType = when (request.filterType){
+        val filterType = when (request.filterType) {
             WearChartFilterTypeDTO.ACTIVITY -> ChartFilterType.ACTIVITY
             WearChartFilterTypeDTO.CATEGORY -> ChartFilterType.CATEGORY
             WearChartFilterTypeDTO.RECORD_TAG -> ChartFilterType.RECORD_TAG

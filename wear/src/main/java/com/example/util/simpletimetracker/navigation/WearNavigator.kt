@@ -9,11 +9,11 @@ import androidx.compose.runtime.Composable
 import androidx.wear.compose.navigation.SwipeDismissableNavHost
 import androidx.wear.compose.navigation.composable
 import androidx.wear.compose.navigation.rememberSwipeDismissableNavController
-import com.example.util.simpletimetracker.presentation.screens.activities.ActivitiesScreen
-import com.example.util.simpletimetracker.presentation.screens.dialog.MessageDialog
-import com.example.util.simpletimetracker.presentation.screens.settings.SettingsScreen
-import com.example.util.simpletimetracker.presentation.screens.statistics.StatisticsScreen
-import com.example.util.simpletimetracker.presentation.screens.tagsSelection.TagsScreen
+import com.example.util.simpletimetracker.features.activities.screen.ActivitiesScreen
+import com.example.util.simpletimetracker.presentation.dialog.MessageDialog
+import com.example.util.simpletimetracker.features.settings.screen.SettingsScreen
+import com.example.util.simpletimetracker.features.statistics.screen.StatisticsScreen
+import com.example.util.simpletimetracker.features.tagsSelection.screen.TagsScreen
 import com.example.util.simpletimetracker.utils.getString
 
 object Route {

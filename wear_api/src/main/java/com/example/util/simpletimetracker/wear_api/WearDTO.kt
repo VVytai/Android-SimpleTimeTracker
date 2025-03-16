@@ -52,7 +52,7 @@ data class WearStatisticsRequest(
     @SerializedName("shift")
     val shift: Int,
     @SerializedName("filterType")
-    val filterType: WearChartFilterTypeDTO
+    val filterType: WearChartFilterTypeDTO,
 ) : Parcelable
 
 @Parcelize
