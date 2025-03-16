@@ -12,6 +12,7 @@ import com.example.util.simpletimetracker.data.WearIconMapper
 import com.example.util.simpletimetracker.data.WearResourceRepo
 import com.example.util.simpletimetracker.domain.base.REPEAT_BUTTON_ITEM_ID
 import com.example.util.simpletimetracker.domain.base.UNTRACKED_ITEM_ID
+import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.domain.model.WearActivity
 import com.example.util.simpletimetracker.domain.model.WearActivityIcon
 import com.example.util.simpletimetracker.domain.model.WearCurrentActivity
@@ -22,7 +23,6 @@ import com.example.util.simpletimetracker.features.activities.screen.ActivitiesL
 import com.example.util.simpletimetracker.features.activities.ui.ActivityChipState
 import com.example.util.simpletimetracker.features.activities.ui.ActivityChipType
 import com.example.util.simpletimetracker.presentation.theme.ColorInactive
-import com.example.util.simpletimetracker.utils.orZero
 import javax.inject.Inject
 
 class ActivitiesViewDataMapper @Inject constructor(

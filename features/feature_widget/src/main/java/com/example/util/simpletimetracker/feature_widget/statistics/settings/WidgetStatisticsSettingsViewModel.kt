@@ -8,6 +8,7 @@ import com.example.util.simpletimetracker.domain.extension.addOrRemove
 import com.example.util.simpletimetracker.core.extension.set
 import com.example.util.simpletimetracker.core.interactor.ChartFilterViewDataInteractor
 import com.example.util.simpletimetracker.core.mapper.ChartFilterViewDataMapper
+import com.example.util.simpletimetracker.core.mapper.RangeTitleMapper
 import com.example.util.simpletimetracker.core.mapper.RangeViewDataMapper
 import com.example.util.simpletimetracker.core.view.buttonsRowView.ButtonsRowViewData
 import com.example.util.simpletimetracker.core.viewData.ChartFilterTypeViewData
@@ -49,6 +50,7 @@ class WidgetStatisticsSettingsViewModel @Inject constructor(
     private val recordTagInteractor: RecordTagInteractor,
     private val chartFilterViewDataMapper: ChartFilterViewDataMapper,
     private val rangeViewDataMapper: RangeViewDataMapper,
+    private val rangeTitleMapper: RangeTitleMapper,
     private val chartFilterViewDataInteractor: ChartFilterViewDataInteractor,
     private val getProcessedLastDaysCountInteractor: GetProcessedLastDaysCountInteractor,
 ) : ViewModel() {
@@ -341,7 +343,7 @@ class WidgetStatisticsSettingsViewModel @Inject constructor(
     private suspend fun loadTitle(): String {
         val startOfDayShift = prefsInteractor.getStartOfDayShift()
         val firstDayOfWeek = prefsInteractor.getFirstDayOfWeek()
-        return rangeViewDataMapper.mapToTitle(
+        return rangeTitleMapper.mapToTitle(
             rangeLength = widgetData.rangeLength,
             position = 0,
             startOfDayShift = startOfDayShift,

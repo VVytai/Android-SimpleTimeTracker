@@ -5,8 +5,6 @@
  */
 package com.example.util.simpletimetracker.domain.model
 
-enum class WearChartFilterType {
-    ACTIVITY,
-    CATEGORY,
-    RECORD_TAG,
-}
+data class WearSetSettings(
+    val allowMultitasking: Boolean,
+)

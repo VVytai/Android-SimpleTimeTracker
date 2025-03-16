@@ -8,12 +8,13 @@ package com.example.util.simpletimetracker.features.tagsSelection.viewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.util.simpletimetracker.data.WearDataRepo
+import com.example.util.simpletimetracker.domain.extension.orFalse
 import com.example.util.simpletimetracker.domain.mediator.StartActivityMediator
 import com.example.util.simpletimetracker.domain.model.WearSettings
 import com.example.util.simpletimetracker.domain.model.WearTag
-import com.example.util.simpletimetracker.features.tagsSelection.ui.TagsLoadingState
 import com.example.util.simpletimetracker.features.tagsSelection.mapper.TagsViewDataMapper
 import com.example.util.simpletimetracker.features.tagsSelection.screen.TagListState
+import com.example.util.simpletimetracker.features.tagsSelection.ui.TagsLoadingState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -45,12 +46,7 @@ class TagsViewModel @Inject constructor(
     private var activityId: Long? = null
     private var tags: List<WearTag> = emptyList()
     private var selectedTagsIds: List<Long> = emptyList()
-    private var settings: WearSettings = WearSettings(
-        allowMultitasking = false,
-        recordTagSelectionCloseAfterOne = false,
-        enableRepeatButton = false,
-        retroactiveTrackingMode = false,
-    )
+    private var settings: WearSettings? = null
 
     // TODO switch to savedStateHandle
     fun init(activityId: Long) {
@@ -64,7 +60,7 @@ class TagsViewModel @Inject constructor(
         when (buttonType) {
             is TagListState.Item.ButtonType.Untagged -> {
                 selectedTagsIds = emptyList()
-                if (settings.recordTagSelectionCloseAfterOne) {
+                if (settings?.recordTagSelectionCloseAfterOne.orFalse()) {
                     val loadingState = TagsLoadingState.LoadingButton(buttonType)
                     startActivity(loadingState)
                 } else {
@@ -84,7 +80,7 @@ class TagsViewModel @Inject constructor(
             if (tagId in this) remove(tagId) else add(tagId)
         }
 
-        if (settings.recordTagSelectionCloseAfterOne) {
+        if (settings?.recordTagSelectionCloseAfterOne.orFalse()) {
             val loadingState = TagsLoadingState.LoadingTag(tagId)
             startActivity(loadingState)
         } else {

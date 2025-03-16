@@ -10,13 +10,17 @@ import com.example.util.simpletimetracker.core.mapper.RecordTagViewDataMapper
 import com.example.util.simpletimetracker.core.viewData.StatisticsDataHolder
 import com.example.util.simpletimetracker.domain.color.mapper.AppColorMapper
 import com.example.util.simpletimetracker.domain.color.model.AppColor
+import com.example.util.simpletimetracker.domain.daysOfWeek.model.DayOfWeek
 import com.example.util.simpletimetracker.domain.record.model.Record
 import com.example.util.simpletimetracker.domain.record.model.RunningRecord
 import com.example.util.simpletimetracker.domain.recordTag.model.RecordTag
 import com.example.util.simpletimetracker.domain.recordType.model.RecordType
+import com.example.util.simpletimetracker.domain.statistics.model.ChartFilterType
 import com.example.util.simpletimetracker.domain.statistics.model.Statistics
 import com.example.util.simpletimetracker.wear_api.WearActivityDTO
+import com.example.util.simpletimetracker.wear_api.WearChartFilterTypeDTO
 import com.example.util.simpletimetracker.wear_api.WearCurrentActivityDTO
+import com.example.util.simpletimetracker.wear_api.WearDayOfWeekDTO
 import com.example.util.simpletimetracker.wear_api.WearLastRecordDTO
 import com.example.util.simpletimetracker.wear_api.WearRecordRepeatResponse
 import com.example.util.simpletimetracker.wear_api.WearSettingsDTO
@@ -95,12 +99,16 @@ class WearDataLocalMapper @Inject constructor(
         recordTagSelectionCloseAfterOne: Boolean,
         enableRepeatButton: Boolean,
         retroactiveTrackingMode: Boolean,
+        startOfDayShift: Long,
+        firstDayOfWeek: DayOfWeek,
     ): WearSettingsDTO {
         return WearSettingsDTO(
             allowMultitasking = allowMultitasking,
             recordTagSelectionCloseAfterOne = recordTagSelectionCloseAfterOne,
             enableRepeatButton = enableRepeatButton,
             retroactiveTrackingMode = retroactiveTrackingMode,
+            startOfDayShift = startOfDayShift,
+            firstDayOfWeek = map(firstDayOfWeek),
         )
     }
 
@@ -117,6 +125,28 @@ class WearDataLocalMapper @Inject constructor(
                     WearRecordRepeatResponse.ActionResult.ALREADY_TRACKING
             },
         )
+    }
+
+    fun map(
+        dto: WearChartFilterTypeDTO,
+    ): ChartFilterType {
+        return when (dto) {
+            WearChartFilterTypeDTO.ACTIVITY -> ChartFilterType.ACTIVITY
+            WearChartFilterTypeDTO.CATEGORY -> ChartFilterType.CATEGORY
+            WearChartFilterTypeDTO.RECORD_TAG -> ChartFilterType.RECORD_TAG
+        }
+    }
+
+    fun map(domain: DayOfWeek): WearDayOfWeekDTO {
+        return when (domain) {
+            DayOfWeek.SUNDAY -> WearDayOfWeekDTO.SUNDAY
+            DayOfWeek.MONDAY -> WearDayOfWeekDTO.MONDAY
+            DayOfWeek.TUESDAY -> WearDayOfWeekDTO.TUESDAY
+            DayOfWeek.WEDNESDAY -> WearDayOfWeekDTO.WEDNESDAY
+            DayOfWeek.THURSDAY -> WearDayOfWeekDTO.THURSDAY
+            DayOfWeek.FRIDAY -> WearDayOfWeekDTO.FRIDAY
+            DayOfWeek.SATURDAY -> WearDayOfWeekDTO.SATURDAY
+        }
     }
 
     private fun mapColor(appColor: AppColor): Long {

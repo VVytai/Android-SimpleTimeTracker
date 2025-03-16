@@ -10,7 +10,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.os.Build
+import com.example.util.simpletimetracker.core.utils.PendingIntents
 import com.example.util.simpletimetracker.presentation.MainActivity
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
@@ -25,16 +25,11 @@ fun getMainStartIntent(context: Context): PendingIntent {
         context,
         0,
         startIntent,
-        getPendingIntentFlags(),
+        PendingIntents.getFlags(),
     )
 }
 
-fun String.padDuration(): String = this.padStart(2, '0')
-
-fun Int?.orZero(): Int = this ?: 0
-
-fun Long?.orZero(): Long = this ?: 0
-
+// TODO move to data_local.common
 @Suppress("UNCHECKED_CAST")
 internal inline fun <reified T : Any> SharedPreferences.delegate(
     key: String,
@@ -67,13 +62,5 @@ internal inline fun <reified T : Any> SharedPreferences.delegate(
             )
         }
         apply()
-    }
-}
-
-private fun getPendingIntentFlags(): Int {
-    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
-    } else {
-        PendingIntent.FLAG_UPDATE_CURRENT
     }
 }

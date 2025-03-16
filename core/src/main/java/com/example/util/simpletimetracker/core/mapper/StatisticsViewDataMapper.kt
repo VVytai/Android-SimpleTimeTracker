@@ -5,7 +5,6 @@ import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.core.viewData.StatisticsDataHolder
 import com.example.util.simpletimetracker.domain.base.UNCATEGORIZED_ITEM_ID
 import com.example.util.simpletimetracker.domain.base.UNTRACKED_ITEM_ID
-import com.example.util.simpletimetracker.core.common.mapper.StatisticsMapper
 import com.example.util.simpletimetracker.domain.statistics.model.ChartFilterType
 import com.example.util.simpletimetracker.domain.statistics.model.Statistics
 import com.example.util.simpletimetracker.feature_base_adapter.statistics.StatisticsViewData

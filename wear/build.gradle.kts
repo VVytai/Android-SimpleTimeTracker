@@ -60,6 +60,7 @@ android {
 dependencies {
     implementation(project(":wear_api"))
     implementation(project(":resources"))
+    implementation(project(":domain:common"))
     implementation(project(":core:common"))
 
     implementation(libs.androidx.appcompat)

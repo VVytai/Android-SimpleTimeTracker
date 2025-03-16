@@ -7,15 +7,15 @@ package com.example.util.simpletimetracker.data
 
 import com.example.util.simpletimetracker.complication.WearComplicationManager
 import com.example.util.simpletimetracker.domain.model.WearActivity
-import com.example.util.simpletimetracker.domain.model.WearChartFilterType
 import com.example.util.simpletimetracker.domain.model.WearCurrentState
 import com.example.util.simpletimetracker.domain.model.WearRecordRepeatResult
+import com.example.util.simpletimetracker.domain.model.WearSetSettings
 import com.example.util.simpletimetracker.domain.model.WearSettings
 import com.example.util.simpletimetracker.domain.model.WearStatistics
 import com.example.util.simpletimetracker.domain.model.WearTag
+import com.example.util.simpletimetracker.domain.statistics.model.ChartFilterType
 import com.example.util.simpletimetracker.notification.WearNotificationManager
 import com.example.util.simpletimetracker.wear_api.WearActivityDTO
-import com.example.util.simpletimetracker.wear_api.WearChartFilterTypeDTO
 import com.example.util.simpletimetracker.wear_api.WearCurrentStateDTO
 import com.example.util.simpletimetracker.wear_api.WearSettingsDTO
 import com.example.util.simpletimetracker.wear_api.WearShouldShowTagSelectionRequest
@@ -98,16 +98,12 @@ class WearDataRepo @Inject constructor(
     suspend fun loadStatistics(
         forceReload: Boolean,
         shift: Int,
-        filterType: WearChartFilterType,
+        filterType: ChartFilterType,
     ): Result<List<WearStatistics>> = mutex.withLock {
         return runCatching {
             val request = WearStatisticsRequest(
                 shift = shift,
-                filterType = when (filterType) {
-                    WearChartFilterType.ACTIVITY -> WearChartFilterTypeDTO.ACTIVITY
-                    WearChartFilterType.CATEGORY -> WearChartFilterTypeDTO.CATEGORY
-                    WearChartFilterType.RECORD_TAG -> WearChartFilterTypeDTO.RECORD_TAG
-                },
+                filterType = wearDataLocalMapper.map(filterType),
             )
             val data = statisticsCache.takeUnless { forceReload }
                 ?: wearRPCClient.queryStatistics(request)
@@ -162,7 +158,7 @@ class WearDataRepo @Inject constructor(
         }
     }
 
-    suspend fun setSettings(settings: WearSettings): Result<Unit> = mutex.withLock {
+    suspend fun setSettings(settings: WearSetSettings): Result<Unit> = mutex.withLock {
         return runCatching {
             val data = wearDataLocalMapper.map(settings)
             wearRPCClient.setSettings(data)

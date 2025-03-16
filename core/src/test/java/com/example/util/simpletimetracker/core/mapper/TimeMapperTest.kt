@@ -1,12 +1,13 @@
 package com.example.util.simpletimetracker.core.mapper
 
 import com.example.util.simpletimetracker.core.R
-import com.example.util.simpletimetracker.core.common.mapper.CommonTimeMapper
+import com.example.util.simpletimetracker.core.mapper.TimeMapperTest.Subject.currentTimestampProvider
 import com.example.util.simpletimetracker.core.mapper.TimeMapperTest.Subject.hourInMs
 import com.example.util.simpletimetracker.core.mapper.TimeMapperTest.Subject.localeProvider
 import com.example.util.simpletimetracker.core.mapper.TimeMapperTest.Subject.minuteInMs
 import com.example.util.simpletimetracker.core.mapper.TimeMapperTest.Subject.resourceRepo
 import com.example.util.simpletimetracker.core.mapper.TimeMapperTest.Subject.secondInMs
+import com.example.util.simpletimetracker.domain.base.CurrentTimestampProvider
 import com.example.util.simpletimetracker.core.provider.LocaleProvider
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import org.junit.AfterClass
@@ -27,6 +28,7 @@ class TimeMapperTest {
 
     private object Subject {
         val resourceRepo: ResourceRepo = Mockito.mock(ResourceRepo::class.java)
+        val currentTimestampProvider: CurrentTimestampProvider = Mockito.mock(CurrentTimestampProvider::class.java)
         val localeProvider: LocaleProvider = Mockito.mock(LocaleProvider::class.java)
 
         val secondInMs = TimeUnit.SECONDS.toMillis(1)
@@ -51,8 +53,10 @@ class TimeMapperTest {
         fun formatInterval() {
             `when`(localeProvider.get()).thenReturn(Locale.getDefault())
 
-            val subject = CommonTimeMapper(
+            val subject = TimeMapper(
+                localeProvider = localeProvider,
                 resourceRepo = resourceRepo,
+                currentTimestampProvider = currentTimestampProvider,
             )
 
             assertEquals(
@@ -103,8 +107,10 @@ class TimeMapperTest {
         fun formatInterval() {
             `when`(localeProvider.get()).thenReturn(Locale.getDefault())
 
-            val subject = CommonTimeMapper(
+            val subject = TimeMapper(
+                localeProvider = localeProvider,
                 resourceRepo = resourceRepo,
+                currentTimestampProvider = currentTimestampProvider,
             )
 
             assertEquals(
@@ -169,8 +175,10 @@ class TimeMapperTest {
         fun formatInterval() {
             `when`(localeProvider.get()).thenReturn(Locale.getDefault())
 
-            val subject = CommonTimeMapper(
+            val subject = TimeMapper(
+                localeProvider = localeProvider,
                 resourceRepo = resourceRepo,
+                currentTimestampProvider = currentTimestampProvider,
             )
 
             assertEquals(

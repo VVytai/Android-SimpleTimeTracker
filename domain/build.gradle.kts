@@ -9,6 +9,8 @@ java {
 }
 
 dependencies {
+    api(project(":domain:common"))
+
     api(libs.javax)
     api(libs.coroutines)
     api(libs.timber)

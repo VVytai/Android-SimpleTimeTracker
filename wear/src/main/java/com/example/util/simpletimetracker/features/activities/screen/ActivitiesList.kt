@@ -25,6 +25,7 @@ import androidx.wear.compose.foundation.lazy.ScalingLazyListScope
 import androidx.wear.compose.material.Text
 import androidx.wear.tooling.preview.devices.WearDevices
 import com.example.util.simpletimetracker.R
+import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.domain.model.WearActivityIcon
 import com.example.util.simpletimetracker.features.activities.ui.ActivityChip
 import com.example.util.simpletimetracker.features.activities.ui.ActivityChipCompact
@@ -44,7 +45,6 @@ import com.example.util.simpletimetracker.presentation.ui.RefreshButton
 import com.example.util.simpletimetracker.presentation.ui.RenderLoading
 import com.example.util.simpletimetracker.presentation.ui.renderError
 import com.example.util.simpletimetracker.utils.getString
-import com.example.util.simpletimetracker.utils.orZero
 import java.time.Instant
 import java.util.UUID
 

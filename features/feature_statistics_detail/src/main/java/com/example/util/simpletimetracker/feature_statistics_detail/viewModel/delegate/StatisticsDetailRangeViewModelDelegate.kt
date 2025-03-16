@@ -6,6 +6,7 @@ import com.example.util.simpletimetracker.core.extension.lazySuspend
 import com.example.util.simpletimetracker.core.extension.set
 import com.example.util.simpletimetracker.core.extension.toModel
 import com.example.util.simpletimetracker.core.interactor.RecordFilterInteractor
+import com.example.util.simpletimetracker.core.mapper.RangeTitleMapper
 import com.example.util.simpletimetracker.core.mapper.RangeViewDataMapper
 import com.example.util.simpletimetracker.core.mapper.TimeMapper
 import com.example.util.simpletimetracker.core.viewData.RangeViewData
@@ -32,6 +33,7 @@ import javax.inject.Inject
 class StatisticsDetailRangeViewModelDelegate @Inject constructor(
     private val router: Router,
     private val rangeViewDataMapper: RangeViewDataMapper,
+    private val rangeTitleMapper: RangeTitleMapper,
     private val prefsInteractor: PrefsInteractor,
     private val timeMapper: TimeMapper,
     private val recordFilterInteractor: RecordFilterInteractor,
@@ -193,7 +195,7 @@ class StatisticsDetailRangeViewModelDelegate @Inject constructor(
     private suspend fun loadTitle(): String {
         val startOfDayShift = prefsInteractor.getStartOfDayShift()
         val firstDayOfWeek = prefsInteractor.getFirstDayOfWeek()
-        return rangeViewDataMapper.mapToTitle(
+        return rangeTitleMapper.mapToTitle(
             rangeLength = rangeLength,
             position = rangePosition,
             startOfDayShift = startOfDayShift,

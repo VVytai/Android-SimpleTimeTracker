@@ -8,7 +8,7 @@ package com.example.util.simpletimetracker.feature_wear
 import android.content.Context
 import com.example.util.simpletimetracker.wear_api.WearCommunicationAPI
 import com.example.util.simpletimetracker.wear_api.WearRequests
-import com.example.util.simpletimetracker.wear_api.WearSettingsDTO
+import com.example.util.simpletimetracker.wear_api.WearSetSettingsRequest
 import com.example.util.simpletimetracker.wear_api.WearShouldShowTagSelectionRequest
 import com.example.util.simpletimetracker.wear_api.WearStartActivityRequest
 import com.example.util.simpletimetracker.wear_api.WearStatisticsRequest
@@ -121,7 +121,7 @@ class WearRPCServer @Inject constructor(
     }
 
     private suspend fun onSetSettings(request: ByteArray): ByteArray? {
-        val settings: WearSettingsDTO = mapFromBytes(request) ?: return null
+        val settings: WearSetSettingsRequest = mapFromBytes(request) ?: return null
         repo.setSettings(settings)
         return ByteArray(0)
     }

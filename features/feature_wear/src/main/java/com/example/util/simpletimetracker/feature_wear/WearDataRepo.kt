@@ -29,11 +29,11 @@ import com.example.util.simpletimetracker.domain.statistics.model.ChartFilterTyp
 import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
 import com.example.util.simpletimetracker.domain.widget.model.WidgetType
 import com.example.util.simpletimetracker.navigation.Router
-import com.example.util.simpletimetracker.wear_api.WearChartFilterTypeDTO
 import com.example.util.simpletimetracker.wear_api.WearActivityDTO
 import com.example.util.simpletimetracker.wear_api.WearCommunicationAPI
 import com.example.util.simpletimetracker.wear_api.WearCurrentStateDTO
 import com.example.util.simpletimetracker.wear_api.WearRecordRepeatResponse
+import com.example.util.simpletimetracker.wear_api.WearSetSettingsRequest
 import com.example.util.simpletimetracker.wear_api.WearSettingsDTO
 import com.example.util.simpletimetracker.wear_api.WearShouldShowTagSelectionRequest
 import com.example.util.simpletimetracker.wear_api.WearShouldShowTagSelectionResponse
@@ -109,11 +109,7 @@ class WearDataRepo @Inject constructor(
     }
 
     override suspend fun queryStatistics(request: WearStatisticsRequest): List<WearStatisticsDTO> {
-        val filterType = when (request.filterType) {
-            WearChartFilterTypeDTO.ACTIVITY -> ChartFilterType.ACTIVITY
-            WearChartFilterTypeDTO.CATEGORY -> ChartFilterType.CATEGORY
-            WearChartFilterTypeDTO.RECORD_TAG -> ChartFilterType.RECORD_TAG
-        }
+        val filterType = wearDataLocalMapper.map(request.filterType)
         val shift = request.shift
         val rangeLength = RangeLength.Day
         val firstDayOfWeek = prefsInteractor.getFirstDayOfWeek()
@@ -203,10 +199,12 @@ class WearDataRepo @Inject constructor(
             recordTagSelectionCloseAfterOne = prefsInteractor.getRecordTagSelectionCloseAfterOne(),
             enableRepeatButton = prefsInteractor.getEnableRepeatButton(),
             retroactiveTrackingMode = prefsInteractor.getRetroactiveTrackingMode(),
+            startOfDayShift = prefsInteractor.getStartOfDayShift(),
+            firstDayOfWeek = prefsInteractor.getFirstDayOfWeek(),
         )
     }
 
-    override suspend fun setSettings(settings: WearSettingsDTO) {
+    override suspend fun setSettings(settings: WearSetSettingsRequest) {
         prefsInteractor.setAllowMultitasking(settings.allowMultitasking)
         widgetInteractor.updateWidgets(WidgetType.QUICK_SETTINGS)
         settingsDataUpdateInteractor.send()

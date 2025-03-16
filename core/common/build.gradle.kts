@@ -14,6 +14,7 @@ android {
 }
 
 dependencies {
+    api(project(":domain:common"))
     implementation(project(":resources"))
 
     implementation(libs.google.dagger)

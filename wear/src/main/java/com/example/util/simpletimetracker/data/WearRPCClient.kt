@@ -10,6 +10,7 @@ import com.example.util.simpletimetracker.wear_api.WearCommunicationAPI
 import com.example.util.simpletimetracker.wear_api.WearCurrentStateDTO
 import com.example.util.simpletimetracker.wear_api.WearRecordRepeatResponse
 import com.example.util.simpletimetracker.wear_api.WearRequests
+import com.example.util.simpletimetracker.wear_api.WearSetSettingsRequest
 import com.example.util.simpletimetracker.wear_api.WearSettingsDTO
 import com.example.util.simpletimetracker.wear_api.WearShouldShowTagSelectionRequest
 import com.example.util.simpletimetracker.wear_api.WearShouldShowTagSelectionResponse
@@ -97,7 +98,7 @@ class WearRPCClient @Inject constructor(
         return response ?: throw WearRPCException
     }
 
-    override suspend fun setSettings(settings: WearSettingsDTO) {
+    override suspend fun setSettings(settings: WearSetSettingsRequest) {
         messenger.send(WearRequests.SET_SETTINGS, mapToBytes(settings))
     }
 

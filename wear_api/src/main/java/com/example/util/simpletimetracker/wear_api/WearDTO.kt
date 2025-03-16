@@ -101,6 +101,16 @@ data class WearSettingsDTO(
     val enableRepeatButton: Boolean,
     @SerializedName("retroactiveTrackingMode")
     val retroactiveTrackingMode: Boolean,
+    @SerializedName("startOfDayShift")
+    val startOfDayShift: Long,
+    @SerializedName("firstDayOfWeek")
+    val firstDayOfWeek: WearDayOfWeekDTO,
+) : Parcelable
+
+@Parcelize
+data class WearSetSettingsRequest(
+    @SerializedName("allowMultitasking")
+    val allowMultitasking: Boolean,
 ) : Parcelable
 
 @Parcelize
@@ -151,4 +161,27 @@ enum class WearChartFilterTypeDTO {
 
     @SerializedName("RECORD_TAG")
     RECORD_TAG,
+}
+
+enum class WearDayOfWeekDTO {
+    @SerializedName("SUNDAY")
+    SUNDAY,
+
+    @SerializedName("MONDAY")
+    MONDAY,
+
+    @SerializedName("TUESDAY")
+    TUESDAY,
+
+    @SerializedName("WEDNESDAY")
+    WEDNESDAY,
+
+    @SerializedName("THURSDAY")
+    THURSDAY,
+
+    @SerializedName("FRIDAY")
+    FRIDAY,
+
+    @SerializedName("SATURDAY")
+    SATURDAY,
 }

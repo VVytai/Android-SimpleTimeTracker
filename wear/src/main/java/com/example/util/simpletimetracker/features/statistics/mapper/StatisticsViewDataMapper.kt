@@ -8,15 +8,20 @@ package com.example.util.simpletimetracker.features.statistics.mapper
 import androidx.compose.ui.graphics.toArgb
 import com.example.util.simpletimetracker.R
 import com.example.util.simpletimetracker.core.ErrorStateMapper
-import com.example.util.simpletimetracker.core.common.mapper.StatisticsMapper
-import com.example.util.simpletimetracker.core.common.mapper.CommonTimeMapper
+import com.example.util.simpletimetracker.core.mapper.RangeTitleMapper
+import com.example.util.simpletimetracker.core.mapper.StatisticsMapper
+import com.example.util.simpletimetracker.core.mapper.TimeMapper
 import com.example.util.simpletimetracker.data.WearIconMapper
 import com.example.util.simpletimetracker.data.WearResourceRepo
 import com.example.util.simpletimetracker.domain.base.UNCATEGORIZED_ITEM_ID
 import com.example.util.simpletimetracker.domain.base.UNTRACKED_ITEM_ID
+import com.example.util.simpletimetracker.domain.daysOfWeek.model.DayOfWeek
+import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.domain.model.WearActivityIcon
-import com.example.util.simpletimetracker.domain.model.WearChartFilterType
+import com.example.util.simpletimetracker.domain.model.WearSettings
 import com.example.util.simpletimetracker.domain.model.WearStatistics
+import com.example.util.simpletimetracker.domain.statistics.model.ChartFilterType
+import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
 import com.example.util.simpletimetracker.features.statistics.screen.StatisticsListState
 import com.example.util.simpletimetracker.features.statistics.ui.StatisticsChipState
 import com.example.util.simpletimetracker.presentation.theme.ColorInactive
@@ -25,7 +30,8 @@ import javax.inject.Inject
 class StatisticsViewDataMapper @Inject constructor(
     private val wearIconMapper: WearIconMapper,
     private val resourceRepo: WearResourceRepo,
-    private val timeMapper: CommonTimeMapper,
+    private val timeMapper: TimeMapper,
+    private val rangeTitleMapper: RangeTitleMapper,
     private val statisticsMapper: StatisticsMapper,
     private val errorStateMapper: ErrorStateMapper,
 ) {
@@ -34,13 +40,42 @@ class StatisticsViewDataMapper @Inject constructor(
         return StatisticsListState.Error(errorStateMapper.map())
     }
 
-    fun mapEmptyState(): StatisticsListState.Empty {
-        return StatisticsListState.Empty(R.string.no_data)
+    fun mapEmptyState(
+        rangeLength: RangeLength,
+        shift: Int,
+        settings: WearSettings?,
+    ): StatisticsListState.Empty {
+        return StatisticsListState.Empty(
+            title = mapToTitle(
+                rangeLength = rangeLength,
+                shift = shift,
+                settings = settings,
+            ),
+            messageResId = R.string.no_data,
+        )
+    }
+
+    fun mapContentLoadingState(
+        rangeLength: RangeLength,
+        shift: Int,
+        settings: WearSettings?,
+    ): StatisticsListState.Content {
+        return StatisticsListState.Content(
+            title = mapToTitle(
+                rangeLength = rangeLength,
+                shift = shift,
+                settings = settings,
+            ),
+            items = listOf(StatisticsListState.Content.Item.Loader),
+        )
     }
 
     fun mapContentState(
         statistics: List<WearStatistics>,
-        filterType: WearChartFilterType,
+        filterType: ChartFilterType,
+        rangeLength: RangeLength,
+        shift: Int,
+        settings: WearSettings?,
     ): StatisticsListState.Content {
         val items = mutableListOf<StatisticsListState.Content.Item>()
 
@@ -68,13 +103,20 @@ class StatisticsViewDataMapper @Inject constructor(
             StatisticsListState.Content.Item.Total(it)
         }
 
+        val title = mapToTitle(
+            rangeLength = rangeLength,
+            shift = shift,
+            settings = settings,
+        )
+
         return StatisticsListState.Content(
+            title = title,
             items = items,
         )
     }
 
     private fun mapItem(
-        filterType: WearChartFilterType,
+        filterType: ChartFilterType,
         statistics: WearStatistics,
         sumDuration: Long,
         statisticsSize: Int,
@@ -105,7 +147,7 @@ class StatisticsViewDataMapper @Inject constructor(
             statistics.id == UNCATEGORIZED_ITEM_ID -> {
                 StatisticsChipState(
                     id = statistics.id,
-                    name = if (filterType == WearChartFilterType.RECORD_TAG) {
+                    name = if (filterType == ChartFilterType.RECORD_TAG) {
                         R.string.change_record_untagged
                     } else {
                         R.string.uncategorized_time_name
@@ -155,6 +197,19 @@ class StatisticsViewDataMapper @Inject constructor(
             interval = total,
             forceSeconds = true,
             useProportionalMinutes = false,
+        )
+    }
+
+    private fun mapToTitle(
+        rangeLength: RangeLength,
+        shift: Int,
+        settings: WearSettings?,
+    ): String {
+        return rangeTitleMapper.mapToTitle(
+            rangeLength = rangeLength,
+            position = shift,
+            startOfDayShift = settings?.startOfDayShift.orZero(),
+            firstDayOfWeek = settings?.firstDayOfWeek ?: DayOfWeek.MONDAY,
         )
     }
 }

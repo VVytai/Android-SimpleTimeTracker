@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.util.simpletimetracker.data.WearDataRepo
 import com.example.util.simpletimetracker.domain.interactor.WearPrefsInteractor
+import com.example.util.simpletimetracker.domain.model.WearSetSettings
 import com.example.util.simpletimetracker.domain.model.WearSettings
 import com.example.util.simpletimetracker.features.settings.ui.SettingsItemType
 import com.example.util.simpletimetracker.features.settings.mapper.SettingsViewDataMapper
@@ -49,7 +50,7 @@ class SettingsViewModel @Inject constructor(
             is SettingsItemType.AllowMultitasking -> {
                 val settings = this@SettingsViewModel.settings ?: return@launch
                 wearDataRepo.setSettings(
-                    settings.copy(
+                    WearSetSettings(
                         allowMultitasking = !settings.allowMultitasking,
                     ),
                 )

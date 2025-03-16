@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.util.simpletimetracker.core.extension.set
+import com.example.util.simpletimetracker.core.mapper.RangeTitleMapper
 import com.example.util.simpletimetracker.core.mapper.RangeViewDataMapper
 import com.example.util.simpletimetracker.core.mapper.TimeMapper
 import com.example.util.simpletimetracker.core.viewData.RangesViewData
@@ -30,6 +31,7 @@ class StatisticsContainerViewModel @Inject constructor(
     private val router: Router,
     private val timeMapper: TimeMapper,
     private val rangeViewDataMapper: RangeViewDataMapper,
+    private val rangeTitleMapper: RangeTitleMapper,
     private val prefsInteractor: PrefsInteractor,
 ) : ViewModel() {
 
@@ -172,7 +174,7 @@ class StatisticsContainerViewModel @Inject constructor(
     private suspend fun loadTitle(): String {
         val startOfDayShift = prefsInteractor.getStartOfDayShift()
         val firstDayOfWeek = prefsInteractor.getFirstDayOfWeek()
-        return rangeViewDataMapper.mapToTitle(
+        return rangeTitleMapper.mapToTitle(
             rangeLength = getRangeLength(),
             position = position.value.orZero(),
             startOfDayShift = startOfDayShift,

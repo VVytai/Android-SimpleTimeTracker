@@ -2,7 +2,7 @@ package com.example.util.simpletimetracker.feature_records_filter.mapper
 
 import androidx.annotation.ColorInt
 import com.example.util.simpletimetracker.core.mapper.ColorMapper
-import com.example.util.simpletimetracker.core.mapper.RangeViewDataMapper
+import com.example.util.simpletimetracker.core.mapper.RangeTitleMapper
 import com.example.util.simpletimetracker.core.mapper.TimeMapper
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.domain.record.extension.getCommentItems
@@ -32,7 +32,7 @@ class RecordsFilterViewDataMapper @Inject constructor(
     private val resourceRepo: ResourceRepo,
     private val timeMapper: TimeMapper,
     private val colorMapper: ColorMapper,
-    private val rangeViewDataMapper: RangeViewDataMapper,
+    private val rangeTitleMapper: RangeTitleMapper,
 ) {
 
     fun mapInitialFilter(
@@ -131,7 +131,7 @@ class RecordsFilterViewDataMapper @Inject constructor(
                 }
             }
             is RecordsFilter.Date -> {
-                rangeViewDataMapper.mapToTitle(
+                rangeTitleMapper.mapToTitle(
                     rangeLength = filter.range,
                     position = filter.position,
                     startOfDayShift = startOfDayShift,
@@ -255,7 +255,7 @@ class RecordsFilterViewDataMapper @Inject constructor(
         return FilterViewData(
             id = index.toLong(),
             type = RecordFilterDateType(rangeLength),
-            name = rangeViewDataMapper.mapToTitle(
+            name = rangeTitleMapper.mapToTitle(
                 rangeLength = rangeLength,
                 position = 0,
                 startOfDayShift = startOfDayShift,

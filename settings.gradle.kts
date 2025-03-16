@@ -11,6 +11,7 @@ pluginManagement {
 include(
     "app",
     "domain",
+    "domain:common",
     "core",
     "core:common",
     "navigation",

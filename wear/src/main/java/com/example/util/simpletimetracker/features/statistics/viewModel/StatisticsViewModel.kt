@@ -8,7 +8,9 @@ package com.example.util.simpletimetracker.features.statistics.viewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.util.simpletimetracker.data.WearDataRepo
-import com.example.util.simpletimetracker.domain.model.WearChartFilterType
+import com.example.util.simpletimetracker.domain.model.WearSettings
+import com.example.util.simpletimetracker.domain.statistics.model.ChartFilterType
+import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
 import com.example.util.simpletimetracker.features.statistics.mapper.StatisticsViewDataMapper
 import com.example.util.simpletimetracker.features.statistics.screen.StatisticsListState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -29,6 +31,9 @@ class StatisticsViewModel @Inject constructor(
 
     private var isInitialized = false
     private var shift: Int = 0
+    private var filterType: ChartFilterType = ChartFilterType.ACTIVITY
+    private var rangeLength = RangeLength.Day
+    private var settings: WearSettings? = null
 
     fun init() {
         if (isInitialized) return
@@ -37,38 +42,59 @@ class StatisticsViewModel @Inject constructor(
     }
 
     fun onRefresh() = viewModelScope.launch {
+        _state.value = StatisticsListState.Loading
         loadData()
+    }
+
+    fun onTitleLongClick() = viewModelScope.launch {
+        changeShift(0)
     }
 
     fun onPrevClick() = viewModelScope.launch {
-        shift -= 1
-        loadData()
+        changeShift(shift - 1)
     }
 
     fun onNextClick() = viewModelScope.launch {
-        shift += 1
+        changeShift(shift + 1)
+    }
+
+    private fun changeShift(newPosition: Int) = viewModelScope.launch {
+        shift = newPosition
+        _state.value = statisticsViewDataMapper.mapContentLoadingState(
+            rangeLength = rangeLength,
+            shift = shift,
+            settings = settings,
+        )
         loadData()
     }
 
     private suspend fun loadData() {
-        val filterType = WearChartFilterType.ACTIVITY
         val statistics = wearDataRepo.loadStatistics(
             forceReload = true,
             shift = shift,
             filterType = filterType,
         )
+        val settingsResult = wearDataRepo.loadSettings(forceReload = false)
 
         when {
-            statistics.isFailure -> {
+            statistics.isFailure || settingsResult.isFailure -> {
                 showError()
             }
             statistics.getOrNull().isNullOrEmpty() -> {
-                _state.value = statisticsViewDataMapper.mapEmptyState()
+                _state.value = statisticsViewDataMapper.mapEmptyState(
+                    rangeLength = rangeLength,
+                    shift = shift,
+                    settings = settings,
+                )
             }
             else -> {
+                settings = settingsResult.getOrNull()
                 _state.value = statisticsViewDataMapper.mapContentState(
                     statistics = statistics.getOrNull().orEmpty(),
                     filterType = filterType,
+                    rangeLength = rangeLength,
+                    shift = shift,
+                    settings = settings,
                 )
             }
         }

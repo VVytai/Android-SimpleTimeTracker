@@ -20,6 +20,7 @@ fun StatisticsScreen() {
     StatisticsList(
         state = state,
         onRefresh = viewModel::onRefresh,
+        onTitleLongClick = viewModel::onTitleLongClick,
         onPrevClick = viewModel::onPrevClick,
         onNextClick = viewModel::onNextClick,
     )

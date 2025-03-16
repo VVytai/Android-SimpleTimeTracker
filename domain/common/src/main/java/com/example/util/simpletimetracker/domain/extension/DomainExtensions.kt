@@ -1,9 +1,5 @@
 package com.example.util.simpletimetracker.domain.extension
 
-import com.example.util.simpletimetracker.domain.record.model.Range
-import com.example.util.simpletimetracker.domain.record.model.RecordBase
-import com.example.util.simpletimetracker.domain.recordTag.model.RecordTag
-
 private const val MINUTE_IN_MILLIS = 60_000
 private const val SECOND_IN_MILLIS = 1_000
 
@@ -19,18 +15,9 @@ fun Int?.orZero(): Int = this ?: 0
 
 fun Float?.orZero(): Float = this ?: 0f
 
-fun Range?.orEmpty(): Range = this ?: Range(0, 0)
-
 fun <T> List<T>?.orEmpty(): List<T> = this ?: emptyList()
 
 fun <T> List<T>.rotateLeft(n: Int): List<T> = drop(n) + take(n)
-
-fun List<RecordTag>.getFullName(): String =
-    this.joinToString(separator = ", ") { it.name }
-
-fun RecordBase.toRange(): Range {
-    return Range(timeStarted = timeStarted, timeEnded = timeEnded)
-}
 
 fun Long.dropSeconds(): Long {
     return this / MINUTE_IN_MILLIS * MINUTE_IN_MILLIS

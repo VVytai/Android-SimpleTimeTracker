@@ -6,7 +6,6 @@
 package com.example.util.simpletimetracker.features.statistics.screen
 
 import androidx.annotation.StringRes
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -20,6 +19,7 @@ import com.example.util.simpletimetracker.domain.model.WearActivityIcon
 import com.example.util.simpletimetracker.features.statistics.ui.StatisticsButtons
 import com.example.util.simpletimetracker.features.statistics.ui.StatisticsChip
 import com.example.util.simpletimetracker.features.statistics.ui.StatisticsChipState
+import com.example.util.simpletimetracker.features.statistics.ui.StatisticsTitle
 import com.example.util.simpletimetracker.presentation.layout.ScaffoldedScrollingColumn
 import com.example.util.simpletimetracker.presentation.ui.ErrorState
 import com.example.util.simpletimetracker.presentation.ui.RenderLoading
@@ -36,14 +36,17 @@ sealed interface StatisticsListState {
     ) : StatisticsListState
 
     data class Empty(
+        val title: String,
         @StringRes val messageResId: Int,
     ) : StatisticsListState
 
     data class Content(
+        val title: String,
         val items: List<Item>,
     ) : StatisticsListState {
 
         sealed interface Item {
+            data object Loader : Item
             data class Statistics(val data: StatisticsChipState) : Item
             data class Total(val data: StatisticsChipState) : Item
         }
@@ -54,6 +57,7 @@ sealed interface StatisticsListState {
 fun StatisticsList(
     state: StatisticsListState,
     onRefresh: () -> Unit = {},
+    onTitleLongClick: () -> Unit = {},
     onPrevClick: () -> Unit = {},
     onNextClick: () -> Unit = {},
 ) {
@@ -71,6 +75,7 @@ fun StatisticsList(
             is StatisticsListState.Empty -> {
                 renderEmptyState(
                     state = state,
+                    onTitleLongClick = onTitleLongClick,
                     onPrevClick = onPrevClick,
                     onNextClick = onNextClick,
                 )
@@ -78,6 +83,7 @@ fun StatisticsList(
             is StatisticsListState.Content -> {
                 renderContent(
                     state = state,
+                    onTitleLongClick = onTitleLongClick,
                     onPrevClick = onPrevClick,
                     onNextClick = onNextClick,
                 )
@@ -88,10 +94,16 @@ fun StatisticsList(
 
 private fun ScalingLazyListScope.renderEmptyState(
     state: StatisticsListState.Empty,
+    onTitleLongClick: () -> Unit,
     onPrevClick: () -> Unit,
     onNextClick: () -> Unit,
 ) {
-    item { Spacer(Modifier) }
+    item {
+        StatisticsTitle(
+            title = state.title,
+            onLongClick = onTitleLongClick,
+        )
+    }
     item {
         StatisticsButtons(
             onPrevClick = onPrevClick,
@@ -108,10 +120,16 @@ private fun ScalingLazyListScope.renderEmptyState(
 
 private fun ScalingLazyListScope.renderContent(
     state: StatisticsListState.Content,
+    onTitleLongClick: () -> Unit,
     onPrevClick: () -> Unit,
     onNextClick: () -> Unit,
 ) {
-    item { Spacer(Modifier) }
+    item {
+        StatisticsTitle(
+            title = state.title,
+            onLongClick = onTitleLongClick,
+        )
+    }
     item {
         StatisticsButtons(
             onPrevClick = onPrevClick,
@@ -120,6 +138,11 @@ private fun ScalingLazyListScope.renderContent(
     }
     for (itemState in state.items) {
         when (itemState) {
+            is StatisticsListState.Content.Item.Loader -> {
+                item {
+                    RenderLoading()
+                }
+            }
             is StatisticsListState.Content.Item.Statistics -> {
                 item(key = itemState.data.id) {
                     StatisticsChip(itemState.data)
@@ -156,7 +179,10 @@ private fun Error() {
 @Composable
 private fun NoData() {
     StatisticsList(
-        state = StatisticsListState.Empty(R.string.no_data),
+        state = StatisticsListState.Empty(
+            title = "Tue, Mar 12",
+            messageResId = R.string.no_data,
+        ),
     )
 }
 
@@ -177,6 +203,21 @@ private fun Content() {
     }
     StatisticsList(
         state = StatisticsListState.Content(
+            title = "Tue, Mar 12",
+            items = items,
+        ),
+    )
+}
+
+@Preview(device = WearDevices.LARGE_ROUND)
+@Composable
+private fun ContentLoading() {
+    val items = List(1) {
+        StatisticsListState.Content.Item.Loader
+    }
+    StatisticsList(
+        state = StatisticsListState.Content(
+            title = "Tue, Mar 12",
             items = items,
         ),
     )

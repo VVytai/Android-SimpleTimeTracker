@@ -13,7 +13,6 @@ import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import com.example.util.simpletimetracker.core.R
-import com.example.util.simpletimetracker.core.common.repo.BaseResourceRepo
 import com.example.util.simpletimetracker.core.provider.ContextProvider
 import com.example.util.simpletimetracker.feature_views.extension.pxToDp
 import javax.inject.Inject
@@ -32,15 +31,15 @@ class ResourceRepo @Inject constructor(
         return context.getString(stringResId)
     }
 
-    fun getString(@StringRes stringResId: Int, vararg args: Any): String {
+    override fun getString(@StringRes stringResId: Int, vararg args: Any): String {
         return context.getString(stringResId, *args)
     }
 
-    fun getQuantityString(@PluralsRes stringResId: Int, quantity: Int): String {
+    override fun getQuantityString(@PluralsRes stringResId: Int, quantity: Int): String {
         return context.resources.getQuantityString(stringResId, quantity)
     }
 
-    fun getQuantityString(@PluralsRes stringResId: Int, quantity: Int, vararg args: Any): String {
+    override fun getQuantityString(@PluralsRes stringResId: Int, quantity: Int, vararg args: Any): String {
         return context.resources.getQuantityString(stringResId, quantity, *args)
     }
 

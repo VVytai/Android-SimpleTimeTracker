@@ -76,7 +76,7 @@ interface WearCommunicationAPI {
      *
      * Set app settings from wear.
      */
-    suspend fun setSettings(settings: WearSettingsDTO)
+    suspend fun setSettings(settings: WearSetSettingsRequest)
 
     /**
      * [WearRequests.OPEN_PHONE_APP]

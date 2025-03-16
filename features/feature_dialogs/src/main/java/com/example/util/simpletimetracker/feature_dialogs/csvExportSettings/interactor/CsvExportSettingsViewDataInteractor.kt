@@ -2,7 +2,7 @@ package com.example.util.simpletimetracker.feature_dialogs.csvExportSettings.int
 
 import androidx.annotation.ColorInt
 import com.example.util.simpletimetracker.core.mapper.ColorMapper
-import com.example.util.simpletimetracker.core.mapper.RangeViewDataMapper
+import com.example.util.simpletimetracker.core.mapper.RangeTitleMapper
 import com.example.util.simpletimetracker.core.mapper.TimeMapper
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.domain.extension.orEmpty
@@ -23,7 +23,7 @@ class CsvExportSettingsViewDataInteractor @Inject constructor(
     private val colorMapper: ColorMapper,
     private val resourceRepo: ResourceRepo,
     private val prefsInteractor: PrefsInteractor,
-    private val rangeViewDataMapper: RangeViewDataMapper,
+    private val rangeTitleMapper: RangeTitleMapper,
 ) {
 
     suspend fun getViewData(
@@ -108,7 +108,7 @@ class CsvExportSettingsViewDataInteractor @Inject constructor(
         return FilterViewData(
             id = index.toLong(),
             type = CsvExportSettingsFilterType(rangeLength),
-            name = rangeViewDataMapper.mapToTitle(
+            name = rangeTitleMapper.mapToTitle(
                 rangeLength = rangeLength,
                 position = 0,
                 startOfDayShift = startOfDayShift,

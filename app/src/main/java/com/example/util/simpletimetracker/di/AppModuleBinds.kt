@@ -1,6 +1,6 @@
 package com.example.util.simpletimetracker.di
 
-import com.example.util.simpletimetracker.core.common.repo.BaseResourceRepo
+import com.example.util.simpletimetracker.core.repo.BaseResourceRepo
 import com.example.util.simpletimetracker.core.interactor.GetCurrentDayInteractorImpl
 import com.example.util.simpletimetracker.core.interactor.IsSystemInDarkModeInteractorImpl
 import com.example.util.simpletimetracker.core.interactor.GetUntrackedRecordsInteractorImpl

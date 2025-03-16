@@ -10,6 +10,7 @@ import androidx.compose.ui.graphics.Color
 import com.example.util.simpletimetracker.R
 import com.example.util.simpletimetracker.core.ErrorStateMapper
 import com.example.util.simpletimetracker.data.WearResourceRepo
+import com.example.util.simpletimetracker.domain.extension.orFalse
 import com.example.util.simpletimetracker.domain.model.WearSettings
 import com.example.util.simpletimetracker.domain.model.WearTag
 import com.example.util.simpletimetracker.features.tagsSelection.screen.TagListState
@@ -32,7 +33,7 @@ class TagsViewDataMapper @Inject constructor(
     fun mapState(
         tags: List<WearTag>,
         selectedTagIds: List<Long>,
-        settings: WearSettings,
+        settings: WearSettings?,
         loadingState: TagsLoadingState,
     ): TagListState {
         val listState = if (tags.isEmpty()) {
@@ -56,10 +57,10 @@ class TagsViewDataMapper @Inject constructor(
     private fun mapContentState(
         tags: List<WearTag>,
         selectedTagIds: List<Long>,
-        settings: WearSettings,
+        settings: WearSettings?,
         loadingState: TagsLoadingState,
     ): TagListState.Content {
-        val mode = if (settings.recordTagSelectionCloseAfterOne) {
+        val mode = if (settings?.recordTagSelectionCloseAfterOne.orFalse()) {
             TagChipState.TagSelectionMode.SINGLE
         } else {
             TagChipState.TagSelectionMode.MULTI

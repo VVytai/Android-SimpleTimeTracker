@@ -5,9 +5,13 @@
  */
 package com.example.util.simpletimetracker.domain.model
 
+import com.example.util.simpletimetracker.domain.daysOfWeek.model.DayOfWeek
+
 data class WearSettings(
     val allowMultitasking: Boolean,
     val recordTagSelectionCloseAfterOne: Boolean,
     val enableRepeatButton: Boolean,
     val retroactiveTrackingMode: Boolean,
+    val startOfDayShift: Long,
+    val firstDayOfWeek: DayOfWeek,
 )
