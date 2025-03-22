@@ -7,7 +7,6 @@ package com.example.util.simpletimetracker.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.wear.compose.navigation.SwipeDismissableNavHost
-import androidx.wear.compose.navigation.composable
 import androidx.wear.compose.navigation.rememberSwipeDismissableNavController
 import com.example.util.simpletimetracker.features.activities.screen.ActivitiesScreen
 import com.example.util.simpletimetracker.features.settings.screen.SettingsScreen
@@ -18,47 +17,34 @@ import com.example.util.simpletimetracker.presentation.dialog.MessageDialog
 import com.example.util.simpletimetracker.utils.getString
 import java.time.Instant
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.ZoneOffset
-
-object Route {
-    const val ACTIVITIES = "activities"
-    const val TAGS = "activities/{id}/tags"
-    const val STATISTICS = "statistics"
-    const val SETTINGS = "settings"
-    const val ALERT = "alert/{textResId}"
-    const val DATE_PICKER = "datePicker/{timestamp}"
-}
 
 @Composable
 fun WearNavigator() {
     val navigation = rememberSwipeDismissableNavController()
     SwipeDismissableNavHost(
         navController = navigation,
-        startDestination = Route.ACTIVITIES,
+        startDestination = WearNavigationRoute.Activities.baseRoute,
     ) {
-        composable(Route.ACTIVITIES) {
+        composable(WearNavigationRoute.Activities) { _, _ ->
             ActivitiesScreen(
                 onRequestTagSelection = {
-                    val route = Route.TAGS.replace("{id}", it.toString())
-                    navigation.navigate(route)
+                    navigation.navigate(WearNavigationRoute.Tags, it)
                 },
                 onStatisticsClick = {
-                    navigation.navigate(Route.STATISTICS)
+                    navigation.navigate(WearNavigationRoute.Statistics)
                 },
                 onSettingsClick = {
-                    navigation.navigate(Route.SETTINGS)
+                    navigation.navigate(WearNavigationRoute.Settings)
                 },
                 onShowMessage = {
-                    val route = Route.ALERT.replace("{textResId}", it.toString())
-                    navigation.navigate(route)
+                    navigation.navigate(WearNavigationRoute.Alert, it)
                 },
             )
         }
-        composable(Route.TAGS) {
-            val activityId = it.arguments
-                ?.getString("id")
-                ?.toLong()
-                ?: return@composable
+        composable(WearNavigationRoute.Tags) { route, arguments ->
+            val activityId = route.get(arguments) ?: return@composable
 
             TagsScreen(
                 activityId = activityId,
@@ -67,22 +53,18 @@ fun WearNavigator() {
                 },
             )
         }
-        composable(Route.STATISTICS) {
+        composable(WearNavigationRoute.Statistics) { _, _ ->
             StatisticsScreen(
                 onOpenDatePicker = {
-                    val route = Route.DATE_PICKER.replace("{timestamp}", it.toString())
-                    navigation.navigate(route)
+                    navigation.navigate(WearNavigationRoute.DatePicker, it)
                 },
             )
         }
-        composable(Route.SETTINGS) {
+        composable(WearNavigationRoute.Settings) { _, _ ->
             SettingsScreen()
         }
-        composable(Route.ALERT) {
-            val textResId = it.arguments
-                ?.getString("textResId")
-                ?.toIntOrNull()
-                ?: return@composable
+        composable(WearNavigationRoute.Alert) { route, arguments ->
+            val textResId = route.get(arguments) ?: return@composable
 
             MessageDialog(
                 message = getString(textResId),
@@ -91,13 +73,11 @@ fun WearNavigator() {
                 },
             )
         }
-        composable(Route.DATE_PICKER) {
-            val timestamp = it.arguments
-                ?.getString("timestamp")
-                ?.toLong()
-                ?: return@composable
-            val instant = Instant.ofEpochMilli(timestamp)
-            val date = LocalDate.ofInstant(instant, ZoneOffset.UTC)
+        composable(WearNavigationRoute.DatePicker) { route, arguments ->
+            val timestamp = route.get(arguments) ?: return@composable
+            val date = LocalDateTime
+                .ofEpochSecond(timestamp / 1000, 0, ZoneOffset.UTC)
+                .toLocalDate()
 
             WearDatePicker(
                 date = date,

@@ -65,7 +65,10 @@ class StatisticsViewModel @Inject constructor(
     }
 
     fun onTitleClick() = viewModelScope.launch {
-        val timestamp = System.currentTimeMillis()
+        val timestamp = timeMapper.toTimestampShifted(
+            rangesFromToday = shift,
+            range = rangeLength,
+        )
         _effects.emit(Effect.OnOpenDatePicker(timestamp))
     }
 
@@ -83,7 +86,7 @@ class StatisticsViewModel @Inject constructor(
 
     private fun onDateSelected(date: LocalDate) {
         timeMapper.toTimestampShift(
-            toTime = date.atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli(),
+            toTime = date.atStartOfDay(ZoneOffset.UTC).toEpochSecond() * 1000,
             range = rangeLength,
             firstDayOfWeek = settings?.firstDayOfWeek ?: DayOfWeek.MONDAY,
         ).toInt().let(::changeShift)
