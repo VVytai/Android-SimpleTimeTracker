@@ -79,6 +79,7 @@ dependencies {
     implementation(libs.compose.wearFoundation)
     implementation(libs.compose.wearToolingPreview)
     implementation(libs.compose.horologist)
+    implementation(libs.compose.horologistComposables)
     implementation(libs.compose.hilt)
     debugImplementation(libs.compose.uiTooling)
     ksp(libs.kapt.dagger)

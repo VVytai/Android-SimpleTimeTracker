@@ -94,6 +94,7 @@ compose-wearMaterial = { group = "androidx.wear.compose", name = "compose-materi
 compose-wearFoundation = { group = "androidx.wear.compose", name = "compose-foundation", version.ref = "wear_compose_version" }
 compose-wearToolingPreview = { group = "androidx.wear", name = "wear-tooling-preview", version.ref = "wear_compose_tooling_preview" }
 compose-horologist = { group = "com.google.android.horologist", name = "horologist-compose-layout", version.ref = "horologist" }
+compose-horologistComposables = { group = "com.google.android.horologist", name = "horologist-composables", version.ref = "horologist" }
 compose-hilt = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "compose_hilt" }
 compose-uiTooling = { group = "androidx.compose.ui", name = "ui-tooling", version.ref = "compose_version" }
 

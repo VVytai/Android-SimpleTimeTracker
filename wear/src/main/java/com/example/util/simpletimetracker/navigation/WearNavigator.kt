@@ -10,11 +10,15 @@ import androidx.wear.compose.navigation.SwipeDismissableNavHost
 import androidx.wear.compose.navigation.composable
 import androidx.wear.compose.navigation.rememberSwipeDismissableNavController
 import com.example.util.simpletimetracker.features.activities.screen.ActivitiesScreen
-import com.example.util.simpletimetracker.presentation.dialog.MessageDialog
 import com.example.util.simpletimetracker.features.settings.screen.SettingsScreen
 import com.example.util.simpletimetracker.features.statistics.screen.StatisticsScreen
 import com.example.util.simpletimetracker.features.tagsSelection.screen.TagsScreen
+import com.example.util.simpletimetracker.presentation.datePicker.WearDatePicker
+import com.example.util.simpletimetracker.presentation.dialog.MessageDialog
 import com.example.util.simpletimetracker.utils.getString
+import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneOffset
 
 object Route {
     const val ACTIVITIES = "activities"
@@ -22,6 +26,7 @@ object Route {
     const val STATISTICS = "statistics"
     const val SETTINGS = "settings"
     const val ALERT = "alert/{textResId}"
+    const val DATE_PICKER = "datePicker/{timestamp}"
 }
 
 @Composable
@@ -63,7 +68,12 @@ fun WearNavigator() {
             )
         }
         composable(Route.STATISTICS) {
-            StatisticsScreen()
+            StatisticsScreen(
+                onOpenDatePicker = {
+                    val route = Route.DATE_PICKER.replace("{timestamp}", it.toString())
+                    navigation.navigate(route)
+                },
+            )
         }
         composable(Route.SETTINGS) {
             SettingsScreen()
@@ -77,6 +87,21 @@ fun WearNavigator() {
             MessageDialog(
                 message = getString(textResId),
                 onDismiss = {
+                    navigation.popBackStack()
+                },
+            )
+        }
+        composable(Route.DATE_PICKER) {
+            val timestamp = it.arguments
+                ?.getString("timestamp")
+                ?.toLong()
+                ?: return@composable
+            val instant = Instant.ofEpochMilli(timestamp)
+            val date = LocalDate.ofInstant(instant, ZoneOffset.UTC)
+
+            WearDatePicker(
+                date = date,
+                onComplete = {
                     navigation.popBackStack()
                 },
             )

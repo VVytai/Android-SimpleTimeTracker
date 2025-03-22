@@ -7,27 +7,44 @@ package com.example.util.simpletimetracker.features.statistics.viewModel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.util.simpletimetracker.core.mapper.TimeMapper
 import com.example.util.simpletimetracker.data.WearDataRepo
+import com.example.util.simpletimetracker.domain.daysOfWeek.model.DayOfWeek
+import com.example.util.simpletimetracker.presentation.datePicker.WearDateSelectedInteractor
 import com.example.util.simpletimetracker.domain.model.WearSettings
 import com.example.util.simpletimetracker.domain.statistics.model.ChartFilterType
 import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
 import com.example.util.simpletimetracker.features.statistics.mapper.StatisticsViewDataMapper
 import com.example.util.simpletimetracker.features.statistics.screen.StatisticsListState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.time.ZoneOffset
 import javax.inject.Inject
 
 @HiltViewModel
 class StatisticsViewModel @Inject constructor(
     private val statisticsViewDataMapper: StatisticsViewDataMapper,
     private val wearDataRepo: WearDataRepo,
+    private val wearDateSelectedInteractor: WearDateSelectedInteractor,
+    private val timeMapper: TimeMapper,
 ) : ViewModel() {
 
     val state: StateFlow<StatisticsListState> get() = _state.asStateFlow()
     private val _state: MutableStateFlow<StatisticsListState> = MutableStateFlow(StatisticsListState.Loading)
+
+    val effects: SharedFlow<Effect> get() = _effects.asSharedFlow()
+    private val _effects = MutableSharedFlow<Effect>(
+        extraBufferCapacity = 1,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST,
+    )
 
     private var isInitialized = false
     private var shift: Int = 0
@@ -37,6 +54,7 @@ class StatisticsViewModel @Inject constructor(
 
     fun init() {
         if (isInitialized) return
+        subscribeToUpdates()
         viewModelScope.launch { loadData() }
         isInitialized = true
     }
@@ -44,6 +62,11 @@ class StatisticsViewModel @Inject constructor(
     fun onRefresh() = viewModelScope.launch {
         _state.value = StatisticsListState.Loading
         loadData()
+    }
+
+    fun onTitleClick() = viewModelScope.launch {
+        val timestamp = System.currentTimeMillis()
+        _effects.emit(Effect.OnOpenDatePicker(timestamp))
     }
 
     fun onTitleLongClick() = viewModelScope.launch {
@@ -56,6 +79,14 @@ class StatisticsViewModel @Inject constructor(
 
     fun onNextClick() = viewModelScope.launch {
         changeShift(shift + 1)
+    }
+
+    private fun onDateSelected(date: LocalDate) {
+        timeMapper.toTimestampShift(
+            toTime = date.atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli(),
+            range = rangeLength,
+            firstDayOfWeek = settings?.firstDayOfWeek ?: DayOfWeek.MONDAY,
+        ).toInt().let(::changeShift)
     }
 
     private fun changeShift(newPosition: Int) = viewModelScope.launch {
@@ -102,5 +133,15 @@ class StatisticsViewModel @Inject constructor(
 
     private fun showError() {
         _state.value = statisticsViewDataMapper.mapErrorState()
+    }
+
+    private fun subscribeToUpdates() {
+        viewModelScope.launch {
+            wearDateSelectedInteractor.data.collect(::onDateSelected)
+        }
+    }
+
+    sealed interface Effect {
+        data class OnOpenDatePicker(val timestamp: Long) : Effect
     }
 }

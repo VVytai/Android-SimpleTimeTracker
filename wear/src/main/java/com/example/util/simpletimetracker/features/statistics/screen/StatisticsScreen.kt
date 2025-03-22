@@ -10,16 +10,27 @@ import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.util.simpletimetracker.features.statistics.viewModel.StatisticsViewModel
+import com.example.util.simpletimetracker.features.statistics.viewModel.StatisticsViewModel.Effect
+import com.example.util.simpletimetracker.utils.collectEffects
 
 @Composable
-fun StatisticsScreen() {
+fun StatisticsScreen(
+    onOpenDatePicker: (Long) -> Unit,
+) {
     val viewModel = hiltViewModel<StatisticsViewModel>()
     viewModel.init()
     val state by viewModel.state.collectAsStateWithLifecycle()
 
+    viewModel.effects.collectEffects(key = viewModel) {
+        when (it) {
+            is Effect.OnOpenDatePicker -> onOpenDatePicker(it.timestamp)
+        }
+    }
+
     StatisticsList(
         state = state,
         onRefresh = viewModel::onRefresh,
+        onTitleClick = viewModel::onTitleClick,
         onTitleLongClick = viewModel::onTitleLongClick,
         onPrevClick = viewModel::onPrevClick,
         onNextClick = viewModel::onNextClick,

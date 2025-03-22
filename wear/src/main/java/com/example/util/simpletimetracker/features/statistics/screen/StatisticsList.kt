@@ -70,6 +70,7 @@ sealed interface StatisticsListState {
 fun StatisticsList(
     state: StatisticsListState,
     onRefresh: () -> Unit = {},
+    onTitleClick: () -> Unit = {},
     onTitleLongClick: () -> Unit = {},
     onPrevClick: () -> Unit = {},
     onNextClick: () -> Unit = {},
@@ -91,6 +92,7 @@ fun StatisticsList(
                     renderEmptyState(
                         state = state,
                         density = density,
+                        onTitleClick = onTitleClick,
                         onTitleLongClick = onTitleLongClick,
                     )
                 }
@@ -98,6 +100,7 @@ fun StatisticsList(
                     renderContent(
                         state = state,
                         density = density,
+                        onTitleClick = onTitleClick,
                         onTitleLongClick = onTitleLongClick,
                     )
                 }
@@ -118,11 +121,13 @@ fun StatisticsList(
 private fun ScalingLazyListScope.renderEmptyState(
     state: StatisticsListState.Empty,
     density: Density,
+    onTitleClick: () -> Unit,
     onTitleLongClick: () -> Unit,
 ) {
     item {
         StatisticsTitle(
             title = state.title,
+            onClick = onTitleClick,
             onLongClick = onTitleLongClick,
         )
     }
@@ -144,11 +149,13 @@ private fun ScalingLazyListScope.renderEmptyState(
 private fun ScalingLazyListScope.renderContent(
     state: StatisticsListState.Content,
     density: Density,
+    onTitleClick: () -> Unit,
     onTitleLongClick: () -> Unit,
 ) {
     item {
         StatisticsTitle(
             title = state.title,
+            onClick = onTitleClick,
             onLongClick = onTitleLongClick,
         )
     }
