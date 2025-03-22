@@ -6,12 +6,24 @@
 package com.example.util.simpletimetracker.features.statistics.screen
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.foundation.lazy.ScalingLazyListScope
+import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Text
 import androidx.wear.tooling.preview.devices.WearDevices
 import com.example.util.simpletimetracker.R
@@ -21,6 +33,7 @@ import com.example.util.simpletimetracker.features.statistics.ui.StatisticsChip
 import com.example.util.simpletimetracker.features.statistics.ui.StatisticsChipState
 import com.example.util.simpletimetracker.features.statistics.ui.StatisticsTitle
 import com.example.util.simpletimetracker.presentation.layout.ScaffoldedScrollingColumn
+import com.example.util.simpletimetracker.presentation.ui.ACTIVITY_RUNNING_VIEW_HEIGHT
 import com.example.util.simpletimetracker.presentation.ui.ErrorState
 import com.example.util.simpletimetracker.presentation.ui.RenderLoading
 import com.example.util.simpletimetracker.presentation.ui.renderError
@@ -61,42 +74,51 @@ fun StatisticsList(
     onPrevClick: () -> Unit = {},
     onNextClick: () -> Unit = {},
 ) {
-    ScaffoldedScrollingColumn {
-        when (state) {
-            is StatisticsListState.Loading -> item {
-                RenderLoading()
+    val density = LocalDensity.current
+    Box {
+        ScaffoldedScrollingColumn {
+            when (state) {
+                is StatisticsListState.Loading -> item {
+                    RenderLoading()
+                }
+                is StatisticsListState.Error -> {
+                    renderError(
+                        state = state.error,
+                        onRefresh = onRefresh,
+                    )
+                }
+                is StatisticsListState.Empty -> {
+                    renderEmptyState(
+                        state = state,
+                        density = density,
+                        onTitleLongClick = onTitleLongClick,
+                    )
+                }
+                is StatisticsListState.Content -> {
+                    renderContent(
+                        state = state,
+                        density = density,
+                        onTitleLongClick = onTitleLongClick,
+                    )
+                }
             }
-            is StatisticsListState.Error -> {
-                renderError(
-                    state = state.error,
-                    onRefresh = onRefresh,
-                )
-            }
-            is StatisticsListState.Empty -> {
-                renderEmptyState(
-                    state = state,
-                    onTitleLongClick = onTitleLongClick,
-                    onPrevClick = onPrevClick,
-                    onNextClick = onNextClick,
-                )
-            }
-            is StatisticsListState.Content -> {
-                renderContent(
-                    state = state,
-                    onTitleLongClick = onTitleLongClick,
-                    onPrevClick = onPrevClick,
-                    onNextClick = onNextClick,
-                )
-            }
+        }
+
+        val showControls = state is StatisticsListState.Empty ||
+            state is StatisticsListState.Content
+        if (showControls) {
+            StatisticsButtons(
+                onPrevClick = onPrevClick,
+                onNextClick = onNextClick,
+            )
         }
     }
 }
 
 private fun ScalingLazyListScope.renderEmptyState(
     state: StatisticsListState.Empty,
+    density: Density,
     onTitleLongClick: () -> Unit,
-    onPrevClick: () -> Unit,
-    onNextClick: () -> Unit,
 ) {
     item {
         StatisticsTitle(
@@ -105,24 +127,24 @@ private fun ScalingLazyListScope.renderEmptyState(
         )
     }
     item {
-        StatisticsButtons(
-            onPrevClick = onPrevClick,
-            onNextClick = onNextClick,
-        )
-    }
-    item {
-        Text(
-            text = getString(state.messageResId),
-            modifier = Modifier.padding(8.dp),
-        )
+        val height = ACTIVITY_RUNNING_VIEW_HEIGHT *
+            density.fontScale
+        Box(
+            modifier = Modifier.height(height.dp),
+            contentAlignment = Alignment.Center,
+        ) {
+            Text(
+                text = getString(state.messageResId),
+                modifier = Modifier.padding(8.dp),
+            )
+        }
     }
 }
 
 private fun ScalingLazyListScope.renderContent(
     state: StatisticsListState.Content,
+    density: Density,
     onTitleLongClick: () -> Unit,
-    onPrevClick: () -> Unit,
-    onNextClick: () -> Unit,
 ) {
     item {
         StatisticsTitle(
@@ -130,17 +152,18 @@ private fun ScalingLazyListScope.renderContent(
             onLongClick = onTitleLongClick,
         )
     }
-    item {
-        StatisticsButtons(
-            onPrevClick = onPrevClick,
-            onNextClick = onNextClick,
-        )
-    }
     for (itemState in state.items) {
         when (itemState) {
             is StatisticsListState.Content.Item.Loader -> {
+                val height = ACTIVITY_RUNNING_VIEW_HEIGHT *
+                    density.fontScale
                 item {
-                    RenderLoading()
+                    Box(
+                        modifier = Modifier.height(height.dp),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        RenderLoading()
+                    }
                 }
             }
             is StatisticsListState.Content.Item.Statistics -> {
@@ -154,6 +177,41 @@ private fun ScalingLazyListScope.renderContent(
                 }
             }
         }
+    }
+    // To avoid last item being cutoff by prev next buttons.
+    item {
+        Spacer(Modifier)
+    }
+}
+
+@Composable
+private fun BoxScope.StatisticsButtons(
+    onPrevClick: () -> Unit,
+    onNextClick: () -> Unit,
+) {
+    Box(
+        modifier = Modifier
+            .align(Alignment.BottomCenter)
+            .fillMaxWidth()
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(
+                        Color(0x00000000),
+                        MaterialTheme.colors.background,
+                    ),
+                ),
+            ),
+        contentAlignment = Alignment.Center,
+    ) {
+        StatisticsButtons(
+            modifier = Modifier.padding(
+                top = 4.dp,
+                bottom = 10.dp,
+            ),
+            spacedBy = 4.dp,
+            onPrevClick = onPrevClick,
+            onNextClick = onNextClick,
+        )
     }
 }
 

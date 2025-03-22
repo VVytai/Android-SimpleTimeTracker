@@ -6,35 +6,40 @@
 package com.example.util.simpletimetracker.features.statistics.ui
 
 import androidx.annotation.DrawableRes
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.wear.compose.material.Button
+import androidx.wear.compose.material.ButtonDefaults
 import androidx.wear.compose.material.Icon
 import androidx.wear.tooling.preview.devices.WearDevices
 import com.example.util.simpletimetracker.R
 import com.example.util.simpletimetracker.presentation.theme.ColorInactive
+import com.example.util.simpletimetracker.presentation.ui.ACTIVITY_VIEW_HEIGHT
 
 @Composable
 fun StatisticsButtons(
+    modifier: Modifier = Modifier,
+    spacedBy: Dp = 0.dp,
     onPrevClick: () -> Unit = {},
     onNextClick: () -> Unit = {},
 ) {
-    Row {
+    Row(modifier) {
         StatisticsButton(
-            modifier = Modifier.weight(1f),
             iconResId = R.drawable.wear_arrow_left,
             onClick = onPrevClick,
         )
+        Spacer(
+            modifier = Modifier.width(spacedBy),
+        )
         StatisticsButton(
-            modifier = Modifier.weight(1f),
             iconResId = R.drawable.wear_arrow_right,
             onClick = onNextClick,
         )
@@ -43,33 +48,32 @@ fun StatisticsButtons(
 
 @Composable
 private fun StatisticsButton(
-    modifier: Modifier,
     @DrawableRes iconResId: Int,
     onClick: () -> Unit = {},
 ) {
-    val shape = RoundedCornerShape(100.dp)
-    Icon(
-        modifier = modifier
-            .background(
-                color = ColorInactive,
-                shape = shape,
+    Button(
+        modifier = Modifier.size(ACTIVITY_VIEW_HEIGHT.dp),
+        onClick = onClick,
+        content = {
+            Icon(
+                painter = painterResource(id = iconResId),
+                contentDescription = null,
             )
-            .clip(shape)
-            .clickable(onClick = onClick)
-            .padding(4.dp),
-        painter = painterResource(iconResId),
-        contentDescription = null,
+        },
+        colors = ButtonDefaults.buttonColors(
+            backgroundColor = ColorInactive,
+        ),
     )
 }
 
 @Preview(device = WearDevices.LARGE_ROUND)
 @Composable
 private fun Preview() {
-    StatisticsButtons()
+    StatisticsButtons(spacedBy = 16.dp)
 }
 
 @Preview(device = WearDevices.LARGE_ROUND, fontScale = 2f)
 @Composable
 private fun PreviewFontScale() {
-    StatisticsButtons()
+    StatisticsButtons(spacedBy = 16.dp)
 }
