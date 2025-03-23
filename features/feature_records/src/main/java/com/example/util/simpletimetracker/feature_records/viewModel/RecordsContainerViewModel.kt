@@ -257,9 +257,9 @@ class RecordsContainerViewModel @Inject constructor(
 
     private suspend fun loadOptionsSwitchState(): RecordsOptionsSwitchState {
         return recordsViewDataMapper.mapOptionsSwitchState(
-            optionsOpened,
-            prefsInteractor.getShowCalendarButtonOnRecordsTab(),
-            prefsInteractor.getShowRecordsCalendar(),
+            optionsOpened = optionsOpened,
+            isCalendarSwitchVisible = prefsInteractor.getShowCalendarButtonOnRecordsTab(),
+            isCalendar = prefsInteractor.getShowRecordsCalendar(),
         )
     }
 

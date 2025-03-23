@@ -15,8 +15,7 @@ class ChartFilterInteractor @Inject constructor(
     ) {
         when (extra.type) {
             is ChartFilterDialogParams.Type.RecordsList -> {
-                // Do nothing
-                // Only activities available on records list filter.
+                prefsInteractor.setListFilterType(filterType)
             }
             is ChartFilterDialogParams.Type.Statistics -> {
                 prefsInteractor.setChartFilterType(filterType)
@@ -44,8 +43,7 @@ class ChartFilterInteractor @Inject constructor(
     ) {
         when (extra.type) {
             is ChartFilterDialogParams.Type.RecordsList -> {
-                // Do nothing
-                // Only activities available on records list filter.
+                prefsInteractor.setFilteredCategoriesOnList(categoryIdsFiltered)
             }
             is ChartFilterDialogParams.Type.Statistics -> {
                 prefsInteractor.setFilteredCategories(categoryIdsFiltered)
@@ -59,8 +57,7 @@ class ChartFilterInteractor @Inject constructor(
     ) {
         when (extra.type) {
             is ChartFilterDialogParams.Type.RecordsList -> {
-                // Do nothing
-                // Only activities available on records list filter.
+                prefsInteractor.setFilteredTagsOnList(recordTagsFiltered)
             }
             is ChartFilterDialogParams.Type.Statistics -> {
                 prefsInteractor.setFilteredTags(recordTagsFiltered)
@@ -73,8 +70,7 @@ class ChartFilterInteractor @Inject constructor(
     ): ChartFilterType {
         return when (extra.type) {
             is ChartFilterDialogParams.Type.RecordsList -> {
-                // Only activities available on records list filter.
-                ChartFilterType.ACTIVITY
+                prefsInteractor.getListFilterType()
             }
             is ChartFilterDialogParams.Type.Statistics -> {
                 prefsInteractor.getChartFilterType()
@@ -100,8 +96,7 @@ class ChartFilterInteractor @Inject constructor(
     ): List<Long> {
         return when (extra.type) {
             is ChartFilterDialogParams.Type.RecordsList -> {
-                // Only activities available on records list filter.
-                emptyList()
+                prefsInteractor.getFilteredCategoriesOnList()
             }
             is ChartFilterDialogParams.Type.Statistics -> {
                 prefsInteractor.getFilteredCategories()
@@ -114,8 +109,7 @@ class ChartFilterInteractor @Inject constructor(
     ): List<Long> {
         return when (extra.type) {
             is ChartFilterDialogParams.Type.RecordsList -> {
-                // Only activities available on records list filter.
-                emptyList()
+                prefsInteractor.getFilteredTagsOnList()
             }
             is ChartFilterDialogParams.Type.Statistics -> {
                 prefsInteractor.getFilteredTags()

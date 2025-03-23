@@ -19,7 +19,6 @@ import com.example.util.simpletimetracker.feature_base_adapter.loader.createLoad
 import com.example.util.simpletimetracker.feature_base_adapter.recordType.createRecordTypeAdapterDelegate
 import com.example.util.simpletimetracker.feature_dialogs.chartFilter.viewModel.ChartFilterViewModel
 import com.example.util.simpletimetracker.feature_views.extension.setOnClick
-import com.example.util.simpletimetracker.feature_views.extension.visible
 import com.example.util.simpletimetracker.navigation.params.screen.ChartFilterDialogParams
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
@@ -73,7 +72,6 @@ class ChartFilterDialogFragment : BaseBottomSheetFragment<Binding>() {
             }
             adapter = recordTypesAdapter
         }
-        updateState()
     }
 
     override fun initUx(): Unit = with(binding) {
@@ -86,11 +84,6 @@ class ChartFilterDialogFragment : BaseBottomSheetFragment<Binding>() {
         extra = params
         filterTypeViewData.observe(binding.buttonsChartFilterType.adapter::replace)
         types.observe(recordTypesAdapter::replace)
-    }
-
-    private fun updateState() = with(binding) {
-        tvChartFilterTypeHint.visible = params.type is ChartFilterDialogParams.Type.Statistics
-        buttonsChartFilterType.visible = params.type is ChartFilterDialogParams.Type.Statistics
     }
 
     companion object {

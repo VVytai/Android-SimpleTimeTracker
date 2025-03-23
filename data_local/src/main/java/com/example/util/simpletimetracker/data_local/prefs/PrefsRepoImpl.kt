@@ -25,6 +25,18 @@ class PrefsRepoImpl @Inject constructor(
         KEY_RECORD_TYPES_FILTERED_ON_LIST, emptySet(),
     )
 
+    override var categoriesFilteredOnList: Set<String> by prefs.delegate(
+        KEY_CATEGORIES_TYPES_FILTERED_ON_LIST, emptySet(),
+    )
+
+    override var tagsFilteredOnList: Set<String> by prefs.delegate(
+        KEY_TAGS_FILTERED_ON_LIST, emptySet(),
+    )
+
+    override var listFilterType: Int by prefs.delegate(
+        KEY_LIST_FILTER_TYPE, 0,
+    )
+
     override var recordTypesFilteredOnChart: Set<String> by prefs.delegate(
         KEY_RECORD_TYPES_FILTERED_ON_CHART, emptySet(),
     )
@@ -534,6 +546,9 @@ class PrefsRepoImpl @Inject constructor(
         private const val RANGE_LAST_DAYS_DEFAULT: Int = 7
 
         const val KEY_RECORD_TYPES_FILTERED_ON_LIST = "recordTypesFilteredOnList"
+        const val KEY_CATEGORIES_TYPES_FILTERED_ON_LIST = "categoriesFilteredOnList"
+        const val KEY_TAGS_FILTERED_ON_LIST = "tagsFilteredOnList"
+        const val KEY_LIST_FILTER_TYPE = "listFilterType"
         const val KEY_RECORD_TYPES_FILTERED_ON_CHART = "recordTypesFilteredOnChart"
         const val KEY_CATEGORIES_TYPES_FILTERED_ON_CHART = "categoriesFilteredOnChart"
         const val KEY_TAGS_FILTERED_ON_CHART = "tagsFilteredOnChart"

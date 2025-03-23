@@ -6,13 +6,13 @@ import com.example.util.simpletimetracker.domain.widget.model.QuickSettingsWidge
 interface PrefsRepo {
 
     var recordTypesFilteredOnList: Set<String>
+    var categoriesFilteredOnList: Set<String>
+    var tagsFilteredOnList: Set<String>
+    var listFilterType: Int
 
     var recordTypesFilteredOnChart: Set<String>
-
     var categoriesFilteredOnChart: Set<String>
-
     var tagsFilteredOnChart: Set<String>
-
     var chartFilterType: Int
 
     var cardOrder: Int

@@ -15,8 +15,6 @@ import com.example.util.simpletimetracker.features.tagsSelection.screen.TagsScre
 import com.example.util.simpletimetracker.presentation.datePicker.WearDatePicker
 import com.example.util.simpletimetracker.presentation.dialog.MessageDialog
 import com.example.util.simpletimetracker.utils.getString
-import java.time.Instant
-import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 

@@ -4,7 +4,10 @@ import com.example.util.simpletimetracker.core.interactor.GetRunningRecordViewDa
 import com.example.util.simpletimetracker.core.mapper.CalendarToListShiftMapper
 import com.example.util.simpletimetracker.core.mapper.RecordViewDataMapper
 import com.example.util.simpletimetracker.core.mapper.TimeMapper
+import com.example.util.simpletimetracker.domain.base.UNCATEGORIZED_ITEM_ID
 import com.example.util.simpletimetracker.domain.base.UNTRACKED_ITEM_ID
+import com.example.util.simpletimetracker.domain.category.interactor.RecordTypeCategoryInteractor
+import com.example.util.simpletimetracker.domain.category.model.RecordTypeCategory
 import com.example.util.simpletimetracker.domain.extension.dropSeconds
 import com.example.util.simpletimetracker.domain.extension.toRange
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
@@ -24,6 +27,7 @@ import com.example.util.simpletimetracker.domain.recordType.model.RecordTypeGoal
 import com.example.util.simpletimetracker.domain.record.model.RunningRecord
 import com.example.util.simpletimetracker.domain.daysOfWeek.model.count
 import com.example.util.simpletimetracker.domain.record.interactor.GetUntrackedRecordsInteractor
+import com.example.util.simpletimetracker.domain.statistics.model.ChartFilterType
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.record.RecordViewData
 import com.example.util.simpletimetracker.feature_base_adapter.runningRecord.RunningRecordViewData
@@ -53,6 +57,7 @@ class RecordsViewDataInteractor @Inject constructor(
     private val rangeMapper: RangeMapper,
     private val getRunningRecordViewDataMediator: GetRunningRecordViewDataMediator,
     private val calendarToListShiftMapper: CalendarToListShiftMapper,
+    private val recordTypeCategoryInteractor: RecordTypeCategoryInteractor,
 ) {
 
     suspend fun getViewData(
@@ -68,13 +73,20 @@ class RecordsViewDataInteractor @Inject constructor(
         val showUntrackedInRecords = prefsInteractor.getShowUntrackedInRecords()
         val reverseOrder = prefsInteractor.getReverseOrderInCalendar()
         val recordTypes = recordTypeInteractor.getAll().associateBy(RecordType::id)
-        val recordTypeIdsFiltered = prefsInteractor.getFilteredTypesOnList()
+        val filterType = prefsInteractor.getListFilterType()
         val recordTags = recordTagInteractor.getAll()
         val goals = recordTypeGoalInteractor.getAllTypeGoals().groupBy { it.idData.value }
         val runningRecords = runningRecordInteractor.getAll()
         val isCalendarView = prefsInteractor.getShowRecordsCalendar()
         val calendarDayCount = prefsInteractor.getDaysInCalendar().count
         val daysCountInShift = if (isCalendarView) calendarDayCount else 1
+        val recordTypeCategories = suspend { recordTypeCategoryInteractor.getAll() }
+
+        val filteredIds = when (filterType) {
+            ChartFilterType.ACTIVITY -> prefsInteractor.getFilteredTypesOnList()
+            ChartFilterType.CATEGORY -> prefsInteractor.getFilteredCategoriesOnList()
+            ChartFilterType.RECORD_TAG -> prefsInteractor.getFilteredTagsOnList()
+        }
 
         return@withContext (daysCountInShift - 1 downTo 0).map { dayInShift ->
             val actualShift = calendarToListShiftMapper.mapCalendarToListShift(
@@ -93,10 +105,12 @@ class RecordsViewDataInteractor @Inject constructor(
             val data = getRecordsViewData(
                 records = records,
                 runningRecords = runningRecords,
+                filterType = filterType,
+                filteredIds = filteredIds,
                 recordTypes = recordTypes,
-                recordTypeIdsFiltered = recordTypeIdsFiltered,
                 recordTags = recordTags,
                 goals = goals,
+                recordTypeCategories = recordTypeCategories,
                 range = range,
                 isDarkTheme = isDarkTheme,
                 useMilitaryTime = useMilitaryTime,
@@ -234,10 +248,12 @@ class RecordsViewDataInteractor @Inject constructor(
     private suspend fun getRecordsViewData(
         records: List<Record>,
         runningRecords: List<RunningRecord>,
+        filterType: ChartFilterType,
+        filteredIds: List<Long>,
         recordTypes: Map<Long, RecordType>,
-        recordTypeIdsFiltered: List<Long>,
         recordTags: List<RecordTag>,
         goals: Map<Long, List<RecordTypeGoal>>,
+        recordTypeCategories: suspend () -> List<RecordTypeCategory>,
         range: Range,
         isDarkTheme: Boolean,
         useMilitaryTime: Boolean,
@@ -262,6 +278,7 @@ class RecordsViewDataInteractor @Inject constructor(
                         data = RecordHolder.Data.RecordData(
                             value = it,
                             typeId = record.typeId,
+                            tagIds = record.tagIds,
                         ),
                     )
                 }
@@ -290,6 +307,7 @@ class RecordsViewDataInteractor @Inject constructor(
                         data = RecordHolder.Data.RunningRecordData(
                             value = it,
                             typeId = runningRecord.id,
+                            tagIds = runningRecord.tagIds,
                         ),
                     )
                 }
@@ -297,7 +315,7 @@ class RecordsViewDataInteractor @Inject constructor(
 
         val untrackedRecordsData = if (
             showUntrackedInRecords &&
-            UNTRACKED_ITEM_ID !in recordTypeIdsFiltered
+            UNTRACKED_ITEM_ID !in filteredIds
         ) {
             val recordRanges = records.map(Record::toRange)
             val runningRecordRanges = runningRecords.map(RunningRecord::toRange)
@@ -318,6 +336,7 @@ class RecordsViewDataInteractor @Inject constructor(
                         data = RecordHolder.Data.RecordData(
                             value = it,
                             typeId = UNTRACKED_ITEM_ID,
+                            tagIds = emptyList(),
                         ),
                     )
                 }
@@ -326,8 +345,55 @@ class RecordsViewDataInteractor @Inject constructor(
             emptyList()
         }
 
-        return (trackedRecordsData + runningRecordsData + untrackedRecordsData)
-            .filter { it.data.typeId !in recordTypeIdsFiltered }
+        return filterRecords(
+            records = trackedRecordsData + runningRecordsData,
+            chartFilterType = filterType,
+            filteredIds = filteredIds,
+            lazyRecordTypeCategories = recordTypeCategories,
+        ) + untrackedRecordsData
+    }
+
+    private suspend fun filterRecords(
+        records: List<RecordHolder>,
+        chartFilterType: ChartFilterType,
+        filteredIds: List<Long>,
+        lazyRecordTypeCategories: suspend () -> List<RecordTypeCategory>,
+    ): List<RecordHolder> {
+        return when (chartFilterType) {
+            ChartFilterType.ACTIVITY -> {
+                records.filter {
+                    it.data.typeId !in filteredIds
+                }
+            }
+            ChartFilterType.CATEGORY -> {
+                val recordTypeCategories = lazyRecordTypeCategories.invoke()
+                val categorizedTypeIds = recordTypeCategories
+                    .map(RecordTypeCategory::recordTypeId)
+                    .distinct()
+                val filteredTypeIds = recordTypeCategories
+                    .filter { it.categoryId in filteredIds }
+                    .map(RecordTypeCategory::recordTypeId)
+                    .distinct()
+                records.filter {
+                    val typeId = it.data.typeId
+                    if (typeId !in categorizedTypeIds) {
+                        UNCATEGORIZED_ITEM_ID !in filteredIds
+                    } else {
+                        typeId !in filteredTypeIds
+                    }
+                }
+            }
+            ChartFilterType.RECORD_TAG -> {
+                records.filter {
+                    val tagIds = it.data.tagIds
+                    if (tagIds.isEmpty()) {
+                        UNCATEGORIZED_ITEM_ID !in filteredIds
+                    } else {
+                        tagIds.all { tagId -> tagId !in filteredIds }
+                    }
+                }
+            }
+        }
     }
 
     private fun mapToCalendarPoint(
@@ -385,15 +451,18 @@ class RecordsViewDataInteractor @Inject constructor(
         sealed interface Data {
             val value: ViewHolderType
             val typeId: Long
+            val tagIds: List<Long>
 
             data class RecordData(
                 override val value: RecordViewData,
                 override val typeId: Long,
+                override val tagIds: List<Long>,
             ) : Data
 
             data class RunningRecordData(
                 override val value: RunningRecordViewData,
                 override val typeId: Long,
+                override val tagIds: List<Long>,
             ) : Data
         }
     }
