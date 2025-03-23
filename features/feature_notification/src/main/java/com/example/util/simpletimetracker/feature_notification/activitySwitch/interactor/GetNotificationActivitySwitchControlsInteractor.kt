@@ -12,6 +12,7 @@ import com.example.util.simpletimetracker.domain.recordTag.model.RecordTag
 import com.example.util.simpletimetracker.domain.recordType.model.RecordType
 import com.example.util.simpletimetracker.domain.recordType.model.RecordTypeGoal
 import com.example.util.simpletimetracker.feature_notification.R
+import com.example.util.simpletimetracker.feature_notification.activitySwitch.manager.NotificationControlsManager.Companion.TAGS_LIST_SIZE
 import com.example.util.simpletimetracker.feature_notification.activitySwitch.manager.NotificationControlsManager.Companion.TYPES_LIST_SIZE
 import com.example.util.simpletimetracker.feature_notification.activitySwitch.manager.NotificationControlsParams
 import com.example.util.simpletimetracker.feature_views.GoalCheckmarkView
@@ -86,25 +87,38 @@ class GetNotificationActivitySwitchControlsInteractor @Inject constructor(
             }
 
         // Populate container with empty items to preserve prev next controls position.
-        fun populateWithEmpty(
-            data: List<NotificationControlsParams.Type>,
-        ): List<NotificationControlsParams.Type> {
+        fun <T> populateWithEmpty(
+            data: List<T>,
+            pageSize: Int,
+            emptyValueProducer: () -> T,
+        ): List<T> {
             if (data.isEmpty()) return data
-            if (data.size % TYPES_LIST_SIZE == 0) return data
-            val emptyCount = TYPES_LIST_SIZE - (data.size % TYPES_LIST_SIZE)
-            val emptyData = List(emptyCount) { NotificationControlsParams.Type.Empty }
+            if (data.size % pageSize == 0) return data
+            val emptyCount = pageSize - (data.size % pageSize)
+            val emptyData = List(emptyCount) { emptyValueProducer() }
             return data + emptyData
         }
 
-        val allTypesViewData = populateWithEmpty(suggestionsViewData) +
-            repeatButtonViewData +
+        val allTypesViewData = populateWithEmpty(
+            data = suggestionsViewData,
+            pageSize = TYPES_LIST_SIZE,
+            emptyValueProducer = { NotificationControlsParams.Type.Empty },
+        ) + repeatButtonViewData +
             typesViewData
 
         return NotificationControlsParams.Enabled(
             hint = hint,
-            types = populateWithEmpty(allTypesViewData),
+            types = populateWithEmpty(
+                data = allTypesViewData,
+                pageSize = TYPES_LIST_SIZE,
+                emptyValueProducer = { NotificationControlsParams.Type.Empty },
+            ),
             typesShift = typesShift,
-            tags = tagsViewData,
+            tags = populateWithEmpty(
+                data = tagsViewData,
+                pageSize = TAGS_LIST_SIZE,
+                emptyValueProducer = { NotificationControlsParams.Tag.Empty },
+            ),
             tagsShift = tagsShift,
             controlIconPrev = RecordTypeIcon.Image(R.drawable.arrow_left),
             controlIconNext = RecordTypeIcon.Image(R.drawable.arrow_right),
@@ -154,7 +168,7 @@ class GetNotificationActivitySwitchControlsInteractor @Inject constructor(
         typesMap: Map<Long, RecordType>,
         isDarkTheme: Boolean,
     ): NotificationControlsParams.Tag {
-        return NotificationControlsParams.Tag(
+        return NotificationControlsParams.Tag.Present(
             id = tag.id,
             text = tag.name,
             color = recordTagViewDataMapper.mapColor(
@@ -167,7 +181,7 @@ class GetNotificationActivitySwitchControlsInteractor @Inject constructor(
     private fun mapUntagged(
         isDarkTheme: Boolean,
     ): List<NotificationControlsParams.Tag> {
-        return NotificationControlsParams.Tag(
+        return NotificationControlsParams.Tag.Present(
             id = 0L,
             text = R.string.change_record_untagged.let(resourceRepo::getString),
             color = colorMapper.toUntrackedColor(isDarkTheme),

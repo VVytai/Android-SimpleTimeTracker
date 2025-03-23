@@ -9,6 +9,8 @@ import android.view.View
 import android.widget.RemoteViews
 import com.example.util.simpletimetracker.core.extension.allowVmViolations
 import com.example.util.simpletimetracker.core.utils.PendingIntents
+import com.example.util.simpletimetracker.domain.extension.ifNull
+import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.feature_notification.R
 import com.example.util.simpletimetracker.feature_notification.activitySwitch.mapper.NotificationControlsMapper
 import com.example.util.simpletimetracker.feature_notification.recevier.NotificationReceiver
@@ -74,6 +76,8 @@ class NotificationControlsManager @Inject constructor(
                 requestCode = getRequestCode(from),
                 from = from,
                 recordTypesShift = (params.typesShift - TYPES_LIST_SIZE)
+                    .takeUnless { it < 0 }
+                    .ifNull { params.types.size - TYPES_LIST_SIZE }
                     .coerceAtLeast(0),
             ),
         )
@@ -155,7 +159,7 @@ class NotificationControlsManager @Inject constructor(
                 from = from,
                 recordTypesShift = (params.typesShift + TYPES_LIST_SIZE)
                     .takeUnless { it >= params.types.size }
-                    ?: params.typesShift,
+                    .orZero(),
             ),
         )
     }
@@ -179,26 +183,29 @@ class NotificationControlsManager @Inject constructor(
                 selectedTypeId = params.selectedTypeId,
                 recordTypesShift = params.typesShift,
                 recordTagsShift = (params.tagsShift - TAGS_LIST_SIZE)
+                    .takeUnless { it < 0 }
+                    .ifNull { params.tags.size - TAGS_LIST_SIZE }
                     .coerceAtLeast(0),
             ),
         )
 
-        // Types buttons
+        // Tags buttons
         val currentTags = params.tags.drop(params.tagsShift).take(TAGS_LIST_SIZE)
-        currentTags.forEach {
+
+        fun addPresentType(data: NotificationControlsParams.Tag.Present) {
             getTagControlView(
-                text = it.text,
-                color = it.color,
+                text = data.text,
+                color = data.color,
                 intent = getPendingSelfIntent(
                     context = context,
                     action = ACTION_NOTIFICATION_CONTROLS_TAG_CLICK,
                     requestCode = getRequestCode(
                         from = from,
-                        additionalInfo = RequestCode.AdditionalInfo.TypeId(it.id),
+                        additionalInfo = RequestCode.AdditionalInfo.TypeId(data.id),
                     ),
                     selectedTypeId = params.selectedTypeId,
                     from = from,
-                    recordTagId = it.id,
+                    recordTagId = data.id,
                     recordTypesShift = params.typesShift,
                 ),
             ).let {
@@ -206,13 +213,21 @@ class NotificationControlsManager @Inject constructor(
             }
         }
 
-        repeat(TAGS_LIST_SIZE - currentTags.size) {
+        // Populate container with empty items to preserve prev next controls position
+        fun addEmptyType() {
             getTagControlView(
                 text = "",
                 color = null,
                 intent = null,
             ).let {
                 addView(R.id.containerNotificationTags, it)
+            }
+        }
+
+        currentTags.forEach {
+            when (it) {
+                is NotificationControlsParams.Tag.Present -> addPresentType(it)
+                is NotificationControlsParams.Tag.Empty -> addEmptyType()
             }
         }
 
@@ -232,7 +247,7 @@ class NotificationControlsManager @Inject constructor(
                 recordTypesShift = params.typesShift,
                 recordTagsShift = (params.tagsShift + TAGS_LIST_SIZE)
                     .takeUnless { it >= params.tags.size }
-                    ?: params.tagsShift,
+                    .orZero(),
             ),
         )
     }
@@ -376,6 +391,6 @@ class NotificationControlsManager @Inject constructor(
         const val ARGS_TAGS_SHIFT = "tagsShift"
 
         const val TYPES_LIST_SIZE = 6
-        private const val TAGS_LIST_SIZE = 4
+        const val TAGS_LIST_SIZE = 4
     }
 }

@@ -49,3 +49,7 @@ fun CharSequence.indexesOf(pat: String): List<Int> =
 fun <T> Any.tryCast(): T? {
     return this as? T
 }
+
+inline fun <T> T?.ifNull(newValue: () -> T): T {
+    return this ?: newValue()
+}

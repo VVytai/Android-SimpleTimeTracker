@@ -31,9 +31,13 @@ sealed interface NotificationControlsParams {
         data object Empty : Type
     }
 
-    data class Tag(
-        val id: Long,
-        val text: String,
-        val color: Int,
-    )
+    sealed interface Tag {
+        data class Present(
+            val id: Long,
+            val text: String,
+            val color: Int,
+        ) : Tag
+
+        data object Empty : Tag
+    }
 }
