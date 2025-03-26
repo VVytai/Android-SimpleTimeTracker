@@ -68,6 +68,9 @@
     <string name="record_removed">Zapis %s usunięty</string>
     <string name="record_removed_undo">Cofnij</string>
     <string name="records_hint">Kliknij wpis, aby edytować</string>
+    <string name="records_add_record">Dodaj rekord</string>
+    <string name="records_switch_to_calendar">Przełącz na widok kalendarza</string>
+    <string name="records_switch_to_list">Przełącz na widok listy</string>
     <string name="no_records_exist">Zapisy będą widoczne tutaj</string>
 
     <!--  Statistics  -->

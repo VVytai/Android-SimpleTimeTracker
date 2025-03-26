@@ -100,7 +100,6 @@ class StatisticsViewDataInteractor @Inject constructor(
             StatisticsChartViewData(
                 data = data,
                 animatedOpen = !forSharing,
-                buttonsVisible = !forSharing,
             )
         }
         val list = coreStatisticsViewDataMapper.mapItemsList(

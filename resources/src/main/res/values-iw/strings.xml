@@ -68,6 +68,9 @@
     <string name="record_removed">רשומה %s הוסרה</string>
     <string name="record_removed_undo">בטל</string>
     <string name="records_hint">לחץ על רשומה כדי לערוך</string>
+    <string name="records_add_record">הוסף רשומה</string>
+    <string name="records_switch_to_calendar">עבור לתצוגת לוח שנה</string>
+    <string name="records_switch_to_list">עבור לתצוגת רשימה</string>
     <string name="no_records_exist">רשומות יוצגו כאן</string>
 
     <!--  Statistics  -->

@@ -68,6 +68,9 @@
     <string name="record_removed">Kayıt silindi: %s</string>
     <string name="record_removed_undo">Geri al</string>
     <string name="records_hint">Düzenlemek için bir kayda tıklayın</string>
+    <string name="records_add_record">Kayıt ekle</string>
+    <string name="records_switch_to_calendar">Takvim görünümüne geç</string>
+    <string name="records_switch_to_list">Liste görünümüne geç</string>
     <string name="no_records_exist">Kayıtlar burada gösterilecek</string>
 
     <!--  Statistics  -->

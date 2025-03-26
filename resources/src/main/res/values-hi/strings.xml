@@ -68,6 +68,9 @@
     <string name="record_removed">रिकॉर्ड %s हटा दिया गया</string>
     <string name="record_removed_undo">पूर्ववत</string>
     <string name="records_hint">एडिट करने के लिए रिकॉर्ड पर क्लिक करें</string>
+    <string name="records_add_record">रिकॉर्ड जोड़ें</string>
+    <string name="records_switch_to_calendar">कैलेंडर दृश्य में बदलें</string>
+    <string name="records_switch_to_list">सूची दृश्य में बदलें</string>
     <string name="no_records_exist">यहां रिकॉर्ड दिखाए जाएंगे</string>
 
     <!--  Statistics  -->

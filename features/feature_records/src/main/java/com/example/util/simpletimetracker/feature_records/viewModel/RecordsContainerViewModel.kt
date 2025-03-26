@@ -7,7 +7,8 @@ import com.example.util.simpletimetracker.core.extension.lazySuspend
 import com.example.util.simpletimetracker.core.extension.set
 import com.example.util.simpletimetracker.core.mapper.CalendarToListShiftMapper
 import com.example.util.simpletimetracker.core.mapper.TimeMapper
-import com.example.util.simpletimetracker.domain.extension.flip
+import com.example.util.simpletimetracker.core.model.OptionsListItem
+import com.example.util.simpletimetracker.domain.daysOfWeek.model.count
 import com.example.util.simpletimetracker.domain.extension.orFalse
 import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
@@ -15,16 +16,16 @@ import com.example.util.simpletimetracker.domain.record.interactor.RecordsContai
 import com.example.util.simpletimetracker.domain.record.interactor.RecordsShareUpdateInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.RecordsUpdateInteractor
 import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
-import com.example.util.simpletimetracker.domain.daysOfWeek.model.count
+import com.example.util.simpletimetracker.feature_base_adapter.optionsList.OptionsListViewData
 import com.example.util.simpletimetracker.feature_records.mapper.RecordsViewDataMapper
 import com.example.util.simpletimetracker.feature_records.model.RecordsContainerPosition
-import com.example.util.simpletimetracker.feature_records.model.RecordsOptionsSwitchState
 import com.example.util.simpletimetracker.navigation.Router
 import com.example.util.simpletimetracker.navigation.params.screen.ChangeRecordFromMainParams
 import com.example.util.simpletimetracker.navigation.params.screen.ChangeRecordParams
 import com.example.util.simpletimetracker.navigation.params.screen.ChartFilterDialogParams
 import com.example.util.simpletimetracker.navigation.params.screen.DateTimeDialogParams
 import com.example.util.simpletimetracker.navigation.params.screen.DateTimeDialogType
+import com.example.util.simpletimetracker.navigation.params.screen.OptionsListParams
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -45,46 +46,19 @@ class RecordsContainerViewModel @Inject constructor(
         by lazySuspend { loadTitle(0) }
     val position: LiveData<RecordsContainerPosition>
         by lazySuspend { loadPosition(newPosition = 0, animate = false) }
-    val optionsSwitchState: LiveData<RecordsOptionsSwitchState>
-        by lazySuspend { loadOptionsSwitchState() }
 
     private var lastListShift: Int = 0
-    private var optionsOpened: Boolean = false
     private val currentPosition get() = position.value?.position.orZero()
 
     init {
         subscribeToUpdates()
     }
 
-    fun onRecordAddClick() {
-        viewModelScope.launch {
-            val params = ChangeRecordParams.New(getActualShift())
-            router.navigate(ChangeRecordFromMainParams(params))
-        }
-    }
-
-    fun onOptionsClick() = viewModelScope.launch {
-        optionsOpened = optionsOpened.flip()
-        updateOptionsSwitchState()
-    }
-
-    fun onFilterClick() {
-        router.navigate(ChartFilterDialogParams(ChartFilterDialogParams.Type.RecordsList))
-    }
-
-    fun onShareClick() = viewModelScope.launch {
-        recordsShareUpdateInteractor.sendShareClicked()
-    }
-
-    fun onCalendarSwitchClick() = viewModelScope.launch {
-        val newValue = !prefsInteractor.getShowRecordsCalendar()
-        prefsInteractor.setShowRecordsCalendar(newValue)
-        updateOptionsSwitchState()
-        recalculateRangeOnCalendarViewSwitched()
-        // Update record fragment that on the same page as was calendar,
-        // other pages will be updated on becoming visible,
-        // this one will not because it is already visible.
-        recordsUpdateInteractor.send()
+    fun onOptionsClick() {
+        val params = OptionsListParams(
+            type = OptionsListParams.Type.RecordsContainer,
+        )
+        router.navigate(params)
     }
 
     fun onTodayClick() {
@@ -145,6 +119,41 @@ class RecordsContainerViewModel @Inject constructor(
         }
     }
 
+    fun onOptionsItemClick(item: OptionsListViewData) {
+        val id = item.id as? OptionsListItem.RecordsContainer ?: return
+        when (id) {
+            is OptionsListItem.RecordsContainer.CalendarView -> onCalendarSwitchClick()
+            is OptionsListItem.RecordsContainer.Filter -> onFilterClick()
+            is OptionsListItem.RecordsContainer.Share -> onShareClick()
+            is OptionsListItem.RecordsContainer.Add -> onRecordAddClick()
+        }
+    }
+
+    private fun onRecordAddClick() {
+        viewModelScope.launch {
+            val params = ChangeRecordParams.New(getActualShift())
+            router.navigate(ChangeRecordFromMainParams(params))
+        }
+    }
+
+    private fun onFilterClick() {
+        router.navigate(ChartFilterDialogParams(ChartFilterDialogParams.Type.RecordsList))
+    }
+
+    private fun onShareClick() = viewModelScope.launch {
+        recordsShareUpdateInteractor.sendShareClicked()
+    }
+
+    private fun onCalendarSwitchClick() = viewModelScope.launch {
+        val newValue = !prefsInteractor.getShowRecordsCalendar()
+        prefsInteractor.setShowRecordsCalendar(newValue)
+        recalculateRangeOnCalendarViewSwitched()
+        // Update record fragment that on the same page as was calendar,
+        // other pages will be updated on becoming visible,
+        // this one will not because it is already visible.
+        recordsUpdateInteractor.send()
+    }
+
     private fun subscribeToUpdates() {
         viewModelScope.launch {
             recordsContainerUpdateInteractor.showCalendarUpdated
@@ -153,10 +162,6 @@ class RecordsContainerViewModel @Inject constructor(
         viewModelScope.launch {
             recordsContainerUpdateInteractor.calendarDaysUpdated
                 .collect { recalculateRangeOnCalendarDaysChanged() }
-        }
-        viewModelScope.launch {
-            recordsContainerUpdateInteractor.showCalendarSwitchUpdated
-                .collect { updateOptionsSwitchState() }
         }
     }
 
@@ -247,19 +252,6 @@ class RecordsContainerViewModel @Inject constructor(
             startOfDayShift = startOfDayShift,
             isCalendarView = isCalendarView,
             calendarDayCount = calendarDayCount.count,
-        )
-    }
-
-    private fun updateOptionsSwitchState() = viewModelScope.launch {
-        val data = loadOptionsSwitchState()
-        optionsSwitchState.set(data)
-    }
-
-    private suspend fun loadOptionsSwitchState(): RecordsOptionsSwitchState {
-        return recordsViewDataMapper.mapOptionsSwitchState(
-            optionsOpened = optionsOpened,
-            isCalendarSwitchVisible = prefsInteractor.getShowCalendarButtonOnRecordsTab(),
-            isCalendar = prefsInteractor.getShowRecordsCalendar(),
         )
     }
 

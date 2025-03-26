@@ -6,7 +6,6 @@ import com.example.util.simpletimetracker.feature_views.pieChart.PiePortion
 data class StatisticsChartViewData(
     val data: List<PiePortion>,
     val animatedOpen: Boolean,
-    val buttonsVisible: Boolean,
 ) : ViewHolderType {
 
     override fun getUniqueId(): Long = 1L

@@ -68,6 +68,9 @@
     <string name="record_removed">Bản ghi %s đã bị loại</string>
     <string name="record_removed_undo">Hoàn tác</string>
     <string name="records_hint">Bấm vào bản ghi để chỉnh sửa</string>
+    <string name="records_add_record">Thêm bản ghi</string>
+    <string name="records_switch_to_calendar">Chuyển sang chế độ xem lịch</string>
+    <string name="records_switch_to_list">Chuyển sang chế độ xem danh sách</string>
     <string name="no_records_exist">Bản ghi sẽ được hiển thị ở đây</string>
 
     <!--  Statistics  -->

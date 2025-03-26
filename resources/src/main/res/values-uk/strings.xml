@@ -68,6 +68,9 @@
     <string name="record_removed">Запис %s видалено</string>
     <string name="record_removed_undo">Скасувати</string>
     <string name="records_hint">Натисніть на запис для редагування</string>
+    <string name="records_add_record">Додати запис</string>
+    <string name="records_switch_to_calendar">Перемкнутися на перегляд календаря</string>
+    <string name="records_switch_to_list">Перемкнутися на перегляд списку</string>
     <string name="no_records_exist">Тут будуть показані записи</string>
 
     <!--  Statistics  -->

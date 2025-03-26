@@ -68,6 +68,9 @@
     <string name="record_removed">Registro %s eliminado</string>
     <string name="record_removed_undo">Deshacer</string>
     <string name="records_hint">Haz clic en el la entrada para editarla</string>
+    <string name="records_add_record">Agregar registro</string>
+    <string name="records_switch_to_calendar">Cambiar a vista de calendario</string>
+    <string name="records_switch_to_list">Cambiar a vista de lista</string>
     <string name="no_records_exist">Los registros se mostrarán aquí</string>
 
     <!--  Statistics  -->

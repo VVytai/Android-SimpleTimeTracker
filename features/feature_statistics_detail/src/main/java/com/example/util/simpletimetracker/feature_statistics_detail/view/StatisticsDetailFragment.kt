@@ -8,6 +8,7 @@ import com.example.util.simpletimetracker.core.base.BaseFragment
 import com.example.util.simpletimetracker.core.dialog.CustomRangeSelectionDialogListener
 import com.example.util.simpletimetracker.core.dialog.DateTimeDialogListener
 import com.example.util.simpletimetracker.core.dialog.DurationDialogListener
+import com.example.util.simpletimetracker.core.dialog.OptionsListDialogListener
 import com.example.util.simpletimetracker.core.dialog.RecordsFilterListener
 import com.example.util.simpletimetracker.core.extension.setSharedTransitions
 import com.example.util.simpletimetracker.core.extension.toViewData
@@ -17,6 +18,7 @@ import com.example.util.simpletimetracker.core.viewData.RangesViewData
 import com.example.util.simpletimetracker.domain.record.model.Range
 import com.example.util.simpletimetracker.feature_base_adapter.BaseRecyclerAdapter
 import com.example.util.simpletimetracker.feature_base_adapter.hint.createHintAdapterDelegate
+import com.example.util.simpletimetracker.feature_base_adapter.optionsList.OptionsListViewData
 import com.example.util.simpletimetracker.feature_base_adapter.statistics.createStatisticsAdapterDelegate
 import com.example.util.simpletimetracker.feature_statistics_detail.adapter.createStatisticsDetailBarChartAdapterDelegate
 import com.example.util.simpletimetracker.feature_statistics_detail.adapter.createStatisticsDetailButtonAdapterDelegate
@@ -47,7 +49,8 @@ class StatisticsDetailFragment :
     DateTimeDialogListener,
     DurationDialogListener,
     CustomRangeSelectionDialogListener,
-    RecordsFilterListener {
+    RecordsFilterListener,
+    OptionsListDialogListener {
 
     override val inflater: (LayoutInflater, ViewGroup?, Boolean) -> Binding =
         Binding::inflate
@@ -105,8 +108,7 @@ class StatisticsDetailFragment :
     }
 
     override fun initUx() = with(binding) {
-        cardStatisticsDetailFilter.setOnClick(viewModel::onFilterClick)
-        cardStatisticsDetailCompare.setOnClick(viewModel::onCompareClick)
+        btnStatisticsDetailOptions.setOnClick(throttle(viewModel::onOptionsClick))
         spinnerStatisticsDetail.onItemSelected = viewModel::onRangeSelected
         btnStatisticsDetailPrevious.setOnClick(viewModel::onPreviousClick)
         btnStatisticsDetailNext.setOnClick(viewModel::onNextClick)
@@ -149,6 +151,10 @@ class StatisticsDetailFragment :
 
     override fun onFilterDismissed(tag: String) {
         viewModel.onTypesFilterDismissed(tag)
+    }
+
+    override fun onOptionsItemClick(item: OptionsListViewData) {
+        viewModel.onOptionsItemClick(item)
     }
 
     private fun setPreview() = params.preview?.run {

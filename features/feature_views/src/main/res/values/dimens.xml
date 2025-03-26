@@ -27,6 +27,11 @@
     <dimen name="button_height_short">46dp</dimen>
     <dimen name="button_corner_radius">8dp</dimen>
 
+    <dimen name="range_selection_button_width">60dp</dimen>
+    <dimen name="range_selection_button_options_width">48dp</dimen>
+    <!--  Exactly half of button height  -->
+    <dimen name="range_selection_button_corner_radius">29dp</dimen>
+
     <dimen name="widget_universal_corner_radius">16dp</dimen>
 
     <dimen name="widget_statistics_refresh_button_size">20dp</dimen>

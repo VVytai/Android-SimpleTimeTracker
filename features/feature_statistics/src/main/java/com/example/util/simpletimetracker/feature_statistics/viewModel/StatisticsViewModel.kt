@@ -12,6 +12,7 @@ import com.example.util.simpletimetracker.core.model.NavigationTab
 import com.example.util.simpletimetracker.domain.darkMode.interactor.ThemeChangedInteractor
 import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
+import com.example.util.simpletimetracker.domain.record.interactor.StatisticsUpdateInteractor
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.loader.LoaderViewData
 import com.example.util.simpletimetracker.feature_base_adapter.statistics.StatisticsViewData
@@ -38,6 +39,7 @@ class StatisticsViewModel @Inject constructor(
     private val statisticsDetailNavigationInteractor: StatisticsDetailNavigationInteractor,
     private val statisticsDetailTotalNavigator: StatisticsDetailTotalNavigator,
     private val themeChangedInteractor: ThemeChangedInteractor,
+    private val statisticsUpdateInteractor: StatisticsUpdateInteractor,
 ) : ViewModel() {
 
     var extra: StatisticsExtra? = null
@@ -90,17 +92,6 @@ class StatisticsViewModel @Inject constructor(
         if (isVisible) updateStatistics()
     }
 
-    fun onFilterClick() {
-        router.navigate(ChartFilterDialogParams(ChartFilterDialogParams.Type.Statistics))
-        isChartFilterOpened = true
-        updateAnimateChartParticles()
-    }
-
-    fun onShareClick() = viewModelScope.launch {
-        val data = loadStatisticsViewData(forSharing = true)
-        sharingData.set(data)
-    }
-
     fun onItemClick(
         item: StatisticsViewData,
         sharedElements: Map<Any, String>,
@@ -150,6 +141,23 @@ class StatisticsViewModel @Inject constructor(
         viewModelScope.launch {
             themeChangedInteractor.themeChanged.collect { updateStatistics() }
         }
+        viewModelScope.launch {
+            statisticsUpdateInteractor.shareClicked.collect { if (isVisible) onShareClick() }
+        }
+        viewModelScope.launch {
+            statisticsUpdateInteractor.filterClicked.collect { if (isVisible) onFilterClick() }
+        }
+    }
+
+    private fun onFilterClick() {
+        router.navigate(ChartFilterDialogParams(ChartFilterDialogParams.Type.Statistics))
+        isChartFilterOpened = true
+        updateAnimateChartParticles()
+    }
+
+    private fun onShareClick() = viewModelScope.launch {
+        val data = loadStatisticsViewData(forSharing = true)
+        sharingData.set(data)
     }
 
     private suspend fun getShift(): Int {

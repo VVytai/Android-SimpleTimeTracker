@@ -8,20 +8,24 @@ import com.example.util.simpletimetracker.core.extension.set
 import com.example.util.simpletimetracker.core.mapper.RangeTitleMapper
 import com.example.util.simpletimetracker.core.mapper.RangeViewDataMapper
 import com.example.util.simpletimetracker.core.mapper.TimeMapper
+import com.example.util.simpletimetracker.core.model.OptionsListItem
 import com.example.util.simpletimetracker.core.viewData.RangesViewData
 import com.example.util.simpletimetracker.core.viewData.SelectDateViewData
 import com.example.util.simpletimetracker.core.viewData.SelectLastDaysViewData
 import com.example.util.simpletimetracker.core.viewData.SelectRangeViewData
 import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
+import com.example.util.simpletimetracker.domain.record.interactor.StatisticsUpdateInteractor
 import com.example.util.simpletimetracker.domain.statistics.extension.canBeSwiped
 import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
+import com.example.util.simpletimetracker.feature_base_adapter.optionsList.OptionsListViewData
 import com.example.util.simpletimetracker.feature_views.spinner.CustomSpinner
 import com.example.util.simpletimetracker.navigation.Router
 import com.example.util.simpletimetracker.navigation.params.screen.CustomRangeSelectionParams
 import com.example.util.simpletimetracker.navigation.params.screen.DateTimeDialogParams
 import com.example.util.simpletimetracker.navigation.params.screen.DateTimeDialogType
 import com.example.util.simpletimetracker.navigation.params.screen.DurationDialogParams
+import com.example.util.simpletimetracker.navigation.params.screen.OptionsListParams
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -33,6 +37,7 @@ class StatisticsContainerViewModel @Inject constructor(
     private val rangeViewDataMapper: RangeViewDataMapper,
     private val rangeTitleMapper: RangeTitleMapper,
     private val prefsInteractor: PrefsInteractor,
+    private val statisticsUpdateInteractor: StatisticsUpdateInteractor,
 ) : ViewModel() {
 
     val title: LiveData<String> by lazy {
@@ -78,6 +83,13 @@ class StatisticsContainerViewModel @Inject constructor(
         updatePosition(position.value.orZero() + 1)
     }
 
+    fun onOptionsClick() {
+        val params = OptionsListParams(
+            type = OptionsListParams.Type.StatisticsContainer,
+        )
+        router.navigate(params)
+    }
+
     fun onRangeSelected(item: CustomSpinner.CustomSpinnerItem) {
         when (item) {
             is SelectDateViewData -> {
@@ -111,6 +123,18 @@ class StatisticsContainerViewModel @Inject constructor(
                     range = prefsInteractor.getStatisticsRange(),
                     firstDayOfWeek = prefsInteractor.getFirstDayOfWeek(),
                 ).toInt().let(::updatePosition)
+            }
+        }
+    }
+
+    fun onOptionsItemClick(item: OptionsListViewData) = viewModelScope.launch {
+        val id = item.id as? OptionsListItem.StatisticsContainer ?: return@launch
+        when (id) {
+            is OptionsListItem.StatisticsContainer.Filter -> {
+                statisticsUpdateInteractor.sendFilterClicked()
+            }
+            is OptionsListItem.StatisticsContainer.Share -> {
+                statisticsUpdateInteractor.sendShareClicked()
             }
         }
     }

@@ -383,26 +383,28 @@
         <item name="cornerRadius">@dimen/button_corner_radius</item>
     </style>
 
-    <style name="ContainerRangeMainButton" parent="AppButtonActive">
+    <style name="ContainerRangeSelectableMainButton" parent="AppButtonActive">
         <item name="android:layout_marginStart">8dp</item>
         <item name="android:layout_marginEnd">8dp</item>
         <item name="android:padding">0dp</item>
-        <item name="layout_constraintHorizontal_weight">2.5</item>
-    </style>
-
-    <style name="ContainerRangeSelectableMainButton" parent="ContainerRangeMainButton">
-        <item name="icon">@drawable/arrow</item>
         <item name="iconGravity">end</item>
-        <item name="iconPadding">-24dp</item>
         <item name="iconTint">@color/white</item>
+        <item name="cornerRadius">@dimen/button_corner_radius</item>
     </style>
 
     <style name="ContainerRangeButton" parent="AppButton">
+        <item name="android:layout_width">@dimen/range_selection_button_width</item>
         <item name="android:scaleType">fitXY</item>
         <item name="icon">@drawable/arrow_left</item>
-        <item name="iconGravity">start</item>
+        <item name="iconGravity">textStart</item>
         <item name="iconTint">@color/white</item>
-        <item name="layout_constraintHorizontal_weight">1</item>
+        <item name="iconPadding">0dp</item>
+        <item name="cornerRadius">@dimen/range_selection_button_corner_radius</item>
+    </style>
+
+    <style name="ContainerRangeOptionsButton" parent="ContainerRangeButton">
+        <item name="android:layout_width">@dimen/range_selection_button_options_width</item>
+        <item name="cornerRadius">@dimen/button_corner_radius</item>
     </style>
 
     <style name="DialogTitle">

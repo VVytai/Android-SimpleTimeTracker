@@ -2,10 +2,12 @@ package com.example.util.simpletimetracker.feature_views.extension
 
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.graphics.Outline
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.MeasureSpec
 import android.view.ViewGroup
+import android.view.ViewOutlineProvider
 import android.widget.AdapterView
 import android.widget.SeekBar
 import android.widget.TextView
@@ -190,4 +192,19 @@ inline fun <T : View> T.postDelayed(
         { action() },
         delayMillis,
     )
+}
+
+fun View.setRounded(radiusDp: Int) {
+    outlineProvider = object : ViewOutlineProvider() {
+        override fun getOutline(view: View, outline: Outline) {
+            outline.setRoundRect(
+                0,
+                0,
+                width,
+                height,
+                radiusDp.dpToPx().toFloat(),
+            )
+        }
+    }
+    clipToOutline = true
 }

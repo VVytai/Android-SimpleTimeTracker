@@ -68,6 +68,9 @@
     <string name="record_removed">متتبع %s أزيل</string>
     <string name="record_removed_undo">تراجع</string>
     <string name="records_hint">للتعديل، اضغط على ما تبع</string>
+    <string name="records_add_record">إضافة سجل</string>
+    <string name="records_switch_to_calendar">التبديل إلى عرض التقويم</string>
+    <string name="records_switch_to_list">التبديل إلى عرض القائمة</string>
     <string name="no_records_exist">سيتم عرض السجلات هنا</string>
 
     <!--  Statistics  -->

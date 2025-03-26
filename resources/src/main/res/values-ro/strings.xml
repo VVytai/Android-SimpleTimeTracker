@@ -68,6 +68,9 @@
     <string name="record_removed">Înregistrarea %s ștearsă</string>
     <string name="record_removed_undo">Revers</string>
     <string name="records_hint">Click pentru a edita înregistrarea</string>
+    <string name="records_add_record">Adaugă înregistrare</string>
+    <string name="records_switch_to_calendar">Comută la vizualizarea calendar</string>
+    <string name="records_switch_to_list">Comută la vizualizarea listă</string>
     <string name="no_records_exist">Înregistrările vor fi afișate aici</string>
 
     <!--  Statistics  -->

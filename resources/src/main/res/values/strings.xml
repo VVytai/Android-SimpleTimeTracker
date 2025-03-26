@@ -68,6 +68,9 @@
     <string name="record_removed">Record %s removed</string>
     <string name="record_removed_undo">Undo</string>
     <string name="records_hint">Click on record to edit</string>
+    <string name="records_add_record">Add record</string>
+    <string name="records_switch_to_calendar">Switch to calendar view</string>
+    <string name="records_switch_to_list">Switch to list view</string>
     <string name="no_records_exist">Records will be shown here</string>
 
     <!--  Statistics  -->

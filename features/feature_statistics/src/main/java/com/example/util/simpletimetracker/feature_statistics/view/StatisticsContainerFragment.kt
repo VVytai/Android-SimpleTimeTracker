@@ -10,11 +10,13 @@ import com.example.util.simpletimetracker.core.di.BaseViewModelFactory
 import com.example.util.simpletimetracker.core.dialog.CustomRangeSelectionDialogListener
 import com.example.util.simpletimetracker.core.dialog.DateTimeDialogListener
 import com.example.util.simpletimetracker.core.dialog.DurationDialogListener
+import com.example.util.simpletimetracker.core.dialog.OptionsListDialogListener
 import com.example.util.simpletimetracker.core.sharedViewModel.MainTabsViewModel
 import com.example.util.simpletimetracker.core.utils.InsetConfiguration
 import com.example.util.simpletimetracker.core.view.SafeFragmentStateAdapter
 import com.example.util.simpletimetracker.core.viewData.RangesViewData
 import com.example.util.simpletimetracker.domain.record.model.Range
+import com.example.util.simpletimetracker.feature_base_adapter.optionsList.OptionsListViewData
 import com.example.util.simpletimetracker.feature_statistics.adapter.StatisticsContainerAdapter
 import com.example.util.simpletimetracker.feature_statistics.viewModel.StatisticsContainerViewModel
 import com.example.util.simpletimetracker.feature_statistics.viewModel.StatisticsSettingsViewModel
@@ -29,7 +31,8 @@ class StatisticsContainerFragment :
     BaseFragment<Binding>(),
     DateTimeDialogListener,
     DurationDialogListener,
-    CustomRangeSelectionDialogListener {
+    CustomRangeSelectionDialogListener,
+    OptionsListDialogListener {
 
     override val inflater: (LayoutInflater, ViewGroup?, Boolean) -> Binding =
         Binding::inflate
@@ -62,6 +65,7 @@ class StatisticsContainerFragment :
     }
 
     override fun initUx() = with(binding) {
+        btnStatisticsContainerOptions.setOnClick(throttle(viewModel::onOptionsClick))
         spinnerStatisticsContainer.onItemSelected = {
             viewModel.onRangeSelected(it)
             settingsViewModel.onRangeSelected(it)
@@ -102,6 +106,10 @@ class StatisticsContainerFragment :
     override fun onResume() {
         super.onResume()
         viewModel.onVisible()
+    }
+
+    override fun onOptionsItemClick(item: OptionsListViewData) {
+        viewModel.onOptionsItemClick(item)
     }
 
     private fun updateNavButtons(isVisible: Boolean) = with(binding) {

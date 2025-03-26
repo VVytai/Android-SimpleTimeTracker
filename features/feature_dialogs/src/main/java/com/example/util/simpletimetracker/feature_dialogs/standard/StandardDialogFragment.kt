@@ -47,7 +47,7 @@ class StandardDialogFragment :
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        listeners += context.findListeners<StandardDialogListener>()
+        listeners = context.findListeners<StandardDialogListener>()
     }
 
     override fun onClick(dialog: DialogInterface?, which: Int) {

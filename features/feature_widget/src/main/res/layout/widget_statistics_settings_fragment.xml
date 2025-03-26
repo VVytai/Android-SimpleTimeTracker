@@ -79,6 +79,7 @@
         android:id="@+id/btnWidgetStatisticsSettingsRange"
         style="@style/ContainerRangeSelectableMainButton"
         android:layout_width="match_parent"
+        app:cornerRadius="@dimen/button_corner_radius"
         app:layout_constraintBottom_toTopOf="@id/btnWidgetStatisticsSettingsSave"
         tools:text="@string/title_today" />
 

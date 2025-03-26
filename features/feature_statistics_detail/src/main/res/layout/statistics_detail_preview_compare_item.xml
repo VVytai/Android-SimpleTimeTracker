@@ -7,10 +7,7 @@
     app:cardCornerRadius="8dp"
     app:cardElevation="4dp"
     app:cardPreventCornerOverlap="false"
-    app:cardUseCompatPadding="true"
-    app:layout_constraintEnd_toStartOf="@id/cardStatisticsDetailFilter"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent">
+    app:cardUseCompatPadding="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"

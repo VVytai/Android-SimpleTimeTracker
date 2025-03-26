@@ -68,6 +68,9 @@
     <string name="record_removed">记录 %s 已删除</string>
     <string name="record_removed_undo">撤消</string>
     <string name="records_hint">点击记录进行编辑</string>
+    <string name="records_add_record">添加记录</string>
+    <string name="records_switch_to_calendar">切换到日历视图</string>
+    <string name="records_switch_to_list">切换到列表视图</string>
     <string name="no_records_exist">记录将在此处显示</string>
 
     <!--  Statistics  -->

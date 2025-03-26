@@ -8,6 +8,7 @@ import com.example.util.simpletimetracker.core.base.ViewModelDelegate
 import com.example.util.simpletimetracker.core.extension.lazySuspend
 import com.example.util.simpletimetracker.core.extension.set
 import com.example.util.simpletimetracker.core.extension.toParams
+import com.example.util.simpletimetracker.core.model.OptionsListItem
 import com.example.util.simpletimetracker.core.view.buttonsRowView.ButtonsRowViewData
 import com.example.util.simpletimetracker.core.viewData.RangesViewData
 import com.example.util.simpletimetracker.domain.base.Coordinates
@@ -16,6 +17,7 @@ import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
 import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.domain.record.model.RecordsFilter
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
+import com.example.util.simpletimetracker.feature_base_adapter.optionsList.OptionsListViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.adapter.StatisticsDetailBlock
 import com.example.util.simpletimetracker.feature_statistics_detail.adapter.StatisticsDetailPreviewsViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.customView.SeriesCalendarView
@@ -40,6 +42,7 @@ import com.example.util.simpletimetracker.feature_statistics_detail.viewModel.de
 import com.example.util.simpletimetracker.feature_views.spinner.CustomSpinner
 import com.example.util.simpletimetracker.navigation.Router
 import com.example.util.simpletimetracker.navigation.params.notification.PopupParams
+import com.example.util.simpletimetracker.navigation.params.screen.OptionsListParams
 import com.example.util.simpletimetracker.navigation.params.screen.RecordsAllParams
 import com.example.util.simpletimetracker.navigation.params.screen.RecordsFilterResultParams
 import com.example.util.simpletimetracker.navigation.params.screen.StatisticsDetailParams
@@ -105,14 +108,6 @@ class StatisticsDetailViewModel @Inject constructor(
 
     fun onVisible() {
         filterDelegate.onVisible()
-    }
-
-    fun onFilterClick() {
-        filterDelegate.onFilterClick()
-    }
-
-    fun onCompareClick() {
-        filterDelegate.onCompareClick()
     }
 
     fun onTypesFilterSelected(result: RecordsFilterResultParams) {
@@ -194,6 +189,25 @@ class StatisticsDetailViewModel @Inject constructor(
 
     fun onNextClick() {
         rangeDelegate.onNextClick()
+    }
+
+    fun onOptionsClick() {
+        val params = OptionsListParams(
+            type = OptionsListParams.Type.StatisticsDetailContainer,
+        )
+        router.navigate(params)
+    }
+
+    fun onOptionsItemClick(item: OptionsListViewData) {
+        val id = item.id as? OptionsListItem.StatisticsDetailContainer ?: return
+        when (id) {
+            is OptionsListItem.StatisticsDetailContainer.Filter -> {
+                filterDelegate.onFilterClick()
+            }
+            is OptionsListItem.StatisticsDetailContainer.Compare -> {
+                filterDelegate.onCompareClick()
+            }
+        }
     }
 
     fun onRangeSelected(item: CustomSpinner.CustomSpinnerItem) {

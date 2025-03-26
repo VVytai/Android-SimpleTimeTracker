@@ -68,6 +68,9 @@
     <string name="record_removed">기록 %s 삭제됨</string>
     <string name="record_removed_undo">되돌리기</string>
     <string name="records_hint">기록을 눌러 수정하세요</string>
+    <string name="records_add_record">기록 추가</string>
+    <string name="records_switch_to_calendar">캘린더 보기로 전환</string>
+    <string name="records_switch_to_list">목록 보기로 전환</string>
     <string name="no_records_exist">여기에서 기록을 확인하세요</string>
 
     <!--  Statistics  -->

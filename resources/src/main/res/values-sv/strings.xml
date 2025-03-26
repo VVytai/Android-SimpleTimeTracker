@@ -68,6 +68,9 @@
     <string name="record_removed">Händelse %s borttagen</string>
     <string name="record_removed_undo">Ångra</string>
     <string name="records_hint">Tryck på händelsen för att redigera</string>
+    <string name="records_add_record">Lägg till post</string>
+    <string name="records_switch_to_calendar">Byt till kalendervy</string>
+    <string name="records_switch_to_list">Byt till listvy</string>
     <string name="no_records_exist">Rekord kommer att visas här</string>
 
     <!--  Statistics  -->

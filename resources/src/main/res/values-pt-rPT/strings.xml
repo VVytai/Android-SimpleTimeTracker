@@ -68,6 +68,9 @@
     <string name="record_removed">Registo %s removido</string>
     <string name="record_removed_undo">Anular</string>
     <string name="records_hint">Clicar no registo para editar</string>
+    <string name="records_add_record">Adicionar registo</string>
+    <string name="records_switch_to_calendar">Mudar para a vista de calendário</string>
+    <string name="records_switch_to_list">Mudar para a vista de lista</string>
     <string name="no_records_exist">Os registos serão mostrados aqui</string>
 
     <!--  Statistics  -->

@@ -19,68 +19,19 @@
             android:background="?android:colorBackground"
             app:elevation="0dp">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <com.example.util.simpletimetracker.feature_views.StatisticsView
+                android:id="@+id/viewStatisticsDetailItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_scrollFlags="scroll">
-
-                <com.example.util.simpletimetracker.feature_views.StatisticsView
-                    android:id="@+id/viewStatisticsDetailItem"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
-                    app:cardElevation="@dimen/record_type_card_elevation"
-                    app:itemDuration=""
-                    app:itemPercent=""
-                    app:layout_constraintEnd_toStartOf="@id/cardStatisticsDetailCompare"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:itemColor="@color/red_800" />
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cardStatisticsDetailCompare"
-                    style="@style/SettingsCard"
-                    android:layout_width="44dp"
-                    android:layout_height="44dp"
-                    android:foreground="?selectableItemBackground"
-                    app:cardBackgroundColor="?appCardBackgroundColor"
-                    app:layout_constraintBottom_toBottomOf="@id/viewStatisticsDetailItem"
-                    app:layout_constraintDimensionRatio="h,1:1"
-                    app:layout_constraintEnd_toStartOf="@id/cardStatisticsDetailFilter"
-                    app:layout_constraintTop_toTopOf="@id/viewStatisticsDetailItem">
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:scaleType="center"
-                        android:src="@drawable/compare"
-                        android:tint="?appInactiveColor" />
-
-                </androidx.cardview.widget.CardView>
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cardStatisticsDetailFilter"
-                    style="@style/SettingsCard"
-                    android:layout_width="44dp"
-                    android:layout_height="44dp"
-                    android:layout_marginEnd="4dp"
-                    android:foreground="?selectableItemBackground"
-                    app:cardBackgroundColor="?appCardBackgroundColor"
-                    app:layout_constraintBottom_toBottomOf="@id/viewStatisticsDetailItem"
-                    app:layout_constraintDimensionRatio="h,1:1"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/viewStatisticsDetailItem">
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:scaleType="center"
-                        android:src="@drawable/filter"
-                        android:tint="?appInactiveColor" />
-
-                </androidx.cardview.widget.CardView>
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                android:layout_marginHorizontal="4dp"
+                app:cardElevation="@dimen/record_type_card_elevation"
+                app:itemDuration=""
+                app:itemPercent=""
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_scrollFlags="scroll"
+                tools:itemColor="@color/red_800" />
 
         </com.google.android.material.appbar.AppBarLayout>
 
@@ -106,10 +57,7 @@
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnStatisticsDetailPrevious"
         style="@style/ContainerRangeButton"
-        android:layout_width="0dp"
         android:layout_marginStart="8dp"
-        app:iconGravity="textStart"
-        app:iconPadding="0dp"
         app:layout_constraintBottom_toBottomOf="@id/btnStatisticsDetailToday"
         app:layout_constraintEnd_toStartOf="@id/btnStatisticsDetailToday"
         app:layout_constraintStart_toStartOf="parent" />
@@ -128,20 +76,26 @@
         style="@style/ContainerRangeSelectableMainButton"
         android:layout_width="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/btnStatisticsDetailNext"
+        app:layout_constraintEnd_toStartOf="@id/btnStatisticsDetailOptions"
         app:layout_constraintStart_toEndOf="@id/btnStatisticsDetailPrevious"
         tools:text="@string/title_today" />
 
     <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnStatisticsDetailOptions"
+        style="@style/ContainerRangeOptionsButton"
+        android:layout_marginEnd="8dp"
+        app:icon="@drawable/more"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/btnStatisticsDetailNext"
+        app:layout_constraintStart_toEndOf="@id/btnStatisticsDetailToday" />
+
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btnStatisticsDetailNext"
         style="@style/ContainerRangeButton"
-        android:layout_width="0dp"
         android:layout_marginEnd="8dp"
         app:icon="@drawable/arrow_right"
-        app:iconGravity="textEnd"
-        app:iconPadding="0dp"
         app:layout_constraintBottom_toBottomOf="@id/btnStatisticsDetailToday"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/btnStatisticsDetailToday" />
+        app:layout_constraintStart_toEndOf="@id/btnStatisticsDetailOptions" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

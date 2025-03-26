@@ -8,17 +8,17 @@ import androidx.fragment.app.viewModels
 import com.example.util.simpletimetracker.core.base.BaseFragment
 import com.example.util.simpletimetracker.core.di.BaseViewModelFactory
 import com.example.util.simpletimetracker.core.dialog.DateTimeDialogListener
+import com.example.util.simpletimetracker.core.dialog.OptionsListDialogListener
 import com.example.util.simpletimetracker.core.sharedViewModel.MainTabsViewModel
 import com.example.util.simpletimetracker.core.sharedViewModel.RemoveRecordViewModel
 import com.example.util.simpletimetracker.core.utils.InsetConfiguration
 import com.example.util.simpletimetracker.core.view.SafeFragmentStateAdapter
+import com.example.util.simpletimetracker.feature_base_adapter.optionsList.OptionsListViewData
 import com.example.util.simpletimetracker.feature_records.adapter.RecordsContainerAdapter
 import com.example.util.simpletimetracker.feature_records.model.RecordsContainerPosition
-import com.example.util.simpletimetracker.feature_records.model.RecordsOptionsSwitchState
 import com.example.util.simpletimetracker.feature_records.viewModel.RecordsContainerViewModel
 import com.example.util.simpletimetracker.feature_views.extension.setOnClick
 import com.example.util.simpletimetracker.feature_views.extension.setOnLongClick
-import com.example.util.simpletimetracker.feature_views.extension.visible
 import com.example.util.simpletimetracker.navigation.Router
 import com.example.util.simpletimetracker.navigation.params.notification.SnackBarParams
 import dagger.hilt.android.AndroidEntryPoint
@@ -28,7 +28,8 @@ import com.example.util.simpletimetracker.feature_records.databinding.RecordsCon
 @AndroidEntryPoint
 class RecordsContainerFragment :
     BaseFragment<Binding>(),
-    DateTimeDialogListener {
+    DateTimeDialogListener,
+    OptionsListDialogListener {
 
     override val inflater: (LayoutInflater, ViewGroup?, Boolean) -> Binding =
         Binding::inflate
@@ -64,11 +65,7 @@ class RecordsContainerFragment :
     }
 
     override fun initUx() = with(binding) {
-        btnRecordAdd.setOnClick(throttle(viewModel::onRecordAddClick))
-        btnRecordsContainerOptions.setOnClick(viewModel::onOptionsClick)
-        btnRecordsContainerFilter.setOnClick(throttle(viewModel::onFilterClick))
-        btnRecordsContainerShare.setOnClick(throttle(viewModel::onShareClick))
-        btnRecordsContainerCalendarSwitch.setOnClick(viewModel::onCalendarSwitchClick)
+        btnRecordAdd.setOnClick(throttle(viewModel::onOptionsClick))
         btnRecordsContainerPrevious.setOnClick(viewModel::onPreviousClick)
         btnRecordsContainerNext.setOnClick(viewModel::onNextClick)
         btnRecordsContainerToday.setOnClick(viewModel::onTodayClick)
@@ -79,7 +76,6 @@ class RecordsContainerFragment :
         with(viewModel) {
             title.observe(::updateTitle)
             position.observe(::setPosition)
-            optionsSwitchState.observe(::setOptionsSwitchState)
         }
         with(removeRecordViewModel) {
             message.observe(::showMessage)
@@ -91,6 +87,10 @@ class RecordsContainerFragment :
 
     override fun onDateTimeSet(timestamp: Long, tag: String?) {
         viewModel.onDateTimeSet(timestamp, tag)
+    }
+
+    override fun onOptionsItemClick(item: OptionsListViewData) {
+        viewModel.onOptionsItemClick(item)
     }
 
     private fun updateTitle(title: String) {
@@ -109,29 +109,6 @@ class RecordsContainerFragment :
             data.position + RecordsContainerAdapter.FIRST,
             data.animate && viewPagerSmoothScroll,
         )
-    }
-
-    private fun setOptionsSwitchState(
-        data: RecordsOptionsSwitchState,
-    ) = with(binding) {
-        when (data.state) {
-            is RecordsOptionsSwitchState.State.Opened -> {
-                btnRecordsContainerFilter.visible = true
-                btnRecordsContainerShare.visible = true
-                btnRecordsContainerCalendarSwitch.visible =
-                    data.calendarSwitchState is RecordsOptionsSwitchState.CalendarSwitchState.Visible
-            }
-            is RecordsOptionsSwitchState.State.Closed -> {
-                btnRecordsContainerFilter.visible = false
-                btnRecordsContainerShare.visible = false
-                btnRecordsContainerCalendarSwitch.visible = false
-            }
-        }
-
-        ivRecordsContainerOptions.setImageResource(data.moreIconResId)
-        if (data.calendarSwitchState is RecordsOptionsSwitchState.CalendarSwitchState.Visible) {
-            ivRecordsContainerCalendarSwitch.setImageResource(data.calendarSwitchState.iconResId)
-        }
     }
 
     private fun updateInsetConfiguration(isNavBatAtTheBottom: Boolean) {

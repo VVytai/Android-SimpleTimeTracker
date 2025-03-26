@@ -141,8 +141,6 @@ class StatisticsFragment :
     private fun buildAdapter(): BaseRecyclerAdapter {
         return BaseRecyclerAdapter(
             createStatisticsChartAdapterDelegate(
-                onFilterClick = viewModel::onFilterClick,
-                onShareClick = throttle(viewModel::onShareClick),
                 onChartAttached = viewModel::onChartAttached,
             ),
             createStatisticsInfoAdapterDelegate(
@@ -151,9 +149,7 @@ class StatisticsFragment :
             createStatisticsAdapterDelegate(
                 onItemClick = throttle(viewModel::onItemClick),
             ),
-            createStatisticsEmptyAdapterDelegate(
-                onFilterClick = viewModel::onFilterClick,
-            ),
+            createStatisticsEmptyAdapterDelegate(),
             createStatisticsGoalAdapterDelegate(viewModel::onGoalClick),
             createStatisticsTitleAdapterDelegate(),
             createHintAdapterDelegate(),

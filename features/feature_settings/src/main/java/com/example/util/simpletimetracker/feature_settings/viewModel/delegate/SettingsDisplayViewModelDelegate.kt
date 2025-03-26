@@ -256,7 +256,6 @@ class SettingsDisplayViewModelDelegate @Inject constructor(
             val newValue = !prefsInteractor.getShowCalendarButtonOnRecordsTab()
             prefsInteractor.setShowCalendarButtonOnRecordsTab(newValue)
             parent?.updateContent()
-            recordsContainerUpdateInteractor.sendShowCalendarSwitchUpdated()
         }
     }
 

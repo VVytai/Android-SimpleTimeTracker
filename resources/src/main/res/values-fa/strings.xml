@@ -68,6 +68,9 @@
     <string name="record_removed">تاریخچه %s حذف شد</string>
     <string name="record_removed_undo">ابطال</string>
     <string name="records_hint">تاریخچه را برای ویرایش لمس کنید</string>
+    <string name="records_add_record">افزودن رکورد</string>
+    <string name="records_switch_to_calendar">تغییر به نمای تقویم</string>
+    <string name="records_switch_to_list">تغییر به نمای فهرست</string>
     <string name="no_records_exist">سوابق در اینجا نشان داده خواهد شد</string>
 
     <!--  Statistics  -->

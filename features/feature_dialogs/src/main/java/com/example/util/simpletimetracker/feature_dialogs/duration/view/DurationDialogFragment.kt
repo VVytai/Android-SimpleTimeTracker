@@ -29,14 +29,14 @@ class DurationDialogFragment : BaseBottomSheetFragment<Binding>() {
 
     private val viewModel: DurationPickerViewModel by viewModels()
 
-    private val listeners: MutableList<DurationDialogListener> = mutableListOf()
+    private var listeners: List<DurationDialogListener> = mutableListOf()
     private val params: DurationDialogParams by fragmentArgumentDelegate(
         key = ARGS_PARAMS, default = DurationDialogParams(),
     )
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        listeners += context.findListeners<DurationDialogListener>()
+        listeners = context.findListeners<DurationDialogListener>()
     }
 
     override fun initDialog() {

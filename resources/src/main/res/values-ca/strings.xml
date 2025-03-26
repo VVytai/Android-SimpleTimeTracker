@@ -68,6 +68,9 @@
     <string name="record_removed">Enregistrament %s eliminat</string>
     <string name="record_removed_undo">Desfés</string>
     <string name="records_hint">Feu clic en un enregistrament per editar-lo</string>
+    <string name="records_add_record">Afegeix un registre</string>
+    <string name="records_switch_to_calendar">Canvia a la vista de calendari</string>
+    <string name="records_switch_to_list">Canvia a la vista de llista</string>
     <string name="no_records_exist">Els registres es mostraran aquí</string>
 
     <!--  Statistics  -->

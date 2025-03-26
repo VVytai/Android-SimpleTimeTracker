@@ -68,6 +68,9 @@
     <string name="record_removed">Registrazione %s rimossa</string>
     <string name="record_removed_undo">Annulla</string>
     <string name="records_hint">Clicca su una registrazione per modificare</string>
+    <string name="records_add_record">Aggiungi record</string>
+    <string name="records_switch_to_calendar">Passa alla vista calendario</string>
+    <string name="records_switch_to_list">Passa alla vista elenco</string>
     <string name="no_records_exist">I record verranno mostrati qui</string>
 
     <!--  Statistics  -->

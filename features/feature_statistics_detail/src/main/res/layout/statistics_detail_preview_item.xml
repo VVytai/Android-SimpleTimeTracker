@@ -9,9 +9,6 @@
     app:cardElevation="4dp"
     app:cardPreventCornerOverlap="false"
     app:cardUseCompatPadding="true"
-    app:layout_constraintEnd_toStartOf="@id/cardStatisticsDetailFilter"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent"
     tools:cardBackgroundColor="@color/black">
 
     <androidx.constraintlayout.widget.ConstraintLayout

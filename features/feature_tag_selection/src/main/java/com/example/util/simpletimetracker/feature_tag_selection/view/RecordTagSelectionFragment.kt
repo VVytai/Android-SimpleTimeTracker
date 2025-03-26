@@ -53,11 +53,11 @@ class RecordTagSelectionFragment : BaseFragment<Binding>() {
     private val params: RecordTagSelectionParams by fragmentArgumentDelegate(
         key = ARGS_PARAMS, default = RecordTagSelectionParams.Empty,
     )
-    private val listeners: MutableList<OnTagSelectedListener> = mutableListOf()
+    private var listeners: List<OnTagSelectedListener> = mutableListOf()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        listeners += context.findListeners<OnTagSelectedListener>()
+        listeners = context.findListeners<OnTagSelectedListener>()
     }
 
     override fun initUi(): Unit = with(binding) {

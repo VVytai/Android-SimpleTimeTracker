@@ -68,6 +68,9 @@
     <string name="record_removed">Rekor %s dihapuskan</string>
     <string name="record_removed_undo">Balikkan</string>
     <string name="records_hint">Ketuk pada rekor untuk menyunting</string>
+    <string name="records_add_record">Tambahkan catatan</string>
+    <string name="records_switch_to_calendar">Beralih ke tampilan kalender</string>
+    <string name="records_switch_to_list">Beralih ke tampilan daftar</string>
     <string name="no_records_exist">Rekaman akan ditampilkan di sini</string>
 
     <!--  Statistics  -->

@@ -12,6 +12,7 @@ import com.example.util.simpletimetracker.feature_dialogs.dateTime.DateTimeDialo
 import com.example.util.simpletimetracker.feature_dialogs.duration.view.DurationDialogFragment
 import com.example.util.simpletimetracker.feature_dialogs.emojiSelection.view.EmojiSelectionDialogFragment
 import com.example.util.simpletimetracker.feature_dialogs.helpDialog.HelpDialogFragment
+import com.example.util.simpletimetracker.feature_dialogs.optionsDialog.OptionsListDialogFragment
 import com.example.util.simpletimetracker.feature_dialogs.recordQuickActions.view.RecordQuickActionsDialogFragment
 import com.example.util.simpletimetracker.feature_dialogs.recordTagSelection.RecordTagSelectionDialogFragment
 import com.example.util.simpletimetracker.feature_dialogs.typesSelection.view.TypesSelectionDialogFragment
@@ -42,6 +43,7 @@ import com.example.util.simpletimetracker.navigation.params.screen.PartialRestor
 import com.example.util.simpletimetracker.navigation.params.screen.PomodoroSettingsParams
 import com.example.util.simpletimetracker.navigation.params.screen.RecordQuickActionsParams
 import com.example.util.simpletimetracker.navigation.params.screen.RecordTagSelectionParams
+import com.example.util.simpletimetracker.navigation.params.screen.OptionsListParams
 import com.example.util.simpletimetracker.navigation.params.screen.TypesSelectionDialogParams
 import com.example.util.simpletimetracker.navigation.params.screen.RecordsFilterParams
 import com.example.util.simpletimetracker.navigation.params.screen.StandardDialogParams
@@ -302,6 +304,16 @@ class NavigationDialogMapModule {
         return NavigationData(
             R.id.partialRestoreSelectionDialogFragment,
             bundleCreatorDelegate(PartialRestoreSelectionFragment::createBundle),
+        )
+    }
+
+    @IntoMap
+    @Provides
+    @ScreenKey(OptionsListParams::class)
+    fun optionsListFragment(): NavigationData {
+        return NavigationData(
+            R.id.optionsListDialogFragment,
+            bundleCreatorDelegate(OptionsListDialogFragment::createBundle),
         )
     }
 }
