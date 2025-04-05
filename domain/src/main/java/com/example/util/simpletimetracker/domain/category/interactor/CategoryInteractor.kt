@@ -38,6 +38,12 @@ class CategoryInteractor @Inject constructor(
     }
 
     suspend fun remove(id: Long) {
+        prefsInteractor.getFilteredCategories().toMutableList()
+            .apply { remove(id) }
+            .let { prefsInteractor.setFilteredCategories(it) }
+        prefsInteractor.getFilteredCategoriesOnList().toMutableList()
+            .apply { remove(id) }
+            .let { prefsInteractor.setFilteredCategoriesOnList(it) }
         recordTypeCategoryRepo.removeAll(id)
         recordTypeGoalRepo.removeByCategory(id)
         categoryRepo.remove(id)

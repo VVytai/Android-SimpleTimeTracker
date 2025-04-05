@@ -61,6 +61,14 @@ class PrefsInteractor @Inject constructor(
         prefsRepo.listFilterType = mapFromChartFilterType(chartFilterType)
     }
 
+    suspend fun getListFilteredIds(filterType: ChartFilterType): List<Long> = withContext(Dispatchers.IO) {
+        when (filterType) {
+            ChartFilterType.ACTIVITY -> getFilteredTypesOnList()
+            ChartFilterType.CATEGORY -> getFilteredCategoriesOnList()
+            ChartFilterType.RECORD_TAG -> getFilteredTagsOnList()
+        }
+    }
+
     suspend fun getFilteredTypes(): List<Long> = withContext(Dispatchers.IO) {
         prefsRepo.recordTypesFilteredOnChart
             .mapNotNull(String::toLongOrNull)
@@ -97,6 +105,14 @@ class PrefsInteractor @Inject constructor(
 
     suspend fun setChartFilterType(chartFilterType: ChartFilterType) = withContext(Dispatchers.IO) {
         prefsRepo.chartFilterType = mapFromChartFilterType(chartFilterType)
+    }
+
+    suspend fun getChartFilteredIds(filterType: ChartFilterType): List<Long> = withContext(Dispatchers.IO) {
+        when (filterType) {
+            ChartFilterType.ACTIVITY -> getFilteredTypes()
+            ChartFilterType.CATEGORY -> getFilteredCategories()
+            ChartFilterType.RECORD_TAG -> getFilteredTags()
+        }
     }
 
     suspend fun getCardOrder(): CardOrder = withContext(Dispatchers.IO) {

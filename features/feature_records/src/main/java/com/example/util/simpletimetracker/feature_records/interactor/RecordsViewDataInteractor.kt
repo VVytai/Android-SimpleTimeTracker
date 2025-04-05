@@ -81,12 +81,7 @@ class RecordsViewDataInteractor @Inject constructor(
         val calendarDayCount = prefsInteractor.getDaysInCalendar().count
         val daysCountInShift = if (isCalendarView) calendarDayCount else 1
         val recordTypeCategories = suspend { recordTypeCategoryInteractor.getAll() }
-
-        val filteredIds = when (filterType) {
-            ChartFilterType.ACTIVITY -> prefsInteractor.getFilteredTypesOnList()
-            ChartFilterType.CATEGORY -> prefsInteractor.getFilteredCategoriesOnList()
-            ChartFilterType.RECORD_TAG -> prefsInteractor.getFilteredTagsOnList()
-        }
+        val filteredIds = prefsInteractor.getListFilteredIds(filterType)
 
         return@withContext (daysCountInShift - 1 downTo 0).map { dayInShift ->
             val actualShift = calendarToListShiftMapper.mapCalendarToListShift(

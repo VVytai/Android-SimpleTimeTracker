@@ -7,7 +7,7 @@
     android:background="?selectableItemBackground">
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/tvItemOptionsListIcon"
+        android:id="@+id/cardItemOptionsListIcon"
         android:layout_width="32dp"
         android:layout_height="32dp"
         android:layout_marginStart="12dp"
@@ -30,6 +30,22 @@
             tools:src="@drawable/list" />
 
     </androidx.cardview.widget.CardView>
+
+    <Space
+        android:id="@+id/spaceItemOptionsList"
+        android:layout_width="10dp"
+        android:layout_height="10dp"
+        app:layout_constraintEnd_toEndOf="@id/cardItemOptionsListIcon"
+        app:layout_constraintTop_toTopOf="@id/cardItemOptionsListIcon" />
+
+    <com.example.util.simpletimetracker.feature_views.GoalCheckmarkView
+        android:id="@+id/viewItemOptionsListCheckmark"
+        android:layout_width="14dp"
+        android:layout_height="14dp"
+        app:itemCheckState="hidden"
+        app:layout_constraintBottom_toBottomOf="@id/spaceItemOptionsList"
+        app:layout_constraintStart_toStartOf="@id/spaceItemOptionsList"
+        tools:itemCheckState="goalNotReached" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tvItemOptionsList"

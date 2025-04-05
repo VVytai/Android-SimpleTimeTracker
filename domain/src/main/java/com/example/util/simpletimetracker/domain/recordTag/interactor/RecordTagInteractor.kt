@@ -78,6 +78,12 @@ class RecordTagInteractor @Inject constructor(
     }
 
     suspend fun remove(id: Long) {
+        prefsInteractor.getFilteredTags().toMutableList()
+            .apply { remove(id) }
+            .let { prefsInteractor.setFilteredTags(it) }
+        prefsInteractor.getFilteredTagsOnList().toMutableList()
+            .apply { remove(id) }
+            .let { prefsInteractor.setFilteredTagsOnList(it) }
         repo.remove(id)
         recordToRecordTagRepo.removeAllByTagId(id)
         runningRecordToRecordTagRepo.removeAllByTagId(id)
