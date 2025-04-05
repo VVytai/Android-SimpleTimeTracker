@@ -218,6 +218,8 @@
     <string name="types_compare_hint">Perbandingan</string>
     <string name="types_filter_show_all">Tampilkan semua</string>
     <string name="types_filter_hide_all">Sembunyikan semua</string>
+    <string name="show">Tampilkan</string>
+    <string name="hide">Sembunyikan</string>
     <string name="chart_filter_type_hint">Jenis statistik</string>
     <string name="chart_filter_categories_empty">Tidak ada kegiatan yang ditambahkan</string>
 

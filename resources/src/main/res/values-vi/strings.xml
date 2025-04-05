@@ -218,6 +218,8 @@
     <string name="types_compare_hint">So sánh</string>
     <string name="types_filter_show_all">Hiển thị tất cả</string>
     <string name="types_filter_hide_all">Ẩn tất cả</string>
+    <string name="show">Hiển thị</string>
+    <string name="hide">Ẩn</string>
     <string name="chart_filter_type_hint">Loại thống kê</string>
     <string name="chart_filter_categories_empty">Chưa thêm thẻ nào</string>
 

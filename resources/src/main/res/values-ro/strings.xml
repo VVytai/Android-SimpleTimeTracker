@@ -218,6 +218,8 @@
     <string name="types_compare_hint">Comparație</string>
     <string name="types_filter_show_all">Arată toate</string>
     <string name="types_filter_hide_all">Ascunde toate</string>
+    <string name="show">Afișează</string>
+    <string name="hide">Ascunde</string>
     <string name="chart_filter_type_hint">Tipuri de statistică</string>
     <string name="chart_filter_categories_empty">Nu sunt etichete adăugate</string>
 

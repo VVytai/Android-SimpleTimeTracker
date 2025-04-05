@@ -218,6 +218,8 @@
     <string name="types_compare_hint">Porównanie</string>
     <string name="types_filter_show_all">Pokaż wszystkie</string>
     <string name="types_filter_hide_all">Ukryj wszystkie</string>
+    <string name="show">Pokaż</string>
+    <string name="hide">Ukryj</string>
     <string name="chart_filter_type_hint">Typ statystyki</string>
     <string name="chart_filter_categories_empty">Brak dodanych tagów</string>
 

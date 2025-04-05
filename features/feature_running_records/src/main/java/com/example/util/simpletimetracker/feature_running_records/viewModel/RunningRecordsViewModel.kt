@@ -22,6 +22,7 @@ import com.example.util.simpletimetracker.domain.record.interactor.RunningRecord
 import com.example.util.simpletimetracker.domain.record.interactor.UpdateRunningRecordFromChangeScreenInteractor
 import com.example.util.simpletimetracker.domain.record.model.RecordDataSelectionDialogResult
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
+import com.example.util.simpletimetracker.feature_base_adapter.activityFilter.ActivityFilterAddViewData
 import com.example.util.simpletimetracker.feature_base_adapter.activityFilter.ActivityFilterViewData
 import com.example.util.simpletimetracker.feature_base_adapter.loader.LoaderViewData
 import com.example.util.simpletimetracker.feature_base_adapter.record.RecordViewData
@@ -249,10 +250,19 @@ class RunningRecordsViewModel @Inject constructor(
         )
     }
 
-    fun onAddActivityFilterClick() = viewModelScope.launch {
-        router.navigate(
-            data = ChangeActivityFilterParams.New,
-        )
+    fun onActivityFilterSpecialClick(item: ActivityFilterAddViewData) = viewModelScope.launch {
+        when (item.type) {
+            ActivityFilterAddViewData.Type.ADD -> {
+                router.navigate(
+                    data = ChangeActivityFilterParams.New,
+                )
+            }
+            ActivityFilterAddViewData.Type.TOGGLE_VISIBILITY -> {
+                val newState = !prefsInteractor.getIsActivityFiltersCollapsed()
+                prefsInteractor.setIsActivityFiltersCollapsed(newState)
+                updateRunningRecords()
+            }
+        }
     }
 
     fun onVisible() {

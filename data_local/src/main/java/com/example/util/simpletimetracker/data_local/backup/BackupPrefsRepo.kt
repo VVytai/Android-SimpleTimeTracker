@@ -12,6 +12,7 @@ import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Compani
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_CARD_ORDER
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_CARD_ORDER_MANUAL
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_CATEGORIES_TYPES_FILTERED_ON_CHART
+import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_CATEGORIES_TYPES_FILTERED_ON_LIST
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_CATEGORY_ORDER
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_CATEGORY_ORDER_MANUAL
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_CHART_FILTER_TYPE
@@ -33,9 +34,11 @@ import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Compani
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_INACTIVITY_REMINDER_DND_START
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_INACTIVITY_REMINDER_DURATION
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_INACTIVITY_REMINDER_RECURRENT
+import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_IS_ACTIVITY_FILTERS_COLLAPSED
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_IS_NAV_BAR_AT_THE_BOTTOM
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_KEEP_SCREEN_ON
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_KEEP_STATISTICS_RANGE
+import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_LIST_FILTER_TYPE
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_NUMBER_OF_CARDS
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_POMODORO_BREAK_TIME
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_POMODORO_FOCUS_TIME
@@ -71,6 +74,7 @@ import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Compani
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_STATISTICS_RANGE_CUSTOM_START
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_STATISTICS_RANGE_LAST_DAYS
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_TAGS_FILTERED_ON_CHART
+import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_TAGS_FILTERED_ON_LIST
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_TAG_ORDER
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_TAG_ORDER_MANUAL
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_UNTRACKED_RANGE_ENABLED
@@ -132,6 +136,9 @@ class BackupPrefsRepo @Inject constructor(
     private fun getProcessorsList(): List<PrefsProcessor<*>> = with(prefsRepoImpl) {
         return listOf(
             PrefsProcessor(KEY_RECORD_TYPES_FILTERED_ON_LIST, ::recordTypesFilteredOnList),
+            PrefsProcessor(KEY_CATEGORIES_TYPES_FILTERED_ON_LIST, ::categoriesFilteredOnList),
+            PrefsProcessor(KEY_TAGS_FILTERED_ON_LIST, ::tagsFilteredOnList),
+            PrefsProcessor(KEY_LIST_FILTER_TYPE, ::listFilterType),
             PrefsProcessor(KEY_RECORD_TYPES_FILTERED_ON_CHART, ::recordTypesFilteredOnChart),
             PrefsProcessor(KEY_CATEGORIES_TYPES_FILTERED_ON_CHART, ::categoriesFilteredOnChart),
             PrefsProcessor(KEY_TAGS_FILTERED_ON_CHART, ::tagsFilteredOnChart),
@@ -167,6 +174,7 @@ class BackupPrefsRepo @Inject constructor(
             PrefsProcessor(KEY_REVERSE_ORDER_IN_CALENDAR, ::reverseOrderInCalendar),
             PrefsProcessor(KEY_DAYS_IN_CALENDAR, ::daysInCalendar),
             PrefsProcessor(KEY_SHOW_ACTIVITY_FILTERS, ::showActivityFilters),
+            PrefsProcessor(KEY_IS_ACTIVITY_FILTERS_COLLAPSED, ::isActivityFiltersCollapsed),
             PrefsProcessor(KEY_ENABLE_REPEAT_BUTTON, ::enableRepeatButton),
             PrefsProcessor(KEY_ENABLE_POMODORO_MODE, ::enablePomodoroMode),
             PrefsProcessor(KEY_POMODORO_FOCUS_TIME, ::pomodoroFocusTime),

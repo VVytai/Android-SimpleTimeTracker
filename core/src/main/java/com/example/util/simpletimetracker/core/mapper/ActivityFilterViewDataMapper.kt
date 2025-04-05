@@ -49,7 +49,24 @@ class ActivityFilterViewDataMapper @Inject constructor(
         isDarkTheme: Boolean,
     ): ActivityFilterAddViewData {
         return ActivityFilterAddViewData(
+            type = ActivityFilterAddViewData.Type.ADD,
             name = resourceRepo.getString(R.string.running_records_add_filter),
+            color = colorMapper.toInactiveColor(isDarkTheme),
+        )
+    }
+
+    fun mapToActivityFilterToggleItem(
+        isFiltersCollapsed: Boolean,
+        isDarkTheme: Boolean,
+    ): ActivityFilterAddViewData {
+        val nameResId = if (isFiltersCollapsed) {
+            R.string.show
+        } else {
+            R.string.hide
+        }
+        return ActivityFilterAddViewData(
+            type = ActivityFilterAddViewData.Type.TOGGLE_VISIBILITY,
+            name = resourceRepo.getString(nameResId),
             color = colorMapper.toInactiveColor(isDarkTheme),
         )
     }

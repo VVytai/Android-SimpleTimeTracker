@@ -25,6 +25,7 @@ import com.example.util.simpletimetracker.domain.record.model.RecordDataSelectio
 import com.example.util.simpletimetracker.domain.recordType.model.RecordType
 import com.example.util.simpletimetracker.domain.record.model.RunningRecord
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
+import com.example.util.simpletimetracker.feature_base_adapter.activityFilter.ActivityFilterAddViewData
 import com.example.util.simpletimetracker.feature_base_adapter.activityFilter.ActivityFilterViewData
 import com.example.util.simpletimetracker.feature_base_adapter.divider.DividerViewData
 import com.example.util.simpletimetracker.feature_base_adapter.loader.LoaderViewData
@@ -121,6 +122,19 @@ class WidgetUniversalViewModel @Inject constructor(
         }
     }
 
+    fun onActivityFilterSpecialClick(item: ActivityFilterAddViewData) = viewModelScope.launch {
+        when (item.type) {
+            ActivityFilterAddViewData.Type.ADD -> {
+                // Currently not supported.
+            }
+            ActivityFilterAddViewData.Type.TOGGLE_VISIBILITY -> {
+                val newState = !prefsInteractor.getIsActivityFiltersCollapsed()
+                prefsInteractor.setIsActivityFiltersCollapsed(newState)
+                updateRecordTypesViewData()
+            }
+        }
+    }
+
     fun onTagSelected() {
         updateRecordTypesViewData()
         exit.set(Unit)
@@ -159,6 +173,7 @@ class WidgetUniversalViewModel @Inject constructor(
         val numberOfCards = prefsInteractor.getNumberOfCards()
         val isDarkTheme = prefsInteractor.getDarkMode()
         val retroactiveTrackingMode = prefsInteractor.getRetroactiveTrackingMode()
+        val isFiltersCollapsed = prefsInteractor.getIsActivityFiltersCollapsed()
         val goals = filterGoalsByDayOfWeekInteractor
             .execute(recordTypeGoalInteractor.getAllTypeGoals())
             .groupBy { it.idData.value }
@@ -176,6 +191,7 @@ class WidgetUniversalViewModel @Inject constructor(
         val filtersViewData = activityFilterViewDataInteractor.getFilterViewData(
             filter = filter,
             isDarkTheme = isDarkTheme,
+            isFiltersCollapsed = isFiltersCollapsed,
             appendAddButton = false,
         ).let {
             if (it.isNotEmpty()) it + DividerViewData(1) else it

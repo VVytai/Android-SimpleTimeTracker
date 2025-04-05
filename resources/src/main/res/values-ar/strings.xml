@@ -218,6 +218,8 @@
     <string name="types_compare_hint">المقارنة</string>
     <string name="types_filter_show_all">إظهار الكل</string>
     <string name="types_filter_hide_all">إخفاء الكل</string>
+    <string name="show">إظهار</string>
+    <string name="hide">إخفاء</string>
     <string name="chart_filter_type_hint">نوع الإحصاء</string>
     <string name="chart_filter_categories_empty">لا توجد وسوم مضافة</string>
 

@@ -336,6 +336,14 @@ class PrefsInteractor @Inject constructor(
         prefsRepo.showActivityFilters = isEnabled
     }
 
+    suspend fun getIsActivityFiltersCollapsed(): Boolean = withContext(Dispatchers.IO) {
+        prefsRepo.isActivityFiltersCollapsed
+    }
+
+    suspend fun setIsActivityFiltersCollapsed(isEnabled: Boolean) = withContext(Dispatchers.IO) {
+        prefsRepo.isActivityFiltersCollapsed = isEnabled
+    }
+
     suspend fun getEnableRepeatButton(): Boolean = withContext(Dispatchers.IO) {
         prefsRepo.enableRepeatButton
     }

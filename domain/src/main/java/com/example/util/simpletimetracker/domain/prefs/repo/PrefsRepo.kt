@@ -64,6 +64,8 @@ interface PrefsRepo {
 
     var showActivityFilters: Boolean
 
+    var isActivityFiltersCollapsed: Boolean
+
     var enableRepeatButton: Boolean
 
     var enablePomodoroMode: Boolean

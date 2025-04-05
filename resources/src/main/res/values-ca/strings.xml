@@ -218,6 +218,8 @@
     <string name="types_compare_hint">Comparació</string>
     <string name="types_filter_show_all">Mostra tot</string>
     <string name="types_filter_hide_all">Amaga tot</string>
+    <string name="show">Mostra</string>
+    <string name="hide">Amaga</string>
     <string name="chart_filter_type_hint">Tipus d\'estadístiques</string>
     <string name="chart_filter_categories_empty">No s\'han afegit etiquetes</string>
 

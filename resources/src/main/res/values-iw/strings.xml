@@ -218,6 +218,8 @@
     <string name="types_compare_hint">השוואה</string>
     <string name="types_filter_show_all">הצג הכל</string>
     <string name="types_filter_hide_all">הסתר הכל</string>
+    <string name="show">הצג</string>
+    <string name="hide">הסתר</string>
     <string name="chart_filter_type_hint">סוג סטטיסטיקה</string>
     <string name="chart_filter_categories_empty">לא נוספו תגיות</string>
 

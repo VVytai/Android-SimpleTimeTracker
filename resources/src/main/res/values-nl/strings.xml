@@ -218,6 +218,8 @@
     <string name="types_compare_hint">Vergelijking</string>
     <string name="types_filter_show_all">Alles tonen</string>
     <string name="types_filter_hide_all">Alles verbergen</string>
+    <string name="show">Weergeven</string>
+    <string name="hide">Verbergen</string>
     <string name="chart_filter_type_hint">Statistiektype</string>
     <string name="chart_filter_categories_empty">Geen labels toegevoegd</string>
 

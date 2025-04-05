@@ -218,6 +218,8 @@
     <string name="types_compare_hint">مقایسه</string>
     <string name="types_filter_show_all">نمایش همه</string>
     <string name="types_filter_hide_all">مخفی کردن همه</string>
+    <string name="show">نمایش</string>
+    <string name="hide">مخفی کردن</string>
     <string name="chart_filter_type_hint">نوع آمار ها</string>
     <string name="chart_filter_categories_empty">برچسبی اضافه نشده</string>
 

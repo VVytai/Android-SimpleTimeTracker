@@ -218,6 +218,8 @@
     <string name="types_compare_hint">比較</string>
     <string name="types_filter_show_all">全部顯示</string>
     <string name="types_filter_hide_all">隱藏全部</string>
+    <string name="show">顯示</string>
+    <string name="hide">隱藏</string>
     <string name="chart_filter_type_hint">統計類型</string>
     <string name="chart_filter_categories_empty">未加入標記</string>
 

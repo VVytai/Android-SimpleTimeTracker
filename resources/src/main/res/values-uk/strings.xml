@@ -218,6 +218,8 @@
     <string name="types_compare_hint">Порівняння</string>
     <string name="types_filter_show_all">Показати все</string>
     <string name="types_filter_hide_all">Приховати все</string>
+    <string name="show">Показати</string>
+    <string name="hide">Приховати</string>
     <string name="chart_filter_type_hint">Тип статистики</string>
     <string name="chart_filter_categories_empty">Теги не додані</string>
 

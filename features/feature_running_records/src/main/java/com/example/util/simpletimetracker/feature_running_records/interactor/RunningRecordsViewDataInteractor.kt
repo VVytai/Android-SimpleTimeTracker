@@ -54,6 +54,7 @@ class RunningRecordsViewDataInteractor @Inject constructor(
         val showRepeatButton = prefsInteractor.getEnableRepeatButton()
         val isPomodoroStarted = prefsInteractor.getPomodoroModeStartedTimestampMs() != 0L
         val retroactiveTrackingModeEnabled = prefsInteractor.getRetroactiveTrackingMode()
+        val isFiltersCollapsed = prefsInteractor.getIsActivityFiltersCollapsed()
         val goals = filterGoalsByDayOfWeekInteractor
             .execute(recordTypeGoalInteractor.getAllTypeGoals())
             .groupBy { it.idData.value }
@@ -118,6 +119,7 @@ class RunningRecordsViewDataInteractor @Inject constructor(
         val filtersViewData = activityFilterViewDataInteractor.getFilterViewData(
             filter = filter,
             isDarkTheme = isDarkTheme,
+            isFiltersCollapsed = isFiltersCollapsed,
             appendAddButton = true,
         ).let {
             if (it.isNotEmpty()) it + DividerViewData(2) else it

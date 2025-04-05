@@ -28,6 +28,7 @@ class ActivityFilterViewDataInteractor @Inject constructor(
     fun getFilterViewData(
         filter: Filter,
         isDarkTheme: Boolean,
+        isFiltersCollapsed: Boolean,
         appendAddButton: Boolean,
     ): List<ViewHolderType> {
         return when (filter) {
@@ -35,22 +36,30 @@ class ActivityFilterViewDataInteractor @Inject constructor(
                 emptyList()
             }
             is Filter.ApplyFilter -> {
-                filter.activityFilters
-                    .map {
+                if (filter.activityFilters.isEmpty()) return emptyList()
+                val result = mutableListOf<ViewHolderType>()
+                if (!isFiltersCollapsed) {
+                    result += filter.activityFilters.map {
                         activityFilterViewDataMapper.map(
                             filter = it,
                             isDarkTheme = isDarkTheme,
                         )
                     }
-                    .let {
-                        if (appendAddButton) {
-                            it + activityFilterViewDataMapper.mapToActivityFilterAddItem(
-                                isDarkTheme = isDarkTheme,
-                            )
-                        } else {
-                            it
-                        }
-                    }
+                }
+                // Show filters if there are several of them,
+                // or if they are collapsed, just in case (collapse and remove all but one).
+                if (filter.activityFilters.size > 1 || isFiltersCollapsed) {
+                    result += activityFilterViewDataMapper.mapToActivityFilterToggleItem(
+                        isFiltersCollapsed = isFiltersCollapsed,
+                        isDarkTheme = isDarkTheme,
+                    )
+                }
+                if (appendAddButton && !isFiltersCollapsed) {
+                    result += activityFilterViewDataMapper.mapToActivityFilterAddItem(
+                        isDarkTheme = isDarkTheme,
+                    )
+                }
+                result
             }
         }
     }
