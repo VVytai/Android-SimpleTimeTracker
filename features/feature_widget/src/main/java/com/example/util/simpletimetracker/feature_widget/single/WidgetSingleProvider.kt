@@ -5,6 +5,7 @@ import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
 import android.os.SystemClock
 import android.view.LayoutInflater
 import android.view.View
@@ -36,8 +37,10 @@ import com.example.util.simpletimetracker.domain.record.model.RecordDataSelectio
 import com.example.util.simpletimetracker.feature_views.ColorUtils
 import com.example.util.simpletimetracker.feature_views.GoalCheckmarkView
 import com.example.util.simpletimetracker.feature_views.RecordTypeView
+import com.example.util.simpletimetracker.feature_views.extension.dpToPx
 import com.example.util.simpletimetracker.feature_views.extension.getBitmapFromView
 import com.example.util.simpletimetracker.feature_views.extension.measureExactly
+import com.example.util.simpletimetracker.feature_views.extension.pxToDp
 import com.example.util.simpletimetracker.feature_views.extension.setAllMargins
 import com.example.util.simpletimetracker.feature_views.viewData.RecordTypeIcon
 import com.example.util.simpletimetracker.feature_widget.R
@@ -131,6 +134,16 @@ class WidgetSingleProvider : AppWidgetProvider() {
         }
     }
 
+    override fun onAppWidgetOptionsChanged(
+        context: Context?,
+        appWidgetManager: AppWidgetManager?,
+        appWidgetId: Int,
+        newOptions: Bundle?,
+    ) {
+        super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions)
+        updateAppWidget(context, appWidgetManager, appWidgetId)
+    }
+
     private fun updateAppWidget(
         context: Context?,
         appWidgetManager: AppWidgetManager?,
@@ -213,7 +226,8 @@ class WidgetSingleProvider : AppWidgetProvider() {
                 )
             }
 
-            measureView(context, view)
+            val options = appWidgetManager.getAppWidgetOptions(appWidgetId)
+            measureView(context, options, view)
             val bitmap = view.getBitmapFromView()
 
             val views = RemoteViews(context.packageName, R.layout.widget_layout)
@@ -315,9 +329,18 @@ class WidgetSingleProvider : AppWidgetProvider() {
         views.setViewVisibility(chronometerId, View.VISIBLE)
     }
 
-    private fun measureView(context: Context, view: View) {
-        var width = context.resources.getDimensionPixelSize(R.dimen.record_type_card_width)
-        var height = context.resources.getDimensionPixelSize(R.dimen.record_type_card_height)
+    private fun measureView(
+        context: Context,
+        options: Bundle,
+        view: View,
+    ) {
+        val defaultWidth = context.resources.getDimensionPixelSize(R.dimen.record_type_card_width)
+        val defaultHeight = context.resources.getDimensionPixelSize(R.dimen.record_type_card_height)
+
+        var width = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, defaultWidth.pxToDp())
+            .dpToPx().takeUnless { it == 0 } ?: defaultWidth
+        var height = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, defaultHeight.pxToDp())
+            .dpToPx().takeUnless { it == 0 } ?: defaultHeight
 
         fun inflate(): View {
             val inflater = LayoutInflater.from(context)
