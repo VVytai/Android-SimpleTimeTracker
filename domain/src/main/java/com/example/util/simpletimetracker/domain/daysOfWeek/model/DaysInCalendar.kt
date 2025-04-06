@@ -5,14 +5,5 @@ enum class DaysInCalendar {
     THREE,
     FIVE,
     SEVEN,
+    WEEK,
 }
-
-val DaysInCalendar.count: Int
-    get() {
-        return when (this) {
-            DaysInCalendar.ONE -> 1
-            DaysInCalendar.THREE -> 3
-            DaysInCalendar.FIVE -> 5
-            DaysInCalendar.SEVEN -> 7
-        }
-    }

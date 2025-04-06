@@ -8,7 +8,7 @@ import com.example.util.simpletimetracker.core.extension.set
 import com.example.util.simpletimetracker.core.mapper.CalendarToListShiftMapper
 import com.example.util.simpletimetracker.core.mapper.TimeMapper
 import com.example.util.simpletimetracker.core.model.OptionsListItem
-import com.example.util.simpletimetracker.domain.daysOfWeek.model.count
+import com.example.util.simpletimetracker.domain.daysOfWeek.model.DaysInCalendar
 import com.example.util.simpletimetracker.domain.extension.orFalse
 import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
@@ -27,6 +27,7 @@ import com.example.util.simpletimetracker.navigation.params.screen.DateTimeDialo
 import com.example.util.simpletimetracker.navigation.params.screen.DateTimeDialogType
 import com.example.util.simpletimetracker.navigation.params.screen.OptionsListParams
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -108,7 +109,9 @@ class RecordsContainerViewModel @Inject constructor(
                         if (prefsInteractor.getShowRecordsCalendar()) {
                             calendarToListShiftMapper.mapListToCalendarShift(
                                 listShift = shift,
-                                calendarDayCount = prefsInteractor.getDaysInCalendar().count,
+                                daysInCalendar = prefsInteractor.getDaysInCalendar(),
+                                startOfDayShift = prefsInteractor.getStartOfDayShift(),
+                                firstDayOfWeek = prefsInteractor.getFirstDayOfWeek(),
                             )
                         } else {
                             shift
@@ -163,6 +166,10 @@ class RecordsContainerViewModel @Inject constructor(
             recordsContainerUpdateInteractor.calendarDaysUpdated
                 .collect { recalculateRangeOnCalendarDaysChanged() }
         }
+        viewModelScope.launch {
+            recordsContainerUpdateInteractor.firstDayOfWeekUpdated
+                .collect { updateTitle(currentPosition) }
+        }
     }
 
     private suspend fun recalculateRangeOnCalendarViewSwitched() {
@@ -174,7 +181,9 @@ class RecordsContainerViewModel @Inject constructor(
             currentPosition = currentPosition,
             lastListPosition = lastListShift,
             showCalendar = prefsInteractor.getShowRecordsCalendar(),
-            daysInCalendar = prefsInteractor.getDaysInCalendar().count,
+            daysInCalendar = prefsInteractor.getDaysInCalendar(),
+            startOfDayShift = prefsInteractor.getStartOfDayShift(),
+            firstDayOfWeek = prefsInteractor.getFirstDayOfWeek(),
         )
         onRangeChanged(newPosition, animate = false)
     }
@@ -182,14 +191,16 @@ class RecordsContainerViewModel @Inject constructor(
     private suspend fun recalculateRangeOnCalendarDaysChanged() {
         val isCalendar = position.value?.isCalendar.orFalse()
         if (!isCalendar) return
-        val prevDaysInCalendar = position.value?.daysInCalendar.orZero()
-        val newDaysInCalendar = prefsInteractor.getDaysInCalendar().count
+        val prevDaysInCalendar = position.value?.daysInCalendar ?: DaysInCalendar.ONE
+        val newDaysInCalendar = prefsInteractor.getDaysInCalendar()
         if (prevDaysInCalendar == newDaysInCalendar) return
 
         val newPosition = calendarToListShiftMapper.recalculateRangeOnCalendarDaysChanged(
             currentPosition = currentPosition,
             currentDaysInCalendar = prevDaysInCalendar,
             newDaysInCalendar = newDaysInCalendar,
+            startOfDayShift = prefsInteractor.getStartOfDayShift(),
+            firstDayOfWeek = prefsInteractor.getFirstDayOfWeek(),
         )
         onRangeChanged(newPosition, animate = false)
     }
@@ -199,7 +210,9 @@ class RecordsContainerViewModel @Inject constructor(
         return if (prefsInteractor.getShowRecordsCalendar()) {
             calendarToListShiftMapper.mapCalendarToListShift(
                 calendarShift = shift,
-                calendarDayCount = prefsInteractor.getDaysInCalendar().count,
+                daysInCalendar = prefsInteractor.getDaysInCalendar(),
+                startOfDayShift = prefsInteractor.getStartOfDayShift(),
+                firstDayOfWeek = prefsInteractor.getFirstDayOfWeek(),
             ).end
         } else {
             shift
@@ -232,7 +245,7 @@ class RecordsContainerViewModel @Inject constructor(
         return RecordsContainerPosition(
             position = newPosition,
             isCalendar = isCalendar,
-            daysInCalendar = prefsInteractor.getDaysInCalendar().count,
+            daysInCalendar = prefsInteractor.getDaysInCalendar(),
             animate = animate,
         )
     }
@@ -246,12 +259,14 @@ class RecordsContainerViewModel @Inject constructor(
         val startOfDayShift = prefsInteractor.getStartOfDayShift()
         val isCalendarView = prefsInteractor.getShowRecordsCalendar()
         val calendarDayCount = prefsInteractor.getDaysInCalendar()
+        val firstDayOfWeek = prefsInteractor.getFirstDayOfWeek()
 
         return recordsViewDataMapper.mapTitle(
             shift = shift,
             startOfDayShift = startOfDayShift,
             isCalendarView = isCalendarView,
-            calendarDayCount = calendarDayCount.count,
+            daysInCalendar = calendarDayCount,
+            firstDayOfWeek = firstDayOfWeek,
         )
     }
 

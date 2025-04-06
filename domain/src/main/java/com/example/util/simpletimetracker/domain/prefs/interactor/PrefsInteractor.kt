@@ -326,11 +326,15 @@ class PrefsInteractor @Inject constructor(
     }
 
     suspend fun getDaysInCalendar(): DaysInCalendar = withContext(Dispatchers.IO) {
+        // Previously was saved with number of days,
+        // now with mapped value,
+        // 0 is default, not existent.
         when (prefsRepo.daysInCalendar) {
             1 -> DaysInCalendar.ONE
             3 -> DaysInCalendar.THREE
             5 -> DaysInCalendar.FIVE
             7 -> DaysInCalendar.SEVEN
+            8 -> DaysInCalendar.WEEK
             else -> DaysInCalendar.ONE
         }
     }
@@ -341,6 +345,7 @@ class PrefsInteractor @Inject constructor(
             DaysInCalendar.THREE -> 3
             DaysInCalendar.FIVE -> 5
             DaysInCalendar.SEVEN -> 7
+            DaysInCalendar.WEEK -> 8
         }
     }
 

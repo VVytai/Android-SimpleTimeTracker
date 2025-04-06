@@ -18,7 +18,6 @@ import com.example.util.simpletimetracker.domain.record.interactor.RecordsShareU
 import com.example.util.simpletimetracker.domain.record.interactor.RecordsUpdateInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.UpdateRunningRecordFromChangeScreenInteractor
 import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
-import com.example.util.simpletimetracker.domain.daysOfWeek.model.count
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.loader.LoaderViewData
 import com.example.util.simpletimetracker.feature_base_adapter.record.RecordViewData
@@ -245,7 +244,8 @@ class RecordsViewModel @Inject constructor(
                         shift = shift,
                         startOfDayShift = prefsInteractor.getStartOfDayShift(),
                         isCalendarView = prefsInteractor.getShowRecordsCalendar(),
-                        calendarDayCount = prefsInteractor.getDaysInCalendar().count,
+                        daysInCalendar = prefsInteractor.getDaysInCalendar(),
+                        firstDayOfWeek = prefsInteractor.getFirstDayOfWeek(),
                     ),
                     RecordsShareState.State.Calendar(state.data),
                 )

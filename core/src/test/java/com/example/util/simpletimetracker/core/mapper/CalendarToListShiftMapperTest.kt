@@ -1,31 +1,67 @@
 package com.example.util.simpletimetracker.core.mapper
 
 import com.example.util.simpletimetracker.core.mapper.CalendarToListShiftMapper.CalendarRange
+import com.example.util.simpletimetracker.core.mapper.CalendarToListShiftMapperTest.Subject.currentTimestampProvider
+import com.example.util.simpletimetracker.core.mapper.CalendarToListShiftMapperTest.Subject.daysInCalendarMapper
+import com.example.util.simpletimetracker.core.mapper.CalendarToListShiftMapperTest.Subject.monday
+import com.example.util.simpletimetracker.core.mapper.CalendarToListShiftMapperTest.Subject.sunday
+import com.example.util.simpletimetracker.core.mapper.CalendarToListShiftMapperTest.Subject.timeMapper
+import com.example.util.simpletimetracker.core.mapper.CalendarToListShiftMapperTest.Subject.tuesday
+import com.example.util.simpletimetracker.core.provider.LocaleProvider
+import com.example.util.simpletimetracker.core.repo.ResourceRepo
+import com.example.util.simpletimetracker.domain.base.CurrentTimestampProvider
+import com.example.util.simpletimetracker.domain.daysOfWeek.mapper.DaysInCalendarMapper
+import com.example.util.simpletimetracker.domain.daysOfWeek.model.DayOfWeek
+import com.example.util.simpletimetracker.domain.daysOfWeek.model.DaysInCalendar
+import com.example.util.simpletimetracker.domain.extension.orZero
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.experimental.runners.Enclosed
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
+import org.mockito.Mockito
+import org.mockito.Mockito.`when`
 
 @RunWith(Enclosed::class)
 class CalendarToListShiftMapperTest {
 
+    private object Subject {
+        var monday = 1743379200000L
+        var tuesday = 1743465600000L
+        var sunday = 1743897600000L
+
+        val resourceRepo: ResourceRepo = Mockito.mock(ResourceRepo::class.java)
+        val localeProvider: LocaleProvider = Mockito.mock(LocaleProvider::class.java)
+        val currentTimestampProvider: CurrentTimestampProvider = Mockito.mock(CurrentTimestampProvider::class.java)
+        val timeMapper: TimeMapper = TimeMapper(localeProvider, resourceRepo, currentTimestampProvider)
+        val daysInCalendarMapper: DaysInCalendarMapper = DaysInCalendarMapper()
+    }
+
     @RunWith(Parameterized::class)
     class MapCalendarToListShift(
-        private val input: List<Int>,
+        private val input: List<Any>,
         private val output: CalendarRange,
     ) {
 
         @Test
         fun test() {
-            val subject = CalendarToListShiftMapper()
+            val timestamp = input.getOrNull(4) as? Long
+            `when`(currentTimestampProvider.get()).thenReturn(timestamp.orZero())
+
+            val subject = CalendarToListShiftMapper(
+                timeMapper = timeMapper,
+                daysInCalendarMapper = daysInCalendarMapper,
+                currentTimestampProvider = currentTimestampProvider,
+            )
 
             assertEquals(
                 "Test failed for params $input",
                 output,
                 subject.mapCalendarToListShift(
-                    calendarShift = input[0],
-                    calendarDayCount = input[1],
+                    calendarShift = input[0] as Int,
+                    daysInCalendar = input[1] as DaysInCalendar,
+                    startOfDayShift = input[2] as Long,
+                    firstDayOfWeek = input[3] as DayOfWeek,
                 ),
             )
         }
@@ -36,55 +72,91 @@ class CalendarToListShiftMapperTest {
             fun data() = listOf(
                 // calendarShift, calendarDayCount
 
-                // Days 0, should be impossible, check just in case.
-                arrayOf(listOf(0, 0), CalendarRange(0, 0)),
-
                 // Days 1
-                arrayOf(listOf(-13, 1), CalendarRange(-13, -13)),
-                arrayOf(listOf(-2, 1), CalendarRange(-2, -2)),
-                arrayOf(listOf(-1, 1), CalendarRange(-1, -1)),
-                arrayOf(listOf(0, 1), CalendarRange(0, 0)),
-                arrayOf(listOf(1, 1), CalendarRange(1, 1)),
-                arrayOf(listOf(2, 1), CalendarRange(2, 2)),
-                arrayOf(listOf(13, 1), CalendarRange(13, 13)),
+                arrayOf(listOf(-13, DaysInCalendar.ONE, 0L, DayOfWeek.MONDAY), CalendarRange(-13, -13)),
+                arrayOf(listOf(-2, DaysInCalendar.ONE, 0L, DayOfWeek.MONDAY), CalendarRange(-2, -2)),
+                arrayOf(listOf(-1, DaysInCalendar.ONE, 0L, DayOfWeek.MONDAY), CalendarRange(-1, -1)),
+                arrayOf(listOf(0, DaysInCalendar.ONE, 0L, DayOfWeek.MONDAY), CalendarRange(0, 0)),
+                arrayOf(listOf(1, DaysInCalendar.ONE, 0L, DayOfWeek.MONDAY), CalendarRange(1, 1)),
+                arrayOf(listOf(2, DaysInCalendar.ONE, 0L, DayOfWeek.MONDAY), CalendarRange(2, 2)),
+                arrayOf(listOf(13, DaysInCalendar.ONE, 0L, DayOfWeek.MONDAY), CalendarRange(13, 13)),
 
                 // Days 3
-                arrayOf(listOf(-13, 3), CalendarRange(-41, -39)),
-                arrayOf(listOf(-2, 3), CalendarRange(-8, -6)),
-                arrayOf(listOf(-1, 3), CalendarRange(-5, -3)),
-                arrayOf(listOf(0, 3), CalendarRange(-2, 0)),
-                arrayOf(listOf(1, 3), CalendarRange(1, 3)),
-                arrayOf(listOf(2, 3), CalendarRange(4, 6)),
-                arrayOf(listOf(13, 3), CalendarRange(37, 39)),
+                arrayOf(listOf(-13, DaysInCalendar.THREE, 0L, DayOfWeek.MONDAY), CalendarRange(-41, -39)),
+                arrayOf(listOf(-2, DaysInCalendar.THREE, 0L, DayOfWeek.MONDAY), CalendarRange(-8, -6)),
+                arrayOf(listOf(-1, DaysInCalendar.THREE, 0L, DayOfWeek.MONDAY), CalendarRange(-5, -3)),
+                arrayOf(listOf(0, DaysInCalendar.THREE, 0L, DayOfWeek.MONDAY), CalendarRange(-2, 0)),
+                arrayOf(listOf(1, DaysInCalendar.THREE, 0L, DayOfWeek.MONDAY), CalendarRange(1, 3)),
+                arrayOf(listOf(2, DaysInCalendar.THREE, 0L, DayOfWeek.MONDAY), CalendarRange(4, 6)),
+                arrayOf(listOf(13, DaysInCalendar.THREE, 0L, DayOfWeek.MONDAY), CalendarRange(37, 39)),
 
                 // Days 5
-                arrayOf(listOf(-13, 5), CalendarRange(-69, -65)),
-                arrayOf(listOf(-2, 5), CalendarRange(-14, -10)),
-                arrayOf(listOf(-1, 5), CalendarRange(-9, -5)),
-                arrayOf(listOf(0, 5), CalendarRange(-4, 0)),
-                arrayOf(listOf(1, 5), CalendarRange(1, 5)),
-                arrayOf(listOf(2, 5), CalendarRange(6, 10)),
-                arrayOf(listOf(13, 5), CalendarRange(61, 65)),
+                arrayOf(listOf(-13, DaysInCalendar.FIVE, 0L, DayOfWeek.MONDAY), CalendarRange(-69, -65)),
+                arrayOf(listOf(-2, DaysInCalendar.FIVE, 0L, DayOfWeek.MONDAY), CalendarRange(-14, -10)),
+                arrayOf(listOf(-1, DaysInCalendar.FIVE, 0L, DayOfWeek.MONDAY), CalendarRange(-9, -5)),
+                arrayOf(listOf(0, DaysInCalendar.FIVE, 0L, DayOfWeek.MONDAY), CalendarRange(-4, 0)),
+                arrayOf(listOf(1, DaysInCalendar.FIVE, 0L, DayOfWeek.MONDAY), CalendarRange(1, 5)),
+                arrayOf(listOf(2, DaysInCalendar.FIVE, 0L, DayOfWeek.MONDAY), CalendarRange(6, 10)),
+                arrayOf(listOf(13, DaysInCalendar.FIVE, 0L, DayOfWeek.MONDAY), CalendarRange(61, 65)),
+
+                // Days 7
+                arrayOf(listOf(-13, DaysInCalendar.SEVEN, 0L, DayOfWeek.MONDAY), CalendarRange(-97, -91)),
+                arrayOf(listOf(-2, DaysInCalendar.SEVEN, 0L, DayOfWeek.MONDAY), CalendarRange(-20, -14)),
+                arrayOf(listOf(-1, DaysInCalendar.SEVEN, 0L, DayOfWeek.MONDAY), CalendarRange(-13, -7)),
+                arrayOf(listOf(0, DaysInCalendar.SEVEN, 0L, DayOfWeek.MONDAY), CalendarRange(-6, 0)),
+                arrayOf(listOf(1, DaysInCalendar.SEVEN, 0L, DayOfWeek.MONDAY), CalendarRange(1, 7)),
+                arrayOf(listOf(2, DaysInCalendar.SEVEN, 0L, DayOfWeek.MONDAY), CalendarRange(8, 14)),
+                arrayOf(listOf(13, DaysInCalendar.SEVEN, 0L, DayOfWeek.MONDAY), CalendarRange(85, 91)),
+
+                // Week
+                arrayOf(listOf(-1, DaysInCalendar.WEEK, 0L, DayOfWeek.MONDAY, monday), CalendarRange(-7, -1)),
+                arrayOf(listOf(0, DaysInCalendar.WEEK, 0L, DayOfWeek.MONDAY, monday), CalendarRange(0, 6)),
+                arrayOf(listOf(1, DaysInCalendar.WEEK, 0L, DayOfWeek.MONDAY, monday), CalendarRange(7, 13)),
+                arrayOf(listOf(-1, DaysInCalendar.WEEK, 0L, DayOfWeek.MONDAY, tuesday), CalendarRange(-8, -2)),
+                arrayOf(listOf(0, DaysInCalendar.WEEK, 0L, DayOfWeek.MONDAY, tuesday), CalendarRange(-1, 5)),
+                arrayOf(listOf(1, DaysInCalendar.WEEK, 0L, DayOfWeek.MONDAY, tuesday), CalendarRange(6, 12)),
+                arrayOf(listOf(-1, DaysInCalendar.WEEK, 0L, DayOfWeek.MONDAY, sunday), CalendarRange(-13, -7)),
+                arrayOf(listOf(0, DaysInCalendar.WEEK, 0L, DayOfWeek.MONDAY, sunday), CalendarRange(-6, 0)),
+                arrayOf(listOf(1, DaysInCalendar.WEEK, 0L, DayOfWeek.MONDAY, sunday), CalendarRange(1, 7)),
+
+                arrayOf(listOf(-1, DaysInCalendar.WEEK, 0L, DayOfWeek.SUNDAY, monday), CalendarRange(-8, -2)),
+                arrayOf(listOf(0, DaysInCalendar.WEEK, 0L, DayOfWeek.SUNDAY, monday), CalendarRange(-1, 5)),
+                arrayOf(listOf(1, DaysInCalendar.WEEK, 0L, DayOfWeek.SUNDAY, monday), CalendarRange(6, 12)),
+                arrayOf(listOf(-1, DaysInCalendar.WEEK, 0L, DayOfWeek.SUNDAY, tuesday), CalendarRange(-9, -3)),
+                arrayOf(listOf(0, DaysInCalendar.WEEK, 0L, DayOfWeek.SUNDAY, tuesday), CalendarRange(-2, 4)),
+                arrayOf(listOf(1, DaysInCalendar.WEEK, 0L, DayOfWeek.SUNDAY, tuesday), CalendarRange(5, 11)),
+                arrayOf(listOf(-1, DaysInCalendar.WEEK, 0L, DayOfWeek.SUNDAY, sunday), CalendarRange(-7, -1)),
+                arrayOf(listOf(0, DaysInCalendar.WEEK, 0L, DayOfWeek.SUNDAY, sunday), CalendarRange(0, 6)),
+                arrayOf(listOf(1, DaysInCalendar.WEEK, 0L, DayOfWeek.SUNDAY, sunday), CalendarRange(7, 13)),
             )
         }
     }
 
     @RunWith(Parameterized::class)
     class MapListToCalendarShift(
-        private val input: List<Int>,
+        private val input: List<Any>,
         private val output: Int,
     ) {
 
         @Test
         fun test() {
-            val subject = CalendarToListShiftMapper()
+            val timestamp = input.getOrNull(4) as? Long
+            `when`(currentTimestampProvider.get()).thenReturn(timestamp.orZero())
+
+            val subject = CalendarToListShiftMapper(
+                timeMapper = timeMapper,
+                daysInCalendarMapper = daysInCalendarMapper,
+                currentTimestampProvider = currentTimestampProvider,
+            )
 
             assertEquals(
                 "Test failed for params $input",
                 output,
                 subject.mapListToCalendarShift(
-                    listShift = input[0],
-                    calendarDayCount = input[1],
+                    listShift = input[0] as Int,
+                    daysInCalendar = input[1] as DaysInCalendar,
+                    startOfDayShift = input[2] as Long,
+                    firstDayOfWeek = input[3] as DayOfWeek,
                 ),
             )
         }
@@ -95,52 +167,114 @@ class CalendarToListShiftMapperTest {
             fun data() = listOf(
                 // listShift, calendarDayCount
 
-                // Days 0, should be impossible, check just in case.
-                arrayOf(listOf(0, 0), 0),
-
                 // Days 1
-                arrayOf(listOf(-13, 1), -13),
-                arrayOf(listOf(-2, 1), -2),
-                arrayOf(listOf(-1, 1), -1),
-                arrayOf(listOf(0, 1), 0),
-                arrayOf(listOf(1, 1), 1),
-                arrayOf(listOf(2, 1), 2),
-                arrayOf(listOf(13, 1), 13),
+                arrayOf(listOf(-13, DaysInCalendar.ONE, 0L, DayOfWeek.MONDAY), -13),
+                arrayOf(listOf(-2, DaysInCalendar.ONE, 0L, DayOfWeek.MONDAY), -2),
+                arrayOf(listOf(-1, DaysInCalendar.ONE, 0L, DayOfWeek.MONDAY), -1),
+                arrayOf(listOf(0, DaysInCalendar.ONE, 0L, DayOfWeek.MONDAY), 0),
+                arrayOf(listOf(1, DaysInCalendar.ONE, 0L, DayOfWeek.MONDAY), 1),
+                arrayOf(listOf(2, DaysInCalendar.ONE, 0L, DayOfWeek.MONDAY), 2),
+                arrayOf(listOf(13, DaysInCalendar.ONE, 0L, DayOfWeek.MONDAY), 13),
 
                 // Days 3
-                arrayOf(listOf(-13, 3), -4),
-                arrayOf(listOf(-6, 3), -2),
-                arrayOf(listOf(-5, 3), -1),
-                arrayOf(listOf(-4, 3), -1),
-                arrayOf(listOf(-3, 3), -1),
-                arrayOf(listOf(-2, 3), 0),
-                arrayOf(listOf(-1, 3), 0),
-                arrayOf(listOf(0, 3), 0),
-                arrayOf(listOf(1, 3), 1),
-                arrayOf(listOf(2, 3), 1),
-                arrayOf(listOf(3, 3), 1),
-                arrayOf(listOf(4, 3), 2),
-                arrayOf(listOf(13, 3), 5),
+                arrayOf(listOf(-13, DaysInCalendar.THREE, 0L, DayOfWeek.MONDAY), -4),
+                arrayOf(listOf(-6, DaysInCalendar.THREE, 0L, DayOfWeek.MONDAY), -2),
+                arrayOf(listOf(-5, DaysInCalendar.THREE, 0L, DayOfWeek.MONDAY), -1),
+                arrayOf(listOf(-4, DaysInCalendar.THREE, 0L, DayOfWeek.MONDAY), -1),
+                arrayOf(listOf(-3, DaysInCalendar.THREE, 0L, DayOfWeek.MONDAY), -1),
+                arrayOf(listOf(-2, DaysInCalendar.THREE, 0L, DayOfWeek.MONDAY), 0),
+                arrayOf(listOf(-1, DaysInCalendar.THREE, 0L, DayOfWeek.MONDAY), 0),
+                arrayOf(listOf(0, DaysInCalendar.THREE, 0L, DayOfWeek.MONDAY), 0),
+                arrayOf(listOf(1, DaysInCalendar.THREE, 0L, DayOfWeek.MONDAY), 1),
+                arrayOf(listOf(2, DaysInCalendar.THREE, 0L, DayOfWeek.MONDAY), 1),
+                arrayOf(listOf(3, DaysInCalendar.THREE, 0L, DayOfWeek.MONDAY), 1),
+                arrayOf(listOf(4, DaysInCalendar.THREE, 0L, DayOfWeek.MONDAY), 2),
+                arrayOf(listOf(13, DaysInCalendar.THREE, 0L, DayOfWeek.MONDAY), 5),
 
                 // Days 5
-                arrayOf(listOf(-15, 5), -3),
-                arrayOf(listOf(-14, 5), -2),
-                arrayOf(listOf(-10, 5), -2),
-                arrayOf(listOf(-9, 5), -1),
-                arrayOf(listOf(-5, 5), -1),
-                arrayOf(listOf(-4, 5), 0),
-                arrayOf(listOf(-3, 5), 0),
-                arrayOf(listOf(-2, 5), 0),
-                arrayOf(listOf(-1, 5), 0),
-                arrayOf(listOf(0, 5), 0),
-                arrayOf(listOf(1, 5), 1),
-                arrayOf(listOf(2, 5), 1),
-                arrayOf(listOf(3, 5), 1),
-                arrayOf(listOf(4, 5), 1),
-                arrayOf(listOf(5, 5), 1),
-                arrayOf(listOf(6, 5), 2),
-                arrayOf(listOf(10, 5), 2),
-                arrayOf(listOf(11, 5), 3),
+                arrayOf(listOf(-10, DaysInCalendar.FIVE, 0L, DayOfWeek.MONDAY), -2),
+                arrayOf(listOf(-9, DaysInCalendar.FIVE, 0L, DayOfWeek.MONDAY), -1),
+                arrayOf(listOf(-5, DaysInCalendar.FIVE, 0L, DayOfWeek.MONDAY), -1),
+                arrayOf(listOf(-4, DaysInCalendar.FIVE, 0L, DayOfWeek.MONDAY), 0),
+                arrayOf(listOf(-3, DaysInCalendar.FIVE, 0L, DayOfWeek.MONDAY), 0),
+                arrayOf(listOf(-2, DaysInCalendar.FIVE, 0L, DayOfWeek.MONDAY), 0),
+                arrayOf(listOf(-1, DaysInCalendar.FIVE, 0L, DayOfWeek.MONDAY), 0),
+                arrayOf(listOf(0, DaysInCalendar.FIVE, 0L, DayOfWeek.MONDAY), 0),
+                arrayOf(listOf(1, DaysInCalendar.FIVE, 0L, DayOfWeek.MONDAY), 1),
+                arrayOf(listOf(2, DaysInCalendar.FIVE, 0L, DayOfWeek.MONDAY), 1),
+                arrayOf(listOf(3, DaysInCalendar.FIVE, 0L, DayOfWeek.MONDAY), 1),
+                arrayOf(listOf(4, DaysInCalendar.FIVE, 0L, DayOfWeek.MONDAY), 1),
+                arrayOf(listOf(5, DaysInCalendar.FIVE, 0L, DayOfWeek.MONDAY), 1),
+                arrayOf(listOf(6, DaysInCalendar.FIVE, 0L, DayOfWeek.MONDAY), 2),
+                arrayOf(listOf(10, DaysInCalendar.FIVE, 0L, DayOfWeek.MONDAY), 2),
+                arrayOf(listOf(15, DaysInCalendar.FIVE, 0L, DayOfWeek.MONDAY), 3),
+
+                // Days 7
+                arrayOf(listOf(-14, DaysInCalendar.SEVEN, 0L, DayOfWeek.MONDAY), -2),
+                arrayOf(listOf(-13, DaysInCalendar.SEVEN, 0L, DayOfWeek.MONDAY), -1),
+                arrayOf(listOf(-7, DaysInCalendar.SEVEN, 0L, DayOfWeek.MONDAY), -1),
+                arrayOf(listOf(-6, DaysInCalendar.SEVEN, 0L, DayOfWeek.MONDAY), 0),
+                arrayOf(listOf(0, DaysInCalendar.SEVEN, 0L, DayOfWeek.MONDAY), 0),
+                arrayOf(listOf(1, DaysInCalendar.SEVEN, 0L, DayOfWeek.MONDAY), 1),
+                arrayOf(listOf(7, DaysInCalendar.SEVEN, 0L, DayOfWeek.MONDAY), 1),
+                arrayOf(listOf(8, DaysInCalendar.SEVEN, 0L, DayOfWeek.MONDAY), 2),
+                arrayOf(listOf(14, DaysInCalendar.SEVEN, 0L, DayOfWeek.MONDAY), 2),
+                arrayOf(listOf(15, DaysInCalendar.SEVEN, 0L, DayOfWeek.MONDAY), 3),
+
+                // Week
+                arrayOf(listOf(-8, DaysInCalendar.WEEK, 0L, DayOfWeek.MONDAY, monday), -2),
+                arrayOf(listOf(-7, DaysInCalendar.WEEK, 0L, DayOfWeek.MONDAY, monday), -1),
+                arrayOf(listOf(-1, DaysInCalendar.WEEK, 0L, DayOfWeek.MONDAY, monday), -1),
+                arrayOf(listOf(0, DaysInCalendar.WEEK, 0L, DayOfWeek.MONDAY, monday), 0),
+                arrayOf(listOf(6, DaysInCalendar.WEEK, 0L, DayOfWeek.MONDAY, monday), 0),
+                arrayOf(listOf(7, DaysInCalendar.WEEK, 0L, DayOfWeek.MONDAY, monday), 1),
+                arrayOf(listOf(13, DaysInCalendar.WEEK, 0L, DayOfWeek.MONDAY, monday), 1),
+                arrayOf(listOf(14, DaysInCalendar.WEEK, 0L, DayOfWeek.MONDAY, monday), 2),
+
+                arrayOf(listOf(-9, DaysInCalendar.WEEK, 0L, DayOfWeek.MONDAY, tuesday), -2),
+                arrayOf(listOf(-8, DaysInCalendar.WEEK, 0L, DayOfWeek.MONDAY, tuesday), -1),
+                arrayOf(listOf(-2, DaysInCalendar.WEEK, 0L, DayOfWeek.MONDAY, tuesday), -1),
+                arrayOf(listOf(-1, DaysInCalendar.WEEK, 0L, DayOfWeek.MONDAY, tuesday), 0),
+                arrayOf(listOf(5, DaysInCalendar.WEEK, 0L, DayOfWeek.MONDAY, tuesday), 0),
+                arrayOf(listOf(6, DaysInCalendar.WEEK, 0L, DayOfWeek.MONDAY, tuesday), 1),
+                arrayOf(listOf(12, DaysInCalendar.WEEK, 0L, DayOfWeek.MONDAY, tuesday), 1),
+                arrayOf(listOf(13, DaysInCalendar.WEEK, 0L, DayOfWeek.MONDAY, tuesday), 2),
+
+                arrayOf(listOf(-14, DaysInCalendar.WEEK, 0L, DayOfWeek.MONDAY, sunday), -2),
+                arrayOf(listOf(-13, DaysInCalendar.WEEK, 0L, DayOfWeek.MONDAY, sunday), -1),
+                arrayOf(listOf(-7, DaysInCalendar.WEEK, 0L, DayOfWeek.MONDAY, sunday), -1),
+                arrayOf(listOf(-6, DaysInCalendar.WEEK, 0L, DayOfWeek.MONDAY, sunday), 0),
+                arrayOf(listOf(0, DaysInCalendar.WEEK, 0L, DayOfWeek.MONDAY, sunday), 0),
+                arrayOf(listOf(1, DaysInCalendar.WEEK, 0L, DayOfWeek.MONDAY, sunday), 1),
+                arrayOf(listOf(7, DaysInCalendar.WEEK, 0L, DayOfWeek.MONDAY, sunday), 1),
+                arrayOf(listOf(8, DaysInCalendar.WEEK, 0L, DayOfWeek.MONDAY, sunday), 2),
+
+                arrayOf(listOf(-9, DaysInCalendar.WEEK, 0L, DayOfWeek.SUNDAY, monday), -2),
+                arrayOf(listOf(-8, DaysInCalendar.WEEK, 0L, DayOfWeek.SUNDAY, monday), -1),
+                arrayOf(listOf(-2, DaysInCalendar.WEEK, 0L, DayOfWeek.SUNDAY, monday), -1),
+                arrayOf(listOf(-1, DaysInCalendar.WEEK, 0L, DayOfWeek.SUNDAY, monday), 0),
+                arrayOf(listOf(5, DaysInCalendar.WEEK, 0L, DayOfWeek.SUNDAY, monday), 0),
+                arrayOf(listOf(6, DaysInCalendar.WEEK, 0L, DayOfWeek.SUNDAY, monday), 1),
+                arrayOf(listOf(12, DaysInCalendar.WEEK, 0L, DayOfWeek.SUNDAY, monday), 1),
+                arrayOf(listOf(13, DaysInCalendar.WEEK, 0L, DayOfWeek.SUNDAY, monday), 2),
+
+                arrayOf(listOf(-10, DaysInCalendar.WEEK, 0L, DayOfWeek.SUNDAY, tuesday), -2),
+                arrayOf(listOf(-9, DaysInCalendar.WEEK, 0L, DayOfWeek.SUNDAY, tuesday), -1),
+                arrayOf(listOf(-3, DaysInCalendar.WEEK, 0L, DayOfWeek.SUNDAY, tuesday), -1),
+                arrayOf(listOf(-2, DaysInCalendar.WEEK, 0L, DayOfWeek.SUNDAY, tuesday), 0),
+                arrayOf(listOf(4, DaysInCalendar.WEEK, 0L, DayOfWeek.SUNDAY, tuesday), 0),
+                arrayOf(listOf(5, DaysInCalendar.WEEK, 0L, DayOfWeek.SUNDAY, tuesday), 1),
+                arrayOf(listOf(11, DaysInCalendar.WEEK, 0L, DayOfWeek.SUNDAY, tuesday), 1),
+                arrayOf(listOf(12, DaysInCalendar.WEEK, 0L, DayOfWeek.SUNDAY, tuesday), 2),
+
+                arrayOf(listOf(-8, DaysInCalendar.WEEK, 0L, DayOfWeek.SUNDAY, sunday), -2),
+                arrayOf(listOf(-7, DaysInCalendar.WEEK, 0L, DayOfWeek.SUNDAY, sunday), -1),
+                arrayOf(listOf(-1, DaysInCalendar.WEEK, 0L, DayOfWeek.SUNDAY, sunday), -1),
+                arrayOf(listOf(0, DaysInCalendar.WEEK, 0L, DayOfWeek.SUNDAY, sunday), 0),
+                arrayOf(listOf(6, DaysInCalendar.WEEK, 0L, DayOfWeek.SUNDAY, sunday), 0),
+                arrayOf(listOf(7, DaysInCalendar.WEEK, 0L, DayOfWeek.SUNDAY, sunday), 1),
+                arrayOf(listOf(13, DaysInCalendar.WEEK, 0L, DayOfWeek.SUNDAY, sunday), 1),
+                arrayOf(listOf(14, DaysInCalendar.WEEK, 0L, DayOfWeek.SUNDAY, sunday), 2),
             )
         }
     }
@@ -153,7 +287,11 @@ class CalendarToListShiftMapperTest {
 
         @Test
         fun test() {
-            val subject = CalendarToListShiftMapper()
+            val subject = CalendarToListShiftMapper(
+                timeMapper = timeMapper,
+                daysInCalendarMapper = daysInCalendarMapper,
+                currentTimestampProvider = currentTimestampProvider,
+            )
 
             assertEquals(
                 "Test failed for params $input",
@@ -162,7 +300,9 @@ class CalendarToListShiftMapperTest {
                     currentPosition = input[0] as Int,
                     lastListPosition = input[1] as Int,
                     showCalendar = input[2] as Boolean,
-                    daysInCalendar = input[3] as Int,
+                    daysInCalendar = input[3] as DaysInCalendar,
+                    startOfDayShift = input[4] as Long,
+                    firstDayOfWeek = input[5] as DayOfWeek,
                 ),
             )
         }
@@ -171,56 +311,58 @@ class CalendarToListShiftMapperTest {
             @JvmStatic
             @Parameterized.Parameters
             fun data() = listOf(
-                // currentPosition, lastListPosition, showCalendar, daysInCalendar
-
-                // Days 0, should be impossible, check just in case.
-                arrayOf(listOf(0, 0, true, 0), 0),
-                arrayOf(listOf(0, 0, false, 0), 0),
+                // currentPosition, lastListPosition, showCalendar, daysInCalendar, startOfDayShift, firstDayOfWeek
 
                 // List to calendar
-                arrayOf(listOf(-13, 0, true, 3), -4),
-                arrayOf(listOf(0, 0, true, 3), 0),
-                arrayOf(listOf(13, 0, true, 3), 5),
-                arrayOf(listOf(-15, 0, true, 5), -3),
-                arrayOf(listOf(0, 0, true, 5), 0),
-                arrayOf(listOf(11, 0, true, 5), 3),
+                arrayOf(listOf(-13, 0, true, DaysInCalendar.THREE, 0L, DayOfWeek.MONDAY), -4),
+                arrayOf(listOf(0, 0, true, DaysInCalendar.THREE, 0L, DayOfWeek.MONDAY), 0),
+                arrayOf(listOf(13, 0, true, DaysInCalendar.THREE, 0L, DayOfWeek.MONDAY), 5),
+                arrayOf(listOf(-15, 0, true, DaysInCalendar.FIVE, 0L, DayOfWeek.MONDAY), -3),
+                arrayOf(listOf(0, 0, true, DaysInCalendar.FIVE, 0L, DayOfWeek.MONDAY), 0),
+                arrayOf(listOf(11, 0, true, DaysInCalendar.FIVE, 0L, DayOfWeek.MONDAY), 3),
 
                 // Calendar to list, can't restore last saved position
-                arrayOf(listOf(-13, 999, false, 3), -39),
-                arrayOf(listOf(0, 999, false, 3), 0),
-                arrayOf(listOf(13, 999, false, 3), 39),
-                arrayOf(listOf(-13, 999, false, 5), -65),
-                arrayOf(listOf(0, 999, false, 5), 0),
-                arrayOf(listOf(13, 999, false, 5), 65),
+                arrayOf(listOf(-13, 999, false, DaysInCalendar.THREE, 0L, DayOfWeek.MONDAY), -39),
+                arrayOf(listOf(0, 999, false, DaysInCalendar.THREE, 0L, DayOfWeek.MONDAY), 0),
+                arrayOf(listOf(13, 999, false, DaysInCalendar.THREE, 0L, DayOfWeek.MONDAY), 39),
+                arrayOf(listOf(-13, 999, false, DaysInCalendar.FIVE, 0L, DayOfWeek.MONDAY), -65),
+                arrayOf(listOf(0, 999, false, DaysInCalendar.FIVE, 0L, DayOfWeek.MONDAY), 0),
+                arrayOf(listOf(13, 999, false, DaysInCalendar.FIVE, 0L, DayOfWeek.MONDAY), 65),
 
                 // Calendar to list, can restore last saved position
-                arrayOf(listOf(-13, -41, false, 3), -41),
-                arrayOf(listOf(0, -1, false, 3), -1),
-                arrayOf(listOf(13, 37, false, 3), 37),
-                arrayOf(listOf(-13, -68, false, 5), -68),
-                arrayOf(listOf(0, -3, false, 5), -3),
-                arrayOf(listOf(13, 64, false, 5), 64),
+                arrayOf(listOf(-13, -41, false, DaysInCalendar.THREE, 0L, DayOfWeek.MONDAY), -41),
+                arrayOf(listOf(0, -1, false, DaysInCalendar.THREE, 0L, DayOfWeek.MONDAY), -1),
+                arrayOf(listOf(13, 37, false, DaysInCalendar.THREE, 0L, DayOfWeek.MONDAY), 37),
+                arrayOf(listOf(-13, -68, false, DaysInCalendar.FIVE, 0L, DayOfWeek.MONDAY), -68),
+                arrayOf(listOf(0, -3, false, DaysInCalendar.FIVE, 0L, DayOfWeek.MONDAY), -3),
+                arrayOf(listOf(13, 64, false, DaysInCalendar.FIVE, 0L, DayOfWeek.MONDAY), 64),
             )
         }
     }
 
     @RunWith(Parameterized::class)
     class RecalculateRangeOnCalendarDaysChanged(
-        private val input: List<Int>,
+        private val input: List<Any>,
         private val output: Int,
     ) {
 
         @Test
         fun test() {
-            val subject = CalendarToListShiftMapper()
+            val subject = CalendarToListShiftMapper(
+                timeMapper = timeMapper,
+                daysInCalendarMapper = daysInCalendarMapper,
+                currentTimestampProvider = currentTimestampProvider,
+            )
 
             assertEquals(
                 "Test failed for params $input",
                 output,
                 subject.recalculateRangeOnCalendarDaysChanged(
-                    currentPosition = input[0],
-                    currentDaysInCalendar = input[1],
-                    newDaysInCalendar = input[2],
+                    currentPosition = input[0] as Int,
+                    currentDaysInCalendar = input[1] as DaysInCalendar,
+                    newDaysInCalendar = input[2] as DaysInCalendar,
+                    startOfDayShift = input[3] as Long,
+                    firstDayOfWeek = input[4] as DayOfWeek,
                 ),
             )
         }
@@ -229,49 +371,46 @@ class CalendarToListShiftMapperTest {
             @JvmStatic
             @Parameterized.Parameters
             fun data() = listOf(
-                // currentPosition, currentDaysInCalendar, newDaysInCalendar
-
-                // Days 0, should be impossible, check just in case.
-                arrayOf(listOf(0, 0, 0), 0),
+                // currentPosition, currentDaysInCalendar, newDaysInCalendar, startOfDayShift, firstDayOfWeek
 
                 // From 1 to 3
-                arrayOf(listOf(-13, 1, 3), -4),
-                arrayOf(listOf(-3, 1, 3), -1),
-                arrayOf(listOf(-2, 1, 3), 0),
-                arrayOf(listOf(-1, 1, 3), 0),
-                arrayOf(listOf(0, 1, 3), 0),
-                arrayOf(listOf(1, 1, 3), 1),
-                arrayOf(listOf(2, 1, 3), 1),
-                arrayOf(listOf(3, 1, 3), 1),
-                arrayOf(listOf(4, 1, 3), 2),
-                arrayOf(listOf(13, 1, 3), 5),
+                arrayOf(listOf(-13, DaysInCalendar.ONE, DaysInCalendar.THREE, 0L, DayOfWeek.MONDAY), -4),
+                arrayOf(listOf(-3, DaysInCalendar.ONE, DaysInCalendar.THREE, 0L, DayOfWeek.MONDAY), -1),
+                arrayOf(listOf(-2, DaysInCalendar.ONE, DaysInCalendar.THREE, 0L, DayOfWeek.MONDAY), 0),
+                arrayOf(listOf(-1, DaysInCalendar.ONE, DaysInCalendar.THREE, 0L, DayOfWeek.MONDAY), 0),
+                arrayOf(listOf(0, DaysInCalendar.ONE, DaysInCalendar.THREE, 0L, DayOfWeek.MONDAY), 0),
+                arrayOf(listOf(1, DaysInCalendar.ONE, DaysInCalendar.THREE, 0L, DayOfWeek.MONDAY), 1),
+                arrayOf(listOf(2, DaysInCalendar.ONE, DaysInCalendar.THREE, 0L, DayOfWeek.MONDAY), 1),
+                arrayOf(listOf(3, DaysInCalendar.ONE, DaysInCalendar.THREE, 0L, DayOfWeek.MONDAY), 1),
+                arrayOf(listOf(4, DaysInCalendar.ONE, DaysInCalendar.THREE, 0L, DayOfWeek.MONDAY), 2),
+                arrayOf(listOf(13, DaysInCalendar.ONE, DaysInCalendar.THREE, 0L, DayOfWeek.MONDAY), 5),
 
                 // From 3 to 1
-                arrayOf(listOf(-13, 3, 1), -39),
-                arrayOf(listOf(-2, 3, 1), -6),
-                arrayOf(listOf(-1, 3, 1), -3),
-                arrayOf(listOf(0, 3, 1), 0),
-                arrayOf(listOf(1, 3, 1), 3),
-                arrayOf(listOf(2, 3, 1), 6),
-                arrayOf(listOf(13, 3, 1), 39),
+                arrayOf(listOf(-13, DaysInCalendar.THREE, DaysInCalendar.ONE, 0L, DayOfWeek.MONDAY), -39),
+                arrayOf(listOf(-2, DaysInCalendar.THREE, DaysInCalendar.ONE, 0L, DayOfWeek.MONDAY), -6),
+                arrayOf(listOf(-1, DaysInCalendar.THREE, DaysInCalendar.ONE, 0L, DayOfWeek.MONDAY), -3),
+                arrayOf(listOf(0, DaysInCalendar.THREE, DaysInCalendar.ONE, 0L, DayOfWeek.MONDAY), 0),
+                arrayOf(listOf(1, DaysInCalendar.THREE, DaysInCalendar.ONE, 0L, DayOfWeek.MONDAY), 3),
+                arrayOf(listOf(2, DaysInCalendar.THREE, DaysInCalendar.ONE, 0L, DayOfWeek.MONDAY), 6),
+                arrayOf(listOf(13, DaysInCalendar.THREE, DaysInCalendar.ONE, 0L, DayOfWeek.MONDAY), 39),
 
                 // From 3 to 7
-                arrayOf(listOf(-13, 3, 7), -5),
-                arrayOf(listOf(-2, 3, 7), 0),
-                arrayOf(listOf(-1, 3, 7), 0),
-                arrayOf(listOf(0, 3, 7), 0),
-                arrayOf(listOf(1, 3, 7), 1),
-                arrayOf(listOf(2, 3, 7), 1),
-                arrayOf(listOf(13, 3, 7), 6),
+                arrayOf(listOf(-13, DaysInCalendar.THREE, DaysInCalendar.SEVEN, 0L, DayOfWeek.MONDAY), -5),
+                arrayOf(listOf(-2, DaysInCalendar.THREE, DaysInCalendar.SEVEN, 0L, DayOfWeek.MONDAY), 0),
+                arrayOf(listOf(-1, DaysInCalendar.THREE, DaysInCalendar.SEVEN, 0L, DayOfWeek.MONDAY), 0),
+                arrayOf(listOf(0, DaysInCalendar.THREE, DaysInCalendar.SEVEN, 0L, DayOfWeek.MONDAY), 0),
+                arrayOf(listOf(1, DaysInCalendar.THREE, DaysInCalendar.SEVEN, 0L, DayOfWeek.MONDAY), 1),
+                arrayOf(listOf(2, DaysInCalendar.THREE, DaysInCalendar.SEVEN, 0L, DayOfWeek.MONDAY), 1),
+                arrayOf(listOf(13, DaysInCalendar.THREE, DaysInCalendar.SEVEN, 0L, DayOfWeek.MONDAY), 6),
 
                 // From 7 to 3
-                arrayOf(listOf(-13, 7, 3), -30),
-                arrayOf(listOf(-2, 7, 3), -4),
-                arrayOf(listOf(-1, 7, 3), -2),
-                arrayOf(listOf(0, 7, 3), 0),
-                arrayOf(listOf(1, 7, 3), 3),
-                arrayOf(listOf(2, 7, 3), 5),
-                arrayOf(listOf(13, 7, 3), 31),
+                arrayOf(listOf(-13, DaysInCalendar.SEVEN, DaysInCalendar.THREE, 0L, DayOfWeek.MONDAY), -30),
+                arrayOf(listOf(-2, DaysInCalendar.SEVEN, DaysInCalendar.THREE, 0L, DayOfWeek.MONDAY), -4),
+                arrayOf(listOf(-1, DaysInCalendar.SEVEN, DaysInCalendar.THREE, 0L, DayOfWeek.MONDAY), -2),
+                arrayOf(listOf(0, DaysInCalendar.SEVEN, DaysInCalendar.THREE, 0L, DayOfWeek.MONDAY), 0),
+                arrayOf(listOf(1, DaysInCalendar.SEVEN, DaysInCalendar.THREE, 0L, DayOfWeek.MONDAY), 3),
+                arrayOf(listOf(2, DaysInCalendar.SEVEN, DaysInCalendar.THREE, 0L, DayOfWeek.MONDAY), 5),
+                arrayOf(listOf(13, DaysInCalendar.SEVEN, DaysInCalendar.THREE, 0L, DayOfWeek.MONDAY), 31),
             )
         }
     }

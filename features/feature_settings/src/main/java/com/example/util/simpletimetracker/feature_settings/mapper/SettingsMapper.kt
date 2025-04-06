@@ -6,11 +6,11 @@ import com.example.util.simpletimetracker.core.mapper.TimeMapper
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.domain.darkMode.model.DarkMode
+import com.example.util.simpletimetracker.domain.daysOfWeek.mapper.DaysInCalendarMapper
 import com.example.util.simpletimetracker.domain.recordTag.model.CardTagOrder
 import com.example.util.simpletimetracker.domain.daysOfWeek.model.DayOfWeek
 import com.example.util.simpletimetracker.domain.daysOfWeek.model.DaysInCalendar
 import com.example.util.simpletimetracker.domain.record.model.RepeatButtonType
-import com.example.util.simpletimetracker.domain.daysOfWeek.model.count
 import com.example.util.simpletimetracker.domain.recordType.model.CardOrder
 import com.example.util.simpletimetracker.domain.statistics.model.WidgetTransparencyPercent
 import com.example.util.simpletimetracker.feature_settings.R
@@ -32,6 +32,7 @@ class SettingsMapper @Inject constructor(
     private val timeMapper: TimeMapper,
     private val resourceRepo: ResourceRepo,
     private val languageInteractor: LanguageInteractor,
+    private val daysInCalendarMapper: DaysInCalendarMapper,
 ) {
 
     private val cardOrderList: List<CardOrder> = listOf(
@@ -52,6 +53,7 @@ class SettingsMapper @Inject constructor(
         DaysInCalendar.THREE,
         DaysInCalendar.FIVE,
         DaysInCalendar.SEVEN,
+        DaysInCalendar.WEEK,
     )
 
     private val widgetTransparencyList: List<WidgetTransparencyPercent> = listOf(
@@ -336,7 +338,11 @@ class SettingsMapper @Inject constructor(
     }
 
     private fun toDaysInCalendarName(daysInCalendar: DaysInCalendar): String {
-        return daysInCalendar.count.toString()
+        return if (daysInCalendar == DaysInCalendar.WEEK) {
+            resourceRepo.getString(R.string.range_week)
+        } else {
+            daysInCalendarMapper.mapDaysCount(daysInCalendar).toString()
+        }
     }
 
     private fun toPosition(widgetTransparency: WidgetTransparencyPercent): Int {

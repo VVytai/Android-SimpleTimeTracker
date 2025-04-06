@@ -10,7 +10,6 @@ import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.domain.base.MULTITASK_ITEM_ID
 import com.example.util.simpletimetracker.domain.base.UNTRACKED_ITEM_ID
 import com.example.util.simpletimetracker.domain.extension.orZero
-import com.example.util.simpletimetracker.domain.extension.rotateLeft
 import com.example.util.simpletimetracker.domain.recordType.extension.value
 import com.example.util.simpletimetracker.domain.record.mapper.RangeMapper
 import com.example.util.simpletimetracker.domain.daysOfWeek.model.DayOfWeek
@@ -349,19 +348,7 @@ class StatisticsDetailViewDataMapper @Inject constructor(
         firstDayOfWeek: DayOfWeek,
         isVisible: Boolean,
     ): StatisticsDetailChartViewData {
-        val days = listOf(
-            DayOfWeek.MONDAY,
-            DayOfWeek.TUESDAY,
-            DayOfWeek.WEDNESDAY,
-            DayOfWeek.THURSDAY,
-            DayOfWeek.FRIDAY,
-            DayOfWeek.SATURDAY,
-            DayOfWeek.SUNDAY,
-        ).let { list ->
-            list.indexOf(firstDayOfWeek)
-                .takeUnless { it == -1 }.orZero()
-                .let(list::rotateLeft)
-        }
+        val days = timeMapper.getWeekOrder(firstDayOfWeek)
 
         val viewData = days.map { day ->
             val calendarDay = timeMapper.toCalendarDayOfWeek(day)

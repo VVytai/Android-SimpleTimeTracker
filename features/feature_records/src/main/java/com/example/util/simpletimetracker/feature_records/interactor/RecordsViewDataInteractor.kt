@@ -8,6 +8,7 @@ import com.example.util.simpletimetracker.domain.base.UNCATEGORIZED_ITEM_ID
 import com.example.util.simpletimetracker.domain.base.UNTRACKED_ITEM_ID
 import com.example.util.simpletimetracker.domain.category.interactor.RecordTypeCategoryInteractor
 import com.example.util.simpletimetracker.domain.category.model.RecordTypeCategory
+import com.example.util.simpletimetracker.domain.daysOfWeek.mapper.DaysInCalendarMapper
 import com.example.util.simpletimetracker.domain.extension.dropSeconds
 import com.example.util.simpletimetracker.domain.extension.toRange
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
@@ -18,6 +19,7 @@ import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTyp
 import com.example.util.simpletimetracker.domain.record.interactor.RunningRecordInteractor
 import com.example.util.simpletimetracker.domain.record.mapper.RangeMapper
 import com.example.util.simpletimetracker.domain.daysOfWeek.model.DayOfWeek
+import com.example.util.simpletimetracker.domain.daysOfWeek.model.DaysInCalendar
 import com.example.util.simpletimetracker.domain.record.model.Range
 import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
 import com.example.util.simpletimetracker.domain.record.model.Record
@@ -25,7 +27,6 @@ import com.example.util.simpletimetracker.domain.recordTag.model.RecordTag
 import com.example.util.simpletimetracker.domain.recordType.model.RecordType
 import com.example.util.simpletimetracker.domain.recordType.model.RecordTypeGoal
 import com.example.util.simpletimetracker.domain.record.model.RunningRecord
-import com.example.util.simpletimetracker.domain.daysOfWeek.model.count
 import com.example.util.simpletimetracker.domain.record.interactor.GetUntrackedRecordsInteractor
 import com.example.util.simpletimetracker.domain.statistics.model.ChartFilterType
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
@@ -58,6 +59,7 @@ class RecordsViewDataInteractor @Inject constructor(
     private val getRunningRecordViewDataMediator: GetRunningRecordViewDataMediator,
     private val calendarToListShiftMapper: CalendarToListShiftMapper,
     private val recordTypeCategoryInteractor: RecordTypeCategoryInteractor,
+    private val daysInCalendarMapper: DaysInCalendarMapper,
 ) {
 
     suspend fun getViewData(
@@ -70,6 +72,7 @@ class RecordsViewDataInteractor @Inject constructor(
         val useProportionalMinutes = prefsInteractor.getUseProportionalMinutes()
         val showSeconds = prefsInteractor.getShowSeconds()
         val startOfDayShift = prefsInteractor.getStartOfDayShift()
+        val firstDayOfWeek = prefsInteractor.getFirstDayOfWeek()
         val showUntrackedInRecords = prefsInteractor.getShowUntrackedInRecords()
         val reverseOrder = prefsInteractor.getReverseOrderInCalendar()
         val recordTypes = recordTypeInteractor.getAll().associateBy(RecordType::id)
@@ -77,16 +80,22 @@ class RecordsViewDataInteractor @Inject constructor(
         val recordTags = recordTagInteractor.getAll()
         val goals = recordTypeGoalInteractor.getAllTypeGoals().groupBy { it.idData.value }
         val runningRecords = runningRecordInteractor.getAll()
-        val isCalendarView = prefsInteractor.getShowRecordsCalendar()
-        val calendarDayCount = prefsInteractor.getDaysInCalendar().count
-        val daysCountInShift = if (isCalendarView) calendarDayCount else 1
         val recordTypeCategories = suspend { recordTypeCategoryInteractor.getAll() }
         val filteredIds = prefsInteractor.getListFilteredIds(filterType)
+        val isCalendarView = prefsInteractor.getShowRecordsCalendar()
+        val daysInCalendar = if (isCalendarView) {
+            prefsInteractor.getDaysInCalendar()
+        } else {
+            DaysInCalendar.ONE
+        }
+        val daysCountInShift = daysInCalendarMapper.mapDaysCount(daysInCalendar)
 
         return@withContext (daysCountInShift - 1 downTo 0).map { dayInShift ->
             val actualShift = calendarToListShiftMapper.mapCalendarToListShift(
                 calendarShift = shift,
-                calendarDayCount = daysCountInShift,
+                daysInCalendar = daysInCalendar,
+                startOfDayShift = startOfDayShift,
+                firstDayOfWeek = firstDayOfWeek,
             ).end - dayInShift
 
             val range = timeMapper.getRangeStartAndEnd(
