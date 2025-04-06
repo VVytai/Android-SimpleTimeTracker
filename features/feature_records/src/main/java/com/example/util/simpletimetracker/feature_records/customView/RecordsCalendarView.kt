@@ -341,7 +341,6 @@ class RecordsCalendarView @JvmOverloads constructor(
             isAntiAlias = true
             color = legendTextColor
             textSize = legendTextSize * 0.8f
-            textAlign = Paint.Align.RIGHT
         }
         linePaint.apply {
             isAntiAlias = true
@@ -372,8 +371,8 @@ class RecordsCalendarView @JvmOverloads constructor(
         legendMinutesTextHeight = textBounds.height().toFloat()
 
         // Chart dimensions
-        chartLeftBound = legendTextWidth + 2 * legendTextPadding
-        chartRightBound = w - legendTextPadding
+        chartLeftBound = legendTextPadding
+        chartRightBound = w - legendTextWidth - 2 * legendTextPadding
         columnWidth = (chartRightBound - chartLeftBound) / dataSize
 
         chartTopBound = if (shouldDrawTopLegends) {
@@ -707,9 +706,9 @@ class RecordsCalendarView @JvmOverloads constructor(
                 ).checkOverdraw()
 
             canvas.drawLine(
-                chartLeftBound - legendTextPadding,
+                0f,
                 currentTimeY.checkReverse(),
-                w,
+                chartRightBound + legendTextPadding,
                 currentTimeY.checkReverse(),
                 currentTimelinePaint,
             )
@@ -726,7 +725,7 @@ class RecordsCalendarView @JvmOverloads constructor(
             canvas.drawLine(
                 chartLeftBound,
                 currentY.checkReverse(),
-                w,
+                chartRightBound,
                 currentY.checkReverse(),
                 linePaint,
             )
@@ -741,7 +740,7 @@ class RecordsCalendarView @JvmOverloads constructor(
                 .padStart(2, '0')
             canvas.drawText(
                 hourText.let { "$it:00" },
-                legendTextPadding,
+                chartRightBound + legendTextPadding,
                 textCenterY,
                 legendTextPaint,
             )
@@ -755,7 +754,7 @@ class RecordsCalendarView @JvmOverloads constructor(
                 canvas.drawLine(
                     chartLeftBound,
                     minuteCurrentY.checkReverse(),
-                    w,
+                    chartRightBound,
                     minuteCurrentY.checkReverse(),
                     lineSecondaryPaint,
                 )
@@ -771,7 +770,7 @@ class RecordsCalendarView @JvmOverloads constructor(
                 val fullText = "$hourText:$minuteText"
                 canvas.drawText(
                     fullText,
-                    chartLeftBound - legendTextPadding,
+                    chartRightBound + legendTextPadding,
                     minuteTextCenterY,
                     legendMinutesTextPaint,
                 )
