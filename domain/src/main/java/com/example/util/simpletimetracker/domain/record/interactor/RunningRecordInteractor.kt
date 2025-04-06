@@ -2,6 +2,8 @@ package com.example.util.simpletimetracker.domain.record.interactor
 
 import com.example.util.simpletimetracker.domain.record.model.RunningRecord
 import com.example.util.simpletimetracker.domain.record.repo.RunningRecordRepo
+import com.example.util.simpletimetracker.domain.recordTag.model.RecordTypeToTag
+import com.example.util.simpletimetracker.domain.recordTag.repo.RecordTypeToTagRepo
 import com.example.util.simpletimetracker.domain.recordTag.repo.RunningRecordToRecordTagRepo
 import javax.inject.Inject
 
@@ -28,12 +30,19 @@ class RunningRecordInteractor @Inject constructor(
 
     suspend fun add(runningRecord: RunningRecord) {
         val recordId = runningRecordRepo.add(runningRecord)
-        runningRecordToRecordTagRepo.removeAllByRunningRecordId(recordId)
-        runningRecordToRecordTagRepo.addRunningRecordTags(recordId, runningRecord.tagIds)
+        updateTags(recordId, runningRecord.tagIds)
     }
 
     suspend fun remove(id: Long) {
         runningRecordToRecordTagRepo.removeAllByRunningRecordId(id)
         runningRecordRepo.remove(id)
+    }
+
+    private suspend fun updateTags(
+        recordId: Long,
+        tagIds: List<Long>,
+    ) {
+        runningRecordToRecordTagRepo.removeAllByRunningRecordId(recordId)
+        runningRecordToRecordTagRepo.addRunningRecordTags(recordId, tagIds)
     }
 }

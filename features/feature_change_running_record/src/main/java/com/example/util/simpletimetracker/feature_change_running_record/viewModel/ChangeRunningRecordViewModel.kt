@@ -20,6 +20,7 @@ import com.example.util.simpletimetracker.domain.record.interactor.RunningRecord
 import com.example.util.simpletimetracker.domain.record.interactor.UpdateRunningRecordFromChangeScreenInteractor
 import com.example.util.simpletimetracker.domain.statistics.model.ChartFilterType
 import com.example.util.simpletimetracker.domain.record.model.RunningRecord
+import com.example.util.simpletimetracker.domain.recordTag.interactor.AddTagToTypeIfNotExistMediator
 import com.example.util.simpletimetracker.domain.recordTag.interactor.RecordTagInteractor
 import com.example.util.simpletimetracker.feature_change_record.interactor.ChangeRecordViewDataInteractor
 import com.example.util.simpletimetracker.feature_change_record.viewData.ChangeRecordChooserState
@@ -64,6 +65,7 @@ class ChangeRunningRecordViewModel @Inject constructor(
     private val statisticsDetailNavigationInteractor: StatisticsDetailNavigationInteractor,
     private val changeRunningRecordMapper: ChangeRunningRecordMapper,
     private val updateRunningRecordFromChangeScreenInteractor: UpdateRunningRecordFromChangeScreenInteractor,
+    private val addTagToTypeIfNotExistMediator: AddTagToTypeIfNotExistMediator,
 ) : ChangeRecordBaseViewModel(
     router = router,
     snackBarMessageNavigationInteractor = snackBarMessageNavigationInteractor,
@@ -145,6 +147,12 @@ class ChangeRunningRecordViewModel @Inject constructor(
             comment = newComment,
             tagIds = newCategoryIds,
         )
+        if (showAllTags) {
+            addTagToTypeIfNotExistMediator.execute(
+                typeId = newTypeId,
+                tagIds = newCategoryIds,
+            )
+        }
         doAfter()
         sendPreviewUpdate(fullUpdate = true)
         router.back()

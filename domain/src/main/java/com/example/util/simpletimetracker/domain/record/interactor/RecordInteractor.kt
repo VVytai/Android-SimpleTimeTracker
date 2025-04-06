@@ -5,6 +5,7 @@ import com.example.util.simpletimetracker.domain.record.model.Record
 import com.example.util.simpletimetracker.domain.record.repo.RecordRepo
 import com.example.util.simpletimetracker.domain.record.model.RunningRecord
 import com.example.util.simpletimetracker.domain.recordTag.repo.RecordToRecordTagRepo
+import com.example.util.simpletimetracker.domain.recordTag.repo.RecordTypeToTagRepo
 import javax.inject.Inject
 
 class RecordInteractor @Inject constructor(

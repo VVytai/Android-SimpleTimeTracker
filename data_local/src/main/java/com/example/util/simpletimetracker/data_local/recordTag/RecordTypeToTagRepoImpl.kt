@@ -56,6 +56,16 @@ class RecordTypeToTagRepoImpl @Inject constructor(
         afterSourceAccess = { cache = null },
     )
 
+    override suspend fun addTags(typeId: Long, tagIds: List<Long>) = mutex.withLockedCache(
+        logMessage = "addTags",
+        accessSource = {
+            tagIds.map {
+                mapper.map(typeId = typeId, tagId = it)
+            }.let { dao.insert(it) }
+        },
+        afterSourceAccess = { cache = null },
+    )
+
     override suspend fun removeTypes(tagId: Long, typeIds: List<Long>) = mutex.withLockedCache(
         logMessage = "removeTypes",
         accessSource = {

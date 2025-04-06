@@ -14,6 +14,7 @@ import com.example.util.simpletimetracker.core.utils.InsetConfiguration
 import com.example.util.simpletimetracker.core.utils.fragmentArgumentDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.BaseRecyclerAdapter
 import com.example.util.simpletimetracker.feature_base_adapter.category.createCategoryAdapterDelegate
+import com.example.util.simpletimetracker.feature_base_adapter.category.createCategoryShowAllAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.divider.createDividerAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.empty.createEmptyAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.info.createInfoAdapterDelegate
@@ -45,6 +46,7 @@ class RecordTagSelectionFragment : BaseFragment<Binding>() {
         BaseRecyclerAdapter(
             createLoaderAdapterDelegate(),
             createCategoryAdapterDelegate(viewModel::onCategoryClick),
+            createCategoryShowAllAdapterDelegate { viewModel.onShowAllTagsClick() },
             createDividerAdapterDelegate(),
             createInfoAdapterDelegate(),
             createEmptyAdapterDelegate(),

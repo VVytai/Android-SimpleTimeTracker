@@ -9,6 +9,7 @@ import com.example.util.simpletimetracker.core.extension.set
 import com.example.util.simpletimetracker.domain.extension.addOrRemove
 import com.example.util.simpletimetracker.domain.record.interactor.AddRunningRecordMediator
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
+import com.example.util.simpletimetracker.domain.recordTag.interactor.AddTagToTypeIfNotExistMediator
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.category.CategoryViewData
 import com.example.util.simpletimetracker.feature_base_adapter.loader.LoaderViewData
@@ -24,6 +25,7 @@ class RecordTagSelectionViewModel @Inject constructor(
     private val viewDataInteractor: RecordTagSelectionViewDataInteractor,
     private val addRunningRecordMediator: AddRunningRecordMediator,
     private val prefsInteractor: PrefsInteractor,
+    private val addTagToTypeIfNotExistMediator: AddTagToTypeIfNotExistMediator,
 ) : BaseViewModel() {
 
     lateinit var extra: RecordTagSelectionParams
@@ -44,6 +46,10 @@ class RecordTagSelectionViewModel @Inject constructor(
     private var newComment: String = ""
     private var newCategoryIds: MutableList<Long> = mutableListOf()
 
+    // Keep in mind that tags would be added to new types only if show all was selected before,
+    // for optimisation reasons, to not call on every save.
+    private var showAllTags: Boolean = false
+
     fun onCategoryClick(item: CategoryViewData) {
         viewModelScope.launch {
             when (item) {
@@ -61,6 +67,11 @@ class RecordTagSelectionViewModel @Inject constructor(
                 updateViewData()
             }
         }
+    }
+
+    fun onShowAllTagsClick() = viewModelScope.launch {
+        showAllTags = true
+        updateViewData()
     }
 
     fun onSaveClick() {
@@ -81,6 +92,12 @@ class RecordTagSelectionViewModel @Inject constructor(
             tagIds = newCategoryIds,
             comment = newComment,
         )
+        if (showAllTags) {
+            addTagToTypeIfNotExistMediator.execute(
+                typeId = extra.typeId,
+                tagIds = newCategoryIds,
+            )
+        }
         saveClicked.set(Unit)
     }
 
@@ -117,6 +134,7 @@ class RecordTagSelectionViewModel @Inject constructor(
         return viewDataInteractor.getViewData(
             typeId = extra.typeId,
             selectedTags = newCategoryIds,
+            showAllTags = showAllTags,
         )
     }
 }

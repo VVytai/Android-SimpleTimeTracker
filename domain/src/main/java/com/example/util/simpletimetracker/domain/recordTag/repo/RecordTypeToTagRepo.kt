@@ -14,6 +14,8 @@ interface RecordTypeToTagRepo {
 
     suspend fun addTypes(tagId: Long, typeIds: List<Long>)
 
+    suspend fun addTags(typeId: Long, tagIds: List<Long>)
+
     suspend fun removeTypes(tagId: Long, typeIds: List<Long>)
 
     suspend fun removeAll(tagId: Long)

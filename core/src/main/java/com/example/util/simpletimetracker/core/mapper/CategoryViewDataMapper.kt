@@ -11,6 +11,7 @@ import com.example.util.simpletimetracker.domain.recordTag.model.RecordTag
 import com.example.util.simpletimetracker.domain.recordType.model.RecordType
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.category.CategoryAddViewData
+import com.example.util.simpletimetracker.feature_base_adapter.category.CategoryShowAllViewData
 import com.example.util.simpletimetracker.feature_base_adapter.category.CategoryViewData
 import com.example.util.simpletimetracker.feature_base_adapter.category.TagType
 import com.example.util.simpletimetracker.feature_base_adapter.empty.EmptyViewData
@@ -151,6 +152,13 @@ class CategoryViewDataMapper @Inject constructor(
 
     fun mapToRecordTagAddItem(isDarkTheme: Boolean): CategoryAddViewData {
         return map(type = TagType.RECORD, isDarkTheme = isDarkTheme)
+    }
+
+    fun mapToRecordTagShowAllItem(isDarkTheme: Boolean): CategoryShowAllViewData {
+        return CategoryShowAllViewData(
+            name = resourceRepo.getString(R.string.types_filter_show_all),
+            color = colorMapper.toInactiveColor(isDarkTheme),
+        )
     }
 
     fun mapToMultitaskItem(

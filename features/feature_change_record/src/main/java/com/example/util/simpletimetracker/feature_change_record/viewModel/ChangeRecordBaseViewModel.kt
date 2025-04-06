@@ -123,6 +123,7 @@ abstract class ChangeRecordBaseViewModel(
         start = ChangeRecordDateTimeFieldsState.State.DateTime,
         end = ChangeRecordDateTimeFieldsState.State.DateTime,
     )
+    protected var showAllTags: Boolean = false
 
     protected abstract suspend fun updatePreview()
     protected abstract fun getChangeCategoryParams(data: ChangeTagData): ChangeRecordTagFromScreen
@@ -341,6 +342,11 @@ abstract class ChangeRecordBaseViewModel(
                 ChangeTagData.New(preselectedTypeId),
             ),
         )
+    }
+
+    fun onShowAllTagsClick() = viewModelScope.launch {
+        showAllTags = true
+        updateCategoriesViewData()
     }
 
     fun onCommentClick(item: ChangeRecordCommentViewData) {
@@ -855,11 +861,12 @@ abstract class ChangeRecordBaseViewModel(
     private suspend fun loadCategoriesViewData(): ChangeRecordTagsViewData {
         return recordTagViewDataInteractor.getViewData(
             selectedTags = newCategoryIds,
-            typeId = newTypeId,
+            typeId = if (showAllTags) null else newTypeId,
             multipleChoiceAvailable = true,
             showAddButton = true,
             showArchived = false,
             showUntaggedButton = true,
+            showAllTagsButton = !showAllTags,
         ).let {
             ChangeRecordTagsViewData(
                 selectedCount = it.selectedCount,

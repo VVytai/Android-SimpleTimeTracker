@@ -21,6 +21,7 @@ import com.example.util.simpletimetracker.domain.statistics.model.ChartFilterTyp
 import com.example.util.simpletimetracker.domain.daysOfWeek.model.DayOfWeek
 import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
 import com.example.util.simpletimetracker.domain.record.model.Record
+import com.example.util.simpletimetracker.domain.recordTag.interactor.AddTagToTypeIfNotExistMediator
 import com.example.util.simpletimetracker.domain.recordTag.interactor.RecordTagInteractor
 import com.example.util.simpletimetracker.feature_change_record.interactor.ChangeRecordViewDataInteractor
 import com.example.util.simpletimetracker.feature_change_record.viewData.ChangeRecordViewData
@@ -50,6 +51,7 @@ class ChangeRecordViewModel @Inject constructor(
     private val externalViewsInteractor: UpdateExternalViewsInteractor,
     private val timeMapper: TimeMapper,
     private val statisticsDetailNavigationInteractor: StatisticsDetailNavigationInteractor,
+    private val addTagToTypeIfNotExistMediator: AddTagToTypeIfNotExistMediator,
 ) : ChangeRecordBaseViewModel(
     router = router,
     snackBarMessageNavigationInteractor = snackBarMessageNavigationInteractor,
@@ -137,6 +139,12 @@ class ChangeRecordViewModel @Inject constructor(
             tagIds = newCategoryIds,
         ).let {
             addRecordMediator.add(it)
+            if (showAllTags) {
+                addTagToTypeIfNotExistMediator.execute(
+                    typeId = newTypeId,
+                    tagIds = newCategoryIds,
+                )
+            }
             if (newTypeId != originalTypeId) {
                 externalViewsInteractor.onRecordChangeType(originalTypeId)
             }

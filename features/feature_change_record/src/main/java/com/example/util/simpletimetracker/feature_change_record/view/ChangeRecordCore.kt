@@ -31,6 +31,7 @@ import com.example.util.simpletimetracker.feature_base_adapter.info.createInfoAd
 import com.example.util.simpletimetracker.feature_base_adapter.recordType.createRecordTypeAdapterDelegate
 import com.example.util.simpletimetracker.feature_change_record.R
 import com.example.util.simpletimetracker.feature_base_adapter.button.createButtonAdapterDelegate
+import com.example.util.simpletimetracker.feature_base_adapter.category.createCategoryShowAllAdapterDelegate
 import com.example.util.simpletimetracker.feature_change_record.adapter.createChangeRecordChangePreviewAdapterDelegate
 import com.example.util.simpletimetracker.feature_change_record.adapter.createChangeRecordCommentAdapterDelegate
 import com.example.util.simpletimetracker.feature_change_record.adapter.createChangeRecordCommentFieldAdapterDelegate
@@ -75,7 +76,12 @@ class ChangeRecordCore(
                 onClick = viewModel::onCategoryClick,
                 onLongClickWithTransition = viewModel::onCategoryLongClick,
             ),
-            createCategoryAddAdapterDelegate { viewModel.onAddCategoryClick() },
+            createCategoryAddAdapterDelegate(
+                onItemClick = { viewModel.onAddCategoryClick() },
+            ),
+            createCategoryShowAllAdapterDelegate(
+                onItemClick =  { viewModel.onShowAllTagsClick() }
+            ),
             createDividerAdapterDelegate(),
             createInfoAdapterDelegate(),
             createHintAdapterDelegate(),

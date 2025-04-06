@@ -24,6 +24,10 @@ class RecordTypeToTagInteractor @Inject constructor(
         repo.addTypes(tagId, typeIds)
     }
 
+    suspend fun addTags(typeId: Long, tagIds: List<Long>) {
+        repo.addTags(typeId, tagIds)
+    }
+
     suspend fun removeTypes(categoryId: Long, typeIds: List<Long>) {
         repo.removeTypes(categoryId, typeIds)
     }
