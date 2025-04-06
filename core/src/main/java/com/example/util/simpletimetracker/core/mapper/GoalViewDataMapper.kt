@@ -198,7 +198,10 @@ class GoalViewDataMapper @Inject constructor(
                 is RecordTypeGoal.Subtype.Limit -> GoalCheckmarkView.CheckState.LIMIT_REACHED
             }
         } else {
-            GoalCheckmarkView.CheckState.HIDDEN
+            when (goalSubtype) {
+                is RecordTypeGoal.Subtype.Goal -> GoalCheckmarkView.CheckState.GOAL_NOT_REACHED
+                is RecordTypeGoal.Subtype.Limit -> GoalCheckmarkView.CheckState.LIMIT_NOT_REACHED
+            }
         }
         val (currentValueString, goalValueString) = when (goal.type) {
             is RecordTypeGoal.Type.Duration -> {
@@ -216,13 +219,13 @@ class GoalViewDataMapper @Inject constructor(
         val goalPercent = if (goalValue == 0L) {
             0
         } else {
-            (current * 100f / goalValue).roundToLong().coerceAtMost(100)
+            (current * 100f / goalValue).roundToLong()
         }
 
         return StatisticsGoalViewData.Goal(
             goalCurrent = currentValueString,
             goal = goalString,
-            goalPercent = goalPercent.let { "$it%" },
+            goalPercent = formatGoalPercent(goalPercent),
             goalState = goalState,
             percent = goalPercent,
         )
@@ -247,5 +250,14 @@ class GoalViewDataMapper @Inject constructor(
             stringResId = R.plurals.statistics_detail_times_tracked,
             quantity = goalValue.toInt(),
         )
+    }
+
+    private fun formatGoalPercent(goalPercent: Long): String {
+        val text = when {
+            goalPercent >= 100_000f -> "∞"
+            goalPercent >= 1_000 -> "${goalPercent / 1000}K"
+            else -> goalPercent.toString()
+        }
+        return "$text%"
     }
 }

@@ -3,9 +3,7 @@ package com.example.util.simpletimetracker.feature_views
 import android.content.Context
 import android.graphics.Color
 import android.util.AttributeSet
-import android.view.View
-import androidx.cardview.widget.CardView
-import androidx.core.content.ContextCompat
+import android.widget.RelativeLayout
 import com.example.util.simpletimetracker.feature_views.ColorUtils.normalizeLightness
 import com.example.util.simpletimetracker.feature_views.GoalCheckmarkView.CheckState
 import com.example.util.simpletimetracker.feature_views.databinding.StatisticsGoalViewLayoutBinding
@@ -17,7 +15,7 @@ class StatisticsGoalView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0,
-) : CardView(
+) : RelativeLayout(
     context,
     attrs,
     defStyleAttr,
@@ -34,7 +32,7 @@ class StatisticsGoalView @JvmOverloads constructor(
     var itemColor: Int = Color.BLACK
         set(value) {
             field = value
-            setCardBackgroundColor(value)
+            binding.containerStatisticsGoalItem.setCardBackgroundColor(value)
             setDividerColor()
         }
 
@@ -66,28 +64,16 @@ class StatisticsGoalView @JvmOverloads constructor(
         set(value) {
             field = value
             binding.tvStatisticsGoalItemPercent.text = value
-            setGoalPercentVisibility()
         }
 
     var itemGoalState: CheckState = CheckState.HIDDEN
         set(value) {
             field = value
             binding.ivStatisticsGoalItemCheck.itemCheckState = value
-            setGoalPercentVisibility()
         }
 
     init {
-        initProps()
         initAttrs(context, attrs, defStyleAttr)
-    }
-
-    private fun initProps() {
-        ContextCompat.getColor(context, R.color.black).let(::setCardBackgroundColor)
-        radius = resources.getDimensionPixelOffset(R.dimen.record_type_card_corner_radius).toFloat()
-        // TODO doesn't work here for some reason, need to set in the layout
-        cardElevation = resources.getDimensionPixelOffset(R.dimen.record_type_card_elevation).toFloat()
-        preventCornerOverlap = false
-        useCompatPadding = true
     }
 
     private fun initAttrs(
@@ -145,13 +131,5 @@ class StatisticsGoalView @JvmOverloads constructor(
     private fun setDividerColor() {
         normalizeLightness(itemColor)
             .let(binding.dividerStatisticsGoalPercent::setBackgroundColor)
-    }
-
-    private fun setGoalPercentVisibility() {
-        binding.tvStatisticsGoalItemPercent.visibility = when {
-            itemGoalState != CheckState.HIDDEN -> View.INVISIBLE
-            itemGoalPercent.isEmpty() -> View.GONE
-            else -> View.VISIBLE
-        }
     }
 }

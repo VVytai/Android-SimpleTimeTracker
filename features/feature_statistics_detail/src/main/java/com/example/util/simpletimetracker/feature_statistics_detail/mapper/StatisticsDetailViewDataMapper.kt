@@ -601,8 +601,8 @@ class StatisticsDetailViewDataMapper @Inject constructor(
             val text = when {
                 abs >= 1_000_000f -> "∞"
                 abs >= 1_000f -> "${(abs / 1000).toLong()}K"
-                abs >= 10 -> abs.toLong()
-                (abs * 10).roundToLong() % 10L == 0L -> abs.toLong()
+                abs >= 10 -> abs.toLong().toString()
+                (abs * 10).roundToLong() % 10L == 0L -> abs.toLong().toString()
                 else -> String.format("%.1f", abs)
             }
             return if (value >= 0) "+$text%" else "-$text%"

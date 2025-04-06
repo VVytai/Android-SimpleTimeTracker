@@ -25,7 +25,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="@id/btnStatisticsContainerToday"
-        app:layout_constraintEnd_toEndOf="@id/btnStatisticsContainerToday"
+        app:layout_constraintEnd_toEndOf="@id/btnStatisticsContainerOptions"
         app:layout_constraintStart_toStartOf="@id/btnStatisticsContainerToday"
         app:layout_constraintTop_toTopOf="@id/btnStatisticsContainerToday" />
 
