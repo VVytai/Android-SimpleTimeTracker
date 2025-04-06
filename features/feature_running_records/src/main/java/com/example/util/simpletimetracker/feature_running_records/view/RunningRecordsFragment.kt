@@ -9,6 +9,8 @@ import com.example.util.simpletimetracker.core.di.BaseViewModelFactory
 import com.example.util.simpletimetracker.core.dialog.OnTagSelectedListener
 import com.example.util.simpletimetracker.core.sharedViewModel.MainTabsViewModel
 import com.example.util.simpletimetracker.core.utils.InsetConfiguration
+import com.example.util.simpletimetracker.core.utils.doOnApplyWindowInsetsListener
+import com.example.util.simpletimetracker.core.utils.getNavBarInsets
 import com.example.util.simpletimetracker.core.utils.updateRunningRecordPreview
 import com.example.util.simpletimetracker.domain.record.interactor.UpdateRunningRecordFromChangeScreenInteractor
 import com.example.util.simpletimetracker.feature_base_adapter.BaseRecyclerAdapter
@@ -16,6 +18,7 @@ import com.example.util.simpletimetracker.feature_base_adapter.activityFilter.cr
 import com.example.util.simpletimetracker.feature_base_adapter.activityFilter.createActivityFilterAddAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.divider.createDividerAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.empty.createEmptyAdapterDelegate
+import com.example.util.simpletimetracker.feature_base_adapter.emptySpace.createEmptySpaceAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.hint.createHintAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.hintBig.createHintBigAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.loader.createLoaderAdapterDelegate
@@ -26,6 +29,7 @@ import com.example.util.simpletimetracker.feature_base_adapter.recordWithHint.cr
 import com.example.util.simpletimetracker.feature_base_adapter.runningRecord.createRunningRecordAdapterDelegate
 import com.example.util.simpletimetracker.feature_running_records.viewModel.RunningRecordsViewModel
 import com.example.util.simpletimetracker.feature_views.TransitionNames
+import com.example.util.simpletimetracker.feature_views.extension.pxToDp
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
@@ -55,6 +59,7 @@ class RunningRecordsFragment :
 
     private val runningRecordsAdapter: BaseRecyclerAdapter by lazy {
         BaseRecyclerAdapter(
+            createEmptySpaceAdapterDelegate(),
             createLoaderAdapterDelegate(),
             createEmptyAdapterDelegate(),
             createHintAdapterDelegate(),
@@ -97,6 +102,10 @@ class RunningRecordsFragment :
             setHasFixedSize(true)
         }
 
+        view?.doOnApplyWindowInsetsListener {
+            viewModel.onChangeInsets(navBarHeight = it.getNavBarInsets().bottom.pxToDp())
+        }
+
         setOnPreDrawListener {
             parentFragment?.startPostponedEnterTransition()
         }
@@ -110,7 +119,6 @@ class RunningRecordsFragment :
         }
         with(mainTabsViewModel) {
             tabReselected.observe(viewModel::onTabReselected)
-            isNavBatAtTheBottom.observe(::updateInsetConfiguration)
         }
     }
 
@@ -139,15 +147,6 @@ class RunningRecordsFragment :
             recyclerView = binding.rvRunningRecordsList,
             update = update,
         )
-    }
-
-    private fun updateInsetConfiguration(isNavBatAtTheBottom: Boolean) {
-        insetConfiguration = if (isNavBatAtTheBottom) {
-            InsetConfiguration.DoNotApply
-        } else {
-            InsetConfiguration.ApplyToView { binding.rvRunningRecordsList }
-        }
-        initInsets()
     }
 
     companion object {

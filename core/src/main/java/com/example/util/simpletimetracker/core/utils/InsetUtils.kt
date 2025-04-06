@@ -1,5 +1,3 @@
-@file:Suppress("unused")
-
 package com.example.util.simpletimetracker.core.utils
 
 import android.view.View

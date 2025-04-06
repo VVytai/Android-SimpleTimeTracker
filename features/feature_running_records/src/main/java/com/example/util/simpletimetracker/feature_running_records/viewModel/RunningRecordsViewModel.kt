@@ -76,6 +76,7 @@ class RunningRecordsViewModel @Inject constructor(
     private var timerJob: Job? = null
     private var completeTypeJob: Job? = null
     private var completeTypeIds: Set<Long> = emptySet()
+    private var navBarHeightDp: Int = 0
 
     init {
         subscribeToUpdates()
@@ -283,6 +284,11 @@ class RunningRecordsViewModel @Inject constructor(
         }
     }
 
+    fun onChangeInsets(navBarHeight: Int) {
+        this.navBarHeightDp = navBarHeight
+        updateRunningRecords()
+    }
+
     private suspend fun onRecordTypeWithDefaultDurationClick(typeId: Long) {
         val defaultDuration = recordTypeInteractor.get(typeId)?.defaultDuration
         if (defaultDuration.orZero() <= 0L) return
@@ -326,6 +332,7 @@ class RunningRecordsViewModel @Inject constructor(
     private suspend fun loadRunningRecordsViewData(): List<ViewHolderType> {
         return runningRecordsViewDataInteractor.getViewData(
             completeTypeIds = completeTypeIds,
+            navBarHeightDp = navBarHeightDp,
         )
     }
 

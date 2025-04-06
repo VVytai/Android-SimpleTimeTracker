@@ -16,6 +16,7 @@ import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTyp
 import com.example.util.simpletimetracker.domain.recordType.model.RecordType
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.divider.DividerViewData
+import com.example.util.simpletimetracker.feature_base_adapter.emptySpace.EmptySpaceViewData
 import com.example.util.simpletimetracker.feature_running_records.mapper.RunningRecordsViewDataMapper
 import javax.inject.Inject
 
@@ -37,6 +38,7 @@ class RunningRecordsViewDataInteractor @Inject constructor(
 
     suspend fun getViewData(
         completeTypeIds: Set<Long>,
+        navBarHeightDp: Int,
     ): List<ViewHolderType> {
         val recordTypes = recordTypeInteractor.getAll()
         val recordTypesMap = recordTypes.associateBy(RecordType::id)
@@ -55,6 +57,7 @@ class RunningRecordsViewDataInteractor @Inject constructor(
         val isPomodoroStarted = prefsInteractor.getPomodoroModeStartedTimestampMs() != 0L
         val retroactiveTrackingModeEnabled = prefsInteractor.getRetroactiveTrackingMode()
         val isFiltersCollapsed = prefsInteractor.getIsActivityFiltersCollapsed()
+        val isNavBarAtTheBottom = prefsInteractor.getIsNavBarAtTheBottom()
         val goals = filterGoalsByDayOfWeekInteractor
             .execute(recordTypeGoalInteractor.getAllTypeGoals())
             .groupBy { it.idData.value }
@@ -187,9 +190,23 @@ class RunningRecordsViewDataInteractor @Inject constructor(
                 }
             }
 
+        // Flexbox layout doesn't fully support clipToPadding = false.
+        // Because of that bottom padding with nav bar insets are not applied to main recycler.
+        // Instead an empty space added.
+        val bottomSpaceForNavBar = if (isNavBarAtTheBottom) {
+            emptyList()
+        } else {
+            EmptySpaceViewData(
+                id = "running_records_nav_bar_space".hashCode().toLong(),
+                height = EmptySpaceViewData.ViewDimension.ExactSizeDp(navBarHeightDp),
+                wrapBefore = true,
+            ).let(::listOf)
+        }
+
         return runningRecordsViewData +
             filtersViewData +
             suggestionsViewData +
-            recordTypesViewData
+            recordTypesViewData +
+            bottomSpaceForNavBar
     }
 }
