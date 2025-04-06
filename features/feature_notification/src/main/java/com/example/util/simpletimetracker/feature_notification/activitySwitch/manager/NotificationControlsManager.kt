@@ -45,9 +45,14 @@ class NotificationControlsManager @Inject constructor(
         val tagsControlsVisible: Boolean = controls.tags.isNotEmpty()
 
         return RemoteViews(context.packageName, R.layout.notification_switch_controls_layout).apply {
-            val hintVisibility = if (controls.hint.isNotEmpty()) View.VISIBLE else View.GONE
+            val hintVisibility = View.VISIBLE
             setViewVisibility(R.id.tvNotificationControlsHint, hintVisibility)
-            setTextViewText(R.id.tvNotificationControlsHint, controls.hint)
+            val fullHint = if (controls.hint.isNotEmpty()) {
+                controls.hint + " " + controls.pagesHint
+            } else {
+                controls.pagesHint
+            }
+            setTextViewText(R.id.tvNotificationControlsHint, fullHint)
 
             addTypeControls(from, controls)
             if (tagsControlsVisible) addTagControls(from, controls)

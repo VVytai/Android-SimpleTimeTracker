@@ -8,6 +8,7 @@ sealed interface NotificationControlsParams {
 
     data class Enabled(
         val hint: String,
+        val pagesHint: String,
         val types: List<Type>,
         val typesShift: Int,
         val tags: List<Tag>,

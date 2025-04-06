@@ -106,8 +106,18 @@ class GetNotificationActivitySwitchControlsInteractor @Inject constructor(
         ) + repeatButtonViewData +
             typesViewData
 
+        val total = allTypesViewData.size
+        val totalPages = total / TYPES_LIST_SIZE
+        val currentPage = (typesShift / TYPES_LIST_SIZE) + 1
+        val pagesHint = if (total != 0 && totalPages > 1) {
+            "($currentPage/$totalPages)"
+        } else {
+            ""
+        }
+
         return NotificationControlsParams.Enabled(
             hint = hint,
+            pagesHint = pagesHint,
             types = populateWithEmpty(
                 data = allTypesViewData,
                 pageSize = TYPES_LIST_SIZE,
