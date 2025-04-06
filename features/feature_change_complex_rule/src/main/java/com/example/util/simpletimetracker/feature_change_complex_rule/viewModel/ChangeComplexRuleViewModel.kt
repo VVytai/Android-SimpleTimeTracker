@@ -145,6 +145,7 @@ class ChangeComplexRuleViewModel @Inject constructor(
                     newAssignTagIds = dataIds.toSet()
                 } else {
                     newAction = ComplexRule.Action.AllowMultitasking
+                    newAssignTagIds = emptySet()
                 }
                 updateActionViewData()
                 onActionTypeChooserClick()
