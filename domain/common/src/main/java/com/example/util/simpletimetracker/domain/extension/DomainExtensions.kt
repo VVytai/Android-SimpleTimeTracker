@@ -45,9 +45,8 @@ fun CharSequence.indexesOf(pat: String): List<Int> =
         .map { it.range.first }
         .toList()
 
-@Suppress("UNCHECKED_CAST")
-fun <T> Any.tryCast(): T? {
-    return this as? T
+inline fun <reified T> Any.tryCast(): T? {
+    return if (this is T) this else null
 }
 
 inline fun <T> T?.ifNull(newValue: () -> T): T {

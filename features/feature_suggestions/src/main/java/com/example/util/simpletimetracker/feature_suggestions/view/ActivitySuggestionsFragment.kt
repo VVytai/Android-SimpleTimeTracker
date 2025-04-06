@@ -68,7 +68,6 @@ class ActivitySuggestionsFragment :
                 flexWrap = FlexWrap.WRAP
             }
             adapter = viewDataAdapter
-            setHasFixedSize(true)
         }
     }
 

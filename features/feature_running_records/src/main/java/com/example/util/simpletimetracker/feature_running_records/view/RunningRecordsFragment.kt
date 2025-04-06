@@ -99,7 +99,6 @@ class RunningRecordsFragment :
                 flexWrap = FlexWrap.WRAP
             }
             adapter = runningRecordsAdapter
-            setHasFixedSize(true)
         }
 
         view?.doOnApplyWindowInsetsListener {

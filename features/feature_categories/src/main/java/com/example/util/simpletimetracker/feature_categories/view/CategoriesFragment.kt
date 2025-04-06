@@ -51,7 +51,6 @@ class CategoriesFragment : BaseFragment<Binding>() {
                 flexWrap = FlexWrap.WRAP
             }
             adapter = categoriesAdapter
-            setHasFixedSize(true)
         }
 
         setOnPreDrawListener {

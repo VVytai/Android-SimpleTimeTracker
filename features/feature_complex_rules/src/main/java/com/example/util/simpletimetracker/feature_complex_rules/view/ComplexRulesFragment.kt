@@ -42,7 +42,6 @@ class ComplexRulesFragment : BaseFragment<Binding>() {
         rvComplexRulesList.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = rulesAdapter
-            setHasFixedSize(true)
         }
     }
 
