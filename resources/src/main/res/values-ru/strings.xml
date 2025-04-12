@@ -505,6 +505,7 @@ CSV-файл должен содержать следующие столбцы, 
     <string name="widget_statistics_chart_name">Диаграмма статистики</string>
     <string name="widget_quick_settings_name">Быстрые настройки</string>
     <string name="widget_load_error">Не найден</string>
+    <string name="widget_statistics_ignore_new_items">Игнорировать новые элементы, добавленные позже</string>
 
     <!--  Notification  -->
     <string name="notification_inactivity_title">Напоминание о бездействии</string>

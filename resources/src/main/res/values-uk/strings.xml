@@ -505,6 +505,7 @@
     <string name="widget_statistics_chart_name">Статистичний графік</string>
     <string name="widget_quick_settings_name">Швидкі налаштування</string>
     <string name="widget_load_error">Не знайдено</string>
+    <string name="widget_statistics_ignore_new_items">Ігнорувати нові елементи, додані пізніше</string>
 
     <!--  Notification  -->
     <string name="notification_inactivity_title">Нагадування про бездіяльність</string>

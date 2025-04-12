@@ -505,6 +505,7 @@ Ví dụ:<br/>
     <string name="widget_statistics_chart_name">Biểu đồ thống kê</string>
     <string name="widget_quick_settings_name">Thiết đặt nhanh</string>
     <string name="widget_load_error">Không tìm thấy</string>
+    <string name="widget_statistics_ignore_new_items">Bỏ qua các mục mới được thêm sau</string>
 
     <!--  Notification  -->
     <string name="notification_inactivity_title">Lời nhắc không hoạt động</string>

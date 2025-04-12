@@ -505,6 +505,7 @@ csv 文件必须包含以逗号分隔的这些列：<br/>
     <string name="widget_statistics_chart_name">统计图表</string>
     <string name="widget_quick_settings_name">快速设置</string>
     <string name="widget_load_error">未找到</string>
+    <string name="widget_statistics_ignore_new_items">忽略后添加的新项目</string>
 
     <!--  Notification  -->
     <string name="notification_inactivity_title">无活动提醒</string>

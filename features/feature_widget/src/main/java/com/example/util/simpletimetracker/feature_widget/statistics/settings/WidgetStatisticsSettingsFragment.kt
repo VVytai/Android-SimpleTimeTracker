@@ -8,6 +8,7 @@ import com.example.util.simpletimetracker.core.base.BaseFragment
 import com.example.util.simpletimetracker.core.dialog.DurationDialogListener
 import com.example.util.simpletimetracker.core.manager.ThemeManager
 import com.example.util.simpletimetracker.core.utils.InsetConfiguration
+import com.example.util.simpletimetracker.core.viewData.RangesViewData
 import com.example.util.simpletimetracker.feature_base_adapter.BaseRecyclerAdapter
 import com.example.util.simpletimetracker.feature_base_adapter.category.createCategoryAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.empty.createEmptyAdapterDelegate
@@ -58,39 +59,51 @@ class WidgetStatisticsSettingsFragment :
         }
     }
 
-    override fun initUx() {
-        with(binding) {
-            buttonsWidgetStatisticsSettingsFilterType.listener = viewModel::onFilterTypeClick
-            btnWidgetStatisticsShowAll.setOnClick(viewModel::onShowAllClick)
-            btnWidgetStatisticsHideAll.setOnClick(viewModel::onHideAllClick)
-            btnWidgetStatisticsSettingsSave.setOnClick(viewModel::onSaveClick)
-            spinnerWidgetStatisticsSettingsRange.onItemSelected = {
-                viewModel.onRangeSelected(it)
-            }
-            btnWidgetStatisticsSettingsRange.setOnClick { spinnerWidgetStatisticsSettingsRange.performClick() }
+    override fun initUx() = with(binding) {
+        buttonsWidgetStatisticsSettingsFilterType.listener = viewModel::onFilterTypeClick
+        btnWidgetStatisticsShowAll.setOnClick(viewModel::onShowAllClick)
+        btnWidgetStatisticsHideAll.setOnClick(viewModel::onHideAllClick)
+        btnWidgetStatisticsSettingsSave.setOnClick(throttle(viewModel::onSaveClick))
+        spinnerWidgetStatisticsSettingsRange.onItemSelected = {
+            viewModel.onRangeSelected(it)
         }
+        btnWidgetStatisticsSettingsRange.setOnClick { spinnerWidgetStatisticsSettingsRange.performClick() }
+        checkboxWidgetStatisticsNewItems.setOnClick(throttle(viewModel::onDoNotIncludeNewItemsClick))
     }
 
-    override fun initViewModel() {
+    override fun initViewModel() = with(binding) {
         with(viewModel) {
-            val widgetId = activity?.intent?.extras
-                ?.getInt(
-                    AppWidgetManager.EXTRA_APPWIDGET_ID,
-                    AppWidgetManager.INVALID_APPWIDGET_ID,
-                )
-                ?: AppWidgetManager.INVALID_APPWIDGET_ID
-
-            extra = WidgetStatisticsSettingsExtra(widgetId)
-            filterTypeViewData.observe(binding.buttonsWidgetStatisticsSettingsFilterType.adapter::replace)
+            extra = WidgetStatisticsSettingsExtra(getWidgetId())
+            filterTypeViewData.observe(buttonsWidgetStatisticsSettingsFilterType.adapter::replace)
             types.observe(recordTypesAdapter::replace)
-            title.observe(binding.btnWidgetStatisticsSettingsRange::setText)
-            rangeItems.observe { binding.spinnerWidgetStatisticsSettingsRange.setData(it.items, it.selectedPosition) }
+            title.observe(btnWidgetStatisticsSettingsRange::setText)
+            rangeItems.observe(::setRangeItemsState)
+            doNotIncludeNewItems.observe(::setDoNotIncludeItemsState)
             handled.observe(::exit)
         }
     }
 
     override fun onCountSet(count: Long, tag: String?) {
         viewModel.onCountSet(count, tag)
+    }
+
+    private fun getWidgetId(): Int {
+        return activity?.intent?.extras
+            ?.getInt(
+                AppWidgetManager.EXTRA_APPWIDGET_ID,
+                AppWidgetManager.INVALID_APPWIDGET_ID,
+            )
+            ?: AppWidgetManager.INVALID_APPWIDGET_ID
+    }
+
+    private fun setRangeItemsState(state: RangesViewData) = with(binding) {
+        spinnerWidgetStatisticsSettingsRange.setData(state.items, state.selectedPosition)
+    }
+
+    private fun setDoNotIncludeItemsState(isChecked: Boolean) = with(binding) {
+        if (checkboxWidgetStatisticsNewItems.isChecked != isChecked) {
+            checkboxWidgetStatisticsNewItems.isChecked = isChecked
+        }
     }
 
     // TODO refactor to shared viewModel to pass data?

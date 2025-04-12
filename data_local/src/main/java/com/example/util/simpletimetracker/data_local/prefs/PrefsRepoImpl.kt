@@ -419,9 +419,13 @@ class PrefsRepoImpl @Inject constructor(
             is RangeLength.Custom -> 0 // Not possible
         }
         val rangeDataLastDays = (data.rangeLength as? RangeLength.Last)?.days
-        val filteredTypesData = data.filteredTypes.map(Long::toString).toSet()
-        val filteredCategoriesData = data.filteredCategories.map(Long::toString).toSet()
-        val filteredTagsData = data.filteredTags.map(Long::toString).toSet()
+        val filteredTypesData = data.typeIds.map(Long::toString).toSet()
+        val filteredCategoriesData = data.categoryIds.map(Long::toString).toSet()
+        val filteredTagsData = data.tagIds.map(Long::toString).toSet()
+        val filteringType = when (data.filteringType) {
+            StatisticsWidgetData.FilterType.FILTER -> 0
+            StatisticsWidgetData.FilterType.SELECT -> 1
+        }
 
         prefs.edit()
             .putInt(KEY_STATISTICS_WIDGET_FILTER_TYPE + widgetId, filterTypeData)
@@ -434,6 +438,7 @@ class PrefsRepoImpl @Inject constructor(
             .putStringSet(KEY_STATISTICS_WIDGET_FILTERED_TYPES + widgetId, filteredTypesData)
             .putStringSet(KEY_STATISTICS_WIDGET_FILTERED_CATEGORIES + widgetId, filteredCategoriesData)
             .putStringSet(KEY_STATISTICS_WIDGET_FILTERED_TAGS + widgetId, filteredTagsData)
+            .putInt(KEY_STATISTICS_WIDGET_FILTERING_TYPE + widgetId, filteringType)
             .apply()
     }
 
@@ -465,13 +470,19 @@ class PrefsRepoImpl @Inject constructor(
         val filteredTags = prefs
             .getStringSet(KEY_STATISTICS_WIDGET_FILTERED_TAGS + widgetId, emptySet())
             ?.mapNotNull { it.toLongOrNull() }.orEmpty().toSet()
+        val filteringType = when(prefs.getInt(KEY_STATISTICS_WIDGET_FILTERING_TYPE + widgetId, 0)) {
+            0 -> StatisticsWidgetData.FilterType.FILTER
+            1 -> StatisticsWidgetData.FilterType.SELECT
+            else -> StatisticsWidgetData.FilterType.FILTER
+        }
 
         return StatisticsWidgetData(
             chartFilterType = filterType,
             rangeLength = range,
-            filteredTypes = filteredTypes,
-            filteredCategories = filteredCategories,
-            filteredTags = filteredTags,
+            typeIds = filteredTypes,
+            categoryIds = filteredCategories,
+            tagIds = filteredTags,
+            filteringType = filteringType,
         )
     }
 
@@ -647,6 +658,7 @@ class PrefsRepoImpl @Inject constructor(
         private const val KEY_STATISTICS_WIDGET_FILTER_TYPE = "statistics_widget_filter_type_"
         private const val KEY_STATISTICS_WIDGET_RANGE = "statistics_widget_range_"
         private const val KEY_STATISTICS_WIDGET_RANGE_LAST_DAYS = "statistics_widget_range_last_days_"
+        private const val KEY_STATISTICS_WIDGET_FILTERING_TYPE = "statistics_widget_filtering_type_"
         private const val KEY_QUICK_SETTINGS_WIDGET_TYPE = "quick_settings_widget_type_"
 
         // Removed

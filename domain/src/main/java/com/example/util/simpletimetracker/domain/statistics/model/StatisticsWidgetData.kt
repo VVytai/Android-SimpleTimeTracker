@@ -1,9 +1,18 @@
 package com.example.util.simpletimetracker.domain.statistics.model
 
+// Ids are either filtered or selected,
+// depending on filtering type.
 data class StatisticsWidgetData(
     val chartFilterType: ChartFilterType,
     val rangeLength: RangeLength,
-    val filteredTypes: Set<Long>,
-    val filteredCategories: Set<Long>,
-    val filteredTags: Set<Long>,
-)
+    val typeIds: Set<Long>,
+    val categoryIds: Set<Long>,
+    val tagIds: Set<Long>,
+    val filteringType: FilterType,
+) {
+
+    enum class FilterType {
+        FILTER,
+        SELECT,
+    }
+}

@@ -505,6 +505,7 @@ Beispiel:<br/>
     <string name="widget_statistics_chart_name">Statistikdiagramm</string>
     <string name="widget_quick_settings_name">Schnelleinstellungen</string>
     <string name="widget_load_error">Nicht gefunden</string>
+    <string name="widget_statistics_ignore_new_items">Neue später hinzugefügte Elemente ignorieren</string>
 
     <!--  Notification  -->
     <string name="notification_inactivity_title">Inaktivitätserinnerung</string>

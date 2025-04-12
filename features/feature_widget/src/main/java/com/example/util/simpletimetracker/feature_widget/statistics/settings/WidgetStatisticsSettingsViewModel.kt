@@ -34,6 +34,7 @@ import com.example.util.simpletimetracker.feature_base_adapter.category.Category
 import com.example.util.simpletimetracker.feature_base_adapter.loader.LoaderViewData
 import com.example.util.simpletimetracker.feature_base_adapter.recordType.RecordTypeViewData
 import com.example.util.simpletimetracker.feature_views.spinner.CustomSpinner
+import com.example.util.simpletimetracker.feature_widget.statistics.interactor.WidgetStatisticsIdsInteractor
 import com.example.util.simpletimetracker.navigation.Router
 import com.example.util.simpletimetracker.navigation.params.screen.DurationDialogParams
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -53,6 +54,7 @@ class WidgetStatisticsSettingsViewModel @Inject constructor(
     private val rangeTitleMapper: RangeTitleMapper,
     private val chartFilterViewDataInteractor: ChartFilterViewDataInteractor,
     private val getProcessedLastDaysCountInteractor: GetProcessedLastDaysCountInteractor,
+    private val widgetStatisticsIdsInteractor: WidgetStatisticsIdsInteractor,
 ) : ViewModel() {
 
     lateinit var extra: WidgetStatisticsSettingsExtra
@@ -94,18 +96,29 @@ class WidgetStatisticsSettingsViewModel @Inject constructor(
             initial
         }
     }
+    val doNotIncludeNewItems: LiveData<Boolean> by lazy {
+        return@lazy MutableLiveData<Boolean>().let { initial ->
+            viewModelScope.launch {
+                initializeWidgetData()
+                initial.value = loadDoNotIncludeNewItems()
+            }
+            initial
+        }
+    }
     val handled: LiveData<Int> = MutableLiveData()
 
     private var recordTypesCache: List<RecordType>? = null
     private var categoriesCache: List<Category>? = null
     private var recordTagsCache: List<RecordTag>? = null
+    private var initialized: Boolean = false
 
     private var widgetData: StatisticsWidgetData = StatisticsWidgetData(
         chartFilterType = ChartFilterType.ACTIVITY,
         rangeLength = RangeLength.Day,
-        filteredTypes = emptySet(),
-        filteredCategories = emptySet(),
-        filteredTags = emptySet(),
+        typeIds = emptySet(),
+        categoryIds = emptySet(),
+        tagIds = emptySet(),
+        filteringType = StatisticsWidgetData.FilterType.FILTER,
     )
 
     fun onFilterTypeClick(viewData: ButtonsRowViewData) {
@@ -121,9 +134,9 @@ class WidgetStatisticsSettingsViewModel @Inject constructor(
 
     fun onRecordTypeClick(item: RecordTypeViewData) {
         viewModelScope.launch {
-            val oldIds = widgetData.filteredTypes.toMutableList()
+            val oldIds = widgetData.typeIds.toMutableList()
             widgetData = widgetData.copy(
-                filteredTypes = oldIds.apply { addOrRemove(item.id) }.toSet(),
+                typeIds = oldIds.apply { addOrRemove(item.id) }.toSet(),
             )
             updateRecordTypesViewData()
         }
@@ -132,16 +145,16 @@ class WidgetStatisticsSettingsViewModel @Inject constructor(
     fun onCategoryClick(item: CategoryViewData) {
         when (item) {
             is CategoryViewData.Category -> {
-                val oldIds = widgetData.filteredCategories.toMutableList()
+                val oldIds = widgetData.categoryIds.toMutableList()
                 widgetData = widgetData.copy(
-                    filteredCategories = oldIds.apply { addOrRemove(item.id) }.toSet(),
+                    categoryIds = oldIds.apply { addOrRemove(item.id) }.toSet(),
                 )
                 updateCategoriesViewData()
             }
             is CategoryViewData.Record -> {
-                val oldIds = widgetData.filteredTags.toMutableList()
+                val oldIds = widgetData.tagIds.toMutableList()
                 widgetData = widgetData.copy(
-                    filteredTags = oldIds.apply { addOrRemove(item.id) }.toSet(),
+                    tagIds = oldIds.apply { addOrRemove(item.id) }.toSet(),
                 )
                 updateTagsViewData()
             }
@@ -149,54 +162,16 @@ class WidgetStatisticsSettingsViewModel @Inject constructor(
     }
 
     fun onShowAllClick() {
-        viewModelScope.launch {
-            widgetData = when (widgetData.chartFilterType) {
-                ChartFilterType.ACTIVITY -> {
-                    widgetData.copy(filteredTypes = emptySet())
-                }
-                ChartFilterType.CATEGORY -> {
-                    widgetData.copy(filteredCategories = emptySet())
-                }
-                ChartFilterType.RECORD_TAG -> {
-                    widgetData.copy(filteredTags = emptySet())
-                }
-            }
-            updateTypesViewData()
+        when (widgetData.filteringType) {
+            StatisticsWidgetData.FilterType.FILTER -> removeAllIds()
+            StatisticsWidgetData.FilterType.SELECT -> addAllIds()
         }
     }
 
     fun onHideAllClick() {
-        viewModelScope.launch {
-            widgetData = when (widgetData.chartFilterType) {
-                ChartFilterType.ACTIVITY -> {
-                    widgetData.copy(
-                        filteredTypes = (
-                            getTypesCache().map(RecordType::id) +
-                                UNTRACKED_ITEM_ID
-                            ).toSet(),
-                    )
-                }
-                ChartFilterType.CATEGORY -> {
-                    widgetData.copy(
-                        filteredCategories = (
-                            getCategoriesCache().map(Category::id) +
-                                UNTRACKED_ITEM_ID +
-                                UNCATEGORIZED_ITEM_ID
-                            ).toSet(),
-                    )
-                }
-                ChartFilterType.RECORD_TAG -> {
-                    widgetData.copy(
-                        filteredTags = (
-                            getTagsCache().map(RecordTag::id) +
-                                UNTRACKED_ITEM_ID +
-                                UNCATEGORIZED_ITEM_ID
-                            )
-                            .toSet(),
-                    )
-                }
-            }
-            updateTypesViewData()
+        when (widgetData.filteringType) {
+            StatisticsWidgetData.FilterType.FILTER -> addAllIds()
+            StatisticsWidgetData.FilterType.SELECT -> removeAllIds()
         }
     }
 
@@ -223,12 +198,72 @@ class WidgetStatisticsSettingsViewModel @Inject constructor(
         updateRanges()
     }
 
+    fun onDoNotIncludeNewItemsClick() = viewModelScope.launch {
+        val newState = when (widgetData.filteringType) {
+            StatisticsWidgetData.FilterType.FILTER -> StatisticsWidgetData.FilterType.SELECT
+            StatisticsWidgetData.FilterType.SELECT -> StatisticsWidgetData.FilterType.FILTER
+        }
+
+        // Revert all ids.
+        val newTypeIds = widgetStatisticsIdsInteractor.getAllTypeIds(
+            getTypesCache().map(RecordType::id).toSet(),
+        ).filter { it !in widgetData.typeIds }.toSet()
+        val newCategoryIds = widgetStatisticsIdsInteractor.getAllCategoryIds(
+            getCategoriesCache().map(Category::id).toSet(),
+        ).filter { it !in widgetData.categoryIds }.toSet()
+        val newTagIds = widgetStatisticsIdsInteractor.getAllTagIds(
+            getTagsCache().map(RecordTag::id).toSet(),
+        ).filter { it !in widgetData.tagIds }.toSet()
+
+        widgetData = widgetData.copy(
+            typeIds = newTypeIds,
+            categoryIds = newCategoryIds,
+            tagIds = newTagIds,
+            filteringType = newState,
+        )
+        updateDoNotIncludeNewItems()
+        updateTypesViewData()
+    }
+
     fun onSaveClick() {
         viewModelScope.launch {
             prefsInteractor.setStatisticsWidget(extra.widgetId, widgetData)
             widgetInteractor.updateStatisticsWidget(extra.widgetId)
             (handled as MutableLiveData).value = extra.widgetId
         }
+    }
+
+    private fun removeAllIds() = viewModelScope.launch {
+        widgetData = when (widgetData.chartFilterType) {
+            ChartFilterType.ACTIVITY -> widgetData.copy(typeIds = emptySet())
+            ChartFilterType.CATEGORY -> widgetData.copy(categoryIds = emptySet())
+            ChartFilterType.RECORD_TAG -> widgetData.copy(tagIds = emptySet())
+        }
+        updateTypesViewData()
+    }
+
+    private fun addAllIds() = viewModelScope.launch {
+        widgetData = when (widgetData.chartFilterType) {
+            ChartFilterType.ACTIVITY -> {
+                val newIds = widgetStatisticsIdsInteractor.getAllTypeIds(
+                    getTypesCache().map(RecordType::id).toSet(),
+                )
+                widgetData.copy(typeIds = newIds)
+            }
+            ChartFilterType.CATEGORY -> {
+                val newIds = widgetStatisticsIdsInteractor.getAllCategoryIds(
+                    getCategoriesCache().map(Category::id).toSet(),
+                )
+                widgetData.copy(categoryIds = newIds)
+            }
+            ChartFilterType.RECORD_TAG -> {
+                val newIds = widgetStatisticsIdsInteractor.getAllTagIds(
+                    getTagsCache().map(RecordTag::id).toSet(),
+                )
+                widgetData.copy(tagIds = newIds)
+            }
+        }
+        updateTypesViewData()
     }
 
     private fun onSelectLastDaysClick() = viewModelScope.launch {
@@ -247,7 +282,9 @@ class WidgetStatisticsSettingsViewModel @Inject constructor(
     }
 
     private suspend fun initializeWidgetData() {
+        if (initialized) return
         widgetData = prefsInteractor.getStatisticsWidget(extra.widgetId)
+        initialized = true
     }
 
     private fun updateFilterTypeViewData() {
@@ -293,17 +330,24 @@ class WidgetStatisticsSettingsViewModel @Inject constructor(
         }
     }
 
+    private suspend fun getActualFilteredIds(): List<Long> {
+        return widgetStatisticsIdsInteractor.getActualFilteredIds(
+            widgetData = widgetData,
+            typeIds = { getTypesCache().map(RecordType::id).toSet() },
+            categoryIds = { getCategoriesCache().map(Category::id).toSet() },
+            tagIds = { getTagsCache().map(RecordTag::id).toSet() },
+        )
+    }
+
     private fun updateRecordTypesViewData() = viewModelScope.launch {
         val data = loadRecordTypesViewData()
         types.set(data)
     }
 
     private suspend fun loadRecordTypesViewData(): List<ViewHolderType> {
-        val typeIdsFiltered = widgetData.filteredTypes.toList()
-
         return chartFilterViewDataInteractor.loadRecordTypesViewData(
             types = getTypesCache(),
-            typeIdsFiltered = typeIdsFiltered,
+            typeIdsFiltered = getActualFilteredIds(),
         )
     }
 
@@ -313,11 +357,9 @@ class WidgetStatisticsSettingsViewModel @Inject constructor(
     }
 
     private suspend fun loadCategoriesViewData(): List<ViewHolderType> {
-        val categoryIdsFiltered = widgetData.filteredCategories.toList()
-
         return chartFilterViewDataInteractor.loadCategoriesViewData(
             categories = getCategoriesCache(),
-            categoryIdsFiltered = categoryIdsFiltered,
+            categoryIdsFiltered = getActualFilteredIds(),
         )
     }
 
@@ -327,12 +369,10 @@ class WidgetStatisticsSettingsViewModel @Inject constructor(
     }
 
     private suspend fun loadTagsViewData(): List<ViewHolderType> {
-        val tagIdsFiltered = widgetData.filteredTags.toList()
-
         return chartFilterViewDataInteractor.loadTagsViewData(
             tags = getTagsCache(),
             types = getTypesCache(),
-            recordTagsFiltered = tagIdsFiltered,
+            recordTagsFiltered = getActualFilteredIds(),
         )
     }
 
@@ -361,6 +401,14 @@ class WidgetStatisticsSettingsViewModel @Inject constructor(
             addSelection = false,
             lastDaysCount = getCurrentLastDaysCount(),
         )
+    }
+
+    private fun updateDoNotIncludeNewItems() = viewModelScope.launch {
+        doNotIncludeNewItems.set(loadDoNotIncludeNewItems())
+    }
+
+    private fun loadDoNotIncludeNewItems(): Boolean {
+        return widgetData.filteringType == StatisticsWidgetData.FilterType.SELECT
     }
 
     companion object {

@@ -505,6 +505,7 @@
     <string name="widget_statistics_chart_name">نمودار آماری</string>
     <string name="widget_quick_settings_name">تنظیمات سریع</string>
     <string name="widget_load_error">پیدا نشد</string>
+    <string name="widget_statistics_ignore_new_items">موارد جدیدی که بعداً اضافه شده‌اند را نادیده بگیر</string>
 
     <!--  Notification  -->
     <string name="notification_inactivity_title">یادآور بی فعالیتی</string>

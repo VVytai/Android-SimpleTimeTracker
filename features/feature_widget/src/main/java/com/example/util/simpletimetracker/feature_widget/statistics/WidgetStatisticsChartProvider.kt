@@ -14,17 +14,11 @@ import android.widget.RemoteViews
 import androidx.core.text.bold
 import com.example.util.simpletimetracker.core.extension.allowDiskRead
 import com.example.util.simpletimetracker.core.extension.allowVmViolations
-import com.example.util.simpletimetracker.core.interactor.StatisticsChartViewDataInteractor
-import com.example.util.simpletimetracker.core.interactor.StatisticsMediator
-import com.example.util.simpletimetracker.core.mapper.TimeMapper
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.core.utils.PendingIntents
 import com.example.util.simpletimetracker.core.utils.SHORTCUT_NAVIGATION_KEY
 import com.example.util.simpletimetracker.core.utils.SHORTCUT_NAVIGATION_STATISTICS
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
-import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTypeInteractor
-import com.example.util.simpletimetracker.domain.statistics.model.ChartFilterType
-import com.example.util.simpletimetracker.domain.recordType.model.RecordType
 import com.example.util.simpletimetracker.feature_views.extension.dpToPx
 import com.example.util.simpletimetracker.feature_views.extension.getBitmapFromView
 import com.example.util.simpletimetracker.feature_views.extension.measureExactly
@@ -32,22 +26,15 @@ import com.example.util.simpletimetracker.feature_views.extension.pxToDp
 import com.example.util.simpletimetracker.feature_views.viewData.RecordTypeIcon
 import com.example.util.simpletimetracker.feature_widget.R
 import com.example.util.simpletimetracker.feature_widget.common.WidgetViewsHolder
+import com.example.util.simpletimetracker.feature_widget.statistics.interactor.WidgetStatisticsViewDataInteractor
 import com.example.util.simpletimetracker.navigation.Router
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class WidgetStatisticsChartProvider : AppWidgetProvider() {
-
-    @Inject
-    lateinit var statisticsChartViewDataInteractor: StatisticsChartViewDataInteractor
-
-    @Inject
-    lateinit var statisticsMediator: StatisticsMediator
 
     @Inject
     lateinit var router: Router
@@ -56,16 +43,13 @@ class WidgetStatisticsChartProvider : AppWidgetProvider() {
     lateinit var prefsInteractor: PrefsInteractor
 
     @Inject
-    lateinit var recordTypeInteractor: RecordTypeInteractor
-
-    @Inject
     lateinit var resourceRepo: ResourceRepo
 
     @Inject
-    lateinit var timeMapper: TimeMapper
+    lateinit var widgetViewsHolder: WidgetViewsHolder
 
     @Inject
-    lateinit var widgetViewsHolder: WidgetViewsHolder
+    lateinit var widgetStatisticsViewDataInteractor: WidgetStatisticsViewDataInteractor
 
     override fun onUpdate(
         context: Context?,
@@ -128,54 +112,12 @@ class WidgetStatisticsChartProvider : AppWidgetProvider() {
     ): View {
         val backgroundTransparency = prefsInteractor.getWidgetBackgroundTransparencyPercent()
 
-        val (chart, total) = withContext(Dispatchers.IO) {
-            val isDarkTheme = prefsInteractor.getDarkMode()
-            val useProportionalMinutes = prefsInteractor.getUseProportionalMinutes()
-            val showSeconds = prefsInteractor.getShowSeconds()
-            val firstDayOfWeek = prefsInteractor.getFirstDayOfWeek()
-            val startOfDayShift = prefsInteractor.getStartOfDayShift()
-            val widgetData = prefsInteractor.getStatisticsWidget(appWidgetId)
-            val types = recordTypeInteractor.getAll().associateBy(RecordType::id)
+        val data = widgetStatisticsViewDataInteractor.getViewData(
+            appWidgetId = appWidgetId,
+        )
+        val chart = data.chart
+        val total = data.total
 
-            val filterType = widgetData.chartFilterType
-            val filteredIds = when (filterType) {
-                ChartFilterType.ACTIVITY -> widgetData.filteredTypes
-                ChartFilterType.CATEGORY -> widgetData.filteredCategories
-                ChartFilterType.RECORD_TAG -> widgetData.filteredTags
-            }.toList()
-            val rangeLength = widgetData.rangeLength
-
-            val dataHolders = statisticsMediator.getDataHolders(
-                filterType = filterType,
-                types = types,
-            )
-            val range = timeMapper.getRangeStartAndEnd(
-                rangeLength = rangeLength,
-                shift = 0,
-                firstDayOfWeek = firstDayOfWeek,
-                startOfDayShift = startOfDayShift,
-            )
-            val statistics = statisticsMediator.getStatistics(
-                filterType = filterType,
-                filteredIds = filteredIds,
-                range = range,
-            )
-            val chart = statisticsChartViewDataInteractor.getChart(
-                filterType = filterType,
-                filteredIds = filteredIds,
-                statistics = statistics,
-                dataHolders = dataHolders,
-                types = types,
-                isDarkTheme = isDarkTheme,
-            )
-            val total: String = statisticsMediator.getStatisticsTotalTracked(
-                statistics = statistics,
-                filteredIds = filteredIds,
-                useProportionalMinutes = useProportionalMinutes,
-                showSeconds = showSeconds,
-            )
-            chart to total
-        }
         val totalTracked = SpannableStringBuilder()
             .append(resourceRepo.getString(R.string.statistics_total_tracked_short))
             .append("\n")
