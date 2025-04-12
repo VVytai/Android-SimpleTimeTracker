@@ -8,18 +8,22 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDialogFragment
 import androidx.fragment.app.commit
+import androidx.lifecycle.lifecycleScope
 import com.example.util.simpletimetracker.core.dialog.DateTimeDialogListener
 import com.example.util.simpletimetracker.core.extension.getAllFragments
 import com.example.util.simpletimetracker.feature_views.extension.onTabSelected
 import com.example.util.simpletimetracker.feature_views.extension.visible
 import com.example.util.simpletimetracker.core.mapper.TimeMapper
+import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.core.utils.fragmentArgumentDelegate
+import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.feature_dialogs.R
 import com.example.util.simpletimetracker.feature_dialogs.databinding.DateTimeDialogFragmentBinding
 import com.example.util.simpletimetracker.navigation.params.screen.DateTimeDialogParams
 import com.example.util.simpletimetracker.navigation.params.screen.DateTimeDialogType
 import com.google.android.material.tabs.TabLayout
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import java.util.Calendar
 import javax.inject.Inject
 
@@ -31,6 +35,12 @@ class DateTimeDialogFragment :
 
     @Inject
     lateinit var timeMapper: TimeMapper
+
+    @Inject
+    lateinit var resourceRepo: ResourceRepo
+
+    @Inject
+    lateinit var prefsInteractor: PrefsInteractor
 
     private val binding: DateTimeDialogFragmentBinding get() = _binding!!
     private var _binding: DateTimeDialogFragmentBinding? = null
@@ -103,6 +113,7 @@ class DateTimeDialogFragment :
     private fun initUi() {
         initFragments()
         initTabs()
+        initBackground()
     }
 
     private fun initUx() {
@@ -176,6 +187,20 @@ class DateTimeDialogFragment :
                     changeTabsVisibility(this)
                 }
             }
+        }
+    }
+
+    private fun initBackground() {
+        // getThemedAttr doesn't work for some reason, resource not found,
+        // retrieve manually without attr.
+        lifecycleScope.launch {
+            val isDarkTheme = prefsInteractor.getDarkMode()
+            val resId = if (isDarkTheme) {
+                R.drawable.bg_rounded_dialog_dark
+            } else {
+                R.drawable.bg_rounded_dialog
+            }
+            dialog?.window?.setBackgroundDrawableResource(resId)
         }
     }
 

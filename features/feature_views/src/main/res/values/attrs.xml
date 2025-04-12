@@ -6,6 +6,7 @@
     <attr name="appBackgroundColor" format="reference" />
     <attr name="appBackgroundDialogColor" format="reference" />
     <attr name="appDialogBackground" format="reference" />
+    <attr name="appDialogDateBackground" format="reference" />
     <attr name="appTextHintColor" format="reference" />
     <attr name="appArrow" format="reference" />
     <attr name="appDividerColor" format="reference" />

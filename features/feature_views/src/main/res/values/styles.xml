@@ -23,6 +23,7 @@
         <item name="appBackgroundColor">@color/colorBackground</item>
         <item name="appBackgroundDialogColor">@color/colorDialogBackground</item>
         <item name="appDialogBackground">@drawable/bg_rounded_bottom_sheet</item>
+        <item name="appDialogDateBackground">@drawable/bg_rounded_dialog</item>
         <item name="appTextHintColor">@color/textHint</item>
         <item name="appArrow">@drawable/arrow</item>
         <item name="appDividerColor">@color/colorDivider</item>
@@ -71,6 +72,7 @@
         <item name="appBackgroundColor">@color/colorBackgroundDark</item>
         <item name="appBackgroundDialogColor">@color/colorDialogBackgroundDark</item>
         <item name="appDialogBackground">@drawable/bg_rounded_bottom_sheet_dark</item>
+        <item name="appDialogDateBackground">@drawable/bg_rounded_dialog_dark</item>
         <item name="appTextHintColor">@color/textHintDark</item>
         <item name="appArrow">@drawable/arrow_dark</item>
         <item name="appDividerColor">@color/colorDividerDark</item>
