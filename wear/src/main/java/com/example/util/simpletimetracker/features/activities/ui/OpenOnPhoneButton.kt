@@ -20,13 +20,14 @@ import androidx.wear.compose.material.OutlinedCompactChip
 import androidx.wear.compose.material.Text
 import androidx.wear.tooling.preview.devices.WearDevices
 import com.example.util.simpletimetracker.R
+import com.example.util.simpletimetracker.utils.getCoercedFontScale
 import com.example.util.simpletimetracker.utils.getString
 
 @Composable
 fun OpenOnPhoneButton(
     onClick: () -> Unit = {},
 ) {
-    val height = 56.dp * LocalDensity.current.fontScale
+    val height = 56.dp * getCoercedFontScale()
     OutlinedCompactChip(
         modifier = Modifier
             .height(height)

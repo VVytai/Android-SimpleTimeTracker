@@ -179,7 +179,7 @@ class StatisticsViewDataMapper @Inject constructor(
     ): StatisticsChipState {
         return StatisticsChipState(
             id = 0,
-            name = resourceRepo.getString(R.string.statistics_total_tracked),
+            name = resourceRepo.getString(R.string.statistics_total_tracked_short),
             icon = null,
             color = ColorInactive.toArgb().toLong(),
             duration = total,

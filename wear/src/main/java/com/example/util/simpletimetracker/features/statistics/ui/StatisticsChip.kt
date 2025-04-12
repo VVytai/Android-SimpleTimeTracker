@@ -25,6 +25,7 @@ import com.example.util.simpletimetracker.R
 import com.example.util.simpletimetracker.domain.model.WearActivityIcon
 import com.example.util.simpletimetracker.features.activities.ui.ActivityIcon
 import com.example.util.simpletimetracker.presentation.ui.ACTIVITY_RUNNING_VIEW_HEIGHT
+import com.example.util.simpletimetracker.utils.getCoercedFontScale
 
 @Immutable
 data class StatisticsChipState(
@@ -41,7 +42,7 @@ fun StatisticsChip(
     state: StatisticsChipState,
 ) {
     val height = ACTIVITY_RUNNING_VIEW_HEIGHT *
-        LocalDensity.current.fontScale
+        getCoercedFontScale()
     Chip(
         modifier = Modifier
             .height(height.dp)

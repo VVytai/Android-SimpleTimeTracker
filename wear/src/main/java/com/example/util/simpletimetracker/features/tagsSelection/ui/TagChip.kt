@@ -27,6 +27,7 @@ import androidx.wear.compose.material.Text
 import androidx.wear.compose.material.ToggleChipDefaults
 import androidx.wear.tooling.preview.devices.WearDevices
 import com.example.util.simpletimetracker.presentation.ui.ACTIVITY_VIEW_HEIGHT
+import com.example.util.simpletimetracker.utils.getCoercedFontScale
 
 @Immutable
 data class TagChipState(
@@ -74,7 +75,7 @@ private fun SingleSelectTagChip(
         { onClick(state.id) }
     }
     val height = ACTIVITY_VIEW_HEIGHT.dp *
-        LocalDensity.current.fontScale
+        getCoercedFontScale()
     Chip(
         modifier = Modifier
             .height(height)
@@ -111,7 +112,7 @@ private fun MultiSelectTagChip(
         { onClick(state.id) }
     }
     val height = ACTIVITY_VIEW_HEIGHT.dp *
-        LocalDensity.current.fontScale
+        getCoercedFontScale()
     SplitToggleChip(
         modifier = Modifier
             .height(height)

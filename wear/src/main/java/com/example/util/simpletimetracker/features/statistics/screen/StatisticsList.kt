@@ -37,6 +37,7 @@ import com.example.util.simpletimetracker.presentation.ui.ACTIVITY_RUNNING_VIEW_
 import com.example.util.simpletimetracker.presentation.ui.ErrorState
 import com.example.util.simpletimetracker.presentation.ui.RenderLoading
 import com.example.util.simpletimetracker.presentation.ui.renderError
+import com.example.util.simpletimetracker.utils.getCoercedFontScale
 import com.example.util.simpletimetracker.utils.getString
 import java.util.UUID
 
@@ -75,7 +76,6 @@ fun StatisticsList(
     onPrevClick: () -> Unit = {},
     onNextClick: () -> Unit = {},
 ) {
-    val density = LocalDensity.current
     Box {
         ScaffoldedScrollingColumn {
             when (state) {
@@ -91,7 +91,6 @@ fun StatisticsList(
                 is StatisticsListState.Empty -> {
                     renderEmptyState(
                         state = state,
-                        density = density,
                         onTitleClick = onTitleClick,
                         onTitleLongClick = onTitleLongClick,
                     )
@@ -99,7 +98,6 @@ fun StatisticsList(
                 is StatisticsListState.Content -> {
                     renderContent(
                         state = state,
-                        density = density,
                         onTitleClick = onTitleClick,
                         onTitleLongClick = onTitleLongClick,
                     )
@@ -120,7 +118,6 @@ fun StatisticsList(
 
 private fun ScalingLazyListScope.renderEmptyState(
     state: StatisticsListState.Empty,
-    density: Density,
     onTitleClick: () -> Unit,
     onTitleLongClick: () -> Unit,
 ) {
@@ -133,7 +130,7 @@ private fun ScalingLazyListScope.renderEmptyState(
     }
     item {
         val height = ACTIVITY_RUNNING_VIEW_HEIGHT *
-            density.fontScale
+            getCoercedFontScale()
         Box(
             modifier = Modifier.height(height.dp),
             contentAlignment = Alignment.Center,
@@ -148,7 +145,6 @@ private fun ScalingLazyListScope.renderEmptyState(
 
 private fun ScalingLazyListScope.renderContent(
     state: StatisticsListState.Content,
-    density: Density,
     onTitleClick: () -> Unit,
     onTitleLongClick: () -> Unit,
 ) {
@@ -162,9 +158,9 @@ private fun ScalingLazyListScope.renderContent(
     for (itemState in state.items) {
         when (itemState) {
             is StatisticsListState.Content.Item.Loader -> {
-                val height = ACTIVITY_RUNNING_VIEW_HEIGHT *
-                    density.fontScale
                 item {
+                    val height = ACTIVITY_RUNNING_VIEW_HEIGHT *
+                        getCoercedFontScale()
                     Box(
                         modifier = Modifier.height(height.dp),
                         contentAlignment = Alignment.Center,
@@ -222,7 +218,7 @@ private fun BoxScope.StatisticsButtons(
     }
 }
 
-@Preview(device = WearDevices.LARGE_ROUND)
+@Preview(device = WearDevices.LARGE_ROUND, fontScale = 1f)
 @Composable
 private fun Loading() {
     StatisticsList(
@@ -240,7 +236,7 @@ private fun Error() {
     )
 }
 
-@Preview(device = WearDevices.LARGE_ROUND)
+@Preview(device = WearDevices.LARGE_ROUND, fontScale = 1f)
 @Composable
 private fun NoData() {
     StatisticsList(
@@ -251,7 +247,7 @@ private fun NoData() {
     )
 }
 
-@Preview(device = WearDevices.LARGE_ROUND)
+@Preview(device = WearDevices.LARGE_ROUND, fontScale = 1f)
 @Composable
 private fun Content() {
     val items = List(5) {
@@ -274,7 +270,7 @@ private fun Content() {
     )
 }
 
-@Preview(device = WearDevices.LARGE_ROUND)
+@Preview(device = WearDevices.LARGE_ROUND, fontScale = 1f)
 @Composable
 private fun ContentLoading() {
     val items = List(1) {

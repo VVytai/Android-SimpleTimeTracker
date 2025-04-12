@@ -14,3 +14,8 @@ fun Int.scaledSp(): TextUnit {
         textSize.sp
     }
 }
+
+@Composable
+fun getCoercedFontScale(): Float {
+    return LocalDensity.current.fontScale.coerceAtLeast(1f)
+}

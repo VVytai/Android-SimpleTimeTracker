@@ -83,7 +83,7 @@
     <!--  Categories  -->
     <string name="categories_title">Kategorien und Tags</string>
     <string name="categories_edit_hint">Klicken Sie zum Bearbeiten auf die Karte</string>
-    <string name="categories_record_type_hint">Weise verschiedenen Aktivitäten denselben Kategorie zu, um  gruppierten Statistiken anzuzeigen</string>
+    <string name="categories_record_type_hint">Weise verschiedenen Aktivitäten dieselbe Kategorie zu, um gruppierte Statistiken zu erstellen</string>
     <string name="categories_record_hint">Ordne den Datensätzen verschiedene Tags zu, um sie zu unterscheiden</string>
     <string name="categories_add_category">Kategorie hinzufügen</string>
     <string name="categories_add_record_tag">Datensatz-Tag hinzufügen</string>

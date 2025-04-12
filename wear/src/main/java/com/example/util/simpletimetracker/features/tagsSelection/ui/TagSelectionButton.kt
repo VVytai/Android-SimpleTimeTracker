@@ -27,6 +27,7 @@ import com.example.util.simpletimetracker.features.tagsSelection.screen.TagListS
 import com.example.util.simpletimetracker.presentation.theme.ColorActive
 import com.example.util.simpletimetracker.presentation.theme.ColorInactive
 import com.example.util.simpletimetracker.presentation.ui.ACTIVITY_VIEW_HEIGHT
+import com.example.util.simpletimetracker.utils.getCoercedFontScale
 
 @Immutable
 data class TagSelectionButtonState(
@@ -45,7 +46,7 @@ fun TagSelectionButton(
         { onClick(state.buttonType) }
     }
     val height = ACTIVITY_VIEW_HEIGHT.dp *
-        LocalDensity.current.fontScale
+        getCoercedFontScale()
     Chip(
         modifier = Modifier
             .height(height)

@@ -33,6 +33,7 @@ import com.example.util.simpletimetracker.presentation.remember.rememberDuration
 import com.example.util.simpletimetracker.presentation.ui.ACTIVITY_RUNNING_VIEW_HEIGHT
 import com.example.util.simpletimetracker.presentation.ui.ACTIVITY_VIEW_HEIGHT
 import com.example.util.simpletimetracker.utils.durationToLabel
+import com.example.util.simpletimetracker.utils.getCoercedFontScale
 import java.time.Instant
 
 @Immutable
@@ -74,7 +75,7 @@ fun ActivityChip(
         ACTIVITY_RUNNING_VIEW_HEIGHT
     } else {
         ACTIVITY_VIEW_HEIGHT
-    } * LocalDensity.current.fontScale
+    } * getCoercedFontScale()
     Chip(
         modifier = Modifier
             .height(height.dp)
