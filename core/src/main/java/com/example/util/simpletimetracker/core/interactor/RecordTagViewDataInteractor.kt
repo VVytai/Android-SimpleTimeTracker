@@ -3,9 +3,10 @@ package com.example.util.simpletimetracker.core.interactor
 import com.example.util.simpletimetracker.core.mapper.CategoryViewDataMapper
 import com.example.util.simpletimetracker.core.mapper.CommonViewDataMapper
 import com.example.util.simpletimetracker.domain.extension.plusAssign
-import com.example.util.simpletimetracker.domain.recordTag.interactor.GetSelectableTagsInteractor
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
+import com.example.util.simpletimetracker.domain.recordTag.interactor.GetSelectableTagsInteractor
 import com.example.util.simpletimetracker.domain.recordTag.interactor.RecordTagInteractor
+import com.example.util.simpletimetracker.domain.recordTag.model.RecordTag
 import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTypeInteractor
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.divider.DividerViewData
@@ -31,19 +32,23 @@ class RecordTagViewDataInteractor @Inject constructor(
         showUntaggedButton: Boolean,
         showAllTagsButton: Boolean,
     ): Result {
+        fun List<RecordTag>.filterArchived(): List<RecordTag> {
+            return if (showArchived) this else this.filterNot { it.archived }
+        }
+
         val isDarkTheme = prefsInteractor.getDarkMode()
+        val allTags = recordTagInteractor.getAll().filterArchived()
         val recordTags = if (typeId != null) {
             getSelectableTagsInteractor.execute(typeId)
         } else {
-            recordTagInteractor.getAll()
-        }
+            allTags
+        }.filterArchived()
         val types = recordTypeInteractor.getAll().associateBy { it.id }
-        val data = recordTags
-            .let { tags -> if (showArchived) tags else tags.filterNot { it.archived } }
+        val hasMoreTags = recordTags.size != allTags.size
 
-        return if (data.isNotEmpty()) {
-            val selected = data.filter { it.id in selectedTags }
-            val available = data.filter { it.id !in selectedTags }
+        return if (recordTags.isNotEmpty()) {
+            val selected = recordTags.filter { it.id in selectedTags }
+            val available = recordTags.filter { it.id !in selectedTags }
 
             val viewData = mutableListOf<ViewHolderType>()
 
@@ -93,7 +98,7 @@ class RecordTagViewDataInteractor @Inject constructor(
                 }
             }
 
-            if (showAllTagsButton) {
+            if (showAllTagsButton && hasMoreTags) {
                 viewData += categoryViewDataMapper.mapToRecordTagShowAllItem(
                     isDarkTheme = isDarkTheme,
                 )
