@@ -47,13 +47,13 @@ class RemoveRunningRecordMediator @Inject constructor(
             updateWidgets = updateWidgets,
             updateNotificationSwitch = updateNotificationSwitch,
         )
-        pomodoroStopInteractor.checkAndStop(runningRecord.id)
     }
 
     suspend fun remove(
         typeId: Long,
         updateWidgets: Boolean = true,
         updateNotificationSwitch: Boolean = true,
+        checkPomodoroStop: Boolean = true,
     ) {
         runningRecordInteractor.remove(typeId)
         updateExternalViewsInteractor.onRunningRecordRemove(
@@ -61,5 +61,6 @@ class RemoveRunningRecordMediator @Inject constructor(
             updateWidgets = updateWidgets,
             updateNotificationSwitch = updateNotificationSwitch,
         )
+        if (checkPomodoroStop) pomodoroStopInteractor.checkAndStop(typeId)
     }
 }

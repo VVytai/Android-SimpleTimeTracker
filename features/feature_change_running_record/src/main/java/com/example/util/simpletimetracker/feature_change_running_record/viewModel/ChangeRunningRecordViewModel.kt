@@ -140,6 +140,7 @@ class ChangeRunningRecordViewModel @Inject constructor(
             typeId = extra.id,
             updateWidgets = false,
             updateNotificationSwitch = false,
+            checkPomodoroStop = extra.id != newTypeId,
         )
         addRunningRecordMediator.addAfterChange(
             typeId = newTypeId,
