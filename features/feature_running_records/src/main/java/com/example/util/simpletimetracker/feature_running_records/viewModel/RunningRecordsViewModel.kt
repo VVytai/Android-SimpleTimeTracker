@@ -285,8 +285,10 @@ class RunningRecordsViewModel @Inject constructor(
     }
 
     fun onChangeInsets(navBarHeight: Int) {
-        this.navBarHeightDp = navBarHeight
-        updateRunningRecords()
+        if (navBarHeightDp != navBarHeight) {
+            navBarHeightDp = navBarHeight
+            updateRunningRecords()
+        }
     }
 
     private suspend fun onRecordTypeWithDefaultDurationClick(typeId: Long) {
