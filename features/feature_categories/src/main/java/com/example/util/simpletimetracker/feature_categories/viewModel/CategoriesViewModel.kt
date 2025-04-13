@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.util.simpletimetracker.core.extension.set
 import com.example.util.simpletimetracker.core.extension.toParams
-import com.example.util.simpletimetracker.core.model.OptionsListItem
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTypeInteractor
@@ -16,9 +15,10 @@ import com.example.util.simpletimetracker.feature_base_adapter.category.Category
 import com.example.util.simpletimetracker.feature_base_adapter.category.CategoryViewData
 import com.example.util.simpletimetracker.feature_base_adapter.category.TagType
 import com.example.util.simpletimetracker.feature_base_adapter.loader.LoaderViewData
-import com.example.util.simpletimetracker.feature_base_adapter.optionsList.OptionsListViewData
 import com.example.util.simpletimetracker.feature_categories.R
 import com.example.util.simpletimetracker.feature_categories.interactor.CategoriesViewDataInteractor
+import com.example.util.simpletimetracker.feature_categories.mapper.CategoriesOptionsListMapper
+import com.example.util.simpletimetracker.feature_categories.model.CategoriesOptionsListItem
 import com.example.util.simpletimetracker.feature_categories.viewData.CategoriesSearchState
 import com.example.util.simpletimetracker.feature_categories.viewData.CategoriesViewData
 import com.example.util.simpletimetracker.navigation.Router
@@ -40,6 +40,7 @@ class CategoriesViewModel @Inject constructor(
     private val prefsInteractor: PrefsInteractor,
     private val recordTypeInteractor: RecordTypeInteractor,
     private val categoriesViewDataInteractor: CategoriesViewDataInteractor,
+    private val categoriesOptionsListMapper: CategoriesOptionsListMapper,
 ) : ViewModel() {
 
     val categories: LiveData<CategoriesViewData> by lazy {
@@ -55,12 +56,12 @@ class CategoriesViewModel @Inject constructor(
         }
     }
     val searchState: LiveData<CategoriesSearchState> by lazy {
-        return@lazy MutableLiveData(
-            CategoriesSearchState(
-                isVisible = false,
-                text = "",
-            ),
-        )
+        return@lazy MutableLiveData<CategoriesSearchState>().let { initial ->
+            viewModelScope.launch {
+                initial.value = loadSearchState()
+            }
+            initial
+        }
     }
 
     private var navBarHeightDp: Int = 0
@@ -106,18 +107,16 @@ class CategoriesViewModel @Inject constructor(
         updateCategories()
     }
 
-    fun onOptionsClick() {
-        val params = OptionsListParams(
-            type = OptionsListParams.Type.Categories,
-        )
-        router.navigate(params)
+    fun onOptionsClick() = viewModelScope.launch {
+        val items = categoriesOptionsListMapper.map(selectedTypeIds)
+        router.navigate(OptionsListParams(items))
     }
 
-    fun onOptionsItemClick(item: OptionsListViewData) = viewModelScope.launch {
-        val id = item.id as? OptionsListItem.Categories ?: return@launch
+    fun onOptionsItemClick(id: OptionsListParams.Item.Id) = viewModelScope.launch {
+        if (id !is CategoriesOptionsListItem) return@launch
         when (id) {
-            is OptionsListItem.Categories.Filter -> onFilterClick()
-            is OptionsListItem.Categories.EnabledSearch -> onSearchToggled()
+            is CategoriesOptionsListItem.Filter -> onFilterClick()
+            is CategoriesOptionsListItem.EnabledSearch -> onSearchToggled()
         }
     }
 

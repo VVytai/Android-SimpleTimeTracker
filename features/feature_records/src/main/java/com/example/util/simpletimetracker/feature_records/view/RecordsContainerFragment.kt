@@ -21,6 +21,7 @@ import com.example.util.simpletimetracker.feature_views.extension.setOnClick
 import com.example.util.simpletimetracker.feature_views.extension.setOnLongClick
 import com.example.util.simpletimetracker.navigation.Router
 import com.example.util.simpletimetracker.navigation.params.notification.SnackBarParams
+import com.example.util.simpletimetracker.navigation.params.screen.OptionsListParams
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import com.example.util.simpletimetracker.feature_records.databinding.RecordsContainerFragmentBinding as Binding
@@ -89,8 +90,8 @@ class RecordsContainerFragment :
         viewModel.onDateTimeSet(timestamp, tag)
     }
 
-    override fun onOptionsItemClick(item: OptionsListViewData) {
-        viewModel.onOptionsItemClick(item)
+    override fun onOptionsItemClick(id: OptionsListParams.Item.Id) {
+        viewModel.onOptionsItemClick(id)
     }
 
     private fun updateTitle(title: String) {

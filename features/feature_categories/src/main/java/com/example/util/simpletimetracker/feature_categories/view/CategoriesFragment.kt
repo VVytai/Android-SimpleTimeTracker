@@ -26,6 +26,7 @@ import com.example.util.simpletimetracker.feature_categories.viewModel.Categorie
 import com.example.util.simpletimetracker.feature_views.extension.pxToDp
 import com.example.util.simpletimetracker.feature_views.extension.setMargins
 import com.example.util.simpletimetracker.feature_views.extension.setOnClick
+import com.example.util.simpletimetracker.navigation.params.screen.OptionsListParams
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
@@ -100,8 +101,8 @@ class CategoriesFragment :
         viewModel.onVisible()
     }
 
-    override fun onOptionsItemClick(item: OptionsListViewData) {
-        viewModel.onOptionsItemClick(item)
+    override fun onOptionsItemClick(id: OptionsListParams.Item.Id) {
+        viewModel.onOptionsItemClick(id)
     }
 
     override fun onChartFilterDataSelected(

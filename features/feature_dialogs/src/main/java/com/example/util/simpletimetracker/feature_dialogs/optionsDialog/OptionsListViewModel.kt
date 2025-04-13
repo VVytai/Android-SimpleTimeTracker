@@ -17,7 +17,7 @@ class OptionsListViewModel @Inject constructor(
 
     val state: LiveData<List<ViewHolderType>> by lazySuspend { loadState() }
 
-    private suspend fun loadState(): List<ViewHolderType> {
+    private fun loadState(): List<ViewHolderType> {
         return optionsListViewDataInteractor.getViewData(extra)
     }
 }

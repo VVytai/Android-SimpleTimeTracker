@@ -8,20 +8,20 @@ import com.example.util.simpletimetracker.core.base.ViewModelDelegate
 import com.example.util.simpletimetracker.core.extension.lazySuspend
 import com.example.util.simpletimetracker.core.extension.set
 import com.example.util.simpletimetracker.core.extension.toParams
-import com.example.util.simpletimetracker.core.model.OptionsListItem
 import com.example.util.simpletimetracker.core.view.buttonsRowView.ButtonsRowViewData
 import com.example.util.simpletimetracker.core.viewData.RangesViewData
 import com.example.util.simpletimetracker.domain.base.Coordinates
 import com.example.util.simpletimetracker.domain.record.model.Range
-import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
 import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.domain.record.model.RecordsFilter
+import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
-import com.example.util.simpletimetracker.feature_base_adapter.optionsList.OptionsListViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.adapter.StatisticsDetailBlock
 import com.example.util.simpletimetracker.feature_statistics_detail.adapter.StatisticsDetailPreviewsViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.customView.SeriesCalendarView
 import com.example.util.simpletimetracker.feature_statistics_detail.interactor.StatisticsDetailContentInteractor
+import com.example.util.simpletimetracker.feature_statistics_detail.mapper.StatisticsDetailOptionsListMapper
+import com.example.util.simpletimetracker.feature_statistics_detail.model.StatisticsDetailOptionsListItem
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailCardInternalViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailClickableLongest
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailClickableShortest
@@ -65,6 +65,7 @@ class StatisticsDetailViewModel @Inject constructor(
     private val filterDelegate: StatisticsDetailFilterViewModelDelegate,
     private val dailyCalendarDelegate: StatisticsDetailDailyCalendarViewModelDelegate,
     private val goalsDelegate: StatisticsDetailGoalsViewModelDelegate,
+    private val statisticsDetailOptionsListMapper: StatisticsDetailOptionsListMapper,
 ) : BaseViewModel() {
 
     val scrollToTop: LiveData<Unit> = SingleLiveEvent()
@@ -191,22 +192,16 @@ class StatisticsDetailViewModel @Inject constructor(
         rangeDelegate.onNextClick()
     }
 
-    fun onOptionsClick() {
-        val params = OptionsListParams(
-            type = OptionsListParams.Type.StatisticsDetailContainer,
-        )
-        router.navigate(params)
+    fun onOptionsClick() = viewModelScope.launch {
+        val items = statisticsDetailOptionsListMapper.map()
+        router.navigate(OptionsListParams(items))
     }
 
-    fun onOptionsItemClick(item: OptionsListViewData) {
-        val id = item.id as? OptionsListItem.StatisticsDetailContainer ?: return
+    fun onOptionsItemClick(id: OptionsListParams.Item.Id) {
+        if (id !is StatisticsDetailOptionsListItem) return
         when (id) {
-            is OptionsListItem.StatisticsDetailContainer.Filter -> {
-                filterDelegate.onFilterClick()
-            }
-            is OptionsListItem.StatisticsDetailContainer.Compare -> {
-                filterDelegate.onCompareClick()
-            }
+            is StatisticsDetailOptionsListItem.Filter -> filterDelegate.onFilterClick()
+            is StatisticsDetailOptionsListItem.Compare -> filterDelegate.onCompareClick()
         }
     }
 

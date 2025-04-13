@@ -23,6 +23,7 @@ import com.example.util.simpletimetracker.feature_statistics.viewModel.Statistic
 import com.example.util.simpletimetracker.feature_views.extension.setOnClick
 import com.example.util.simpletimetracker.feature_views.extension.setOnLongClick
 import com.example.util.simpletimetracker.feature_views.extension.visible
+import com.example.util.simpletimetracker.navigation.params.screen.OptionsListParams
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -108,8 +109,8 @@ class StatisticsContainerFragment :
         viewModel.onVisible()
     }
 
-    override fun onOptionsItemClick(item: OptionsListViewData) {
-        viewModel.onOptionsItemClick(item)
+    override fun onOptionsItemClick(id: OptionsListParams.Item.Id) {
+        viewModel.onOptionsItemClick(id)
     }
 
     private fun updateNavButtons(isVisible: Boolean) = with(binding) {

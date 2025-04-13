@@ -38,6 +38,7 @@ import com.example.util.simpletimetracker.feature_statistics_detail.viewModel.St
 import com.example.util.simpletimetracker.feature_views.extension.setOnClick
 import com.example.util.simpletimetracker.feature_views.extension.setOnLongClick
 import com.example.util.simpletimetracker.feature_views.extension.visible
+import com.example.util.simpletimetracker.navigation.params.screen.OptionsListParams
 import com.example.util.simpletimetracker.navigation.params.screen.RecordsFilterResultParams
 import com.example.util.simpletimetracker.navigation.params.screen.StatisticsDetailParams
 import dagger.hilt.android.AndroidEntryPoint
@@ -153,8 +154,8 @@ class StatisticsDetailFragment :
         viewModel.onTypesFilterDismissed(tag)
     }
 
-    override fun onOptionsItemClick(item: OptionsListViewData) {
-        viewModel.onOptionsItemClick(item)
+    override fun onOptionsItemClick(id: OptionsListParams.Item.Id) {
+        viewModel.onOptionsItemClick(id)
     }
 
     private fun setPreview() = params.preview?.run {

@@ -59,7 +59,8 @@ class OptionsListDialogFragment :
 
     private fun onItemClick(item: OptionsListViewData) {
         fun onClick(item: OptionsListViewData) {
-            listener?.onOptionsItemClick(item)
+            val id = (item.id as? OptionsListItemId)?.id ?: return
+            listener?.onOptionsItemClick(id)
         }
         router.back()
         item.let(throttle(::onClick))

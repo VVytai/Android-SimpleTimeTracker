@@ -1,31 +1,28 @@
 package com.example.util.simpletimetracker.navigation.params.screen
 
 import android.os.Parcelable
+import androidx.annotation.DrawableRes
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class OptionsListParams(
-    val type: Type,
+    val items: List<Item>,
 ) : ScreenParams, Parcelable {
 
-    sealed interface Type : Parcelable {
+    @Parcelize
+    data class Item(
+        val id: Id,
+        val text: String,
+        @DrawableRes val icon: Int,
+        val isIconCheckVisible: Boolean,
+    ) : Parcelable {
 
-        @Parcelize
-        data object RecordsContainer : Type
-
-        @Parcelize
-        data object StatisticsContainer : Type
-
-        @Parcelize
-        data object StatisticsDetailContainer : Type
-
-        @Parcelize
-        data object Categories : Type
+        interface Id : Parcelable
     }
 
     companion object {
         val Empty = OptionsListParams(
-            type = Type.RecordsContainer,
+            items = emptyList(),
         )
     }
 }

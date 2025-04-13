@@ -7,7 +7,6 @@ import com.example.util.simpletimetracker.core.extension.lazySuspend
 import com.example.util.simpletimetracker.core.extension.set
 import com.example.util.simpletimetracker.core.mapper.CalendarToListShiftMapper
 import com.example.util.simpletimetracker.core.mapper.TimeMapper
-import com.example.util.simpletimetracker.core.model.OptionsListItem
 import com.example.util.simpletimetracker.domain.daysOfWeek.model.DaysInCalendar
 import com.example.util.simpletimetracker.domain.extension.orFalse
 import com.example.util.simpletimetracker.domain.extension.orZero
@@ -16,8 +15,9 @@ import com.example.util.simpletimetracker.domain.record.interactor.RecordsContai
 import com.example.util.simpletimetracker.domain.record.interactor.RecordsShareUpdateInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.RecordsUpdateInteractor
 import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
-import com.example.util.simpletimetracker.feature_base_adapter.optionsList.OptionsListViewData
+import com.example.util.simpletimetracker.feature_records.mapper.RecordsContainerOptionsListMapper
 import com.example.util.simpletimetracker.feature_records.mapper.RecordsViewDataMapper
+import com.example.util.simpletimetracker.feature_records.model.RecordsContainerOptionsListItem
 import com.example.util.simpletimetracker.feature_records.model.RecordsContainerPosition
 import com.example.util.simpletimetracker.navigation.Router
 import com.example.util.simpletimetracker.navigation.params.screen.ChangeRecordFromMainParams
@@ -40,6 +40,7 @@ class RecordsContainerViewModel @Inject constructor(
     private val recordsContainerUpdateInteractor: RecordsContainerUpdateInteractor,
     private val recordsShareUpdateInteractor: RecordsShareUpdateInteractor,
     private val calendarToListShiftMapper: CalendarToListShiftMapper,
+    private val recordsContainerOptionsListMapper: RecordsContainerOptionsListMapper,
 ) : BaseViewModel() {
 
     val title: LiveData<String>
@@ -54,11 +55,9 @@ class RecordsContainerViewModel @Inject constructor(
         subscribeToUpdates()
     }
 
-    fun onOptionsClick() {
-        val params = OptionsListParams(
-            type = OptionsListParams.Type.RecordsContainer,
-        )
-        router.navigate(params)
+    fun onOptionsClick() = viewModelScope.launch {
+        val items = recordsContainerOptionsListMapper.map()
+        router.navigate(OptionsListParams(items))
     }
 
     fun onTodayClick() {
@@ -121,13 +120,13 @@ class RecordsContainerViewModel @Inject constructor(
         }
     }
 
-    fun onOptionsItemClick(item: OptionsListViewData) {
-        val id = item.id as? OptionsListItem.RecordsContainer ?: return
+    fun onOptionsItemClick(id: OptionsListParams.Item.Id) {
+        if (id !is RecordsContainerOptionsListItem) return
         when (id) {
-            is OptionsListItem.RecordsContainer.CalendarView -> onCalendarSwitchClick()
-            is OptionsListItem.RecordsContainer.Filter -> onFilterClick()
-            is OptionsListItem.RecordsContainer.Share -> onShareClick()
-            is OptionsListItem.RecordsContainer.Add -> onRecordAddClick()
+            is RecordsContainerOptionsListItem.CalendarView -> onCalendarSwitchClick()
+            is RecordsContainerOptionsListItem.Filter -> onFilterClick()
+            is RecordsContainerOptionsListItem.Share -> onShareClick()
+            is RecordsContainerOptionsListItem.Add -> onRecordAddClick()
         }
     }
 

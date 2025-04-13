@@ -8,7 +8,6 @@ import com.example.util.simpletimetracker.core.extension.set
 import com.example.util.simpletimetracker.core.mapper.RangeTitleMapper
 import com.example.util.simpletimetracker.core.mapper.RangeViewDataMapper
 import com.example.util.simpletimetracker.core.mapper.TimeMapper
-import com.example.util.simpletimetracker.core.model.OptionsListItem
 import com.example.util.simpletimetracker.core.viewData.RangesViewData
 import com.example.util.simpletimetracker.core.viewData.SelectDateViewData
 import com.example.util.simpletimetracker.core.viewData.SelectLastDaysViewData
@@ -18,7 +17,8 @@ import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteracto
 import com.example.util.simpletimetracker.domain.record.interactor.StatisticsUpdateInteractor
 import com.example.util.simpletimetracker.domain.statistics.extension.canBeSwiped
 import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
-import com.example.util.simpletimetracker.feature_base_adapter.optionsList.OptionsListViewData
+import com.example.util.simpletimetracker.feature_statistics.mapper.StatisticsContainerOptionsListMapper
+import com.example.util.simpletimetracker.feature_statistics.model.StatisticsContainerOptionsListItem
 import com.example.util.simpletimetracker.feature_views.spinner.CustomSpinner
 import com.example.util.simpletimetracker.navigation.Router
 import com.example.util.simpletimetracker.navigation.params.screen.CustomRangeSelectionParams
@@ -38,6 +38,7 @@ class StatisticsContainerViewModel @Inject constructor(
     private val rangeTitleMapper: RangeTitleMapper,
     private val prefsInteractor: PrefsInteractor,
     private val statisticsUpdateInteractor: StatisticsUpdateInteractor,
+    private val statisticsContainerOptionsListMapper: StatisticsContainerOptionsListMapper,
 ) : ViewModel() {
 
     val title: LiveData<String> by lazy {
@@ -83,11 +84,9 @@ class StatisticsContainerViewModel @Inject constructor(
         updatePosition(position.value.orZero() + 1)
     }
 
-    fun onOptionsClick() {
-        val params = OptionsListParams(
-            type = OptionsListParams.Type.StatisticsContainer,
-        )
-        router.navigate(params)
+    fun onOptionsClick() = viewModelScope.launch {
+        val items = statisticsContainerOptionsListMapper.map()
+        router.navigate(OptionsListParams(items))
     }
 
     fun onRangeSelected(item: CustomSpinner.CustomSpinnerItem) {
@@ -127,13 +126,13 @@ class StatisticsContainerViewModel @Inject constructor(
         }
     }
 
-    fun onOptionsItemClick(item: OptionsListViewData) = viewModelScope.launch {
-        val id = item.id as? OptionsListItem.StatisticsContainer ?: return@launch
+    fun onOptionsItemClick(id: OptionsListParams.Item.Id) = viewModelScope.launch {
+        if (id !is StatisticsContainerOptionsListItem) return@launch
         when (id) {
-            is OptionsListItem.StatisticsContainer.Filter -> {
+            is StatisticsContainerOptionsListItem.Filter -> {
                 statisticsUpdateInteractor.sendFilterClicked()
             }
-            is OptionsListItem.StatisticsContainer.Share -> {
+            is StatisticsContainerOptionsListItem.Share -> {
                 statisticsUpdateInteractor.sendShareClicked()
             }
         }
