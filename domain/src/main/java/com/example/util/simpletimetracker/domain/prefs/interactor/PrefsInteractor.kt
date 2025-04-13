@@ -859,6 +859,14 @@ class PrefsInteractor @Inject constructor(
         prefsRepo.isNavBarAtTheBottom = value
     }
 
+    suspend fun getIsCategoriesSearchEnabled(): Boolean = withContext(Dispatchers.IO) {
+        prefsRepo.isCategoriesSearchEnabled
+    }
+
+    suspend fun setIsCategoriesSearchEnabled(value: Boolean) = withContext(Dispatchers.IO) {
+        prefsRepo.isCategoriesSearchEnabled = value
+    }
+
     suspend fun clear() = withContext(Dispatchers.IO) {
         prefsRepo.clear()
     }
@@ -940,7 +948,7 @@ class PrefsInteractor @Inject constructor(
         }
     }
 
-    fun mapToChartFilterType(data: Int): ChartFilterType {
+    private fun mapToChartFilterType(data: Int): ChartFilterType {
         return when (data) {
             0 -> ChartFilterType.ACTIVITY
             1 -> ChartFilterType.CATEGORY
@@ -949,7 +957,7 @@ class PrefsInteractor @Inject constructor(
         }
     }
 
-    fun mapFromChartFilterType(data: ChartFilterType): Int {
+    private fun mapFromChartFilterType(data: ChartFilterType): Int {
         return when (data) {
             ChartFilterType.ACTIVITY -> 0
             ChartFilterType.CATEGORY -> 1

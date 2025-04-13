@@ -36,6 +36,9 @@ class OptionsListViewDataInteractor @Inject constructor(
             is OptionsListParams.Type.StatisticsDetailContainer -> {
                 getStatisticsDetailContainerViewData()
             }
+            is OptionsListParams.Type.Categories -> {
+                getCategoriesViewData()
+            }
         }
     }
 
@@ -63,6 +66,13 @@ class OptionsListViewDataInteractor @Inject constructor(
         ).let { mapData(it) }
     }
 
+    private suspend fun getCategoriesViewData(): List<ViewHolderType> {
+        return listOfNotNull(
+            OptionsListItem.Categories.EnabledSearch,
+            OptionsListItem.Categories.Filter,
+        ).let { mapData(it) }
+    }
+
     private suspend fun mapData(
         items: List<OptionsListItem>,
     ): List<OptionsListViewData> {
@@ -77,6 +87,7 @@ class OptionsListViewDataInteractor @Inject constructor(
         }
     }
 
+    // TODO FILTER refactor
     private suspend fun mapData(
         item: OptionsListItem,
         getExistingIds: suspend (ChartFilterType) -> Map<Long, Boolean>,
@@ -138,6 +149,16 @@ class OptionsListViewDataInteractor @Inject constructor(
                 text = resourceRepo.getString(R.string.chart_filter_hint)
                 iconResId = R.drawable.filter
                 isIconCheckVisible = false
+            }
+            OptionsListItem.Categories.Filter -> {
+                text = resourceRepo.getString(R.string.chart_filter_hint)
+                iconResId = R.drawable.filter
+                isIconCheckVisible = false // TODO FILTER get from repo
+            }
+            OptionsListItem.Categories.EnabledSearch -> {
+                text = resourceRepo.getString(R.string.enable_search_hint)
+                iconResId = R.drawable.search
+                isIconCheckVisible = prefsInteractor.getIsCategoriesSearchEnabled()
             }
         }
 

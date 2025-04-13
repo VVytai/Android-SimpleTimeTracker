@@ -31,11 +31,47 @@
         app:layout_constraintTop_toBottomOf="@id/tvCategoriesTitle"
         tools:visibility="visible" />
 
-    <com.example.util.simpletimetracker.feature_views.DividerView
+    <com.example.util.simpletimetracker.feature_views.DividerFullView
         android:id="@+id/dividerCategories"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/tvCategoriesEditHint" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/inputCategoriesSearchField"
+        style="@style/ChangeItemInputField"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginEnd="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/dividerCategories"
+        tools:layout_marginBottom="4dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etCategoriesSearchField"
+            style="@style/EditTextMultiLine"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/search_hint" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.example.util.simpletimetracker.feature_views.DividerFullView
+        android:id="@+id/dividerCategoriesSearch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/inputCategoriesSearchField" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/groupCategoriesSearch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="inputCategoriesSearchField, dividerCategoriesSearch"
+        tools:visibility="visible" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvCategoriesList"
@@ -43,7 +79,16 @@
         android:layout_height="0dp"
         android:clipToPadding="false"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/dividerCategories"
+        app:layout_constraintTop_toBottomOf="@id/dividerCategoriesSearch"
+        tools:itemCount="15"
         tools:listitem="@layout/item_category_layout" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnCategoriesOptions"
+        style="@style/ContainerRangeOptionsButton"
+        android:layout_marginEnd="8dp"
+        app:icon="@drawable/more"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

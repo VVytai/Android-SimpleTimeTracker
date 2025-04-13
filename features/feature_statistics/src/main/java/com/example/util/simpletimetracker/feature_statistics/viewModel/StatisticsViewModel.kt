@@ -13,6 +13,7 @@ import com.example.util.simpletimetracker.domain.darkMode.interactor.ThemeChange
 import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.StatisticsUpdateInteractor
+import com.example.util.simpletimetracker.domain.statistics.model.ChartFilterType
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.loader.LoaderViewData
 import com.example.util.simpletimetracker.feature_base_adapter.statistics.StatisticsViewData
@@ -121,7 +122,19 @@ class StatisticsViewModel @Inject constructor(
         )
     }
 
-    fun onFilterApplied() {
+    fun onFilterApplied(
+        chartFilterType: ChartFilterType,
+        dataIds: List<Long>,
+    ) = viewModelScope.launch {
+        prefsInteractor.setChartFilterType(chartFilterType)
+        when (chartFilterType) {
+            ChartFilterType.ACTIVITY -> prefsInteractor.setFilteredTypes(dataIds)
+            ChartFilterType.CATEGORY -> prefsInteractor.setFilteredCategories(dataIds)
+            ChartFilterType.RECORD_TAG -> prefsInteractor.setFilteredTags(dataIds)
+        }
+    }
+
+    fun onFilterClosed() {
         updateStatistics()
         isChartFilterOpened = false
         updateAnimateChartParticles()
@@ -149,8 +162,14 @@ class StatisticsViewModel @Inject constructor(
         }
     }
 
-    private fun onFilterClick() {
-        router.navigate(ChartFilterDialogParams(ChartFilterDialogParams.Type.Statistics))
+    private fun onFilterClick() = viewModelScope.launch {
+        val params = ChartFilterDialogParams(
+            chartFilterType = prefsInteractor.getChartFilterType(),
+            filteredTypeIds = prefsInteractor.getFilteredTypes(),
+            filteredCategoryIds = prefsInteractor.getFilteredCategories(),
+            filteredTagIds = prefsInteractor.getFilteredTags(),
+        )
+        router.navigate(params)
         isChartFilterOpened = true
         updateAnimateChartParticles()
     }

@@ -20,6 +20,8 @@
     <string name="no_data">沒有數據</string>
     <string name="general_error">出了點問題。請重試或重新啟動應用程式。</string>
     <string name="copied_to_clipboard">已複製到剪貼簿</string>
+    <string name="search_hint">搜尋</string>
+    <string name="enable_search_hint">啟用搜尋</string>
 
     <!--  Range selection  -->
     <string name="title_yesterday">昨天</string>
@@ -220,7 +222,7 @@
     <string name="types_filter_hide_all">隱藏全部</string>
     <string name="show">顯示</string>
     <string name="hide">隱藏</string>
-    <string name="chart_filter_type_hint">統計類型</string>
+    <string name="chart_filter_type_hint">篩選器類型</string>
     <string name="chart_filter_categories_empty">未加入標記</string>
 
     <string name="duration_dialog_save">儲存</string>

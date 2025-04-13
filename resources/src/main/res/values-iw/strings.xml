@@ -20,6 +20,8 @@
     <string name="no_data">אין נתונים</string>
     <string name="general_error">משהו השתבש. אנא נסה שוב או הפעל מחדש את היישום.</string>
     <string name="copied_to_clipboard">הועתק ללוח</string>
+    <string name="search_hint">חיפוש</string>
+    <string name="enable_search_hint">אפשר חיפוש</string>
 
     <!--  Range selection  -->
     <string name="title_yesterday">אתמול</string>
@@ -220,7 +222,7 @@
     <string name="types_filter_hide_all">הסתר הכל</string>
     <string name="show">הצג</string>
     <string name="hide">הסתר</string>
-    <string name="chart_filter_type_hint">סוג סטטיסטיקה</string>
+    <string name="chart_filter_type_hint">סוג מסנן</string>
     <string name="chart_filter_categories_empty">לא נוספו תגיות</string>
 
     <string name="duration_dialog_save">שמור</string>

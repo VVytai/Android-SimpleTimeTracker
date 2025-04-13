@@ -20,6 +20,8 @@
     <string name="no_data">Geen gegevens</string>
     <string name="general_error">Er is iets misgegaan. Probeer het opnieuw of start de app opnieuw.</string>
     <string name="copied_to_clipboard">Gekopieerd naar klembord</string>
+    <string name="search_hint">Zoeken</string>
+    <string name="enable_search_hint">Zoeken inschakelen</string>
 
     <!--  Range selection  -->
     <string name="title_yesterday">Gisteren</string>
@@ -220,7 +222,7 @@
     <string name="types_filter_hide_all">Alles verbergen</string>
     <string name="show">Weergeven</string>
     <string name="hide">Verbergen</string>
-    <string name="chart_filter_type_hint">Statistiektype</string>
+    <string name="chart_filter_type_hint">Filtertype</string>
     <string name="chart_filter_categories_empty">Geen labels toegevoegd</string>
 
     <string name="duration_dialog_save">Opslaan</string>

@@ -20,6 +20,8 @@
     <string name="no_data">اطلاعاتی وجود ندارد</string>
     <string name="general_error">مشکلی پیش آمد. لطفاً دوباره امتحان کنید یا برنامه را دوباره راه اندازی کنید.</string>
     <string name="copied_to_clipboard">در کلیپ بورد کپی شد</string>
+    <string name="search_hint">جستجو</string>
+    <string name="enable_search_hint">فعال‌سازی جستجو</string>
 
     <!--  Range selection  -->
     <string name="title_yesterday">روز قبل</string>
@@ -220,7 +222,7 @@
     <string name="types_filter_hide_all">مخفی کردن همه</string>
     <string name="show">نمایش</string>
     <string name="hide">مخفی کردن</string>
-    <string name="chart_filter_type_hint">نوع آمار ها</string>
+    <string name="chart_filter_type_hint">نوع فیلتر</string>
     <string name="chart_filter_categories_empty">برچسبی اضافه نشده</string>
 
     <string name="duration_dialog_save">ذخیره</string>

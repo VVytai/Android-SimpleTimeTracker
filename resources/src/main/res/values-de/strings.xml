@@ -20,6 +20,8 @@
     <string name="no_data">Keine Daten</string>
     <string name="general_error">Etwas ist schief gelaufen. Bitte versuchen Sie es erneut oder starten Sie die App neu.</string>
     <string name="copied_to_clipboard">In die Zwischenablage kopiert</string>
+    <string name="search_hint">Suchen</string>
+    <string name="enable_search_hint">Suche aktivieren</string>
 
     <!--  Range selection  -->
     <string name="title_yesterday">Gestern</string>
@@ -220,7 +222,7 @@
     <string name="types_filter_hide_all">Alles ausblenden</string>
     <string name="show">Anzeigen</string>
     <string name="hide">Ausblenden</string>
-    <string name="chart_filter_type_hint">Statistik Typ</string>
+    <string name="chart_filter_type_hint">Filtertyp</string>
     <string name="chart_filter_categories_empty">Keine Tags hinzugefügt</string>
 
     <string name="duration_dialog_save">Speichern</string>

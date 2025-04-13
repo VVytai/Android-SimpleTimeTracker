@@ -17,6 +17,7 @@ import com.example.util.simpletimetracker.core.utils.InsetConfiguration
 import com.example.util.simpletimetracker.core.utils.updateRunningRecordPreview
 import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.domain.record.interactor.UpdateRunningRecordFromChangeScreenInteractor
+import com.example.util.simpletimetracker.domain.statistics.model.ChartFilterType
 import com.example.util.simpletimetracker.feature_base_adapter.BaseRecyclerAdapter
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.empty.createEmptyAdapterDelegate
@@ -120,6 +121,13 @@ class RecordsFragment :
 
     override fun onActionComplete() {
         viewModel.onNeedUpdate()
+    }
+
+    override fun onChartFilterDataSelected(
+        chartFilterType: ChartFilterType,
+        dataIds: List<Long>,
+    ) {
+        viewModel.onFilterApplied(chartFilterType, dataIds)
     }
 
     override fun onChartFilterDialogDismissed() {

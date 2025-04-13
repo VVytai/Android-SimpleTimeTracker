@@ -17,6 +17,7 @@ import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteracto
 import com.example.util.simpletimetracker.domain.record.interactor.RecordsShareUpdateInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.RecordsUpdateInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.UpdateRunningRecordFromChangeScreenInteractor
+import com.example.util.simpletimetracker.domain.statistics.model.ChartFilterType
 import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.loader.LoaderViewData
@@ -197,6 +198,18 @@ class RecordsViewModel @Inject constructor(
 
     fun onShareView(view: Any) = viewModelScope.launch {
         sharingInteractor.execute(view = view, filename = SHARING_NAME)
+    }
+
+    fun onFilterApplied(
+        chartFilterType: ChartFilterType,
+        dataIds: List<Long>,
+    ) = viewModelScope.launch {
+        prefsInteractor.setListFilterType(chartFilterType)
+        when (chartFilterType) {
+            ChartFilterType.ACTIVITY -> prefsInteractor.setFilteredTypesOnList(dataIds)
+            ChartFilterType.CATEGORY -> prefsInteractor.setFilteredCategoriesOnList(dataIds)
+            ChartFilterType.RECORD_TAG -> prefsInteractor.setFilteredTagsOnList(dataIds)
+        }
     }
 
     private fun subscribeToUpdates() {

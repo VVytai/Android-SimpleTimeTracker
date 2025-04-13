@@ -23,7 +23,7 @@ import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.category.CategoryViewData
 import com.example.util.simpletimetracker.feature_base_adapter.loader.LoaderViewData
 import com.example.util.simpletimetracker.feature_base_adapter.recordType.RecordTypeViewData
-import com.example.util.simpletimetracker.feature_dialogs.chartFilter.interactor.ChartFilterInteractor
+import com.example.util.simpletimetracker.feature_dialogs.chartFilter.model.ChartFilterDataSelectionResult
 import com.example.util.simpletimetracker.navigation.params.screen.ChartFilterDialogParams
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -35,7 +35,6 @@ class ChartFilterViewModel @Inject constructor(
     private val categoryInteractor: CategoryInteractor,
     private val recordTagInteractor: RecordTagInteractor,
     private val chartFilterViewDataMapper: ChartFilterViewDataMapper,
-    private val chartFilterInteractor: ChartFilterInteractor,
     private val chartFilterViewDataInteractor: ChartFilterViewDataInteractor,
 ) : ViewModel() {
 
@@ -60,94 +59,99 @@ class ChartFilterViewModel @Inject constructor(
             initial
         }
     }
+    val onDataSelected: LiveData<ChartFilterDataSelectionResult> = MutableLiveData()
 
     private var filterType: ChartFilterType = ChartFilterType.ACTIVITY
 
+    // Cache
     private var recordTypesCache: List<RecordType>? = null
     private var categoriesCache: List<Category>? = null
     private var recordTagsCache: List<RecordTag>? = null
 
-    private var typeIdsFiltered: MutableList<Long> = mutableListOf()
-    private var categoryIdsFiltered: MutableList<Long> = mutableListOf()
-    private var recordTagIdsFiltered: MutableList<Long> = mutableListOf()
+    // Filtered ids
+    private var typeIdsFiltered: List<Long> = mutableListOf()
+    private var categoryIdsFiltered: List<Long> = mutableListOf()
+    private var recordTagIdsFiltered: List<Long> = mutableListOf()
 
     fun onFilterTypeClick(viewData: ButtonsRowViewData) {
         viewModelScope.launch {
             if (viewData !is ChartFilterTypeViewData) return@launch
             filterType = viewData.filterType
-            chartFilterInteractor.setChartFilterType(extra, filterType)
             updateFilterTypeViewData()
             updateTypesViewData()
+            sendResult()
         }
     }
 
     fun onRecordTypeClick(item: RecordTypeViewData) = viewModelScope.launch {
-        typeIdsFiltered.addOrRemove(item.id)
-        chartFilterInteractor.setFilteredTypes(extra, typeIdsFiltered)
+        typeIdsFiltered = typeIdsFiltered.toMutableList().apply { addOrRemove(item.id) }
+        sendResult()
         updateRecordTypesViewData()
     }
 
     fun onCategoryClick(item: CategoryViewData) = viewModelScope.launch {
         when (item) {
             is CategoryViewData.Category -> {
-                categoryIdsFiltered.addOrRemove(item.id)
-                chartFilterInteractor.setFilteredCategories(extra, categoryIdsFiltered)
-                updateCategoriesViewData()
+                categoryIdsFiltered = categoryIdsFiltered.toMutableList()
+                    .apply { addOrRemove(item.id) }
             }
             is CategoryViewData.Record -> {
-                recordTagIdsFiltered.addOrRemove(item.id)
-                chartFilterInteractor.setFilteredTags(extra, recordTagIdsFiltered)
-                updateTagsViewData()
+                recordTagIdsFiltered = recordTagIdsFiltered.toMutableList()
+                    .apply { addOrRemove(item.id) }
             }
         }
+        sendResult()
+        updateTypesViewData()
     }
 
     fun onShowAllClick() = viewModelScope.launch {
         when (filterType) {
-            ChartFilterType.ACTIVITY -> {
-                typeIdsFiltered.clear()
-                chartFilterInteractor.setFilteredTypes(extra, typeIdsFiltered)
-            }
-            ChartFilterType.CATEGORY -> {
-                categoryIdsFiltered.clear()
-                chartFilterInteractor.setFilteredCategories(extra, categoryIdsFiltered)
-            }
-            ChartFilterType.RECORD_TAG -> {
-                recordTagIdsFiltered.clear()
-                chartFilterInteractor.setFilteredTags(extra, recordTagIdsFiltered)
-            }
+            ChartFilterType.ACTIVITY -> typeIdsFiltered = emptyList()
+            ChartFilterType.CATEGORY -> categoryIdsFiltered = emptyList()
+            ChartFilterType.RECORD_TAG -> recordTagIdsFiltered = emptyList()
         }
+        sendResult()
         updateTypesViewData()
     }
 
     fun onHideAllClick() = viewModelScope.launch {
         when (filterType) {
             ChartFilterType.ACTIVITY -> {
-                getTypesCache().map { it.id }.let(typeIdsFiltered::addAll)
-                typeIdsFiltered.add(UNTRACKED_ITEM_ID)
-                chartFilterInteractor.setFilteredTypes(extra, typeIdsFiltered)
+                typeIdsFiltered = getTypesCache().map(RecordType::id) +
+                    UNTRACKED_ITEM_ID
             }
             ChartFilterType.CATEGORY -> {
-                getCategoriesCache().map { it.id }.let(categoryIdsFiltered::addAll)
-                categoryIdsFiltered.add(UNTRACKED_ITEM_ID)
-                categoryIdsFiltered.add(UNCATEGORIZED_ITEM_ID)
-                chartFilterInteractor.setFilteredCategories(extra, categoryIdsFiltered)
+                categoryIdsFiltered = getCategoriesCache().map(Category::id) +
+                    UNTRACKED_ITEM_ID +
+                    UNCATEGORIZED_ITEM_ID
             }
             ChartFilterType.RECORD_TAG -> {
-                getTagsCache().map { it.id }.let(recordTagIdsFiltered::addAll)
-                recordTagIdsFiltered.add(UNTRACKED_ITEM_ID)
-                recordTagIdsFiltered.add(UNCATEGORIZED_ITEM_ID)
-                chartFilterInteractor.setFilteredTags(extra, recordTagIdsFiltered)
+                recordTagIdsFiltered = getTagsCache().map(RecordTag::id) +
+                    UNTRACKED_ITEM_ID +
+                    UNCATEGORIZED_ITEM_ID
             }
         }
+        sendResult()
         updateTypesViewData()
     }
 
-    private suspend fun initializeChartFilterType() {
-        filterType = chartFilterInteractor.getChartFilterType(extra)
-        typeIdsFiltered = chartFilterInteractor.getFilteredTypes(extra).toMutableList()
-        categoryIdsFiltered = chartFilterInteractor.getFilteredCategories(extra).toMutableList()
-        recordTagIdsFiltered = chartFilterInteractor.getFilteredTags(extra).toMutableList()
+    private fun sendResult() {
+        val result = ChartFilterDataSelectionResult(
+            chartFilterType = filterType,
+            dataIds = when (filterType) {
+                ChartFilterType.ACTIVITY -> typeIdsFiltered
+                ChartFilterType.CATEGORY -> categoryIdsFiltered
+                ChartFilterType.RECORD_TAG -> recordTagIdsFiltered
+            },
+        )
+        onDataSelected.set(result)
+    }
+
+    private fun initializeChartFilterType() {
+        filterType = extra.chartFilterType
+        typeIdsFiltered = extra.filteredTypeIds
+        categoryIdsFiltered = extra.filteredCategoryIds
+        recordTagIdsFiltered = extra.filteredTagIds
     }
 
     private suspend fun getTypesCache(): List<RecordType> {

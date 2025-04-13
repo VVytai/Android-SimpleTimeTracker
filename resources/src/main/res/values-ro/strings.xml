@@ -20,6 +20,8 @@
     <string name="no_data">Nu există informații</string>
     <string name="general_error">Ceva a mers greşit. Vă rugăm să încercați din nou sau reporniți aplicația.</string>
     <string name="copied_to_clipboard">Copiat în clipboard</string>
+    <string name="search_hint">Căutare</string>
+    <string name="enable_search_hint">Activează căutarea</string>
 
     <!--  Range selection  -->
     <string name="title_yesterday">Ieri</string>
@@ -220,7 +222,7 @@
     <string name="types_filter_hide_all">Ascunde toate</string>
     <string name="show">Afișează</string>
     <string name="hide">Ascunde</string>
-    <string name="chart_filter_type_hint">Tipuri de statistică</string>
+    <string name="chart_filter_type_hint">Tip de filtru</string>
     <string name="chart_filter_categories_empty">Nu sunt etichete adăugate</string>
 
     <string name="duration_dialog_save">Salvează</string>

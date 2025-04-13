@@ -20,6 +20,8 @@
     <string name="no_data">Tidak ada data</string>
     <string name="general_error">Ada yang tidak beres. Silakan coba lagi atau mulai ulang aplikasi.</string>
     <string name="copied_to_clipboard">Disalin ke papan klip</string>
+    <string name="search_hint">Cari</string>
+    <string name="enable_search_hint">Aktifkan pencarian</string>
 
     <!--  Range selection  -->
     <string name="title_yesterday">Kemarin</string>
@@ -220,7 +222,7 @@
     <string name="types_filter_hide_all">Sembunyikan semua</string>
     <string name="show">Tampilkan</string>
     <string name="hide">Sembunyikan</string>
-    <string name="chart_filter_type_hint">Jenis statistik</string>
+    <string name="chart_filter_type_hint">Jenis filter</string>
     <string name="chart_filter_categories_empty">Tidak ada kegiatan yang ditambahkan</string>
 
     <string name="duration_dialog_save">Simpan</string>

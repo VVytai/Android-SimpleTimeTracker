@@ -20,6 +20,8 @@
     <string name="no_data">Inga data</string>
     <string name="general_error">Något gick fel. Försök igen eller starta om appen.</string>
     <string name="copied_to_clipboard">Kopierade till urklipp</string>
+    <string name="search_hint">Sök</string>
+    <string name="enable_search_hint">Aktivera sökning</string>
 
     <!--  Range selection  -->
     <string name="title_yesterday">Igår</string>
@@ -220,7 +222,7 @@
     <string name="types_filter_hide_all">Göm alla</string>
     <string name="show">Visa</string>
     <string name="hide">Dölj</string>
-    <string name="chart_filter_type_hint">Statistiktyp</string>
+    <string name="chart_filter_type_hint">Filtertyp</string>
     <string name="chart_filter_categories_empty">Inga taggar tillagda</string>
 
     <string name="duration_dialog_save">Spara</string>

@@ -18,6 +18,9 @@ data class OptionsListParams(
 
         @Parcelize
         data object StatisticsDetailContainer : Type
+
+        @Parcelize
+        data object Categories : Type
     }
 
     companion object {

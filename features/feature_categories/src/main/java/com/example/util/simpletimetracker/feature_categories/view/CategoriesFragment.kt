@@ -1,38 +1,56 @@
 package com.example.util.simpletimetracker.feature_categories.view
 
-import com.example.util.simpletimetracker.feature_categories.databinding.CategoriesFragmentBinding as Binding
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.viewModels
 import com.example.util.simpletimetracker.core.base.BaseFragment
+import com.example.util.simpletimetracker.core.dialog.ChartFilterDialogListener
+import com.example.util.simpletimetracker.core.dialog.OptionsListDialogListener
+import com.example.util.simpletimetracker.core.dialog.TypesSelectionDialogListener
 import com.example.util.simpletimetracker.core.utils.InsetConfiguration
+import com.example.util.simpletimetracker.core.utils.doOnApplyWindowInsetsListener
+import com.example.util.simpletimetracker.core.utils.getNavBarInsets
+import com.example.util.simpletimetracker.domain.statistics.model.ChartFilterType
 import com.example.util.simpletimetracker.feature_base_adapter.BaseRecyclerAdapter
 import com.example.util.simpletimetracker.feature_base_adapter.category.createCategoryAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.category.createCategoryAddAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.divider.createDividerAdapterDelegate
+import com.example.util.simpletimetracker.feature_base_adapter.emptySpace.createEmptySpaceAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.hint.createHintAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.loader.createLoaderAdapterDelegate
+import com.example.util.simpletimetracker.feature_base_adapter.optionsList.OptionsListViewData
+import com.example.util.simpletimetracker.feature_categories.viewData.CategoriesSearchState
 import com.example.util.simpletimetracker.feature_categories.viewModel.CategoriesViewModel
+import com.example.util.simpletimetracker.feature_views.extension.pxToDp
+import com.example.util.simpletimetracker.feature_views.extension.setMargins
+import com.example.util.simpletimetracker.feature_views.extension.setOnClick
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
 import dagger.hilt.android.AndroidEntryPoint
+import com.example.util.simpletimetracker.feature_categories.databinding.CategoriesFragmentBinding as Binding
 
 @AndroidEntryPoint
-class CategoriesFragment : BaseFragment<Binding>() {
+class CategoriesFragment :
+    BaseFragment<Binding>(),
+    OptionsListDialogListener,
+    ChartFilterDialogListener,
+    TypesSelectionDialogListener {
 
     override val inflater: (LayoutInflater, ViewGroup?, Boolean) -> Binding =
         Binding::inflate
 
     override var insetConfiguration: InsetConfiguration =
-        InsetConfiguration.ApplyToView { binding.rvCategoriesList }
+        InsetConfiguration.DoNotApply
 
     private val viewModel: CategoriesViewModel by viewModels()
 
     private val categoriesAdapter: BaseRecyclerAdapter by lazy {
         BaseRecyclerAdapter(
+            createEmptySpaceAdapterDelegate(),
             createLoaderAdapterDelegate(),
             createDividerAdapterDelegate(),
             createHintAdapterDelegate(),
@@ -53,9 +71,20 @@ class CategoriesFragment : BaseFragment<Binding>() {
             adapter = categoriesAdapter
         }
 
+        btnCategoriesOptions.doOnApplyWindowInsetsListener {
+            val navBarHeight = it.getNavBarInsets().bottom.pxToDp()
+            viewModel.onChangeInsets(navBarHeight = navBarHeight)
+            setMargins(bottom = navBarHeight)
+        }
+
         setOnPreDrawListener {
             startPostponedEnterTransition()
         }
+    }
+
+    override fun initUx(): Unit = with(binding) {
+        btnCategoriesOptions.setOnClick(throttle(viewModel::onOptionsClick))
+        etCategoriesSearchField.doAfterTextChanged { viewModel.onSearchChange(it.toString()) }
     }
 
     override fun initViewModel(): Unit = with(viewModel) {
@@ -63,10 +92,40 @@ class CategoriesFragment : BaseFragment<Binding>() {
             categoriesAdapter.replace(it.items)
             binding.tvCategoriesEditHint.isVisible = it.showHint
         }
+        searchState.observe(::setSearchState)
     }
 
     override fun onResume() {
         super.onResume()
         viewModel.onVisible()
+    }
+
+    override fun onOptionsItemClick(item: OptionsListViewData) {
+        viewModel.onOptionsItemClick(item)
+    }
+
+    override fun onChartFilterDataSelected(
+        chartFilterType: ChartFilterType,
+        dataIds: List<Long>,
+    ) {
+        viewModel.onFilterApplied(chartFilterType, dataIds)
+    }
+
+    override fun onChartFilterDialogDismissed() {
+        viewModel.onFilterClosed()
+    }
+
+    override fun onDataSelected(dataIds: List<Long>, tag: String?) {
+        viewModel.onDataSelected(dataIds, tag)
+    }
+
+    private fun setSearchState(
+        state: CategoriesSearchState,
+    ) = with(binding) {
+        groupCategoriesSearch.isVisible = state.isVisible
+        if (state.text != etCategoriesSearchField.text.toString()) {
+            etCategoriesSearchField.setText(state.text)
+            etCategoriesSearchField.setSelection(state.text.length)
+        }
     }
 }

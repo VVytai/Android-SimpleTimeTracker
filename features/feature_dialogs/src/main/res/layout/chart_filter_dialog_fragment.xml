@@ -17,12 +17,13 @@
         android:tint="?appContrastColor" />
 
     <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvChartFilterTitle"
         style="@style/DialogTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/chart_filter_hint" />
 
-    <com.example.util.simpletimetracker.feature_views.DividerView
+    <com.example.util.simpletimetracker.feature_views.DividerFullView
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
@@ -30,9 +31,16 @@
         android:id="@+id/rvChartFilterContainer"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginBottom="24dp"
         android:layout_weight="1"
         tools:listitem="@layout/item_record_type_layout" />
+
+    <View
+        android:id="@+id/dividerChartFilterBottom"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginBottom="4dp"
+        android:background="?appDividerColor"
+        app:layout_constraintBottom_toTopOf="@id/tvChartFilterTypeHint" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tvChartFilterTypeHint"

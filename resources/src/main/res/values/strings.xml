@@ -20,6 +20,8 @@
     <string name="no_data">No data</string>
     <string name="general_error">Something went wrong. Please try again or restart the app.</string>
     <string name="copied_to_clipboard">Copied to clipboard</string>
+    <string name="search_hint">Search</string>
+    <string name="enable_search_hint">Enable search</string>
 
     <!--  Range selection  -->
     <string name="title_yesterday">Yesterday</string>
@@ -220,7 +222,7 @@
     <string name="types_filter_hide_all">Hide all</string>
     <string name="show">Show</string>
     <string name="hide">Hide</string>
-    <string name="chart_filter_type_hint">Statistics type</string>
+    <string name="chart_filter_type_hint">Filter type</string>
     <string name="chart_filter_categories_empty">No tags added</string>
 
     <string name="duration_dialog_save">Save</string>

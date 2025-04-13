@@ -20,6 +20,8 @@
     <string name="no_data">Sem dados</string>
     <string name="general_error">Algo deu errado. Tente novamente ou reinicie o aplicativo.</string>
     <string name="copied_to_clipboard">Copiado para a área de transferência</string>
+    <string name="search_hint">Pesquisar</string>
+    <string name="enable_search_hint">Ativar a pesquisa</string>
 
     <!--  Range selection  -->
     <string name="title_yesterday">Ontem</string>
@@ -220,7 +222,7 @@
     <string name="types_filter_hide_all">Ocultar todos</string>
     <string name="show">Mostrar</string>
     <string name="hide">Esconder</string>
-    <string name="chart_filter_type_hint">Tipo de estatísticas</string>
+    <string name="chart_filter_type_hint">Tipo de filtro</string>
     <string name="chart_filter_categories_empty">Nenhuma etiqueta adicionada</string>
 
     <string name="duration_dialog_save">Guardar</string>

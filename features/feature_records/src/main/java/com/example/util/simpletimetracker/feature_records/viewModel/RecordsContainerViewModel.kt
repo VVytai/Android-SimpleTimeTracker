@@ -27,7 +27,6 @@ import com.example.util.simpletimetracker.navigation.params.screen.DateTimeDialo
 import com.example.util.simpletimetracker.navigation.params.screen.DateTimeDialogType
 import com.example.util.simpletimetracker.navigation.params.screen.OptionsListParams
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -139,8 +138,14 @@ class RecordsContainerViewModel @Inject constructor(
         }
     }
 
-    private fun onFilterClick() {
-        router.navigate(ChartFilterDialogParams(ChartFilterDialogParams.Type.RecordsList))
+    private fun onFilterClick() = viewModelScope.launch {
+        val params = ChartFilterDialogParams(
+            chartFilterType = prefsInteractor.getListFilterType(),
+            filteredTypeIds = prefsInteractor.getFilteredTypesOnList(),
+            filteredCategoryIds = prefsInteractor.getFilteredCategoriesOnList(),
+            filteredTagIds = prefsInteractor.getFilteredTagsOnList(),
+        )
+        router.navigate(params)
     }
 
     private fun onShareClick() = viewModelScope.launch {

@@ -5,6 +5,7 @@ import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import com.example.util.simpletimetracker.core.base.BaseBottomSheetFragment
 import com.example.util.simpletimetracker.core.dialog.ChartFilterDialogListener
@@ -17,6 +18,7 @@ import com.example.util.simpletimetracker.feature_base_adapter.category.createCa
 import com.example.util.simpletimetracker.feature_base_adapter.empty.createEmptyAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.loader.createLoaderAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.recordType.createRecordTypeAdapterDelegate
+import com.example.util.simpletimetracker.feature_dialogs.chartFilter.model.ChartFilterDataSelectionResult
 import com.example.util.simpletimetracker.feature_dialogs.chartFilter.viewModel.ChartFilterViewModel
 import com.example.util.simpletimetracker.feature_views.extension.setOnClick
 import com.example.util.simpletimetracker.navigation.params.screen.ChartFilterDialogParams
@@ -84,6 +86,14 @@ class ChartFilterDialogFragment : BaseBottomSheetFragment<Binding>() {
         extra = params
         filterTypeViewData.observe(binding.buttonsChartFilterType.adapter::replace)
         types.observe(recordTypesAdapter::replace)
+        onDataSelected.observe(::onDataSelected)
+    }
+
+    private fun onDataSelected(result: ChartFilterDataSelectionResult) {
+        chartFilterDialogListener?.onChartFilterDataSelected(
+            chartFilterType = result.chartFilterType,
+            dataIds = result.dataIds,
+        )
     }
 
     companion object {

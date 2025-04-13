@@ -20,6 +20,8 @@
     <string name="no_data">لايوجد بيانات</string>
     <string name="general_error">حدث خطأ ما. يرجى المحاولة مرة أخرى أو إعادة تشغيل التطبيق.</string>
     <string name="copied_to_clipboard">تم نسخها إلى الحافظة</string>
+    <string name="search_hint">بحث</string>
+    <string name="enable_search_hint">تمكين البحث</string>
 
     <!--  Range selection  -->
     <string name="title_yesterday">اﻷمس</string>
@@ -220,7 +222,7 @@
     <string name="types_filter_hide_all">إخفاء الكل</string>
     <string name="show">إظهار</string>
     <string name="hide">إخفاء</string>
-    <string name="chart_filter_type_hint">نوع الإحصاء</string>
+    <string name="chart_filter_type_hint">نوع الفلتر</string>
     <string name="chart_filter_categories_empty">لا توجد وسوم مضافة</string>
 
     <string name="duration_dialog_save">حفظ</string>

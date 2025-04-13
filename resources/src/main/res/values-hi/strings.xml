@@ -20,6 +20,8 @@
     <string name="no_data">कोई डेटा नहीं</string>
     <string name="general_error">कुछ गलत हो गया। कृपया पुनः प्रयास करें या ऐप को पुनरारंभ करें।</string>
     <string name="copied_to_clipboard">क्लिपबोर्ड पर कॉपी किया गया</string>
+    <string name="search_hint">खोजें</string>
+    <string name="enable_search_hint">खोज सक्षम करें</string>
 
     <!--  Range selection  -->
     <string name="title_yesterday">कल</string>
@@ -220,7 +222,7 @@
     <string name="types_filter_hide_all">सभी को छिपाएं</string>
     <string name="show">दिखाएं</string>
     <string name="hide">छुपाएं</string>
-    <string name="chart_filter_type_hint">सांख्यिकी प्रकार</string>
+    <string name="chart_filter_type_hint">फ़िल्टर प्रकार</string>
     <string name="chart_filter_categories_empty">कोई टैग नहीं जोड़ा गया</string>
 
     <string name="duration_dialog_save">बचाना</string>

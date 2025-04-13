@@ -20,6 +20,8 @@
     <string name="no_data">No hi ha dades</string>
     <string name="general_error">Alguna cosa va fallar. Torneu-ho a provar o reinicieu l\'aplicació.</string>
     <string name="copied_to_clipboard">S\'ha copiat al porta-retalls</string>
+    <string name="search_hint">Cerca</string>
+    <string name="enable_search_hint">Habilita la cerca</string>
 
     <!--  Range selection  -->
     <string name="title_yesterday">Ahir</string>
@@ -220,7 +222,7 @@
     <string name="types_filter_hide_all">Amaga tot</string>
     <string name="show">Mostra</string>
     <string name="hide">Amaga</string>
-    <string name="chart_filter_type_hint">Tipus d\'estadístiques</string>
+    <string name="chart_filter_type_hint">Tipus de filtre</string>
     <string name="chart_filter_categories_empty">No s\'han afegit etiquetes</string>
 
     <string name="duration_dialog_save">Desa</string>

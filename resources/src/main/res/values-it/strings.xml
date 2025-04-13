@@ -20,6 +20,8 @@
     <string name="no_data">Nessun dato</string>
     <string name="general_error">Qualcosa è andato storto. Riprova o riavvia l\'app.</string>
     <string name="copied_to_clipboard">Copiato negli appunti</string>
+    <string name="search_hint">Cerca</string>
+    <string name="enable_search_hint">Abilita la ricerca</string>
 
     <!--  Range selection  -->
     <string name="title_yesterday">Ieri</string>
@@ -220,7 +222,7 @@
     <string name="types_filter_hide_all">Nascondi tutto</string>
     <string name="show">Mostra</string>
     <string name="hide">Nascondi</string>
-    <string name="chart_filter_type_hint">Tipi di statistiche</string>
+    <string name="chart_filter_type_hint">Tipo di filtro</string>
     <string name="chart_filter_categories_empty">Nessuna etichetta aggiunta</string>
 
     <string name="duration_dialog_save">Salva</string>

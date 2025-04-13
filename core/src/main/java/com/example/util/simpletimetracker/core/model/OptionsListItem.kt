@@ -20,4 +20,9 @@ sealed interface OptionsListItem : OptionsListViewData.Id {
         data object Filter : StatisticsDetailContainer
         data object Compare : StatisticsDetailContainer
     }
+
+    sealed interface Categories : OptionsListItem {
+        data object Filter : Categories
+        data object EnabledSearch : Categories
+    }
 }

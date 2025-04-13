@@ -21,9 +21,11 @@ class ChangeRecordTagViewDataInteractor @Inject constructor(
 
     suspend fun getTypesViewData(
         selectedTypes: Set<Long>,
+        initialTypeIds: Set<Long>,
     ): ChangeRecordTagTypesViewData {
         return getViewData(
             selectedTypes = selectedTypes,
+            initialTypeIds = initialTypeIds,
             hintViewDataProvider = { nothingSelected ->
                 changeRecordTagMapper.mapHint(nothingSelected)
             },
@@ -35,6 +37,7 @@ class ChangeRecordTagViewDataInteractor @Inject constructor(
     ): ChangeRecordTagTypesViewData {
         return getViewData(
             selectedTypes = selectedTypes,
+            initialTypeIds = emptySet(),
             hintViewDataProvider = {
                 changeRecordTagMapper.mapDefaultTypeHint()
             },
@@ -43,12 +46,13 @@ class ChangeRecordTagViewDataInteractor @Inject constructor(
 
     private suspend fun getViewData(
         selectedTypes: Set<Long>,
+        initialTypeIds: Set<Long>,
         hintViewDataProvider: (nothingSelected: Boolean) -> ViewHolderType,
     ): ChangeRecordTagTypesViewData {
         val numberOfCards = prefsInteractor.getNumberOfCards()
         val isDarkTheme = prefsInteractor.getDarkMode()
         val data = recordTypeInteractor.getAll()
-            .filter { !it.hidden }
+            .filter { !it.hidden || (it.id in initialTypeIds) }
 
         return if (data.isNotEmpty()) {
             val selected = data.filter { it.id in selectedTypes }

@@ -14,6 +14,7 @@ import com.example.util.simpletimetracker.core.repo.DeviceRepo
 import com.example.util.simpletimetracker.core.sharedViewModel.MainTabsViewModel
 import com.example.util.simpletimetracker.core.utils.InsetConfiguration
 import com.example.util.simpletimetracker.domain.extension.orZero
+import com.example.util.simpletimetracker.domain.statistics.model.ChartFilterType
 import com.example.util.simpletimetracker.feature_base_adapter.BaseRecyclerAdapter
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.divider.createDividerAdapterDelegate
@@ -111,8 +112,15 @@ class StatisticsFragment :
         viewModel.onHidden()
     }
 
+    override fun onChartFilterDataSelected(
+        chartFilterType: ChartFilterType,
+        dataIds: List<Long>,
+    ) {
+        viewModel.onFilterApplied(chartFilterType, dataIds)
+    }
+
     override fun onChartFilterDialogDismissed() {
-        viewModel.onFilterApplied()
+        viewModel.onFilterClosed()
     }
 
     private fun setAnimateParticles(animate: Boolean) {

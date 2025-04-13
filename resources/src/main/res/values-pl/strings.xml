@@ -20,6 +20,8 @@
     <string name="no_data">Brak danych</string>
     <string name="general_error">Coś poszło nie tak. Spróbuj ponownie lub uruchom ponownie aplikację.</string>
     <string name="copied_to_clipboard">Skopiowano do schowka</string>
+    <string name="search_hint">Szukaj</string>
+    <string name="enable_search_hint">Włącz wyszukiwanie</string>
 
     <!--  Range selection  -->
     <string name="title_yesterday">Wczoraj</string>
@@ -220,7 +222,7 @@
     <string name="types_filter_hide_all">Ukryj wszystkie</string>
     <string name="show">Pokaż</string>
     <string name="hide">Ukryj</string>
-    <string name="chart_filter_type_hint">Typ statystyki</string>
+    <string name="chart_filter_type_hint">Typ filtra</string>
     <string name="chart_filter_categories_empty">Brak dodanych tagów</string>
 
     <string name="duration_dialog_save">Zapisz</string>

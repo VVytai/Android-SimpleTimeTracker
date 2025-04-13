@@ -20,6 +20,8 @@
     <string name="no_data">Pas de données</string>
     <string name="general_error">Quelque chose s\'est mal passé. Veuillez réessayer ou redémarrer l\'application.</string>
     <string name="copied_to_clipboard">Copié dans le presse-papiers</string>
+    <string name="search_hint">Rechercher</string>
+    <string name="enable_search_hint">Activer la recherche</string>
 
     <!--  Range selection  -->
     <string name="title_yesterday">Hier</string>
@@ -220,7 +222,7 @@
     <string name="types_filter_hide_all">Cacher tout</string>
     <string name="show">Afficher</string>
     <string name="hide">Masquer</string>
-    <string name="chart_filter_type_hint">Type de statistiques</string>
+    <string name="chart_filter_type_hint">Type de filtre</string>
     <string name="chart_filter_categories_empty">Aucune étiquette ajoutée</string>
 
     <string name="duration_dialog_save">Sauvegarder</string>

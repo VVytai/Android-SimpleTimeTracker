@@ -24,6 +24,7 @@ import com.example.util.simpletimetracker.domain.recordTag.interactor.RecordType
 import com.example.util.simpletimetracker.domain.recordTag.interactor.RemoveRecordTagMediator
 import com.example.util.simpletimetracker.domain.notifications.interactor.UpdateExternalViewsInteractor
 import com.example.util.simpletimetracker.domain.color.model.AppColor
+import com.example.util.simpletimetracker.domain.extension.addOrRemove
 import com.example.util.simpletimetracker.domain.statistics.model.ChartFilterType
 import com.example.util.simpletimetracker.domain.recordTag.model.RecordTag
 import com.example.util.simpletimetracker.feature_base_adapter.category.CategoryViewData
@@ -179,9 +180,7 @@ class ChangeRecordTagViewModel @Inject constructor(
 
     fun onTypeClick(item: RecordTypeViewData) {
         viewModelScope.launch {
-            newTypeIds = newTypeIds.toMutableSet().apply {
-                if (item.id in this) remove(item.id) else add(item.id)
-            }
+            newTypeIds = newTypeIds.toMutableSet().apply { addOrRemove(item.id) }
             updateTypesViewData()
         }
     }
@@ -494,7 +493,10 @@ class ChangeRecordTagViewModel @Inject constructor(
     }
 
     private suspend fun loadTypesViewData(): ChangeRecordTagTypesViewData {
-        return changeRecordTagViewDataInteractor.getTypesViewData(newTypeIds)
+        return changeRecordTagViewDataInteractor.getTypesViewData(
+            selectedTypes = newTypeIds,
+            initialTypeIds = initialTypeIds,
+        )
     }
 
     private fun updateDefaultTypesViewData() = viewModelScope.launch {

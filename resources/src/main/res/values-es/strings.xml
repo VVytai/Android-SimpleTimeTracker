@@ -20,6 +20,8 @@
     <string name="no_data">Sin datos</string>
     <string name="general_error">Algo salió mal. Inténtalo de nuevo o reinicia la aplicación.</string>
     <string name="copied_to_clipboard">Copiado al portapapeles</string>
+    <string name="search_hint">Buscar</string>
+    <string name="enable_search_hint">Habilitar búsqueda</string>
 
     <!--  Range selection  -->
     <string name="title_yesterday">Ayer</string>
@@ -220,7 +222,7 @@
     <string name="types_filter_hide_all">Ocultar todo</string>
     <string name="show">Mostrar</string>
     <string name="hide">Ocultar</string>
-    <string name="chart_filter_type_hint">Tipo de estadística</string>
+    <string name="chart_filter_type_hint">Tipo de filtro</string>
     <string name="chart_filter_categories_empty">No se añadieron etiquetas</string>
 
     <string name="duration_dialog_save">Guardar</string>

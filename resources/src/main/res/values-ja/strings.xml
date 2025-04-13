@@ -20,6 +20,8 @@
     <string name="no_data">データなし</string>
     <string name="general_error">何か問題が発生しました。もう一度試すか、アプリを再起動してください。</string>
     <string name="copied_to_clipboard">クリップボードにコピーされました</string>
+    <string name="search_hint">検索</string>
+    <string name="enable_search_hint">検索を有効にする</string>
 
     <!--  Range selection  -->
     <string name="title_yesterday">昨日</string>
@@ -220,7 +222,7 @@
     <string name="types_filter_hide_all">すべて隠す</string>
     <string name="show">表示</string>
     <string name="hide">非表示</string>
-    <string name="chart_filter_type_hint">統計の種類</string>
+    <string name="chart_filter_type_hint">フィルタータイプ</string>
     <string name="chart_filter_categories_empty">タグは追加されていない</string>
 
     <string name="duration_dialog_save">保存</string>

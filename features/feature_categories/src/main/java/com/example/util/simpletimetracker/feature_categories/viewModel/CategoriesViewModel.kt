@@ -6,23 +6,39 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.util.simpletimetracker.core.extension.set
 import com.example.util.simpletimetracker.core.extension.toParams
+import com.example.util.simpletimetracker.core.model.OptionsListItem
+import com.example.util.simpletimetracker.core.repo.ResourceRepo
+import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
+import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTypeInteractor
+import com.example.util.simpletimetracker.domain.recordType.model.RecordType
+import com.example.util.simpletimetracker.domain.statistics.model.ChartFilterType
 import com.example.util.simpletimetracker.feature_base_adapter.category.CategoryAddViewData
 import com.example.util.simpletimetracker.feature_base_adapter.category.CategoryViewData
 import com.example.util.simpletimetracker.feature_base_adapter.category.TagType
 import com.example.util.simpletimetracker.feature_base_adapter.loader.LoaderViewData
+import com.example.util.simpletimetracker.feature_base_adapter.optionsList.OptionsListViewData
+import com.example.util.simpletimetracker.feature_categories.R
 import com.example.util.simpletimetracker.feature_categories.interactor.CategoriesViewDataInteractor
+import com.example.util.simpletimetracker.feature_categories.viewData.CategoriesSearchState
 import com.example.util.simpletimetracker.feature_categories.viewData.CategoriesViewData
 import com.example.util.simpletimetracker.navigation.Router
 import com.example.util.simpletimetracker.navigation.params.screen.ChangeCategoryFromTagsParams
 import com.example.util.simpletimetracker.navigation.params.screen.ChangeRecordTagFromTagsParams
 import com.example.util.simpletimetracker.navigation.params.screen.ChangeTagData
+import com.example.util.simpletimetracker.navigation.params.screen.OptionsListParams
+import com.example.util.simpletimetracker.navigation.params.screen.TypesSelectionDialogParams
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class CategoriesViewModel @Inject constructor(
     private val router: Router,
+    private val resourceRepo: ResourceRepo,
+    private val prefsInteractor: PrefsInteractor,
+    private val recordTypeInteractor: RecordTypeInteractor,
     private val categoriesViewDataInteractor: CategoriesViewDataInteractor,
 ) : ViewModel() {
 
@@ -38,6 +54,19 @@ class CategoriesViewModel @Inject constructor(
             initial
         }
     }
+    val searchState: LiveData<CategoriesSearchState> by lazy {
+        return@lazy MutableLiveData(
+            CategoriesSearchState(
+                isVisible = false,
+                text = "",
+            ),
+        )
+    }
+
+    private var navBarHeightDp: Int = 0
+    private var selectedTypeIds: List<Long> = emptyList()
+    private var searchText: String = ""
+    private var searchJob: Job? = null
 
     fun onCategoryClick(item: CategoryViewData, sharedElements: Pair<Any, String>) {
         val params = when (item) {
@@ -77,12 +106,110 @@ class CategoriesViewModel @Inject constructor(
         updateCategories()
     }
 
+    fun onOptionsClick() {
+        val params = OptionsListParams(
+            type = OptionsListParams.Type.Categories,
+        )
+        router.navigate(params)
+    }
+
+    fun onOptionsItemClick(item: OptionsListViewData) = viewModelScope.launch {
+        val id = item.id as? OptionsListItem.Categories ?: return@launch
+        when (id) {
+            is OptionsListItem.Categories.Filter -> onFilterClick()
+            is OptionsListItem.Categories.EnabledSearch -> onSearchToggled()
+        }
+    }
+
+    fun onChangeInsets(navBarHeight: Int) {
+        if (navBarHeightDp != navBarHeight) {
+            navBarHeightDp = navBarHeight
+            updateCategories()
+        }
+    }
+
+    fun onFilterApplied(
+        chartFilterType: ChartFilterType,
+        dataIds: List<Long>,
+    ) = viewModelScope.launch {
+        // Filtering available only by activity.
+        if (chartFilterType != ChartFilterType.ACTIVITY) return@launch
+        val allTypeIds = recordTypeInteractor.getAll().map(RecordType::id)
+        selectedTypeIds = allTypeIds.filter { it !in dataIds }
+    }
+
+    fun onDataSelected(dataIds: List<Long>, tag: String?) {
+        if (tag != CATEGORIES_TYPE_SELECTION_TAG) return
+        selectedTypeIds = dataIds
+        updateCategories()
+    }
+
+    fun onFilterClosed() {
+        updateCategories()
+    }
+
+    fun onSearchChange(search: String) {
+        if (search != searchText) {
+            searchJob?.cancel()
+            searchJob = viewModelScope.launch {
+                searchText = search
+                // Do not delay on clear.
+                if (search.isNotEmpty()) delay(500)
+                updateSearchState()
+                updateCategories()
+            }
+        }
+    }
+
+    private fun onFilterClick() = viewModelScope.launch {
+        // TODO add to dialog param?
+        val allTypeIds = recordTypeInteractor.getAll()
+        val archivedTypeIds = allTypeIds.filter(RecordType::hidden).map(RecordType::id)
+        TypesSelectionDialogParams(
+            tag = CATEGORIES_TYPE_SELECTION_TAG,
+            title = resourceRepo.getString(R.string.change_record_message_choose_type),
+            subtitle = "",
+            type = TypesSelectionDialogParams.Type.Activity,
+            selectedTypeIds = selectedTypeIds,
+            isMultiSelectAvailable = true,
+            idsShouldBeVisible = archivedTypeIds,
+            showHints = true,
+        ).let(router::navigate)
+    }
+
+    private suspend fun onSearchToggled() {
+        val current = prefsInteractor.getIsCategoriesSearchEnabled()
+        prefsInteractor.setIsCategoriesSearchEnabled(!current)
+        updateSearchState()
+        updateCategories()
+    }
+
+    private fun updateSearchState() = viewModelScope.launch {
+        searchState.set(loadSearchState())
+    }
+
+    private suspend fun loadSearchState(): CategoriesSearchState {
+        return CategoriesSearchState(
+            isVisible = prefsInteractor.getIsCategoriesSearchEnabled(),
+            text = searchText,
+        )
+    }
+
     private fun updateCategories() = viewModelScope.launch {
         val data = loadCategoriesViewData()
         categories.set(data)
     }
 
     private suspend fun loadCategoriesViewData(): CategoriesViewData {
-        return categoriesViewDataInteractor.getViewData()
+        return categoriesViewDataInteractor.getViewData(
+            selectedTypeIds = selectedTypeIds,
+            searchEnabled = prefsInteractor.getIsCategoriesSearchEnabled(),
+            searchText = searchText,
+            navBarHeightDp = navBarHeightDp,
+        )
+    }
+
+    companion object {
+        private const val CATEGORIES_TYPE_SELECTION_TAG = "CATEGORIES_TYPE_SELECTION_TAG"
     }
 }

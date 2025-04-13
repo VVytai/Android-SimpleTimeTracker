@@ -20,6 +20,8 @@
     <string name="no_data">没有数据</string>
     <string name="general_error">出了点问题。请重试或重新启动应用程序</string>
     <string name="copied_to_clipboard">已复制到剪贴板</string>
+    <string name="search_hint">搜索</string>
+    <string name="enable_search_hint">启用搜索</string>
 
     <!--  Range selection  -->
     <string name="title_yesterday">昨天</string>
@@ -220,7 +222,7 @@
     <string name="types_filter_hide_all">全部隐藏</string>
     <string name="show">显示</string>
     <string name="hide">隐藏</string>
-    <string name="chart_filter_type_hint">统计类型</string>
+    <string name="chart_filter_type_hint">过滤器类型</string>
     <string name="chart_filter_categories_empty">未添加标签</string>
 
     <string name="duration_dialog_save">保存</string>

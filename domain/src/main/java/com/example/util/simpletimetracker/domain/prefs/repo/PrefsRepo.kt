@@ -166,6 +166,8 @@ interface PrefsRepo {
 
     var isNavBarAtTheBottom: Boolean
 
+    var isCategoriesSearchEnabled: Boolean
+
     fun setWidget(widgetId: Int, recordType: Long)
 
     fun getWidget(widgetId: Int): Long
