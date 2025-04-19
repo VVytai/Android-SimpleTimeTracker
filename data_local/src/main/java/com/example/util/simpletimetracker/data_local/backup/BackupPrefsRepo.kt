@@ -35,6 +35,7 @@ import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Compani
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_INACTIVITY_REMINDER_DURATION
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_INACTIVITY_REMINDER_RECURRENT
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_IS_ACTIVITY_FILTERS_COLLAPSED
+import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_IS_ARCHIVE_SEARCH_ENABLED
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_IS_CATEGORIES_SEARCH_ENABLED
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_IS_NAV_BAR_AT_THE_BOTTOM
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_KEEP_SCREEN_ON
@@ -220,6 +221,7 @@ class BackupPrefsRepo @Inject constructor(
             PrefsProcessor(KEY_DEFAULT_TYPES_HIDDEN, ::defaultTypesHidden),
             PrefsProcessor(KEY_IS_NAV_BAR_AT_THE_BOTTOM, ::isNavBarAtTheBottom),
             PrefsProcessor(KEY_IS_CATEGORIES_SEARCH_ENABLED, ::isCategoriesSearchEnabled),
+            PrefsProcessor(KEY_IS_ARCHIVE_SEARCH_ENABLED, ::isArchiveSearchEnabled),
         )
     }
 

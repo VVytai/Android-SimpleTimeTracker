@@ -80,7 +80,7 @@ class ChangeRecordCore(
                 onItemClick = { viewModel.onAddCategoryClick() },
             ),
             createCategoryShowAllAdapterDelegate(
-                onItemClick =  { viewModel.onShowAllTagsClick() }
+                onItemClick = { viewModel.onShowAllTagsClick() },
             ),
             createDividerAdapterDelegate(),
             createInfoAdapterDelegate(),

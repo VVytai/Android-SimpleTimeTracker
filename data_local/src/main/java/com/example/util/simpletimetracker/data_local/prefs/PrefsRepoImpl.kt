@@ -392,6 +392,10 @@ class PrefsRepoImpl @Inject constructor(
         KEY_IS_CATEGORIES_SEARCH_ENABLED, false,
     )
 
+    override var isArchiveSearchEnabled: Boolean by prefs.delegate(
+        KEY_IS_ARCHIVE_SEARCH_ENABLED, false,
+    )
+
     override fun setWidget(widgetId: Int, recordType: Long) {
         val key = KEY_WIDGET + widgetId
         logPrefsDataAccess("set $key")
@@ -478,7 +482,7 @@ class PrefsRepoImpl @Inject constructor(
         val filteredTags = prefs
             .getStringSet(KEY_STATISTICS_WIDGET_FILTERED_TAGS + widgetId, emptySet())
             ?.mapNotNull { it.toLongOrNull() }.orEmpty().toSet()
-        val filteringType = when(prefs.getInt(KEY_STATISTICS_WIDGET_FILTERING_TYPE + widgetId, 0)) {
+        val filteringType = when (prefs.getInt(KEY_STATISTICS_WIDGET_FILTERING_TYPE + widgetId, 0)) {
             0 -> StatisticsWidgetData.FilterType.FILTER
             1 -> StatisticsWidgetData.FilterType.SELECT
             else -> StatisticsWidgetData.FilterType.FILTER
@@ -654,6 +658,7 @@ class PrefsRepoImpl @Inject constructor(
         const val KEY_DEFAULT_TYPES_HIDDEN = "defaultTypesHidden"
         const val KEY_IS_NAV_BAR_AT_THE_BOTTOM = "isNavBarAtTheBottom"
         const val KEY_IS_CATEGORIES_SEARCH_ENABLED = "isCategoriesSearchEnabled"
+        const val KEY_IS_ARCHIVE_SEARCH_ENABLED = "isArchiveSearchEnabled"
         const val KEY_CARD_ORDER_MANUAL = "cardOrderManual"
         const val KEY_CATEGORY_ORDER_MANUAL = "categoryOrderManual"
         const val KEY_TAG_ORDER_MANUAL = "tagOrderManual"

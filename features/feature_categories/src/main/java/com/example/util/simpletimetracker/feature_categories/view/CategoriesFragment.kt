@@ -20,7 +20,6 @@ import com.example.util.simpletimetracker.feature_base_adapter.divider.createDiv
 import com.example.util.simpletimetracker.feature_base_adapter.emptySpace.createEmptySpaceAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.hint.createHintAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.loader.createLoaderAdapterDelegate
-import com.example.util.simpletimetracker.feature_base_adapter.optionsList.OptionsListViewData
 import com.example.util.simpletimetracker.feature_categories.viewData.CategoriesSearchState
 import com.example.util.simpletimetracker.feature_categories.viewModel.CategoriesViewModel
 import com.example.util.simpletimetracker.feature_views.extension.pxToDp

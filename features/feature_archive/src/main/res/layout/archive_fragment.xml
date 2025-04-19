@@ -31,11 +31,47 @@
         app:layout_constraintTop_toBottomOf="@id/tvArchiveTitle"
         tools:visibility="visible" />
 
-    <com.example.util.simpletimetracker.feature_views.DividerView
+    <com.example.util.simpletimetracker.feature_views.DividerFullView
         android:id="@+id/dividerArchive"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/tvArchiveHint" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/inputArchiveSearchField"
+        style="@style/ChangeItemInputField"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginEnd="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/dividerArchive"
+        tools:layout_marginBottom="4dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etArchiveSearchField"
+            style="@style/ChangeItemNameEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/search_hint" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.example.util.simpletimetracker.feature_views.DividerFullView
+        android:id="@+id/dividerArchiveSearch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/inputArchiveSearchField" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/groupArchiveSearch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="inputArchiveSearchField, dividerArchiveSearch"
+        tools:visibility="visible" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvArchiveList"
@@ -43,7 +79,16 @@
         android:layout_height="0dp"
         android:clipToPadding="false"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/dividerArchive"
+        app:layout_constraintTop_toBottomOf="@id/dividerArchiveSearch"
+        tools:itemCount="15"
         tools:listitem="@layout/item_record_type_layout" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnArchiveOptions"
+        style="@style/ContainerRangeOptionsButton"
+        android:layout_marginEnd="8dp"
+        app:icon="@drawable/more"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

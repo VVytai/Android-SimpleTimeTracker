@@ -141,7 +141,7 @@ class RecordQuickActionsInteractor @Inject constructor(
             typeId = old.id,
             updateWidgets = false,
             updateNotificationSwitch = false,
-            checkPomodoroStop = old.id != newTypeId
+            checkPomodoroStop = old.id != newTypeId,
         )
         addRunningRecordMediator.addAfterChange(
             typeId = newTypeId,

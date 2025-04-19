@@ -2,8 +2,6 @@ package com.example.util.simpletimetracker.domain.record.interactor
 
 import com.example.util.simpletimetracker.domain.record.model.RunningRecord
 import com.example.util.simpletimetracker.domain.record.repo.RunningRecordRepo
-import com.example.util.simpletimetracker.domain.recordTag.model.RecordTypeToTag
-import com.example.util.simpletimetracker.domain.recordTag.repo.RecordTypeToTagRepo
 import com.example.util.simpletimetracker.domain.recordTag.repo.RunningRecordToRecordTagRepo
 import javax.inject.Inject
 

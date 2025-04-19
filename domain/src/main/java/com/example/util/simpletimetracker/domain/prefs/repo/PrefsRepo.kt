@@ -170,6 +170,8 @@ interface PrefsRepo {
 
     var isCategoriesSearchEnabled: Boolean
 
+    var isArchiveSearchEnabled: Boolean
+
     fun setWidget(widgetId: Int, recordType: Long)
 
     fun getWidget(widgetId: Int): Long

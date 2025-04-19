@@ -875,6 +875,14 @@ class PrefsInteractor @Inject constructor(
         prefsRepo.isCategoriesSearchEnabled = value
     }
 
+    suspend fun getIsArchiveSearchEnabled(): Boolean = withContext(Dispatchers.IO) {
+        prefsRepo.isArchiveSearchEnabled
+    }
+
+    suspend fun setIsArchiveSearchEnabled(value: Boolean) = withContext(Dispatchers.IO) {
+        prefsRepo.isArchiveSearchEnabled = value
+    }
+
     suspend fun clear() = withContext(Dispatchers.IO) {
         prefsRepo.clear()
     }
