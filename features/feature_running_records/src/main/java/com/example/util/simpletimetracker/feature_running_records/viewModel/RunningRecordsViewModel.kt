@@ -10,6 +10,7 @@ import com.example.util.simpletimetracker.core.extension.toParams
 import com.example.util.simpletimetracker.core.interactor.GetChangeRecordNavigationParamsInteractor
 import com.example.util.simpletimetracker.core.interactor.RecordRepeatInteractor
 import com.example.util.simpletimetracker.core.model.NavigationTab
+import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.domain.record.interactor.AddRunningRecordMediator
 import com.example.util.simpletimetracker.domain.activityFilter.interactor.ChangeSelectedActivityFilterMediator
@@ -30,6 +31,7 @@ import com.example.util.simpletimetracker.feature_base_adapter.recordType.Record
 import com.example.util.simpletimetracker.feature_base_adapter.recordTypeSpecial.RunningRecordTypeSpecialViewData
 import com.example.util.simpletimetracker.feature_base_adapter.recordWithHint.RecordWithHintViewData
 import com.example.util.simpletimetracker.feature_base_adapter.runningRecord.RunningRecordViewData
+import com.example.util.simpletimetracker.feature_running_records.R
 import com.example.util.simpletimetracker.feature_running_records.interactor.RunningRecordsViewDataInteractor
 import com.example.util.simpletimetracker.navigation.Router
 import com.example.util.simpletimetracker.navigation.params.screen.ChangeActivityFilterParams
@@ -41,6 +43,7 @@ import com.example.util.simpletimetracker.navigation.params.screen.ChangeRunning
 import com.example.util.simpletimetracker.navigation.params.screen.DefaultTypesSelectionDialogParams
 import com.example.util.simpletimetracker.navigation.params.screen.PomodoroParams
 import com.example.util.simpletimetracker.navigation.params.screen.RecordTagSelectionParams
+import com.example.util.simpletimetracker.navigation.params.screen.StandardDialogParams
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
@@ -52,6 +55,7 @@ import javax.inject.Inject
 @HiltViewModel
 class RunningRecordsViewModel @Inject constructor(
     private val router: Router,
+    private val resourceRepo: ResourceRepo,
     private val addRunningRecordMediator: AddRunningRecordMediator,
     private val removeRunningRecordMediator: RemoveRunningRecordMediator,
     private val runningRecordInteractor: RunningRecordInteractor,
@@ -268,6 +272,7 @@ class RunningRecordsViewModel @Inject constructor(
 
     fun onVisible() {
         startUpdate()
+        checkForRetroActiveMultitaskHint()
     }
 
     fun onHidden() {
@@ -291,6 +296,14 @@ class RunningRecordsViewModel @Inject constructor(
         }
     }
 
+    fun onPositiveClick(tag: String?) = viewModelScope.launch {
+        when (tag) {
+            RETRO_MULTITASKING_HINT_TAG -> {
+                prefsInteractor.setRetroactiveMultitaskingHintWasHidden(true)
+            }
+        }
+    }
+
     private suspend fun onRecordTypeWithDefaultDurationClick(typeId: Long) {
         val defaultDuration = recordTypeInteractor.get(typeId)?.defaultDuration
         if (defaultDuration.orZero() <= 0L) return
@@ -309,6 +322,22 @@ class RunningRecordsViewModel @Inject constructor(
         result: RecordDataSelectionDialogResult,
     ) {
         router.navigate(RecordTagSelectionParams(typeId, result.toParams()))
+    }
+
+    private fun checkForRetroActiveMultitaskHint() = viewModelScope.launch {
+        val needToShow = !prefsInteractor.getRetroactiveMultitaskingHintWasHidden() &&
+            prefsInteractor.getRetroactiveTrackingMode() &&
+            prefsInteractor.getAllowMultitasking()
+
+        if (needToShow) {
+            router.navigate(
+                StandardDialogParams(
+                    tag = RETRO_MULTITASKING_HINT_TAG,
+                    message = resourceRepo.getString(R.string.settings_retroactive_multitasking_hint),
+                    btnPositive = resourceRepo.getString(R.string.ok),
+                ),
+            )
+        }
     }
 
     private fun subscribeToUpdates() {
@@ -357,5 +386,6 @@ class RunningRecordsViewModel @Inject constructor(
     companion object {
         private const val TIMER_UPDATE_MS = 1000L
         private const val COMPLETE_TYPE_ANIMATION_MS = 1000L
+        private const val RETRO_MULTITASKING_HINT_TAG = "RETRO_MULTITASKING_HINT_TAG"
     }
 }

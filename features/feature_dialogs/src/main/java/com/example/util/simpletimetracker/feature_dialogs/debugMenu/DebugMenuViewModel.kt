@@ -32,6 +32,13 @@ class DebugMenuViewModel @Inject constructor(
         }
     }
 
+    fun onResetHideRetroactiveMultitaskingClick() {
+        viewModelScope.launch {
+            prefsInteractor.clearRetroactiveMultitaskingHidden()
+            showSuccessMessage()
+        }
+    }
+
     fun onResetPomodoroSettingsClick() {
         viewModelScope.launch {
             prefsInteractor.clearPomodoroSettingsClick()

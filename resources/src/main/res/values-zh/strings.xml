@@ -313,6 +313,7 @@
     <string name="settings_keep_statistics_range_hint">如果启用，详细统计信息将在统计信息中选择的相同时间范围内打开</string>
     <string name="settings_retroactive_tracking_mode">启用追溯时间追踪</string>
     <string name="settings_retroactive_tracking_mode_hint">通过选择自上次以来已完成的活动而不是从现在起将完成的活动来追踪时间</string>
+    <string name="settings_retroactive_multitasking_hint">多任务已启用。跟踪某个活动时，所有最近的活动也将被跟踪。</string>
     <string name="settings_start_of_day">一天的开始</string>
     <string name="settings_start_of_day_hint">一天的开始将根据标志向前或向后移动指定的时间量</string>
     <string name="settings_start_of_day_hint_value">今天开始于 %s</string>

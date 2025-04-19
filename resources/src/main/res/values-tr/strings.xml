@@ -313,6 +313,7 @@
     <string name="settings_keep_statistics_range_hint">Etkinleştirilirse, istatistiklerde seçilen aynı zaman aralığı ile ayrıntılı istatistikler açılır.</string>
     <string name="settings_retroactive_tracking_mode">Geriye dönük zaman takibini etkinleştir</string>
     <string name="settings_retroactive_tracking_mode_hint">Şu andan itibaren hangi etkinliğin yapılacağını değil, son seferden bu yana hangi etkinliğin yapıldığını seçerek zamanı takip edin.</string>
+    <string name="settings_retroactive_multitasking_hint">Çoklu görev etkin. Bir etkinlik izlenirken tüm son etkinlikler de izlenecek.</string>
     <string name="settings_start_of_day">Gün başlangıcı</string>
     <string name="settings_start_of_day_hint">Günün başlangıcı, işarete bağlı olarak belirtilen süre kadar ileri veya geri kaydırılacaktır.</string>
     <string name="settings_start_of_day_hint_value">Bugün %s\'de başlıyor</string>

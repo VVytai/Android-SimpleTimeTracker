@@ -313,6 +313,7 @@
     <string name="settings_keep_statistics_range_hint">Nếu bật thống kê chi tiết sẽ được mở với cùng khoảng thời gian được chọn trong thống kê.</string>
     <string name="settings_retroactive_tracking_mode">Bật tính năng theo dõi thời gian hồi tố</string>
     <string name="settings_retroactive_tracking_mode_hint">Theo dõi thời gian bằng cách chọn hoạt động nào đã được thực hiện kể từ lần trước thay vì hoạt động nào sẽ được thực hiện từ bây giờ.</string>
+    <string name="settings_retroactive_multitasking_hint">Đa nhiệm đã được bật. Tất cả các hoạt động gần đây cũng sẽ được theo dõi khi một hoạt động được theo dõi.</string>
     <string name="settings_start_of_day">Thay đổi đầu ngày</string>
     <string name="settings_start_of_day_hint">Thời điểm bắt đầu ngày sẽ được dịch chuyển theo khoảng thời gian được chỉ định, tiến hoặc lùi tùy theo dấu hiệu.</string>
     <string name="settings_start_of_day_hint_value">Hôm nay bắt đầu lúc %s</string>

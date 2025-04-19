@@ -24,8 +24,13 @@ class DebugMenuDialogFragment : BaseBottomSheetFragment<Binding>() {
     }
 
     override fun initUx(): Unit = with(binding) {
-        tvDebugMenuResetPrefs.setOnClick(viewModel::onResetPrefsClicked)
-        tvDebugMenuResetHideDefaultTypes.setOnClick(viewModel::onResetHideDefaultTypesClick)
-        tvDebugMenuResetPomodoroSettings.setOnClick(viewModel::onResetPomodoroSettingsClick)
+        tvDebugMenuResetPrefs
+            .setOnClick(viewModel::onResetPrefsClicked)
+        tvDebugMenuResetHideDefaultTypes
+            .setOnClick(viewModel::onResetHideDefaultTypesClick)
+        tvDebugMenuResetHideRetroactiveMultitasking
+            .setOnClick(viewModel::onResetHideRetroactiveMultitaskingClick)
+        tvDebugMenuResetPomodoroSettings
+            .setOnClick(viewModel::onResetPomodoroSettingsClick)
     }
 }

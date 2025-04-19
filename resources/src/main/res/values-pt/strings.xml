@@ -313,6 +313,7 @@
     <string name="settings_keep_statistics_range_hint">Se ativado, as estatísticas detalhadas serão abertas com o mesmo intervalo de tempo selecionado nas estatísticas.</string>
     <string name="settings_retroactive_tracking_mode">Habilitar rastreamento de tempo retroativo</string>
     <string name="settings_retroactive_tracking_mode_hint">Acompanhe o tempo selecionando quais atividades foram realizadas desde a última vez, em vez de quais atividades serão realizadas a partir de agora.</string>
+    <string name="settings_retroactive_multitasking_hint">A multitarefa está ativada. Todas as últimas atividades também serão rastreadas quando alguma atividade for rastreada.</string>
     <string name="settings_start_of_day">Mudar início do dia</string>
     <string name="settings_start_of_day_hint">O início do dia será deslocado pela quantidade de tempo especificada, para frente ou para trás, dependendo do sinal.</string>
     <string name="settings_start_of_day_hint_value">Hoje começa no %s</string>

@@ -313,6 +313,7 @@
     <string name="settings_keep_statistics_range_hint">Dacă este activat, statisticile detaliate vor fi deschise cu același interval în statistici.</string>
     <string name="settings_retroactive_tracking_mode">Activați urmărirea timpului retroactiv</string>
     <string name="settings_retroactive_tracking_mode_hint">Urmăriți timpul selectând ce activitate au fost efectuate de data trecută, mai degrabă decât ce activitate va fi efectuată de acum.</string>
+    <string name="settings_retroactive_multitasking_hint">Multitasking-ul este activat. Toate activitățile recente vor fi de asemenea urmărite când o activitate este urmărită.</string>
     <string name="settings_start_of_day">Modifică începutul zilei</string>
     <string name="settings_start_of_day_hint">Începutul zilei va fi modificat cu intervalul de timp specificat, înainte sau înapoi în funcție de semn.</string>
     <string name="settings_start_of_day_hint_value">Azi începe la %s</string>

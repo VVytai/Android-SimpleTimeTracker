@@ -313,6 +313,7 @@
     <string name="settings_keep_statistics_range_hint">Indien ingeschakeld worden gedetailleerde statistieken geopend met hetzelfde tijdbereik geselecteerd in statistieken.</string>
     <string name="settings_retroactive_tracking_mode">Schakel tijdregistratie met terugwerkende kracht in</string>
     <string name="settings_retroactive_tracking_mode_hint">Houd de tijd bij door te selecteren welke activiteit sinds de vorige keer is uitgevoerd, in plaats van welke activiteit vanaf nu zal worden uitgevoerd.</string>
+    <string name="settings_retroactive_multitasking_hint">Multitasking is ingeschakeld. Alle laatste activiteiten worden ook bijgehouden wanneer een activiteit wordt gevolgd.</string>
     <string name="settings_start_of_day">Shift begin van de dag</string>
     <string name="settings_start_of_day_hint">Het begin van de dag wordt verschoven met de opgegeven hoeveelheid tijd, vooruit of achteruit, afhankelijk van het teken.</string>
     <string name="settings_start_of_day_hint_value">Vandaag begint bij %s</string>

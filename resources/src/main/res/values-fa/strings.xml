@@ -313,6 +313,7 @@
     <string name="settings_keep_statistics_range_hint">اگر فعال باشد آمار جزئی با همان محدوده آماری در صفحه آمارها باز می شود</string>
     <string name="settings_retroactive_tracking_mode">ردیابی زمان عطف به ماسبق را فعال کنید</string>
     <string name="settings_retroactive_tracking_mode_hint">با انتخاب اینکه کدام فعالیت از آخرین بار انجام شده است، نه اینکه کدام فعالیت از هم اکنون انجام شود، زمان را پیگیری کنید.</string>
+    <string name="settings_retroactive_multitasking_hint">چندوظیفگی فعال است. تمام فعالیت‌های اخیر نیز هنگام ردیابی یک فعالیت، ردیابی خواهند شد.</string>
     <string name="settings_start_of_day">تغییر زمان شروع روز</string>
     <string name="settings_start_of_day_hint">بسته به علامت، شروع روز با مقدار زمان مشخص، به جلو یا عقب جابه‌جا می‌شود.</string>
     <string name="settings_start_of_day_hint_value">امروز در %s شروع می شود</string>

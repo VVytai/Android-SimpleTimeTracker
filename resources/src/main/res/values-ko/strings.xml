@@ -313,6 +313,7 @@
     <string name="settings_keep_statistics_range_hint">활성화시 상세 통계가 같은 기간 범위를 가지게 됩니다.</string>
     <string name="settings_retroactive_tracking_mode">소급 시간 추적 활성화</string>
     <string name="settings_retroactive_tracking_mode_hint">지금부터 수행할 활동보다는 지난번 이후에 수행한 활동을 선택하여 시간을 추적하세요.</string>
+    <string name="settings_retroactive_multitasking_hint">멀티태스킹이 활성화되었습니다. 어떤 활동이 추적될 때 모든 최근 활동도 함께 추적됩니다.</string>
     <string name="settings_start_of_day">하루의 시작 시간 옮기기</string>
     <string name="settings_start_of_day_hint">하루의 시작 시간을 정해진 시간만큼 앞당기거나 늦춥니다.</string>
     <string name="settings_start_of_day_hint_value">오늘은 %s에 시작됩니다</string>

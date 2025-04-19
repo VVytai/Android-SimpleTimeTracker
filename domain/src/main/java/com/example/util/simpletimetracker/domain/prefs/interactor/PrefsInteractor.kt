@@ -250,6 +250,14 @@ class PrefsInteractor @Inject constructor(
         prefsRepo.retroactiveTrackingMode = isEnabled
     }
 
+    suspend fun getRetroactiveMultitaskingHintWasHidden(): Boolean = withContext(Dispatchers.IO) {
+        prefsRepo.retroactiveMultitaskingHintWasHidden
+    }
+
+    suspend fun setRetroactiveMultitaskingHintWasHidden(isEnabled: Boolean) = withContext(Dispatchers.IO) {
+        prefsRepo.retroactiveMultitaskingHintWasHidden = isEnabled
+    }
+
     suspend fun getFirstDayOfWeek(): DayOfWeek = withContext(Dispatchers.IO) {
         // Same as in java Calendar
         when (prefsRepo.firstDayOfWeek) {
@@ -873,6 +881,10 @@ class PrefsInteractor @Inject constructor(
 
     suspend fun clearDefaultTypesHidden() = withContext(Dispatchers.IO) {
         prefsRepo.clearDefaultTypesHidden()
+    }
+
+    suspend fun clearRetroactiveMultitaskingHidden() = withContext(Dispatchers.IO) {
+        prefsRepo.clearRetroactiveMultitaskingHidden()
     }
 
     suspend fun clearPomodoroSettingsClick() = withContext(Dispatchers.IO) {

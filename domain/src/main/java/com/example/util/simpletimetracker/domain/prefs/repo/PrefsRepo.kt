@@ -46,6 +46,8 @@ interface PrefsRepo {
 
     var retroactiveTrackingMode: Boolean
 
+    var retroactiveMultitaskingHintWasHidden: Boolean
+
     var firstDayOfWeek: Int
 
     var startOfDayShift: Long // in milliseconds
@@ -190,6 +192,7 @@ interface PrefsRepo {
 
     fun clear()
     fun clearDefaultTypesHidden()
+    fun clearRetroactiveMultitaskingHidden()
     fun clearPomodoroSettingsClick()
 
     fun hasValueSaved(key: String): Boolean

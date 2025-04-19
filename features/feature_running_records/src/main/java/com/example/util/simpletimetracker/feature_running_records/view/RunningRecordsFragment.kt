@@ -7,6 +7,7 @@ import androidx.fragment.app.viewModels
 import com.example.util.simpletimetracker.core.base.BaseFragment
 import com.example.util.simpletimetracker.core.di.BaseViewModelFactory
 import com.example.util.simpletimetracker.core.dialog.OnTagSelectedListener
+import com.example.util.simpletimetracker.core.dialog.StandardDialogListener
 import com.example.util.simpletimetracker.core.sharedViewModel.MainTabsViewModel
 import com.example.util.simpletimetracker.core.utils.InsetConfiguration
 import com.example.util.simpletimetracker.core.utils.doOnApplyWindowInsetsListener
@@ -41,7 +42,8 @@ import com.example.util.simpletimetracker.feature_running_records.databinding.Ru
 @AndroidEntryPoint
 class RunningRecordsFragment :
     BaseFragment<Binding>(),
-    OnTagSelectedListener {
+    OnTagSelectedListener,
+    StandardDialogListener {
 
     override val inflater: (LayoutInflater, ViewGroup?, Boolean) -> Binding =
         Binding::inflate
@@ -133,6 +135,10 @@ class RunningRecordsFragment :
 
     override fun onTagSelected() {
         viewModel.onTagSelected()
+    }
+
+    override fun onPositiveClick(tag: String?, data: Any?) {
+        viewModel.onPositiveClick(tag)
     }
 
     private fun resetScreen() = with(binding) {

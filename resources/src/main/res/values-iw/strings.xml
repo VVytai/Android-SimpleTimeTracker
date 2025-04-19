@@ -313,6 +313,7 @@
     <string name="settings_keep_statistics_range_hint">אם מופעל סטטיסטיקה מפורטת תפתח עם אותו טווח הזמן שנבחר בסטטיסטיקה.</string>
     <string name="settings_retroactive_tracking_mode">אפשר מעקב אחר זמן רטרואקטיבי</string>
     <string name="settings_retroactive_tracking_mode_hint">עקוב אחר זמן על ידי בחירת הפעילות שבוצעה מאז הפעם האחרונה ולא איזו פעילות תתבצע מעתה.</string>
+    <string name="settings_retroactive_multitasking_hint">ריבוי משימות מופעל. כל הפעילויות האחרונות יעקבו גם כן כאשר פעילות כלשהי מתועדת.</string>
     <string name="settings_start_of_day">הזז את תחילת היום</string>
     <string name="settings_start_of_day_hint">תחילת היום תוזז בכמות הזמן שצוינה, קדימה או אחורה בהתאם לסימן.</string>
     <string name="settings_start_of_day_hint_value">היום מתחיל ב%s</string>

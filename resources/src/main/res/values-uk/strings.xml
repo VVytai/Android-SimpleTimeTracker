@@ -313,6 +313,7 @@
     <string name="settings_keep_statistics_range_hint">Якщо ввімкнено, буде відкрита детальна статистика з тим самим діапазоном часу, вибраним у статистиці.</string>
     <string name="settings_retroactive_tracking_mode">Увімкнути ретроспективне відстеження часу</string>
     <string name="settings_retroactive_tracking_mode_hint">Відстежуйте час, вибираючи, які дії були виконані з останнього разу, а не дії, які виконуватимуться зараз.</string>
+    <string name="settings_retroactive_multitasking_hint">Багатозадачність увімкнена. Усі останні дії також будуть відслідковуватись, коли відслідковується якась дія.</string>
     <string name="settings_start_of_day">Зміщення початку дня</string>
     <string name="settings_start_of_day_hint">Початок дня буде зміщено на вказану кількість часу вперед або назад залежно від знака.</string>
     <string name="settings_start_of_day_hint_value">Початок сьогоднішного дня: %s</string>

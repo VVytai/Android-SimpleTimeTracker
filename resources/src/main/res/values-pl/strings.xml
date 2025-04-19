@@ -313,6 +313,7 @@
     <string name="settings_keep_statistics_range_hint">Jeśli ta opcja jest włączona, zostaną otwarte szczegółowe statystyki dla tego samego okresu, jaki został wybrany w statystykach.</string>
     <string name="settings_retroactive_tracking_mode">Włącz śledzenie czasu z mocą wsteczną</string>
     <string name="settings_retroactive_tracking_mode_hint">Śledź czas, wybierając czynność wykonaną od ostatniego razu, a nie tę, która będzie wykonywana od teraz.</string>
+    <string name="settings_retroactive_multitasking_hint">Wielozadaniowość jest włączona. Wszystkie ostatnie aktywności będą również śledzone, gdy jakaś aktywność jest śledzona.</string>
     <string name="settings_start_of_day">Przesuń początek dnia</string>
     <string name="settings_start_of_day_hint">Początek dnia zostanie przesunięty o określony czas, do przodu lub do tyłu, w zależności od znaku.</string>
     <string name="settings_start_of_day_hint_value">Rozpoczęcie dnia o %s</string>

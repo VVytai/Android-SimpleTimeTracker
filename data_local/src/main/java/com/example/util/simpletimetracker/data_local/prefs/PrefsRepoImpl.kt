@@ -144,6 +144,10 @@ class PrefsRepoImpl @Inject constructor(
         KEY_RETROACTIVE_TRACKING_MODE, false,
     )
 
+    override var retroactiveMultitaskingHintWasHidden: Boolean by prefs.delegate(
+        KEY_RETROACTIVE_MULTITASKING_HINT_WAS_HIDDEN, false,
+    )
+
     override var firstDayOfWeek: Int by prefs.delegate(
         KEY_FIRST_DAY_OF_WEEK, firstDayOfWeekDefault,
     )
@@ -543,6 +547,10 @@ class PrefsRepoImpl @Inject constructor(
         prefs.edit().remove(KEY_DEFAULT_TYPES_HIDDEN).apply()
     }
 
+    override fun clearRetroactiveMultitaskingHidden() {
+        prefs.edit().remove(KEY_RETROACTIVE_MULTITASKING_HINT_WAS_HIDDEN).apply()
+    }
+
     override fun clearPomodoroSettingsClick() {
         prefs.edit().remove(KEY_POMODORO_FOCUS_TIME).apply()
         prefs.edit().remove(KEY_POMODORO_BREAK_TIME).apply()
@@ -591,6 +599,7 @@ class PrefsRepoImpl @Inject constructor(
         const val KEY_ICS_EXPORT_CUSTOM_FILENAME = "icsExportCustomFilename"
         const val KEY_KEEP_STATISTICS_RANGE = "keepStatisticsRange"
         const val KEY_RETROACTIVE_TRACKING_MODE = "retroactiveTrackingMode"
+        const val KEY_RETROACTIVE_MULTITASKING_HINT_WAS_HIDDEN = "retroactiveMultitaskingHintWasHidden"
         const val KEY_FIRST_DAY_OF_WEEK = "firstDayOfWeek"
         const val KEY_START_OF_DAY_SHIFT = "startOfDayShift"
         const val KEY_SHOW_UNTRACKED_IN_RECORDS = "showUntrackedInRecords"

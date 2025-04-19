@@ -313,6 +313,7 @@
     <string name="settings_keep_statistics_range_hint">Jika diaktifkan, statistik terperinci akan dibuka dengan rentang waktu yang sama yang dipilih dalam statistik.</string>
     <string name="settings_retroactive_tracking_mode">Aktifkan pelacakan waktu retroaktif</string>
     <string name="settings_retroactive_tracking_mode_hint">Lacak waktu dengan memilih aktivitas mana yang telah dilakukan sejak terakhir kali, bukan aktivitas mana yang akan dilakukan mulai sekarang.</string>
+    <string name="settings_retroactive_multitasking_hint">Multitasking diaktifkan. Semua aktivitas terakhir juga akan dilacak saat suatu aktivitas dilacak.</string>
     <string name="settings_start_of_day">Pergeseran awal hari</string>
     <string name="settings_start_of_day_hint">Permulaan hari akan digeser dengan jumlah waktu yang ditentukan, maju atau mundur tergantung pada tandanya.</string>
     <string name="settings_start_of_day_hint_value">Hari ini mulai di %s</string>

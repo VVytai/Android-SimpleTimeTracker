@@ -313,6 +313,7 @@
     <string name="settings_keep_statistics_range_hint">Si és habilitat, les estadístiques detallades s\'obriran amb el mateix rang de temps seleccionat a les estadístiques</string>
     <string name="settings_retroactive_tracking_mode">Activa el seguiment de temps retroactiu</string>
     <string name="settings_retroactive_tracking_mode_hint">Feu un seguiment del temps seleccionant quina activitat s\'ha fet des de l\'última vegada en lloc de quina activitat es farà a partir d\'ara.</string>
+    <string name="settings_retroactive_multitasking_hint">El multitasca està habilitat. Totes les últimes activitats també es registraran quan es faci un seguiment d\'una activitat.</string>
     <string name="settings_start_of_day">Canvia l\'inici del dia</string>
     <string name="settings_start_of_day_hint">L\'inici del dia es desplaçarà per la quantitat de temps especificada, cap endavant o cap enrere segons el signe.</string>
     <string name="settings_start_of_day_hint_value">Avui comença a %s</string>

@@ -313,6 +313,7 @@
     <string name="settings_keep_statistics_range_hint">Si activé, les statistiques détaillées seront ouvertes avec la même plage de temps que celle sélectionnée dans les statistiques.</string>
     <string name="settings_retroactive_tracking_mode">Activer le suivi du temps rétroactif</string>
     <string name="settings_retroactive_tracking_mode_hint">Suivez le temps en sélectionnant quelle activité a été effectuée depuis la dernière fois plutôt que quelle activité sera effectuée à partir de maintenant.</string>
+    <string name="settings_retroactive_multitasking_hint">Le multitâche est activé. Toutes les dernières activités seront également suivies lorsqu\'une activité est suivie.</string>
     <string name="settings_start_of_day">Décalage du début de journée</string>
     <string name="settings_start_of_day_hint">Le début de la journée sera décalé de la durée spécifiée, en avant ou en arrière selon le signe.</string>
     <string name="settings_start_of_day_hint_value">Aujourd\'hui commence à %s</string>

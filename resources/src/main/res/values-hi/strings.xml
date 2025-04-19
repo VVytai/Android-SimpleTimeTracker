@@ -313,6 +313,7 @@
     <string name="settings_keep_statistics_range_hint">यदि चालू किए गए विस्तृत आँकड़े सांख्यिकी में चयनित एक ही समय सीमा के साथ खोले जाएंगे।</string>
     <string name="settings_retroactive_tracking_mode">पूर्वव्यापी समय ट्रैकिंग सक्षम करें</string>
     <string name="settings_retroactive_tracking_mode_hint">पिछली बार से कौन सी गतिविधि की गई है, इसका चयन करके समय ट्रैक करें न कि कौन सी गतिविधि अब से की जाएगी।</string>
+    <string name="settings_retroactive_multitasking_hint">मल्टीटास्किंग सक्षम है। जब कोई गतिविधि ट्रैक की जाती है, तो सभी हाल की गतिविधियाँ भी ट्रैक की जाएँगी।</string>
     <string name="settings_start_of_day">दिन की शिफ्ट शुरुआत</string>
     <string name="settings_start_of_day_hint">दिन की शुरुआत संकेत के आधार पर निर्दिष्ट समय, आगे या पीछे की ओर स्थानांतरित की जाएगी।</string>
     <string name="settings_start_of_day_hint_value">आज %s से प्रारंभ हो रहा है</string>

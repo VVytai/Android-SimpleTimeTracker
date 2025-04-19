@@ -313,6 +313,7 @@
     <string name="settings_keep_statistics_range_hint">Wenn aktiviert, werden detaillierte Statistiken mit dem gleichen Zeitraum geöffnet, der in den Statistiken ausgewählt wurde.</string>
     <string name="settings_retroactive_tracking_mode">Aktivieren Sie die rückwirkende Zeiterfassung</string>
     <string name="settings_retroactive_tracking_mode_hint">Verfolgen Sie die Zeit, indem Sie auswählen, welche Aktivitäten seit dem letzten Mal ausgeführt wurden, und nicht, welche Aktivität ab jetzt ausgeführt wird.</string>
+    <string name="settings_retroactive_multitasking_hint">Multitasking ist aktiviert. Alle letzten Aktivitäten werden ebenfalls verfolgt, wenn eine Aktivität verfolgt wird.</string>
     <string name="settings_start_of_day">Schichtstart in den Tag</string>
     <string name="settings_start_of_day_hint">Der Tagesbeginn wird je nach Vorzeichen um die angegebene Zeit nach vorne oder hinten verschoben.</string>
     <string name="settings_start_of_day_hint_value">Heute beginnt bei %s</string>

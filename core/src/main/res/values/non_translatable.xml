@@ -20,6 +20,7 @@
     <string name="debug_menu" translatable="false">Debug menu</string>
     <string name="debug_menu_reset_prefs" translatable="false">Clear all preferences (requires app restart)</string>
     <string name="debug_menu_reset_hide_default_types" translatable="false">Clear \"Hide default types\" preference</string>
+    <string name="debug_menu_reset_hide_retroactive_multitasking_hint" translatable="false">Clear \"Retroactive multitasking hint was hidden\" preference</string>
     <string name="debug_menu_reset_pomodoro_settings" translatable="false">Clear Pomodoro preferences</string>
     <string name="debug_menu_hide_message" translatable="false">Success</string>
 
