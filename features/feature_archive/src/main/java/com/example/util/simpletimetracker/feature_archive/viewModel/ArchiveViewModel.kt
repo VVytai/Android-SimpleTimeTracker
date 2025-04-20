@@ -83,6 +83,10 @@ class ArchiveViewModel @Inject constructor(
         router.navigate(OptionsListParams(items))
     }
 
+    fun onOptionsLongClick() = viewModelScope.launch {
+        onSearchToggled()
+    }
+
     fun onOptionsItemClick(id: OptionsListParams.Item.Id) = viewModelScope.launch {
         if (id !is ArchiveOptionsListItem) return@launch
         when (id) {

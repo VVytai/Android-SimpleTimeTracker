@@ -24,6 +24,7 @@ import com.example.util.simpletimetracker.feature_base_adapter.recordType.create
 import com.example.util.simpletimetracker.feature_views.extension.pxToDp
 import com.example.util.simpletimetracker.feature_views.extension.setMargins
 import com.example.util.simpletimetracker.feature_views.extension.setOnClick
+import com.example.util.simpletimetracker.feature_views.extension.setOnLongClick
 import com.example.util.simpletimetracker.navigation.params.screen.ArchiveDialogParams
 import com.example.util.simpletimetracker.navigation.params.screen.OptionsListParams
 import com.google.android.flexbox.FlexDirection
@@ -78,6 +79,7 @@ class ArchiveFragment :
 
     override fun initUx(): Unit = with(binding) {
         btnArchiveOptions.setOnClick(throttle(viewModel::onOptionsClick))
+        btnArchiveOptions.setOnLongClick(throttle(viewModel::onOptionsLongClick))
         etArchiveSearchField.doAfterTextChanged { viewModel.onSearchChange(it.toString()) }
     }
 

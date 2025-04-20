@@ -109,6 +109,7 @@ class StatisticsDetailFragment :
 
     override fun initUx() = with(binding) {
         btnStatisticsDetailOptions.setOnClick(throttle(viewModel::onOptionsClick))
+        btnStatisticsDetailOptions.setOnLongClick(throttle(viewModel::onOptionsLongClick))
         spinnerStatisticsDetail.onItemSelected = viewModel::onRangeSelected
         btnStatisticsDetailPrevious.setOnClick(viewModel::onPreviousClick)
         btnStatisticsDetailNext.setOnClick(viewModel::onNextClick)

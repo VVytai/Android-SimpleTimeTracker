@@ -60,6 +60,10 @@ class RecordsContainerViewModel @Inject constructor(
         router.navigate(OptionsListParams(items))
     }
 
+    fun onOptionsLongClick() {
+        onRecordAddClick()
+    }
+
     fun onTodayClick() {
         viewModelScope.launch {
             val useMilitaryTime = prefsInteractor.getUseMilitaryTimeFormat()

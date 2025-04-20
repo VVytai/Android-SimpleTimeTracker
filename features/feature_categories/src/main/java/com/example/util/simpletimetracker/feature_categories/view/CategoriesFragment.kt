@@ -25,6 +25,7 @@ import com.example.util.simpletimetracker.feature_categories.viewModel.Categorie
 import com.example.util.simpletimetracker.feature_views.extension.pxToDp
 import com.example.util.simpletimetracker.feature_views.extension.setMargins
 import com.example.util.simpletimetracker.feature_views.extension.setOnClick
+import com.example.util.simpletimetracker.feature_views.extension.setOnLongClick
 import com.example.util.simpletimetracker.navigation.params.screen.OptionsListParams
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
@@ -84,6 +85,7 @@ class CategoriesFragment :
 
     override fun initUx(): Unit = with(binding) {
         btnCategoriesOptions.setOnClick(throttle(viewModel::onOptionsClick))
+        btnCategoriesOptions.setOnLongClick(throttle(viewModel::onOptionsLongClick))
         etCategoriesSearchField.doAfterTextChanged { viewModel.onSearchChange(it.toString()) }
     }
 

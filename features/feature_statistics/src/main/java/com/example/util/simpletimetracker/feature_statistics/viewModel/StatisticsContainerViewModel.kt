@@ -89,6 +89,10 @@ class StatisticsContainerViewModel @Inject constructor(
         router.navigate(OptionsListParams(items))
     }
 
+    fun onOptionsLongClick() = viewModelScope.launch {
+        statisticsUpdateInteractor.sendFilterClicked()
+    }
+
     fun onRangeSelected(item: CustomSpinner.CustomSpinnerItem) {
         when (item) {
             is SelectDateViewData -> {

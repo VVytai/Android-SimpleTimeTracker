@@ -197,6 +197,10 @@ class StatisticsDetailViewModel @Inject constructor(
         router.navigate(OptionsListParams(items))
     }
 
+    fun onOptionsLongClick() {
+        filterDelegate.onFilterClick()
+    }
+
     fun onOptionsItemClick(id: OptionsListParams.Item.Id) {
         if (id !is StatisticsDetailOptionsListItem) return
         when (id) {

@@ -66,6 +66,7 @@ class StatisticsContainerFragment :
 
     override fun initUx() = with(binding) {
         btnStatisticsContainerOptions.setOnClick(throttle(viewModel::onOptionsClick))
+        btnStatisticsContainerOptions.setOnLongClick(throttle(viewModel::onOptionsLongClick))
         spinnerStatisticsContainer.onItemSelected = {
             viewModel.onRangeSelected(it)
             settingsViewModel.onRangeSelected(it)

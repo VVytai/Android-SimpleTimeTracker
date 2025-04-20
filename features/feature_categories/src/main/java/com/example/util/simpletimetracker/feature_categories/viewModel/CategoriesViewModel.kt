@@ -112,6 +112,10 @@ class CategoriesViewModel @Inject constructor(
         router.navigate(OptionsListParams(items))
     }
 
+    fun onOptionsLongClick() {
+        onFilterClick()
+    }
+
     fun onOptionsItemClick(id: OptionsListParams.Item.Id) = viewModelScope.launch {
         if (id !is CategoriesOptionsListItem) return@launch
         when (id) {
