@@ -349,6 +349,7 @@
     <string name="settings_show_record_tag_close_hint">Sluiten na het selecteren van een label</string>
     <string name="settings_show_comment_input">Toon commentaarinvoer</string>
     <string name="settings_show_comment_input_hint">Bij het starten van een timer wordt een dialoogvenster voor commentaarinvoer weergegeven.</string>
+    <string name="settings_show_comment_suggestions">Suggesties tonen</string>
     <string name="settings_rate">Beoordeel ons</string>
     <string name="settings_rate_description">Beoordeel de app en laat een recensie achter.</string>
     <string name="settings_support_development">Ondersteuning van ontwikkeling</string>

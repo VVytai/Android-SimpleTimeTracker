@@ -349,6 +349,7 @@
     <string name="settings_show_record_tag_close_hint">Tutup setelah memilih satu tag</string>
     <string name="settings_show_comment_input">Tampilkan masukan komentar</string>
     <string name="settings_show_comment_input_hint">Saat memulai pengatur waktu - dialog input komentar akan ditampilkan.</string>
+    <string name="settings_show_comment_suggestions">Tampilkan saran</string>
     <string name="settings_rate">Nilai kami</string>
     <string name="settings_rate_description">Nilai aplikasi dan tinggalkan sebuah ulasan.</string>
     <string name="settings_support_development">Mendukung pengembangan</string>

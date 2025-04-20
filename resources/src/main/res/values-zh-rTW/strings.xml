@@ -349,6 +349,7 @@
     <string name="settings_show_record_tag_close_hint">選擇一個標籤後關閉</string>
     <string name="settings_show_comment_input">顯示評論輸入</string>
     <string name="settings_show_comment_input_hint">啟動計時器時 - 將顯示註解輸入對話方塊。</string>
+    <string name="settings_show_comment_suggestions">顯示建議</string>
     <string name="settings_rate">給我們投票</string>
     <string name="settings_rate_description">給我們的應用留下評分</string>
     <string name="settings_support_development">支持發展</string>

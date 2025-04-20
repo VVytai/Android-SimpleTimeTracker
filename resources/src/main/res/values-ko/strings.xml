@@ -349,6 +349,7 @@
     <string name="settings_show_record_tag_close_hint">하나의 태그를 선택한 후 닫기.</string>
     <string name="settings_show_comment_input">댓글 입력 표시</string>
     <string name="settings_show_comment_input_hint">타이머를 시작하면 코멘트 입력 대화상자가 표시됩니다.</string>
+    <string name="settings_show_comment_suggestions">추천 표시</string>
     <string name="settings_rate">평가하기</string>
     <string name="settings_rate_description">앱을 평가하고 리뷰를 남겨주세요.</string>
     <string name="settings_support_development">개발 지원</string>

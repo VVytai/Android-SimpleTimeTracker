@@ -349,6 +349,7 @@
     <string name="settings_show_record_tag_close_hint">Cerrar después de seleccionar una etiqueta</string>
     <string name="settings_show_comment_input">Mostrar entrada de comentario</string>
     <string name="settings_show_comment_input_hint">Al iniciar un temporizador, se mostrará un cuadro de diálogo para ingresar comentarios.</string>
+    <string name="settings_show_comment_suggestions">Mostrar sugerencias</string>
     <string name="settings_rate">Valórenos</string>
     <string name="settings_rate_description">Valore la aplicación y deje un comentario.</string>
     <string name="settings_support_development">Apoyar el desarrollo</string>

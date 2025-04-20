@@ -349,6 +349,7 @@
     <string name="settings_show_record_tag_close_hint">Fechar após selecionar uma etiqueta</string>
     <string name="settings_show_comment_input">Mostrar entrada de comentário</string>
     <string name="settings_show_comment_input_hint">Ao iniciar um cronômetro - uma caixa de diálogo de entrada de comentários será mostrada.</string>
+    <string name="settings_show_comment_suggestions">Mostrar sugestões</string>
     <string name="settings_rate">Avaliação</string>
     <string name="settings_rate_description">Avaliação e comentários sobre a aplicação.</string>
     <string name="settings_support_development">Apoiar o desenvolvimento</string>

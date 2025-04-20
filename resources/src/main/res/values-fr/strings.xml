@@ -349,6 +349,7 @@
     <string name="settings_show_record_tag_close_hint">Fermer après avoir sélectionné une étiquette</string>
     <string name="settings_show_comment_input">Afficher la saisie des commentaires</string>
     <string name="settings_show_comment_input_hint">Lors du démarrage d\'une minuterie, une boîte de dialogue de saisie de commentaires s\'affichera.</string>
+    <string name="settings_show_comment_suggestions">Afficher les suggestions</string>
     <string name="settings_rate">Évaluez nous</string>
     <string name="settings_rate_description">Évaluez l\'application et laissez un avis.</string>
     <string name="settings_support_development">Accompagner le développement</string>

@@ -13,7 +13,6 @@ import com.example.util.simpletimetracker.core.utils.fragmentArgumentDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.BaseRecyclerAdapter
 import com.example.util.simpletimetracker.feature_base_adapter.category.createCategoryAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.category.createCategoryShowAllAdapterDelegate
-import com.example.util.simpletimetracker.feature_base_adapter.category.createCategoryShowSuggestionsAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.commentField.createCommentFieldAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.divider.createDividerAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.empty.createEmptyAdapterDelegate
@@ -50,7 +49,6 @@ class RecordTagSelectionFragment : BaseFragment<Binding>() {
             createLoaderAdapterDelegate(),
             createCategoryAdapterDelegate(viewModel::onCategoryClick),
             createCategoryShowAllAdapterDelegate { viewModel.onShowAllTagsClick() },
-            createCategoryShowSuggestionsAdapterDelegate { viewModel.onShowSuggestionsClick() },
             createDividerAdapterDelegate(),
             createInfoAdapterDelegate(),
             createHintAdapterDelegate(),

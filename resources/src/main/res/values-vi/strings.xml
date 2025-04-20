@@ -349,6 +349,7 @@
     <string name="settings_show_record_tag_close_hint">Đóng sau khi chọn một thẻ</string>
     <string name="settings_show_comment_input">Hiển thị đầu vào nhận xét</string>
     <string name="settings_show_comment_input_hint">Khi bắt đầu hẹn giờ - hộp thoại nhập nhận xét sẽ được hiển thị.</string>
+    <string name="settings_show_comment_suggestions">Hiển thị gợi ý</string>
     <string name="settings_rate">Hãy đánh giá chúng tôi</string>
     <string name="settings_rate_description">Xếp hạng ứng dụng và để lại đánh giá.</string>
     <string name="settings_support_development">Hỗ trợ phát triển</string>

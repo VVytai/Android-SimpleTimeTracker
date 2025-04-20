@@ -349,6 +349,7 @@
     <string name="settings_show_record_tag_close_hint">Zamknij po wybraniu jednego tagu</string>
     <string name="settings_show_comment_input">Pokaż wprowadzony komentarz</string>
     <string name="settings_show_comment_input_hint">Po uruchomieniu stopera – zostanie wyświetlone okno dialogowe umożliwiające wprowadzenie komentarza.</string>
+    <string name="settings_show_comment_suggestions">Pokaż sugestie</string>
     <string name="settings_rate">Oceń nas</string>
     <string name="settings_rate_description">Oceń aplikację i zostaw recenzję.</string>
     <string name="settings_support_development">Wspieraj rozwój</string>

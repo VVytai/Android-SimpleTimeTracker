@@ -349,6 +349,7 @@
     <string name="settings_show_record_tag_close_hint">بستن بعد از انتخاب یک برچسب</string>
     <string name="settings_show_comment_input">نمایش ورودی نظر</string>
     <string name="settings_show_comment_input_hint">هنگام شروع یک تایمر - یک گفتگوی ورودی نظر نشان داده می شود.</string>
+    <string name="settings_show_comment_suggestions">نمایش پیشنهادها</string>
     <string name="settings_rate">به ما امتیاز دهید</string>
     <string name="settings_rate_description">به ما امتیاز دهید و نظر خود را بگذارید</string>
     <string name="settings_support_development">پشتیبانی از توسعه</string>

@@ -75,12 +75,6 @@ class RecordTagSelectionViewModel @Inject constructor(
         updateViewData()
     }
 
-    fun onShowSuggestionsClick() = viewModelScope.launch {
-        val newValue = !prefsInteractor.getIsCommentSelectionSuggestionsEnabled()
-        prefsInteractor.setIsCommentSelectionSuggestionsEnabled(newValue)
-        updateViewData()
-    }
-
     fun onSaveClick() {
         viewModelScope.launch {
             saveClicked()

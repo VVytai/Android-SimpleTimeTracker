@@ -349,6 +349,7 @@
     <string name="settings_show_record_tag_close_hint">Закрити після вибору одного тегу</string>
     <string name="settings_show_comment_input">Показувати введення коментарів</string>
     <string name="settings_show_comment_input_hint">При запуску таймера буде показано діалогове вікно введення коментарів.</string>
+    <string name="settings_show_comment_suggestions">Показати пропозиції</string>
     <string name="settings_rate">Оцініть нас</string>
     <string name="settings_rate_description">Оцініть програму та залиште відгук.</string>
     <string name="settings_support_development">Підтримати розробку</string>

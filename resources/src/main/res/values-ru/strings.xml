@@ -349,6 +349,7 @@
     <string name="settings_show_record_tag_close_hint">Закрыть после выбора одного тега</string>
     <string name="settings_show_comment_input">Показать ввод комментариев</string>
     <string name="settings_show_comment_input_hint">При запуске таймера будет показан диалог ввода комментария.</string>
+    <string name="settings_show_comment_suggestions">Показать предложения</string>
     <string name="settings_rate">Оцените нас</string>
     <string name="settings_rate_description">Оцените приложение и оставьте отзыв.</string>
     <string name="settings_support_development">Поддержать разработку</string>

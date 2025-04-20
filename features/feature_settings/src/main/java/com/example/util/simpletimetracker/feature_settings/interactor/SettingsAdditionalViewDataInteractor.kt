@@ -92,12 +92,22 @@ class SettingsAdditionalViewDataInteractor @Inject constructor(
                     title = resourceRepo.getString(R.string.settings_show_comment_input),
                     subtitle = resourceRepo.getString(R.string.settings_show_comment_input_hint),
                     isChecked = showCommentInput,
-                    bottomSpaceIsVisible = true,
-                    dividerIsVisible = true,
+                    bottomSpaceIsVisible = !showCommentInput,
+                    dividerIsVisible = !showCommentInput,
                 ),
                 buttonBlock = SettingsBlock.AdditionalCommentInputExcludeActivities,
                 isButtonVisible = showCommentInput,
             )
+            if (showCommentInput) {
+                result += SettingsCheckboxViewData(
+                    block = SettingsBlock.AdditionalShowCommentSuggestions,
+                    title = resourceRepo.getString(R.string.settings_show_comment_suggestions),
+                    subtitle = "",
+                    isChecked = prefsInteractor.getIsCommentSelectionSuggestionsEnabled(),
+                    bottomSpaceIsVisible = true,
+                    dividerIsVisible = true,
+                )
+            }
 
             result += SettingsCheckboxViewData(
                 block = SettingsBlock.AdditionalKeepStatisticsRange,
