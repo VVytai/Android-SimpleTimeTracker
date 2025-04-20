@@ -29,10 +29,7 @@
         <item name="appDividerColor">@color/colorDivider</item>
         <item name="appDivider">@drawable/divider_drawable</item>
         <item name="appInputFieldBorder">@drawable/bg_input_field_border</item>
-        <item name="appInputFieldBorderDialog">@drawable/bg_input_field_border</item>
         <item name="appInputFieldBorderColor">@color/inputFieldBorder</item>
-        <item name="appInputFieldBorderDialogColor">@color/inputFieldBorder</item>
-        <item name="appInputFieldBorderTimeDialogColor">@color/inputFieldBorder</item>
         <item name="appPieChartDividerColor">@color/pieChartDivider</item>
         <item name="appCardBackgroundColor">@color/cardBackground</item>
         <item name="appFabBackgroundColor">@color/colorFabBackground</item>
@@ -78,10 +75,7 @@
         <item name="appDividerColor">@color/colorDividerDark</item>
         <item name="appDivider">@drawable/divider_drawable_dark</item>
         <item name="appInputFieldBorder">@drawable/bg_input_field_border_dark</item>
-        <item name="appInputFieldBorderDialog">@drawable/bg_input_field_border_dialog_dark</item>
         <item name="appInputFieldBorderColor">@color/inputFieldBorderDark</item>
-        <item name="appInputFieldBorderDialogColor">@color/inputFieldBorderDialogDark</item>
-        <item name="appInputFieldBorderTimeDialogColor">@color/inputFieldBorderTimeDialogDark</item>
         <item name="appPieChartDividerColor">@color/pieChartDividerDark</item>
         <item name="appCardBackgroundColor">@color/cardBackgroundDark</item>
         <item name="appFabBackgroundColor">@color/colorFabBackgroundDark</item>
@@ -204,17 +198,9 @@
         <item name="boxStrokeErrorColor">@color/blue_grey_300</item>
     </style>
 
-    <style name="ChangeItemInputFieldDialog" parent="ChangeItemInputField">
-        <item name="boxStrokeColor">@color/states_input_field_border_dialog_color</item>
-    </style>
-
-    <style name="ChangeItemInputFieldColorDialog" parent="ChangeItemInputFieldDialog">
+    <style name="ChangeItemInputFieldColorDialog" parent="ChangeItemInputField">
         <item name="endIconDrawable">@null</item>
         <item name="endIconMode">none</item>
-    </style>
-
-    <style name="ChangeItemInputFieldTimeDialog" parent="ChangeItemInputField">
-        <item name="boxStrokeColor">@color/states_input_field_border_time_dialog_color</item>
     </style>
 
     <style name="ChangeItemHintStyle">

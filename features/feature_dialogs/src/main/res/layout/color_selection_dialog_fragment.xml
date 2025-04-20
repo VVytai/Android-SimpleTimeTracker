@@ -80,7 +80,7 @@
         android:layout_height="0dp"
         android:layout_marginHorizontal="8dp"
         android:layout_marginBottom="10dp"
-        app:cardBackgroundColor="?appInputFieldBorderDialogColor"
+        app:cardBackgroundColor="?appInputFieldBorderColor"
         app:cardCornerRadius="@dimen/record_type_card_corner_radius"
         app:cardElevation="0dp"
         app:layout_constraintBottom_toTopOf="@id/inputColorSelectionHex"

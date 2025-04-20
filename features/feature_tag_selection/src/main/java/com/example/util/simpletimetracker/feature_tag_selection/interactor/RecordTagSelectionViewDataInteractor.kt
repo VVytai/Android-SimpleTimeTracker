@@ -80,6 +80,12 @@ class RecordTagSelectionViewDataInteractor @Inject constructor(
             ).data
         }
 
+        result += EmptySpaceViewData(
+            id = "record_tag_selection_end_space".hashCode().toLong(),
+            width = EmptySpaceViewData.ViewDimension.MatchParent,
+            height = EmptySpaceViewData.ViewDimension.ExactSizeDp(8),
+        )
+
         return result
     }
 }
