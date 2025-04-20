@@ -36,7 +36,6 @@ class ActivityFilterViewDataInteractor @Inject constructor(
                 emptyList()
             }
             is Filter.ApplyFilter -> {
-                if (filter.activityFilters.isEmpty()) return emptyList()
                 val result = mutableListOf<ViewHolderType>()
                 if (!isFiltersCollapsed) {
                     result += filter.activityFilters.map {
@@ -46,8 +45,8 @@ class ActivityFilterViewDataInteractor @Inject constructor(
                         )
                     }
                 }
-                // Show filters if there are several of them,
-                // or if they are collapsed, just in case (collapse and remove all but one).
+                // Show collapse button if there are several filters,
+                // or if they are collapsed, just in case (collapse and then remove all but one).
                 if (filter.activityFilters.size > 1 || isFiltersCollapsed) {
                     result += activityFilterViewDataMapper.mapToActivityFilterToggleItem(
                         isFiltersCollapsed = isFiltersCollapsed,

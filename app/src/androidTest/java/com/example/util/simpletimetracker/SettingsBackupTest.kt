@@ -34,6 +34,7 @@ import com.example.util.simpletimetracker.utils.clickOnView
 import com.example.util.simpletimetracker.utils.clickOnViewWithId
 import com.example.util.simpletimetracker.utils.clickOnViewWithText
 import com.example.util.simpletimetracker.utils.longClickOnView
+import com.example.util.simpletimetracker.utils.longClickOnViewWithId
 import com.example.util.simpletimetracker.utils.nestedScrollTo
 import com.example.util.simpletimetracker.utils.scrollRecyclerInPagerToView
 import com.example.util.simpletimetracker.utils.scrollRecyclerToView
@@ -252,7 +253,7 @@ class SettingsBackupTest : BaseUiTest() {
 
         // Check fav comments
         NavUtils.openRecordsScreen()
-        clickOnViewWithId(R.id.btnRecordAdd)
+        longClickOnViewWithId(R.id.btnRecordAdd)
         onView(withText(R.string.change_record_comment_field)).perform(nestedScrollTo())
         clickOnViewWithText(R.string.change_record_comment_field)
         checkViewIsDisplayed(withText(R.string.change_record_favourite_comments_hint))

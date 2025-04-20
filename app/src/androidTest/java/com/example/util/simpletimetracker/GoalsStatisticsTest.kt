@@ -30,8 +30,8 @@ import com.example.util.simpletimetracker.utils.NavUtils
 import com.example.util.simpletimetracker.utils.checkViewIsDisplayed
 import com.example.util.simpletimetracker.utils.clickOnView
 import com.example.util.simpletimetracker.utils.clickOnViewWithId
-import com.example.util.simpletimetracker.utils.clickOnViewWithIdOnPager
 import com.example.util.simpletimetracker.utils.clickOnViewWithText
+import com.example.util.simpletimetracker.utils.longClickOnViewWithIdOnPager
 import com.example.util.simpletimetracker.utils.scrollRecyclerInPagerToView
 import com.example.util.simpletimetracker.utils.scrollToBottom
 import com.example.util.simpletimetracker.utils.tryAction
@@ -368,7 +368,7 @@ class GoalsStatisticsTest : BaseUiTest() {
         addRecords(testUtils, otherGoals.second())
 
         NavUtils.openStatisticsScreen()
-        clickOnViewWithIdOnPager(statisticsR.id.btnStatisticsChartFilter)
+        longClickOnViewWithIdOnPager(statisticsR.id.btnStatisticsContainerOptions)
         clickOnViewWithText(coreR.string.category_hint)
         pressBack()
 
@@ -492,7 +492,7 @@ class GoalsStatisticsTest : BaseUiTest() {
         NavUtils.openStatisticsScreen()
         clickOnViewWithId(statisticsR.id.btnStatisticsContainerToday)
         clickOnViewWithText(coreR.string.range_week)
-        clickOnViewWithIdOnPager(statisticsR.id.btnStatisticsChartFilter)
+        longClickOnViewWithIdOnPager(statisticsR.id.btnStatisticsContainerOptions)
         clickOnViewWithText(coreR.string.category_hint)
         pressBack()
 
@@ -616,7 +616,7 @@ class GoalsStatisticsTest : BaseUiTest() {
         NavUtils.openStatisticsScreen()
         clickOnViewWithId(statisticsR.id.btnStatisticsContainerToday)
         clickOnViewWithText(coreR.string.range_month)
-        clickOnViewWithIdOnPager(statisticsR.id.btnStatisticsChartFilter)
+        longClickOnViewWithIdOnPager(statisticsR.id.btnStatisticsContainerOptions)
         clickOnViewWithText(coreR.string.category_hint)
         pressBack()
 

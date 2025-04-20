@@ -15,9 +15,9 @@ import com.example.util.simpletimetracker.utils.checkViewDoesNotExist
 import com.example.util.simpletimetracker.utils.checkViewIsDisplayed
 import com.example.util.simpletimetracker.utils.clickOnView
 import com.example.util.simpletimetracker.utils.clickOnViewWithId
-import com.example.util.simpletimetracker.utils.clickOnViewWithIdOnPager
 import com.example.util.simpletimetracker.utils.clickOnViewWithText
 import com.example.util.simpletimetracker.utils.longClickOnViewWithId
+import com.example.util.simpletimetracker.utils.longClickOnViewWithIdOnPager
 import com.example.util.simpletimetracker.utils.tryAction
 import com.example.util.simpletimetracker.utils.typeTextIntoView
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -147,7 +147,7 @@ class MainScreenEmptyTest : BaseUiTest() {
         checkRanges()
 
         // Empty category statistics
-        clickOnViewWithIdOnPager(statisticsR.id.btnStatisticsEmptyFilter)
+        longClickOnViewWithIdOnPager(statisticsR.id.btnStatisticsContainerOptions)
         clickOnViewWithText(coreR.string.category_hint)
         pressBack()
         longClickOnViewWithId(statisticsR.id.btnStatisticsContainerToday)
@@ -190,7 +190,7 @@ class MainScreenEmptyTest : BaseUiTest() {
         checkRanges()
 
         // Empty tag statistics
-        clickOnViewWithIdOnPager(statisticsR.id.btnStatisticsEmptyFilter)
+        longClickOnViewWithIdOnPager(statisticsR.id.btnStatisticsContainerOptions)
         clickOnViewWithText(coreR.string.record_tag_hint_short)
         pressBack()
         longClickOnViewWithId(statisticsR.id.btnStatisticsContainerToday)

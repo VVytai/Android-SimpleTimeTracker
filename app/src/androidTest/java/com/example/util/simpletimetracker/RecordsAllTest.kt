@@ -22,6 +22,8 @@ import com.example.util.simpletimetracker.utils.clickOnView
 import com.example.util.simpletimetracker.utils.clickOnViewWithId
 import com.example.util.simpletimetracker.utils.clickOnViewWithIdOnPager
 import com.example.util.simpletimetracker.utils.clickOnViewWithText
+import com.example.util.simpletimetracker.utils.longClickOnViewWithId
+import com.example.util.simpletimetracker.utils.longClickOnViewWithIdOnPager
 import com.example.util.simpletimetracker.utils.tryAction
 import com.example.util.simpletimetracker.utils.withPluralText
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -272,7 +274,7 @@ class RecordsAllTest : BaseUiTest() {
 
         // Open statistics
         NavUtils.openStatisticsScreen()
-        clickOnViewWithIdOnPager(statisticsR.id.btnStatisticsChartFilter)
+        longClickOnViewWithIdOnPager(statisticsR.id.btnStatisticsContainerOptions)
         clickOnViewWithText(coreR.string.category_hint)
         pressBack()
         tryAction { clickOnView(allOf(withText(categoryName1), isCompletelyDisplayed())) }
@@ -333,7 +335,7 @@ class RecordsAllTest : BaseUiTest() {
         // Change filter
         pressBack()
         onView(withId(statisticsDetailR.id.containerStatisticsDetailContent)).perform(swipeDown())
-        clickOnViewWithId(statisticsDetailR.id.cardStatisticsDetailFilter)
+        longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
         checkViewIsDisplayed(allOf(isDescendantOfA(withId(baseR.id.viewRecordTypeItem)), withText(name1)))
         checkViewIsDisplayed(allOf(isDescendantOfA(withId(baseR.id.viewRecordTypeItem)), withText(name2)))
         checkViewIsDisplayed(allOf(isDescendantOfA(withId(baseR.id.viewRecordTypeItem)), withText(name3)))
@@ -350,7 +352,7 @@ class RecordsAllTest : BaseUiTest() {
         // Change filter
         pressBack()
         onView(withId(statisticsDetailR.id.containerStatisticsDetailContent)).perform(swipeDown())
-        clickOnViewWithId(statisticsDetailR.id.cardStatisticsDetailFilter)
+        longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
         clickOnView(allOf(isDescendantOfA(withId(baseR.id.viewRecordTypeItem)), withText(name1)))
         clickOnView(allOf(isDescendantOfA(withId(baseR.id.viewRecordTypeItem)), withText(name2)))
         pressBack()

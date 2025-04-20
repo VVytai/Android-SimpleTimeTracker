@@ -12,9 +12,9 @@ import com.example.util.simpletimetracker.utils.NavUtils
 import com.example.util.simpletimetracker.utils.checkViewDoesNotExist
 import com.example.util.simpletimetracker.utils.checkViewIsDisplayed
 import com.example.util.simpletimetracker.utils.clickOnView
-import com.example.util.simpletimetracker.utils.clickOnViewWithId
 import com.example.util.simpletimetracker.utils.clickOnViewWithText
 import com.example.util.simpletimetracker.utils.longClickOnView
+import com.example.util.simpletimetracker.utils.longClickOnViewWithId
 import com.example.util.simpletimetracker.utils.nestedScrollTo
 import com.example.util.simpletimetracker.utils.scrollRecyclerToView
 import com.example.util.simpletimetracker.utils.tryAction
@@ -77,7 +77,7 @@ class RecordActionsMergeTest : BaseUiTest() {
         pressBack()
 
         // New record - not shown
-        clickOnViewWithId(recordsR.id.btnRecordAdd)
+        longClickOnViewWithId(recordsR.id.btnRecordAdd)
         onView(withText(coreR.string.change_record_actions_hint)).perform(nestedScrollTo())
         clickOnViewWithText(coreR.string.change_record_actions_hint)
         checkViewDoesNotExist(withText(coreR.string.change_record_merge))

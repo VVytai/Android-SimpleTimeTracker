@@ -22,6 +22,7 @@ import com.example.util.simpletimetracker.utils.clickOnView
 import com.example.util.simpletimetracker.utils.clickOnViewWithId
 import com.example.util.simpletimetracker.utils.clickOnViewWithText
 import com.example.util.simpletimetracker.utils.longClickOnView
+import com.example.util.simpletimetracker.utils.longClickOnViewWithId
 import com.example.util.simpletimetracker.utils.tryAction
 import com.example.util.simpletimetracker.utils.typeTextIntoView
 import com.example.util.simpletimetracker.utils.withCardColor
@@ -63,7 +64,7 @@ class ChangeRecordTest : BaseUiTest() {
 
         // Add record
         NavUtils.openRecordsScreen()
-        clickOnViewWithId(recordsR.id.btnRecordAdd)
+        longClickOnViewWithId(recordsR.id.btnRecordAdd)
 
         val currentTime = System.currentTimeMillis()
         var timeStartedTimestamp = currentTime - 60 * 60 * 1000
@@ -226,7 +227,7 @@ class ChangeRecordTest : BaseUiTest() {
 
         // Add record
         NavUtils.openRecordsScreen()
-        clickOnViewWithId(recordsR.id.btnRecordAdd)
+        longClickOnViewWithId(recordsR.id.btnRecordAdd)
         clickOnViewWithText(coreR.string.change_record_type_field)
         clickOnRecyclerItem(changeRecordR.id.rvChangeRecordType, withText(name))
         clickOnViewWithText(coreR.string.change_record_save)

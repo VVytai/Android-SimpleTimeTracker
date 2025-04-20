@@ -12,9 +12,9 @@ import com.example.util.simpletimetracker.utils.NavUtils
 import com.example.util.simpletimetracker.utils.clickOnRecyclerItem
 import com.example.util.simpletimetracker.utils.clickOnView
 import com.example.util.simpletimetracker.utils.clickOnViewWithId
-import com.example.util.simpletimetracker.utils.clickOnViewWithIdOnPager
 import com.example.util.simpletimetracker.utils.clickOnViewWithText
 import com.example.util.simpletimetracker.utils.longClickOnViewWithId
+import com.example.util.simpletimetracker.utils.longClickOnViewWithIdOnPager
 import com.example.util.simpletimetracker.utils.tryAction
 import com.example.util.simpletimetracker.utils.typeTextIntoView
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -59,10 +59,10 @@ class MainScreenTest : BaseUiTest() {
         clickOnView(allOf(withText(name), isCompletelyDisplayed()))
         pressBack()
 
-        clickOnViewWithId(recordsR.id.btnRecordAdd)
+        longClickOnViewWithId(recordsR.id.btnRecordAdd)
         pressBack()
 
-        clickOnViewWithId(recordsR.id.btnRecordAdd)
+        longClickOnViewWithId(recordsR.id.btnRecordAdd)
         clickOnViewWithText(coreR.string.change_record_type_field)
         clickOnRecyclerItem(changeRecordR.id.rvChangeRecordType, withText(name))
         clickOnViewWithText(coreR.string.change_record_save)
@@ -73,7 +73,7 @@ class MainScreenTest : BaseUiTest() {
 
         // Statistics
         NavUtils.openStatisticsScreen()
-        clickOnViewWithIdOnPager(statisticsR.id.btnStatisticsChartFilter)
+        longClickOnViewWithIdOnPager(statisticsR.id.btnStatisticsContainerOptions)
         pressBack()
         clickOnViewWithId(statisticsR.id.btnStatisticsContainerPrevious)
         longClickOnViewWithId(statisticsR.id.btnStatisticsContainerToday)

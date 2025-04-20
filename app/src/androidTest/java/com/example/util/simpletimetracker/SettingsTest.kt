@@ -1636,7 +1636,7 @@ class SettingsTest : BaseUiTest() {
         // Dialog shown
         NavUtils.openRunningRecordsScreen()
         clickOnViewWithText(name)
-        tryAction { checkViewIsDisplayed(withId(tagSelectionR.id.inputRecordTagSelectionComment)) }
+        tryAction { checkViewIsDisplayed(withId(tagSelectionR.id.inputCommentField)) }
         pressBack()
 
         // Start without comment
@@ -1647,7 +1647,7 @@ class SettingsTest : BaseUiTest() {
 
         // Start with comment
         clickOnViewWithText(name)
-        tryAction { typeTextIntoView(tagSelectionR.id.etRecordTagSelectionCommentItem, comment) }
+        tryAction { typeTextIntoView(tagSelectionR.id.etCommentItemField, comment) }
         clickOnViewWithText(coreR.string.duration_dialog_save)
         tryAction { clickOnView(allOf(isDescendantOfA(withId(baseR.id.viewRunningRecordItem)), withText(comment))) }
 
@@ -1685,7 +1685,7 @@ class SettingsTest : BaseUiTest() {
         // Not excluded - show dialog
         NavUtils.openRunningRecordsScreen()
         clickOnViewWithText(name)
-        tryAction { checkViewIsDisplayed(withId(tagSelectionR.id.inputRecordTagSelectionComment)) }
+        tryAction { checkViewIsDisplayed(withId(tagSelectionR.id.inputCommentField)) }
         pressBack()
 
         // Change setting
@@ -1730,7 +1730,7 @@ class SettingsTest : BaseUiTest() {
         NavUtils.openRunningRecordsScreen()
         clickOnViewWithText(name)
         tryAction { checkViewIsDisplayed(withText(tag)) }
-        tryAction { checkViewIsDisplayed(withId(tagSelectionR.id.inputRecordTagSelectionComment)) }
+        tryAction { checkViewIsDisplayed(withId(tagSelectionR.id.inputCommentField)) }
         pressBack()
 
         // Start untagged, no comment
@@ -1741,7 +1741,7 @@ class SettingsTest : BaseUiTest() {
 
         // Start untagged, with comment
         clickOnViewWithText(name)
-        tryAction { typeTextIntoView(tagSelectionR.id.etRecordTagSelectionCommentItem, comment) }
+        tryAction { typeTextIntoView(tagSelectionR.id.etCommentItemField, comment) }
         clickOnViewWithText(coreR.string.duration_dialog_save)
         tryAction { checkViewIsDisplayed(allOf(withId(R.id.tvRunningRecordItemComment), withText(comment))) }
         tryAction { clickOnView(allOf(isDescendantOfA(withId(baseR.id.viewRunningRecordItem)), withText(name))) }
@@ -1755,7 +1755,7 @@ class SettingsTest : BaseUiTest() {
 
         // Start tagged, with comment
         clickOnViewWithText(name)
-        tryAction { typeTextIntoView(tagSelectionR.id.etRecordTagSelectionCommentItem, comment) }
+        tryAction { typeTextIntoView(tagSelectionR.id.etCommentItemField, comment) }
         clickOnViewWithText(tag)
         clickOnViewWithText(coreR.string.duration_dialog_save)
         tryAction { checkViewIsDisplayed(allOf(withId(R.id.tvRunningRecordItemComment), withText(comment))) }
@@ -1772,7 +1772,7 @@ class SettingsTest : BaseUiTest() {
         NavUtils.openRunningRecordsScreen()
         clickOnViewWithText(name)
         tryAction { checkViewDoesNotExist(withText(tag)) }
-        tryAction { checkViewIsDisplayed(withId(tagSelectionR.id.inputRecordTagSelectionComment)) }
+        tryAction { checkViewIsDisplayed(withId(tagSelectionR.id.inputCommentField)) }
         pressBack()
 
         // Exclude for comments
@@ -1792,7 +1792,7 @@ class SettingsTest : BaseUiTest() {
         NavUtils.openRunningRecordsScreen()
         clickOnViewWithText(name)
         tryAction { checkViewIsDisplayed(withText(tag)) }
-        tryAction { checkViewIsNotDisplayed(withId(tagSelectionR.id.inputRecordTagSelectionComment)) }
+        tryAction { checkViewDoesNotExist(withId(tagSelectionR.id.inputCommentField)) }
         pressBack()
 
         // Exclude both
@@ -2158,8 +2158,9 @@ class SettingsTest : BaseUiTest() {
 
         // Check not shown
         NavUtils.openRecordsScreen()
-        clickOnViewWithId(recordsR.id.btnRecordsContainerOptions)
-        checkViewIsNotDisplayed(withId(recordsR.id.btnRecordsContainerCalendarSwitch))
+        clickOnViewWithId(recordsR.id.btnRecordAdd)
+        checkViewDoesNotExist(withText(R.string.records_switch_to_calendar))
+        pressBack()
 
         // Change settings
         NavUtils.openSettingsScreen()
@@ -2169,7 +2170,9 @@ class SettingsTest : BaseUiTest() {
 
         // Check shown
         NavUtils.openRecordsScreen()
-        checkViewIsDisplayed(withId(recordsR.id.btnRecordsContainerCalendarSwitch))
+        clickOnViewWithId(recordsR.id.btnRecordAdd)
+        checkViewIsDisplayed(withText(R.string.records_switch_to_calendar))
+        pressBack()
 
         // Change back
         NavUtils.openSettingsScreen()
@@ -2179,7 +2182,8 @@ class SettingsTest : BaseUiTest() {
 
         // Check not shown
         NavUtils.openRecordsScreen()
-        checkViewIsNotDisplayed(withId(recordsR.id.btnRecordsContainerCalendarSwitch))
+        clickOnViewWithId(recordsR.id.btnRecordAdd)
+        checkViewDoesNotExist(withText(R.string.records_switch_to_calendar))
     }
 
     @Test

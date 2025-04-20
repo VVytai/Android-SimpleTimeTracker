@@ -147,13 +147,12 @@ object GoalsTestUtils {
     }
 
     fun checkStatisticsMark(typeName: String, isVisible: Boolean) {
-        allOf(
-            isDescendantOfA(withId(baseR.id.viewStatisticsGoalItem)),
-            hasSibling(withText(typeName)),
-            withId(R.id.ivStatisticsGoalItemCheck),
-        ).let {
-            if (isVisible) checkViewIsDisplayed(it) else checkViewIsNotDisplayed(it)
-        }
+        allOf(withId(R.id.viewStatisticsGoalItem), hasDescendant(withText(typeName)), isCompletelyDisplayed())
+            .let(::checkViewIsDisplayed)
+        allOf(getStatisticsMatcher(typeName), withId(R.id.ivGoalCheckmarkItemCheckOutline))
+            .let(::checkViewIsDisplayed)
+        allOf(getStatisticsMatcher(typeName), withId(R.id.ivGoalCheckmarkItemCheck))
+            .let { if (isVisible) checkViewIsDisplayed(it) else checkViewIsNotDisplayed(it) }
     }
 
     fun checkTypeMark(typeName: String, isVisible: Boolean) {
@@ -205,6 +204,15 @@ object GoalsTestUtils {
         return isDescendantOfA(
             allOf(
                 withId(R.id.viewRecordTypeItem),
+                hasDescendant(withText(typeName)),
+            ),
+        )
+    }
+
+    private fun getStatisticsMatcher(typeName: String): Matcher<View> {
+        return isDescendantOfA(
+            allOf(
+                withId(R.id.viewStatisticsGoalItem),
                 hasDescendant(withText(typeName)),
             ),
         )

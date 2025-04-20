@@ -14,8 +14,8 @@ import com.example.util.simpletimetracker.utils.checkViewDoesNotExist
 import com.example.util.simpletimetracker.utils.checkViewIsDisplayed
 import com.example.util.simpletimetracker.utils.clickOnView
 import com.example.util.simpletimetracker.utils.clickOnViewWithId
-import com.example.util.simpletimetracker.utils.clickOnViewWithIdOnPager
 import com.example.util.simpletimetracker.utils.clickOnViewWithText
+import com.example.util.simpletimetracker.utils.longClickOnViewWithIdOnPager
 import com.example.util.simpletimetracker.utils.tryAction
 import com.example.util.simpletimetracker.utils.withCardColor
 import com.example.util.simpletimetracker.utils.withPluralText
@@ -89,7 +89,7 @@ class StatisticsTest : BaseUiTest() {
                 isCompletelyDisplayed(),
             ),
         )
-        clickOnViewWithIdOnPager(statisticsR.id.btnStatisticsChartFilter)
+        longClickOnViewWithIdOnPager(statisticsR.id.btnStatisticsContainerOptions)
         clickOnViewWithText(coreR.string.untracked_time_name)
         pressBack()
         checkViewIsDisplayed(
@@ -164,7 +164,7 @@ class StatisticsTest : BaseUiTest() {
         testUtils.addRecord(typeName1, timeStarted = before, timeEnded = before)
 
         NavUtils.openStatisticsScreen()
-        clickOnViewWithIdOnPager(statisticsR.id.btnStatisticsChartFilter)
+        longClickOnViewWithIdOnPager(statisticsR.id.btnStatisticsContainerOptions)
         clickOnViewWithText(coreR.string.category_hint)
         pressBack()
 
@@ -207,7 +207,7 @@ class StatisticsTest : BaseUiTest() {
                 isCompletelyDisplayed(),
             ),
         )
-        clickOnViewWithIdOnPager(statisticsR.id.btnStatisticsChartFilter)
+        longClickOnViewWithIdOnPager(statisticsR.id.btnStatisticsContainerOptions)
         clickOnViewWithText(coreR.string.untracked_time_name)
         pressBack()
         checkViewIsDisplayed(
@@ -292,7 +292,7 @@ class StatisticsTest : BaseUiTest() {
         testUtils.addRecord(typeName1, timeStarted = before, timeEnded = before)
 
         NavUtils.openStatisticsScreen()
-        clickOnViewWithIdOnPager(statisticsR.id.btnStatisticsChartFilter)
+        longClickOnViewWithIdOnPager(statisticsR.id.btnStatisticsContainerOptions)
         clickOnViewWithText(coreR.string.record_tag_hint_short)
         pressBack()
 
@@ -335,7 +335,7 @@ class StatisticsTest : BaseUiTest() {
                 isCompletelyDisplayed(),
             ),
         )
-        clickOnViewWithIdOnPager(statisticsR.id.btnStatisticsChartFilter)
+        longClickOnViewWithIdOnPager(statisticsR.id.btnStatisticsContainerOptions)
         clickOnViewWithText(coreR.string.untracked_time_name)
         pressBack()
         checkViewIsDisplayed(
@@ -680,7 +680,7 @@ class StatisticsTest : BaseUiTest() {
         pressBack()
 
         // Check total tracked for category
-        clickOnViewWithIdOnPager(statisticsR.id.btnStatisticsChartFilter)
+        longClickOnViewWithIdOnPager(statisticsR.id.btnStatisticsContainerOptions)
         clickOnViewWithText(coreR.string.category_hint)
         pressBack()
         clickOnView(allOf(withText(R.string.statistics_total_tracked), isCompletelyDisplayed()))
@@ -696,7 +696,7 @@ class StatisticsTest : BaseUiTest() {
         pressBack()
 
         // Check total tracked for tag
-        clickOnViewWithIdOnPager(statisticsR.id.btnStatisticsChartFilter)
+        longClickOnViewWithIdOnPager(statisticsR.id.btnStatisticsContainerOptions)
         clickOnViewWithText(coreR.string.record_tag_hint_short)
         pressBack()
         clickOnView(allOf(withText(R.string.statistics_total_tracked), isCompletelyDisplayed()))

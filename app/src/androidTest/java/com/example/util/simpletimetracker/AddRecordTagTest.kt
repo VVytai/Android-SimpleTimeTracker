@@ -435,7 +435,7 @@ class AddRecordTagTest : BaseUiTest() {
         // Check items
         NavUtils.openSettingsScreen()
         NavUtils.openCategoriesScreen()
-        onView(withId(categoriesR.id.rvCategoriesList)).check(recyclerItemCount(7))
+        onView(withId(categoriesR.id.rvCategoriesList)).check(recyclerItemCount(8))
 
         // Add another tag
         clickOnViewWithText(coreR.string.categories_add_record_tag)
@@ -446,7 +446,7 @@ class AddRecordTagTest : BaseUiTest() {
         clickOnRecyclerItem(changeRecordTagR.id.rvChangeRecordTagType, withText(typeName))
         clickOnViewWithText(coreR.string.change_record_type_save)
 
-        onView(withId(categoriesR.id.rvCategoriesList)).check(recyclerItemCount(8))
+        onView(withId(categoriesR.id.rvCategoriesList)).check(recyclerItemCount(9))
 
         // Add another general tag
         clickOnViewWithText(coreR.string.categories_add_record_tag)
@@ -456,7 +456,7 @@ class AddRecordTagTest : BaseUiTest() {
         closeSoftKeyboard()
         clickOnViewWithText(coreR.string.change_record_type_save)
 
-        onView(withId(categoriesR.id.rvCategoriesList)).check(recyclerItemCount(9))
+        onView(withId(categoriesR.id.rvCategoriesList)).check(recyclerItemCount(10))
     }
 
     @Test

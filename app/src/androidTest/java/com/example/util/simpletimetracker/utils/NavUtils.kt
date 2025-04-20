@@ -294,7 +294,7 @@ object NavUtils {
     }
 
     fun addRecord(name: String) {
-        tryAction { clickOnViewWithId(recordsR.id.btnRecordAdd) }
+        tryAction { longClickOnViewWithId(recordsR.id.btnRecordAdd) }
 
         // Activity
         clickOnViewWithText(coreR.string.change_record_type_field)
@@ -312,7 +312,7 @@ object NavUtils {
         comment: String? = null,
         tag: String? = null,
     ) {
-        tryAction { clickOnViewWithId(recordsR.id.btnRecordAdd) }
+        tryAction { longClickOnViewWithId(recordsR.id.btnRecordAdd) }
 
         // Time started
         clickOnViewWithId(changeRecordR.id.fieldChangeRecordTimeStarted)

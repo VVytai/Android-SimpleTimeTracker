@@ -15,6 +15,7 @@ import com.example.util.simpletimetracker.utils.clickOnView
 import com.example.util.simpletimetracker.utils.clickOnViewWithId
 import com.example.util.simpletimetracker.utils.clickOnViewWithText
 import com.example.util.simpletimetracker.utils.longClickOnView
+import com.example.util.simpletimetracker.utils.longClickOnViewWithId
 import com.example.util.simpletimetracker.utils.nestedScrollTo
 import com.example.util.simpletimetracker.utils.recyclerItemCount
 import com.example.util.simpletimetracker.utils.scrollRecyclerToView
@@ -186,7 +187,7 @@ class RecordActionsRepeatTest : BaseUiTest() {
         // Open add new record
         onView(allOf(withId(recordsR.id.rvRecordsList), isCompletelyDisplayed()))
             .check(recyclerItemCount(1))
-        clickOnViewWithId(recordsR.id.btnRecordAdd)
+        longClickOnViewWithId(recordsR.id.btnRecordAdd)
 
         // Repeat untracked doesn't work
         onView(withText(coreR.string.change_record_actions_hint)).perform(nestedScrollTo())
@@ -279,7 +280,7 @@ class RecordActionsRepeatTest : BaseUiTest() {
         NavUtils.openRecordsScreen()
 
         // Repeat
-        clickOnViewWithId(recordsR.id.btnRecordAdd)
+        longClickOnViewWithId(recordsR.id.btnRecordAdd)
         clickOnViewWithText(coreR.string.change_record_type_field)
         clickOnRecyclerItem(changeRecordR.id.rvChangeRecordType, withText(name))
         onView(withText(coreR.string.change_record_actions_hint)).perform(nestedScrollTo())
@@ -320,7 +321,7 @@ class RecordActionsRepeatTest : BaseUiTest() {
         NavUtils.openRecordsScreen()
 
         // Repeat
-        clickOnViewWithId(recordsR.id.btnRecordAdd)
+        longClickOnViewWithId(recordsR.id.btnRecordAdd)
         clickOnViewWithText(coreR.string.change_record_type_field)
         clickOnRecyclerItem(changeRecordR.id.rvChangeRecordType, withText(name2))
         onView(withText(coreR.string.change_record_actions_hint)).perform(nestedScrollTo())

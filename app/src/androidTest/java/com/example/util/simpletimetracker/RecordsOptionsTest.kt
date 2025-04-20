@@ -10,7 +10,6 @@ import com.example.util.simpletimetracker.utils.BaseUiTest
 import com.example.util.simpletimetracker.utils.NavUtils
 import com.example.util.simpletimetracker.utils.checkViewDoesNotExist
 import com.example.util.simpletimetracker.utils.checkViewIsDisplayed
-import com.example.util.simpletimetracker.utils.checkViewIsNotDisplayed
 import com.example.util.simpletimetracker.utils.clickOnView
 import com.example.util.simpletimetracker.utils.clickOnViewWithId
 import com.example.util.simpletimetracker.utils.clickOnViewWithText
@@ -28,41 +27,6 @@ import com.example.util.simpletimetracker.feature_records.R as recordsR
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
 class RecordsOptionsTest : BaseUiTest() {
-
-    @Test
-    fun buttonsVisibility() {
-        NavUtils.openRecordsScreen()
-
-        // Check not visible
-        checkViewIsDisplayed(withId(recordsR.id.btnRecordsContainerOptions))
-        checkViewIsNotDisplayed(withId(recordsR.id.btnRecordsContainerFilter))
-        checkViewIsNotDisplayed(withId(recordsR.id.btnRecordsContainerShare))
-        checkViewIsNotDisplayed(withId(recordsR.id.btnRecordsContainerCalendarSwitch))
-
-        // Show options
-        clickOnViewWithId(recordsR.id.btnRecordsContainerOptions)
-        checkViewIsDisplayed(withId(recordsR.id.btnRecordsContainerOptions))
-        checkViewIsDisplayed(withId(recordsR.id.btnRecordsContainerFilter))
-        checkViewIsDisplayed(withId(recordsR.id.btnRecordsContainerShare))
-        checkViewIsNotDisplayed(withId(recordsR.id.btnRecordsContainerCalendarSwitch))
-
-        // Switch tabs
-        NavUtils.openRunningRecordsScreen()
-        NavUtils.openRecordsScreen()
-
-        // Still shown
-        checkViewIsDisplayed(withId(recordsR.id.btnRecordsContainerOptions))
-        checkViewIsDisplayed(withId(recordsR.id.btnRecordsContainerFilter))
-        checkViewIsDisplayed(withId(recordsR.id.btnRecordsContainerShare))
-        checkViewIsNotDisplayed(withId(recordsR.id.btnRecordsContainerCalendarSwitch))
-
-        // Hide options
-        clickOnViewWithId(recordsR.id.btnRecordsContainerOptions)
-        checkViewIsDisplayed(withId(recordsR.id.btnRecordsContainerOptions))
-        checkViewIsNotDisplayed(withId(recordsR.id.btnRecordsContainerFilter))
-        checkViewIsNotDisplayed(withId(recordsR.id.btnRecordsContainerShare))
-        checkViewIsNotDisplayed(withId(recordsR.id.btnRecordsContainerCalendarSwitch))
-    }
 
     @Test
     fun filterType() {
@@ -87,8 +51,8 @@ class RecordsOptionsTest : BaseUiTest() {
         checkViewIsDisplayed(allOf(withText(name2), isCompletelyDisplayed()))
 
         // Filter untracked
-        clickOnViewWithId(recordsR.id.btnRecordsContainerOptions)
-        clickOnViewWithId(recordsR.id.btnRecordsContainerFilter)
+        clickOnViewWithId(recordsR.id.btnRecordAdd)
+        clickOnViewWithText(R.string.chart_filter_hint)
         clickOnView(
             allOf(isDescendantOfA(withId(baseR.id.viewRecordTypeItem)), withText(coreR.string.untracked_time_name)),
         )
@@ -98,7 +62,8 @@ class RecordsOptionsTest : BaseUiTest() {
         checkViewIsDisplayed(allOf(withText(name2), isCompletelyDisplayed()))
 
         // Filter activity
-        clickOnViewWithId(recordsR.id.btnRecordsContainerFilter)
+        clickOnViewWithId(recordsR.id.btnRecordAdd)
+        clickOnViewWithText(R.string.chart_filter_hint)
         clickOnView(allOf(isDescendantOfA(withId(baseR.id.viewRecordTypeItem)), withText(name1)))
         pressBack()
         tryAction { checkViewDoesNotExist(allOf(withText(coreR.string.untracked_time_name), isCompletelyDisplayed())) }
@@ -106,7 +71,8 @@ class RecordsOptionsTest : BaseUiTest() {
         checkViewIsDisplayed(allOf(withText(name2), isCompletelyDisplayed()))
 
         // Filter all
-        clickOnViewWithId(recordsR.id.btnRecordsContainerFilter)
+        clickOnViewWithId(recordsR.id.btnRecordAdd)
+        clickOnViewWithText(R.string.chart_filter_hint)
         clickOnView(allOf(isDescendantOfA(withId(baseR.id.viewRecordTypeItem)), withText(name2)))
         pressBack()
         tryAction { checkViewDoesNotExist(allOf(withText(coreR.string.untracked_time_name), isCompletelyDisplayed())) }
@@ -115,7 +81,8 @@ class RecordsOptionsTest : BaseUiTest() {
         checkViewIsDisplayed(allOf(withText(coreR.string.no_data), isCompletelyDisplayed()))
 
         // Show all
-        clickOnViewWithId(recordsR.id.btnRecordsContainerFilter)
+        clickOnViewWithId(recordsR.id.btnRecordAdd)
+        clickOnViewWithText(R.string.chart_filter_hint)
         clickOnViewWithText(coreR.string.types_filter_show_all)
         pressBack()
         tryAction { checkViewIsDisplayed(allOf(withText(coreR.string.untracked_time_name), isCompletelyDisplayed())) }
@@ -123,7 +90,8 @@ class RecordsOptionsTest : BaseUiTest() {
         checkViewIsDisplayed(allOf(withText(name2), isCompletelyDisplayed()))
 
         // Hide all
-        clickOnViewWithId(recordsR.id.btnRecordsContainerFilter)
+        clickOnViewWithId(recordsR.id.btnRecordAdd)
+        clickOnViewWithText(R.string.chart_filter_hint)
         clickOnViewWithText(coreR.string.types_filter_hide_all)
         pressBack()
         tryAction { checkViewDoesNotExist(allOf(withText(coreR.string.untracked_time_name), isCompletelyDisplayed())) }
@@ -149,8 +117,8 @@ class RecordsOptionsTest : BaseUiTest() {
         checkViewIsDisplayed(allOf(withText(name), isCompletelyDisplayed()))
 
         // Change setting
-        clickOnViewWithId(recordsR.id.btnRecordsContainerOptions)
-        clickOnViewWithId(recordsR.id.btnRecordsContainerCalendarSwitch)
+        clickOnViewWithId(recordsR.id.btnRecordAdd)
+        clickOnViewWithText(R.string.records_switch_to_calendar)
 
         // Record is not shown
         checkViewIsDisplayed(allOf(withId(recordsR.id.viewRecordsCalendar), isCompletelyDisplayed()))
@@ -159,7 +127,8 @@ class RecordsOptionsTest : BaseUiTest() {
         checkViewDoesNotExist(allOf(withText(name), isCompletelyDisplayed()))
 
         // Change setting
-        clickOnViewWithId(recordsR.id.btnRecordsContainerCalendarSwitch)
+        clickOnViewWithId(recordsR.id.btnRecordAdd)
+        clickOnViewWithText(R.string.records_switch_to_list)
 
         // Record is shown
         checkViewDoesNotExist(allOf(withId(recordsR.id.viewRecordsCalendar), isCompletelyDisplayed()))

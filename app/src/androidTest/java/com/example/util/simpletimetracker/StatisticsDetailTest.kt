@@ -20,6 +20,7 @@ import com.example.util.simpletimetracker.utils.clickOnView
 import com.example.util.simpletimetracker.utils.clickOnViewWithId
 import com.example.util.simpletimetracker.utils.clickOnViewWithIdOnPager
 import com.example.util.simpletimetracker.utils.clickOnViewWithText
+import com.example.util.simpletimetracker.utils.longClickOnViewWithId
 import com.example.util.simpletimetracker.utils.recyclerItemCount
 import com.example.util.simpletimetracker.utils.tryAction
 import com.example.util.simpletimetracker.utils.withCardColor
@@ -114,10 +115,10 @@ class StatisticsDetailTest : BaseUiTest() {
             monthEnded = calendarToday.get(Calendar.MONTH),
             dayEnded = calendarToday.get(Calendar.DAY_OF_MONTH),
         )
-        checkViewDoesNotExist(
+        checkViewIsDisplayed(
             allOf(withId(statisticsDetailR.id.btnStatisticsDetailPrevious), isCompletelyDisplayed()),
         )
-        checkViewDoesNotExist(
+        checkViewIsDisplayed(
             allOf(withId(statisticsDetailR.id.btnStatisticsDetailNext), isCompletelyDisplayed()),
         )
         checkViewDoesNotExist(
@@ -1193,7 +1194,7 @@ class StatisticsDetailTest : BaseUiTest() {
         // Check
         NavUtils.openStatisticsScreen()
         tryAction { clickOnView(allOf(withText(name1), isCompletelyDisplayed())) }
-        clickOnViewWithId(statisticsDetailR.id.cardStatisticsDetailFilter)
+        longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
         clickOnView(withText(coreR.string.multitask_time_name))
         pressBack()
 

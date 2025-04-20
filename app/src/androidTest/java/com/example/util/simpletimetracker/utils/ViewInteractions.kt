@@ -45,6 +45,9 @@ fun clickOnViewWithId(id: Int): ViewInteraction =
 fun clickOnViewWithIdOnPager(id: Int): ViewInteraction =
     onView(allOf(isCompletelyDisplayed(), withId(id))).perform(click())
 
+fun longClickOnViewWithIdOnPager(id: Int): ViewInteraction =
+    onView(allOf(isCompletelyDisplayed(), withId(id))).perform(longClick())
+
 fun clickOnViewWithText(textId: Int): ViewInteraction =
     onView(withText(textId)).perform(click())
 
