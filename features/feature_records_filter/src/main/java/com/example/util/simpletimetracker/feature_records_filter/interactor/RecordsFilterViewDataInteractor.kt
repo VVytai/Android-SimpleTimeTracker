@@ -57,7 +57,7 @@ import com.example.util.simpletimetracker.feature_base_adapter.hint.HintViewData
 import com.example.util.simpletimetracker.feature_base_adapter.recordFilter.FilterViewData
 import com.example.util.simpletimetracker.feature_records_filter.R
 import com.example.util.simpletimetracker.feature_records_filter.adapter.RecordsFilterButtonViewData
-import com.example.util.simpletimetracker.feature_records_filter.adapter.RecordsFilterCommentViewData
+import com.example.util.simpletimetracker.feature_base_adapter.commentField.CommentFieldViewData
 import com.example.util.simpletimetracker.feature_records_filter.adapter.RecordsFilterRangeViewData
 import com.example.util.simpletimetracker.feature_records_filter.mapper.RecordsFilterViewDataMapper
 import com.example.util.simpletimetracker.feature_records_filter.model.RecordFilterCommentType
@@ -439,9 +439,11 @@ class RecordsFilterViewDataInteractor @Inject constructor(
             .getCommentItems()
             .getComments()
             .firstOrNull()
-        result += RecordsFilterCommentViewData(
+        result += CommentFieldViewData(
             id = 1L, // Only one at the time.
             text = comment.orEmpty(),
+            marginTopDp = -2,
+            marginHorizontal = resourceRepo.getDimenInDp(R.dimen.edit_screen_margin_horizontal),
         )
 
         return@withContext result

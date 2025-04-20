@@ -11,6 +11,6 @@
         android:id="@+id/rvWidgetSingleConfigureRecordType"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:listitem="@layout/item_widget_record_type_layout" />
+        tools:listitem="@layout/item_record_type_layout" />
 
 </LinearLayout>

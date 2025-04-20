@@ -25,7 +25,7 @@ import com.example.util.simpletimetracker.feature_base_adapter.category.Category
 import com.example.util.simpletimetracker.feature_base_adapter.recordType.RecordTypeViewData
 import com.example.util.simpletimetracker.feature_change_record.R
 import com.example.util.simpletimetracker.feature_change_record.adapter.ChangeRecordChangePreviewViewData
-import com.example.util.simpletimetracker.feature_change_record.adapter.ChangeRecordCommentViewData
+import com.example.util.simpletimetracker.feature_base_adapter.recordComment.RecordCommentViewData
 import com.example.util.simpletimetracker.feature_change_record.adapter.ChangeRecordSliderViewData
 import com.example.util.simpletimetracker.feature_change_record.adapter.ChangeRecordTimeAdjustmentViewData
 import com.example.util.simpletimetracker.feature_change_record.adapter.ChangeRecordTimeDoublePreviewViewData
@@ -349,7 +349,7 @@ abstract class ChangeRecordBaseViewModel(
         updateCategoriesViewData()
     }
 
-    fun onCommentClick(item: ChangeRecordCommentViewData) {
+    fun onCommentClick(item: RecordCommentViewData) {
         viewModelScope.launch {
             if (item.text != newComment) {
                 newComment = item.text

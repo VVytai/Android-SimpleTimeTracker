@@ -15,10 +15,15 @@ import com.example.util.simpletimetracker.core.utils.fragmentArgumentDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.BaseRecyclerAdapter
 import com.example.util.simpletimetracker.feature_base_adapter.category.createCategoryAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.category.createCategoryShowAllAdapterDelegate
+import com.example.util.simpletimetracker.feature_base_adapter.commentField.createCommentFieldAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.divider.createDividerAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.empty.createEmptyAdapterDelegate
+import com.example.util.simpletimetracker.feature_base_adapter.emptySpace.createEmptySpaceAdapterDelegate
+import com.example.util.simpletimetracker.feature_base_adapter.hint.createHintAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.info.createInfoAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.loader.createLoaderAdapterDelegate
+import com.example.util.simpletimetracker.feature_base_adapter.recordComment.createRecordCommentAdapterDelegate
+import com.example.util.simpletimetracker.feature_tag_selection.adapter.createRecordTagSelectionTextAdapterDelegate
 import com.example.util.simpletimetracker.feature_tag_selection.viewData.RecordTagSelectionViewState
 import com.example.util.simpletimetracker.feature_tag_selection.viewModel.RecordTagSelectionViewModel
 import com.example.util.simpletimetracker.feature_views.extension.setOnClick
@@ -49,7 +54,12 @@ class RecordTagSelectionFragment : BaseFragment<Binding>() {
             createCategoryShowAllAdapterDelegate { viewModel.onShowAllTagsClick() },
             createDividerAdapterDelegate(),
             createInfoAdapterDelegate(),
+            createHintAdapterDelegate(),
             createEmptyAdapterDelegate(),
+            createEmptySpaceAdapterDelegate(),
+            createCommentFieldAdapterDelegate(viewModel::onCommentChange),
+            createRecordTagSelectionTextAdapterDelegate(),
+            createRecordCommentAdapterDelegate(viewModel::onCommentClick),
         )
     }
     private val params: RecordTagSelectionParams by fragmentArgumentDelegate(
@@ -74,26 +84,17 @@ class RecordTagSelectionFragment : BaseFragment<Binding>() {
     }
 
     override fun initUx() = with(binding) {
-        etRecordTagSelectionCommentItem.doAfterTextChanged { viewModel.onCommentChange(it.toString()) }
         btnRecordTagSelectionSave.setOnClick(viewModel::onSaveClick)
     }
 
     override fun initViewModel(): Unit = with(viewModel) {
         extra = params
         viewData.observe(adapter::replace)
-        saveButtonVisibility.observe(binding.btnRecordTagSelectionSave::visible::set)
-        viewState.observe(::setState)
+        saveButtonVisibility.observe {
+            binding.dividerTypesSelectionBottom.visible = it
+            binding.btnRecordTagSelectionSave.visible = it
+        }
         saveClicked.observe { onTagSelected() }
-    }
-
-    private fun setState(data: RecordTagSelectionViewState) = with(binding) {
-        val showComment = RecordTagSelectionViewState.Field.Comment in data.fields
-        tvRecordTagSelectionCommentHint.isVisible = showComment
-        inputRecordTagSelectionComment.isVisible = showComment
-
-        val showTags = RecordTagSelectionViewState.Field.Tags in data.fields
-        tvRecordTagSelectionTagHint.isVisible = showTags
-        rvRecordTagSelectionList.isVisible = showTags
     }
 
     private fun onTagSelected() {

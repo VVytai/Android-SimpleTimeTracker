@@ -1,12 +1,12 @@
-package com.example.util.simpletimetracker.feature_change_record.adapter
+package com.example.util.simpletimetracker.feature_base_adapter.recordComment
 
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.createRecyclerBindingAdapterDelegate
 import com.example.util.simpletimetracker.feature_views.extension.setOnClickWith
-import com.example.util.simpletimetracker.feature_change_record.databinding.ChangeRecordCommentItemBinding as Binding
-import com.example.util.simpletimetracker.feature_change_record.adapter.ChangeRecordCommentViewData as ViewData
+import com.example.util.simpletimetracker.feature_base_adapter.databinding.ChangeRecordCommentItemBinding as Binding
+import com.example.util.simpletimetracker.feature_base_adapter.recordComment.RecordCommentViewData as ViewData
 
-fun createChangeRecordCommentAdapterDelegate(
+fun createRecordCommentAdapterDelegate(
     onItemClick: ((ViewData) -> Unit),
 ) = createRecyclerBindingAdapterDelegate<ViewData, Binding>(
     Binding::inflate,
@@ -21,7 +21,7 @@ fun createChangeRecordCommentAdapterDelegate(
     }
 }
 
-sealed class ChangeRecordCommentViewData : ViewHolderType {
+sealed class RecordCommentViewData : ViewHolderType {
 
     abstract val text: String
 

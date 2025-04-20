@@ -9,7 +9,7 @@ import com.example.util.simpletimetracker.core.dialog.OnTagSelectedListener
 import com.example.util.simpletimetracker.core.manager.ThemeManager
 import com.example.util.simpletimetracker.core.provider.ContextProvider
 import com.example.util.simpletimetracker.core.utils.activityArgumentDelegate
-import com.example.util.simpletimetracker.core.utils.applyNavBarInsets
+import com.example.util.simpletimetracker.core.utils.applySystemBarInsets
 import com.example.util.simpletimetracker.feature_widget.R
 import com.example.util.simpletimetracker.navigation.ScreenFactory
 import com.example.util.simpletimetracker.navigation.params.screen.RecordTagSelectionParams
@@ -38,7 +38,8 @@ class WidgetSingleTagSelectionActivity :
     )
 
     override fun initUi() {
-        binding.root.applyNavBarInsets()
+        // TODO check insets on all widget activities.
+        binding.root.applySystemBarInsets()
         screenFactory.getFragment(params)?.let {
             supportFragmentManager.commit {
                 replace(R.id.containerWidgetRecordTagSelection, it)

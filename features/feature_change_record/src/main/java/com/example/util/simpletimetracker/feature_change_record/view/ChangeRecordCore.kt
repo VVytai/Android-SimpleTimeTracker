@@ -33,7 +33,7 @@ import com.example.util.simpletimetracker.feature_change_record.R
 import com.example.util.simpletimetracker.feature_base_adapter.button.createButtonAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.category.createCategoryShowAllAdapterDelegate
 import com.example.util.simpletimetracker.feature_change_record.adapter.createChangeRecordChangePreviewAdapterDelegate
-import com.example.util.simpletimetracker.feature_change_record.adapter.createChangeRecordCommentAdapterDelegate
+import com.example.util.simpletimetracker.feature_base_adapter.recordComment.createRecordCommentAdapterDelegate
 import com.example.util.simpletimetracker.feature_change_record.adapter.createChangeRecordCommentFieldAdapterDelegate
 import com.example.util.simpletimetracker.feature_change_record.adapter.createChangeRecordSliderAdapterDelegate
 import com.example.util.simpletimetracker.feature_change_record.adapter.createChangeRecordTimeAdjustmentAdapterDelegate
@@ -96,7 +96,7 @@ class ChangeRecordCore(
                 afterTextChange = viewModel::onCommentChange,
                 onFavouriteClick = viewModel::onFavouriteCommentClick,
             ),
-            createChangeRecordCommentAdapterDelegate(
+            createRecordCommentAdapterDelegate(
                 onItemClick = viewModel::onCommentClick,
             ),
         )

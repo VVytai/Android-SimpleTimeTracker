@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.commit
 import com.example.util.simpletimetracker.core.base.BaseBottomSheetFragment
 import com.example.util.simpletimetracker.core.dialog.OnTagSelectedListener
+import com.example.util.simpletimetracker.core.extension.blockContentScroll
 import com.example.util.simpletimetracker.core.extension.setSkipCollapsed
 import com.example.util.simpletimetracker.core.utils.fragmentArgumentDelegate
 import com.example.util.simpletimetracker.feature_dialogs.R
@@ -36,6 +37,7 @@ class RecordTagSelectionDialogFragment :
 
     override fun initDialog() {
         setSkipCollapsed()
+        // TODO block content scroll
     }
 
     override fun initUi() {
