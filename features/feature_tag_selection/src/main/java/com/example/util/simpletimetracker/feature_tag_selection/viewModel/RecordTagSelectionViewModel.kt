@@ -7,7 +7,6 @@ import com.example.util.simpletimetracker.core.base.BaseViewModel
 import com.example.util.simpletimetracker.core.extension.lazySuspend
 import com.example.util.simpletimetracker.core.extension.set
 import com.example.util.simpletimetracker.domain.extension.addOrRemove
-import com.example.util.simpletimetracker.domain.favourite.model.FavouriteComment
 import com.example.util.simpletimetracker.domain.record.interactor.AddRunningRecordMediator
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.recordTag.interactor.AddTagToTypeIfNotExistMediator
@@ -16,7 +15,6 @@ import com.example.util.simpletimetracker.feature_base_adapter.category.Category
 import com.example.util.simpletimetracker.feature_base_adapter.loader.LoaderViewData
 import com.example.util.simpletimetracker.feature_base_adapter.recordComment.RecordCommentViewData
 import com.example.util.simpletimetracker.feature_tag_selection.interactor.RecordTagSelectionViewDataInteractor
-import com.example.util.simpletimetracker.feature_tag_selection.viewData.RecordTagSelectionViewState
 import com.example.util.simpletimetracker.navigation.params.screen.RecordTagSelectionParams
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -77,6 +75,12 @@ class RecordTagSelectionViewModel @Inject constructor(
         updateViewData()
     }
 
+    fun onShowSuggestionsClick() = viewModelScope.launch {
+        val newValue = !prefsInteractor.getIsCommentSelectionSuggestionsEnabled()
+        prefsInteractor.setIsCommentSelectionSuggestionsEnabled(newValue)
+        updateViewData()
+    }
+
     fun onSaveClick() {
         viewModelScope.launch {
             saveClicked()
@@ -126,18 +130,6 @@ class RecordTagSelectionViewModel @Inject constructor(
             showCommentInput -> true
             else -> false
         }
-    }
-
-    private fun loadViewState(): RecordTagSelectionViewState {
-        val fields = extra.fields.map {
-            when (it) {
-                is RecordTagSelectionParams.Field.Tags ->
-                    RecordTagSelectionViewState.Field.Tags
-                is RecordTagSelectionParams.Field.Comment ->
-                    RecordTagSelectionViewState.Field.Comment
-            }
-        }
-        return RecordTagSelectionViewState(fields)
     }
 
     private fun updateViewData(

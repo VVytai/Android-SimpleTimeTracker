@@ -41,9 +41,7 @@ class RecordCommentSearchViewDataInteractor @Inject constructor(
         }
     }
 
-    suspend fun getFavouriteData(
-
-    ): List<ViewHolderType> {
+    suspend fun getFavouriteData(): List<ViewHolderType> {
         return favouriteCommentInteractor.getAll()
             .map { RecordCommentViewData.Favourite(it.comment) }
             .takeUnless { it.isEmpty() }

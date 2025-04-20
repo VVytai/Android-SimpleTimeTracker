@@ -21,6 +21,7 @@ fun createCommentFieldAdapterDelegate(
             item.text != etCommentItemField.text.toString()
         ) {
             etCommentItemField.setText(item.text)
+            etCommentItemField.setSelection(item.text.length)
         }
         inputCommentField.setMargins(
             top = item.marginTopDp,

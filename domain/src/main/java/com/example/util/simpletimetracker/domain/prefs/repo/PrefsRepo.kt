@@ -172,6 +172,8 @@ interface PrefsRepo {
 
     var isArchiveSearchEnabled: Boolean
 
+    var isCommentSelectionSuggestionsEnabled: Boolean
+
     fun setWidget(widgetId: Int, recordType: Long)
 
     fun getWidget(widgetId: Int): Long

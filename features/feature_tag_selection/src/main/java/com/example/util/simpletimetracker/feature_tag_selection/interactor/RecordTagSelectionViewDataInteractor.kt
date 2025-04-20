@@ -5,6 +5,7 @@ import com.example.util.simpletimetracker.core.interactor.RecordTagViewDataInter
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
+import com.example.util.simpletimetracker.feature_base_adapter.category.CategoryShowSuggestionsViewData
 import com.example.util.simpletimetracker.feature_base_adapter.commentField.CommentFieldViewData
 import com.example.util.simpletimetracker.feature_base_adapter.emptySpace.EmptySpaceViewData
 import com.example.util.simpletimetracker.feature_tag_selection.R
@@ -27,7 +28,9 @@ class RecordTagSelectionViewDataInteractor @Inject constructor(
         fromCommentChange: Boolean,
     ): List<ViewHolderType> {
         val typeId = extra.typeId
-        val closeAfterOneTagSelected: Boolean = prefsInteractor.getRecordTagSelectionCloseAfterOne()
+        val closeAfterOneTagSelected = prefsInteractor.getRecordTagSelectionCloseAfterOne()
+        val showSuggestions = prefsInteractor.getIsCommentSelectionSuggestionsEnabled()
+        val isDarkTheme = prefsInteractor.getDarkMode()
         val shouldShowCommentSelection = RecordTagSelectionParams.Field.Comment in extra.fields
         val shouldShowTagSelection = RecordTagSelectionParams.Field.Tags in extra.fields
 
@@ -45,9 +48,20 @@ class RecordTagSelectionViewDataInteractor @Inject constructor(
                 marginHorizontal = resourceRepo.getDimenInDp(R.dimen.edit_screen_margin_horizontal),
             )
 
-            result += recordCommentSearchViewDataInteractor.getSearchData(comment)
-            result += recordCommentSearchViewDataInteractor.getFavouriteData()
-            result += recordCommentSearchViewDataInteractor.getLastCommentsData(typeId)
+            result += CategoryShowSuggestionsViewData(
+                name = resourceRepo.getString(R.string.change_record_last_comments_hint),
+                color = if (showSuggestions) {
+                    resourceRepo.getThemedAttr(R.attr.appActiveColor, isDarkTheme)
+                } else {
+                    resourceRepo.getThemedAttr(R.attr.appInactiveColor, isDarkTheme)
+                },
+            )
+
+            if (showSuggestions) {
+                result += recordCommentSearchViewDataInteractor.getSearchData(comment)
+                result += recordCommentSearchViewDataInteractor.getFavouriteData()
+                result += recordCommentSearchViewDataInteractor.getLastCommentsData(typeId)
+            }
         }
 
         if (shouldShowTagSelection) {

@@ -883,6 +883,14 @@ class PrefsInteractor @Inject constructor(
         prefsRepo.isArchiveSearchEnabled = value
     }
 
+    suspend fun getIsCommentSelectionSuggestionsEnabled(): Boolean = withContext(Dispatchers.IO) {
+        prefsRepo.isCommentSelectionSuggestionsEnabled
+    }
+
+    suspend fun setIsCommentSelectionSuggestionsEnabled(value: Boolean) = withContext(Dispatchers.IO) {
+        prefsRepo.isCommentSelectionSuggestionsEnabled = value
+    }
+
     suspend fun clear() = withContext(Dispatchers.IO) {
         prefsRepo.clear()
     }
