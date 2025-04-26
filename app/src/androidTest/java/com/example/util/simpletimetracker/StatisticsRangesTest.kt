@@ -125,8 +125,8 @@ class StatisticsRangesTest : BaseUiTest() {
         clickOnViewWithText(coreR.string.range_custom)
         tryAction { clickOnViewWithId(dialogsR.id.btnCustomRangeSelection) }
         checkViewIsDisplayed(allOf(withText(name), isCompletelyDisplayed()))
-        checkViewIsNotDisplayed(withId(statisticsR.id.btnStatisticsContainerPrevious))
-        checkViewIsNotDisplayed(withId(statisticsR.id.btnStatisticsContainerNext))
+        checkViewIsDisplayed(withId(statisticsR.id.btnStatisticsContainerPrevious))
+        checkViewIsDisplayed(withId(statisticsR.id.btnStatisticsContainerNext))
 
         // Switch to last days range
         clickOnViewWithId(statisticsR.id.btnStatisticsContainerToday)
@@ -137,8 +137,8 @@ class StatisticsRangesTest : BaseUiTest() {
         clickOnView(withPluralText(coreR.plurals.range_last, 7, 7))
         clickOnViewWithText(coreR.string.duration_dialog_save)
         checkViewIsDisplayed(allOf(withText(name), isCompletelyDisplayed()))
-        checkViewIsNotDisplayed(withId(statisticsR.id.btnStatisticsContainerPrevious))
-        checkViewIsNotDisplayed(withId(statisticsR.id.btnStatisticsContainerNext))
+        checkViewIsDisplayed(withId(statisticsR.id.btnStatisticsContainerPrevious))
+        checkViewIsDisplayed(withId(statisticsR.id.btnStatisticsContainerNext))
 
         // Switch back to day
         clickOnViewWithId(statisticsR.id.btnStatisticsContainerToday)

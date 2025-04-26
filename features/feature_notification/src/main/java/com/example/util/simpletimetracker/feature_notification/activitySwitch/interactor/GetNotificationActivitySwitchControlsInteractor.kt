@@ -41,6 +41,19 @@ class GetNotificationActivitySwitchControlsInteractor @Inject constructor(
         goals: Map<Long, List<RecordTypeGoal>>,
         allDailyCurrents: Map<Long, GetCurrentRecordsDurationInteractor.Result>,
     ): NotificationControlsParams {
+        // Populate container with empty items to preserve prev next controls position.
+        fun <T> populateWithEmpty(
+            data: List<T>,
+            pageSize: Int,
+            emptyValueProducer: () -> T,
+        ): List<T> {
+            if (data.isEmpty()) return data
+            if (data.size % pageSize == 0) return data
+            val emptyCount = pageSize - (data.size % pageSize)
+            val emptyData = List(emptyCount) { emptyValueProducer() }
+            return data + emptyData
+        }
+
         val typesMap = types.associateBy { it.id }
 
         val suggestionsViewData = suggestions.map { type ->
@@ -49,6 +62,12 @@ class GetNotificationActivitySwitchControlsInteractor @Inject constructor(
                 isDarkTheme = isDarkTheme,
                 goals = goals,
                 allDailyCurrents = allDailyCurrents,
+            )
+        }.let {
+            populateWithEmpty(
+                data = it,
+                pageSize = TYPES_LIST_SIZE,
+                emptyValueProducer = { NotificationControlsParams.Type.Empty },
             )
         }
 
@@ -86,25 +105,11 @@ class GetNotificationActivitySwitchControlsInteractor @Inject constructor(
                 }
             }
 
-        // Populate container with empty items to preserve prev next controls position.
-        fun <T> populateWithEmpty(
-            data: List<T>,
-            pageSize: Int,
-            emptyValueProducer: () -> T,
-        ): List<T> {
-            if (data.isEmpty()) return data
-            if (data.size % pageSize == 0) return data
-            val emptyCount = pageSize - (data.size % pageSize)
-            val emptyData = List(emptyCount) { emptyValueProducer() }
-            return data + emptyData
-        }
-
         val allTypesViewData = populateWithEmpty(
-            data = suggestionsViewData,
+            data = suggestionsViewData + repeatButtonViewData + typesViewData,
             pageSize = TYPES_LIST_SIZE,
             emptyValueProducer = { NotificationControlsParams.Type.Empty },
-        ) + repeatButtonViewData +
-            typesViewData
+        )
 
         val total = allTypesViewData.size
         val totalPages = total / TYPES_LIST_SIZE
@@ -118,11 +123,7 @@ class GetNotificationActivitySwitchControlsInteractor @Inject constructor(
         return NotificationControlsParams.Enabled(
             hint = hint,
             pagesHint = pagesHint,
-            types = populateWithEmpty(
-                data = allTypesViewData,
-                pageSize = TYPES_LIST_SIZE,
-                emptyValueProducer = { NotificationControlsParams.Type.Empty },
-            ),
+            types = allTypesViewData,
             typesShift = typesShift,
             tags = populateWithEmpty(
                 data = tagsViewData,
