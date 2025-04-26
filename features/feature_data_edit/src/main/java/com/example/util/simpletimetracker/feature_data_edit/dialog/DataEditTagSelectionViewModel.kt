@@ -65,6 +65,7 @@ class DataEditTagSelectionViewModel @Inject constructor(
         recordTagViewDataInteractor.getViewData(
             selectedTags = selectedIds,
             typeId = extra.typeId,
+            showAllTags = false,
             multipleChoiceAvailable = true,
             showAddButton = false,
             showArchived = true,

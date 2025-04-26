@@ -74,12 +74,13 @@ class RecordTagSelectionViewDataInteractor @Inject constructor(
 
             result += recordTagViewDataInteractor.getViewData(
                 selectedTags = selectedTags,
-                typeId = if (showAllTags) null else typeId,
+                typeId = typeId,
+                showAllTags = showAllTags,
                 multipleChoiceAvailable = !closeAfterOneTagSelected,
                 showAddButton = false,
                 showArchived = false,
                 showUntaggedButton = true,
-                showAllTagsButton = !showAllTags,
+                showAllTagsButton = true,
             ).data
         }
 

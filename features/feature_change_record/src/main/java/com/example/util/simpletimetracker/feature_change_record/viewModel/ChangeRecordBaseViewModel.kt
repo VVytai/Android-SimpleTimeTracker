@@ -861,12 +861,13 @@ abstract class ChangeRecordBaseViewModel(
     private suspend fun loadCategoriesViewData(): ChangeRecordTagsViewData {
         return recordTagViewDataInteractor.getViewData(
             selectedTags = newCategoryIds,
-            typeId = if (showAllTags) null else newTypeId,
+            typeId = newTypeId,
+            showAllTags = showAllTags,
             multipleChoiceAvailable = true,
             showAddButton = true,
             showArchived = false,
             showUntaggedButton = true,
-            showAllTagsButton = !showAllTags,
+            showAllTagsButton = true,
         ).let {
             ChangeRecordTagsViewData(
                 selectedCount = it.selectedCount,
