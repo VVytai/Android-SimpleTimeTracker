@@ -8,6 +8,7 @@ import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withClassName
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withSubstring
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.util.simpletimetracker.feature_dialogs.dateTime.CustomDatePicker
@@ -280,6 +281,66 @@ class ChangeRecordTest : BaseUiTest() {
                 ),
             )
         }
+    }
+
+    @Test
+    fun selectTagFromOtherActivity() {
+        val type1 = "Type1"
+        val type2 = "Type2"
+        val tag1 = "Tag1"
+        val tag2 = "Tag2"
+
+        // No tags - not shown
+        NavUtils.openRecordsScreen()
+        longClickOnViewWithId(R.id.btnRecordAdd)
+        clickOnViewWithText(coreR.string.change_record_tag_field)
+        checkViewDoesNotExist(withText(R.string.types_filter_show_all))
+        pressBack()
+        pressBack()
+
+        // Add activities
+        NavUtils.openRunningRecordsScreen()
+        testUtils.addActivity(type1)
+        testUtils.addActivity(type2)
+        testUtils.addRecordTag(tag1, type1)
+        testUtils.addRecord(type1)
+        NavUtils.openRecordsScreen()
+
+        // Not other tags - still not shown
+        clickOnView(allOf(withText(type1), isCompletelyDisplayed()))
+        clickOnViewWithText(coreR.string.change_record_tag_field)
+        checkViewDoesNotExist(withText(R.string.types_filter_show_all))
+        pressBack()
+        pressBack()
+
+        // Add other tag
+        testUtils.addRecordTag(tag2, type2)
+
+        // Check
+        clickOnView(allOf(withText(type1), isCompletelyDisplayed()))
+        clickOnViewWithText(coreR.string.change_record_tag_field)
+        checkViewIsDisplayed(withText(tag1))
+        checkViewDoesNotExist(withText(tag2))
+        checkViewIsDisplayed(withText(R.string.types_filter_show_all))
+
+        // Show all
+        clickOnViewWithText(R.string.types_filter_show_all)
+        checkViewIsDisplayed(withText(tag1))
+        checkViewIsDisplayed(withText(tag2))
+
+        // Select
+        clickOnViewWithText(tag2)
+        clickOnViewWithText(R.string.change_record_save)
+
+        // Check
+        checkViewIsDisplayed(withText("$type1 - $tag2"))
+
+        // Check that is now assignable
+        clickOnViewWithText("$type1 - $tag2")
+        clickOnViewWithText(coreR.string.change_record_tag_field)
+        checkViewIsDisplayed(withText(tag1))
+        checkViewIsDisplayed(withText(tag2))
+        checkViewDoesNotExist(withText(R.string.types_filter_show_all))
     }
 
     @Test

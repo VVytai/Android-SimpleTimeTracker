@@ -298,6 +298,45 @@ class SuggestionsTest : BaseUiTest() {
         checkViewDoesNotExist(typeMatcher(type3))
     }
 
+    @Test
+    fun multitasking() {
+        val type1 = "type1"
+        val type2 = "type2"
+        val type3 = "type3"
+        val type4 = "type4"
+
+        // Add data
+        runBlocking { prefsInteractor.setAllowMultitasking(true) }
+        testUtils.addActivity(type1)
+        testUtils.addActivity(type2)
+        testUtils.addActivity(type3)
+        testUtils.addActivity(type4)
+        testUtils.addSuggestion(type1, listOf(type3))
+        testUtils.addSuggestion(type2, listOf(type4))
+        Thread.sleep(1000)
+
+        // Check
+        checkViewDoesNotExist(typeMatcher(type1))
+        checkViewDoesNotExist(typeMatcher(type2))
+        checkViewDoesNotExist(typeMatcher(type3))
+        checkViewDoesNotExist(typeMatcher(type4))
+
+        clickOnViewWithText(type1)
+        checkRunningRecord(type1)
+        checkViewDoesNotExist(typeMatcher(type1))
+        checkViewDoesNotExist(typeMatcher(type2))
+        checkViewIsDisplayed(typeMatcher(type3))
+        checkViewDoesNotExist(typeMatcher(type4))
+
+        clickOnViewWithText(type2)
+        checkRunningRecord(type1)
+        checkRunningRecord(type2)
+        checkViewDoesNotExist(typeMatcher(type1))
+        checkViewDoesNotExist(typeMatcher(type2))
+        checkViewIsDisplayed(typeMatcher(type3))
+        checkViewIsDisplayed(typeMatcher(type4))
+    }
+
     private fun Matcher<View>.performClick() {
         onView(this).perform(click())
     }

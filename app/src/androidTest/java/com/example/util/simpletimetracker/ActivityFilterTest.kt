@@ -600,6 +600,45 @@ class ActivityFilterTest : BaseUiTest() {
         checkViewIsDisplayed(withText(typeName2))
     }
 
+    @Test
+    fun hidingShowing() {
+        showActivityFilters()
+
+        val filter1 = "filter1"
+        val filter2 = "filter2"
+
+        // Add data
+        testUtils.addActivityFilter(filter1)
+        Thread.sleep(1000)
+
+        // Button not shown
+        tryAction { checkViewDoesNotExist(withText(R.string.hide)) }
+        checkViewDoesNotExist(withText(R.string.show))
+        checkViewIsDisplayed(withText(filter1))
+
+        // Add another one
+        testUtils.addActivityFilter(filter2)
+        tryAction { checkViewIsDisplayed(withText(R.string.hide)) }
+        checkViewDoesNotExist(withText(R.string.show))
+        checkViewIsDisplayed(withText(filter1))
+        checkViewIsDisplayed(withText(filter2))
+
+        // Hide
+        clickOnViewWithText(R.string.hide)
+        tryAction { checkViewDoesNotExist(withText(R.string.hide)) }
+        checkViewIsDisplayed(withText(R.string.show))
+        checkViewDoesNotExist(withText(filter1))
+        checkViewDoesNotExist(withText(filter2))
+
+        // Show
+        Thread.sleep(1000) // Button is throttled.
+        clickOnViewWithText(R.string.show)
+        tryAction { checkViewDoesNotExist(withText(R.string.show)) }
+        checkViewIsDisplayed(withText(R.string.hide))
+        checkViewIsDisplayed(withText(filter1))
+        checkViewIsDisplayed(withText(filter2))
+    }
+
     private fun checkFilter(
         name: String,
         color: Int,

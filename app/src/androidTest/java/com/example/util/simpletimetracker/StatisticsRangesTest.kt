@@ -672,6 +672,15 @@ class StatisticsRangesTest : BaseUiTest() {
         checkViewDoesNotExist(allOf(withText(name1), isCompletelyDisplayed()))
         checkViewDoesNotExist(allOf(withText(name2), isCompletelyDisplayed()))
 
+        // Check previous
+        clickOnViewWithId(statisticsR.id.btnStatisticsContainerPrevious)
+        checkStatisticsItem(name = name1, hours = 1)
+        checkViewDoesNotExist(allOf(withText(name2), isCompletelyDisplayed()))
+        clickOnViewWithId(statisticsR.id.btnStatisticsContainerPrevious)
+        checkViewDoesNotExist(allOf(withText(name1), isCompletelyDisplayed()))
+        checkStatisticsItem(name = name2, hours = 2)
+        longClickOnViewWithId(statisticsR.id.btnStatisticsContainerToday)
+
         // Select custom range yesterday
         clickOnViewWithId(statisticsR.id.btnStatisticsContainerToday)
         clickOnViewWithText(coreR.string.range_custom)
@@ -691,6 +700,12 @@ class StatisticsRangesTest : BaseUiTest() {
         checkStatisticsItem(nameResId = coreR.string.untracked_time_name, hours = 23)
         checkStatisticsItem(name = name1, hours = 1)
         checkViewDoesNotExist(allOf(withText(name2), isCompletelyDisplayed()))
+
+        // Check previous
+        clickOnViewWithId(statisticsR.id.btnStatisticsContainerPrevious)
+        checkViewDoesNotExist(allOf(withText(name1), isCompletelyDisplayed()))
+        checkStatisticsItem(name = name2, hours = 2)
+        longClickOnViewWithId(statisticsR.id.btnStatisticsContainerToday)
 
         // Check time set
         clickOnViewWithId(statisticsR.id.btnStatisticsContainerToday)
@@ -717,6 +732,12 @@ class StatisticsRangesTest : BaseUiTest() {
         checkStatisticsItem(nameResId = coreR.string.untracked_time_name, hours = 30)
         checkStatisticsItem(name = name1, hours = 1)
         checkStatisticsItem(name = name2, hours = 2)
+
+        // Check previous
+        clickOnViewWithId(statisticsR.id.btnStatisticsContainerPrevious)
+        checkViewDoesNotExist(allOf(withText(name1), isCompletelyDisplayed()))
+        checkViewDoesNotExist(allOf(withText(name2), isCompletelyDisplayed()))
+        longClickOnViewWithId(statisticsR.id.btnStatisticsContainerToday)
 
         // Check time set
         clickOnViewWithId(statisticsR.id.btnStatisticsContainerToday)
@@ -802,6 +823,10 @@ class StatisticsRangesTest : BaseUiTest() {
             ),
         )
         checkStatisticsItem(name = name1, hours = 2)
+
+        // Check previous
+        clickOnViewWithId(statisticsR.id.btnStatisticsContainerPrevious)
+        checkStatisticsItem(name = name1, hours = 1)
     }
 
     private fun checkStatisticsItem(

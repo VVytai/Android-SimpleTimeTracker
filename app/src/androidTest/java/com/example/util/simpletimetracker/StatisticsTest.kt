@@ -74,7 +74,7 @@ class StatisticsTest : BaseUiTest() {
         clickOnView(allOf(withText(coreR.string.title_this_year), isCompletelyDisplayed()))
         clickOnView(withPluralText(coreR.plurals.range_last, 7, 7))
         clickOnViewWithText(coreR.string.duration_dialog_save)
-        checkRecordsRange(firstColor, lastColor, firstIcon, lastIcon, name, newName, checkPrevious = false)
+        checkRecordsRange(firstColor, lastColor, firstIcon, lastIcon, name, newName)
 
         // Switch to overall range
         clickOnView(allOf(withPluralText(coreR.plurals.range_last, 7, 7), isCompletelyDisplayed()))
@@ -192,7 +192,7 @@ class StatisticsTest : BaseUiTest() {
         clickOnView(allOf(withText(coreR.string.title_this_year), isCompletelyDisplayed()))
         clickOnView(withPluralText(coreR.plurals.range_last, 7, 7))
         clickOnViewWithText(coreR.string.duration_dialog_save)
-        checkCategoryRange(firstColor, lastColor, categoryName1, categoryName2, categoryName3, checkPrevious = false)
+        checkCategoryRange(firstColor, lastColor, categoryName1, categoryName2, categoryName3)
 
         // Switch to overall range
         clickOnView(allOf(withPluralText(coreR.plurals.range_last, 7, 7), isCompletelyDisplayed()))
@@ -320,7 +320,7 @@ class StatisticsTest : BaseUiTest() {
         clickOnView(allOf(withText(coreR.string.title_this_year), isCompletelyDisplayed()))
         clickOnView(withPluralText(coreR.plurals.range_last, 7, 7))
         clickOnViewWithText(coreR.string.duration_dialog_save)
-        checkTagRange(firstColor, lastColor, tagName1, tagName2, tagName3, checkPrevious = false)
+        checkTagRange(firstColor, lastColor, tagName1, tagName2, tagName3)
 
         // Switch to overall range
         clickOnView(allOf(withPluralText(coreR.plurals.range_last, 7, 7), isCompletelyDisplayed()))

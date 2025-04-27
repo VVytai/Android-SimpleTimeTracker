@@ -1,5 +1,6 @@
 package com.example.util.simpletimetracker
 
+import androidx.test.espresso.Espresso.closeSoftKeyboard
 import androidx.test.espresso.Espresso.onData
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.pressBack
@@ -30,11 +31,13 @@ import com.example.util.simpletimetracker.utils.checkCheckboxIsNotChecked
 import com.example.util.simpletimetracker.utils.checkViewDoesNotExist
 import com.example.util.simpletimetracker.utils.checkViewIsDisplayed
 import com.example.util.simpletimetracker.utils.checkViewIsNotDisplayed
+import com.example.util.simpletimetracker.utils.clickOnRecyclerItem
 import com.example.util.simpletimetracker.utils.clickOnView
 import com.example.util.simpletimetracker.utils.clickOnViewWithId
 import com.example.util.simpletimetracker.utils.clickOnViewWithIdOnPager
 import com.example.util.simpletimetracker.utils.clickOnViewWithText
 import com.example.util.simpletimetracker.utils.getMillis
+import com.example.util.simpletimetracker.utils.longClickOnView
 import com.example.util.simpletimetracker.utils.longClickOnViewWithId
 import com.example.util.simpletimetracker.utils.recyclerItemCount
 import com.example.util.simpletimetracker.utils.tryAction
@@ -52,6 +55,7 @@ import java.util.Calendar
 import java.util.concurrent.TimeUnit
 import com.example.util.simpletimetracker.core.R as coreR
 import com.example.util.simpletimetracker.feature_base_adapter.R as baseR
+import com.example.util.simpletimetracker.feature_change_record.R as changeRecordR
 import com.example.util.simpletimetracker.feature_change_record_type.R as changeRecordTypeR
 import com.example.util.simpletimetracker.feature_dialogs.R as dialogsR
 import com.example.util.simpletimetracker.feature_records.R as recordsR
@@ -1613,6 +1617,54 @@ class SettingsTest : BaseUiTest() {
     }
 
     @Test
+    fun recordTagSelectionFromOtherActivity() {
+        val type1 = "Type1"
+        val type2 = "Type2"
+        val tag1 = "Tag1"
+        val tag2 = "Tag2"
+
+        // Add activities
+        runBlocking { prefsInteractor.setShowRecordTagSelection(true) }
+        testUtils.addActivity(type1)
+        testUtils.addActivity(type2)
+        testUtils.addRecordTag(tag1, type1)
+        Thread.sleep(1000)
+
+        // Not other tags - not shown
+        tryAction { clickOnViewWithText(type1) }
+        checkViewDoesNotExist(withText(R.string.types_filter_show_all))
+        pressBack()
+
+        // Add other tag
+        testUtils.addRecordTag(tag2, type2)
+
+        // Check
+        clickOnViewWithText(type1)
+        checkViewIsDisplayed(withText(tag1))
+        checkViewDoesNotExist(withText(tag2))
+        checkViewIsDisplayed(withText(R.string.types_filter_show_all))
+
+        // Show all
+        clickOnViewWithText(R.string.types_filter_show_all)
+        checkViewIsDisplayed(withText(tag1))
+        checkViewIsDisplayed(withText(tag2))
+
+        // Select
+        clickOnViewWithText(tag2)
+        clickOnViewWithText(R.string.change_record_save)
+
+        // Check
+        checkViewIsDisplayed(withText("$type1 - $tag2"))
+
+        // Check that is now assignable
+        longClickOnView(withText("$type1 - $tag2"))
+        clickOnViewWithText(coreR.string.change_record_tag_field)
+        checkViewIsDisplayed(withText(tag1))
+        checkViewIsDisplayed(withText(tag2))
+        checkViewDoesNotExist(withText(R.string.types_filter_show_all))
+    }
+
+    @Test
     fun commentSelection() {
         val name = "TypeName"
         val comment = "comment"
@@ -1700,6 +1752,128 @@ class SettingsTest : BaseUiTest() {
         NavUtils.openRunningRecordsScreen()
         clickOnViewWithText(name)
         tryAction { clickOnView(allOf(isDescendantOfA(withId(baseR.id.viewRunningRecordItem)), withText(name))) }
+    }
+
+    @Test
+    fun commentSelectionSuggestions() {
+        val nameNoComments = "Name1"
+        val nameComment = "Name2"
+        val nameComments = "Name3"
+        val comment1 = "Comment1"
+        val comment2 = "Comment2"
+        val comment3 = "Comment3"
+        val favComment1 = "favourite comment1"
+
+        // Add data
+        testUtils.addActivity(nameNoComments)
+        testUtils.addActivity(nameComment)
+        testUtils.addActivity(nameComments)
+        testUtils.addRecord(nameNoComments)
+        testUtils.addRecord(nameComment, comment = comment1)
+        testUtils.addRecord(nameComments, comment = comment2)
+        testUtils.addRecord(nameComments, comment = comment3)
+
+        // Disabled
+        NavUtils.openSettingsScreen()
+        NavUtils.openSettingsAdditional()
+        scrollSettingsRecyclerToText(coreR.string.settings_show_comment_input)
+        checkViewDoesNotExist(withText(coreR.string.settings_show_comment_suggestions))
+
+        clickOnSettingsCheckboxBesideText(coreR.string.settings_show_comment_input)
+        scrollSettingsRecyclerToText(coreR.string.settings_show_comment_suggestions)
+        checkViewIsDisplayed(withText(coreR.string.settings_show_comment_suggestions))
+        checkCheckboxIsNotChecked(settingsCheckboxBesideText(coreR.string.settings_show_comment_suggestions))
+        clickOnSettingsCheckboxBesideText(coreR.string.settings_show_comment_suggestions)
+        checkCheckboxIsChecked(settingsCheckboxBesideText(coreR.string.settings_show_comment_suggestions))
+
+        // Has no data
+        NavUtils.openRunningRecordsScreen()
+        clickOnViewWithText(nameNoComments)
+        tryAction { checkViewIsDisplayed(withId(tagSelectionR.id.inputCommentField)) }
+        checkViewDoesNotExist(withText(coreR.string.change_record_similar_comments_hint))
+        checkViewDoesNotExist(withText(coreR.string.change_record_last_comments_hint))
+        checkViewDoesNotExist(withText(coreR.string.change_record_favourite_comments_hint))
+        pressBack()
+
+        // Has data
+        clickOnViewWithText(nameComment)
+        checkViewDoesNotExist(withText(coreR.string.change_record_similar_comments_hint))
+        checkViewIsDisplayed(withText(coreR.string.change_record_last_comments_hint))
+        checkViewDoesNotExist(withText(coreR.string.change_record_favourite_comments_hint))
+        checkViewIsDisplayed(withText(comment1))
+        checkViewDoesNotExist(withText(comment2))
+        checkViewDoesNotExist(withText(comment3))
+        pressBack()
+
+        clickOnViewWithText(nameComments)
+        checkViewDoesNotExist(withText(coreR.string.change_record_similar_comments_hint))
+        checkViewIsDisplayed(withText(coreR.string.change_record_last_comments_hint))
+        checkViewDoesNotExist(withText(coreR.string.change_record_favourite_comments_hint))
+        checkViewDoesNotExist(withText(comment1))
+        checkViewIsDisplayed(withText(comment2))
+        checkViewIsDisplayed(withText(comment3))
+
+        // Select last comment
+        clickOnViewWithText(comment2)
+        checkViewIsDisplayed(allOf(withId(tagSelectionR.id.etCommentItemField), withText(comment2)))
+        pressBack()
+
+        // Has favourite comments
+        testUtils.addFavouriteComment(favComment1)
+        clickOnViewWithText(nameComments)
+        checkViewDoesNotExist(withText(coreR.string.change_record_similar_comments_hint))
+        checkViewIsDisplayed(withText(coreR.string.change_record_last_comments_hint))
+        checkViewIsDisplayed(withText(coreR.string.change_record_favourite_comments_hint))
+        checkViewDoesNotExist(withText(comment1))
+        checkViewIsDisplayed(withText(comment2))
+        checkViewIsDisplayed(withText(comment3))
+        checkViewIsDisplayed(withText(favComment1))
+
+        // Select fav comment
+        clickOnViewWithText(favComment1)
+        checkViewIsDisplayed(allOf(withId(tagSelectionR.id.etCommentItemField), withText(favComment1)))
+        pressBack()
+
+        // Search
+        clickOnViewWithText(nameNoComments)
+        typeTextIntoView(tagSelectionR.id.etCommentItemField, "comm")
+        Thread.sleep(1000)
+        closeSoftKeyboard()
+        checkViewIsDisplayed(withText(coreR.string.change_record_similar_comments_hint))
+        checkViewDoesNotExist(withText(coreR.string.change_record_last_comments_hint))
+        checkViewIsDisplayed(withText(coreR.string.change_record_favourite_comments_hint))
+        checkViewIsDisplayed(withText(comment1))
+        checkViewIsDisplayed(withText(comment2))
+        checkViewIsDisplayed(withText(comment3))
+        checkViewIsDisplayed(withText(favComment1))
+
+        typeTextIntoView(changeRecordR.id.etCommentItemField, "1")
+        Thread.sleep(1000)
+        closeSoftKeyboard()
+        checkViewIsDisplayed(withText(coreR.string.change_record_similar_comments_hint))
+        checkViewDoesNotExist(withText(coreR.string.change_record_last_comments_hint))
+        checkViewIsDisplayed(withText(coreR.string.change_record_favourite_comments_hint))
+        checkViewIsDisplayed(withText(comment1))
+        checkViewDoesNotExist(withText(comment2))
+        checkViewDoesNotExist(withText(comment3))
+        checkViewIsDisplayed(withText(favComment1))
+        pressBack()
+
+        // Has data but disabled
+        NavUtils.openSettingsScreen()
+        scrollSettingsRecyclerToText(coreR.string.settings_show_comment_suggestions)
+        checkViewIsDisplayed(withText(coreR.string.settings_show_comment_suggestions))
+        checkCheckboxIsChecked(settingsCheckboxBesideText(coreR.string.settings_show_comment_suggestions))
+        clickOnSettingsCheckboxBesideText(coreR.string.settings_show_comment_suggestions)
+        checkCheckboxIsNotChecked(settingsCheckboxBesideText(coreR.string.settings_show_comment_suggestions))
+
+        NavUtils.openRunningRecordsScreen()
+        clickOnViewWithText(nameComments)
+        tryAction { checkViewIsDisplayed(withId(tagSelectionR.id.inputCommentField)) }
+        checkViewDoesNotExist(withText(coreR.string.change_record_similar_comments_hint))
+        checkViewDoesNotExist(withText(coreR.string.change_record_last_comments_hint))
+        checkViewDoesNotExist(withText(coreR.string.change_record_favourite_comments_hint))
+        pressBack()
     }
 
     @Test
@@ -2506,6 +2680,36 @@ class SettingsTest : BaseUiTest() {
         // Stop last auto started - not running
         clickOnView(allOf(isDescendantOfA(withId(R.id.viewRunningRecordItem)), withText(name2)))
         checkRunningMark(false)
+
+        // Delete auto started - not running
+        clickOnView(allOf(withText(name1), isCompletelyDisplayed()))
+        checkRunningMark(true)
+        longClickOnView(allOf(isDescendantOfA(withId(R.id.viewRunningRecordItem)), withText(name1)))
+        clickOnViewWithText(R.string.archive_dialog_delete)
+        checkRunningMark(false)
+
+        // Change to not auto started - not running
+        clickOnView(allOf(withText(name1), isCompletelyDisplayed()))
+        checkRunningMark(true)
+        longClickOnView(allOf(isDescendantOfA(withId(R.id.viewRunningRecordItem)), withText(name1)))
+        clickOnViewWithText(coreR.string.change_record_type_field)
+        clickOnRecyclerItem(changeRecordR.id.rvChangeRecordType, withText(name3))
+        clickOnViewWithText(R.string.change_record_save)
+        checkRunningMark(false)
+    }
+
+    @Test
+    fun retroactiveMode() {
+        NavUtils.openSettingsScreen()
+        NavUtils.openSettingsAdditional()
+        scrollSettingsRecyclerToText(coreR.string.settings_retroactive_tracking_mode)
+
+        checkCheckboxIsNotChecked(settingsCheckboxBesideText(coreR.string.settings_retroactive_tracking_mode))
+        clickOnSettingsCheckboxBesideText(coreR.string.settings_retroactive_tracking_mode)
+        checkCheckboxIsChecked(settingsCheckboxBesideText(coreR.string.settings_retroactive_tracking_mode))
+
+        clickOnSettingsCheckboxBesideText(coreR.string.settings_retroactive_tracking_mode)
+        checkCheckboxIsNotChecked(settingsCheckboxBesideText(coreR.string.settings_retroactive_tracking_mode))
     }
 
     private fun clearDuration() {

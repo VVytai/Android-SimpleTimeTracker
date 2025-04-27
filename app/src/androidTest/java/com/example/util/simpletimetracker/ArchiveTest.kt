@@ -4,6 +4,7 @@ import androidx.test.espresso.Espresso.closeSoftKeyboard
 import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -11,6 +12,7 @@ import com.example.util.simpletimetracker.utils.BaseUiTest
 import com.example.util.simpletimetracker.utils.NavUtils
 import com.example.util.simpletimetracker.utils.checkViewDoesNotExist
 import com.example.util.simpletimetracker.utils.checkViewIsDisplayed
+import com.example.util.simpletimetracker.utils.checkViewIsNotDisplayed
 import com.example.util.simpletimetracker.utils.clickOnView
 import com.example.util.simpletimetracker.utils.clickOnViewWithId
 import com.example.util.simpletimetracker.utils.clickOnViewWithText
@@ -18,6 +20,7 @@ import com.example.util.simpletimetracker.utils.longClickOnView
 import com.example.util.simpletimetracker.utils.longClickOnViewWithId
 import com.example.util.simpletimetracker.utils.longClickOnViewWithIdOnPager
 import com.example.util.simpletimetracker.utils.tryAction
+import com.example.util.simpletimetracker.utils.typeTextIntoView
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.hamcrest.CoreMatchers.allOf
 import org.junit.Test
@@ -353,6 +356,100 @@ class ArchiveTest : BaseUiTest() {
                 hasDescendant(withText("0")),
             ),
         )
+    }
+
+    @Test
+    fun search() {
+        fun checkVisible(vararg names: String) {
+            names.forEach {
+                checkViewIsDisplayed(allOf(isDescendantOfA(withId(R.id.rvArchiveList)), withText(it)))
+            }
+        }
+
+        fun checkNotVisible(vararg names: String) {
+            names.forEach {
+                checkViewDoesNotExist(allOf(isDescendantOfA(withId(R.id.rvArchiveList)), withText(it)))
+            }
+        }
+
+        val tag1 = "tag1"
+        val tag2 = "tag2 test2"
+        val tag3 = "tag3 test3"
+        val type1 = "type1"
+        val type2 = "type2 test2"
+        val type3 = "type3 test3"
+
+        // Add data
+        testUtils.addActivity(type1, archived = true)
+        testUtils.addActivity(type2, archived = true)
+        testUtils.addActivity(type3, archived = true)
+        testUtils.addRecordTag(tag1, archived = true)
+        testUtils.addRecordTag(tag2, archived = true)
+        testUtils.addRecordTag(tag3, archived = true)
+
+        // Check
+        NavUtils.openSettingsScreen()
+        NavUtils.openArchiveScreen()
+        checkVisible(tag1, tag2, tag3, type1, type2, type3)
+
+        // Search
+        clickOnViewWithId(R.id.btnArchiveOptions)
+        clickOnViewWithText(R.string.enable_search_hint)
+
+        typeTextIntoView(R.id.etArchiveSearchField, tag1)
+        tryAction {
+            checkVisible(tag1)
+            checkNotVisible(tag2, tag3, type1, type2, type3)
+        }
+
+        typeTextIntoView(R.id.etArchiveSearchField, tag2)
+        tryAction {
+            checkVisible(tag2)
+            checkNotVisible(tag1, tag3, type1, type2, type3)
+        }
+
+        typeTextIntoView(R.id.etArchiveSearchField, type1)
+        tryAction {
+            checkVisible(type1)
+            checkNotVisible(tag1, tag2, tag3, type2, type3)
+        }
+
+        typeTextIntoView(R.id.etArchiveSearchField, type2)
+        tryAction {
+            checkVisible(type2)
+            checkNotVisible(tag1, tag2, tag3, type1, type3)
+        }
+
+        typeTextIntoView(R.id.etArchiveSearchField, "1")
+        tryAction {
+            checkVisible(tag1, type1)
+            checkNotVisible(tag2, tag3, type2, type3)
+        }
+
+        typeTextIntoView(R.id.etArchiveSearchField, "test2")
+        tryAction {
+            checkVisible(tag2, type2)
+            checkNotVisible(tag1, tag3, type1, type3)
+        }
+
+        typeTextIntoView(R.id.etArchiveSearchField, "test")
+        tryAction {
+            checkVisible(tag2, tag3, type2, type3)
+            checkNotVisible(tag1, type1)
+        }
+
+        typeTextIntoView(R.id.etArchiveSearchField, "something")
+        tryAction {
+            checkNotVisible(tag1, tag2, tag3, type1, type2, type3)
+        }
+
+        // Disable
+        clickOnViewWithId(R.id.btnArchiveOptions)
+        clickOnViewWithText(R.string.enable_search_hint)
+        tryAction {
+            checkViewIsNotDisplayed(withId(R.id.etArchiveSearchField))
+            checkVisible(tag1, tag2, tag3, type1, type2, type3)
+        }
     }
 
     private fun checkTypeVisible(name: String) {
