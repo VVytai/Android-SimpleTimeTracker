@@ -4,10 +4,13 @@ import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.view.WindowManager
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.viewModels
 import com.example.util.simpletimetracker.core.base.BaseFragment
 import com.example.util.simpletimetracker.core.dialog.OnTagSelectedListener
 import com.example.util.simpletimetracker.core.extension.findListeners
+import com.example.util.simpletimetracker.core.manager.KeyboardVisibilityManager
 import com.example.util.simpletimetracker.core.utils.InsetConfiguration
 import com.example.util.simpletimetracker.core.utils.fragmentArgumentDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.BaseRecyclerAdapter
@@ -23,6 +26,7 @@ import com.example.util.simpletimetracker.feature_base_adapter.loader.createLoad
 import com.example.util.simpletimetracker.feature_base_adapter.recordComment.createRecordCommentAdapterDelegate
 import com.example.util.simpletimetracker.feature_tag_selection.adapter.createRecordTagSelectionTextAdapterDelegate
 import com.example.util.simpletimetracker.feature_tag_selection.viewModel.RecordTagSelectionViewModel
+import com.example.util.simpletimetracker.feature_views.extension.safeUpdateLayoutParams
 import com.example.util.simpletimetracker.feature_views.extension.setOnClick
 import com.example.util.simpletimetracker.feature_views.extension.visible
 import com.example.util.simpletimetracker.navigation.params.screen.RecordTagSelectionParams
@@ -81,11 +85,13 @@ class RecordTagSelectionFragment : BaseFragment<Binding>() {
     }
 
     override fun initUx() = with(binding) {
+        KeyboardVisibilityManager.addObserver(this@RecordTagSelectionFragment, ::onKeyboardVisible)
         btnRecordTagSelectionSave.setOnClick(viewModel::onSaveClick)
     }
 
     override fun initViewModel(): Unit = with(viewModel) {
         extra = params
+        saveSoftInputMode()
         viewData.observe(adapter::replace)
         saveButtonVisibility.observe {
             binding.dividerTypesSelectionBottom.visible = it
@@ -94,8 +100,29 @@ class RecordTagSelectionFragment : BaseFragment<Binding>() {
         saveClicked.observe { onTagSelected() }
     }
 
+    override fun onDestroy() {
+        restoreSoftInputMode()
+        KeyboardVisibilityManager.removeObserver(this@RecordTagSelectionFragment)
+        super.onDestroy()
+    }
+
     private fun onTagSelected() {
         listeners.forEach { it.onTagSelected() }
+    }
+
+    private fun onKeyboardVisible(isVisible: Boolean) {
+        binding.rvRecordTagSelectionList.safeUpdateLayoutParams<ConstraintLayout.LayoutParams> {
+            verticalBias = if (isVisible) 0.0f else 0.5f
+        }
+    }
+
+    private fun saveSoftInputMode() {
+        activity?.window?.attributes?.softInputMode?.let { viewModel.softInputMode = it }
+        activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+    }
+
+    private fun restoreSoftInputMode() {
+        viewModel.softInputMode?.let { activity?.window?.setSoftInputMode(it) }
     }
 
     companion object {

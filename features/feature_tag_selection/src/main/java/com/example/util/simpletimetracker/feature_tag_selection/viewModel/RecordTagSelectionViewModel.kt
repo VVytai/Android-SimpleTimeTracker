@@ -7,8 +7,8 @@ import com.example.util.simpletimetracker.core.base.BaseViewModel
 import com.example.util.simpletimetracker.core.extension.lazySuspend
 import com.example.util.simpletimetracker.core.extension.set
 import com.example.util.simpletimetracker.domain.extension.addOrRemove
-import com.example.util.simpletimetracker.domain.record.interactor.AddRunningRecordMediator
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
+import com.example.util.simpletimetracker.domain.record.interactor.AddRunningRecordMediator
 import com.example.util.simpletimetracker.domain.recordTag.interactor.AddTagToTypeIfNotExistMediator
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.category.CategoryViewData
@@ -30,6 +30,7 @@ class RecordTagSelectionViewModel @Inject constructor(
 ) : BaseViewModel() {
 
     lateinit var extra: RecordTagSelectionParams
+    var softInputMode: Int? = null
 
     val viewData: LiveData<List<ViewHolderType>> by lazy {
         return@lazy MutableLiveData<List<ViewHolderType>>().let { initial ->

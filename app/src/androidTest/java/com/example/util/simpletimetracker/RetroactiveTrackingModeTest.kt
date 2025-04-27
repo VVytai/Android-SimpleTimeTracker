@@ -213,6 +213,5 @@ class RetroactiveTrackingModeTest : BaseUiTest() {
                 hasDescendant(withSubstring(text)),
             ),
         )
-
     }
 }

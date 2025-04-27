@@ -208,3 +208,11 @@ fun View.setRounded(radiusDp: Int) {
     }
     clipToOutline = true
 }
+
+inline fun <reified T : ViewGroup.LayoutParams> View.safeUpdateLayoutParams(
+    block: T.() -> Unit,
+) {
+    val params = layoutParams as? T ?: return
+    block(params)
+    layoutParams = params
+}

@@ -5,10 +5,13 @@ import androidx.core.graphics.Insets
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
+import com.example.util.simpletimetracker.core.manager.KeyboardVisibilityManager
 
 // Can update padding or margin, which would be more appropriate.
 fun View.doOnApplyWindowInsetsListener(block: View.(WindowInsetsCompat) -> Unit) {
     ViewCompat.setOnApplyWindowInsetsListener(this) { _, windowInsets ->
+        // All setOnApplyWindowInsetsListener listeners should call Keyboard manager.
+        KeyboardVisibilityManager.onInsetsChanged(windowInsets)
         block(windowInsets)
         windowInsets
     }
@@ -39,6 +42,11 @@ fun WindowInsetsCompat.getNavBarInsets(): Insets {
 
 fun WindowInsetsCompat.getSystemBarInsets(): Insets {
     return getInsets(WindowInsetsCompat.Type.systemBars())
+}
+
+// Need windowSoftInputMode="adjustResize" on activity in order to work on api < 30.
+fun WindowInsetsCompat.isKeyboardInsetsVisible(): Boolean {
+    return isVisible(WindowInsetsCompat.Type.ime())
 }
 
 sealed interface InsetConfiguration {

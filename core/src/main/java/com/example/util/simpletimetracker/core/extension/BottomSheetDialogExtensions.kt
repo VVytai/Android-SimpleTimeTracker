@@ -21,12 +21,16 @@ fun BottomSheetDialogFragment.setSkipCollapsed() {
     }
 }
 
-fun BottomSheetDialogFragment.setFullScreen() {
+fun BottomSheetDialogFragment.setFullScreen(isFullScreen: Boolean = true) {
     // Dialog parent is R.id.design_bottom_sheet from android material.
     // It's a wrapper created around dialog to set bottom sheet behavior. By default it's created
     // with wrap_content height, so we replace it here.
     (view?.parent as? FrameLayout)?.apply {
-        layoutParams?.height = CoordinatorLayout.LayoutParams.MATCH_PARENT
+        layoutParams?.height = if (isFullScreen) {
+            CoordinatorLayout.LayoutParams.MATCH_PARENT
+        } else {
+            CoordinatorLayout.LayoutParams.WRAP_CONTENT
+        }
         requestLayout() // TODO necessary?
     }
 }

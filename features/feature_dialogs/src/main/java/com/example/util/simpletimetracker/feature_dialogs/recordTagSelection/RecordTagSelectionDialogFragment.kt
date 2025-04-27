@@ -7,7 +7,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.commit
 import com.example.util.simpletimetracker.core.base.BaseBottomSheetFragment
 import com.example.util.simpletimetracker.core.dialog.OnTagSelectedListener
+import com.example.util.simpletimetracker.core.extension.setFullScreen
 import com.example.util.simpletimetracker.core.extension.setSkipCollapsed
+import com.example.util.simpletimetracker.core.manager.KeyboardVisibilityManager
 import com.example.util.simpletimetracker.core.utils.fragmentArgumentDelegate
 import com.example.util.simpletimetracker.feature_dialogs.R
 import com.example.util.simpletimetracker.navigation.ScreenFactory
@@ -45,6 +47,19 @@ class RecordTagSelectionDialogFragment :
                 replace(R.id.containerRecordTagSelection, it)
             }
         }
+    }
+
+    override fun initUx() {
+        KeyboardVisibilityManager.addObserver(this@RecordTagSelectionDialogFragment, ::onKeyboardVisible)
+    }
+
+    override fun onDestroy() {
+        KeyboardVisibilityManager.removeObserver(this@RecordTagSelectionDialogFragment)
+        super.onDestroy()
+    }
+
+    private fun onKeyboardVisible(isVisible: Boolean) {
+        setFullScreen(isFullScreen = isVisible)
     }
 
     companion object {
