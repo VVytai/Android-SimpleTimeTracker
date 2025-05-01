@@ -28,4 +28,5 @@ sealed interface AppLanguage {
     object Ukrainian : AppLanguage
     object ChineseSimplified : AppLanguage
     object ChineseTraditional : AppLanguage
+    object Zulu : AppLanguage
 }

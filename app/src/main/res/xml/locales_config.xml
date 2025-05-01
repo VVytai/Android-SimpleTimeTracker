@@ -25,4 +25,5 @@
     <locale android:name="@string/settings_ukrainian_tag"/>
     <locale android:name="@string/settings_chinese_simplified_tag"/>
     <locale android:name="@string/settings_chinese_traditional_tag"/>
+    <locale android:name="@string/settings_zulu_tag"/>
 </locale-config>

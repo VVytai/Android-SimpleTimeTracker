@@ -50,6 +50,7 @@ class LanguageInteractor @Inject constructor(
             is AppLanguage.Ukrainian -> R.string.settings_ukrainian_language
             is AppLanguage.ChineseSimplified -> R.string.settings_chinese_simplified_language
             is AppLanguage.ChineseTraditional -> R.string.settings_chinese_traditional_language
+            is AppLanguage.Zulu -> R.string.settings_zulu_language
         }.let(resourceRepo::getString)
     }
 
@@ -81,6 +82,7 @@ class LanguageInteractor @Inject constructor(
             is AppLanguage.Ukrainian -> R.string.settings_ukrainian_tag
             is AppLanguage.ChineseSimplified -> R.string.settings_chinese_simplified_tag
             is AppLanguage.ChineseTraditional -> R.string.settings_chinese_traditional_tag
+            is AppLanguage.Zulu -> R.string.settings_zulu_tag
         }.let(resourceRepo::getString)
     }
 
@@ -114,6 +116,7 @@ class LanguageInteractor @Inject constructor(
             is AppLanguage.Ukrainian -> R.string.settings_ukrainian_translators
             is AppLanguage.ChineseSimplified -> R.string.settings_chinese_simplified_translators
             is AppLanguage.ChineseTraditional -> R.string.settings_chinese_traditional_translators
+            is AppLanguage.Zulu -> R.string.settings_zulu_translators
         }.let(resourceRepo::getString)
     }
 
@@ -154,6 +157,7 @@ class LanguageInteractor @Inject constructor(
             AppLanguage.Ukrainian,
             AppLanguage.ChineseSimplified,
             AppLanguage.ChineseTraditional,
+            AppLanguage.Zulu,
         )
     }
 }
