@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.kotlin)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
+    alias(libs.plugins.marathon)
 }
 
 applyAndroidLibrary()
@@ -139,4 +140,15 @@ dependencies {
     androidTestImplementation(libs.uitest.espressoContrib)
     androidTestImplementation(libs.uitest.dagger)
     androidTestImplementation(libs.uitest.room)
+    androidTestImplementation(libs.uitest.rules)
+}
+
+marathon {
+    name = "stt tests"
+    retryStrategy {
+        fixedQuota {
+            retryPerTestQuota = 3
+            totalAllowedRetryQuota = 100
+        }
+    }
 }

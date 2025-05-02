@@ -369,6 +369,7 @@ class ActivityFilterTest : BaseUiTest() {
             color = firstColor,
             names = listOf(categoryName1, categoryName2),
         )
+        Thread.sleep(1000)
 
         // Check filtering
         tryAction { checkFilter(filterByActivity1, viewsR.color.colorFiltered) }

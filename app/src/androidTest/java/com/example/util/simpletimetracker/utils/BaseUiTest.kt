@@ -1,6 +1,8 @@
 package com.example.util.simpletimetracker.utils
 
+import android.Manifest
 import android.content.Context
+import android.os.Build
 import androidx.annotation.ColorInt
 import androidx.emoji2.bundled.BundledEmojiCompatConfig
 import androidx.emoji2.text.EmojiCompat
@@ -8,6 +10,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.rule.GrantPermissionRule
 import com.example.util.simpletimetracker.core.R
 import com.example.util.simpletimetracker.core.interactor.LanguageInteractor
 import com.example.util.simpletimetracker.core.mapper.ColorMapper
@@ -16,9 +19,9 @@ import com.example.util.simpletimetracker.core.mapper.IconImageMapper
 import com.example.util.simpletimetracker.core.mapper.TimeMapper
 import com.example.util.simpletimetracker.core.utils.CountingIdlingResourceProvider
 import com.example.util.simpletimetracker.core.utils.TestUtils
-import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
-import com.example.util.simpletimetracker.domain.complexRule.repo.ComplexRuleRepo
 import com.example.util.simpletimetracker.domain.backup.repo.BackupRepo
+import com.example.util.simpletimetracker.domain.complexRule.repo.ComplexRuleRepo
+import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.recordType.repo.RecordTypeRepo
 import com.example.util.simpletimetracker.feature_records.view.RecordsContainerFragment
 import com.example.util.simpletimetracker.feature_settings.viewModel.delegate.SettingsFileWorkDelegate
@@ -73,6 +76,14 @@ open class BaseUiTest {
     val mRetryTestRule = RetryTestRule()
 
     @get:Rule(order = 2)
+    val permissionRule: GrantPermissionRule =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            GrantPermissionRule.grant(Manifest.permission.POST_NOTIFICATIONS)
+        } else {
+            GrantPermissionRule.grant()
+        }
+
+    @get:Rule(order = 3)
     val activityScenarioRule = ActivityScenarioRule(MainActivity::class.java)
 
     val firstColor: Int

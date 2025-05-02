@@ -3,6 +3,7 @@ package com.example.util.simpletimetracker.feature_change_running_record.interac
 import com.example.util.simpletimetracker.core.interactor.FilterGoalsByDayOfWeekInteractor
 import com.example.util.simpletimetracker.core.interactor.GetRunningRecordViewDataMediator
 import com.example.util.simpletimetracker.core.mapper.ChangeRecordDateTimeMapper
+import com.example.util.simpletimetracker.domain.extension.dropMillis
 import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.recordTag.interactor.RecordTagInteractor
@@ -64,7 +65,9 @@ class ChangeRunningRecordViewDataInteractor @Inject constructor(
                         ChangeRecordDateTimeMapper.Param.DateTime(record.timeStarted)
                     }
                     is ChangeRecordDateTimeFieldsState.State.Duration -> {
-                        ChangeRecordDateTimeMapper.Param.Duration(record.duration)
+                        ChangeRecordDateTimeMapper.Param.Duration(
+                            record.timeEnded - record.timeStarted.dropMillis(),
+                        )
                     }
                 },
                 field = ChangeRecordDateTimeMapper.Field.Start,

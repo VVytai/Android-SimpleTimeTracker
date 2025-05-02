@@ -179,6 +179,7 @@ class AddRecordTest : BaseUiTest() {
         // Set comment
         clickOnViewWithText(coreR.string.change_record_comment_field)
         typeTextIntoView(changeRecordR.id.etChangeRecordCommentField, comment)
+        Thread.sleep(1000) // For keyboard to open.
         closeSoftKeyboard()
         tryAction { checkPreviewUpdated(hasDescendant(withText(comment))) }
         clickOnViewWithText(coreR.string.change_record_comment_field)

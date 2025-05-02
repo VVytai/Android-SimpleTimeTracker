@@ -3,6 +3,7 @@ gradle = "8.4.0"
 kotlin = "1.9.25"
 ktlint = "12.1.0"
 ksp = "1.9.25-1.0.20" # same as kotlin
+marathon = "0.10.3"
 
 coroutines = "1.6.4"
 timber = "4.7.1"
@@ -47,6 +48,7 @@ espresso = "3.5.0"
 mockito = "5.14.2"
 mockitoKotlin = "5.4.0"
 coroutinesTest = "1.7.1"
+rules = "1.5.0"
 
 [libraries]
 kotlin = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlin" }
@@ -120,6 +122,7 @@ uitest-espressoContrib = { group = "androidx.test.espresso", name = "espresso-co
 uitest-espressoIdling = { group = "androidx.test.espresso", name = "espresso-idling-resource", version.ref = "espresso" }
 uitest-dagger = { group = "com.google.dagger", name = "hilt-android-testing", version.ref = "dagger" }
 uitest-room = { group = "androidx.room", name = "room-testing", version.ref = "room" }
+uitest-rules = { group = "androidx.test", name = "rules", version.ref = "rules" }
 
 [plugins]
 gradleApplication = { id = "com.android.application", version.ref = "gradle" }
@@ -131,3 +134,4 @@ javaLibrary = { id = "java-library" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "dagger" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+marathon = { id = "com.malinskiy.marathon", version.ref = "marathon" }

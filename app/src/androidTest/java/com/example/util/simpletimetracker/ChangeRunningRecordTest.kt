@@ -159,6 +159,7 @@ class ChangeRunningRecordTest : BaseUiTest() {
         checkViewIsDisplayed(allOf(withId(changeRecordR.id.tvChangeRecordTimeStartedTime), withText(timeStarted.time)))
         clickOnViewWithText(coreR.string.change_record_comment_field)
         typeTextIntoView(changeRecordR.id.etChangeRecordCommentField, comment)
+        Thread.sleep(1000) // For keyboard to open.
         clickOnViewWithText(coreR.string.change_record_comment_field)
 
         // Preview is updated
