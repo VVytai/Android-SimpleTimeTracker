@@ -102,4 +102,8 @@
     <string name="settings_vietnamese_language" translatable="false">Tiếng Việt</string>
     <string name="settings_vietnamese_tag" translatable="false">vi</string>
 
+    <string name="settings_zulu_translators" translatable="false">Hillgate Sambo</string>
+    <string name="settings_zulu_language" translatable="false">IsiZulu</string>
+    <string name="settings_zulu_tag" translatable="false">zu</string>
+
 </resources>
