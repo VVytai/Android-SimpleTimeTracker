@@ -29,11 +29,22 @@ class DurationPickerViewModel @Inject constructor() : BaseViewModel() {
     fun onButtonPressed(button: NumberKeyboardView.Button) {
         when (button) {
             is NumberKeyboardView.Button.Number -> onNumberPressed(button.value)
-            is NumberKeyboardView.Button.Delete -> onNumberDelete()
+            is NumberKeyboardView.Button.Delete -> onNumberDelete(button.isLongClick)
             is NumberKeyboardView.Button.DoubleZero -> {
                 onNumberPressed(0)
                 onNumberPressed(0)
             }
+        }
+    }
+
+    fun onValueChanged(viewData: DurationView.ViewData) {
+        val newValue = TimeUnit.HOURS.toSeconds(viewData.hours) +
+            TimeUnit.MINUTES.toSeconds(viewData.minutes) +
+            viewData.seconds
+        val newFormattedValue = reformatDurationValue(newValue)
+        if (newFormattedValue != reformattedValue) {
+            reformattedValue = newFormattedValue
+            updateViewData()
         }
     }
 
@@ -49,12 +60,16 @@ class DurationPickerViewModel @Inject constructor() : BaseViewModel() {
         }
     }
 
-    private fun onNumberDelete() {
-        reformattedValue = if (extra.showSeconds) {
-            reformattedValue / 10
+    private fun onNumberDelete(isLongClick: Boolean) {
+        if (isLongClick) {
+            reformattedValue = 0
         } else {
-            val seconds = reformattedValue % 100
-            ((reformattedValue / 100) / 10) * 100 + seconds
+            reformattedValue = if (extra.showSeconds) {
+                reformattedValue / 10
+            } else {
+                val seconds = reformattedValue % 100
+                ((reformattedValue / 100) / 10) * 100 + seconds
+            }
         }
         updateViewData()
     }

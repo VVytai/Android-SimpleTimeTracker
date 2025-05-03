@@ -1,18 +1,23 @@
 package com.example.util.simpletimetracker.feature_dialogs.duration.view
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MotionEvent
+import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import com.example.util.simpletimetracker.core.base.BaseBottomSheetFragment
 import com.example.util.simpletimetracker.core.dialog.DurationDialogListener
+import com.example.util.simpletimetracker.core.extension.behavior
 import com.example.util.simpletimetracker.core.extension.findListeners
 import com.example.util.simpletimetracker.core.extension.observeOnce
 import com.example.util.simpletimetracker.core.extension.setFullScreen
 import com.example.util.simpletimetracker.core.extension.setSkipCollapsed
 import com.example.util.simpletimetracker.core.utils.fragmentArgumentDelegate
 import com.example.util.simpletimetracker.domain.extension.orZero
+import com.example.util.simpletimetracker.feature_dialogs.duration.customView.DurationView
 import com.example.util.simpletimetracker.feature_dialogs.duration.model.DurationDialogState
 import com.example.util.simpletimetracker.feature_dialogs.duration.viewModel.DurationPickerViewModel
 import com.example.util.simpletimetracker.feature_views.extension.setOnClick
@@ -48,6 +53,8 @@ class DurationDialogFragment : BaseBottomSheetFragment<Binding>() {
         btnDurationPickerSave.setOnClick(::onSaveClick)
         btnDurationPickerDisable.setOnClick(::onDisableClick)
         viewDurationPickerNumberKeyboard.listener = viewModel::onButtonPressed
+        viewDurationPickerTouchInterceptor.attachTouchInterceptor(parent = viewDurationPickerValue)
+        viewDurationPickerValue.listener = DurationView.Listener(viewModel::onValueChanged)
     }
 
     override fun initViewModel(): Unit = with(viewModel) {
@@ -92,6 +99,23 @@ class DurationDialogFragment : BaseBottomSheetFragment<Binding>() {
     private fun onDisableClick() {
         listeners.forEach { it.onDisable(params.tag) }
         dismiss()
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun View.attachTouchInterceptor(
+        parent: View,
+    ) {
+        setOnTouchListener { v, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> behavior?.isDraggable = false
+                MotionEvent.ACTION_MOVE -> behavior?.isDraggable = false
+                MotionEvent.ACTION_UP,
+                MotionEvent.ACTION_CANCEL,
+                -> behavior?.isDraggable = true
+            }
+            parent.onTouchEvent(event)
+            true
+        }
     }
 
     companion object {

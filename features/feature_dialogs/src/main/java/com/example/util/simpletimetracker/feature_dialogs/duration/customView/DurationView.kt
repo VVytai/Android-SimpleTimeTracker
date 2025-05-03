@@ -1,16 +1,21 @@
 package com.example.util.simpletimetracker.feature_dialogs.duration.customView
 
+import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Rect
 import android.util.AttributeSet
+import android.view.MotionEvent
 import android.view.View
+import androidx.core.animation.doOnEnd
+import com.example.util.simpletimetracker.core.utils.SwipeDetector
 import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.domain.extension.toDuration
 import com.example.util.simpletimetracker.feature_dialogs.R
-import java.lang.Float.min
+import kotlin.math.round
 
 class DurationView @JvmOverloads constructor(
     context: Context,
@@ -21,6 +26,7 @@ class DurationView @JvmOverloads constructor(
     attrs,
     defStyleAttr,
 ) {
+    var listener: Listener? = null
 
     // Attrs
     private var textColor: Int = 0
@@ -32,13 +38,28 @@ class DurationView @JvmOverloads constructor(
     private var data: ViewData = ViewData.Empty
     private val textPaint: Paint = Paint()
     private val legendTextPaint: Paint = Paint()
+    private var textHeight: Float = 0f
     private var textStartHorizontal: Float = 0f
     private var textStartVertical: Float = 0f
+    private val swipeSpeedCoefficient: Float = 2f
+    private val settlingAnimationDurationMs: Long = 300
     private val bounds: Rect = Rect()
+    private val minPageValue = 0
+    private val maxPageValue = 59
+    private val pageSize = maxPageValue - minPageValue + 1
+    private var fieldStateHours: FieldState = FieldState()
+    private var fieldStateMinutes: FieldState = FieldState()
+    private var fieldStateSeconds: FieldState = FieldState()
 
     private val hourString: String by lazy { context.getString(R.string.time_hour) }
     private val minuteString: String by lazy { context.getString(R.string.time_minute) }
     private val secondString: String by lazy { context.getString(R.string.time_second) }
+
+    private val swipeDetector = SwipeDetector(
+        context = context,
+        onSlide = ::onEventSwipe,
+        onSlideStop = ::onEventSwipeStop,
+    )
 
     init {
         initArgs(context, attrs, defStyleAttr)
@@ -57,11 +78,40 @@ class DurationView @JvmOverloads constructor(
         val h = height.toFloat()
 
         calculateDimensions(w, h)
-        drawText(canvas)
+        drawText(canvas, h)
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    override fun onTouchEvent(event: MotionEvent): Boolean {
+        var handled = false
+
+        when (event.action) {
+            MotionEvent.ACTION_DOWN -> handled = true
+        }
+
+        return handled or
+            swipeDetector.onTouchEvent(event)
     }
 
     fun setData(data: ViewData) {
-        this.data = data
+        // If still animating - don't change, it will change on animation end.
+        this.data = data.copy(
+            hours = if (fieldStateHours.isSettling || fieldStateHours.isSwiping) {
+                this.data.hours
+            } else {
+                data.hours
+            },
+            minutes = if (fieldStateMinutes.isSettling || fieldStateMinutes.isSwiping) {
+                this.data.minutes
+            } else {
+                data.minutes
+            },
+            seconds = if (fieldStateSeconds.isSettling || fieldStateSeconds.isSwiping) {
+                this.data.seconds
+            } else {
+                data.seconds
+            },
+        )
         invalidate()
     }
 
@@ -113,28 +163,27 @@ class DurationView @JvmOverloads constructor(
         ).map(legendTextPaint::measureText).sum()
         val paddingsCount = if (data.showSeconds) 2 else 1
         val desiredWidth = w - legendsTextWidth - paddingsCount * legendPadding
-        val text = data.hours.format() +
-            data.minutes.format() +
-            data.seconds.takeIf { data.showSeconds }?.format().orEmpty()
-        val textLength = text.length
-        val hoursWidth = min(data.hours.format().length.toFloat() / textLength * desiredWidth, h)
-        setTextSizeForWidth(textPaint, data.hours.format(), hoursWidth)
+        setTextSizeForWidth(
+            paint = textPaint,
+            data = data,
+            desiredWidth = desiredWidth,
+        )
 
         val fullTextWidth = textPaint.measureText(data.hours.format()) +
             textPaint.measureText(data.minutes.format()) +
             data.seconds.takeIf { data.showSeconds }
                 ?.let { textPaint.measureText(it.format()) }.orZero() +
             legendsTextWidth
-        textStartHorizontal = (w - fullTextWidth - 2 * legendPadding) / 2
+        textStartHorizontal = (w - fullTextWidth - 2 * legendPadding) / 2f
 
         textPaint.getTextBounds("0", 0, 1, bounds)
-        val textHeight = bounds.height()
-        textStartVertical = textHeight + (h - textHeight) / 2
+        textHeight = bounds.height().toFloat()
+        textStartVertical = textHeight + (h - textHeight) / 2f
     }
 
-    private fun drawText(canvas: Canvas) {
+    private fun drawText(canvas: Canvas, h: Float) {
         // Center text
-        canvas.translate(textStartHorizontal, textStartVertical)
+        var currentTextStartHorizontal = textStartHorizontal
 
         val hoursText = data.hours.format()
         val minutesText = data.minutes.format()
@@ -143,37 +192,156 @@ class DurationView @JvmOverloads constructor(
         val minutesNotEmpty = hoursNotEmpty || textHasValues(minutesText)
         val secondsNotEmpty = hoursNotEmpty || minutesNotEmpty || textHasValues(secondsText)
 
+        // Hours
         var color = if (hoursNotEmpty) textColor else legendTextColor
         textPaint.color = color
-        legendTextPaint.color = color
-        canvas.drawText(hoursText, 0f, 0f, textPaint)
-        canvas.translate(textPaint.measureText(hoursText), 0f)
-        canvas.drawText(hourString, 0f, 0f, legendTextPaint)
-        canvas.translate(legendTextPaint.measureText(hourString) + legendPadding, 0f)
+        canvas.drawText(
+            hoursText,
+            currentTextStartHorizontal,
+            textStartVertical + fieldStateHours.panFactor,
+            textPaint,
+        )
+        fieldStateHours = fieldStateHours.copy(
+            leftPx = currentTextStartHorizontal,
+            rightPx = currentTextStartHorizontal + textPaint.measureText(hoursText),
+        )
+        drawPages(
+            canvas = canvas,
+            h = h,
+            data = data.hours,
+            currentTextStartHorizontal = currentTextStartHorizontal,
+            panFactor = fieldStateHours.panFactor,
+            hasMinLimit = false,
+            hasMaxLimit = false,
+        )
+        currentTextStartHorizontal += textPaint.measureText(hoursText)
+        canvas.drawText(hourString, currentTextStartHorizontal, textStartVertical, legendTextPaint)
+        currentTextStartHorizontal += legendTextPaint.measureText(hourString) + legendPadding
 
+        // Minutes
         color = if (minutesNotEmpty) textColor else legendTextColor
         textPaint.color = color
-        legendTextPaint.color = color
-        canvas.drawText(minutesText, 0f, 0f, textPaint)
-        canvas.translate(textPaint.measureText(minutesText), 0f)
-        canvas.drawText(minuteString, 0f, 0f, legendTextPaint)
-        canvas.translate(legendTextPaint.measureText(minuteString) + legendPadding, 0f)
+        canvas.drawText(
+            minutesText,
+            currentTextStartHorizontal,
+            textStartVertical + fieldStateMinutes.panFactor,
+            textPaint,
+        )
+        fieldStateMinutes = fieldStateMinutes.copy(
+            leftPx = currentTextStartHorizontal,
+            rightPx = currentTextStartHorizontal + textPaint.measureText(minutesText),
+        )
+        drawPages(
+            canvas = canvas,
+            h = h,
+            data = data.minutes,
+            currentTextStartHorizontal = currentTextStartHorizontal,
+            panFactor = fieldStateMinutes.panFactor,
+        )
+        currentTextStartHorizontal += textPaint.measureText(minutesText)
+        canvas.drawText(minuteString, currentTextStartHorizontal, textStartVertical, legendTextPaint)
+        currentTextStartHorizontal += legendTextPaint.measureText(minuteString) + legendPadding
 
+        // Seconds
         if (data.showSeconds) {
             color = if (secondsNotEmpty) textColor else legendTextColor
             textPaint.color = color
-            legendTextPaint.color = color
-            canvas.drawText(secondsText, 0f, 0f, textPaint)
-            canvas.translate(textPaint.measureText(secondsText), 0f)
-            canvas.drawText(secondString, 0f, 0f, legendTextPaint)
-            canvas.translate(legendTextPaint.measureText(secondString), 0f)
+            canvas.drawText(
+                secondsText,
+                currentTextStartHorizontal,
+                textStartVertical + fieldStateSeconds.panFactor,
+                textPaint,
+            )
+            fieldStateSeconds = fieldStateSeconds.copy(
+                leftPx = currentTextStartHorizontal,
+                rightPx = currentTextStartHorizontal + textPaint.measureText(secondsText),
+            )
+            drawPages(
+                canvas = canvas,
+                h = h,
+                data = data.seconds,
+                currentTextStartHorizontal = currentTextStartHorizontal,
+                panFactor = fieldStateSeconds.panFactor,
+            )
+            currentTextStartHorizontal += textPaint.measureText(secondsText)
+            canvas.drawText(secondString, currentTextStartHorizontal, textStartVertical, legendTextPaint)
+            currentTextStartHorizontal += legendTextPaint.measureText(secondString)
         }
     }
 
-    private fun setTextSizeForWidth(paint: Paint, text: String, desiredWidth: Float) {
+    private fun drawPages(
+        canvas: Canvas,
+        h: Float,
+        data: Long,
+        currentTextStartHorizontal: Float,
+        panFactor: Float,
+        hasMinLimit: Boolean = true,
+        hasMaxLimit: Boolean = true,
+    ) {
+        textPaint.color = legendTextColor
+        var pageNumber = 1
+        var valueToDraw: Long
+        var textToDraw: String
+        var currentPageY: Float
+        var currentPageX: Float
+        val dataFormatted = data.format()
+
+        // Top pages
+        while (true) {
+            currentPageY = textStartVertical - textHeight * pageNumber + panFactor
+            // Do not draw over screen.
+            if (currentPageY < 0) break
+            valueToDraw = (data - pageNumber)
+                .let { if (it < minPageValue && hasMinLimit) it + pageSize else it }
+            textToDraw = valueToDraw.format()
+            if (valueToDraw >= 0) {
+                currentPageX = getPageStartHorizontal(textToDraw, dataFormatted, currentTextStartHorizontal)
+                canvas.drawText(textToDraw, currentPageX, currentPageY, textPaint)
+            }
+            pageNumber += 1
+        }
+
+        // Bottom pages.
+        pageNumber = 1
+        while (true) {
+            currentPageY = textStartVertical + textHeight * pageNumber + panFactor
+            // Do not draw over screen.
+            if (currentPageY - textHeight > h) break
+            valueToDraw = (data + pageNumber)
+                .let { if (it > maxPageValue && hasMaxLimit) it - pageSize else it }
+            textToDraw = valueToDraw.format()
+            currentPageX = getPageStartHorizontal(textToDraw, dataFormatted, currentTextStartHorizontal)
+            canvas.drawText(textToDraw, currentPageX, currentPageY, textPaint)
+            pageNumber += 1
+        }
+    }
+
+    private fun getPageStartHorizontal(
+        textToDraw: String,
+        dataFormatted: String,
+        currentTextStartHorizontal: Float,
+    ): Float {
+        // Move text to the right if it is longer or shorted than current data.
+        // Otherwise if for ex. current data is 99, next 100 will overdraw on minutes.
+        return if (textToDraw.length == dataFormatted.length) {
+            currentTextStartHorizontal
+        } else {
+            currentTextStartHorizontal +
+                textPaint.measureText(dataFormatted) -
+                textPaint.measureText(textToDraw)
+        }
+    }
+
+    private fun setTextSizeForWidth(
+        paint: Paint,
+        data: ViewData,
+        desiredWidth: Float,
+    ) {
         val testTextSize = 48f
         paint.textSize = testTextSize
-        val width = paint.measureText(text)
+        val width = paint.measureText(data.hours.format()) +
+            paint.measureText(data.minutes.format()) +
+            if (data.showSeconds) paint.measureText(data.seconds.format()) else 0f
 
         val desiredTextSize = testTextSize * desiredWidth / width
         paint.textSize = desiredTextSize
@@ -183,8 +351,141 @@ class DurationView @JvmOverloads constructor(
         return text != "00"
     }
 
+    @Suppress("UNUSED_PARAMETER")
+    private fun onEventSwipe(
+        offset: Float,
+        direction: SwipeDetector.Direction,
+        event: MotionEvent,
+    ) {
+        startSwipe(
+            event = event,
+            offset = offset,
+            getState = { fieldStateHours },
+            setState = { fieldStateHours = it },
+        )
+        startSwipe(
+            event = event,
+            offset = offset,
+            getState = { fieldStateMinutes },
+            setState = { fieldStateMinutes = it },
+        )
+        startSwipe(
+            event = event,
+            offset = offset,
+            getState = { fieldStateSeconds },
+            setState = { fieldStateSeconds = it },
+        )
+    }
+
+    private fun onEventSwipeStop() {
+        startSettling(
+            data = data.hours,
+            getState = { fieldStateHours },
+            setState = { fieldStateHours = it },
+            onSettled = { listener?.onValueSelected(data.copy(hours = it)) },
+            hasMinLimit = false,
+            hasMaxLimit = false,
+        )
+        startSettling(
+            data = data.minutes,
+            getState = { fieldStateMinutes },
+            setState = { fieldStateMinutes = it },
+            onSettled = { listener?.onValueSelected(data.copy(minutes = it)) },
+        )
+        startSettling(
+            data = data.seconds,
+            getState = { fieldStateSeconds },
+            setState = { fieldStateSeconds = it },
+            onSettled = { listener?.onValueSelected(data.copy(seconds = it)) },
+        )
+    }
+
+    private fun startSwipe(
+        event: MotionEvent,
+        offset: Float,
+        getState: () -> FieldState,
+        setState: (FieldState) -> Unit,
+    ) {
+        if (event.x in getState().leftPx..getState().rightPx) {
+            // Cancel current animation on new swipe.
+            if (getState().isSettling) {
+                getState().animator?.cancel()
+            }
+            getState().copy(
+                panFactor = getState().lastPanFactor + offset * swipeSpeedCoefficient,
+                isSwiping = true,
+            ).let(setState)
+            invalidate()
+        }
+    }
+
+    private fun startSettling(
+        data: Long,
+        getState: () -> FieldState,
+        setState: (FieldState) -> Unit,
+        onSettled: (Long) -> Unit,
+        hasMinLimit: Boolean = true,
+        hasMaxLimit: Boolean = true,
+    ) {
+        if (!getState().isSwiping) return
+        val snapTo: Long = round(getState().panFactor / textHeight).toLong().let {
+            when {
+                hasMinLimit -> it
+                data - it < 0 -> data // Prevents overshooting zero on hours.
+                else -> it
+            }
+        }
+        val snapToPx: Float = snapTo * textHeight
+
+        val animator = ValueAnimator.ofFloat(getState().panFactor, snapToPx)
+        animator.duration = settlingAnimationDurationMs
+        animator.addUpdateListener { animation ->
+            getState().copy(
+                panFactor = animation.animatedValue as Float,
+                lastPanFactor = animation.animatedValue as Float,
+            ).let(setState)
+            invalidate()
+        }
+        animator.doOnEnd {
+            getState().copy(
+                isSettling = false,
+                panFactor = 0f,
+                lastPanFactor = 0f,
+            ).let(setState)
+            (data - snapTo).let {
+                when {
+                    it < minPageValue && hasMinLimit -> it + pageSize
+                    it > maxPageValue && hasMaxLimit -> it - pageSize
+                    else -> it
+                }
+            }.coerceAtLeast(0).let(onSettled)
+            invalidate()
+        }
+        animator.start()
+
+        getState().copy(
+            isSwiping = false,
+            isSettling = true,
+            animator = animator,
+        ).let(setState)
+    }
+
     private fun Long.format(): String {
         return this.toDuration()
+    }
+
+    private data class FieldState(
+        val leftPx: Float = 0f,
+        val rightPx: Float = 0f,
+        val panFactor: Float = 0f,
+        val lastPanFactor: Float = 0f,
+        val isSwiping: Boolean = false,
+        val isSettling: Boolean = false,
+        val animator: ValueAnimator? = null,
+    )
+
+    fun interface Listener {
+        fun onValueSelected(viewData: ViewData)
     }
 
     data class ViewData(

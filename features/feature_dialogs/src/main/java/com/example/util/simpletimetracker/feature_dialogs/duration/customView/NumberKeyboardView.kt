@@ -10,6 +10,7 @@ import com.example.util.simpletimetracker.feature_views.extension.setOnClick
 import com.example.util.simpletimetracker.feature_dialogs.R
 import com.example.util.simpletimetracker.feature_dialogs.databinding.NumberKeyboardLayoutBinding
 import com.example.util.simpletimetracker.feature_views.extension.layoutInflater
+import com.example.util.simpletimetracker.feature_views.extension.setOnLongClick
 
 class NumberKeyboardView @JvmOverloads constructor(
     context: Context,
@@ -56,8 +57,15 @@ class NumberKeyboardView @JvmOverloads constructor(
         textViews.forEach { (value, view) ->
             view.setOnClick { listener?.invoke(Button.Number(value)) }
         }
-        binding.tvNumberKeyboard00.setOnClick { listener?.invoke(Button.DoubleZero) }
-        binding.btnNumberKeyboardDelete.setOnClick { listener?.invoke(Button.Delete) }
+        binding.tvNumberKeyboard00.setOnClick {
+            listener?.invoke(Button.DoubleZero)
+        }
+        binding.btnNumberKeyboardDelete.setOnClick {
+            listener?.invoke(Button.Delete(isLongClick = false))
+        }
+        binding.btnNumberKeyboardDelete.setOnLongClick {
+            listener?.invoke(Button.Delete(isLongClick = true))
+        }
     }
 
     private fun setTextColor(textColor: Int) {
@@ -74,6 +82,6 @@ class NumberKeyboardView @JvmOverloads constructor(
     sealed interface Button {
         data class Number(val value: Int) : Button
         object DoubleZero : Button
-        object Delete : Button
+        data class Delete(val isLongClick: Boolean) : Button
     }
 }
