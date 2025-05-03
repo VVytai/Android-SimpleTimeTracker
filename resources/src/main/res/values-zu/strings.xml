@@ -43,11 +43,11 @@
     <string name="range_select_year">Khetha unyaka</string>
 
     <plurals name="range_last">
-        <!-- <item quantity="zero">Last %s days</item> -->
+        <!--        <item quantity="zero">Izinsuku zokugcina eziyi-%s</item>-->
         <item quantity="one">Usuku olungu-%s lokugcina</item>
         <item quantity="two">Izinsuku ezi-%s zokugcina</item>
-        <item quantity="few">Izinsuku zokugcina eziyi-%s</item>
-        <item quantity="many">Izinsuku zokugcina eziyi-%s</item>
+        <!--        <item quantity="few">Izinsuku zokugcina eziyi-%s</item>-->
+        <!--        <item quantity="many">Izinsuku zokugcina eziyi-%s</item>-->
         <item quantity="other">Izinsuku zokugcina eziyi-%s</item>
     </plurals>
 
@@ -124,6 +124,7 @@
     <string name="change_record_split_hint">Izohlukanisa irekhodi libe ngamaqembu amabili ngesikhathi esikhethiwe</string>
     <string name="change_record_continue">Qhubeka</string>
     <string name="change_record_continue_hint">Izosusa irekhodi elikhona bese iqhubeka nokulandelela lo msebenzi</string>
+    <string name="change_record_repeat">@string/running_records_repeat</string>
     <string name="change_record_repeat_hint">Izophinda ilandelele lo msebenzi</string>
     <string name="change_record_duplicate">Kopisha</string>
     <string name="change_record_duplicate_hint">Izokwakha ikhophi yale rekhodi</string>
@@ -204,7 +205,6 @@
     <string name="change_activity_filter_removed">Isihlungi sisusiwe</string>
     <string name="change_activity_filter_save">Londoloza</string>
     <string name="change_activity_filter_type">Uhlobo lwesihlungi</string>
-
 
     <!--  Dialogs  -->
     <string name="date_time_dialog_date">Usuku</string>
@@ -357,7 +357,7 @@
     <string name="settings_feedback">Impendulo</string>
     <string name="settings_feedback_description">Unesiphakamiso? Utholile iphutha? Funa ukukhuluma? Sibhalele!</string>
     <string name="settings_version">Inguqulo</string>
-    <string name="settings_email_chooser_title">Thumela ngo...</string>
+    <string name="settings_email_chooser_title">Thumela ngo…</string>
     <string name="settings_translators">Abahumushi</string>
     <string name="settings_contributors">Abanye abanikezeli</string>
     <string name="settings_automated_tracking">Ukulandelela okuzenzakalelayo</string>
@@ -495,11 +495,11 @@ Isibonelo:<br/>
     <string name="statistics_detail_goals_deficit">Ukusilela</string>
 
     <plurals name="statistics_detail_times_tracked">
-        <item quantity="zero">Amarekhodi</item>
+        <!--        <item quantity="zero">Amarekhodi</item>-->
         <item quantity="one">Irekhodi</item>
-        <item quantity="two">Amarekhodi</item>
-        <item quantity="few">Amarekhodi</item>
-        <item quantity="many">Amarekhodi</item>
+        <!--        <item quantity="two">Amarekhodi</item>-->
+        <!--        <item quantity="few">Amarekhodi</item>-->
+        <!--        <item quantity="many">Amarekhodi</item>-->
         <item quantity="other">Amarekhodi</item>
     </plurals>
 
