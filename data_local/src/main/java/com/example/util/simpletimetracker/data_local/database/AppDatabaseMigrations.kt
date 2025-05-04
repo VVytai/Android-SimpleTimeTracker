@@ -33,6 +33,7 @@ class AppDatabaseMigrations {
                 migration_22_23,
                 migration_23_24,
                 migration_24_25,
+                migration_25_26,
             )
 
         private val migration_1_2 = object : Migration(1, 2) {
@@ -313,6 +314,14 @@ class AppDatabaseMigrations {
             override fun migrate(database: SupportSQLiteDatabase) {
                 database.execSQL(
                     "CREATE TABLE IF NOT EXISTS `activitySuggestion` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `forTypeId` INTEGER NOT NULL, `suggestionIds` TEXT NOT NULL)",
+                )
+            }
+        }
+
+        private val migration_25_26 = object : Migration(25, 26) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL(
+                    "CREATE TABLE IF NOT EXISTS `durationSuggestions` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `valueSeconds` INTEGER NOT NULL)",
                 )
             }
         }

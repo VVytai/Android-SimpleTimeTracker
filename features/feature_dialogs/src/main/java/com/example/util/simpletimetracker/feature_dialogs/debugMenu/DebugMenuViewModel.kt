@@ -46,6 +46,13 @@ class DebugMenuViewModel @Inject constructor(
         }
     }
 
+    fun onResetDurationSuggestionsPrepopulated() {
+        viewModelScope.launch {
+            prefsInteractor.clearDurationSuggestionsPrepopulated()
+            showSuccessMessage()
+        }
+    }
+
     private fun showSuccessMessage() {
         router.show(
             SnackBarParams(

@@ -356,7 +356,7 @@
         tools:layout="@layout/settings_partial_restore_fragment" />
     <dialog
         android:id="@+id/partialRestoreSelectionDialogFragment"
-        android:name="com.example.util.simpletimetracker.feature_settings.partialRestoreSelection.PartialRestoreSelectionFragment"
+        android:name="com.example.util.simpletimetracker.feature_settings.partialRestoreSelection.view.PartialRestoreSelectionFragment"
         android:label="PartialRestoreSelectionDialogFragment"
         tools:layout="@layout/settings_partial_restore_selection_fragment" />
     <dialog

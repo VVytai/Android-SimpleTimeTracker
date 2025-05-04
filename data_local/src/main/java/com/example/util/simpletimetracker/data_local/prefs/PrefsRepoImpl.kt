@@ -400,6 +400,10 @@ class PrefsRepoImpl @Inject constructor(
         KEY_IS_COMMENT_SELECTION_SUGGESTIONS_ENABLED, false,
     )
 
+    override var durationSuggestionsWasPrepopulated: Boolean by prefs.delegate(
+        KEY_DURATION_SUGGESTIONS_WAS_PREPOPULATED, false,
+    )
+
     override fun setWidget(widgetId: Int, recordType: Long) {
         val key = KEY_WIDGET + widgetId
         logPrefsDataAccess("set $key")
@@ -566,6 +570,10 @@ class PrefsRepoImpl @Inject constructor(
         prefs.edit().remove(KEY_POMODORO_PERIODS_UNTIL_LONG_BREAK).apply()
     }
 
+    override fun clearDurationSuggestionsPrepopulated() {
+        prefs.edit().remove(KEY_DURATION_SUGGESTIONS_WAS_PREPOPULATED).apply()
+    }
+
     override fun hasValueSaved(key: String): Boolean {
         return prefs.contains(key)
     }
@@ -664,6 +672,7 @@ class PrefsRepoImpl @Inject constructor(
         const val KEY_IS_CATEGORIES_SEARCH_ENABLED = "isCategoriesSearchEnabled"
         const val KEY_IS_ARCHIVE_SEARCH_ENABLED = "isArchiveSearchEnabled"
         const val KEY_IS_COMMENT_SELECTION_SUGGESTIONS_ENABLED = "isCommentSelectionSuggestionsEnabled"
+        const val KEY_DURATION_SUGGESTIONS_WAS_PREPOPULATED = "durationSuggestionsWasPrepopulated"
         const val KEY_CARD_ORDER_MANUAL = "cardOrderManual"
         const val KEY_CATEGORY_ORDER_MANUAL = "categoryOrderManual"
         const val KEY_TAG_ORDER_MANUAL = "tagOrderManual"

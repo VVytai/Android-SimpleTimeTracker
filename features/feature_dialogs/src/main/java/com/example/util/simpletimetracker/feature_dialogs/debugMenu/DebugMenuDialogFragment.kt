@@ -32,5 +32,7 @@ class DebugMenuDialogFragment : BaseBottomSheetFragment<Binding>() {
             .setOnClick(viewModel::onResetHideRetroactiveMultitaskingClick)
         tvDebugMenuResetPomodoroSettings
             .setOnClick(viewModel::onResetPomodoroSettingsClick)
+        tvDebugMenuResetDurationSuggestionsPrepopulated
+            .setOnClick(viewModel::onResetDurationSuggestionsPrepopulated)
     }
 }

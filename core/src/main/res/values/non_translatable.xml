@@ -22,6 +22,7 @@
     <string name="debug_menu_reset_hide_default_types" translatable="false">Clear \"Hide default types\" preference</string>
     <string name="debug_menu_reset_hide_retroactive_multitasking_hint" translatable="false">Clear \"Retroactive multitasking hint was hidden\" preference</string>
     <string name="debug_menu_reset_pomodoro_settings" translatable="false">Clear Pomodoro preferences</string>
+    <string name="debug_menu_reset_duration_suggestions_prepopulated" translatable="false">Clear duration suggestions was prepopulated</string>
     <string name="debug_menu_hide_message" translatable="false">Success</string>
 
     <string name="settings_automated_tracking_action" translatable="false">Action</string>

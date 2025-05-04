@@ -1,27 +1,40 @@
 package com.example.util.simpletimetracker.feature_dialogs.duration.viewModel
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.viewModelScope
 import com.example.util.simpletimetracker.core.base.BaseViewModel
 import com.example.util.simpletimetracker.core.extension.lazySuspend
 import com.example.util.simpletimetracker.core.extension.set
+import com.example.util.simpletimetracker.domain.durationSuggestion.interactor.DurationSuggestionInteractor
+import com.example.util.simpletimetracker.domain.durationSuggestion.model.DurationSuggestion
 import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.domain.extension.padDuration
+import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
+import com.example.util.simpletimetracker.feature_dialogs.duration.adapter.DurationSuggestionViewData
 import com.example.util.simpletimetracker.feature_dialogs.duration.customView.DurationView
 import com.example.util.simpletimetracker.feature_dialogs.duration.customView.NumberKeyboardView
+import com.example.util.simpletimetracker.feature_dialogs.duration.interactor.DurationPickerViewDataInteractor
 import com.example.util.simpletimetracker.feature_dialogs.duration.model.DurationDialogState
 import com.example.util.simpletimetracker.navigation.params.screen.DurationDialogParams
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @HiltViewModel
-class DurationPickerViewModel @Inject constructor() : BaseViewModel() {
+class DurationPickerViewModel @Inject constructor(
+    private val durationSuggestionInteractor: DurationSuggestionInteractor,
+    private val durationPickerViewDataInteractor: DurationPickerViewDataInteractor,
+) : BaseViewModel() {
 
     lateinit var extra: DurationDialogParams
 
     val stateViewData: LiveData<DurationDialogState> by lazySuspend {
         reformattedValue = reformatValue(extra.value)
         loadViewData()
+    }
+    val suggestionsViewData: LiveData<List<ViewHolderType>> by lazySuspend {
+        loadSuggestionsViewData()
     }
 
     private var reformattedValue: Long = 0
@@ -41,11 +54,51 @@ class DurationPickerViewModel @Inject constructor() : BaseViewModel() {
         val newValue = TimeUnit.HOURS.toSeconds(viewData.hours) +
             TimeUnit.MINUTES.toSeconds(viewData.minutes) +
             viewData.seconds
-        val newFormattedValue = reformatDurationValue(newValue)
+        val newFormattedValue = mapToFormattedValue(newValue)
         if (newFormattedValue != reformattedValue) {
             reformattedValue = newFormattedValue
             updateViewData()
         }
+    }
+
+    fun onSuggestionClick(viewData: DurationSuggestionViewData) = viewModelScope.launch {
+        when (viewData.type) {
+            is DurationSuggestionViewData.Type.Add -> onAddSuggestion()
+            is DurationSuggestionViewData.Type.Value -> onSuggestionClicked(viewData.type)
+        }
+    }
+
+    fun onSuggestionLongClick(viewData: DurationSuggestionViewData) = viewModelScope.launch {
+        when (viewData.type) {
+            is DurationSuggestionViewData.Type.Add -> onAddSuggestion()
+            is DurationSuggestionViewData.Type.Value -> onSuggestionLongClicked(viewData.type)
+        }
+    }
+
+    private suspend fun onAddSuggestion() {
+        val currentDuration = stateViewData.value?.value?.getDurationSeconds() ?: return
+        val existingDurations = durationSuggestionInteractor.getAll().map { it.valueSeconds }
+        if (currentDuration !in existingDurations) {
+            // Zero id creates new record
+            val newSuggestion = DurationSuggestion(
+                id = 0L,
+                valueSeconds = currentDuration,
+            )
+            durationSuggestionInteractor.add(newSuggestion)
+            updateSuggestionsViewData()
+        }
+    }
+
+    private fun onSuggestionClicked(viewData: DurationSuggestionViewData.Type.Value) {
+        reformattedValue = mapToFormattedValue(viewData.value)
+        updateViewData()
+    }
+
+    private suspend fun onSuggestionLongClicked(viewData: DurationSuggestionViewData.Type.Value) {
+        durationSuggestionInteractor.getAll()
+            .filter { it.valueSeconds == viewData.value }
+            .forEach { durationSuggestionInteractor.remove(it.id) }
+        updateSuggestionsViewData()
     }
 
     private fun onNumberPressed(number: Int) {
@@ -89,12 +142,12 @@ class DurationPickerViewModel @Inject constructor() : BaseViewModel() {
 
     private fun reformatValue(value: DurationDialogParams.Value): Long {
         return when (value) {
-            is DurationDialogParams.Value.DurationSeconds -> reformatDurationValue(value.duration)
+            is DurationDialogParams.Value.DurationSeconds -> mapToFormattedValue(value.duration)
             is DurationDialogParams.Value.Count -> value.count
         }
     }
 
-    private fun reformatDurationValue(duration: Long): Long {
+    private fun mapToFormattedValue(duration: Long): Long {
         fun format(value: Long): String = value.toString().padDuration()
 
         val hr = duration
@@ -105,6 +158,15 @@ class DurationPickerViewModel @Inject constructor() : BaseViewModel() {
             .let(TimeUnit.SECONDS::toSeconds)
 
         return (format(hr) + format(min) + format(sec)).toLongOrNull().orZero()
+    }
+
+    private suspend fun updateSuggestionsViewData() {
+        val data = loadSuggestionsViewData()
+        suggestionsViewData.set(data)
+    }
+
+    private suspend fun loadSuggestionsViewData(): List<ViewHolderType> {
+        return durationPickerViewDataInteractor.getSuggestionsViewData(extra)
     }
 
     private fun updateViewData() {
@@ -121,7 +183,7 @@ class DurationPickerViewModel @Inject constructor() : BaseViewModel() {
             }
             is DurationDialogParams.Value.Count -> {
                 DurationDialogState.Value.Count(
-                    data = reformattedValue.toString(),
+                    data = reformattedValue,
                 )
             }
         }

@@ -10,6 +10,13 @@ data class DurationDialogState(
 
     sealed interface Value {
         data class Duration(val data: DurationView.ViewData) : Value
-        data class Count(val data: String) : Value
+        data class Count(val data: Long) : Value
+
+        fun getDurationSeconds(): Long {
+            return when (this) {
+                is Duration -> data.seconds + data.minutes * 60L + data.hours * 3600L
+                is Count -> data
+            }
+        }
     }
 }

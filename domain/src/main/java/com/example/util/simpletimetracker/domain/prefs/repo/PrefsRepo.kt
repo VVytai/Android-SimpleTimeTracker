@@ -174,6 +174,8 @@ interface PrefsRepo {
 
     var isCommentSelectionSuggestionsEnabled: Boolean
 
+    var durationSuggestionsWasPrepopulated: Boolean
+
     fun setWidget(widgetId: Int, recordType: Long)
 
     fun getWidget(widgetId: Int): Long
@@ -198,6 +200,7 @@ interface PrefsRepo {
     fun clearDefaultTypesHidden()
     fun clearRetroactiveMultitaskingHidden()
     fun clearPomodoroSettingsClick()
+    fun clearDurationSuggestionsPrepopulated()
 
     fun hasValueSaved(key: String): Boolean
 }

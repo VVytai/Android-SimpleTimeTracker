@@ -1,4 +1,4 @@
-package com.example.util.simpletimetracker.feature_settings.partialRestoreSelection
+package com.example.util.simpletimetracker.feature_settings.partialRestoreSelection.interactor
 
 import com.example.util.simpletimetracker.core.delegates.iconSelection.mapper.IconSelectionMapper
 import com.example.util.simpletimetracker.core.mapper.ActivityFilterViewDataMapper

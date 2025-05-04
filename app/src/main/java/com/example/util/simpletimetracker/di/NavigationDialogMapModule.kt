@@ -18,7 +18,7 @@ import com.example.util.simpletimetracker.feature_dialogs.recordTagSelection.Rec
 import com.example.util.simpletimetracker.feature_dialogs.typesSelection.view.TypesSelectionDialogFragment
 import com.example.util.simpletimetracker.feature_dialogs.standard.StandardDialogFragment
 import com.example.util.simpletimetracker.feature_records_filter.view.RecordsFilterFragment
-import com.example.util.simpletimetracker.feature_settings.partialRestoreSelection.PartialRestoreSelectionFragment
+import com.example.util.simpletimetracker.feature_settings.partialRestoreSelection.view.PartialRestoreSelectionFragment
 import com.example.util.simpletimetracker.feature_settings.partialRestoreSelection.model.PartialRestoreSelectionDialogParams
 import com.example.util.simpletimetracker.navigation.NavigationData
 import com.example.util.simpletimetracker.navigation.bundleCreator.BundleCreator

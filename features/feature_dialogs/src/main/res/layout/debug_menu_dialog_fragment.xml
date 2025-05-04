@@ -74,6 +74,16 @@
                 android:text="@string/debug_menu_reset_pomodoro_settings"
                 android:textColor="?appTextPrimaryColor" />
 
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvDebugMenuResetDurationSuggestionsPrepopulated"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="8dp"
+                android:background="?selectableItemBackground"
+                android:padding="8dp"
+                android:text="@string/debug_menu_reset_duration_suggestions_prepopulated"
+                android:textColor="?appTextPrimaryColor" />
+
         </androidx.appcompat.widget.LinearLayoutCompat>
 
     </androidx.core.widget.NestedScrollView>

@@ -1,4 +1,4 @@
-package com.example.util.simpletimetracker.feature_settings.partialRestoreSelection
+package com.example.util.simpletimetracker.feature_settings.partialRestoreSelection.view
 
 import android.content.Context
 import android.os.Bundle
@@ -24,6 +24,7 @@ import com.example.util.simpletimetracker.feature_base_adapter.loader.createLoad
 import com.example.util.simpletimetracker.feature_base_adapter.record.createRecordAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.recordType.createRecordTypeAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.recordsDateDivider.createRecordsDateDividerAdapterDelegate
+import com.example.util.simpletimetracker.feature_settings.partialRestoreSelection.viewModel.PartialRestoreSelectionViewModel
 import com.example.util.simpletimetracker.feature_settings.partialRestoreSelection.model.PartialRestoreSelectionDialogListener
 import com.example.util.simpletimetracker.feature_settings.partialRestoreSelection.model.PartialRestoreSelectionDialogParams
 import com.example.util.simpletimetracker.feature_views.extension.setOnClick

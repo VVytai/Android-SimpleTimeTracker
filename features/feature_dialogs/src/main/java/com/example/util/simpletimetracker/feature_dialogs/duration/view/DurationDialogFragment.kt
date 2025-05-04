@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import com.example.util.simpletimetracker.core.base.BaseBottomSheetFragment
 import com.example.util.simpletimetracker.core.dialog.DurationDialogListener
@@ -16,7 +17,9 @@ import com.example.util.simpletimetracker.core.extension.observeOnce
 import com.example.util.simpletimetracker.core.extension.setFullScreen
 import com.example.util.simpletimetracker.core.extension.setSkipCollapsed
 import com.example.util.simpletimetracker.core.utils.fragmentArgumentDelegate
-import com.example.util.simpletimetracker.domain.extension.orZero
+import com.example.util.simpletimetracker.feature_base_adapter.BaseRecyclerAdapter
+import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
+import com.example.util.simpletimetracker.feature_dialogs.duration.adapter.createDurationSuggestionAdapter
 import com.example.util.simpletimetracker.feature_dialogs.duration.customView.DurationView
 import com.example.util.simpletimetracker.feature_dialogs.duration.model.DurationDialogState
 import com.example.util.simpletimetracker.feature_dialogs.duration.viewModel.DurationPickerViewModel
@@ -33,7 +36,14 @@ class DurationDialogFragment : BaseBottomSheetFragment<Binding>() {
         Binding::inflate
 
     private val viewModel: DurationPickerViewModel by viewModels()
-
+    private val suggestionsAdapter: BaseRecyclerAdapter by lazy {
+        BaseRecyclerAdapter(
+            createDurationSuggestionAdapter(
+                onClick = viewModel::onSuggestionClick,
+                onLongClick = viewModel::onSuggestionLongClick,
+            ),
+        )
+    }
     private var listeners: List<DurationDialogListener> = mutableListOf()
     private val params: DurationDialogParams by fragmentArgumentDelegate(
         key = ARGS_PARAMS, default = DurationDialogParams(),
@@ -49,6 +59,12 @@ class DurationDialogFragment : BaseBottomSheetFragment<Binding>() {
         setFullScreen()
     }
 
+    override fun initUi(): Unit = with(binding) {
+        rvDurationPickerSuggestions.apply {
+            adapter = suggestionsAdapter
+        }
+    }
+
     override fun initUx(): Unit = with(binding) {
         btnDurationPickerSave.setOnClick(::onSaveClick)
         btnDurationPickerDisable.setOnClick(::onDisableClick)
@@ -60,6 +76,7 @@ class DurationDialogFragment : BaseBottomSheetFragment<Binding>() {
     override fun initViewModel(): Unit = with(viewModel) {
         extra = params
         stateViewData.observe(::updateState)
+        suggestionsViewData.observe(::updateSuggestionsState)
     }
 
     private fun updateState(state: DurationDialogState) {
@@ -74,21 +91,25 @@ class DurationDialogFragment : BaseBottomSheetFragment<Binding>() {
             is DurationDialogState.Value.Count -> {
                 binding.viewDurationPickerValue.visible = false
                 binding.tvDurationPickerValue.visible = true
-                binding.tvDurationPickerValue.text = state.value.data
+                binding.tvDurationPickerValue.text = "${state.value.data}"
             }
         }
     }
 
+    private fun updateSuggestionsState(viewData: List<ViewHolderType>) = with(binding) {
+        rvDurationPickerSuggestions.isVisible = viewData.isNotEmpty()
+        suggestionsAdapter.replace(viewData)
+    }
+
     private fun onSaveClick() {
         viewModel.stateViewData.observeOnce(viewLifecycleOwner) { state ->
+            val data = state.value.getDurationSeconds()
+
             when (state.value) {
                 is DurationDialogState.Value.Duration -> {
-                    val data = state.value.data
-                    val duration = data.seconds + data.minutes * 60L + data.hours * 3600L
-                    listeners.forEach { it.onDurationSet(duration, params.tag) }
+                    listeners.forEach { it.onDurationSet(data, params.tag) }
                 }
                 is DurationDialogState.Value.Count -> {
-                    val data = state.value.data.toLongOrNull().orZero()
                     listeners.forEach { it.onCountSet(data, params.tag) }
                 }
             }

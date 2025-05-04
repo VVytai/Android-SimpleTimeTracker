@@ -20,6 +20,7 @@ import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Compani
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_DARK_MODE_2
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_DAYS_IN_CALENDAR
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_DEFAULT_TYPES_HIDDEN
+import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_DURATION_SUGGESTIONS_WAS_PREPOPULATED
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_ENABLE_POMODORO_MODE
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_ENABLE_REPEAT_BUTTON
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_FILE_EXPORT_RANGE
@@ -224,6 +225,7 @@ class BackupPrefsRepo @Inject constructor(
             PrefsProcessor(KEY_IS_CATEGORIES_SEARCH_ENABLED, ::isCategoriesSearchEnabled),
             PrefsProcessor(KEY_IS_ARCHIVE_SEARCH_ENABLED, ::isArchiveSearchEnabled),
             PrefsProcessor(KEY_IS_COMMENT_SELECTION_SUGGESTIONS_ENABLED, ::isCommentSelectionSuggestionsEnabled),
+            PrefsProcessor(KEY_DURATION_SUGGESTIONS_WAS_PREPOPULATED, ::durationSuggestionsWasPrepopulated),
         )
     }
 

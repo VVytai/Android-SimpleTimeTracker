@@ -3,20 +3,21 @@ package com.example.util.simpletimetracker.domain.backup.interactor
 import com.example.util.simpletimetracker.domain.activityFilter.repo.ActivityFilterRepo
 import com.example.util.simpletimetracker.domain.activitySuggestion.repo.ActivitySuggestionRepo
 import com.example.util.simpletimetracker.domain.category.repo.CategoryRepo
+import com.example.util.simpletimetracker.domain.category.repo.RecordTypeCategoryRepo
 import com.example.util.simpletimetracker.domain.complexRule.repo.ComplexRuleRepo
+import com.example.util.simpletimetracker.domain.durationSuggestion.repo.DurationSuggestionRepo
 import com.example.util.simpletimetracker.domain.favourite.repo.FavouriteColorRepo
 import com.example.util.simpletimetracker.domain.favourite.repo.FavouriteCommentRepo
 import com.example.util.simpletimetracker.domain.favourite.repo.FavouriteIconRepo
 import com.example.util.simpletimetracker.domain.record.repo.RecordRepo
+import com.example.util.simpletimetracker.domain.record.repo.RunningRecordRepo
 import com.example.util.simpletimetracker.domain.recordTag.repo.RecordTagRepo
 import com.example.util.simpletimetracker.domain.recordTag.repo.RecordToRecordTagRepo
-import com.example.util.simpletimetracker.domain.category.repo.RecordTypeCategoryRepo
-import com.example.util.simpletimetracker.domain.recordType.repo.RecordTypeGoalRepo
-import com.example.util.simpletimetracker.domain.recordType.repo.RecordTypeRepo
 import com.example.util.simpletimetracker.domain.recordTag.repo.RecordTypeToDefaultTagRepo
 import com.example.util.simpletimetracker.domain.recordTag.repo.RecordTypeToTagRepo
-import com.example.util.simpletimetracker.domain.record.repo.RunningRecordRepo
 import com.example.util.simpletimetracker.domain.recordTag.repo.RunningRecordToRecordTagRepo
+import com.example.util.simpletimetracker.domain.recordType.repo.RecordTypeGoalRepo
+import com.example.util.simpletimetracker.domain.recordType.repo.RecordTypeRepo
 import javax.inject.Inject
 
 class ClearDataInteractor @Inject constructor(
@@ -37,6 +38,7 @@ class ClearDataInteractor @Inject constructor(
     private val recordTypeToDefaultTagRepo: RecordTypeToDefaultTagRepo,
     private val favouriteIconRepo: FavouriteIconRepo,
     private val complexRuleRepo: ComplexRuleRepo,
+    private val durationSuggestionRepo: DurationSuggestionRepo,
 ) {
 
     suspend fun execute() {
@@ -57,5 +59,6 @@ class ClearDataInteractor @Inject constructor(
         recordTypeToDefaultTagRepo.clear()
         favouriteIconRepo.clear()
         complexRuleRepo.clear()
+        durationSuggestionRepo.clear()
     }
 }

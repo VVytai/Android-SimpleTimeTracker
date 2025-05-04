@@ -20,6 +20,7 @@ import com.example.util.simpletimetracker.data_local.recordType.RecordTypeGoalRe
 import com.example.util.simpletimetracker.data_local.recordType.RecordTypeRepoImpl
 import com.example.util.simpletimetracker.data_local.backup.BackupPartialRepoImpl
 import com.example.util.simpletimetracker.data_local.backup.BackupRepoImpl
+import com.example.util.simpletimetracker.data_local.durationSuggestion.DurationSuggestionRepoImpl
 import com.example.util.simpletimetracker.data_local.file.CsvRepoImpl
 import com.example.util.simpletimetracker.data_local.file.IcsRepoImpl
 import com.example.util.simpletimetracker.data_local.sharing.SharingRepoImpl
@@ -45,6 +46,7 @@ import com.example.util.simpletimetracker.domain.backup.repo.BackupPartialRepo
 import com.example.util.simpletimetracker.domain.backup.repo.BackupRepo
 import com.example.util.simpletimetracker.domain.backup.repo.CsvRepo
 import com.example.util.simpletimetracker.domain.backup.repo.IcsRepo
+import com.example.util.simpletimetracker.domain.durationSuggestion.repo.DurationSuggestionRepo
 import com.example.util.simpletimetracker.domain.sharing.SharingRepo
 import dagger.Binds
 import dagger.Module
@@ -147,4 +149,8 @@ interface DataLocalModuleBinds {
     @Binds
     @Singleton
     fun bindComplexRuleRepo(impl: ComplexRuleRepoImpl): ComplexRuleRepo
+
+    @Binds
+    @Singleton
+    fun bindDurationSuggestionRepo(impl: DurationSuggestionRepoImpl): DurationSuggestionRepo
 }

@@ -42,6 +42,7 @@ class DurationView @JvmOverloads constructor(
     private var textStartHorizontal: Float = 0f
     private var textStartVertical: Float = 0f
     private val swipeSpeedCoefficient: Float = 2f
+    private val pageAlpha: Float = 0.3f
     private val settlingAnimationDurationMs: Long = 300
     private val bounds: Rect = Rect()
     private val minPageValue = 0
@@ -278,7 +279,10 @@ class DurationView @JvmOverloads constructor(
         hasMinLimit: Boolean = true,
         hasMaxLimit: Boolean = true,
     ) {
+        val defaultAlpha = 255
         textPaint.color = legendTextColor
+        textPaint.alpha = (defaultAlpha * pageAlpha).toInt()
+
         var pageNumber = 1
         var valueToDraw: Long
         var textToDraw: String
@@ -314,6 +318,7 @@ class DurationView @JvmOverloads constructor(
             canvas.drawText(textToDraw, currentPageX, currentPageY, textPaint)
             pageNumber += 1
         }
+        textPaint.alpha = defaultAlpha
     }
 
     private fun getPageStartHorizontal(

@@ -891,6 +891,14 @@ class PrefsInteractor @Inject constructor(
         prefsRepo.isCommentSelectionSuggestionsEnabled = value
     }
 
+    suspend fun getDurationSuggestionsWasPrepopulated(): Boolean = withContext(Dispatchers.IO) {
+        prefsRepo.durationSuggestionsWasPrepopulated
+    }
+
+    suspend fun setDurationSuggestionsWasPrepopulated(value: Boolean) = withContext(Dispatchers.IO) {
+        prefsRepo.durationSuggestionsWasPrepopulated = value
+    }
+
     suspend fun clear() = withContext(Dispatchers.IO) {
         prefsRepo.clear()
     }
@@ -905,6 +913,10 @@ class PrefsInteractor @Inject constructor(
 
     suspend fun clearPomodoroSettingsClick() = withContext(Dispatchers.IO) {
         prefsRepo.clearPomodoroSettingsClick()
+    }
+
+    suspend fun clearDurationSuggestionsPrepopulated() = withContext(Dispatchers.IO) {
+        prefsRepo.clearDurationSuggestionsPrepopulated()
     }
 
     private fun mapToRange(

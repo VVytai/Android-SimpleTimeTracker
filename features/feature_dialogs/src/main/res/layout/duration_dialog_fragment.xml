@@ -75,6 +75,20 @@
         android:background="?appDividerColor"
         app:layout_constraintTop_toBottomOf="@id/guidelineDurationPicker" />
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvDurationPickerSuggestions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:clipToPadding="false"
+        android:orientation="horizontal"
+        android:paddingHorizontal="4dp"
+        android:visibility="gone"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintTop_toBottomOf="@id/viewDurationPickerDivider"
+        tools:listitem="@layout/item_duration_dialog_suggestion_layout"
+        tools:visibility="visible" />
+
     <com.example.util.simpletimetracker.feature_dialogs.duration.customView.NumberKeyboardView
         android:id="@+id/viewDurationPickerNumberKeyboard"
         android:layout_width="match_parent"
@@ -83,7 +97,7 @@
         android:layout_marginVertical="8dp"
         android:layout_weight="1"
         app:layout_constraintBottom_toTopOf="@id/containerDurationPickerButtons"
-        app:layout_constraintTop_toBottomOf="@id/viewDurationPickerDivider"
+        app:layout_constraintTop_toBottomOf="@id/rvDurationPickerSuggestions"
         app:numberKeyboardTextColor="?appTextPrimaryColor"
         app:numberKeyboardTextSize="32sp" />
 
