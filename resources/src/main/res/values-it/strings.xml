@@ -22,6 +22,7 @@
     <string name="copied_to_clipboard">Copiato negli appunti</string>
     <string name="search_hint">Cerca</string>
     <string name="enable_search_hint">Abilita la ricerca</string>
+    <string name="help">Aiuto</string>
 
     <!--  Range selection  -->
     <string name="title_yesterday">Ieri</string>
@@ -89,6 +90,15 @@
     <string name="categories_record_hint">Assegna diverse etichette alle registrazioni per differenziarle tra loro</string>
     <string name="categories_add_category">Aggiungi categoria</string>
     <string name="categories_add_record_tag">Aggiungi etichetta alla registrazione</string>
+    <string name="categories_and_tags_hint"><![CDATA[
+Le <b>categorie</b> ti aiutano a raggruppare attività correlate. Ad esempio:<br><br>
+• La categoria <b>Produttiva</b> potrebbe includere <b>Lettura</b> e <b>Palestra</b>.<br><br>
+• La categoria <b>Tempo libero</b> potrebbe includere <b>TV</b> e <b>Giochi</b>.<br><br>
+Questo ti permette di vedere quanto tempo stai dedicando complessivamente ad attività produttive rispetto a quelle non produttive.<br><br>
+I <b>tag</b> ti permettono di aggiungere maggiori dettagli a un\'attività specifica. Ad esempio:<br><br>
+• Per l\'attività <b>Lettura</b>, usa tag come <b>1984</b> o <b>Harry Potter</b> per monitorare il tempo dedicato a ciascun libro.<br><br>
+• Per l\'attività <b>Lavoro</b>, usa tag come <b>Casa</b> e <b>Ufficio</b> per distinguere dove è stato svolto il lavoro.<br>
+    ]]></string>
 
     <!--  Change category  -->
     <string name="change_category_removed">Categoria rimossa</string>

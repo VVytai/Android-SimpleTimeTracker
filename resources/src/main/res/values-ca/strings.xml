@@ -22,6 +22,7 @@
     <string name="copied_to_clipboard">S\'ha copiat al porta-retalls</string>
     <string name="search_hint">Cerca</string>
     <string name="enable_search_hint">Habilita la cerca</string>
+    <string name="help">Ajuda</string>
 
     <!--  Range selection  -->
     <string name="title_yesterday">Ahir</string>
@@ -89,6 +90,15 @@
     <string name="categories_record_hint">Assigneu diferents etiquetes als enregistraments per diferenciar-los</string>
     <string name="categories_add_category">Afegeix categoria</string>
     <string name="categories_add_record_tag">Afegeix etiqueta d\'enregistrament</string>
+    <string name="categories_and_tags_hint"><![CDATA[
+<b>Categories</b> t\'ajuden a agrupar activitats relacionades. Per exemple:<br><br>
+• La categoria <b>Productiva</b> podria incloure <b>Llegir</b> i <b>Gimnàs</b>.<br><br>
+• La categoria <b>Oci</b> podria incloure <b>TV</b> i <b>Jocs</b>.<br><br>
+Això et permet veure quant de temps dediques a activitats productives versus no productives en general.<br><br>
+<b>Etiquetes</b> et permeten afegir més detall a una activitat específica. Per exemple:<br><br>
+• Per a l\'activitat de <b>Llegir</b>, utilitza etiquetes com <b>1984</b> o <b>Harry Potter</b> per fer un seguiment del temps dedicat a cada llibre.<br><br>
+• Per a l\'activitat de <b>Treball</b>, utilitza etiquetes com <b>Casa</b> i <b>Oficina</b> per diferenciar on s\'ha realitzat el treball.<br>
+    ]]></string>
 
     <!--  Change category  -->
     <string name="change_category_removed">Categoria eliminada</string>

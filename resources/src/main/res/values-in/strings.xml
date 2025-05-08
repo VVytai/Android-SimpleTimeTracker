@@ -22,6 +22,7 @@
     <string name="copied_to_clipboard">Disalin ke papan klip</string>
     <string name="search_hint">Cari</string>
     <string name="enable_search_hint">Aktifkan pencarian</string>
+    <string name="help">Bantuan</string>
 
     <!--  Range selection  -->
     <string name="title_yesterday">Kemarin</string>
@@ -89,6 +90,15 @@
     <string name="categories_record_hint">Tetapkan label yang berbeda ke rekaman untuk membedakannya</string>
     <string name="categories_add_category">Tambahkan kategori</string>
     <string name="categories_add_record_tag">Tambahkan label rekaman</string>
+    <string name="categories_and_tags_hint"><![CDATA[
+<b>Kategori</b> membantu Anda mengelompokkan aktivitas yang berhubungan. Contohnya:<br><br>
+• Kategori <b>Produktif</b> bisa mencakup <b>Membaca</b> dan <b>Gym</b>.<br><br>
+• Kategori <b>Hiburan</b> bisa mencakup <b>TV</b> dan <b>Game</b>.<br><br>
+Ini memungkinkan Anda melihat berapa banyak waktu yang dihabiskan untuk aktivitas produktif dibandingkan dengan yang tidak produktif secara keseluruhan.<br><br>
+<b>Tag</b> memungkinkan Anda menambahkan detail lebih lanjut ke aktivitas tertentu. Contohnya:<br><br>
+• Untuk aktivitas <b>Membaca</b>, gunakan tag seperti <b>1984</b> atau <b>Harry Potter</b> untuk melacak waktu yang dihabiskan untuk setiap buku.<br><br>
+• Untuk aktivitas <b>Pekerjaan</b>, gunakan tag seperti <b>Rumah</b> dan <b>Kantor</b> untuk membedakan di mana pekerjaan dilakukan.<br>
+    ]]></string>
 
     <!--  Change category  -->
     <string name="change_category_removed">Kategori dihapuskan</string>

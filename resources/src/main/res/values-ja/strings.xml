@@ -22,6 +22,7 @@
     <string name="copied_to_clipboard">クリップボードにコピーされました</string>
     <string name="search_hint">検索</string>
     <string name="enable_search_hint">検索を有効にする</string>
+    <string name="help">ヘルプ</string>
 
     <!--  Range selection  -->
     <string name="title_yesterday">昨日</string>
@@ -89,6 +90,15 @@
     <string name="categories_record_hint">計測記録に異なるタグを付与し、計測記録を区別することが可能です</string>
     <string name="categories_add_category">カテゴリを追加</string>
     <string name="categories_add_record_tag">計測タグを追加</string>
+    <string name="categories_and_tags_hint"><![CDATA[
+<b>カテゴリ</b>は、関連するアクティビティをグループ化するのに役立ちます。例えば：<br><br>
+• <b>生産的</b>カテゴリには、<b>読書</b>や<b>ジム</b>が含まれるかもしれません。<br><br>
+• <b>レジャー</b>カテゴリには、<b>テレビ</b>や<b>ゲーム</b>が含まれるかもしれません。<br><br>
+これにより、生産的な活動と非生産的な活動にどれだけの時間を費やしているかを全体的に把握することができます。<br><br>
+<b>タグ</b>は、特定のアクティビティに詳細を追加するのに役立ちます。例えば：<br><br>
+• <b>読書</b>アクティビティには、<b>1984</b>や<b>ハリーポッター</b>などのタグを使って、各本にかけた時間を追跡できます。<br><br>
+• <b>仕事</b>アクティビティには、<b>自宅</b>や<b>オフィス</b>などのタグを使って、仕事をどこで行ったかを区別できます。<br>
+    ]]></string>
 
     <!--  Change category  -->
     <string name="change_category_removed">カテゴリを削除しました</string>

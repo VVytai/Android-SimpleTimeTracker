@@ -22,6 +22,7 @@
     <string name="copied_to_clipboard">Copié dans le presse-papiers</string>
     <string name="search_hint">Rechercher</string>
     <string name="enable_search_hint">Activer la recherche</string>
+    <string name="help">Aide</string>
 
     <!--  Range selection  -->
     <string name="title_yesterday">Hier</string>
@@ -89,6 +90,15 @@
     <string name="categories_record_hint">Attribuez différentes étiquettes aux enregistrements pour les différencier</string>
     <string name="categories_add_category">Créer une catégorie</string>
     <string name="categories_add_record_tag">Créer une étiquette d\'enregistrement</string>
+    <string name="categories_and_tags_hint"><![CDATA[
+<b>Catégories</b> vous aident à regrouper des activités similaires. Par exemple :<br><br>
+• La catégorie <b>Productif</b> peut inclure <b>Lecture</b> et <b>Salle de sport</b>.<br><br>
+• La catégorie <b>Détente</b> peut inclure <b>Télévision</b> et <b>Jeux</b>.<br><br>
+Cela vous permet de voir combien de temps vous passez globalement sur des activités productives ou non productives.<br><br>
+<b>Étiquettes</b> vous permettent d\'ajouter plus de détails à une activité spécifique. Par exemple :<br><br>
+• Pour l\'activité <b>Lecture</b>, utilisez des étiquettes comme <b>1984</b> ou <b>Harry Potter</b> pour suivre le temps passé sur chaque livre.<br><br>
+• Pour l\'activité <b>Travail</b>, utilisez des étiquettes comme <b>Domicile</b> et <b>Bureau</b> pour différencier où le travail a été effectué.<br>
+    ]]></string>
 
     <!--  Change category  -->
     <string name="change_category_removed">Catégorie supprimée</string>

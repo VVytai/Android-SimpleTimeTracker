@@ -22,6 +22,7 @@
     <string name="copied_to_clipboard">已复制到剪贴板</string>
     <string name="search_hint">搜索</string>
     <string name="enable_search_hint">启用搜索</string>
+    <string name="help">帮助</string>
 
     <!--  Range selection  -->
     <string name="title_yesterday">昨天</string>
@@ -89,6 +90,15 @@
     <string name="categories_record_hint">为活动分配不同的标签，进行细致地区分</string>
     <string name="categories_add_category">添加分类</string>
     <string name="categories_add_record_tag">添加记录标签</string>
+    <string name="categories_and_tags_hint"><![CDATA[
+<b>分类</b>可以帮助你将相关的活动进行分组。例如：<br><br>
+• <b>高效</b>分类可以包括<b>阅读</b>和<b>健身</b>。<br><br>
+• <b>休闲</b>分类可以包括<b>电视</b>和<b>游戏</b>。<br><br>
+这可以帮助你了解自己在高效与非高效活动上花费了多少时间。<br><br>
+<b>标签</b>可以让你为具体活动添加更多细节。例如：<br><br>
+• 对于<b>阅读</b>活动，可以使用<b>1984</b>或<b>哈利波特</b>这样的标签来追踪每本书的阅读时间。<br><br>
+• 对于<b>工作</b>活动，可以使用<b>在家</b>和<b>办公室</b>这样的标签来区分工作的地点。<br>
+    ]]></string>
 
     <!--  Change category  -->
     <string name="change_category_removed">已移除分类</string>

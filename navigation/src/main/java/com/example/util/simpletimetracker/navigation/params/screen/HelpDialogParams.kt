@@ -5,6 +5,14 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class HelpDialogParams(
-    val title: String = "",
-    val text: CharSequence = "",
-) : Parcelable, ScreenParams
+    val title: String,
+    val text: CharSequence,
+) : Parcelable, ScreenParams {
+
+    companion object {
+        val Empty = HelpDialogParams(
+            title = "",
+            text = "",
+        )
+    }
+}

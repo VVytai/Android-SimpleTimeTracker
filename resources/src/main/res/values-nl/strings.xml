@@ -22,6 +22,7 @@
     <string name="copied_to_clipboard">Gekopieerd naar klembord</string>
     <string name="search_hint">Zoeken</string>
     <string name="enable_search_hint">Zoeken inschakelen</string>
+    <string name="help">Help</string>
 
     <!--  Range selection  -->
     <string name="title_yesterday">Gisteren</string>
@@ -89,6 +90,15 @@
     <string name="categories_record_hint">Wijs verschillende labels toe aan records om ze te onderscheiden</string>
     <string name="categories_add_category">Categorie toevoegen</string>
     <string name="categories_add_record_tag">Recordtag toevoegen</string>
+    <string name="categories_and_tags_hint"><![CDATA[
+<b>Categorieën</b> helpen je om gerelateerde activiteiten te groeperen. Bijvoorbeeld:<br><br>
+• De <b>Productieve</b> categorie kan <b>Lezen</b> en <b>Sportschool</b> bevatten.<br><br>
+• De <b>Vrije tijd</b> categorie kan <b>TV</b> en <b>Spellen</b> bevatten.<br><br>
+Dit stelt je in staat om te zien hoeveel tijd je in totaal besteedt aan productieve versus niet-productieve activiteiten.<br><br>
+<b>Tags</b> stellen je in staat om meer details aan een specifieke activiteit toe te voegen. Bijvoorbeeld:<br><br>
+• Voor de <b>Lezen</b> activiteit, gebruik tags zoals <b>1984</b> of <b>Harry Potter</b> om de tijd die aan elk boek wordt besteed bij te houden.<br><br>
+• Voor de <b>Werk</b> activiteit, gebruik tags zoals <b>Thuis</b> en <b>Kantoor</b> om te onderscheiden waar het werk is uitgevoerd.<br>
+    ]]></string>
 
     <!--  Change category  -->
     <string name="change_category_removed">Categorie verwijderd</string>

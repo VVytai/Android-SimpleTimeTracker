@@ -22,6 +22,7 @@
     <string name="copied_to_clipboard">Skopiowano do schowka</string>
     <string name="search_hint">Szukaj</string>
     <string name="enable_search_hint">Włącz wyszukiwanie</string>
+    <string name="help">Pomoc</string>
 
     <!--  Range selection  -->
     <string name="title_yesterday">Wczoraj</string>
@@ -89,6 +90,15 @@
     <string name="categories_record_hint">Przypisz różne tagi do zapisów, aby je rozróżnić</string>
     <string name="categories_add_category">Dodaj kategorię</string>
     <string name="categories_add_record_tag">Dodaj tag dla aktywności</string>
+    <string name="categories_and_tags_hint"><![CDATA[
+<b>Kategorie</b> pomagają Ci grupować powiązane ze sobą aktywności. Na przykład:<br><br>
+• Kategoria <b>Produktywna</b> może obejmować <b>Czytanie</b> i <b>Siłownię</b>.<br><br>
+• Kategoria <b>Rekreacja</b> może obejmować <b>TV</b> i <b>Gry</b>.<br><br>
+Pozwala to zobaczyć, ile czasu spędzasz na produktywnych i nieproduktywnych aktywnościach w sumie.<br><br>
+<b>Tagi</b> umożliwiają dodanie większej ilości szczegółów do konkretnej aktywności. Na przykład:<br><br>
+• Dla aktywności <b>Czytanie</b>, używaj tagów takich jak <b>1984</b> lub <b>Harry Potter</b>, aby śledzić czas spędzony na każdej książce.<br><br>
+• Dla aktywności <b>Praca</b>, używaj tagów takich jak <b>Dom</b> i <b>Biuro</b>, aby rozróżnić, gdzie praca była wykonywana.<br>
+    ]]></string>
 
     <!--  Change category  -->
     <string name="change_category_removed">Kategoria usunięta</string>

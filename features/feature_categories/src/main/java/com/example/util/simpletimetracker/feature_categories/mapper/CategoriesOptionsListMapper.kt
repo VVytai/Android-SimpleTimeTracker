@@ -19,6 +19,13 @@ class CategoriesOptionsListMapper @Inject constructor(
         val result = mutableListOf<OptionsListParams.Item>()
 
         result += OptionsListParams.Item(
+            id = CategoriesOptionsListItem.Help,
+            text = resourceRepo.getString(R.string.help),
+            icon = R.drawable.unknown,
+            isIconCheckVisible = false,
+        )
+
+        result += OptionsListParams.Item(
             id = CategoriesOptionsListItem.EnabledSearch,
             text = resourceRepo.getString(R.string.enable_search_hint),
             icon = R.drawable.search,

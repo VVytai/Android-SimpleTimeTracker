@@ -22,6 +22,7 @@
     <string name="copied_to_clipboard">क्लिपबोर्ड पर कॉपी किया गया</string>
     <string name="search_hint">खोजें</string>
     <string name="enable_search_hint">खोज सक्षम करें</string>
+    <string name="help">सहायता</string>
 
     <!--  Range selection  -->
     <string name="title_yesterday">कल</string>
@@ -89,6 +90,15 @@
     <string name="categories_record_hint">उनके बीच अंतर करने के लिए रिकॉर्ड के लिए अलग -अलग टैग असाइन करें</string>
     <string name="categories_add_category">कैटेगरी जोड़े</string>
     <string name="categories_add_record_tag">रिकॉर्ड टैग जोड़ें</string>
+    <string name="categories_and_tags_hint"><![CDATA[
+<b>श्रेणियाँ</b> आपको संबंधित गतिविधियों को समूहित करने में मदद करती हैं। उदाहरण के लिए:<br><br>
+• <b>उत्पादक</b> श्रेणी में <b>पढ़ाई</b> और <b>जिम</b> शामिल हो सकते हैं।<br><br>
+• <b>मनोरंजन</b> श्रेणी में <b>टीवी</b> और <b>गेम्स</b> शामिल हो सकते हैं।<br><br>
+यह आपको यह देखने में मदद करता है कि आप कुल मिलाकर उत्पादक बनाम गैर-उत्पादक गतिविधियों पर कितना समय बिता रहे हैं।<br><br>
+<b>टैग</b> आपको किसी विशिष्ट गतिविधि में अधिक विवरण जोड़ने की अनुमति देते हैं। उदाहरण के लिए:<br><br>
+• <b>पढ़ाई</b> गतिविधि के लिए, <b>1984</b> या <b>हैरी पॉटर</b> जैसे टैग का उपयोग करें ताकि हर किताब पर खर्च किया गया समय ट्रैक किया जा सके।<br><br>
+• <b>काम</b> गतिविधि के लिए, <b>घर</b> और <b>ऑफिस</b> जैसे टैग का उपयोग करें ताकि यह स्पष्ट हो सके कि काम कहाँ किया गया था।<br>
+    ]]></string>
 
     <!--  Change category  -->
     <string name="change_category_removed">श्रेणी हटा दिया गयी</string>

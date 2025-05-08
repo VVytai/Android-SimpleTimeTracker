@@ -22,6 +22,7 @@
     <string name="copied_to_clipboard">Copiado para a área de transferência</string>
     <string name="search_hint">Pesquisar</string>
     <string name="enable_search_hint">Ativar pesquisa</string>
+    <string name="help">Ajuda</string>
 
     <!--  Range selection  -->
     <string name="title_yesterday">Ontem</string>
@@ -89,6 +90,15 @@
     <string name="categories_record_hint">Atribua tags diferentes aos registros para diferenciá-los</string>
     <string name="categories_add_category">Adicionar categoria</string>
     <string name="categories_add_record_tag">Adicionar tag de registro</string>
+    <string name="categories_and_tags_hint"><![CDATA[
+<b>Categorias</b> ajudam a agrupar atividades relacionadas. Por exemplo:<br><br>
+• A categoria <b>Produtiva</b> pode incluir <b>Leitura</b> e <b>Academia</b>.<br><br>
+• A categoria <b>Lazer</b> pode incluir <b>TV</b> e <b>Jogos</b>.<br><br>
+Isso permite ver quanto tempo você está gastando em atividades produtivas versus não produtivas no geral.<br><br>
+<b>Tags</b> permitem adicionar mais detalhes a uma atividade específica. Por exemplo:<br><br>
+• Para a atividade <b>Leitura</b>, use tags como <b>1984</b> ou <b>Harry Potter</b> para acompanhar o tempo gasto em cada livro.<br><br>
+• Para a atividade <b>Trabalho</b>, use tags como <b>Casa</b> e <b>Escritório</b> para diferenciar onde o trabalho foi realizado.<br>
+    ]]></string>
 
     <!--  Change category  -->
     <string name="change_category_removed">Categoria removida</string>

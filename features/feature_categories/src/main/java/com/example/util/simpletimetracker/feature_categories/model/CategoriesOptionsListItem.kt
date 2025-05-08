@@ -10,4 +10,7 @@ sealed interface CategoriesOptionsListItem : OptionsListParams.Item.Id {
 
     @Parcelize
     data object EnabledSearch : CategoriesOptionsListItem
+
+    @Parcelize
+    data object Help : CategoriesOptionsListItem
 }

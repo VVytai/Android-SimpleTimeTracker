@@ -22,6 +22,7 @@
     <string name="copied_to_clipboard">تم نسخها إلى الحافظة</string>
     <string name="search_hint">بحث</string>
     <string name="enable_search_hint">تمكين البحث</string>
+    <string name="help">مساعدة</string>
 
     <!--  Range selection  -->
     <string name="title_yesterday">اﻷمس</string>
@@ -89,6 +90,15 @@
     <string name="categories_record_hint">عين وسوم مختلفة للتمييز بين المتتبعات</string>
     <string name="categories_add_category">إضافة تصنيف</string>
     <string name="categories_add_record_tag">إضافة وسم التتبع</string>
+    <string name="categories_and_tags_hint"><![CDATA[
+<b>الفئات</b> تساعدك على تجميع الأنشطة ذات الصلة. على سبيل المثال:<br><br>
+• قد تتضمن فئة <b>الإنتاجية</b> أنشطة مثل <b>القراءة</b> و<b>الصالة الرياضية</b>.<br><br>
+• قد تتضمن فئة <b>الترفيه</b> أنشطة مثل <b>التلفاز</b> و<b>الألعاب</b>.<br><br>
+يساعدك ذلك على معرفة مقدار الوقت الذي تقضيه في الأنشطة الإنتاجية مقابل غير الإنتاجية بشكل عام.<br><br>
+<b>العلامات</b> تتيح لك إضافة مزيد من التفاصيل إلى نشاط معين. على سبيل المثال:<br><br>
+• لنشاط <b>القراءة</b>، استخدم علامات مثل <b>1984</b> أو <b>هاري بوتر</b> لتتبع الوقت الذي تقضيه في كل كتاب.<br><br>
+• لنشاط <b>العمل</b>، استخدم علامات مثل <b>المنزل</b> و<b>المكتب</b> لتمييز مكان تنفيذ العمل.<br>
+    ]]></string>
 
     <!--  Change category  -->
     <string name="change_category_removed">حذف التصنيف</string>

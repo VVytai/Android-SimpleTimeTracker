@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.util.simpletimetracker.core.extension.fromHtml
 import com.example.util.simpletimetracker.core.extension.set
 import com.example.util.simpletimetracker.core.extension.toParams
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
@@ -25,6 +26,7 @@ import com.example.util.simpletimetracker.navigation.Router
 import com.example.util.simpletimetracker.navigation.params.screen.ChangeCategoryFromTagsParams
 import com.example.util.simpletimetracker.navigation.params.screen.ChangeRecordTagFromTagsParams
 import com.example.util.simpletimetracker.navigation.params.screen.ChangeTagData
+import com.example.util.simpletimetracker.navigation.params.screen.HelpDialogParams
 import com.example.util.simpletimetracker.navigation.params.screen.OptionsListParams
 import com.example.util.simpletimetracker.navigation.params.screen.TypesSelectionDialogParams
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -121,6 +123,7 @@ class CategoriesViewModel @Inject constructor(
         when (id) {
             is CategoriesOptionsListItem.Filter -> onFilterClick()
             is CategoriesOptionsListItem.EnabledSearch -> onSearchToggled()
+            is CategoriesOptionsListItem.Help -> onHelpClick()
         }
     }
 
@@ -185,6 +188,13 @@ class CategoriesViewModel @Inject constructor(
         prefsInteractor.setIsCategoriesSearchEnabled(!current)
         updateSearchState()
         updateCategories()
+    }
+
+    private fun onHelpClick() {
+        HelpDialogParams(
+            title = resourceRepo.getString(R.string.categories_title),
+            text = resourceRepo.getString(R.string.categories_and_tags_hint).fromHtml(),
+        ).let(router::navigate)
     }
 
     private fun updateSearchState() = viewModelScope.launch {

@@ -22,6 +22,7 @@
     <string name="copied_to_clipboard">已複製到剪貼簿</string>
     <string name="search_hint">搜尋</string>
     <string name="enable_search_hint">啟用搜尋</string>
+    <string name="help">幫助</string>
 
     <!--  Range selection  -->
     <string name="title_yesterday">昨天</string>
@@ -89,6 +90,15 @@
     <string name="categories_record_hint">指派不同標記來記錄它們不同之處</string>
     <string name="categories_add_category">新增分類</string>
     <string name="categories_add_record_tag">新增紀錄標記</string>
+    <string name="categories_and_tags_hint"><![CDATA[
+<b>分類</b>可以幫助你將相關的活動分組。例如：<br><br>
+• <b>高效</b>分類可能包括<b>閱讀</b>和<b>健身</b>。<br><br>
+• <b>休閒</b>分類可能包括<b>電視</b>和<b>遊戲</b>。<br><br>
+這能讓你了解自己總共花了多少時間在高效與低效的活動上。<br><br>
+<b>標籤</b>可以讓你為特定活動添加更多細節。例如：<br><br>
+• 對於<b>閱讀</b>活動，可以使用<b>一九八四</b>或<b>哈利波特</b>等標籤來追蹤閱讀每本書的時間。<br><br>
+• 對於<b>工作</b>活動，可以使用<b>在家</b>和<b>辦公室</b>等標籤來區分工作地點。<br>
+    ]]></string>
 
     <!--  Change category  -->
     <string name="change_category_removed">分類已移除</string>

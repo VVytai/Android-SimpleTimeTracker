@@ -22,6 +22,7 @@
     <string name="copied_to_clipboard">Kopierade till urklipp</string>
     <string name="search_hint">Sök</string>
     <string name="enable_search_hint">Aktivera sökning</string>
+    <string name="help">Hjälp</string>
 
     <!--  Range selection  -->
     <string name="title_yesterday">Igår</string>
@@ -89,6 +90,15 @@
     <string name="categories_record_hint">Ge händelser olika taggar för att skilja dem åt</string>
     <string name="categories_add_category">Lägg till kategori</string>
     <string name="categories_add_record_tag">Lägg till händelsetagg</string>
+    <string name="categories_and_tags_hint"><![CDATA[
+<b>Kategorier</b> hjälper dig att gruppera relaterade aktiviteter. Till exempel:<br><br>
+• Kategorin <b>Produktiv</b> kan inkludera <b>Läsning</b> och <b>Gym</b>.<br><br>
+• Kategorin <b>Fritid</b> kan inkludera <b>TV</b> och <b>Spel</b>.<br><br>
+Detta gör att du kan se hur mycket tid du spenderar på produktiva kontra icke-produktiva aktiviteter totalt sett.<br><br>
+<b>Taggar</b> låter dig lägga till mer detaljer till en specifik aktivitet. Till exempel:<br><br>
+• För aktiviteten <b>Läsning</b>, använd taggar som <b>1984</b> eller <b>Harry Potter</b> för att hålla reda på tiden för varje bok.<br><br>
+• För aktiviteten <b>Arbete</b>, använd taggar som <b>Hemma</b> och <b>Kontor</b> för att särskilja var arbetet utfördes.<br>
+    ]]></string>
 
     <!--  Change category  -->
     <string name="change_category_removed">Kategori borttagen</string>

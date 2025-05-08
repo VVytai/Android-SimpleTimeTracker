@@ -22,6 +22,7 @@
     <string name="copied_to_clipboard">در کلیپ بورد کپی شد</string>
     <string name="search_hint">جستجو</string>
     <string name="enable_search_hint">فعال‌سازی جستجو</string>
+    <string name="help">کمک</string>
 
     <!--  Range selection  -->
     <string name="title_yesterday">روز قبل</string>
@@ -89,6 +90,15 @@
     <string name="categories_record_hint">برچسب های مختلف را به تاریخچه ها اختصاص دهید تا آنها را از هم تفکیک کنید</string>
     <string name="categories_add_category">افزودن دسته بندی</string>
     <string name="categories_add_record_tag">افزودن برچسب تاریخچه</string>
+    <string name="categories_and_tags_hint"><![CDATA[
+<b>دسته‌بندی‌ها</b> به شما کمک می‌کنند فعالیت‌های مرتبط را گروه‌بندی کنید. برای مثال:<br><br>
+• دسته <b>سودمند</b> می‌تواند شامل <b>مطالعه</b> و <b>باشگاه</b> باشد.<br><br>
+• دسته <b>تفریحی</b> می‌تواند شامل <b>تلویزیون</b> و <b>بازی‌ها</b> باشد.<br><br>
+این به شما اجازه می‌دهد ببینید چه مقدار زمان را صرف فعالیت‌های سودمند در مقایسه با فعالیت‌های غیرسودمند می‌کنید.<br><br>
+<b>برچسب‌ها</b> به شما امکان می‌دهند جزئیات بیشتری به یک فعالیت خاص اضافه کنید. برای مثال:<br><br>
+• برای فعالیت <b>مطالعه</b>، از برچسب‌هایی مانند <b>1984</b> یا <b>هری پاتر</b> استفاده کنید تا زمان صرف‌شده برای هر کتاب را پیگیری کنید.<br><br>
+• برای فعالیت <b>کار</b>، از برچسب‌هایی مانند <b>خانه</b> و <b>دفتر</b> استفاده کنید تا محل انجام کار را مشخص کنید.<br>
+    ]]></string>
 
     <!--  Change category  -->
     <string name="change_category_removed">دسته بندی حذف شد</string>

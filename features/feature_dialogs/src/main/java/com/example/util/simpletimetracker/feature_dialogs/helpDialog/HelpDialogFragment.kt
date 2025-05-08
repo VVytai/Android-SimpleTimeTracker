@@ -19,7 +19,7 @@ class HelpDialogFragment : BaseBottomSheetFragment<Binding>() {
         Binding::inflate
 
     private val params: HelpDialogParams by fragmentArgumentDelegate(
-        key = ARGS_PARAMS, default = HelpDialogParams(),
+        key = ARGS_PARAMS, default = HelpDialogParams.Empty,
     )
 
     override fun initDialog() {

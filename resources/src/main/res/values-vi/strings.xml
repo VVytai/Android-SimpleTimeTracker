@@ -22,6 +22,7 @@
     <string name="copied_to_clipboard">Đã sao chép vào bảng nhớ tạm</string>
     <string name="search_hint">Tìm kiếm</string>
     <string name="enable_search_hint">Bật tìm kiếm</string>
+    <string name="help">Trợ giúp</string>
 
     <!--  Range selection  -->
     <string name="title_yesterday">Hôm qua</string>
@@ -89,6 +90,15 @@
     <string name="categories_record_hint">Gán các thẻ khác nhau cho các bản ghi để phân biệt giữa chúng</string>
     <string name="categories_add_category">Thêm danh mục</string>
     <string name="categories_add_record_tag">Thêm thẻ bản ghi</string>
+    <string name="categories_and_tags_hint"><![CDATA[
+<b>Danh mục</b> giúp bạn nhóm các hoạt động liên quan lại với nhau. Ví dụ:<br><br>
+• Danh mục <b>Năng suất</b> có thể bao gồm <b>Đọc sách</b> và <b>Phòng tập thể dục</b>.<br><br>
+• Danh mục <b>Giải trí</b> có thể bao gồm <b>TV</b> và <b>Trò chơi</b>.<br><br>
+Điều này giúp bạn nhìn thấy bạn đang dành bao nhiêu thời gian cho các hoạt động năng suất và không năng suất tổng thể.<br><br>
+<b>Thẻ</b> cho phép bạn thêm chi tiết vào một hoạt động cụ thể. Ví dụ:<br><br>
+• Đối với hoạt động <b>Đọc sách</b>, sử dụng các thẻ như <b>1984</b> hoặc <b>Harry Potter</b> để theo dõi thời gian dành cho mỗi cuốn sách.<br><br>
+• Đối với hoạt động <b>Công việc</b>, sử dụng các thẻ như <b>Nhà</b> và <b>Văn phòng</b> để phân biệt nơi công việc được thực hiện.<br>
+    ]]></string>
 
     <!--  Change category  -->
     <string name="change_category_removed">Đã loại danh mục</string>

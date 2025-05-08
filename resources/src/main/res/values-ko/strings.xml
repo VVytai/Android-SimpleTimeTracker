@@ -22,6 +22,7 @@
     <string name="copied_to_clipboard">클립보드에 복사됨</string>
     <string name="search_hint">검색</string>
     <string name="enable_search_hint">검색 사용</string>
+    <string name="help">도움말</string>
 
     <!--  Range selection  -->
     <string name="title_yesterday">어제</string>
@@ -89,6 +90,15 @@
     <string name="categories_record_hint">같은 활동의 기록을 태그로 구분할 수 있습니다</string>
     <string name="categories_add_category">카테고리 추가</string>
     <string name="categories_add_record_tag">기록 태그 추가</string>
+    <string name="categories_and_tags_hint"><![CDATA[
+<b>카테고리</b>는 관련된 활동을 그룹화하는 데 도움이 됩니다. 예를 들어:<br><br>
+• <b>생산적</b> 카테고리에는 <b>독서</b>와 <b>체육관</b>이 포함될 수 있습니다.<br><br>
+• <b>여가</b> 카테고리에는 <b>TV</b>와 <b>게임</b>이 포함될 수 있습니다.<br><br>
+이를 통해 전반적으로 생산적인 활동과 비생산적인 활동에 얼마나 많은 시간을 보내고 있는지 알 수 있습니다.<br><br>
+<b>태그</b>는 특정 활동에 더 많은 세부 정보를 추가할 수 있게 해줍니다. 예를 들어:<br><br>
+• <b>독서</b> 활동에는 <b>1984</b> 또는 <b>해리포터</b>와 같은 태그를 사용하여 각 책에 소비한 시간을 추적할 수 있습니다.<br><br>
+• <b>작업</b> 활동에는 <b>집</b>과 <b>사무실</b>과 같은 태그를 사용하여 작업이 수행된 장소를 구분할 수 있습니다.<br>
+    ]]></string>
 
     <!--  Change category  -->
     <string name="change_category_removed">카테고리 삭제됨</string>

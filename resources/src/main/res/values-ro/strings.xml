@@ -22,6 +22,7 @@
     <string name="copied_to_clipboard">Copiat în clipboard</string>
     <string name="search_hint">Căutare</string>
     <string name="enable_search_hint">Activează căutarea</string>
+    <string name="help">Ajutor</string>
 
     <!--  Range selection  -->
     <string name="title_yesterday">Ieri</string>
@@ -89,6 +90,15 @@
     <string name="categories_record_hint">Atribuiți diferite etichete înregistrărilor pentru a le diferenția</string>
     <string name="categories_add_category">Adaugă categorie</string>
     <string name="categories_add_record_tag">Adaugă etichetă</string>
+    <string name="categories_and_tags_hint"><![CDATA[
+<b>Categoriile</b> te ajută să grupezi activități înrudite. De exemplu:<br><br>
+• Categoria <b>Productivă</b> poate include <b>Citit</b> și <b>Sală de sport</b>.<br><br>
+• Categoria <b>Relaxare</b> poate include <b>TV</b> și <b>Jocuri</b>.<br><br>
+Acest lucru îți permite să vezi cât timp petreci în activități productive față de cele neproductive, în general.<br><br>
+<b>Etichetele</b> îți permit să adaugi mai multe detalii unei activități specifice. De exemplu:<br><br>
+• Pentru activitatea <b>Citit</b>, folosește etichete precum <b>1984</b> sau <b>Harry Potter</b> pentru a urmări timpul petrecut cu fiecare carte.<br><br>
+• Pentru activitatea <b>Lucru</b>, folosește etichete precum <b>Acasă</b> și <b>Birou</b> pentru a diferenția unde a fost realizată activitatea.<br>
+    ]]></string>
 
     <!--  Change category  -->
     <string name="change_category_removed">Categorie ștearsă</string>

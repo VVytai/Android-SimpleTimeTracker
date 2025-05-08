@@ -22,6 +22,7 @@
     <string name="copied_to_clipboard">Скопійовано в буфер обміну</string>
     <string name="search_hint">Пошук</string>
     <string name="enable_search_hint">Увімкнути пошук</string>
+    <string name="help">Допомога</string>
 
     <!--  Range selection  -->
     <string name="title_yesterday">Вчора</string>
@@ -89,6 +90,15 @@
     <string name="categories_record_hint">Призначте різні теги записам, щоб розрізняти їх</string>
     <string name="categories_add_category">Додати категорію</string>
     <string name="categories_add_record_tag">Додати тег запису</string>
+    <string name="categories_and_tags_hint"><![CDATA[
+<b>Категорії</b> допомагають групувати пов’язані активності. Наприклад:<br><br>
+• Категорія <b>Продуктивність</b> може включати <b>Читання</b> та <b>Спортзал</b>.<br><br>
+• Категорія <b>Дозвілля</b> може включати <b>Телебачення</b> та <b>Ігри</b>.<br><br>
+Це дозволяє побачити, скільки часу ви витрачаєте на продуктивні та непродуктивні дії загалом.<br><br>
+<b>Теги</b> дозволяють додати більше деталей до конкретної активності. Наприклад:<br><br>
+• Для активності <b>Читання</b> використовуйте теги, як-от <b>1984</b> або <b>Гаррі Поттер</b>, щоб відстежувати час, витрачений на кожну книгу.<br><br>
+• Для активності <b>Робота</b> використовуйте теги, як-от <b>Дім</b> та <b>Офіс</b>, щоб розрізнити, де саме виконувалась робота.<br>
+    ]]></string>
 
     <!--  Change category  -->
     <string name="change_category_removed">Категорію видалено</string>

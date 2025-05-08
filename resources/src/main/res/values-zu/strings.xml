@@ -22,6 +22,7 @@
     <string name="copied_to_clipboard">Kukopishwe ebhodini lokunamathisela</string>
     <string name="search_hint">Sesha</string>
     <string name="enable_search_hint">Vumela usesho</string>
+    <string name="help">Usizo</string>
 
     <!--  Range selection  -->
     <string name="title_yesterday">Izolo</string>
@@ -89,6 +90,15 @@
     <string name="categories_record_hint">Nikeza amathegi ahlukene kumarekhodi ukuze uhlukanise</string>
     <string name="categories_add_category">Engeza isigaba</string>
     <string name="categories_add_record_tag">Engeza ithegi yerekhodi</string>
+    <string name="categories_and_tags_hint"><![CDATA[
+<b>Izigaba</b> zikusiza ukuthi uhlele imisebenzi ehlobene. Isibonelo:<br><br>
+• Isigaba <b>Esisebenzayo</b> singabandakanya <b>Ukufunda</b> kanye ne <b>Ijimu</b>.<br><br>
+• Isigaba <b>Sokuphumula</b> singabandakanya <b>Umsakazo</b> kanye <b>Nezidlalo</b>.<br><br>
+Lokhu kukuvumela ukuthi ubone isikhathi osichitha emisebenzini esebenzayo nezingasebenzi kahle.<br><br>
+<b>Amathegi</b> akuvumela ukuthi ungeze imininingwane eminingi emsebenzini othile. Isibonelo:<br><br>
+• Ngomsebenzi <b>Wokufunda</b>, sebenzisa amathegi anjenge <b>1984</b> noma <b>Harry Potter</b> ukuze ulandele isikhathi ochithe kuzo zonke izincwadi.<br><br>
+• Ngomsebenzi <b>Wokusebenza</b>, sebenzisa amathegi anjenge <b>Ekhaya</b> noma <b>Ehhovisi</b> ukuze uhlukanise lapho umsebenzi wenziwe khona.<br>
+    ]]></string>
 
     <!--  Change category  -->
     <string name="change_category_removed">Isigaba sisusiwe</string>

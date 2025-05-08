@@ -22,6 +22,7 @@
     <string name="copied_to_clipboard">Panoya kopyalandı</string>
     <string name="search_hint">Ara</string>
     <string name="enable_search_hint">Aramayı etkinleştir</string>
+    <string name="help">Yardım</string>
 
     <!--  Range selection  -->
     <string name="title_yesterday">Dün</string>
@@ -89,6 +90,15 @@
     <string name="categories_record_hint">Aralarında ayrım yapabilmek için kayıtlara farklı etiketler atayın</string>
     <string name="categories_add_category">Kategori ekle</string>
     <string name="categories_add_record_tag">Kayıt etiketi ekle</string>
+    <string name="categories_and_tags_hint"><![CDATA[
+<b>Kategoriler</b>, ilgili aktiviteleri gruplamanıza yardımcı olur. Örneğin:<br><br>
+• <b>Verimli</b> kategorisi, <b>Okuma</b> ve <b>Spor Salonu</b> gibi aktiviteleri içerebilir.<br><br>
+• <b>Boş Zaman</b> kategorisi, <b>TV</b> ve <b>Oyunlar</b> gibi aktiviteleri içerebilir.<br><br>
+Bu, genel olarak verimli ve verimsiz aktivitelere ne kadar zaman harcadığınızı görmenizi sağlar.<br><br>
+<b>Etiketler</b>, belirli bir aktiviteye daha fazla ayrıntı eklemenizi sağlar. Örneğin:<br><br>
+• <b>Okuma</b> aktivitesi için, her bir kitaba harcanan zamanı izlemek için <b>1984</b> veya <b>Harry Potter</b> gibi etiketler kullanabilirsiniz.<br><br>
+• <b>İş</b> aktivitesi için, yapılan işi nerede gerçekleştirdiğinizi ayırt etmek için <b>Eve</b> ve <b>Ofis</b> gibi etiketler kullanabilirsiniz.<br>
+    ]]></string>
 
     <!--  Change category  -->
     <string name="change_category_removed">Kategori silindi</string>

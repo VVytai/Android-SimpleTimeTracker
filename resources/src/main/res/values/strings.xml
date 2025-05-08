@@ -22,6 +22,7 @@
     <string name="copied_to_clipboard">Copied to clipboard</string>
     <string name="search_hint">Search</string>
     <string name="enable_search_hint">Enable search</string>
+    <string name="help">Help</string>
 
     <!--  Range selection  -->
     <string name="title_yesterday">Yesterday</string>
@@ -89,6 +90,15 @@
     <string name="categories_record_hint">Assign different tags to records to differentiate between them</string>
     <string name="categories_add_category">Add category</string>
     <string name="categories_add_record_tag">Add record tag</string>
+    <string name="categories_and_tags_hint"><![CDATA[
+<b>Categories</b> help you group related activities. For example:<br><br>
+• The <b>Productive</b> category might include <b>Reading</b> and <b>Gym</b>.<br><br>
+• The <b>Leisure</b> category could include <b>TV</b> and <b>Games</b>.<br><br>
+This allows you to see how much time you\'re spending on productive versus unproductive activities overall.<br><br>
+<b>Tags</b> let you add more detail to a specific activity. For example:<br><br>
+• For the <b>Reading</b> activity, use tags like <b>1984</b> or <b>Harry Potter</b> to track time spent on each book.<br><br>
+• For the <b>Work</b> activity, use tags like <b>Home</b> and <b>Office</b> to differentiate where the work was done.<br>
+    ]]></string>
 
     <!--  Change category  -->
     <string name="change_category_removed">Category removed</string>
