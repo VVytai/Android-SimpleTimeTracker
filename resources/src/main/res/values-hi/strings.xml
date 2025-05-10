@@ -129,6 +129,7 @@
     <string name="change_record_categories_empty">कोई रिकॉर्ड टैग नहीं जोड़ा गया</string>
     <string name="change_record_save">बचाना</string>
     <string name="change_record_untagged">टैग नहीं किए गए</string>
+    <string name="change_record_tag_from_other_activity">अन्य गतिविधियों को सौंपा गया</string>
     <string name="change_running_record_removed">चल रही गतिविधि हटा दी गई</string>
     <string name="change_record_split">विभाजित करे</string>
     <string name="change_record_split_hint"> ये वर्तमान रिकॉर्ड को निर्धारित समय बिंदु पर दो भागो में काट देगा</string>

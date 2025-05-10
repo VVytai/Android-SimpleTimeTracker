@@ -129,6 +129,7 @@ Dies ermöglicht es dir, zu sehen, wie viel Zeit du insgesamt für produktive ve
     <string name="change_record_categories_empty">Keine Datensatz-Tags hinzugefügt</string>
     <string name="change_record_save">Speichern</string>
     <string name="change_record_untagged">Nicht markiert</string>
+    <string name="change_record_tag_from_other_activity">Anderen Aktivitäten zugewiesen</string>
     <string name="change_running_record_removed">Laufende Aktivität entfernt</string>
     <string name="change_record_split">Teilen</string>
     <string name="change_record_split_hint">Schneidet den aktuellen Datensatz zum angegebenen Zeitpunkt in zwei Teile</string>

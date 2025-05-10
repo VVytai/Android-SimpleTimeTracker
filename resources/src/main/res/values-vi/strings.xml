@@ -129,6 +129,7 @@
     <string name="change_record_categories_empty">Không có thẻ bản ghi nào được thêm vào</string>
     <string name="change_record_save">Lưu</string>
     <string name="change_record_untagged">Chưa gắn thẻ</string>
+    <string name="change_record_tag_from_other_activity">Được gán cho các hoạt động khác</string>
     <string name="change_running_record_removed">Đã xóa hoạt động đang chạy</string>
     <string name="change_record_split">Phân chia</string>
     <string name="change_record_split_hint">Sẽ cắt bản ghi hiện tại thành hai tại thời điểm được chỉ định</string>

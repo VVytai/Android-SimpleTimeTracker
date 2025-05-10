@@ -129,6 +129,7 @@ Cela vous permet de voir combien de temps vous passez globalement sur des activi
     <string name="change_record_categories_empty">Aucune étiquette d\'enregistrement ajoutée</string>
     <string name="change_record_save">Sauvegarder</string>
     <string name="change_record_untagged">Non étiqueté</string>
+    <string name="change_record_tag_from_other_activity">Attribué à d\'autres activités</string>
     <string name="change_running_record_removed">Activité en cours d\'exécution supprimée</string>
     <string name="change_record_split">Diviser</string>
     <string name="change_record_split_hint">Couper l\'enregistrement actuel en deux au moment spécifié</string>

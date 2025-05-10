@@ -129,6 +129,7 @@ Això et permet veure quant de temps dediques a activitats productives versus no
     <string name="change_record_categories_empty">No s\'han afegit etiquetes</string>
     <string name="change_record_save">Desa</string>
     <string name="change_record_untagged">Sense etiquetar</string>
+    <string name="change_record_tag_from_other_activity">Assignat a altres activitats</string>
     <string name="change_running_record_removed">L\'activitat actual eliminada</string>
     <string name="change_record_split">Divideix</string>
     <string name="change_record_split_hint">Tallarà l\'enregistrament actual en dos en el moment especificat</string>

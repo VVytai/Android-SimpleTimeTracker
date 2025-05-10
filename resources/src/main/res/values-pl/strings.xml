@@ -129,6 +129,7 @@ Pozwala to zobaczyć, ile czasu spędzasz na produktywnych i nieproduktywnych ak
     <string name="change_record_categories_empty">Brak dodanych tagów</string>
     <string name="change_record_save">Zapisz</string>
     <string name="change_record_untagged">Nieotagowane</string>
+    <string name="change_record_tag_from_other_activity">Przypisano do innych działań</string>
     <string name="change_running_record_removed">Usunięto bieżącą aktywność</string>
     <string name="change_record_split">Podziel</string>
     <string name="change_record_split_hint">Podzieli bieżący zapis na dwie części w określonym momencie</string>

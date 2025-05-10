@@ -1,6 +1,7 @@
 package com.example.util.simpletimetracker.feature_dialogs.typesSelection.interactor
 
 import com.example.util.simpletimetracker.core.mapper.CategoryViewDataMapper
+import com.example.util.simpletimetracker.core.mapper.CommonViewDataMapper
 import com.example.util.simpletimetracker.core.mapper.RecordTypeViewDataMapper
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.domain.recordTag.interactor.GetSelectableTagsInteractor
@@ -10,7 +11,6 @@ import com.example.util.simpletimetracker.domain.recordType.model.RecordType
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.divider.DividerViewData
 import com.example.util.simpletimetracker.feature_base_adapter.empty.EmptyViewData
-import com.example.util.simpletimetracker.feature_base_adapter.info.InfoViewData
 import com.example.util.simpletimetracker.feature_dialogs.R
 import com.example.util.simpletimetracker.feature_dialogs.typesSelection.model.TypesSelectionCacheHolder
 import com.example.util.simpletimetracker.feature_views.GoalCheckmarkView
@@ -24,6 +24,7 @@ class TypesSelectionViewDataInteractor @Inject constructor(
     private val categoryViewDataMapper: CategoryViewDataMapper,
     private val prefsInteractor: PrefsInteractor,
     private val resourceRepo: ResourceRepo,
+    private val commonViewDataMapper: CommonViewDataMapper,
 ) {
 
     suspend fun loadCache(
@@ -105,11 +106,11 @@ class TypesSelectionViewDataInteractor @Inject constructor(
         }
 
         if (selected.isNotEmpty() && extra.showHints) {
-            result += InfoViewData(resourceRepo.getString(R.string.something_selected))
+            result += commonViewDataMapper.mapSelectedHint(isEmpty = false)
         }
         result += selected
         if (selected.isEmpty() && extra.showHints) {
-            result += InfoViewData(resourceRepo.getString(R.string.nothing_selected))
+            result += commonViewDataMapper.mapSelectedHint(isEmpty = true)
         }
         if (available.isNotEmpty() && extra.showHints) {
             result += DividerViewData(0)

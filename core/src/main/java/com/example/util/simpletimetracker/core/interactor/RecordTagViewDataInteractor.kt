@@ -1,7 +1,9 @@
 package com.example.util.simpletimetracker.core.interactor
 
+import com.example.util.simpletimetracker.core.R
 import com.example.util.simpletimetracker.core.mapper.CategoryViewDataMapper
 import com.example.util.simpletimetracker.core.mapper.CommonViewDataMapper
+import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.domain.extension.plusAssign
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.recordTag.interactor.GetSelectableTagsInteractor
@@ -15,6 +17,7 @@ import com.example.util.simpletimetracker.feature_base_adapter.info.InfoViewData
 import javax.inject.Inject
 
 class RecordTagViewDataInteractor @Inject constructor(
+    private val resourceRepo: ResourceRepo,
     private val prefsInteractor: PrefsInteractor,
     private val recordTypeInteractor: RecordTypeInteractor,
     private val recordTagInteractor: RecordTagInteractor,
@@ -65,7 +68,7 @@ class RecordTagViewDataInteractor @Inject constructor(
             if (showAddButton) {
                 viewData += listOf(
                     categoryViewDataMapper.mapToRecordTagHint(),
-                    DividerViewData(1),
+                    DividerViewData("divider_hint".hashCode().toLong()),
                 )
             }
 
@@ -84,7 +87,7 @@ class RecordTagViewDataInteractor @Inject constructor(
             }
 
             if (multipleChoiceAvailable && available.isNotEmpty()) {
-                viewData += DividerViewData(2)
+                viewData += DividerViewData("divider_available".hashCode().toLong())
             }
 
             categoryViewDataMapper.groupToTagGroups(available).forEach { (groupName, tags) ->
@@ -102,10 +105,10 @@ class RecordTagViewDataInteractor @Inject constructor(
             }
 
             if (availableFromOtherActivities.isNotEmpty()) {
-                viewData += DividerViewData(3)
+                viewData += DividerViewData("divider_from_other".hashCode().toLong())
 
                 viewData += HintViewData(
-                    text = "Assigned to other activities", // TODO
+                    text = resourceRepo.getString(R.string.change_record_tag_from_other_activity),
                 )
 
                 viewData += availableFromOtherActivities.map {
@@ -136,7 +139,7 @@ class RecordTagViewDataInteractor @Inject constructor(
 
             if (buttonsViewData.isNotEmpty()) {
                 if (multipleChoiceAvailable || availableFromOtherActivities.isNotEmpty()) {
-                    viewData += DividerViewData(4)
+                    viewData += DividerViewData("divider_buttons".hashCode().toLong())
                 }
                 viewData += buttonsViewData
             }

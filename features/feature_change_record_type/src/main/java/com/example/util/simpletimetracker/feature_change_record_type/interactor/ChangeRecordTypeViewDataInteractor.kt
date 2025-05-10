@@ -29,7 +29,8 @@ class ChangeRecordTypeViewDataInteractor @Inject constructor(
 
             categoryViewDataMapper.mapToCategoryHint().let(viewData::add)
 
-            DividerViewData(1).let(viewData::add)
+            DividerViewData("divider_hint".hashCode().toLong())
+                .let(viewData::add)
 
             commonViewDataMapper.mapSelectedHint(
                 isEmpty = selected.isEmpty(),
@@ -42,7 +43,8 @@ class ChangeRecordTypeViewDataInteractor @Inject constructor(
                 )
             }.let(viewData::addAll)
 
-            DividerViewData(2).let(viewData::add)
+            DividerViewData("divider_available".hashCode().toLong())
+                .let(viewData::add)
 
             available.map {
                 categoryViewDataMapper.mapCategory(

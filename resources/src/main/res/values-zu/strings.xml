@@ -129,6 +129,7 @@ Lokhu kukuvumela ukuthi ubone isikhathi osichitha emisebenzini esebenzayo nezing
     <string name="change_record_categories_empty">Awakafakwa amathegi</string>
     <string name="change_record_save">Londoloza</string>
     <string name="change_record_untagged">Okungana thegi</string>
+    <string name="change_record_tag_from_other_activity">Kunikezwe kwezinye izinto ezenziwayo</string>
     <string name="change_running_record_removed">Umsebenzi oqhubekayo ususiwe</string>
     <string name="change_record_split">Hlukanisa</string>
     <string name="change_record_split_hint">Izohlukanisa irekhodi libe ngamaqembu amabili ngesikhathi esikhethiwe</string>

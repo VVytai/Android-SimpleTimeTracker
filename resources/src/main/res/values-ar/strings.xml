@@ -129,6 +129,7 @@
     <string name="change_record_categories_empty">لم تضاف وسوم متتبعة</string>
     <string name="change_record_save">حفظ</string>
     <string name="change_record_untagged">بدون وسم</string>
+    <string name="change_record_tag_from_other_activity">تم تعيينه لأنشطة أخرى</string>
     <string name="change_running_record_removed">إزالة النشاط الجاري</string>
     <string name="change_record_split">تقسيم</string>
     <string name="change_record_split_hint">سيقسم التتبع الحالي إلى قسمين حسب النقطة المحددة في الوقت</string>

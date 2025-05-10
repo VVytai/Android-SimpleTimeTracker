@@ -129,6 +129,7 @@
     <string name="change_record_categories_empty">沒有新增紀錄標記</string>
     <string name="change_record_save">儲存</string>
     <string name="change_record_untagged">已取消標記</string>
+    <string name="change_record_tag_from_other_activity">分配給其他活動</string>
     <string name="change_running_record_removed">執行中的活動已移除</string>
     <string name="change_record_split">相除</string>
     <string name="change_record_split_hint">現有紀錄將會切成兩個指定的時間點</string>

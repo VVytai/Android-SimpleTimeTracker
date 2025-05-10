@@ -129,6 +129,7 @@ Ini memungkinkan Anda melihat berapa banyak waktu yang dihabiskan untuk aktivita
     <string name="change_record_categories_empty">Tidak ada label rekaman yang ditambahkan</string>
     <string name="change_record_save">Simpan</string>
     <string name="change_record_untagged">Tidak berlabel</string>
+    <string name="change_record_tag_from_other_activity">Ditugaskan ke aktivitas lain</string>
     <string name="change_running_record_removed">Kegiatan berjalan dihapus</string>
     <string name="change_record_split">Membagi</string>
     <string name="change_record_split_hint">Akan memotong rekor saat ini menjadi dua pada titik waktu yang ditentukan</string>

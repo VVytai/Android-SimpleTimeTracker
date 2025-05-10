@@ -129,6 +129,7 @@ Esto te permite ver cuánto tiempo estás dedicando a actividades productivas fr
     <string name="change_record_categories_empty">No se añadieron etiquetas</string>
     <string name="change_record_save">Guardar</string>
     <string name="change_record_untagged">Sin etiquetar</string>
+    <string name="change_record_tag_from_other_activity">Asignado a otras actividades</string>
     <string name="change_running_record_removed">Temporizador eliminado</string>
     <string name="change_record_split">Dividir</string>
     <string name="change_record_split_hint">Cortará el registro actual en dos en el momento especificado</string>

@@ -399,6 +399,7 @@ class ChangeRecordTypeFragment :
         )
 
         val isClosed = state.current is Closed
+        spaceChangeRecordTypeFieldsTop.isVisible = !isClosed
         inputChangeRecordTypeName.isVisible = isClosed
         btnChangeRecordTypeStatistics.isVisible =
             viewModel.statsIconVisibility.value.orFalse() && isClosed

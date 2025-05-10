@@ -129,6 +129,7 @@ Dit stelt je in staat om te zien hoeveel tijd je in totaal besteedt aan producti
     <string name="change_record_categories_empty">Geen opname labels toegevoegd</string>
     <string name="change_record_save">Opslaan</string>
     <string name="change_record_untagged">Niet gelabeld</string>
+    <string name="change_record_tag_from_other_activity">Toegewezen aan andere activiteiten</string>
     <string name="change_running_record_removed">Lopende activiteit verwijderd</string>
     <string name="change_record_split">Verdeling</string>
     <string name="change_record_split_hint">Zal het huidige record in tweeën knippen op het opgegeven tijdstip</string>

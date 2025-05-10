@@ -129,6 +129,7 @@ Isto permite-lhe ver quanto tempo está a gastar em atividades produtivas versus
     <string name="change_record_categories_empty">Nenhuma etiqueta de registo adicionada</string>
     <string name="change_record_save">Guardar</string>
     <string name="change_record_untagged">Sem etiqueta</string>
+    <string name="change_record_tag_from_other_activity">Atribuído a outras atividades</string>
     <string name="change_running_record_removed">Atividade em andamento removida</string>
     <string name="change_record_split">Dividir</string>
     <string name="change_record_split_hint">Dividir o registo atual em dois num determinado período de tempo</string>

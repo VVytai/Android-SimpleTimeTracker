@@ -129,6 +129,7 @@
     <string name="change_record_categories_empty">計測タグがありません</string>
     <string name="change_record_save">保存</string>
     <string name="change_record_untagged">タグを外す</string>
+    <string name="change_record_tag_from_other_activity">他のアクティビティに割り当てられました</string>
     <string name="change_running_record_removed">記録中のアクティビティを削除</string>
     <string name="change_record_split">分ける</string>
     <string name="change_record_split_hint">指定された時点で現在のレコードを 2 つに分割します</string>

@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.util.simpletimetracker.domain.extension.addOrRemove
 import com.example.util.simpletimetracker.core.extension.set
+import com.example.util.simpletimetracker.core.mapper.CommonViewDataMapper
 import com.example.util.simpletimetracker.core.mapper.RecordTypeViewDataMapper
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.domain.recordType.model.CardOrder
@@ -15,7 +16,6 @@ import com.example.util.simpletimetracker.domain.notifications.interactor.Update
 import com.example.util.simpletimetracker.domain.recordType.model.RecordType
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.divider.DividerViewData
-import com.example.util.simpletimetracker.feature_base_adapter.info.InfoViewData
 import com.example.util.simpletimetracker.feature_base_adapter.loader.LoaderViewData
 import com.example.util.simpletimetracker.feature_base_adapter.recordType.RecordTypeViewData
 import com.example.util.simpletimetracker.feature_dialogs.R
@@ -36,6 +36,7 @@ class DefaultTypesSelectionViewModel @Inject constructor(
     private val getDefaultRecordTypesInteractor: GetDefaultRecordTypesInteractor,
     private val resourceRepo: ResourceRepo,
     private val externalViewsInteractor: UpdateExternalViewsInteractor,
+    private val commonViewDataMapper: CommonViewDataMapper,
 ) : ViewModel() {
 
     val types: LiveData<List<ViewHolderType>> by lazy {
@@ -146,12 +147,8 @@ class DefaultTypesSelectionViewModel @Inject constructor(
 
         val result = mutableListOf<ViewHolderType>()
 
-        if (selected.isNotEmpty()) {
-            result += InfoViewData(resourceRepo.getString(R.string.something_selected))
-            result += selected
-        } else {
-            result += InfoViewData(resourceRepo.getString(R.string.nothing_selected))
-        }
+        result += commonViewDataMapper.mapSelectedHint(isEmpty = selected.isEmpty())
+        result += selected
         if (available.isNotEmpty()) {
             result += DividerViewData(0)
         }

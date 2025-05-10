@@ -272,6 +272,7 @@ class ChangeRecordCore(
         )
 
         val isClosed = state.current is Closed
+        spaceChangeRecordFieldsTop.isVisible = !isClosed
         containerChangeRecordTime.isVisible = isClosed
         btnChangeRecordStatistics.isVisible =
             viewModel.statsIconVisibility.value.orFalse() && isClosed

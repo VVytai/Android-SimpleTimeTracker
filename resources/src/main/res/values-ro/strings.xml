@@ -129,6 +129,7 @@ Acest lucru îți permite să vezi cât timp petreci în activități productive
     <string name="change_record_categories_empty">Nu au fost adăugate etichete</string>
     <string name="change_record_save">Salvează</string>
     <string name="change_record_untagged">Ne-etichetat</string>
+    <string name="change_record_tag_from_other_activity">Alocat altor activități</string>
     <string name="change_running_record_removed">Ștergere activitatea în curs</string>
     <string name="change_record_split">Împarte</string>
     <string name="change_record_split_hint">Va împarți înregistrarea curentă în două părți la momentul specificat</string>

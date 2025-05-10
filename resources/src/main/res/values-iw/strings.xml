@@ -129,6 +129,7 @@
     <string name="change_record_categories_empty">לא נוספו תגיות רשומה</string>
     <string name="change_record_save">שמור</string>
     <string name="change_record_untagged">לא מתויג</string>
+    <string name="change_record_tag_from_other_activity">הוקצה לפעילויות אחרות</string>
     <string name="change_running_record_removed">פעילות פועלת הוסרה</string>
     <string name="change_record_split">פצל</string>
     <string name="change_record_split_hint">יחתוך רשומה נוכחית לשניים בנקודת הזמן שצוינה</string>

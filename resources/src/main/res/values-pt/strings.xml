@@ -129,6 +129,7 @@ Isso permite ver quanto tempo você está gastando em atividades produtivas vers
     <string name="change_record_categories_empty">Nenhuma tag de registro adicionada</string>
     <string name="change_record_save">Salvar</string>
     <string name="change_record_untagged">Sem tag</string>
+    <string name="change_record_tag_from_other_activity">Atribuído a outras atividades</string>
     <string name="change_running_record_removed">Atividade em andamento removida</string>
     <string name="change_record_split">Dividir</string>
     <string name="change_record_split_hint">Cortará o registro atual em dois no ponto especificado no tempo</string>

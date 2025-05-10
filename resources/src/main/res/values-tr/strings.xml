@@ -129,6 +129,7 @@ Bu, genel olarak verimli ve verimsiz aktivitelere ne kadar zaman harcadığını
     <string name="change_record_categories_empty">Kayıt etiketi eklenmedi</string>
     <string name="change_record_save">Kaydet</string>
     <string name="change_record_untagged">Etiketsiz</string>
+    <string name="change_record_tag_from_other_activity">Diğer etkinliklere atandı</string>
     <string name="change_running_record_removed">Takip edilen aktivite silindi</string>
     <string name="change_record_split">Bölmek</string>
     <string name="change_record_split_hint">Geçerli kaydı belirtilen zamanda ikiye böler</string>

@@ -129,6 +129,7 @@
     <string name="change_record_categories_empty">没有新增记录标签</string>
     <string name="change_record_save">保存</string>
     <string name="change_record_untagged">无标签</string>
+    <string name="change_record_tag_from_other_activity">分配给其他活动</string>
     <string name="change_running_record_removed">正在追踪的活动已删除</string>
     <string name="change_record_split">分割</string>
     <string name="change_record_split_hint">在指定时间点将当前记录一分为二</string>

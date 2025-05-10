@@ -129,6 +129,7 @@ Detta gör att du kan se hur mycket tid du spenderar på produktiva kontra icke-
     <string name="change_record_categories_empty">Ingen händelsetagg vald</string>
     <string name="change_record_save">Spara</string>
     <string name="change_record_untagged">Ej taggad</string>
+    <string name="change_record_tag_from_other_activity">Tilldelad till andra aktiviteter</string>
     <string name="change_running_record_removed">Pågående aktivitet borttagen</string>
     <string name="change_record_split">Dela upp</string>
     <string name="change_record_split_hint">Delar upp den nuvarande händelsen i två vid den angivna tidpunkten</string>

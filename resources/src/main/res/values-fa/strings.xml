@@ -129,6 +129,7 @@
     <string name="change_record_categories_empty">برچسب تاریخچه ای اضافه نشده</string>
     <string name="change_record_save">ذخیره</string>
     <string name="change_record_untagged">بدون برچسب</string>
+    <string name="change_record_tag_from_other_activity">اختصاص داده شده به فعالیت‌های دیگر</string>
     <string name="change_running_record_removed">فعالیت در حال اجرا حذف شد</string>
     <string name="change_record_split">تقسیم</string>
     <string name="change_record_split_hint">در زمان معین فعالیت فعلی را به دو قسمت تقسیم می کند</string>
