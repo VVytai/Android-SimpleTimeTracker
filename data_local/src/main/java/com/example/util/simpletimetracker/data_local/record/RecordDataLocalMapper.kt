@@ -13,7 +13,7 @@ class RecordDataLocalMapper @Inject constructor() {
             timeStarted = dbo.record.timeStarted,
             timeEnded = dbo.record.timeEnded,
             comment = dbo.record.comment,
-            tagIds = dbo.recordTags.map { it.id },
+            tagIds = dbo.recordTags,
         )
     }
 

@@ -11,7 +11,7 @@ class RunningRecordDataLocalMapper @Inject constructor() {
             id = dbo.runningRecord.id,
             timeStarted = dbo.runningRecord.timeStarted,
             comment = dbo.runningRecord.comment,
-            tagIds = dbo.recordTags.map { it.id },
+            tagIds = dbo.recordTags,
         )
     }
 
