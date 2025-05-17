@@ -6,6 +6,7 @@ import com.example.util.simpletimetracker.core.mapper.RecordTypeViewDataMapper
 import com.example.util.simpletimetracker.domain.base.UNCATEGORIZED_ITEM_ID
 import com.example.util.simpletimetracker.domain.base.UNTRACKED_ITEM_ID
 import com.example.util.simpletimetracker.domain.category.model.Category
+import com.example.util.simpletimetracker.domain.extension.plus
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.recordTag.model.RecordTag
 import com.example.util.simpletimetracker.domain.recordType.model.RecordType
@@ -23,10 +24,12 @@ class ChartFilterViewDataInteractor @Inject constructor(
     suspend fun loadRecordTypesViewData(
         types: List<RecordType>,
         typeIdsFiltered: List<Long>,
+        isArchivedShown: Boolean,
     ): List<ViewHolderType> {
         val numberOfCards = prefsInteractor.getNumberOfCards()
         val isDarkTheme = prefsInteractor.getDarkMode()
         val showUntracked = prefsInteractor.getShowUntrackedInStatistics()
+        val showArchived = types.any { it.hidden }
         val untrackedItem = if (showUntracked) {
             chartFilterViewDataMapper.mapToUntrackedItem(
                 typeIdsFiltered = typeIdsFiltered,
@@ -36,9 +39,21 @@ class ChartFilterViewDataInteractor @Inject constructor(
         } else {
             null
         }
+        val archivedItem = if (showArchived) {
+            chartFilterViewDataMapper.mapToArchivedItem(
+                isEnabled = isArchivedShown,
+                numberOfCards = numberOfCards,
+                isDarkTheme = isDarkTheme,
+            )
+        } else {
+            null
+        }
 
         return types
-            .map { type ->
+            .mapNotNull { type ->
+                if (!isArchivedShown && type.hidden) {
+                    return@mapNotNull null
+                }
                 recordTypeViewDataMapper.mapFiltered(
                     recordType = type,
                     isFiltered = type.id in typeIdsFiltered,
@@ -49,7 +64,8 @@ class ChartFilterViewDataInteractor @Inject constructor(
                 )
             }
             .takeUnless { it.isEmpty() }
-            ?.run { if (untrackedItem != null) plus(untrackedItem) else this }
+            ?.plus(untrackedItem)
+            ?.plus(archivedItem)
             ?: recordTypeViewDataMapper.mapToEmpty()
     }
 
@@ -67,6 +83,10 @@ class ChartFilterViewDataInteractor @Inject constructor(
         } else {
             null
         }
+        val untaggedItem = categoryViewDataMapper.mapToUncategorizedItem(
+            isFiltered = UNCATEGORIZED_ITEM_ID in categoryIdsFiltered,
+            isDarkTheme = isDarkTheme,
+        )
 
         return categories
             .map { category ->
@@ -77,13 +97,8 @@ class ChartFilterViewDataInteractor @Inject constructor(
                 )
             }
             .takeUnless { it.isEmpty() }
-            ?.run { if (untrackedItem != null) plus(untrackedItem) else this }
-            ?.plus(
-                categoryViewDataMapper.mapToUncategorizedItem(
-                    isFiltered = UNCATEGORIZED_ITEM_ID in categoryIdsFiltered,
-                    isDarkTheme = isDarkTheme,
-                ),
-            )
+            ?.plus(untrackedItem)
+            ?.plus(untaggedItem)
             ?: categoryViewDataMapper.mapToCategoriesEmpty().let(::listOf)
     }
 
@@ -91,10 +106,12 @@ class ChartFilterViewDataInteractor @Inject constructor(
         tags: List<RecordTag>,
         types: List<RecordType>,
         recordTagsFiltered: List<Long>,
+        isArchivedShown: Boolean,
     ): List<ViewHolderType> {
         val typesMap = types.associateBy(RecordType::id)
         val isDarkTheme = prefsInteractor.getDarkMode()
         val showUntracked = prefsInteractor.getShowUntrackedInStatistics()
+        val showArchived = tags.any { it.archived }
         val untrackedItem = if (showUntracked) {
             categoryViewDataMapper.mapToTagUntrackedItem(
                 isFiltered = UNTRACKED_ITEM_ID in recordTagsFiltered,
@@ -103,9 +120,24 @@ class ChartFilterViewDataInteractor @Inject constructor(
         } else {
             null
         }
+        val untaggedItem = categoryViewDataMapper.mapToUntaggedItem(
+            isFiltered = UNCATEGORIZED_ITEM_ID in recordTagsFiltered,
+            isDarkTheme = isDarkTheme,
+        )
+        val archivedItem = if (showArchived) {
+            categoryViewDataMapper.mapToTagArchiveItem(
+                isEnabled = isArchivedShown,
+                isDarkTheme = isDarkTheme,
+            )
+        } else {
+            null
+        }
 
         return tags
-            .map { tag ->
+            .mapNotNull { tag ->
+                if (!isArchivedShown && tag.archived) {
+                    return@mapNotNull null
+                }
                 categoryViewDataMapper.mapRecordTag(
                     tag = tag,
                     type = typesMap[tag.iconColorSource],
@@ -114,13 +146,9 @@ class ChartFilterViewDataInteractor @Inject constructor(
                 )
             }
             .takeUnless { it.isEmpty() }
-            ?.run { if (untrackedItem != null) plus(untrackedItem) else this }
-            ?.plus(
-                categoryViewDataMapper.mapToUntaggedItem(
-                    isFiltered = UNCATEGORIZED_ITEM_ID in recordTagsFiltered,
-                    isDarkTheme = isDarkTheme,
-                ),
-            )
+            ?.plus(untrackedItem)
+            ?.plus(untaggedItem)
+            ?.plus(archivedItem)
             ?: categoryViewDataMapper.mapToRecordTagsEmpty().let(::listOf)
     }
 }

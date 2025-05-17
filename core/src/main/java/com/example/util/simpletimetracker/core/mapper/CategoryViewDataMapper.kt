@@ -2,6 +2,7 @@ package com.example.util.simpletimetracker.core.mapper
 
 import com.example.util.simpletimetracker.core.R
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
+import com.example.util.simpletimetracker.domain.base.ARCHIVED_BUTTON_ITEM_ID
 import com.example.util.simpletimetracker.domain.base.MULTITASK_ITEM_ID
 import com.example.util.simpletimetracker.domain.base.UNCATEGORIZED_ITEM_ID
 import com.example.util.simpletimetracker.domain.base.UNTRACKED_ITEM_ID
@@ -142,6 +143,27 @@ class CategoryViewDataMapper @Inject constructor(
                 colorMapper.toFilteredColor(isDarkTheme)
             } else {
                 colorMapper.toUntrackedColor(isDarkTheme)
+            },
+        )
+    }
+
+    fun mapToTagArchiveItem(
+        isEnabled: Boolean,
+        isDarkTheme: Boolean,
+    ): CategoryViewData {
+        return CategoryViewData.Record.Tagged(
+            id = ARCHIVED_BUTTON_ITEM_ID,
+            name = R.string.settings_archive
+                .let(resourceRepo::getString),
+            icon = RecordTypeIcon.Image(R.drawable.archive),
+            iconColor = getTextColor(
+                isDarkTheme = isDarkTheme,
+                isFiltered = false,
+            ),
+            color = if (isEnabled) {
+                colorMapper.toActiveColor(isDarkTheme)
+            } else {
+                colorMapper.toInactiveColor(isDarkTheme)
             },
         )
     }

@@ -9,6 +9,7 @@ import com.example.util.simpletimetracker.core.interactor.ChartFilterViewDataInt
 import com.example.util.simpletimetracker.core.mapper.ChartFilterViewDataMapper
 import com.example.util.simpletimetracker.core.view.buttonsRowView.ButtonsRowViewData
 import com.example.util.simpletimetracker.core.viewData.ChartFilterTypeViewData
+import com.example.util.simpletimetracker.domain.base.ARCHIVED_BUTTON_ITEM_ID
 import com.example.util.simpletimetracker.domain.base.UNCATEGORIZED_ITEM_ID
 import com.example.util.simpletimetracker.domain.base.UNTRACKED_ITEM_ID
 import com.example.util.simpletimetracker.domain.extension.addOrRemove
@@ -62,6 +63,7 @@ class ChartFilterViewModel @Inject constructor(
     val onDataSelected: LiveData<ChartFilterDataSelectionResult> = MutableLiveData()
 
     private var filterType: ChartFilterType = ChartFilterType.ACTIVITY
+    private var isArchivedShown: Boolean = false
 
     // Cache
     private var recordTypesCache: List<RecordType>? = null
@@ -84,7 +86,11 @@ class ChartFilterViewModel @Inject constructor(
     }
 
     fun onRecordTypeClick(item: RecordTypeViewData) = viewModelScope.launch {
-        typeIdsFiltered = typeIdsFiltered.toMutableList().apply { addOrRemove(item.id) }
+        if (item.id == ARCHIVED_BUTTON_ITEM_ID) {
+            isArchivedShown = !isArchivedShown
+        } else {
+            typeIdsFiltered = typeIdsFiltered.toMutableList().apply { addOrRemove(item.id) }
+        }
         sendResult()
         updateRecordTypesViewData()
     }
@@ -96,8 +102,12 @@ class ChartFilterViewModel @Inject constructor(
                     .apply { addOrRemove(item.id) }
             }
             is CategoryViewData.Record -> {
-                recordTagIdsFiltered = recordTagIdsFiltered.toMutableList()
-                    .apply { addOrRemove(item.id) }
+                if (item.id == ARCHIVED_BUTTON_ITEM_ID) {
+                    isArchivedShown = !isArchivedShown
+                } else {
+                    recordTagIdsFiltered = recordTagIdsFiltered.toMutableList()
+                        .apply { addOrRemove(item.id) }
+                }
             }
         }
         sendResult()
@@ -206,6 +216,7 @@ class ChartFilterViewModel @Inject constructor(
         return chartFilterViewDataInteractor.loadRecordTypesViewData(
             types = getTypesCache(),
             typeIdsFiltered = typeIdsFiltered,
+            isArchivedShown = isArchivedShown,
         )
     }
 
@@ -231,6 +242,7 @@ class ChartFilterViewModel @Inject constructor(
             tags = getTagsCache(),
             types = getTypesCache(),
             recordTagsFiltered = recordTagIdsFiltered,
+            isArchivedShown = isArchivedShown,
         )
     }
 }

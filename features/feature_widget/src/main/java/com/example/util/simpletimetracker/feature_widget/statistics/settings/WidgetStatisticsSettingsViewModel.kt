@@ -15,6 +15,7 @@ import com.example.util.simpletimetracker.core.viewData.ChartFilterTypeViewData
 import com.example.util.simpletimetracker.core.viewData.RangeViewData
 import com.example.util.simpletimetracker.core.viewData.RangesViewData
 import com.example.util.simpletimetracker.core.viewData.SelectLastDaysViewData
+import com.example.util.simpletimetracker.domain.base.ARCHIVED_BUTTON_ITEM_ID
 import com.example.util.simpletimetracker.domain.category.interactor.CategoryInteractor
 import com.example.util.simpletimetracker.domain.category.model.Category
 import com.example.util.simpletimetracker.domain.daysOfWeek.interactor.GetProcessedLastDaysCountInteractor
@@ -109,6 +110,7 @@ class WidgetStatisticsSettingsViewModel @Inject constructor(
     private var categoriesCache: List<Category>? = null
     private var recordTagsCache: List<RecordTag>? = null
     private var initialized: Boolean = false
+    private var isArchivedShown: Boolean = false
 
     private var widgetData: StatisticsWidgetData = StatisticsWidgetData(
         chartFilterType = ChartFilterType.ACTIVITY,
@@ -130,14 +132,16 @@ class WidgetStatisticsSettingsViewModel @Inject constructor(
         }
     }
 
-    fun onRecordTypeClick(item: RecordTypeViewData) {
-        viewModelScope.launch {
+    fun onRecordTypeClick(item: RecordTypeViewData) = viewModelScope.launch {
+        if (item.id == ARCHIVED_BUTTON_ITEM_ID) {
+            isArchivedShown = !isArchivedShown
+        } else {
             val oldIds = widgetData.typeIds.toMutableList()
             widgetData = widgetData.copy(
                 typeIds = oldIds.apply { addOrRemove(item.id) }.toSet(),
             )
-            updateRecordTypesViewData()
         }
+        updateTypesViewData()
     }
 
     fun onCategoryClick(item: CategoryViewData) {
@@ -147,16 +151,19 @@ class WidgetStatisticsSettingsViewModel @Inject constructor(
                 widgetData = widgetData.copy(
                     categoryIds = oldIds.apply { addOrRemove(item.id) }.toSet(),
                 )
-                updateCategoriesViewData()
             }
             is CategoryViewData.Record -> {
-                val oldIds = widgetData.tagIds.toMutableList()
-                widgetData = widgetData.copy(
-                    tagIds = oldIds.apply { addOrRemove(item.id) }.toSet(),
-                )
-                updateTagsViewData()
+                if (item.id == ARCHIVED_BUTTON_ITEM_ID) {
+                    isArchivedShown = !isArchivedShown
+                } else {
+                    val oldIds = widgetData.tagIds.toMutableList()
+                    widgetData = widgetData.copy(
+                        tagIds = oldIds.apply { addOrRemove(item.id) }.toSet(),
+                    )
+                }
             }
         }
+        updateTypesViewData()
     }
 
     fun onShowAllClick() {
@@ -346,6 +353,7 @@ class WidgetStatisticsSettingsViewModel @Inject constructor(
         return chartFilterViewDataInteractor.loadRecordTypesViewData(
             types = getTypesCache(),
             typeIdsFiltered = getActualFilteredIds(),
+            isArchivedShown = isArchivedShown,
         )
     }
 
@@ -371,6 +379,7 @@ class WidgetStatisticsSettingsViewModel @Inject constructor(
             tags = getTagsCache(),
             types = getTypesCache(),
             recordTagsFiltered = getActualFilteredIds(),
+            isArchivedShown = isArchivedShown
         )
     }
 

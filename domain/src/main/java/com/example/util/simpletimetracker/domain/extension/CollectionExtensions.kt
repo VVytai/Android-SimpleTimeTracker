@@ -23,6 +23,10 @@ operator fun <T> MutableCollection<in T>.plusAssign(elements: List<T>?) {
     if (elements != null) this.addAll(elements)
 }
 
+operator fun <T> List<T>.plus(element: T?): List<T> {
+    return if (element != null) this.plusElement(element) else this
+}
+
 inline fun <T> List<T>.removeIf(crossinline filter: (T) -> Boolean): List<T> {
     return this.toMutableList().apply { removeAll { filter(it) } }
 }
