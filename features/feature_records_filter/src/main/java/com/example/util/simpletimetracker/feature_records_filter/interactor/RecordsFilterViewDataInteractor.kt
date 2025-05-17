@@ -347,7 +347,6 @@ class RecordsFilterViewDataInteractor @Inject constructor(
 
         val typesSelectionButtons = mapper.mapToSelectionButtons(
             type = RecordsFilterSelectionButtonType.Type.Activities,
-            isDarkTheme = isDarkTheme,
         )
 
         val categoriesViewData = categories
@@ -369,7 +368,6 @@ class RecordsFilterViewDataInteractor @Inject constructor(
 
         val categoriesSelectionButtons = mapper.mapToSelectionButtons(
             type = RecordsFilterSelectionButtonType.Type.Categories,
-            isDarkTheme = isDarkTheme,
         )
 
         if (categoriesViewData.isNotEmpty()) {
@@ -532,7 +530,6 @@ class RecordsFilterViewDataInteractor @Inject constructor(
 
         val selectionButtons = mapper.mapToSelectionButtons(
             type = RecordsFilterSelectionButtonType.Type.Tags,
-            isDarkTheme = isDarkTheme,
         )
 
         if (recordTagsViewData.isNotEmpty()) {

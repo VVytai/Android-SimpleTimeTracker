@@ -1,20 +1,20 @@
 package com.example.util.simpletimetracker.feature_records_filter.viewData
 
-import com.example.util.simpletimetracker.feature_base_adapter.selectionButton.SelectionButtonViewData
+import com.example.util.simpletimetracker.feature_base_adapter.buttonDouble.DoubleButtonsViewData
 
 data class RecordsFilterSelectionButtonType(
     val type: Type,
     val subtype: Subtype,
-) : SelectionButtonViewData.Type {
+) : DoubleButtonsViewData.Type {
 
     sealed interface Type {
-        object Activities : Type
-        object Categories : Type
-        object Tags : Type
+        data object Activities : Type
+        data object Categories : Type
+        data object Tags : Type
     }
 
     sealed interface Subtype {
-        object SelectAll : Subtype
-        object SelectNone : Subtype
+        data object SelectAll : Subtype
+        data object SelectNone : Subtype
     }
 }

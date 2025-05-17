@@ -20,6 +20,7 @@ import com.example.util.simpletimetracker.core.extension.setFullScreen
 import com.example.util.simpletimetracker.core.extension.setSkipCollapsed
 import com.example.util.simpletimetracker.core.utils.fragmentArgumentDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.BaseRecyclerAdapter
+import com.example.util.simpletimetracker.feature_base_adapter.buttonDouble.createDoubleButtonsAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.category.createCategoryAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.divider.createDividerAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.empty.createEmptyAdapterDelegate
@@ -35,7 +36,6 @@ import com.example.util.simpletimetracker.feature_records_filter.adapter.createR
 import com.example.util.simpletimetracker.feature_base_adapter.commentField.createCommentFieldAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.dayOfWeek.createDayOfWeekAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.emptySpace.createEmptySpaceAdapterDelegate
-import com.example.util.simpletimetracker.feature_base_adapter.selectionButton.createSelectionButtonAdapterDelegate
 import com.example.util.simpletimetracker.feature_records_filter.adapter.createRecordsFilterRangeAdapterDelegate
 import com.example.util.simpletimetracker.feature_records_filter.model.RecordsFilterSelectedRecordsViewData
 import com.example.util.simpletimetracker.feature_records_filter.viewModel.RecordsFilterViewModel
@@ -78,7 +78,7 @@ class RecordsFilterFragment :
             createRecordTypeAdapterDelegate(viewModel::onRecordTypeClick),
             createCategoryAdapterDelegate(viewModel::onCategoryClick),
             createRecordAdapterDelegate(onItemClick = viewModel::onRecordClick),
-            createSelectionButtonAdapterDelegate(viewModel::onSelectionButtonClick),
+            createDoubleButtonsAdapterDelegate(viewModel::onSelectionButtonClick),
             createCommentFieldAdapterDelegate(viewModel::onCommentChange),
             createRecordsFilterButtonAdapterDelegate(viewModel::onInnerFilterButtonClick),
             createDayOfWeekAdapterDelegate(viewModel::onDayOfWeekClick),

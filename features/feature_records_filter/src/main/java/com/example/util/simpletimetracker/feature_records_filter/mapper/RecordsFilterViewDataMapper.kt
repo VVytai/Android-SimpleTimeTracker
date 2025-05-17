@@ -16,9 +16,8 @@ import com.example.util.simpletimetracker.domain.record.extension.hasSameTimes
 import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
 import com.example.util.simpletimetracker.domain.record.model.RecordsFilter
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
-import com.example.util.simpletimetracker.feature_base_adapter.emptySpace.EmptySpaceViewData
+import com.example.util.simpletimetracker.feature_base_adapter.buttonDouble.DoubleButtonsViewData
 import com.example.util.simpletimetracker.feature_base_adapter.recordFilter.FilterViewData
-import com.example.util.simpletimetracker.feature_base_adapter.selectionButton.SelectionButtonViewData
 import com.example.util.simpletimetracker.feature_records_filter.R
 import com.example.util.simpletimetracker.feature_records_filter.model.RecordFilterCommentType
 import com.example.util.simpletimetracker.feature_records_filter.model.RecordFilterDateType
@@ -292,29 +291,24 @@ class RecordsFilterViewDataMapper @Inject constructor(
 
     fun mapToSelectionButtons(
         type: RecordsFilterSelectionButtonType.Type,
-        isDarkTheme: Boolean,
     ): List<ViewHolderType> {
         val result = mutableListOf<ViewHolderType>()
 
-        result += SelectionButtonViewData(
-            type = RecordsFilterSelectionButtonType(
-                type = type,
-                subtype = RecordsFilterSelectionButtonType.Subtype.SelectAll,
+        result += DoubleButtonsViewData(
+            DoubleButtonsViewData.Button(
+                type = RecordsFilterSelectionButtonType(
+                    type = type,
+                    subtype = RecordsFilterSelectionButtonType.Subtype.SelectAll,
+                ),
+                name = resourceRepo.getString(R.string.select_all),
             ),
-            name = resourceRepo.getString(R.string.select_all),
-            color = colorMapper.toInactiveColor(isDarkTheme),
-        )
-        result += SelectionButtonViewData(
-            type = RecordsFilterSelectionButtonType(
-                type = type,
-                subtype = RecordsFilterSelectionButtonType.Subtype.SelectNone,
+            DoubleButtonsViewData.Button(
+                type = RecordsFilterSelectionButtonType(
+                    type = type,
+                    subtype = RecordsFilterSelectionButtonType.Subtype.SelectNone,
+                ),
+                name = resourceRepo.getString(R.string.select_nothing),
             ),
-            name = resourceRepo.getString(R.string.select_nothing),
-            color = colorMapper.toInactiveColor(isDarkTheme),
-        )
-        result += EmptySpaceViewData(
-            id = 0,
-            wrapBefore = true,
         )
 
         return result
