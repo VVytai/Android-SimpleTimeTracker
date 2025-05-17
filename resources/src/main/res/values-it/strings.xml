@@ -94,12 +94,12 @@
     <string name="categories_add_record_tag">Aggiungi etichetta alla registrazione</string>
     <string name="categories_and_tags_hint"><![CDATA[
 Le <b>categorie</b> ti aiutano a raggruppare attività correlate. Ad esempio:<br><br>
-• La categoria <b>Produttiva</b> potrebbe includere <b>Lettura</b> e <b>Palestra</b>.<br><br>
-• La categoria <b>Tempo libero</b> potrebbe includere <b>TV</b> e <b>Giochi</b>.<br><br>
+• La categoria <custom-color-3>Produttiva</custom-color-3> potrebbe includere <custom-color-3>Lettura</custom-color-3> e <custom-color-3>Palestra</custom-color-3>.<br><br>
+• La categoria <custom-color-1>Tempo libero</custom-color-1> potrebbe includere <custom-color-1>TV</custom-color-1> e <custom-color-1>Giochi</custom-color-1>.<br><br>
 Questo ti permette di vedere quanto tempo stai dedicando complessivamente ad attività produttive rispetto a quelle non produttive.<br><br>
 I <b>tag</b> ti permettono di aggiungere maggiori dettagli a un\'attività specifica. Ad esempio:<br><br>
-• Per l\'attività <b>Lettura</b>, usa tag come <b>1984</b> o <b>Harry Potter</b> per monitorare il tempo dedicato a ciascun libro.<br><br>
-• Per l\'attività <b>Lavoro</b>, usa tag come <b>Casa</b> e <b>Ufficio</b> per distinguere dove è stato svolto il lavoro.<br>
+• Per l\'attività <custom-color-3>Lettura</custom-color-3>, usa tag come <custom-color-3>1984</custom-color-3> o <custom-color-3>Harry Potter</custom-color-3> per monitorare il tempo dedicato a ciascun libro.<br><br>
+• Per l\'attività <custom-color-10>Lavoro</custom-color-10>, usa tag come <custom-color-10>Casa</custom-color-10> e <custom-color-10>Ufficio</custom-color-10> per distinguere dove è stato svolto il lavoro.<br>
     ]]></string>
 
     <!--  Change category  -->

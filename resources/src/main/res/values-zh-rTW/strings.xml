@@ -94,12 +94,12 @@
     <string name="categories_add_record_tag">新增紀錄標記</string>
     <string name="categories_and_tags_hint"><![CDATA[
 <b>分類</b>可以幫助你將相關的活動分組。例如：<br><br>
-• <b>高效</b>分類可能包括<b>閱讀</b>和<b>健身</b>。<br><br>
-• <b>休閒</b>分類可能包括<b>電視</b>和<b>遊戲</b>。<br><br>
+• <custom-color-3>高效</custom-color-3>分類可能包括<custom-color-3>閱讀</custom-color-3>和<custom-color-3>健身</custom-color-3>。<br><br>
+• <custom-color-1>休閒</custom-color-1>分類可能包括<custom-color-1>電視</custom-color-1>和<custom-color-1>遊戲</custom-color-1>。<br><br>
 這能讓你了解自己總共花了多少時間在高效與低效的活動上。<br><br>
 <b>標籤</b>可以讓你為特定活動添加更多細節。例如：<br><br>
-• 對於<b>閱讀</b>活動，可以使用<b>一九八四</b>或<b>哈利波特</b>等標籤來追蹤閱讀每本書的時間。<br><br>
-• 對於<b>工作</b>活動，可以使用<b>在家</b>和<b>辦公室</b>等標籤來區分工作地點。<br>
+• 對於<custom-color-3>閱讀</custom-color-3>活動，可以使用<custom-color-3>一九八四</custom-color-3>或<custom-color-3>哈利波特</custom-color-3>等標籤來追蹤閱讀每本書的時間。<br><br>
+• 對於<custom-color-10>工作</custom-color-10>活動，可以使用<custom-color-10>在家</custom-color-10>和<custom-color-10>辦公室</custom-color-10>等標籤來區分工作地點。<br>
     ]]></string>
 
     <!--  Change category  -->

@@ -94,12 +94,12 @@
     <string name="categories_add_record_tag">Afegeix etiqueta d\'enregistrament</string>
     <string name="categories_and_tags_hint"><![CDATA[
 <b>Categories</b> t\'ajuden a agrupar activitats relacionades. Per exemple:<br><br>
-• La categoria <b>Productiva</b> podria incloure <b>Llegir</b> i <b>Gimnàs</b>.<br><br>
-• La categoria <b>Oci</b> podria incloure <b>TV</b> i <b>Jocs</b>.<br><br>
+• La categoria <custom-color-3>Productiva</custom-color-3> podria incloure <custom-color-3>Llegir</custom-color-3> i <custom-color-3>Gimnàs</custom-color-3>.<br><br>
+• La categoria <custom-color-1>Oci</custom-color-1> podria incloure <custom-color-1>TV</custom-color-1> i <custom-color-1>Jocs</custom-color-1>.<br><br>
 Això et permet veure quant de temps dediques a activitats productives versus no productives en general.<br><br>
 <b>Etiquetes</b> et permeten afegir més detall a una activitat específica. Per exemple:<br><br>
-• Per a l\'activitat de <b>Llegir</b>, utilitza etiquetes com <b>1984</b> o <b>Harry Potter</b> per fer un seguiment del temps dedicat a cada llibre.<br><br>
-• Per a l\'activitat de <b>Treball</b>, utilitza etiquetes com <b>Casa</b> i <b>Oficina</b> per diferenciar on s\'ha realitzat el treball.<br>
+• Per a l\'activitat de <custom-color-3>Llegir</custom-color-3>, utilitza etiquetes com <custom-color-3>1984</custom-color-3> o <custom-color-3>Harry Potter</custom-color-3> per fer un seguiment del temps dedicat a cada llibre.<br><br>
+• Per a l\'activitat de <custom-color-10>Treball</custom-color-10>, utilitza etiquetes com <custom-color-10>Casa</custom-color-10> i <custom-color-10>Oficina</custom-color-10> per diferenciar on s\'ha realitzat el treball.<br>
     ]]></string>
 
     <!--  Change category  -->

@@ -94,12 +94,12 @@
     <string name="categories_add_record_tag">Tambahkan label rekaman</string>
     <string name="categories_and_tags_hint"><![CDATA[
 <b>Kategori</b> membantu Anda mengelompokkan aktivitas yang berhubungan. Contohnya:<br><br>
-• Kategori <b>Produktif</b> bisa mencakup <b>Membaca</b> dan <b>Gym</b>.<br><br>
-• Kategori <b>Hiburan</b> bisa mencakup <b>TV</b> dan <b>Game</b>.<br><br>
+• Kategori <custom-color-3>Produktif</custom-color-3> bisa mencakup <custom-color-3>Membaca</custom-color-3> dan <custom-color-3>Gym</custom-color-3>.<br><br>
+• Kategori <custom-color-1>Hiburan</custom-color-1> bisa mencakup <custom-color-1>TV</custom-color-1> dan <custom-color-1>Game</custom-color-1>.<br><br>
 Ini memungkinkan Anda melihat berapa banyak waktu yang dihabiskan untuk aktivitas produktif dibandingkan dengan yang tidak produktif secara keseluruhan.<br><br>
 <b>Tag</b> memungkinkan Anda menambahkan detail lebih lanjut ke aktivitas tertentu. Contohnya:<br><br>
-• Untuk aktivitas <b>Membaca</b>, gunakan tag seperti <b>1984</b> atau <b>Harry Potter</b> untuk melacak waktu yang dihabiskan untuk setiap buku.<br><br>
-• Untuk aktivitas <b>Pekerjaan</b>, gunakan tag seperti <b>Rumah</b> dan <b>Kantor</b> untuk membedakan di mana pekerjaan dilakukan.<br>
+• Untuk aktivitas <custom-color-3>Membaca</custom-color-3>, gunakan tag seperti <custom-color-3>1984</custom-color-3> atau <custom-color-3>Harry Potter</custom-color-3> untuk melacak waktu yang dihabiskan untuk setiap buku.<br><br>
+• Untuk aktivitas <custom-color-10>Pekerjaan</custom-color-10>, gunakan tag seperti <custom-color-10>Rumah</custom-color-10> dan <custom-color-10>Kantor</custom-color-10> untuk membedakan di mana pekerjaan dilakukan.<br>
     ]]></string>
 
     <!--  Change category  -->

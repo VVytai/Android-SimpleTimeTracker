@@ -94,12 +94,12 @@
     <string name="categories_add_record_tag">Créer une étiquette d\'enregistrement</string>
     <string name="categories_and_tags_hint"><![CDATA[
 <b>Catégories</b> vous aident à regrouper des activités similaires. Par exemple :<br><br>
-• La catégorie <b>Productif</b> peut inclure <b>Lecture</b> et <b>Salle de sport</b>.<br><br>
-• La catégorie <b>Détente</b> peut inclure <b>Télévision</b> et <b>Jeux</b>.<br><br>
+• La catégorie <custom-color-3>Productif</custom-color-3> peut inclure <custom-color-3>Lecture</custom-color-3> et <custom-color-3>Salle de sport</custom-color-3>.<br><br>
+• La catégorie <custom-color-1>Détente</custom-color-1> peut inclure <custom-color-1>Télévision</custom-color-1> et <custom-color-1>Jeux</custom-color-1>.<br><br>
 Cela vous permet de voir combien de temps vous passez globalement sur des activités productives ou non productives.<br><br>
 <b>Étiquettes</b> vous permettent d\'ajouter plus de détails à une activité spécifique. Par exemple :<br><br>
-• Pour l\'activité <b>Lecture</b>, utilisez des étiquettes comme <b>1984</b> ou <b>Harry Potter</b> pour suivre le temps passé sur chaque livre.<br><br>
-• Pour l\'activité <b>Travail</b>, utilisez des étiquettes comme <b>Domicile</b> et <b>Bureau</b> pour différencier où le travail a été effectué.<br>
+• Pour l\'activité <custom-color-3>Lecture</custom-color-3>, utilisez des étiquettes comme <custom-color-3>1984</custom-color-3> ou <custom-color-3>Harry Potter</custom-color-3> pour suivre le temps passé sur chaque livre.<br><br>
+• Pour l\'activité <custom-color-10>Travail</custom-color-10>, utilisez des étiquettes comme <custom-color-10>Domicile</custom-color-10> et <custom-color-10>Bureau</custom-color-10> pour différencier où le travail a été effectué.<br>
     ]]></string>
 
     <!--  Change category  -->

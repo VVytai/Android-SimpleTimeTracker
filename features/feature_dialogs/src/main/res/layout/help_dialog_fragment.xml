@@ -31,7 +31,7 @@
         android:layout_height="wrap_content"
         android:scrollbars="vertical">
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <com.example.util.simpletimetracker.feature_views.TextViewRoundedSpans
             android:id="@+id/tvHelpDialogDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -39,7 +39,7 @@
             android:paddingVertical="12dp"
             android:textColor="?appTextPrimaryColor"
             android:textSize="16sp"
-            tools:text="Help text" />
+            tools:text="@tools:sample/lorem/random" />
 
     </androidx.core.widget.NestedScrollView>
 

@@ -94,12 +94,12 @@
     <string name="categories_add_record_tag">Lägg till händelsetagg</string>
     <string name="categories_and_tags_hint"><![CDATA[
 <b>Kategorier</b> hjälper dig att gruppera relaterade aktiviteter. Till exempel:<br><br>
-• Kategorin <b>Produktiv</b> kan inkludera <b>Läsning</b> och <b>Gym</b>.<br><br>
-• Kategorin <b>Fritid</b> kan inkludera <b>TV</b> och <b>Spel</b>.<br><br>
+• Kategorin <custom-color-3>Produktiv</custom-color-3> kan inkludera <custom-color-3>Läsning</custom-color-3> och <custom-color-3>Gym</custom-color-3>.<br><br>
+• Kategorin <custom-color-1>Fritid</custom-color-1> kan inkludera <custom-color-1>TV</custom-color-1> och <custom-color-1>Spel</custom-color-1>.<br><br>
 Detta gör att du kan se hur mycket tid du spenderar på produktiva kontra icke-produktiva aktiviteter totalt sett.<br><br>
 <b>Taggar</b> låter dig lägga till mer detaljer till en specifik aktivitet. Till exempel:<br><br>
-• För aktiviteten <b>Läsning</b>, använd taggar som <b>1984</b> eller <b>Harry Potter</b> för att hålla reda på tiden för varje bok.<br><br>
-• För aktiviteten <b>Arbete</b>, använd taggar som <b>Hemma</b> och <b>Kontor</b> för att särskilja var arbetet utfördes.<br>
+• För aktiviteten <custom-color-3>Läsning</custom-color-3>, använd taggar som <custom-color-3>1984</custom-color-3> eller <custom-color-3>Harry Potter</custom-color-3> för att hålla reda på tiden för varje bok.<br><br>
+• För aktiviteten <custom-color-10>Arbete</custom-color-10>, använd taggar som <custom-color-10>Hemma</custom-color-10> och <custom-color-10>Kontor</custom-color-10> för att särskilja var arbetet utfördes.<br>
     ]]></string>
 
     <!--  Change category  -->

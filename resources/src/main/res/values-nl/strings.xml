@@ -94,12 +94,12 @@
     <string name="categories_add_record_tag">Recordtag toevoegen</string>
     <string name="categories_and_tags_hint"><![CDATA[
 <b>Categorieën</b> helpen je om gerelateerde activiteiten te groeperen. Bijvoorbeeld:<br><br>
-• De <b>Productieve</b> categorie kan <b>Lezen</b> en <b>Sportschool</b> bevatten.<br><br>
-• De <b>Vrije tijd</b> categorie kan <b>TV</b> en <b>Spellen</b> bevatten.<br><br>
+• De <custom-color-3>Productieve</custom-color-3> categorie kan <custom-color-3>Lezen</custom-color-3> en <custom-color-3>Sportschool</custom-color-3> bevatten.<br><br>
+• De <custom-color-1>Vrije tijd</custom-color-1> categorie kan <custom-color-1>TV</custom-color-1> en <custom-color-1>Spellen</custom-color-1> bevatten.<br><br>
 Dit stelt je in staat om te zien hoeveel tijd je in totaal besteedt aan productieve versus niet-productieve activiteiten.<br><br>
 <b>Tags</b> stellen je in staat om meer details aan een specifieke activiteit toe te voegen. Bijvoorbeeld:<br><br>
-• Voor de <b>Lezen</b> activiteit, gebruik tags zoals <b>1984</b> of <b>Harry Potter</b> om de tijd die aan elk boek wordt besteed bij te houden.<br><br>
-• Voor de <b>Werk</b> activiteit, gebruik tags zoals <b>Thuis</b> en <b>Kantoor</b> om te onderscheiden waar het werk is uitgevoerd.<br>
+• Voor de <custom-color-3>Lezen</custom-color-3> activiteit, gebruik tags zoals <custom-color-3>1984</custom-color-3> of <custom-color-3>Harry Potter</custom-color-3> om de tijd die aan elk boek wordt besteed bij te houden.<br><br>
+• Voor de <custom-color-10>Werk</custom-color-10> activiteit, gebruik tags zoals <custom-color-10>Thuis</custom-color-10> en <custom-color-10>Kantoor</custom-color-10> om te onderscheiden waar het werk is uitgevoerd.<br>
     ]]></string>
 
     <!--  Change category  -->

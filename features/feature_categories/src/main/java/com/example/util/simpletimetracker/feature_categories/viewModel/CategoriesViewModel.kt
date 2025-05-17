@@ -1,5 +1,12 @@
 package com.example.util.simpletimetracker.feature_categories.viewModel
 
+import android.graphics.Typeface
+import android.text.Editable
+import android.text.Html
+import android.text.Spannable
+import android.text.Spanned
+import android.text.style.ForegroundColorSpan
+import android.text.style.StyleSpan
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -7,7 +14,10 @@ import androidx.lifecycle.viewModelScope
 import com.example.util.simpletimetracker.core.extension.fromHtml
 import com.example.util.simpletimetracker.core.extension.set
 import com.example.util.simpletimetracker.core.extension.toParams
+import com.example.util.simpletimetracker.core.mapper.ColorMapper
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
+import com.example.util.simpletimetracker.domain.color.model.AppColor
+import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTypeInteractor
 import com.example.util.simpletimetracker.domain.recordType.model.RecordType
@@ -20,8 +30,10 @@ import com.example.util.simpletimetracker.feature_categories.R
 import com.example.util.simpletimetracker.feature_categories.interactor.CategoriesViewDataInteractor
 import com.example.util.simpletimetracker.feature_categories.mapper.CategoriesOptionsListMapper
 import com.example.util.simpletimetracker.feature_categories.model.CategoriesOptionsListItem
+import com.example.util.simpletimetracker.feature_categories.utils.CustomTagHandler
 import com.example.util.simpletimetracker.feature_categories.viewData.CategoriesSearchState
 import com.example.util.simpletimetracker.feature_categories.viewData.CategoriesViewData
+import com.example.util.simpletimetracker.feature_views.TextViewRoundedSpans
 import com.example.util.simpletimetracker.navigation.Router
 import com.example.util.simpletimetracker.navigation.params.screen.ChangeCategoryFromTagsParams
 import com.example.util.simpletimetracker.navigation.params.screen.ChangeRecordTagFromTagsParams
@@ -33,6 +45,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.xml.sax.XMLReader
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 import javax.inject.Inject
 
 @HiltViewModel
@@ -40,6 +55,7 @@ class CategoriesViewModel @Inject constructor(
     private val router: Router,
     private val resourceRepo: ResourceRepo,
     private val prefsInteractor: PrefsInteractor,
+    private val customTagHandler: CustomTagHandler,
     private val recordTypeInteractor: RecordTypeInteractor,
     private val categoriesViewDataInteractor: CategoriesViewDataInteractor,
     private val categoriesOptionsListMapper: CategoriesOptionsListMapper,
@@ -190,10 +206,13 @@ class CategoriesViewModel @Inject constructor(
         updateCategories()
     }
 
-    private fun onHelpClick() {
+    private suspend fun onHelpClick() {
+        customTagHandler.isDarkTheme = prefsInteractor.getDarkMode()
+        val text = resourceRepo.getString(R.string.categories_and_tags_hint)
+            .fromHtml(customTagHandler)
         HelpDialogParams(
             title = resourceRepo.getString(R.string.categories_title),
-            text = resourceRepo.getString(R.string.categories_and_tags_hint).fromHtml(),
+            text = text,
         ).let(router::navigate)
     }
 

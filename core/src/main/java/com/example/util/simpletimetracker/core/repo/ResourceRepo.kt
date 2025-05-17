@@ -35,6 +35,10 @@ class ResourceRepo @Inject constructor(
         return context.getString(stringResId, *args)
     }
 
+    fun getText(@StringRes stringResId: Int): CharSequence {
+        return context.getText(stringResId)
+    }
+
     override fun getQuantityString(@PluralsRes stringResId: Int, quantity: Int): String {
         return context.resources.getQuantityString(stringResId, quantity)
     }

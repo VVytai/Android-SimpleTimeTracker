@@ -94,12 +94,12 @@
     <string name="categories_add_record_tag">Datensatz-Tag hinzufügen</string>
     <string name="categories_and_tags_hint"><![CDATA[
 <b>Kategorien</b> helfen dir, verwandte Aktivitäten zu gruppieren. Zum Beispiel:<br><br>
-• Die Kategorie <b>Produktiv</b> könnte <b>Lesen</b> und <b>Fitnessstudio</b> umfassen.<br><br>
-• Die Kategorie <b>Freizeit</b> könnte <b>Fernsehen</b> und <b>Spiele</b> umfassen.<br><br>
+• Die Kategorie <custom-color-3>Produktiv</custom-color-3> könnte <custom-color-3>Lesen</custom-color-3> und <custom-color-3>Fitnessstudio</custom-color-3> umfassen.<br><br>
+• Die Kategorie <custom-color-1>Freizeit</custom-color-1> könnte <custom-color-1>Fernsehen</custom-color-1> und <custom-color-1>Spiele</custom-color-1> umfassen.<br><br>
 Dies ermöglicht es dir, zu sehen, wie viel Zeit du insgesamt für produktive versus unproduktive Aktivitäten aufwendest.<br><br>
 <b>Tags</b> ermöglichen es dir, einer bestimmten Aktivität mehr Details hinzuzufügen. Zum Beispiel:<br><br>
-• Für die Aktivität <b>Lesen</b> verwende Tags wie <b>1984</b> oder <b>Harry Potter</b>, um die Zeit für jedes Buch zu verfolgen.<br><br>
-• Für die Aktivität <b>Arbeit</b> verwende Tags wie <b>Zuhause</b> und <b>Büro</b>, um zu unterscheiden, wo die Arbeit erledigt wurde.<br>
+• Für die Aktivität <custom-color-3>Lesen</custom-color-3> verwende Tags wie <custom-color-3>1984</custom-color-3> oder <custom-color-3>Harry Potter</custom-color-3>, um die Zeit für jedes Buch zu verfolgen.<br><br>
+• Für die Aktivität <custom-color-10>Arbeit</custom-color-10> verwende Tags wie <custom-color-10>Zuhause</custom-color-10> und <custom-color-10>Büro</custom-color-10>, um zu unterscheiden, wo die Arbeit erledigt wurde.<br>
     ]]></string>
 
     <!--  Change category  -->

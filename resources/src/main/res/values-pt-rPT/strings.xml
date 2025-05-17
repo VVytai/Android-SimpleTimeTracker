@@ -94,12 +94,12 @@
     <string name="categories_add_record_tag">Adicionar etiqueta de registo</string>
     <string name="categories_and_tags_hint"><![CDATA[
 <b>Categorias</b> ajudam a agrupar atividades relacionadas. Por exemplo:<br><br>
-• A categoria <b>Produtiva</b> pode incluir <b>Leitura</b> e <b>Ginásio</b>.<br><br>
-• A categoria <b>Lazer</b> pode incluir <b>TV</b> e <b>Jogos</b>.<br><br>
+• A categoria <custom-color-3>Produtiva</custom-color-3> pode incluir <custom-color-3>Leitura</custom-color-3> e <custom-color-3>Ginásio</custom-color-3>.<br><br>
+• A categoria <custom-color-1>Lazer</custom-color-1> pode incluir <custom-color-1>TV</custom-color-1> e <custom-color-1>Jogos</custom-color-1>.<br><br>
 Isto permite-lhe ver quanto tempo está a gastar em atividades produtivas versus não produtivas no geral.<br><br>
 <b>Etiquetas</b> permitem-lhe adicionar mais detalhes a uma atividade específica. Por exemplo:<br><br>
-• Para a atividade <b>Leitura</b>, use etiquetas como <b>1984</b> ou <b>Harry Potter</b> para acompanhar o tempo gasto em cada livro.<br><br>
-• Para a atividade <b>Trabalho</b>, use etiquetas como <b>Casa</b> e <b>Escritório</b> para distinguir onde o trabalho foi realizado.<br>
+• Para a atividade <custom-color-3>Leitura</custom-color-3>, use etiquetas como <custom-color-3>1984</custom-color-3> ou <custom-color-3>Harry Potter</custom-color-3> para acompanhar o tempo gasto em cada livro.<br><br>
+• Para a atividade <custom-color-10>Trabalho</custom-color-10>, use etiquetas como <custom-color-10>Casa</custom-color-10> e <custom-color-10>Escritório</custom-color-10> para distinguir onde o trabalho foi realizado.<br>
     ]]></string>
 
     <!--  Change category  -->

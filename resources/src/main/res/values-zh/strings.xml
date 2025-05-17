@@ -94,12 +94,12 @@
     <string name="categories_add_record_tag">添加记录标签</string>
     <string name="categories_and_tags_hint"><![CDATA[
 <b>分类</b>可以帮助你将相关的活动进行分组。例如：<br><br>
-• <b>高效</b>分类可以包括<b>阅读</b>和<b>健身</b>。<br><br>
-• <b>休闲</b>分类可以包括<b>电视</b>和<b>游戏</b>。<br><br>
+• <custom-color-3>高效</custom-color-3>分类可以包括<custom-color-3>阅读</custom-color-3>和<custom-color-3>健身</custom-color-3>。<br><br>
+• <custom-color-1>休闲</custom-color-1>分类可以包括<custom-color-1>电视</custom-color-1>和<custom-color-1>游戏</custom-color-1>。<br><br>
 这可以帮助你了解自己在高效与非高效活动上花费了多少时间。<br><br>
 <b>标签</b>可以让你为具体活动添加更多细节。例如：<br><br>
-• 对于<b>阅读</b>活动，可以使用<b>1984</b>或<b>哈利波特</b>这样的标签来追踪每本书的阅读时间。<br><br>
-• 对于<b>工作</b>活动，可以使用<b>在家</b>和<b>办公室</b>这样的标签来区分工作的地点。<br>
+• 对于<custom-color-3>阅读</custom-color-3>活动，可以使用<custom-color-3>1984</custom-color-3>或<custom-color-3>哈利波特</custom-color-3>这样的标签来追踪每本书的阅读时间。<br><br>
+• 对于<custom-color-10>工作</custom-color-10>活动，可以使用<custom-color-10>在家</custom-color-10>和<custom-color-10>办公室</custom-color-10>这样的标签来区分工作的地点。<br>
     ]]></string>
 
     <!--  Change category  -->

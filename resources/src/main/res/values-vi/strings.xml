@@ -94,12 +94,12 @@
     <string name="categories_add_record_tag">Thêm thẻ bản ghi</string>
     <string name="categories_and_tags_hint"><![CDATA[
 <b>Danh mục</b> giúp bạn nhóm các hoạt động liên quan lại với nhau. Ví dụ:<br><br>
-• Danh mục <b>Năng suất</b> có thể bao gồm <b>Đọc sách</b> và <b>Phòng tập thể dục</b>.<br><br>
-• Danh mục <b>Giải trí</b> có thể bao gồm <b>TV</b> và <b>Trò chơi</b>.<br><br>
+• Danh mục <custom-color-3>Năng suất</custom-color-3> có thể bao gồm <custom-color-3>Đọc sách</custom-color-3> và <custom-color-3>Phòng tập thể dục</custom-color-3>.<br><br>
+• Danh mục <custom-color-1>Giải trí</custom-color-1> có thể bao gồm <custom-color-1>TV</custom-color-1> và <custom-color-1>Trò chơi</custom-color-1>.<br><br>
 Điều này giúp bạn nhìn thấy bạn đang dành bao nhiêu thời gian cho các hoạt động năng suất và không năng suất tổng thể.<br><br>
 <b>Thẻ</b> cho phép bạn thêm chi tiết vào một hoạt động cụ thể. Ví dụ:<br><br>
-• Đối với hoạt động <b>Đọc sách</b>, sử dụng các thẻ như <b>1984</b> hoặc <b>Harry Potter</b> để theo dõi thời gian dành cho mỗi cuốn sách.<br><br>
-• Đối với hoạt động <b>Công việc</b>, sử dụng các thẻ như <b>Nhà</b> và <b>Văn phòng</b> để phân biệt nơi công việc được thực hiện.<br>
+• Đối với hoạt động <custom-color-3>Đọc sách</custom-color-3>, sử dụng các thẻ như <custom-color-3>1984</custom-color-3> hoặc <custom-color-3>Harry Potter</custom-color-3> để theo dõi thời gian dành cho mỗi cuốn sách.<br><br>
+• Đối với hoạt động <custom-color-10>Công việc</custom-color-10>, sử dụng các thẻ như <custom-color-10>Nhà</custom-color-10> và <custom-color-10>Văn phòng</custom-color-10> để phân biệt nơi công việc được thực hiện.<br>
     ]]></string>
 
     <!--  Change category  -->

@@ -94,12 +94,12 @@
     <string name="categories_add_record_tag">הוסף תגית רשומה</string>
     <string name="categories_and_tags_hint"><![CDATA[
 <b>קטגוריות</b> עוזרות לך לקבץ פעילויות קשורות. לדוגמה:<br><br>
-• קטגוריית <b>פרודוקטיבי</b> עשויה לכלול <b>קריאה</b> ו<b>חדר כושר</b>.<br><br>
-• קטגוריית <b>פנאי</b> עשויה לכלול <b>טלוויזיה</b> ו<b>משחקים</b>.<br><br>
+• קטגוריית <custom-color-3>פרודוקטיבי</custom-color-3> עשויה לכלול <custom-color-3>קריאה</custom-color-3> ו<custom-color-3>חדר כושר</custom-color-3>.<br><br>
+• קטגוריית <custom-color-1>פנאי</custom-color-1> עשויה לכלול <custom-color-1>טלוויזיה</custom-color-1> ו<custom-color-1>משחקים</custom-color-1>.<br><br>
 זה מאפשר לך לראות כמה זמן אתה מבלה בפעילויות פרודוקטיביות מול פעילויות לא פרודוקטיביות באופן כללי.<br><br>
 <b>תגים</b> מאפשרים לך להוסיף פרטים נוספים לפעילות מסוימת. לדוגמה:<br><br>
-• עבור פעילות <b>קריאה</b>, השתמש בתגים כמו <b>1984</b> או <b>הארי פוטר</b> כדי לעקוב אחרי הזמן שהוקדש לכל ספר.<br><br>
-• עבור פעילות <b>עבודה</b>, השתמש בתגים כמו <b>בית</b> ו<b>משרד</b> כדי להבדיל היכן בוצעה העבודה.<br>
+• עבור פעילות <custom-color-3>קריאה</custom-color-3>, השתמש בתגים כמו <custom-color-3>1984</custom-color-3> או <custom-color-3>הארי פוטר</custom-color-3> כדי לעקוב אחרי הזמן שהוקדש לכל ספר.<br><br>
+• עבור פעילות <custom-color-10>עבודה</custom-color-10>, השתמש בתגים כמו <custom-color-10>בית</custom-color-10> ו<custom-color-10>משרד</custom-color-10> כדי להבדיל היכן בוצעה העבודה.<br>
     ]]></string>
 
     <!--  Change category  -->

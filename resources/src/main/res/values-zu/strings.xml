@@ -94,12 +94,12 @@
     <string name="categories_add_record_tag">Engeza ithegi yerekhodi</string>
     <string name="categories_and_tags_hint"><![CDATA[
 <b>Izigaba</b> zikusiza ukuthi uhlele imisebenzi ehlobene. Isibonelo:<br><br>
-• Isigaba <b>Esisebenzayo</b> singabandakanya <b>Ukufunda</b> kanye ne <b>Ijimu</b>.<br><br>
-• Isigaba <b>Sokuphumula</b> singabandakanya <b>Umsakazo</b> kanye <b>Nezidlalo</b>.<br><br>
+• Isigaba <custom-color-3>Esisebenzayo</custom-color-3> singabandakanya <custom-color-3>Ukufunda</custom-color-3> kanye ne <custom-color-3>Ijimu</custom-color-3>.<br><br>
+• Isigaba <custom-color-1>Sokuphumula</custom-color-1> singabandakanya <custom-color-1>Umsakazo</custom-color-1> kanye <custom-color-1>Nezidlalo</custom-color-1>.<br><br>
 Lokhu kukuvumela ukuthi ubone isikhathi osichitha emisebenzini esebenzayo nezingasebenzi kahle.<br><br>
 <b>Amathegi</b> akuvumela ukuthi ungeze imininingwane eminingi emsebenzini othile. Isibonelo:<br><br>
-• Ngomsebenzi <b>Wokufunda</b>, sebenzisa amathegi anjenge <b>1984</b> noma <b>Harry Potter</b> ukuze ulandele isikhathi ochithe kuzo zonke izincwadi.<br><br>
-• Ngomsebenzi <b>Wokusebenza</b>, sebenzisa amathegi anjenge <b>Ekhaya</b> noma <b>Ehhovisi</b> ukuze uhlukanise lapho umsebenzi wenziwe khona.<br>
+• Ngomsebenzi <custom-color-3>Wokufunda</custom-color-3>, sebenzisa amathegi anjenge <custom-color-3>1984</custom-color-3> noma <custom-color-3>Harry Potter</custom-color-3> ukuze ulandele isikhathi ochithe kuzo zonke izincwadi.<br><br>
+• Ngomsebenzi <custom-color-10>Wokusebenza</custom-color-10>, sebenzisa amathegi anjenge <custom-color-10>Ekhaya</custom-color-10> noma <custom-color-10>Ehhovisi</custom-color-10> ukuze uhlukanise lapho umsebenzi wenziwe khona.<br>
     ]]></string>
 
     <!--  Change category  -->
@@ -274,7 +274,7 @@ Lokhu kukuvumela ukuthi ubone isikhathi osichitha emisebenzini esebenzayo nezing
     <string name="running_records_empty_hint">Chofoza isikhathi eside ukuze uhlele</string>
     <string name="running_records_add_type">Engeza</string>
     <string name="running_records_add_filter">Engeza isihlungi</string>
-    <string name="running_records_add_default">Okuzenzakalelayo</string>
+    <string name="running_records_add_default">Okuvamile</string>
     <string name="running_records_repeat">Phinda</string>
     <string name="running_records_repeat_no_prev_record">Akunarekhodi langaphambilini ongaphinda nalo</string>
     <string name="running_records_repeat_already_tracking">Usuvele uyalandelela lo msebenzi</string>

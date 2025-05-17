@@ -94,12 +94,12 @@
     <string name="categories_add_record_tag">Kayıt etiketi ekle</string>
     <string name="categories_and_tags_hint"><![CDATA[
 <b>Kategoriler</b>, ilgili aktiviteleri gruplamanıza yardımcı olur. Örneğin:<br><br>
-• <b>Verimli</b> kategorisi, <b>Okuma</b> ve <b>Spor Salonu</b> gibi aktiviteleri içerebilir.<br><br>
-• <b>Boş Zaman</b> kategorisi, <b>TV</b> ve <b>Oyunlar</b> gibi aktiviteleri içerebilir.<br><br>
+• <custom-color-3>Verimli</custom-color-3> kategorisi, <custom-color-3>Okuma</custom-color-3> ve <custom-color-3>Spor Salonu</custom-color-3> gibi aktiviteleri içerebilir.<br><br>
+• <custom-color-1>Boş Zaman</custom-color-1> kategorisi, <custom-color-1>TV</custom-color-1> ve <custom-color-1>Oyunlar</custom-color-1> gibi aktiviteleri içerebilir.<br><br>
 Bu, genel olarak verimli ve verimsiz aktivitelere ne kadar zaman harcadığınızı görmenizi sağlar.<br><br>
 <b>Etiketler</b>, belirli bir aktiviteye daha fazla ayrıntı eklemenizi sağlar. Örneğin:<br><br>
-• <b>Okuma</b> aktivitesi için, her bir kitaba harcanan zamanı izlemek için <b>1984</b> veya <b>Harry Potter</b> gibi etiketler kullanabilirsiniz.<br><br>
-• <b>İş</b> aktivitesi için, yapılan işi nerede gerçekleştirdiğinizi ayırt etmek için <b>Eve</b> ve <b>Ofis</b> gibi etiketler kullanabilirsiniz.<br>
+• <custom-color-3>Okuma</custom-color-3> aktivitesi için, her bir kitaba harcanan zamanı izlemek için <custom-color-3>1984</custom-color-3> veya <custom-color-3>Harry Potter</custom-color-3> gibi etiketler kullanabilirsiniz.<br><br>
+• <custom-color-10>İş</custom-color-10> aktivitesi için, yapılan işi nerede gerçekleştirdiğinizi ayırt etmek için <custom-color-10>Eve</custom-color-10> ve <custom-color-10>Ofis</custom-color-10> gibi etiketler kullanabilirsiniz.<br>
     ]]></string>
 
     <!--  Change category  -->

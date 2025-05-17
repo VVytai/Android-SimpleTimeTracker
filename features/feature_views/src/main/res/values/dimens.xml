@@ -35,4 +35,6 @@
     <dimen name="widget_universal_corner_radius">16dp</dimen>
 
     <dimen name="widget_statistics_refresh_button_size">20dp</dimen>
+
+    <dimen name="rounded_span_radius">99dp</dimen>
 </resources>

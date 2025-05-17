@@ -12,6 +12,7 @@ import android.text.style.ClickableSpan
 import android.text.style.DynamicDrawableSpan
 import android.text.style.ForegroundColorSpan
 import android.text.style.ImageSpan
+import android.text.style.ReplacementSpan
 import android.view.View
 import androidx.annotation.ColorInt
 

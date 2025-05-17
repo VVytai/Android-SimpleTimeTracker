@@ -94,12 +94,12 @@
     <string name="categories_add_record_tag">Add record tag</string>
     <string name="categories_and_tags_hint"><![CDATA[
 <b>Categories</b> help you group related activities. For example:<br><br>
-• The <b>Productive</b> category might include <b>Reading</b> and <b>Gym</b>.<br><br>
-• The <b>Leisure</b> category could include <b>TV</b> and <b>Games</b>.<br><br>
+• The <custom-color-3>Productive</custom-color-3> category might include <custom-color-3>Reading</custom-color-3> and <custom-color-3>Gym</custom-color-3>.<br><br>
+• The <custom-color-1>Leisure</custom-color-1> category could include <custom-color-1>TV</custom-color-1> and <custom-color-1>Games</custom-color-1>.<br><br>
 This allows you to see how much time you\'re spending on productive versus unproductive activities overall.<br><br>
 <b>Tags</b> let you add more detail to a specific activity. For example:<br><br>
-• For the <b>Reading</b> activity, use tags like <b>1984</b> or <b>Harry Potter</b> to track time spent on each book.<br><br>
-• For the <b>Work</b> activity, use tags like <b>Home</b> and <b>Office</b> to differentiate where the work was done.<br>
+• For the <custom-color-3>Reading</custom-color-3> activity, use tags like <custom-color-3>1984</custom-color-3> or <custom-color-3>Harry Potter</custom-color-3> to track time spent on each book.<br><br>
+• For the <custom-color-10>Work</custom-color-10> activity, use tags like <custom-color-10>Home</custom-color-10> and <custom-color-10>Office</custom-color-10> to differentiate where the work was done.<br>
     ]]></string>
 
     <!--  Change category  -->

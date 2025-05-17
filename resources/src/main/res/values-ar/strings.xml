@@ -94,12 +94,12 @@
     <string name="categories_add_record_tag">إضافة وسم التتبع</string>
     <string name="categories_and_tags_hint"><![CDATA[
 <b>الفئات</b> تساعدك على تجميع الأنشطة ذات الصلة. على سبيل المثال:<br><br>
-• قد تتضمن فئة <b>الإنتاجية</b> أنشطة مثل <b>القراءة</b> و<b>الصالة الرياضية</b>.<br><br>
-• قد تتضمن فئة <b>الترفيه</b> أنشطة مثل <b>التلفاز</b> و<b>الألعاب</b>.<br><br>
+• قد تتضمن فئة <custom-color-3>الإنتاجية</custom-color-3> أنشطة مثل <custom-color-3>القراءة</custom-color-3> و<custom-color-3>الصالة الرياضية</custom-color-3>.<br><br>
+• قد تتضمن فئة <custom-color-1>الترفيه</custom-color-1> أنشطة مثل <custom-color-1>التلفاز</custom-color-1> و<custom-color-1>الألعاب</custom-color-1>.<br><br>
 يساعدك ذلك على معرفة مقدار الوقت الذي تقضيه في الأنشطة الإنتاجية مقابل غير الإنتاجية بشكل عام.<br><br>
 <b>العلامات</b> تتيح لك إضافة مزيد من التفاصيل إلى نشاط معين. على سبيل المثال:<br><br>
-• لنشاط <b>القراءة</b>، استخدم علامات مثل <b>1984</b> أو <b>هاري بوتر</b> لتتبع الوقت الذي تقضيه في كل كتاب.<br><br>
-• لنشاط <b>العمل</b>، استخدم علامات مثل <b>المنزل</b> و<b>المكتب</b> لتمييز مكان تنفيذ العمل.<br>
+• لنشاط <custom-color-3>القراءة</custom-color-3>، استخدم علامات مثل <custom-color-3>1984</custom-color-3> أو <custom-color-3>هاري بوتر</custom-color-3> لتتبع الوقت الذي تقضيه في كل كتاب.<br><br>
+• لنشاط <custom-color-10>العمل</custom-color-10>، استخدم علامات مثل <custom-color-10>المنزل</custom-color-10> و<custom-color-10>المكتب</custom-color-10> لتمييز مكان تنفيذ العمل.<br>
     ]]></string>
 
     <!--  Change category  -->
