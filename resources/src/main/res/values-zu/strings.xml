@@ -75,6 +75,8 @@
     <string name="records_switch_to_calendar">Shintshela ekubukeni kwekhalenda</string>
     <string name="records_switch_to_list">Shintshela ekubukeni kohlu</string>
     <string name="no_records_exist">Amarekhodi azovezwa lapha</string>
+    <string name="record_add_hint">Chofoza ku-%s ukuze wengeze irekhodi elisha</string>
+    <string name="record_date_hint">Chofoza inkinobho yosuku ukuze ukhethe usuku</string>
 
     <!--  Statistics  -->
     <string name="statistics_total_tracked">Isamba esilandelelwe</string>

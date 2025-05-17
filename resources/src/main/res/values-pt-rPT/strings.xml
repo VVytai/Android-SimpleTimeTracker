@@ -75,6 +75,8 @@
     <string name="records_switch_to_calendar">Mudar para a vista de calendário</string>
     <string name="records_switch_to_list">Mudar para a vista de lista</string>
     <string name="no_records_exist">Os registos serão mostrados aqui</string>
+    <string name="record_add_hint">Clique em %s para adicionar um novo registo</string>
+    <string name="record_date_hint">Clique no botão da data para selecionar uma data</string>
 
     <!--  Statistics  -->
     <string name="statistics_total_tracked">Total registado</string>

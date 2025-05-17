@@ -75,6 +75,8 @@
     <string name="records_switch_to_calendar">Byt till kalendervy</string>
     <string name="records_switch_to_list">Byt till listvy</string>
     <string name="no_records_exist">Rekord kommer att visas här</string>
+    <string name="record_add_hint">Klicka på %s för att lägga till en ny post</string>
+    <string name="record_date_hint">Klicka på datumknappen för att välja datum</string>
 
     <!--  Statistics  -->
     <string name="statistics_total_tracked">Totalt</string>

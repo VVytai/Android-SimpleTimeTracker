@@ -75,6 +75,8 @@
     <string name="records_switch_to_calendar">Chuyển sang chế độ xem lịch</string>
     <string name="records_switch_to_list">Chuyển sang chế độ xem danh sách</string>
     <string name="no_records_exist">Bản ghi sẽ được hiển thị ở đây</string>
+    <string name="record_add_hint">Nhấn vào %s để thêm bản ghi mới</string>
+    <string name="record_date_hint">Nhấn vào nút ngày để chọn ngày</string>
 
     <!--  Statistics  -->
     <string name="statistics_total_tracked">Tổng số đã theo dõi</string>

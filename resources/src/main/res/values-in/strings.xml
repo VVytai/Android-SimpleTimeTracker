@@ -75,6 +75,8 @@
     <string name="records_switch_to_calendar">Beralih ke tampilan kalender</string>
     <string name="records_switch_to_list">Beralih ke tampilan daftar</string>
     <string name="no_records_exist">Rekaman akan ditampilkan di sini</string>
+    <string name="record_add_hint">Klik %s untuk menambahkan catatan baru</string>
+    <string name="record_date_hint">Klik tombol tanggal untuk memilih tanggal</string>
 
     <!--  Statistics  -->
     <string name="statistics_total_tracked">Jumlah yang dilacak</string>

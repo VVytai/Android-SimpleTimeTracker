@@ -8,6 +8,7 @@
     <string name="plus_sign" translatable="false">+</string>
     <string name="minus_sign" translatable="false">-</string>
     <string name="running_records_pomodoro" translatable="false">Pomodoro</string>
+    <string name="image_tag" translatable="false">[IMAGE]</string>
 
     <string name="color_red" translatable="false">R</string>
     <string name="color_green" translatable="false">G</string>

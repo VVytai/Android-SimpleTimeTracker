@@ -3,7 +3,7 @@ package com.example.util.simpletimetracker.feature_base_adapter.hintBig
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 
 data class HintBigViewData(
-    val text: String,
+    val text: CharSequence,
     val infoIconVisible: Boolean,
     val closeIconVisible: Boolean,
     val button: Button = Button.Hidden,
@@ -20,7 +20,7 @@ data class HintBigViewData(
 
     interface ButtonType
 
-    override fun getUniqueId(): Long = text.hashCode().toLong()
+    override fun getUniqueId(): Long = text.toString().hashCode().toLong()
 
     override fun isValidType(other: ViewHolderType): Boolean = other is HintBigViewData
 }

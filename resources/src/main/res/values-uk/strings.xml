@@ -75,6 +75,8 @@
     <string name="records_switch_to_calendar">Перемкнутися на перегляд календаря</string>
     <string name="records_switch_to_list">Перемкнутися на перегляд списку</string>
     <string name="no_records_exist">Тут будуть показані записи</string>
+    <string name="record_add_hint">Натисніть %s, щоб додати новий запис</string>
+    <string name="record_date_hint">Натисніть кнопку дати, щоб вибрати дату</string>
 
     <!--  Statistics  -->
     <string name="statistics_total_tracked">Всього відстежено</string>

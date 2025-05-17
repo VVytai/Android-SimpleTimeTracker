@@ -230,10 +230,10 @@ class SettingsAutomatedTrackingMapper @Inject constructor(
         isDarkTheme: Boolean,
     ): SpannableString = runCatching {
         val helpTexts = mutableListOf<HelpText>()
-        actions.forEach {
-            helpTexts += HelpText(it.action, canCopy = true)
-            helpTexts += it.extras.map { HelpText(it, canCopy = true) }
-            helpTexts += it.optional.map { HelpText(it, canCopy = true) }
+        actions.forEach { action ->
+            helpTexts += HelpText(action.action, canCopy = true)
+            helpTexts += action.extras.map { HelpText(it, canCopy = true) }
+            helpTexts += action.optional.map { HelpText(it, canCopy = true) }
         }
 
         val templateText = StringBuilder()
@@ -317,11 +317,10 @@ class SettingsAutomatedTrackingMapper @Inject constructor(
         arguments: List<HelpText>,
     ): SpannableString = runCatching {
         val imageTag = "IMAGE_TAG"
-        val theme = if (isDarkTheme) R.style.AppThemeDark else R.style.AppTheme
         val copyableArguments = arguments.filter(HelpText::canCopy)
 
         fun insertImageTags(arguments: List<HelpText>): List<String> {
-            return arguments.mapIndexed { index, arg ->
+            return arguments.map { arg ->
                 if (arg.canCopy) {
                     "${arg.text} $imageTag"
                 } else {
@@ -348,7 +347,7 @@ class SettingsAutomatedTrackingMapper @Inject constructor(
             val icon = resourceRepo.getDrawable(R.drawable.action_copy)
                 ?.mutate()
                 ?.apply {
-                    setTint(resourceRepo.getThemedAttr(R.attr.appTextHintColor, theme))
+                    setTint(resourceRepo.getThemedAttr(R.attr.appTextHintColor, isDarkTheme))
                 }
                 ?: return SpannableString("")
 

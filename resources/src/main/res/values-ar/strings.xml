@@ -75,6 +75,8 @@
     <string name="records_switch_to_calendar">التبديل إلى عرض التقويم</string>
     <string name="records_switch_to_list">التبديل إلى عرض القائمة</string>
     <string name="no_records_exist">سيتم عرض السجلات هنا</string>
+    <string name="record_add_hint">انقر على %s لإضافة سجل جديد</string>
+    <string name="record_date_hint">انقر على زر التاريخ لاختيار التاريخ</string>
 
     <!--  Statistics  -->
     <string name="statistics_total_tracked">إجمالي الوقت المتتبع</string>

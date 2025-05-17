@@ -13,6 +13,7 @@
     <color name="textLight">@color/grey_50</color>
     <color name="textLightDark">@color/grey_100</color>
 
+    <color name="textHintCommon">#85FFFFFF</color>
     <color name="textHint">#A1A1A1</color>
     <color name="textHintDark">#4D4D4D</color>
 

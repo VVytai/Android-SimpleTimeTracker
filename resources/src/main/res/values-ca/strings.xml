@@ -75,6 +75,8 @@
     <string name="records_switch_to_calendar">Canvia a la vista de calendari</string>
     <string name="records_switch_to_list">Canvia a la vista de llista</string>
     <string name="no_records_exist">Els registres es mostraran aquí</string>
+    <string name="record_add_hint">Feu clic a %s per afegir un nou registre</string>
+    <string name="record_date_hint">Feu clic al botó de data per seleccionar la data</string>
 
     <!--  Statistics  -->
     <string name="statistics_total_tracked">Total enregistrat</string>

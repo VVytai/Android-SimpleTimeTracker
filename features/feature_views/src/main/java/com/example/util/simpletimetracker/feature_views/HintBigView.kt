@@ -20,7 +20,7 @@ class HintBigView @JvmOverloads constructor(
 
     private val binding = HintBigViewLayoutBinding.inflate(layoutInflater, this)
 
-    var itemText: String = ""
+    var itemText: CharSequence = ""
         set(value) {
             field = value
             binding.tvHintBigText.text = value

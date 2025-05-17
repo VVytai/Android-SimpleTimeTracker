@@ -75,6 +75,8 @@
     <string name="records_switch_to_calendar">切换到日历视图</string>
     <string name="records_switch_to_list">切换到列表视图</string>
     <string name="no_records_exist">记录将在此处显示</string>
+    <string name="record_add_hint">点击%s以添加新记录</string>
+    <string name="record_date_hint">点击日期按钮选择日期</string>
 
     <!--  Statistics  -->
     <string name="statistics_total_tracked">总追踪时长</string>

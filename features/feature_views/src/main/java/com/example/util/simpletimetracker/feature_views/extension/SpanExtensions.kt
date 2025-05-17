@@ -1,5 +1,7 @@
 package com.example.util.simpletimetracker.feature_views.extension
 
+import android.graphics.Canvas
+import android.graphics.Paint
 import android.graphics.drawable.Drawable
 import android.text.Spannable
 import android.text.SpannableString
@@ -36,8 +38,8 @@ fun SpannableString.setBackgroundSpan(
 }
 
 fun SpannableString.setForegroundSpan(
-    start: Int,
-    length: Int,
+    start: Int = 0,
+    length: Int = this.length,
     @ColorInt color: Int,
 ): SpannableString {
     setSpan(
@@ -68,24 +70,55 @@ fun SpannableString.setImageSpan(
     length: Int,
     drawable: Drawable,
     sizeDp: Int,
+    isCentered: Boolean = false,
 ): SpannableString {
+    val finalDrawable = drawable.apply {
+        setBounds(0, 0, sizeDp.dpToPx(), sizeDp.dpToPx())
+    }
+    val span = if (isCentered) {
+        CenteredImageSpan(finalDrawable)
+    } else {
+        ImageSpan(finalDrawable, DynamicDrawableSpan.ALIGN_BASELINE)
+    }
     setSpan(
-        ImageSpan(
-            drawable.apply {
-                setBounds(
-                    0,
-                    0,
-                    sizeDp.dpToPx(),
-                    sizeDp.dpToPx(),
-                )
-            },
-            DynamicDrawableSpan.ALIGN_BASELINE,
-        ),
+        span,
         start,
         start + length,
         Spannable.SPAN_EXCLUSIVE_EXCLUSIVE,
     )
     return this
+}
+
+class CenteredImageSpan(
+    drawable: Drawable,
+) : ImageSpan(drawable) {
+    override fun getSize(
+        paint: Paint,
+        text: CharSequence?,
+        start: Int,
+        end: Int,
+        fm: Paint.FontMetricsInt?,
+    ): Int {
+        return drawable.bounds.width()
+    }
+
+    override fun draw(
+        canvas: Canvas,
+        text: CharSequence?,
+        start: Int,
+        end: Int,
+        x: Float,
+        top: Int,
+        y: Int,
+        bottom: Int,
+        paint: Paint,
+    ) {
+        canvas.save()
+        val transY = top + (bottom - top) / 2 - drawable.bounds.height() / 2
+        canvas.translate(x, transY.toFloat())
+        drawable.draw(canvas)
+        canvas.restore()
+    }
 }
 
 private fun createClickableSpan(

@@ -75,6 +75,8 @@
     <string name="records_switch_to_calendar">Passer à la vue calendrier</string>
     <string name="records_switch_to_list">Passer à la vue liste</string>
     <string name="no_records_exist">Les enregistrements seront affichés ici</string>
+    <string name="record_add_hint">Cliquez sur %s pour ajouter un nouvel enregistrement</string>
+    <string name="record_date_hint">Cliquez sur le bouton de date pour sélectionner une date</string>
 
     <!--  Statistics  -->
     <string name="statistics_total_tracked">Total suivi</string>

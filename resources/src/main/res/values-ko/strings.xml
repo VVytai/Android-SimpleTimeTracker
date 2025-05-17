@@ -75,6 +75,8 @@
     <string name="records_switch_to_calendar">캘린더 보기로 전환</string>
     <string name="records_switch_to_list">목록 보기로 전환</string>
     <string name="no_records_exist">여기에서 기록을 확인하세요</string>
+    <string name="record_add_hint">%s을(를) 클릭하여 새 기록을 추가하세요</string>
+    <string name="record_date_hint">날짜를 선택하려면 날짜 버튼을 클릭하세요</string>
 
     <!--  Statistics  -->
     <string name="statistics_total_tracked">총 기록된 시간</string>

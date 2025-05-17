@@ -75,6 +75,8 @@
     <string name="records_switch_to_calendar">Alternar para a visualização de calendário</string>
     <string name="records_switch_to_list">Alternar para a visualização de lista</string>
     <string name="no_records_exist">Os registros serão mostrados aqui</string>
+    <string name="record_add_hint">Clique em %s para adicionar um novo registro</string>
+    <string name="record_date_hint">Clique no botão de data para selecionar uma data</string>
 
     <!--  Statistics  -->
     <string name="statistics_total_tracked">Total monitorado</string>

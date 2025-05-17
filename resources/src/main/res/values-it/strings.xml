@@ -75,6 +75,8 @@
     <string name="records_switch_to_calendar">Passa alla vista calendario</string>
     <string name="records_switch_to_list">Passa alla vista elenco</string>
     <string name="no_records_exist">I record verranno mostrati qui</string>
+    <string name="record_add_hint">Fai clic su %s per aggiungere un nuovo record</string>
+    <string name="record_date_hint">Fare clic sul pulsante della data per selezionare una data</string>
 
     <!--  Statistics  -->
     <string name="statistics_total_tracked">Totali tracciati</string>

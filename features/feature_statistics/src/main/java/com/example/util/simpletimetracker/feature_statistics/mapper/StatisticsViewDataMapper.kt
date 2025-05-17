@@ -1,5 +1,6 @@
 package com.example.util.simpletimetracker.feature_statistics.mapper
 
+import android.text.SpannableStringBuilder
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.empty.EmptyViewData
@@ -7,6 +8,8 @@ import com.example.util.simpletimetracker.feature_base_adapter.hint.HintViewData
 import com.example.util.simpletimetracker.feature_base_adapter.hintBig.HintBigViewData
 import com.example.util.simpletimetracker.feature_statistics.R
 import com.example.util.simpletimetracker.feature_statistics.viewData.StatisticsInfoViewData
+import com.example.util.simpletimetracker.feature_views.extension.setForegroundSpan
+import com.example.util.simpletimetracker.feature_views.extension.toSpannableString
 import javax.inject.Inject
 
 class StatisticsViewDataMapper @Inject constructor(
@@ -27,8 +30,18 @@ class StatisticsViewDataMapper @Inject constructor(
     }
 
     fun mapToNoStatistics(): ViewHolderType {
+        val emptyHint = resourceRepo.getString(R.string.no_statistics_exist)
+        val dateHint = resourceRepo.getString(R.string.record_date_hint)
+            .toSpannableString()
+            .apply {
+                setForegroundSpan(color = resourceRepo.getColor(R.color.textHintCommon))
+            }
+
         return HintBigViewData(
-            text = resourceRepo.getString(R.string.no_statistics_exist),
+            text = SpannableStringBuilder()
+                .append(emptyHint)
+                .append("\n")
+                .append(dateHint),
             infoIconVisible = true,
             closeIconVisible = false,
         )

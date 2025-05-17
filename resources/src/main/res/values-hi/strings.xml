@@ -75,6 +75,8 @@
     <string name="records_switch_to_calendar">कैलेंडर दृश्य में बदलें</string>
     <string name="records_switch_to_list">सूची दृश्य में बदलें</string>
     <string name="no_records_exist">यहां रिकॉर्ड दिखाए जाएंगे</string>
+    <string name="record_add_hint">%s पर क्लिक करें नया रिकॉर्ड जोड़ने के लिए</string>
+    <string name="record_date_hint">तारीख चुनने के लिए तारीख बटन पर क्लिक करें</string>
 
     <!--  Statistics  -->
     <string name="statistics_total_tracked">कुल ट्रैक किया हुआ</string>

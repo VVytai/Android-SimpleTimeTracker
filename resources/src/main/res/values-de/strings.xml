@@ -75,6 +75,8 @@
     <string name="records_switch_to_calendar">Zur Kalenderansicht wechseln</string>
     <string name="records_switch_to_list">Zur Listenansicht wechseln</string>
     <string name="no_records_exist">Datensätze werden hier angezeigt</string>
+    <string name="record_add_hint">Klicken Sie auf %s, um einen neuen Eintrag hinzuzufügen</string>
+    <string name="record_date_hint">Klicken Sie auf die Datumsschaltfläche, um ein Datum auszuwählen</string>
 
     <!--  Statistics  -->
     <string name="statistics_total_tracked">Insgesamt erfasst</string>

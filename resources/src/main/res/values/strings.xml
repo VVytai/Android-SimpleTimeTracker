@@ -75,6 +75,8 @@
     <string name="records_switch_to_calendar">Switch to calendar view</string>
     <string name="records_switch_to_list">Switch to list view</string>
     <string name="no_records_exist">Records will be shown here</string>
+    <string name="record_add_hint">Click on %s to add new record</string>
+    <string name="record_date_hint">Click on date button to select date</string>
 
     <!--  Statistics  -->
     <string name="statistics_total_tracked">Total tracked</string>

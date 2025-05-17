@@ -75,6 +75,8 @@
     <string name="records_switch_to_calendar">切換到行事曆視圖</string>
     <string name="records_switch_to_list">切換到列表視圖</string>
     <string name="no_records_exist">記錄將顯示在這裡</string>
+    <string name="record_add_hint">點擊%s以新增記錄</string>
+    <string name="record_date_hint">點擊日期按鈕以選擇日期</string>
 
     <!--  Statistics  -->
     <string name="statistics_total_tracked">總計已追蹤</string>

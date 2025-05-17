@@ -75,6 +75,8 @@
     <string name="records_switch_to_calendar">Takvim görünümüne geç</string>
     <string name="records_switch_to_list">Liste görünümüne geç</string>
     <string name="no_records_exist">Kayıtlar burada gösterilecek</string>
+    <string name="record_add_hint">Yeni kayıt eklemek için %s üzerine tıklayın</string>
+    <string name="record_date_hint">Tarih seçmek için tarih düğmesine tıklayın</string>
 
     <!--  Statistics  -->
     <string name="statistics_total_tracked">Toplam takip süresi</string>

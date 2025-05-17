@@ -1,5 +1,6 @@
 package com.example.util.simpletimetracker.core.mapper
 
+import android.text.SpannableStringBuilder
 import com.example.util.simpletimetracker.core.R
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.domain.extension.dropSeconds
@@ -11,6 +12,9 @@ import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.empty.EmptyViewData
 import com.example.util.simpletimetracker.feature_base_adapter.hintBig.HintBigViewData
 import com.example.util.simpletimetracker.feature_base_adapter.record.RecordViewData
+import com.example.util.simpletimetracker.feature_views.extension.setForegroundSpan
+import com.example.util.simpletimetracker.feature_views.extension.setImageSpan
+import com.example.util.simpletimetracker.feature_views.extension.toSpannableString
 import com.example.util.simpletimetracker.feature_views.viewData.RecordTypeIcon
 import javax.inject.Inject
 
@@ -134,8 +138,37 @@ class RecordViewDataMapper @Inject constructor(
     }
 
     fun mapToNoRecords(): ViewHolderType {
+        val imageTag = resourceRepo.getString(R.string.image_tag)
+        val emptyHint = resourceRepo.getString(R.string.no_records_exist)
+        val addHint = resourceRepo.getString(R.string.record_add_hint, imageTag)
+            .toSpannableString()
+            .apply {
+                val icon = resourceRepo.getDrawable(R.drawable.add)
+                    ?.mutate()
+                    ?.apply { setTint(resourceRepo.getColor(R.color.textHintCommon)) }
+                    ?: return@apply
+                setImageSpan(
+                    start = indexOf(imageTag),
+                    length = imageTag.length,
+                    drawable = icon,
+                    sizeDp = 16,
+                    isCentered = true
+                )
+                setForegroundSpan(color = resourceRepo.getColor(R.color.textHintCommon))
+            }
+        val dateHint = resourceRepo.getString(R.string.record_date_hint)
+            .toSpannableString()
+            .apply {
+                setForegroundSpan(color = resourceRepo.getColor(R.color.textHintCommon))
+            }
+
         return HintBigViewData(
-            text = resourceRepo.getString(R.string.no_records_exist),
+            text = SpannableStringBuilder()
+                .append(emptyHint)
+                .append("\n")
+                .append(addHint)
+                .append("\n")
+                .append(dateHint),
             infoIconVisible = true,
             closeIconVisible = false,
         )

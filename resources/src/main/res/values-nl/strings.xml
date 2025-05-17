@@ -75,6 +75,8 @@
     <string name="records_switch_to_calendar">Overschakelen naar kalenderweergave</string>
     <string name="records_switch_to_list">Overschakelen naar lijstweergave</string>
     <string name="no_records_exist">Records worden hier weergegeven</string>
+    <string name="record_add_hint">Klik op %s om een nieuw record toe te voegen</string>
+    <string name="record_date_hint">Klik op de datumknop om een datum te selecteren</string>
 
     <!--  Statistics  -->
     <string name="statistics_total_tracked">Totaal bijgehouden</string>
