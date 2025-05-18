@@ -78,6 +78,11 @@
         app:layout_constraintEnd_toEndOf="@id/spaceChangeRecordChangeCurrentPreviewTimeStartedEnd"
         app:layout_constraintTop_toTopOf="@id/spaceChangeRecordChangeCurrentPreviewTimeStartedTop">
 
+        <View
+            android:id="@+id/viewChangeRecordChangeCurrentPreviewTimeStartedAdjust"
+            style="@style/ButtonTimeAdjust"
+            tools:background="?appInputFieldBorderColor" />
+
         <androidx.appcompat.widget.AppCompatTextView style="@style/ButtonTimeAdjust" />
 
     </androidx.cardview.widget.CardView>
@@ -103,6 +108,11 @@
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="@id/spaceChangeRecordChangeCurrentPreviewTimeEndedEnd"
         app:layout_constraintTop_toTopOf="@id/spaceChangeRecordChangeCurrentPreviewTimeEndedTop">
+
+        <View
+            android:id="@+id/viewChangeRecordChangeCurrentPreviewTimeEndedAdjust"
+            style="@style/ButtonTimeAdjust"
+            tools:background="?appBackgroundColor" />
 
         <androidx.appcompat.widget.AppCompatTextView style="@style/ButtonTimeAdjust" />
 

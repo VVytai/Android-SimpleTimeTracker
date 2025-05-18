@@ -27,9 +27,9 @@ fun createChangeRecordTimeDoublePreviewAdapterDelegate(
         fieldChangeRecordChangeCurrentPreviewTimeEnded.isVisible = item.isTimeEndedAvailable
         btnChangeRecordChangeCurrentPreviewTimeStartedAdjust.isVisible = item.isTimeEndedAvailable
         btnChangeRecordChangeCurrentPreviewTimeEndedAdjust.isVisible = item.isTimeEndedAvailable
-        btnChangeRecordChangeCurrentPreviewTimeStartedAdjust
+        viewChangeRecordChangeCurrentPreviewTimeStartedAdjust
             .setChooserColor(item.state == TimeAdjustmentState.TIME_STARTED)
-        btnChangeRecordChangeCurrentPreviewTimeEndedAdjust
+        viewChangeRecordChangeCurrentPreviewTimeEndedAdjust
             .setChooserColor(item.state == TimeAdjustmentState.TIME_ENDED)
 
         fieldChangeRecordChangeCurrentPreviewTimeStarted.setOnClickWith(item, onTimeStartedClick)
