@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
@@ -24,6 +25,7 @@ import com.example.util.simpletimetracker.feature_dialogs.recordQuickActions.ada
 import com.example.util.simpletimetracker.feature_dialogs.recordQuickActions.model.RecordQuickActionsButton
 import com.example.util.simpletimetracker.feature_dialogs.recordQuickActions.model.RecordQuickActionsState
 import com.example.util.simpletimetracker.feature_dialogs.recordQuickActions.viewModel.RecordQuickActionsViewModel
+import com.example.util.simpletimetracker.feature_views.extension.setOnClick
 import com.example.util.simpletimetracker.feature_views.extension.setSpanSizeLookup
 import com.example.util.simpletimetracker.navigation.params.screen.ChangeRecordParams
 import com.example.util.simpletimetracker.navigation.params.screen.RecordQuickActionsParams
@@ -78,6 +80,10 @@ class RecordQuickActionsDialogFragment :
         }
     }
 
+    override fun initUx() = with(binding) {
+        btnRecordQuickActionsHint.setOnClick(throttle(viewModel::onHintClick))
+    }
+
     override fun initViewModel(): Unit = with(viewModel) {
         extra = params
         state.observe(::updateState)
@@ -93,8 +99,9 @@ class RecordQuickActionsDialogFragment :
         viewModel.onDateTimeSet(timestamp, tag)
     }
 
-    private fun updateState(state: RecordQuickActionsState) {
+    private fun updateState(state: RecordQuickActionsState) = with(binding) {
         contentAdapter.replace(state.buttons)
+        btnRecordQuickActionsHint.isVisible = state.hintData.isNotEmpty()
     }
 
     private fun prepareRemoveRecordViewModel() {

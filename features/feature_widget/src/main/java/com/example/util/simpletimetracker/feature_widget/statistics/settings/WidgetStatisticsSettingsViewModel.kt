@@ -379,7 +379,7 @@ class WidgetStatisticsSettingsViewModel @Inject constructor(
             tags = getTagsCache(),
             types = getTypesCache(),
             recordTagsFiltered = getActualFilteredIds(),
-            isArchivedShown = isArchivedShown
+            isArchivedShown = isArchivedShown,
         )
     }
 

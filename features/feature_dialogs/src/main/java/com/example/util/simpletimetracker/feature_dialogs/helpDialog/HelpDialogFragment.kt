@@ -24,7 +24,7 @@ class HelpDialogFragment : BaseBottomSheetFragment<Binding>() {
 
     override fun initDialog() {
         setSkipCollapsed()
-        setFullScreen()
+        if (params.isFullscreen) setFullScreen()
     }
 
     override fun initUi() = with(binding) {

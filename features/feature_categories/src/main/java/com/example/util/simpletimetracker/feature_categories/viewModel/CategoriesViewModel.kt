@@ -1,12 +1,5 @@
 package com.example.util.simpletimetracker.feature_categories.viewModel
 
-import android.graphics.Typeface
-import android.text.Editable
-import android.text.Html
-import android.text.Spannable
-import android.text.Spanned
-import android.text.style.ForegroundColorSpan
-import android.text.style.StyleSpan
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -14,10 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.util.simpletimetracker.core.extension.fromHtml
 import com.example.util.simpletimetracker.core.extension.set
 import com.example.util.simpletimetracker.core.extension.toParams
-import com.example.util.simpletimetracker.core.mapper.ColorMapper
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
-import com.example.util.simpletimetracker.domain.color.model.AppColor
-import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTypeInteractor
 import com.example.util.simpletimetracker.domain.recordType.model.RecordType
@@ -33,7 +23,6 @@ import com.example.util.simpletimetracker.feature_categories.model.CategoriesOpt
 import com.example.util.simpletimetracker.feature_categories.utils.CustomTagHandler
 import com.example.util.simpletimetracker.feature_categories.viewData.CategoriesSearchState
 import com.example.util.simpletimetracker.feature_categories.viewData.CategoriesViewData
-import com.example.util.simpletimetracker.feature_views.TextViewRoundedSpans
 import com.example.util.simpletimetracker.navigation.Router
 import com.example.util.simpletimetracker.navigation.params.screen.ChangeCategoryFromTagsParams
 import com.example.util.simpletimetracker.navigation.params.screen.ChangeRecordTagFromTagsParams
@@ -45,9 +34,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import org.xml.sax.XMLReader
-import java.util.regex.Matcher
-import java.util.regex.Pattern
 import javax.inject.Inject
 
 @HiltViewModel

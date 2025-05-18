@@ -35,6 +35,21 @@ class RecordQuickActionMapper @Inject constructor(
         }.let(resourceRepo::getString)
     }
 
+    fun mapHint(data: RecordQuickAction): String? {
+        return when (data) {
+            CONTINUE -> R.string.change_record_continue_hint
+            REPEAT -> R.string.change_record_repeat_hint
+            DUPLICATE -> R.string.change_record_duplicate_hint
+            MOVE -> R.string.change_record_move_hint
+            MERGE -> R.string.change_record_merge_hint
+            SPLIT -> R.string.change_record_split_hint
+            ADJUST -> R.string.change_record_change_adjacent_records
+            STOP -> null
+            CHANGE_ACTIVITY -> null
+            CHANGE_TAG -> null
+        }?.let(resourceRepo::getString)
+    }
+
     @DrawableRes
     fun mapIcon(data: RecordQuickAction): Int {
         return when (data) {

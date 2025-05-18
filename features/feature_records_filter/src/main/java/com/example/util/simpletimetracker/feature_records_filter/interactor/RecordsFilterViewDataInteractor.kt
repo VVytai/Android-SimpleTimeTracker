@@ -553,7 +553,7 @@ class RecordsFilterViewDataInteractor @Inject constructor(
                     )
                 } else {
                     null
-                }
+                },
             )
             .orEmpty()
 

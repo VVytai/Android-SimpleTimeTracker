@@ -1,14 +1,13 @@
 package com.example.util.simpletimetracker.feature_base_adapter.buttonDouble
 
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
-import com.example.util.simpletimetracker.feature_base_adapter.buttonDouble.DoubleButtonsViewData
 import com.example.util.simpletimetracker.feature_base_adapter.createRecyclerBindingAdapterDelegate
 import com.example.util.simpletimetracker.feature_views.extension.setOnClickWith
 import com.example.util.simpletimetracker.feature_base_adapter.buttonDouble.DoubleButtonsViewData as ViewData
 import com.example.util.simpletimetracker.feature_base_adapter.databinding.ItemDoubleButtonsLayoutBinding as Binding
 
 fun createDoubleButtonsAdapterDelegate(
-    onClick: (DoubleButtonsViewData.Type) -> Unit,
+    onClick: (ViewData.Type) -> Unit,
 ) = createRecyclerBindingAdapterDelegate<ViewData, Binding>(
     Binding::inflate,
 ) { binding, item, _ ->

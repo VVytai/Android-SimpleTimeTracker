@@ -7,12 +7,14 @@ import kotlinx.parcelize.Parcelize
 data class HelpDialogParams(
     val title: String,
     val text: CharSequence,
+    val isFullscreen: Boolean = true,
 ) : Parcelable, ScreenParams {
 
     companion object {
         val Empty = HelpDialogParams(
             title = "",
             text = "",
+            isFullscreen = true,
         )
     }
 }

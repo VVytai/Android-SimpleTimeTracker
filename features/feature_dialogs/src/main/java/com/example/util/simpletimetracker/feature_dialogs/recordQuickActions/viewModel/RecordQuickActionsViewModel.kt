@@ -29,6 +29,7 @@ import com.example.util.simpletimetracker.navigation.Router
 import com.example.util.simpletimetracker.navigation.params.notification.SnackBarParams
 import com.example.util.simpletimetracker.navigation.params.screen.DateTimeDialogParams
 import com.example.util.simpletimetracker.navigation.params.screen.DateTimeDialogType
+import com.example.util.simpletimetracker.navigation.params.screen.HelpDialogParams
 import com.example.util.simpletimetracker.navigation.params.screen.RecordQuickActionsParams
 import com.example.util.simpletimetracker.navigation.params.screen.RecordQuickActionsParams.Type
 import com.example.util.simpletimetracker.navigation.params.screen.TypesSelectionDialogParams
@@ -83,6 +84,17 @@ class RecordQuickActionsViewModel @Inject constructor(
             RecordQuickActionsButton.CHANGE_TAG ->
                 onButtonClick(delayBlock = true, onProceed = ::onChangeTag)
         }
+    }
+
+    fun onHintClick() {
+        val hintData = state.value?.hintData ?: return
+        if (hintData.isEmpty()) return
+        val params = HelpDialogParams(
+            title = resourceRepo.getString(R.string.change_record_actions_hint),
+            text = hintData,
+            isFullscreen = false,
+        )
+        router.navigate(params)
     }
 
     private suspend fun goToStatistics() {

@@ -152,7 +152,7 @@ class RecordViewDataMapper @Inject constructor(
                     length = imageTag.length,
                     drawable = icon,
                     sizeDp = 16,
-                    isCentered = true
+                    isCentered = true,
                 )
                 setForegroundSpan(color = resourceRepo.getColor(R.color.textHintCommon))
             }
