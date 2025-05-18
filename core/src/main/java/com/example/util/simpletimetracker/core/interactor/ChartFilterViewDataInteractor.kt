@@ -40,7 +40,7 @@ class ChartFilterViewDataInteractor @Inject constructor(
             null
         }
         val archivedItem = if (showArchived) {
-            chartFilterViewDataMapper.mapToArchivedItem(
+            recordTypeViewDataMapper.mapToArchivedItem(
                 isEnabled = isArchivedShown,
                 numberOfCards = numberOfCards,
                 isDarkTheme = isDarkTheme,
@@ -63,7 +63,7 @@ class ChartFilterViewDataInteractor @Inject constructor(
                     isComplete = false,
                 )
             }
-            .takeUnless { it.isEmpty() }
+            .takeUnless { types.isEmpty() }
             ?.plus(untrackedItem)
             ?.plus(archivedItem)
             ?: recordTypeViewDataMapper.mapToEmpty()
@@ -96,7 +96,7 @@ class ChartFilterViewDataInteractor @Inject constructor(
                     isFiltered = category.id in categoryIdsFiltered,
                 )
             }
-            .takeUnless { it.isEmpty() }
+            .takeUnless { categories.isEmpty() }
             ?.plus(untrackedItem)
             ?.plus(untaggedItem)
             ?: categoryViewDataMapper.mapToCategoriesEmpty().let(::listOf)
@@ -145,7 +145,7 @@ class ChartFilterViewDataInteractor @Inject constructor(
                     isFiltered = tag.id in recordTagsFiltered,
                 )
             }
-            .takeUnless { it.isEmpty() }
+            .takeUnless { tags.isEmpty() }
             ?.plus(untrackedItem)
             ?.plus(untaggedItem)
             ?.plus(archivedItem)

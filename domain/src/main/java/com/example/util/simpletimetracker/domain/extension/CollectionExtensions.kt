@@ -27,6 +27,10 @@ operator fun <T> List<T>.plus(element: T?): List<T> {
     return if (element != null) this.plusElement(element) else this
 }
 
+operator fun <T> List<T>.plus(elements: List<T>?): List<T> {
+    return if (elements != null) this.toMutableList().apply { addAll(elements) } else this
+}
+
 inline fun <T> List<T>.removeIf(crossinline filter: (T) -> Boolean): List<T> {
     return this.toMutableList().apply { removeAll { filter(it) } }
 }

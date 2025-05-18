@@ -44,6 +44,7 @@ import com.example.util.simpletimetracker.domain.record.model.Record
 import com.example.util.simpletimetracker.domain.recordTag.model.RecordTag
 import com.example.util.simpletimetracker.domain.recordType.model.RecordType
 import com.example.util.simpletimetracker.domain.category.model.RecordTypeCategory
+import com.example.util.simpletimetracker.domain.extension.plus
 import com.example.util.simpletimetracker.domain.record.extension.hasDuplicationsFilter
 import com.example.util.simpletimetracker.domain.recordType.model.RecordTypeGoal
 import com.example.util.simpletimetracker.domain.recordTag.model.RecordTypeToTag
@@ -321,6 +322,7 @@ class RecordsFilterViewDataInteractor @Inject constructor(
     suspend fun getActivityFilterSelectionViewData(
         extra: RecordsFilterParams,
         filters: List<RecordsFilter>,
+        isArchivedShown: Boolean,
         types: List<RecordType>,
         recordTypeCategories: List<RecordTypeCategory>,
         categories: List<Category>,
@@ -329,12 +331,16 @@ class RecordsFilterViewDataInteractor @Inject constructor(
 
         val numberOfCards = prefsInteractor.getNumberOfCards()
         val isDarkTheme = prefsInteractor.getDarkMode()
+        val showArchived = types.any { it.hidden }
 
         val selectedCategoryItems: List<RecordsFilter.CategoryItem> = filters.getCategoryItems()
         val selectedCategoryIds: List<Long> = filters.getCategoryIds()
         val allSelectedTypeIds: List<Long> = filters.getAllTypeIds(types, recordTypeCategories)
 
-        val typesViewData = types.map { type ->
+        val typesViewData = types.mapNotNull { type ->
+            if (!isArchivedShown && type.hidden) {
+                return@mapNotNull null
+            }
             recordTypeViewDataMapper.mapFiltered(
                 recordType = type,
                 numberOfCards = numberOfCards,
@@ -343,7 +349,17 @@ class RecordsFilterViewDataInteractor @Inject constructor(
                 checkState = GoalCheckmarkView.CheckState.HIDDEN,
                 isComplete = false,
             )
-        }
+        }.plus(
+            if (showArchived) {
+                recordTypeViewDataMapper.mapToArchivedItem(
+                    isEnabled = isArchivedShown,
+                    numberOfCards = numberOfCards,
+                    isDarkTheme = isDarkTheme,
+                )
+            } else {
+                null
+            },
+        )
 
         val typesSelectionButtons = mapper.mapToSelectionButtons(
             type = RecordsFilterSelectionButtonType.Type.Activities,
@@ -357,27 +373,25 @@ class RecordsFilterViewDataInteractor @Inject constructor(
                     isFiltered = category.id !in selectedCategoryIds,
                 )
             }
-            .takeUnless { it.isEmpty() }
-            ?.plus(
+            .plus(
                 categoryViewDataMapper.mapToUncategorizedItem(
                     isFiltered = !selectedCategoryItems.hasUncategorizedItem(),
                     isDarkTheme = isDarkTheme,
                 ),
             )
-            .orEmpty()
 
         val categoriesSelectionButtons = mapper.mapToSelectionButtons(
             type = RecordsFilterSelectionButtonType.Type.Categories,
         )
 
-        if (categoriesViewData.isNotEmpty()) {
+        if (categories.isNotEmpty()) {
             HintViewData(resourceRepo.getString(R.string.category_hint)).let(result::add)
             categoriesSelectionButtons.let(result::addAll)
             categoriesViewData.let(result::addAll)
             DividerViewData(1).let(result::add)
         }
 
-        if (typesViewData.isNotEmpty()) {
+        if (types.isNotEmpty()) {
             HintViewData(resourceRepo.getString(R.string.activity_hint)).let(result::add)
             typesSelectionButtons.let(result::addAll)
             typesViewData.let(result::addAll)
@@ -484,6 +498,7 @@ class RecordsFilterViewDataInteractor @Inject constructor(
     suspend fun getTagsFilterSelectionViewData(
         type: RecordFilterType,
         filters: List<RecordsFilter>,
+        isArchivedShown: Boolean,
         types: List<RecordType>,
         recordTypeCategories: List<RecordTypeCategory>,
         recordTags: List<RecordTag>,
@@ -508,10 +523,14 @@ class RecordsFilterViewDataInteractor @Inject constructor(
             typesToTags = recordTypesToTags,
             typeIds = selectedTypes,
         )
+        val selectableTags = recordTags.filter { it.id in selectableTagIds }
+        val showArchived = selectableTags.any { it.archived }
 
-        val recordTagsViewData = recordTags
-            .filter { it.id in selectableTagIds }
-            .map { tag ->
+        val recordTagsViewData = selectableTags
+            .mapNotNull { tag ->
+                if (!isArchivedShown && tag.archived) {
+                    return@mapNotNull null
+                }
                 categoryViewDataMapper.mapRecordTag(
                     tag = tag,
                     type = typesMap[tag.iconColorSource],
@@ -519,12 +538,22 @@ class RecordsFilterViewDataInteractor @Inject constructor(
                     isFiltered = tag.id !in selectedTaggedIds,
                 )
             }
-            .takeUnless { it.isEmpty() }
+            .takeUnless { selectableTags.isEmpty() }
             ?.plus(
                 categoryViewDataMapper.mapToUntaggedItem(
                     isFiltered = !selectedTags.hasUntaggedItem(),
                     isDarkTheme = isDarkTheme,
                 ),
+            )
+            ?.plus(
+                if (showArchived) {
+                    categoryViewDataMapper.mapToTagArchiveItem(
+                        isEnabled = isArchivedShown,
+                        isDarkTheme = isDarkTheme,
+                    )
+                } else {
+                    null
+                }
             )
             .orEmpty()
 

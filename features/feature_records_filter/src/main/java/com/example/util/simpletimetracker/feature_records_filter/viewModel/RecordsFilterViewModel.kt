@@ -8,6 +8,7 @@ import com.example.util.simpletimetracker.core.extension.set
 import com.example.util.simpletimetracker.core.extension.toModel
 import com.example.util.simpletimetracker.core.interactor.RecordFilterInteractor
 import com.example.util.simpletimetracker.core.mapper.TimeMapper
+import com.example.util.simpletimetracker.domain.base.ARCHIVED_BUTTON_ITEM_ID
 import com.example.util.simpletimetracker.domain.base.MULTITASK_ITEM_ID
 import com.example.util.simpletimetracker.domain.base.UNTRACKED_ITEM_ID
 import com.example.util.simpletimetracker.domain.record.extension.getDate
@@ -119,6 +120,8 @@ class RecordsFilterViewModel @Inject constructor(
 
     private var filters: List<RecordsFilter> = emptyList()
     private var filterSelectionState: RecordsFilterSelectionState = RecordsFilterSelectionState.Hidden
+    private var isArchivedTypesShown: Boolean = false
+    private var isArchivedTagsShown: Boolean = false
     private val defaultRange: Range by lazy { viewDataInteractor.getDefaultDateRange() }
     private val defaultDurationRange: Range by lazy { viewDataInteractor.getDefaultDurationRange() }
     private val defaultTimeOfDayRange: Range by lazy { viewDataInteractor.getDefaultTimeOfDayRange() }
@@ -171,7 +174,11 @@ class RecordsFilterViewModel @Inject constructor(
     }
 
     fun onRecordTypeClick(item: RecordTypeViewData) = viewModelScope.launch {
-        handleTypeClick(item.id)
+        if (item.id == ARCHIVED_BUTTON_ITEM_ID) {
+            handleArchivedTypeClick()
+        } else {
+            handleTypeClick(item.id)
+        }
         updateViewDataOnFiltersChanged()
     }
 
@@ -183,6 +190,7 @@ class RecordsFilterViewModel @Inject constructor(
             is CategoryViewData.Record -> when (item.id) {
                 UNTRACKED_ITEM_ID -> handleUntrackedClick()
                 MULTITASK_ITEM_ID -> handleMultitaskClick()
+                ARCHIVED_BUTTON_ITEM_ID -> handleArchivedTagClick()
                 else -> handleTagClick(item)
             }
         }
@@ -365,6 +373,14 @@ class RecordsFilterViewModel @Inject constructor(
         filters = recordsFilterUpdateInteractor.handleMultitaskClick(
             currentFilters = filters,
         )
+    }
+
+    private fun handleArchivedTypeClick() {
+        isArchivedTypesShown = !isArchivedTypesShown
+    }
+
+    private fun handleArchivedTagClick() {
+        isArchivedTagsShown = !isArchivedTagsShown
     }
 
     private fun handleCommentFilterClick(item: FilterViewData) {
@@ -718,6 +734,7 @@ class RecordsFilterViewModel @Inject constructor(
                 viewDataInteractor.getActivityFilterSelectionViewData(
                     extra = extra,
                     filters = filters,
+                    isArchivedShown = isArchivedTypesShown,
                     types = getTypesCache(),
                     recordTypeCategories = getRecordTypeCategoriesCache(),
                     categories = getCategoriesCache(),
@@ -734,6 +751,7 @@ class RecordsFilterViewModel @Inject constructor(
                 viewDataInteractor.getTagsFilterSelectionViewData(
                     type = type,
                     filters = filters,
+                    isArchivedShown = isArchivedTagsShown,
                     types = getTypesCache(),
                     recordTypeCategories = getRecordTypeCategoriesCache(),
                     recordTags = getTagsCache(),

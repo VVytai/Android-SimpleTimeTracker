@@ -3,7 +3,6 @@ package com.example.util.simpletimetracker.core.mapper
 import com.example.util.simpletimetracker.core.R
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.core.viewData.ChartFilterTypeViewData
-import com.example.util.simpletimetracker.domain.base.ARCHIVED_BUTTON_ITEM_ID
 import com.example.util.simpletimetracker.domain.base.UNTRACKED_ITEM_ID
 import com.example.util.simpletimetracker.domain.statistics.model.ChartFilterType
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
@@ -36,28 +35,6 @@ class ChartFilterViewDataMapper @Inject constructor(
                 colorMapper.toFilteredColor(isDarkTheme)
             } else {
                 colorMapper.toUntrackedColor(isDarkTheme)
-            },
-            width = recordTypeCardSizeMapper.toCardWidth(numberOfCards),
-            height = recordTypeCardSizeMapper.toCardHeight(numberOfCards),
-            asRow = recordTypeCardSizeMapper.toCardAsRow(numberOfCards),
-        )
-    }
-
-    fun mapToArchivedItem(
-        isEnabled: Boolean,
-        numberOfCards: Int,
-        isDarkTheme: Boolean,
-    ): RecordTypeViewData {
-        return RecordTypeViewData(
-            id = ARCHIVED_BUTTON_ITEM_ID,
-            name = R.string.settings_archive
-                .let(resourceRepo::getString),
-            iconId = RecordTypeIcon.Image(R.drawable.archive),
-            iconColor = colorMapper.toIconColor(isDarkTheme),
-            color = if (isEnabled) {
-                colorMapper.toActiveColor(isDarkTheme)
-            } else {
-                colorMapper.toInactiveColor(isDarkTheme)
             },
             width = recordTypeCardSizeMapper.toCardWidth(numberOfCards),
             height = recordTypeCardSizeMapper.toCardHeight(numberOfCards),
