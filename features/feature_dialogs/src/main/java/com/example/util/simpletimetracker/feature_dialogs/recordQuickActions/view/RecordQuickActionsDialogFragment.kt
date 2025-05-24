@@ -17,12 +17,10 @@ import com.example.util.simpletimetracker.core.extension.findListener
 import com.example.util.simpletimetracker.core.extension.setSkipCollapsed
 import com.example.util.simpletimetracker.core.sharedViewModel.RemoveRecordViewModel
 import com.example.util.simpletimetracker.core.utils.fragmentArgumentDelegate
-import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.feature_base_adapter.BaseRecyclerAdapter
 import com.example.util.simpletimetracker.feature_dialogs.recordQuickActions.adapter.RecordQuickActionsWidthHolder
 import com.example.util.simpletimetracker.feature_dialogs.recordQuickActions.adapter.createRecordQuickActionsButtonAdapterDelegate
 import com.example.util.simpletimetracker.feature_dialogs.recordQuickActions.adapter.createRecordQuickActionsButtonBigAdapterDelegate
-import com.example.util.simpletimetracker.feature_dialogs.recordQuickActions.model.RecordQuickActionsButton
 import com.example.util.simpletimetracker.feature_dialogs.recordQuickActions.model.RecordQuickActionsState
 import com.example.util.simpletimetracker.feature_dialogs.recordQuickActions.viewModel.RecordQuickActionsViewModel
 import com.example.util.simpletimetracker.feature_views.extension.setOnClick
@@ -52,8 +50,8 @@ class RecordQuickActionsDialogFragment :
 
     private val contentAdapter: BaseRecyclerAdapter by lazy {
         BaseRecyclerAdapter(
-            createRecordQuickActionsButtonBigAdapterDelegate(::onButtonClick),
-            createRecordQuickActionsButtonAdapterDelegate(::onButtonClick),
+            createRecordQuickActionsButtonBigAdapterDelegate(viewModel::onButtonClick),
+            createRecordQuickActionsButtonAdapterDelegate(viewModel::onButtonClick),
         )
     }
 
@@ -89,7 +87,13 @@ class RecordQuickActionsDialogFragment :
         extra = params
         state.observe(::updateState)
         actionComplete.observe { onActionComplete() }
-        prepareRemoveRecordViewModel()
+        removeRecordIds.observe {
+            removeRecordViewModel.onDeleteClick(
+                recordIds = it,
+                from = ChangeRecordParams.From.Records,
+            )
+        }
+        removeRecordViewModel.prepare()
     }
 
     override fun onDataSelected(dataIds: List<Long>, tag: String?) {
@@ -107,11 +111,6 @@ class RecordQuickActionsDialogFragment :
         hintRecordQuickActionsMultiselect.itemText = state.multiSelectHint
     }
 
-    private fun prepareRemoveRecordViewModel() {
-        val recordId = (params.type as? RecordQuickActionsParams.Type.RecordTracked)?.id.orZero()
-        removeRecordViewModel.prepare(recordId)
-    }
-
     private fun onActionComplete() {
         listener?.onActionComplete()
     }
@@ -125,13 +124,6 @@ class RecordQuickActionsDialogFragment :
             val isFullWidth = item is RecordQuickActionsWidthHolder &&
                 item.width is RecordQuickActionsWidthHolder.Width.Full
             if (isFullWidth) SPAN_COUNT else 1
-        }
-    }
-
-    private fun onButtonClick(block: RecordQuickActionsButton) {
-        viewModel.onButtonClick(block)
-        if (block == RecordQuickActionsButton.DELETE) {
-            removeRecordViewModel.onDeleteClick(ChangeRecordParams.From.Records)
         }
     }
 

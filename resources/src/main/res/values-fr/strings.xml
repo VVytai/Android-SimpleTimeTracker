@@ -145,6 +145,8 @@ Cela vous permet de voir combien de temps vous passez globalement sur des activi
     <string name="change_record_move_hint">Changera l\'heure de début sans changer la durée</string>
     <string name="change_record_merge">Fusionner</string>
     <string name="change_record_merge_hint">Ajoutera cette fois à l\'enregistrement précédent</string>
+    <string name="change_record_multiselect">Sélection multiple</string>
+    <string name="change_record_multiselect_hint">Sélectionnez plusieurs enregistrements, puis rouvrez le menu Actions</string>
     <string name="change_record_adjust">Changement</string>
     <string name="change_record_change_prev_record">Modifier également l\'heure de l\'enregistrement précédent</string>
     <string name="change_record_change_adjacent_records">Modifier également l\'heure des enregistrements adjacents</string>

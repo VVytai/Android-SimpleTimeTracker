@@ -270,7 +270,10 @@ class RecordsViewDataInteractor @Inject constructor(
                 val value = holder.data.value
                 val id = when (value) {
                     is RecordViewData.Tracked -> MultiSelectedRecordId.Tracked(value.id)
-                    is RecordViewData.Untracked -> MultiSelectedRecordId.Untracked(value.timeStartedTimestamp)
+                    is RecordViewData.Untracked -> MultiSelectedRecordId.Untracked(
+                        timeStartedTimestamp = value.timeStartedTimestamp,
+                        timeEndedTimestamp = value.timeEndedTimestamp,
+                    )
                 }
                 if (id in multiSelectedIds) {
                     RecordSelectedViewData(value)

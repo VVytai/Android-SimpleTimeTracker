@@ -2,7 +2,6 @@ package com.example.util.simpletimetracker.feature_base_adapter.record
 
 import androidx.core.view.ViewCompat
 import com.example.util.simpletimetracker.feature_base_adapter.createRecyclerBindingAdapterDelegate
-import com.example.util.simpletimetracker.feature_base_adapter.record.RecordViewData
 import com.example.util.simpletimetracker.feature_views.RecordView
 import com.example.util.simpletimetracker.feature_views.TransitionNames
 import com.example.util.simpletimetracker.feature_views.extension.setOnClick
@@ -28,7 +27,7 @@ fun createRecordAdapterDelegate(
     }
 }
 
-fun RecordView.bindState(item: RecordViewData) {
+fun RecordView.bindState(item: ViewData) {
     itemColor = item.color
     itemIcon = item.iconId
     itemName = item.name

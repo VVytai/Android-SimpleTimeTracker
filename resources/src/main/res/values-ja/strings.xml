@@ -145,6 +145,8 @@
     <string name="change_record_move_hint">継続時間を変更せずに開始時間を変更します</string>
     <string name="change_record_merge">マージ</string>
     <string name="change_record_merge_hint">現在の記録を前の記録に追加します</string>
+    <string name="change_record_multiselect">マルチ選択</string>
+    <string name="change_record_multiselect_hint">複数のレコードを選択して、もう一度アクションメニューを開いてください</string>
     <string name="change_record_adjust">変更する</string>
     <string name="change_record_change_prev_record">前のレコードの時刻も変更</string>
     <string name="change_record_change_adjacent_records">隣接レコードの時刻も変更</string>

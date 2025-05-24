@@ -145,6 +145,8 @@ Dit stelt je in staat om te zien hoeveel tijd je in totaal besteedt aan producti
     <string name="change_record_move_hint">Zal de starttijd wijzigen zonder de duur te veranderen</string>
     <string name="change_record_merge">Samenvoegen</string>
     <string name="change_record_merge_hint">Zal deze tijd toevoegen aan het vorige record</string>
+    <string name="change_record_multiselect">Meervoudige selectie</string>
+    <string name="change_record_multiselect_hint">Selecteer meerdere records en open opnieuw het actiemenu</string>
     <string name="change_record_adjust">Verandering</string>
     <string name="change_record_change_prev_record">Wijzig ook de tijd van het vorige record</string>
     <string name="change_record_change_adjacent_records">Wijzig ook de tijd van aangrenzende records</string>

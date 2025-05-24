@@ -145,6 +145,8 @@
     <string name="change_record_move_hint">Sẽ thay đổi thời gian bắt đầu mà không thay đổi thời lượng</string>
     <string name="change_record_merge">Hợp nhất</string>
     <string name="change_record_merge_hint">Sẽ thêm thời gian này vào bản ghi trước đó</string>
+    <string name="change_record_multiselect">Chọn nhiều</string>
+    <string name="change_record_multiselect_hint">Chọn nhiều bản ghi và mở lại menu Hành động</string>
     <string name="change_record_adjust">Thay đổi</string>
     <string name="change_record_change_prev_record">Đồng thời thay đổi thời gian của bản ghi trước đó</string>
     <string name="change_record_change_adjacent_records">Đồng thời thay đổi thời gian của các bản ghi liền kề</string>

@@ -145,6 +145,8 @@ I <b>tag</b> ti permettono di aggiungere maggiori dettagli a un\'attività speci
     <string name="change_record_move_hint">Cambierà l\'orario di inizio senza cambiare la durata</string>
     <string name="change_record_merge">Unisci</string>
     <string name="change_record_merge_hint">Aggiungerà questa volta al record precedente</string>
+    <string name="change_record_multiselect">Selezione multipla</string>
+    <string name="change_record_multiselect_hint">Seleziona più record e riapri il menu Azioni</string>
     <string name="change_record_adjust">Modificare</string>
     <string name="change_record_change_prev_record">Cambia anche l\'ora della registrazione precedente</string>
     <string name="change_record_change_adjacent_records">Cambia anche l\'ora dei record adiacenti</string>

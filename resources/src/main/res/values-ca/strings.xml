@@ -145,6 +145,8 @@ Això et permet veure quant de temps dediques a activitats productives versus no
     <string name="change_record_move_hint">Canviarà l\'hora d\'inici sense canviar la durada</string>
     <string name="change_record_merge">Uneix</string>
     <string name="change_record_merge_hint">Afegirà la durada d\'aquest enregistrament a l\'anterior</string>
+    <string name="change_record_multiselect">Selecció múltiple</string>
+    <string name="change_record_multiselect_hint">Selecciona diversos registres i obre de nou el menú d\'accions</string>
     <string name="change_record_adjust">Canvi</string>
     <string name="change_record_change_prev_record">També canvia el temps de l\'enregistrament anterior</string>
     <string name="change_record_change_adjacent_records">També canvia el temps dels enregistraments adjacents</string>

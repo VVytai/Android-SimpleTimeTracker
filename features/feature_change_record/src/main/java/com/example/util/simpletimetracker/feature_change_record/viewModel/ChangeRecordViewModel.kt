@@ -3,6 +3,7 @@ package com.example.util.simpletimetracker.feature_change_record.viewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.example.util.simpletimetracker.core.base.SingleLiveEvent
 import com.example.util.simpletimetracker.core.extension.set
 import com.example.util.simpletimetracker.core.interactor.RecordTagViewDataInteractor
 import com.example.util.simpletimetracker.core.interactor.RecordTypesViewDataInteractor
@@ -92,6 +93,7 @@ class ChangeRecordViewModel @Inject constructor(
             initial
         }
     }
+    val removeRecordId: LiveData<Long> = SingleLiveEvent()
 
     private val recordId: Long? get() = (extra as? ChangeRecordParams.Tracked)?.id
 
@@ -102,6 +104,7 @@ class ChangeRecordViewModel @Inject constructor(
     }
 
     fun onDeleteClick() {
+        recordId?.let { removeRecordId.set(it) }
         router.back()
     }
 
@@ -146,7 +149,7 @@ class ChangeRecordViewModel @Inject constructor(
                 )
             }
             if (newTypeId != originalTypeId) {
-                externalViewsInteractor.onRecordChangeType(originalTypeId)
+                externalViewsInteractor.onRecordChangeType(listOf(originalTypeId))
             }
             doAfter()
             warmupCache(extra.daysFromToday)

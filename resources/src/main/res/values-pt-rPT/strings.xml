@@ -145,6 +145,8 @@ Isto permite-lhe ver quanto tempo está a gastar em atividades produtivas versus
     <string name="change_record_move_hint">Vai mudar a hora de início sem alterar a duração</string>
     <string name="change_record_merge">Juntar</string>
     <string name="change_record_merge_hint">Adicionará este tempo ao registo anterior</string>
+    <string name="change_record_multiselect">Seleção múltipla</string>
+    <string name="change_record_multiselect_hint">Selecione vários registos e abra novamente o menu Ações</string>
     <string name="change_record_adjust">Ajustar</string>
     <string name="change_record_change_prev_record">Mudar a hora do registo anterior</string>
     <string name="change_record_change_adjacent_records">Mudar a hora dos registos adjacentes</string>

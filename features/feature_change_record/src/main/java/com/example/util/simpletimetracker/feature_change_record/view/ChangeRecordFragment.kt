@@ -15,7 +15,6 @@ import com.example.util.simpletimetracker.core.extension.toViewData
 import com.example.util.simpletimetracker.core.sharedViewModel.RemoveRecordViewModel
 import com.example.util.simpletimetracker.core.utils.InsetConfiguration
 import com.example.util.simpletimetracker.core.utils.fragmentArgumentDelegate
-import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.feature_change_record.viewData.ChangeRecordViewData
 import com.example.util.simpletimetracker.feature_change_record.viewModel.ChangeRecordViewModel
 import com.example.util.simpletimetracker.feature_views.extension.animateColor
@@ -77,22 +76,23 @@ class ChangeRecordFragment :
     override fun initUx() = with(binding) {
         core.initUx(this@ChangeRecordFragment, layoutChangeRecordCore)
         layoutChangeRecordCore.btnChangeRecordStatistics.setOnClick(viewModel::onStatisticsClick)
-        layoutChangeRecordCore.btnChangeRecordDelete.setOnClick {
-            viewModel.onDeleteClick()
-            removeRecordViewModel.onDeleteClick(
-                (extra as? ChangeRecordParams.Tracked)?.from,
-            )
-        }
+        layoutChangeRecordCore.btnChangeRecordDelete.setOnClick(viewModel::onDeleteClick)
     }
 
     override fun initViewModel() = with(binding) {
         with(viewModel) {
             extra = this@ChangeRecordFragment.extra
             record.observe(::updatePreview)
+            removeRecordId.observe {
+                removeRecordViewModel.onDeleteClick(
+                    recordIds = setOf(it),
+                    from = (extra as? ChangeRecordParams.Tracked)?.from,
+                )
+            }
             core.initViewModel(this@ChangeRecordFragment, layoutChangeRecordCore)
         }
         with(removeRecordViewModel) {
-            prepare((extra as? ChangeRecordParams.Tracked)?.id.orZero())
+            prepare()
             deleteButtonEnabled.observe(layoutChangeRecordCore.btnChangeRecordDelete::setEnabled)
         }
     }

@@ -34,7 +34,7 @@ class UpdateExternalViewsInteractor @Inject constructor(
             Update.GoalReschedule(runningRecordIds + typeId),
             Update.WidgetStatistics,
             Update.WidgetSingleTypes.takeIf { getRetroactiveTrackingMode() }
-                ?: Update.WidgetSingleType(typeId),
+                ?: Update.WidgetSingleType(listOf(typeId)),
             Update.WidgetUniversal.takeIf { getRetroactiveTrackingMode() },
             Update.Wear.takeIf { !fromArchive || getRetroactiveTrackingMode() },
             Update.NotificationTypes.takeIf { !fromArchive },
@@ -118,7 +118,7 @@ class UpdateExternalViewsInteractor @Inject constructor(
         updateNotificationSwitch: Boolean,
     ) {
         runUpdates(
-            Update.NotificationType(typeId),
+            Update.NotificationType(listOf(typeId)),
             Update.NotificationWithControls.takeIf { updateNotificationSwitch },
             Update.InactivityReminderCancel,
             Update.ActivityReminderReschedule.takeIf {
@@ -134,31 +134,31 @@ class UpdateExternalViewsInteractor @Inject constructor(
     }
 
     suspend fun onRecordRemove(
-        typeId: Long,
+        typeIds: List<Long>,
     ) {
         runUpdates(
-            Update.NotificationType(typeId),
+            Update.NotificationType(typeIds),
             Update.NotificationWithControls,
-            Update.GoalReschedule(listOf(typeId)),
+            Update.GoalReschedule(typeIds),
             Update.WidgetStatistics,
             Update.WidgetSingleTypes.takeIf { getRetroactiveTrackingMode() }
-                ?: Update.WidgetSingleType(typeId),
+                ?: Update.WidgetSingleType(typeIds),
             Update.WidgetUniversal.takeIf { getRetroactiveTrackingMode() },
             Update.Wear.takeIf { getRetroactiveTrackingMode() },
         )
     }
 
     suspend fun onRecordAddOrChange(
-        typeId: Long,
+        typeIds: List<Long>,
         updateNotificationSwitch: Boolean,
     ) {
         runUpdates(
-            Update.NotificationType(typeId),
+            Update.NotificationType(typeIds),
             Update.NotificationWithControls.takeIf { updateNotificationSwitch },
-            Update.GoalReschedule(listOf(typeId)),
+            Update.GoalReschedule(typeIds),
             Update.WidgetStatistics,
             Update.WidgetSingleTypes.takeIf { getRetroactiveTrackingMode() }
-                ?: Update.WidgetSingleType(typeId),
+                ?: Update.WidgetSingleType(typeIds),
             Update.WidgetUniversal.takeIf { getRetroactiveTrackingMode() },
             Update.Wear.takeIf { getRetroactiveTrackingMode() },
         )
@@ -180,11 +180,11 @@ class UpdateExternalViewsInteractor @Inject constructor(
 
     // Called after record add.
     suspend fun onRecordChangeType(
-        originalTypeId: Long,
+        originalTypeIds: List<Long>,
     ) {
         runUpdates(
-            Update.NotificationType(originalTypeId),
-            Update.GoalReschedule(listOf(originalTypeId)),
+            Update.NotificationType(originalTypeIds),
+            Update.GoalReschedule(originalTypeIds),
         )
     }
 
@@ -235,8 +235,8 @@ class UpdateExternalViewsInteractor @Inject constructor(
         typeId: Long,
     ) {
         runUpdates(
-            Update.WidgetSingleType(typeId),
-            Update.NotificationType(typeId),
+            Update.WidgetSingleType(listOf(typeId)),
+            Update.NotificationType(listOf(typeId)),
             Update.NotificationWithControls,
         )
     }
@@ -436,7 +436,7 @@ class UpdateExternalViewsInteractor @Inject constructor(
                 notificationTypeInteractor.updateNotifications()
             }
             is Update.NotificationType -> {
-                notificationTypeInteractor.checkAndShow(update.typeId)
+                update.typeIds.forEach { notificationTypeInteractor.checkAndShow(it) }
             }
             is Update.NotificationTypeHide -> {
                 notificationTypeInteractor.checkAndHide(update.typeId)
@@ -457,7 +457,7 @@ class UpdateExternalViewsInteractor @Inject constructor(
                 widgetInteractor.updateWidgets(WidgetType.RECORD_TYPE)
             }
             is Update.WidgetSingleType -> {
-                widgetInteractor.updateSingleWidgets(typeIds = listOf(update.typeId))
+                widgetInteractor.updateSingleWidgets(typeIds = update.typeIds)
             }
             is Update.Wear -> {
                 wearInteractor.update()
@@ -485,14 +485,14 @@ class UpdateExternalViewsInteractor @Inject constructor(
 
     private sealed interface Update {
         data object NotificationTypes : Update
-        data class NotificationType(val typeId: Long) : Update
+        data class NotificationType(val typeIds: List<Long>) : Update
         data class NotificationTypeHide(val typeId: Long) : Update
         data object NotificationWithControls : Update
         data object WidgetStatistics : Update
         data object WidgetQuickSettings : Update
         data object WidgetUniversal : Update
         data object WidgetSingleTypes : Update
-        data class WidgetSingleType(val typeId: Long) : Update
+        data class WidgetSingleType(val typeIds: List<Long>) : Update
         data object Wear : Update
         data class GoalReschedule(val typeIds: List<Long> = emptyList()) : Update
         data class GoalCancel(val idData: RecordTypeGoal.IdData) : Update

@@ -4,7 +4,6 @@ import androidx.core.view.ViewCompat
 import com.example.util.simpletimetracker.domain.extension.orFalse
 import com.example.util.simpletimetracker.feature_base_adapter.createRecyclerBindingAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.runningRecord.GoalTimeViewData.Subtype
-import com.example.util.simpletimetracker.feature_base_adapter.runningRecord.RunningRecordViewData
 import com.example.util.simpletimetracker.feature_views.GoalCheckmarkView.CheckState
 import com.example.util.simpletimetracker.feature_views.RunningRecordView
 import com.example.util.simpletimetracker.feature_views.extension.setOnClick
@@ -35,7 +34,7 @@ fun createRunningRecordAdapterDelegate(
 }
 
 fun RunningRecordView.bindState(
-    item: RunningRecordViewData,
+    item: ViewData,
     rebind: Boolean,
     updates: List<Any?>,
 ) {

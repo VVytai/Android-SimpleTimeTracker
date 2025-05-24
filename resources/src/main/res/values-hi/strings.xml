@@ -145,6 +145,8 @@
     <string name="change_record_move_hint">अवधि बदले बिना प्रारंभ समय बदल जाएगा</string>
     <string name="change_record_merge">जोड़े</string>
     <string name="change_record_merge_hint">इस समय को पिछले रिकॉर्ड में जोड़ देगा</string>
+    <string name="change_record_multiselect">मल्टिसलेक्ट</string>
+    <string name="change_record_multiselect_hint">कई रिकॉर्ड चुनें और फिर से क्रियाएँ मेनू खोलें</string>
     <string name="change_record_adjust">बदलना</string>
     <string name="change_record_change_prev_record">पिछले रिकॉर्ड का समय भी बदलें</string>
     <string name="change_record_change_adjacent_records">पास के रिकॉर्ड का समय भी बदलें</string>

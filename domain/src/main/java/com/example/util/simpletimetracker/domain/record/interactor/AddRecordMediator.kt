@@ -13,19 +13,29 @@ class AddRecordMediator @Inject constructor(
         record: Record,
         updateNotificationSwitch: Boolean = true,
     ) {
-        recordInteractor.add(record)
+        add(
+            records = listOf(record),
+            updateNotificationSwitch = updateNotificationSwitch,
+        )
+    }
+
+    suspend fun add(
+        records: List<Record>,
+        updateNotificationSwitch: Boolean = true,
+    ) {
+        records.forEach { recordInteractor.add(it) }
         doAfterAdd(
-            typeId = record.typeId,
+            typeIds = records.map(Record::typeId).distinct(),
             updateNotificationSwitch = updateNotificationSwitch,
         )
     }
 
     suspend fun doAfterAdd(
-        typeId: Long,
+        typeIds: List<Long>,
         updateNotificationSwitch: Boolean = true,
     ) {
         externalViewsInteractor.onRecordAddOrChange(
-            typeId = typeId,
+            typeIds = typeIds,
             updateNotificationSwitch = updateNotificationSwitch,
         )
     }

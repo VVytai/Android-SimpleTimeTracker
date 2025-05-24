@@ -9,11 +9,18 @@ class RemoveRecordMediator @Inject constructor(
 ) {
 
     suspend fun remove(recordId: Long, typeId: Long) {
-        recordInteractor.remove(recordId)
-        doAfterRemove(typeId)
+        remove(
+            recordIds = listOf(recordId),
+            typeIds = listOf(typeId)
+        )
     }
 
-    suspend fun doAfterRemove(typeId: Long) {
-        externalViewsInteractor.onRecordRemove(typeId)
+    suspend fun remove(recordIds: List<Long>, typeIds: List<Long>) {
+        recordIds.forEach { recordInteractor.remove(it) }
+        doAfterRemove(typeIds)
+    }
+
+    suspend fun doAfterRemove(typeIds: List<Long>) {
+        externalViewsInteractor.onRecordRemove(typeIds)
     }
 }

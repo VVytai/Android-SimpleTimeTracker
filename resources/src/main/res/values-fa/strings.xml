@@ -145,6 +145,8 @@
     <string name="change_record_move_hint">زمان شروع را تغییر می‌دهد بدون اینکه مدت زمان تغییر کند</string>
     <string name="change_record_merge">تریکب</string>
     <string name="change_record_merge_hint">این زمان را به تاریخچه قبلی اضاف می کند</string>
+    <string name="change_record_multiselect">چندانتخابی</string>
+    <string name="change_record_multiselect_hint">چند رکورد را انتخاب کرده و دوباره منوی عملیات را باز کنید</string>
     <string name="change_record_adjust">تغییر</string>
     <string name="change_record_change_prev_record">همچنین زمان تاریخچه قبلی را تغییر دهید</string>
     <string name="change_record_change_adjacent_records">همچنین زمان تاریخچه های مجاور را تغییر دهید</string>

@@ -45,6 +45,37 @@ class RecordQuickActionsViewDataInteractor @Inject constructor(
         }
     }
 
+    suspend fun getRecords(
+        ids: List<MultiSelectedRecordId>,
+    ): List<RecordBase> {
+        return ids.mapNotNull {
+            when (it) {
+                is MultiSelectedRecordId.Tracked -> recordInteractor.get(it.id)
+                is MultiSelectedRecordId.Untracked -> null
+                is MultiSelectedRecordId.Running -> runningRecordInteractor.get(it.id)
+            }
+        }
+    }
+
+    fun getParamsList(
+        extra: RecordQuickActionsParams,
+    ): List<Type> {
+        return if (recordsContainerMultiselectInteractor.isEnabled) {
+            recordsContainerMultiselectInteractor.selectedRecordIds.map {
+                when (it) {
+                    is MultiSelectedRecordId.Tracked -> Type.RecordTracked(it.id)
+                    is MultiSelectedRecordId.Running -> Type.RecordRunning(it.id)
+                    is MultiSelectedRecordId.Untracked -> Type.RecordUntracked(
+                        timeStarted = it.timeStartedTimestamp,
+                        timeEnded = it.timeEndedTimestamp,
+                    )
+                }
+            }
+        } else {
+            listOfNotNull(extra.type)
+        }
+    }
+
     suspend fun getViewData(
         extra: RecordQuickActionsParams,
     ): RecordQuickActionsState {
@@ -54,8 +85,12 @@ class RecordQuickActionsViewDataInteractor @Inject constructor(
         val canContinue = !retroactiveTrackingModeEnabled
         val allowedButtons = if (multiSelectEnabled) {
             val multiSelectedIds = recordsContainerMultiselectInteractor.selectedRecordIds
+            val hasTags = getRecords(multiSelectedIds).map { it.typeIds }
+                .flatten().distinct()
+                .let { getSelectableTagsInteractor.execute(*it.toLongArray()) }
+                .any { !it.archived }
             getAllowedInMultiselectButtons(
-                hasTags = false,
+                hasTags = hasTags,
                 multiSelectedIds = multiSelectedIds,
             )
         } else {
@@ -137,7 +172,7 @@ class RecordQuickActionsViewDataInteractor @Inject constructor(
     ): List<RecordQuickActionsButton> {
         return listOfNotNull(
             RecordQuickActionsButton.DELETE.takeIf {
-                multiSelectedIds.none { it is MultiSelectedRecordId.Untracked }
+                multiSelectedIds.all { it is MultiSelectedRecordId.Tracked }
             },
             RecordQuickActionsButton.DUPLICATE.takeIf {
                 multiSelectedIds.all { it is MultiSelectedRecordId.Tracked }
@@ -147,7 +182,9 @@ class RecordQuickActionsViewDataInteractor @Inject constructor(
             },
             RecordQuickActionsButton.MULTISELECT,
             RecordQuickActionsButton.CHANGE_ACTIVITY,
-            RecordQuickActionsButton.CHANGE_TAG.takeIf { hasTags },
+            RecordQuickActionsButton.CHANGE_TAG.takeIf {
+                multiSelectedIds.none { it is MultiSelectedRecordId.Untracked } && hasTags
+            },
         )
     }
 

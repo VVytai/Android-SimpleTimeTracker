@@ -145,6 +145,8 @@ Detta gör att du kan se hur mycket tid du spenderar på produktiva kontra icke-
     <string name="change_record_move_hint">Kommer att ändra starttiden utan att ändra varaktigheten</string>
     <string name="change_record_merge">Sammanfoga</string>
     <string name="change_record_merge_hint">Lägger till denna tid till tidigare händelse</string>
+    <string name="change_record_multiselect">Flerval</string>
+    <string name="change_record_multiselect_hint">Välj flera poster och öppna åtgärdsmenyn igen</string>
     <string name="change_record_adjust">Förändra</string>
     <string name="change_record_change_prev_record">Ändra även tid för tidigare händelse</string>
     <string name="change_record_change_adjacent_records">Ändra också tiden för de intilliggande händelserna</string>

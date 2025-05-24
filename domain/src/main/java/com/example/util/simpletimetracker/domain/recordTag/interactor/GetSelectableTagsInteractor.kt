@@ -9,18 +9,15 @@ class GetSelectableTagsInteractor @Inject constructor(
     private val filterSelectableTagsInteractor: FilterSelectableTagsInteractor,
 ) {
 
-    suspend fun execute(typeId: Long): List<RecordTag> {
+    suspend fun execute(vararg typeId: Long): List<RecordTag> {
         val tags = recordTagInteractor.getAll()
         val typesToTags = recordTypeToTagInteractor.getAll()
-        val typeIds = if (typeId != 0L) {
-            listOf(typeId)
-        } else {
-            emptyList()
-        }
+        val typeIds = typeId.filter { it != 0L }
         val selectableTagIds = filterSelectableTagsInteractor.execute(
             tagIds = tags.map { it.id },
             typesToTags = typesToTags,
-            typeIds = typeIds,
+            typeIds = emptyList(),
+            byAllTypeIds = typeIds,
         )
 
         return tags.filter { it.id in selectableTagIds }

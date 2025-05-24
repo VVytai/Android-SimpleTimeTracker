@@ -175,7 +175,10 @@ class RecordsViewModel @Inject constructor(
         if (recordsContainerMultiselectInteractor.isEnabled) {
             val id = when (item) {
                 is RecordViewData.Tracked -> MultiSelectedRecordId.Tracked(item.id)
-                is RecordViewData.Untracked -> MultiSelectedRecordId.Untracked(item.timeStartedTimestamp)
+                is RecordViewData.Untracked -> MultiSelectedRecordId.Untracked(
+                    timeStartedTimestamp = item.timeStartedTimestamp,
+                    timeEndedTimestamp = item.timeEndedTimestamp,
+                )
             }
             if (id !in recordsContainerMultiselectInteractor.selectedRecordIds) {
                 recordsContainerMultiselectInteractor.onRecordClick(id)
@@ -275,7 +278,10 @@ class RecordsViewModel @Inject constructor(
     private fun onMultiselectRecordClick(item: RecordViewData) {
         val id = when (item) {
             is RecordViewData.Tracked -> MultiSelectedRecordId.Tracked(item.id)
-            is RecordViewData.Untracked -> MultiSelectedRecordId.Untracked(item.timeStartedTimestamp)
+            is RecordViewData.Untracked -> MultiSelectedRecordId.Untracked(
+                timeStartedTimestamp = item.timeStartedTimestamp,
+                timeEndedTimestamp = item.timeEndedTimestamp,
+            )
         }
         recordsContainerMultiselectInteractor.onRecordClick(id)
         updateRecords()

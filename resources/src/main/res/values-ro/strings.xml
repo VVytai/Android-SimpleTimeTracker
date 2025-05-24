@@ -145,6 +145,8 @@ Acest lucru îți permite să vezi cât timp petreci în activități productive
     <string name="change_record_move_hint">Va schimba ora de început fără a modifica durata</string>
     <string name="change_record_merge">Combină</string>
     <string name="change_record_merge_hint">Va adauga acest timp la înregistrarea anterioară</string>
+    <string name="change_record_multiselect">Selecție multiplă</string>
+    <string name="change_record_multiselect_hint">Selectează mai multe înregistrări și deschide din nou meniul de acțiuni</string>
     <string name="change_record_adjust">Modifică</string>
     <string name="change_record_change_prev_record">Modifică de asemenea timpul înregistrării precedente</string>
     <string name="change_record_change_adjacent_records">Modifică de asemenea timpul înregistrărilor adiacente</string>

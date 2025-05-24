@@ -25,7 +25,7 @@ data class TypesSelectionDialogParams(
             object All : Tag
 
             @Parcelize
-            data class ByType(val typeId: Long) : Tag
+            data class ByType(val typeIds: List<Long>) : Tag
         }
     }
 

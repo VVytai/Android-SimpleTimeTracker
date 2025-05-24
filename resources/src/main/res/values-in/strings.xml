@@ -145,6 +145,8 @@ Ini memungkinkan Anda melihat berapa banyak waktu yang dihabiskan untuk aktivita
     <string name="change_record_move_hint">Akan mengubah waktu mulai tanpa mengubah durasi</string>
     <string name="change_record_merge">Menggabungkan</string>
     <string name="change_record_merge_hint">Akan menambahkan waktu ini ke rekor sebelumnya</string>
+    <string name="change_record_multiselect">Pilih ganda</string>
+    <string name="change_record_multiselect_hint">Pilih beberapa data lalu buka kembali menu Tindakan</string>
     <string name="change_record_adjust">Mengubah</string>
     <string name="change_record_change_prev_record">Juga ubah waktu rekaman sebelumnya</string>
     <string name="change_record_change_adjacent_records">Juga ubah waktu catatan yang berdekatan</string>

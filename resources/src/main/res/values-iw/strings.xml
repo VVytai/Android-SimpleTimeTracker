@@ -145,6 +145,8 @@
     <string name="change_record_move_hint">ישנה את זמן ההתחלה دون לשנות את המשך</string>
     <string name="change_record_merge">מזג</string>
     <string name="change_record_merge_hint">יוסיף זמן זה לרשומה קודמת</string>
+    <string name="change_record_multiselect">בחירה מרובה</string>
+    <string name="change_record_multiselect_hint">בחר מספר רשומות ופתח שוב את תפריט הפעולות</string>
     <string name="change_record_adjust">שנה</string>
     <string name="change_record_change_prev_record">שנה גם זמן של רשומה קודמת</string>
     <string name="change_record_change_adjacent_records">שנה גם זמן של רשומות סמוכות</string>

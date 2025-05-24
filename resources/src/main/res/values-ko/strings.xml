@@ -145,6 +145,8 @@
     <string name="change_record_move_hint">지속 시간을 변경하지 않고 시작 시간을 변경합니다</string>
     <string name="change_record_merge">병합</string>
     <string name="change_record_merge_hint">이 기록을 이전 기록으로 병합합니다</string>
+    <string name="change_record_multiselect">다중 선택</string>
+    <string name="change_record_multiselect_hint">여러 레코드를 선택하고 다시 작업 메뉴를 여세요</string>
     <string name="change_record_adjust">변경</string>
     <string name="change_record_change_prev_record">이전 기록도 함께 변경</string>
     <string name="change_record_change_adjacent_records">관련 기록의 시간도 함께 변경</string>

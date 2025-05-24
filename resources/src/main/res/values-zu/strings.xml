@@ -145,6 +145,8 @@ Lokhu kukuvumela ukuthi ubone isikhathi osichitha emisebenzini esebenzayo nezing
     <string name="change_record_move_hint">Izoshintsha isikhathi lekucalwe ngaso ngaphandle kokushintsha ubude</string>
     <string name="change_record_merge">Hlanganisa</string>
     <string name="change_record_merge_hint">Izowengeza lesi sikhathi kwirekhodi langaphambilini</string>
+    <string name="change_record_multiselect">Ukukhetha okuningi</string>
+    <string name="change_record_multiselect_hint">Khetha amarekhodi amaningi bese uvula kabusha imenyu yezenzo</string>
     <string name="change_record_adjust">Shintsha</string>
     <string name="change_record_change_prev_record">Futhi shintsha isikhathi serekhodi langaphambilini</string>
     <string name="change_record_change_adjacent_records">Futhi shintsha isikhathi samarekhodi aseduze</string>

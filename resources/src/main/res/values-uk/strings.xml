@@ -145,6 +145,8 @@
     <string name="change_record_move_hint">Змінить час початку, не змінюючи тривалість</string>
     <string name="change_record_merge">Об’єднати</string>
     <string name="change_record_merge_hint">Додасть цей час до попереднього запису</string>
+    <string name="change_record_multiselect">Мультивибір</string>
+    <string name="change_record_multiselect_hint">Виберіть кілька записів і знову відкрийте меню дій</string>
     <string name="change_record_adjust">Змінити</string>
     <string name="change_record_change_prev_record">Також змінити час попереднього запису</string>
     <string name="change_record_change_adjacent_records">Також змінити час суміжних записів</string>

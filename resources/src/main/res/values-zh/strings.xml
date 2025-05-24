@@ -145,6 +145,8 @@
     <string name="change_record_move_hint">将更改开始时间而不改变持续时间</string>
     <string name="change_record_merge">合并</string>
     <string name="change_record_merge_hint">将此时间添加到先前的记录中</string>
+    <string name="change_record_multiselect">多选</string>
+    <string name="change_record_multiselect_hint">选择多个记录后再次打开操作菜单</string>
     <string name="change_record_adjust">更改</string>
     <string name="change_record_change_prev_record">同时更改前笔记录的时间</string>
     <string name="change_record_change_adjacent_records">同时更改临近记录的时间</string>

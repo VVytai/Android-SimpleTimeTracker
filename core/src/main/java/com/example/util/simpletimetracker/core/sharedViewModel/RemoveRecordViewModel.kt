@@ -5,13 +5,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.util.simpletimetracker.core.R
-import com.example.util.simpletimetracker.domain.record.interactor.AddRecordMediator
-import com.example.util.simpletimetracker.domain.record.interactor.RemoveRecordMediator
+import com.example.util.simpletimetracker.core.extension.set
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
-import com.example.util.simpletimetracker.domain.extension.orZero
+import com.example.util.simpletimetracker.domain.record.interactor.AddRecordMediator
 import com.example.util.simpletimetracker.domain.record.interactor.RecordInteractor
-import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTypeInteractor
+import com.example.util.simpletimetracker.domain.record.interactor.RemoveRecordMediator
 import com.example.util.simpletimetracker.domain.record.model.Record
+import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTypeInteractor
 import com.example.util.simpletimetracker.navigation.params.notification.SnackBarParams
 import com.example.util.simpletimetracker.navigation.params.screen.ChangeRecordParams
 import kotlinx.coroutines.launch
@@ -29,57 +29,65 @@ class RemoveRecordViewModel @Inject constructor(
     val message: LiveData<SnackBarParams?> = MutableLiveData()
     val needUpdate: LiveData<Boolean> = MutableLiveData()
 
-    private var recordId: Long = 0
+    private var removedRecords: List<Record> = emptyList()
 
-    fun prepare(id: Long) {
-        recordId = id
-        (deleteButtonEnabled as MutableLiveData).value = true
+    fun prepare() {
+        deleteButtonEnabled.set(true)
     }
 
-    fun onDeleteClick(from: ChangeRecordParams.From?) {
-        (deleteButtonEnabled as MutableLiveData).value = false
-        viewModelScope.launch {
-            if (recordId != 0L) {
-                val removedRecord = recordInteractor.get(recordId)
-                val typeId = removedRecord?.typeId
-                val removedName = typeId
-                    ?.let { recordTypeInteractor.get(it) }
-                    ?.name
-                    .orEmpty()
-                val tag = when (from) {
-                    is ChangeRecordParams.From.Records ->
-                        SnackBarParams.TAG.RECORD_DELETE
-                    is ChangeRecordParams.From.RecordsAll ->
-                        SnackBarParams.TAG.RECORDS_ALL_DELETE
-                    else -> null
-                }
+    fun onDeleteClick(
+        recordIds: Set<Long>,
+        from: ChangeRecordParams.From?,
+    ) = viewModelScope.launch {
+        deleteButtonEnabled.set(false)
 
-                removeRecordMediator.remove(recordId, typeId.orZero())
+        removedRecords = recordIds.mapNotNull { recordInteractor.get(it) }
 
-                (needUpdate as MutableLiveData).value = true
+        val typeIds = removedRecords.map(Record::typeId).distinct()
+        removeRecordMediator.remove(
+            recordIds = removedRecords.map { it.id },
+            typeIds = typeIds
+        )
 
-                (message as MutableLiveData).value = SnackBarParams(
-                    tag = tag,
-                    message = resourceRepo.getString(R.string.record_removed, removedName),
-                    actionText = R.string.record_removed_undo.let(resourceRepo::getString),
-                    actionListener = { removedRecord?.let(::onAction) },
-                )
-            }
+        val removedRecordsCount = removedRecords.size
+        val messageText = if (removedRecordsCount == 1) {
+            val typeId = typeIds.firstOrNull()
+            val removedName = typeId?.let { recordTypeInteractor.get(it) }
+                ?.name.orEmpty().let { "($it)" }
+            resourceRepo.getString(R.string.record_removed, removedName)
+        } else {
+            val removedCount = "($removedRecordsCount)"
+            resourceRepo.getString(R.string.record_removed, removedCount)
         }
+        val tag = when (from) {
+            is ChangeRecordParams.From.Records ->
+                SnackBarParams.TAG.RECORD_DELETE
+            is ChangeRecordParams.From.RecordsAll ->
+                SnackBarParams.TAG.RECORDS_ALL_DELETE
+            else -> null
+        }
+
+        needUpdate.set(true)
+
+        val messageParams = SnackBarParams(
+            tag = tag,
+            message = messageText,
+            actionText = R.string.record_removed_undo.let(resourceRepo::getString),
+            actionListener = { onAction() },
+        )
+        message.set(messageParams)
     }
 
     fun onMessageShown() {
-        (message as MutableLiveData).value = null
+        message.set(null)
     }
 
     fun onUpdated() {
-        (needUpdate as MutableLiveData).value = false
+        needUpdate.set(false)
     }
 
-    private fun onAction(removedRecord: Record) {
-        viewModelScope.launch {
-            addRecordMediator.add(removedRecord)
-            (needUpdate as MutableLiveData).value = true
-        }
+    private fun onAction() = viewModelScope.launch {
+        addRecordMediator.add(removedRecords)
+        needUpdate.set(true)
     }
 }

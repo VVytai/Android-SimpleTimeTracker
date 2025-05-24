@@ -106,14 +106,12 @@ class DateEditChangeInteractor @Inject constructor(
         }
 
         if (deleteRecord) {
-            oldTypeIds.forEach { typeId ->
-                removeRecordMediator.doAfterRemove(typeId)
-            }
+            removeRecordMediator.doAfterRemove(oldTypeIds.toList())
         }
         // Check goal time and statistics widget consistency.
         if (newTypeId != null) {
             externalViewsInteractor.onRecordsChangeType(oldTypeIds)
-            addRecordMediator.doAfterAdd(newTypeId)
+            addRecordMediator.doAfterAdd(listOf(newTypeId))
         }
     }
 

@@ -10,6 +10,7 @@ import com.example.util.simpletimetracker.core.extension.toViewData
 import com.example.util.simpletimetracker.core.interactor.StatisticsDetailNavigationInteractor
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.domain.base.UNTRACKED_ITEM_ID
+import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.RecordInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.RecordsContainerMultiselectInteractor
@@ -60,6 +61,7 @@ class RecordQuickActionsViewModel @Inject constructor(
     lateinit var extra: RecordQuickActionsParams
 
     val state: LiveData<RecordQuickActionsState> by lazySuspend { loadState() }
+    val removeRecordIds: LiveData<Set<Long>> = SingleLiveEvent()
     val actionComplete: LiveData<Unit> = SingleLiveEvent<Unit>()
 
     private var buttonsBlocked: Boolean = false
@@ -129,10 +131,22 @@ class RecordQuickActionsViewModel @Inject constructor(
     }
 
     private suspend fun onDelete() {
+        if (recordsContainerMultiselectInteractor.isEnabled) {
+            val recordIds = recordsContainerMultiselectInteractor.selectedRecordIds
+                .filterIsInstance<MultiSelectedRecordId.Tracked>()
+                .map { it.id }
+                .toSet()
+            removeRecordIds.set(recordIds)
+            recordsContainerMultiselectInteractor.disable()
+            router.back()
+            return
+        }
         val params = extra.type ?: return
         when (params) {
             is Type.RecordTracked -> {
                 // Removal handled in separate viewModel.
+                val recordId = (params as? Type.RecordTracked)?.id.orZero()
+                removeRecordIds.set(setOf(recordId))
                 router.back()
             }
             is Type.RecordUntracked -> {
@@ -180,6 +194,17 @@ class RecordQuickActionsViewModel @Inject constructor(
     }
 
     private suspend fun onDuplicate() {
+        if (recordsContainerMultiselectInteractor.isEnabled) {
+            val recordIds = recordsContainerMultiselectInteractor.selectedRecordIds
+                .filterIsInstance<MultiSelectedRecordId.Tracked>()
+                .map { it.id }
+                .toSet()
+            val records = recordIds.mapNotNull { recordInteractor.get(it) }
+            recordActionDuplicateMediator.execute(records)
+            recordsContainerMultiselectInteractor.disable()
+            exit()
+            return
+        }
         val record = getTrackedRecord() ?: return
         recordActionDuplicateMediator.execute(
             typeId = record.typeId,
@@ -192,15 +217,30 @@ class RecordQuickActionsViewModel @Inject constructor(
     }
 
     private suspend fun onMove() {
-        val record = getTrackedRecord() ?: return
+        val timestamp: Long
+        val type: DateTimeDialogType
+
+        if (recordsContainerMultiselectInteractor.isEnabled) {
+            val recordIds = recordsContainerMultiselectInteractor.selectedRecordIds
+                .filterIsInstance<MultiSelectedRecordId.Tracked>()
+            timestamp = recordQuickActionsViewDataInteractor.getRecords(recordIds)
+                .minByOrNull { it.timeStarted }
+                ?.timeStarted
+                ?: return
+            type = DateTimeDialogType.DATE
+        } else {
+            timestamp = getTrackedRecord()?.timeStarted ?: return
+            type = DateTimeDialogType.DATETIME()
+        }
+
         val useMilitaryTime = prefsInteractor.getUseMilitaryTimeFormat()
         val firstDayOfWeek = prefsInteractor.getFirstDayOfWeek()
         val showSeconds = prefsInteractor.getShowSeconds()
 
         DateTimeDialogParams(
             tag = RECORD_QUICK_MOVE_TIME_SELECTION_TAG,
-            timestamp = record.timeStarted,
-            type = DateTimeDialogType.DATETIME(),
+            timestamp = timestamp,
+            type = type,
             useMilitaryTime = useMilitaryTime,
             firstDayOfWeek = firstDayOfWeek,
             showSeconds = showSeconds,
@@ -225,13 +265,9 @@ class RecordQuickActionsViewModel @Inject constructor(
     }
 
     private suspend fun onMultiselect() {
-        // TODO MULTI translate texts
         // TODO MULTI on calendar?
         // TODO MULTI cancel on tab change?
         // TODO MULTI disable throttle record click in multiselect
-        // TODO MULTI move record delete event to viewModel.
-        // TODO MULTI add tag change.
-        // TODO MULTI for Move allow only date change.
         if (recordsContainerMultiselectInteractor.isEnabled) {
             recordsContainerMultiselectInteractor.disable()
         } else {
@@ -255,15 +291,24 @@ class RecordQuickActionsViewModel @Inject constructor(
     }
 
     private fun onChangeTag() = viewModelScope.launch {
-        val record = recordQuickActionsViewDataInteractor.getRecord(extra)
-        val typeId = record?.typeIds?.firstOrNull() ?: return@launch
-        val selectedTypeIds = record.tagIds
+        val typeIds: List<Long>
+        val selectedTypeIds: List<Long>
+        if (recordsContainerMultiselectInteractor.isEnabled) {
+            val multiSelectedIds = recordsContainerMultiselectInteractor.selectedRecordIds
+            val records = recordQuickActionsViewDataInteractor.getRecords(multiSelectedIds)
+            typeIds = records.map { it.typeIds }.flatten().distinct()
+            selectedTypeIds = emptyList()
+        } else {
+            val record = recordQuickActionsViewDataInteractor.getRecord(extra)
+            typeIds = listOfNotNull(record?.typeIds?.firstOrNull())
+            selectedTypeIds = record?.tagIds.orEmpty()
+        }
 
         TypesSelectionDialogParams(
             tag = RECORD_QUICK_ACTIONS_TAG_SELECTION_TAG,
             title = resourceRepo.getString(R.string.records_filter_select_tags),
             subtitle = "",
-            type = TypesSelectionDialogParams.Type.Tag.ByType(typeId),
+            type = TypesSelectionDialogParams.Type.Tag.ByType(typeIds),
             selectedTypeIds = selectedTypeIds,
             isMultiSelectAvailable = true,
             idsShouldBeVisible = selectedTypeIds,
@@ -272,28 +317,35 @@ class RecordQuickActionsViewModel @Inject constructor(
     }
 
     fun onTypesSelected(typeIds: List<Long>, tag: String?) = viewModelScope.launch {
-        val params = extra.type ?: return@launch
+        val paramsList = recordQuickActionsViewDataInteractor.getParamsList(extra)
         when (tag) {
             RECORD_QUICK_ACTIONS_TYPE_SELECTION_TAG -> {
                 buttonsBlocked = true
                 val typeId = typeIds.firstOrNull() ?: return@launch
-                recordQuickActionsInteractor.changeType(params, typeId)
+                recordQuickActionsInteractor.changeType(paramsList, typeId)
+                recordsContainerMultiselectInteractor.disable()
                 exit()
             }
             RECORD_QUICK_ACTIONS_TAG_SELECTION_TAG -> {
                 buttonsBlocked = true
-                recordQuickActionsInteractor.changeTags(params, typeIds)
+                recordQuickActionsInteractor.changeTags(paramsList, typeIds)
+                recordsContainerMultiselectInteractor.disable()
                 exit()
             }
         }
     }
 
     fun onDateTimeSet(timestamp: Long, tag: String?) = viewModelScope.launch {
-        val params = extra.type ?: return@launch
+        val paramsList = recordQuickActionsViewDataInteractor.getParamsList(extra)
         when (tag) {
             RECORD_QUICK_MOVE_TIME_SELECTION_TAG -> {
                 buttonsBlocked = true
-                recordQuickActionsInteractor.move(params, timestamp)
+                recordQuickActionsInteractor.move(
+                    params = paramsList,
+                    timestamp = timestamp,
+                    changeOnlyDate = recordsContainerMultiselectInteractor.isEnabled,
+                )
+                recordsContainerMultiselectInteractor.disable()
                 exit()
             }
         }
@@ -321,9 +373,15 @@ class RecordQuickActionsViewModel @Inject constructor(
     private fun mapMultiselectId(): MultiSelectedRecordId? {
         val extraType = extra.type ?: return null
         return when (extraType) {
-            is Type.RecordTracked -> MultiSelectedRecordId.Tracked(extraType.id)
-            is Type.RecordUntracked -> MultiSelectedRecordId.Untracked(extraType.timeStarted)
-            is Type.RecordRunning -> MultiSelectedRecordId.Running(extraType.id)
+            is Type.RecordTracked ->
+                MultiSelectedRecordId.Tracked(extraType.id)
+            is Type.RecordUntracked ->
+                MultiSelectedRecordId.Untracked(
+                    timeStartedTimestamp = extraType.timeStarted,
+                    timeEndedTimestamp = extraType.timeEnded,
+                )
+            is Type.RecordRunning ->
+                MultiSelectedRecordId.Running(extraType.id)
         }
     }
 

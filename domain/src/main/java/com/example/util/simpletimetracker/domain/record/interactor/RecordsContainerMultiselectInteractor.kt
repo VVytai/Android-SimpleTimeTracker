@@ -29,6 +29,7 @@ class RecordsContainerMultiselectInteractor @Inject constructor() {
     }
 
     suspend fun disable() {
+        if (!isEnabled) return
         selectedRecordIds = emptyList()
         onNewState(false)
     }

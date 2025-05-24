@@ -9,6 +9,7 @@ class FilterSelectableTagsInteractor @Inject constructor() {
         tagIds: List<Long>,
         typesToTags: List<RecordTypeToTag>,
         typeIds: List<Long>,
+        byAllTypeIds: List<Long> = emptyList(),
     ): List<Long> {
         val tagsToAssignedTypes = typesToTags
             .groupBy { it.tagId }
@@ -21,8 +22,9 @@ class FilterSelectableTagsInteractor @Inject constructor() {
 
         return tagIds.filter { tagId ->
             val assignedTypes = tagsToAssignedTypes[tagId].orEmpty()
-            // Tag can be assigned to type.
+            // Tag can be assigned to any type.
             typeIds.any { it in assignedTypes } ||
+                (byAllTypeIds.isNotEmpty() && byAllTypeIds.all { it in assignedTypes }) ||
                 // Tag can be assigned to any type.
                 tagId !in tagIdsAssignedToAnyType
         }

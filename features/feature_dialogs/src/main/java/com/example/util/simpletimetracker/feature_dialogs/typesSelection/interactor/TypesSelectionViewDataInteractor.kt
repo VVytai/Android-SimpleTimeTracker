@@ -44,7 +44,7 @@ class TypesSelectionViewDataInteractor @Inject constructor(
                         recordTagInteractor.getAll()
                     }
                     is TypesSelectionDialogParams.Type.Tag.ByType -> {
-                        getSelectableTagsInteractor.execute(extraType.typeId)
+                        getSelectableTagsInteractor.execute(*extraType.typeIds.toLongArray())
                     }
                 }
                 tags.filter {

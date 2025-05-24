@@ -1,16 +1,17 @@
 package com.example.util.simpletimetracker.feature_dialogs.recordQuickActions.interactor
 
+import com.example.util.simpletimetracker.domain.notifications.interactor.UpdateExternalViewsInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.AddRecordMediator
 import com.example.util.simpletimetracker.domain.record.interactor.AddRunningRecordMediator
 import com.example.util.simpletimetracker.domain.record.interactor.RecordInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.RemoveRunningRecordMediator
 import com.example.util.simpletimetracker.domain.record.interactor.RunningRecordInteractor
-import com.example.util.simpletimetracker.domain.notifications.interactor.UpdateExternalViewsInteractor
 import com.example.util.simpletimetracker.domain.record.model.Record
 import com.example.util.simpletimetracker.domain.record.model.RunningRecord
 import com.example.util.simpletimetracker.domain.recordTag.interactor.GetSelectableTagsInteractor
 import com.example.util.simpletimetracker.domain.recordTag.model.RecordTag
 import com.example.util.simpletimetracker.navigation.params.screen.RecordQuickActionsParams.Type
+import java.util.Calendar
 import javax.inject.Inject
 
 class RecordQuickActionsInteractor @Inject constructor(
@@ -23,132 +24,193 @@ class RecordQuickActionsInteractor @Inject constructor(
     private val getSelectableTagsInteractor: GetSelectableTagsInteractor,
 ) {
 
+    @Suppress("ComplexRedundantLet")
     suspend fun changeType(
-        params: Type,
+        params: List<Type>,
         newTypeId: Long,
     ) {
-        when (params) {
-            is Type.RecordTracked -> {
-                val recordId = params.id
-                val record = recordInteractor.get(recordId) ?: return
-                if (record.typeId == newTypeId) return
-                changeRecord(
-                    old = record,
-                    newTypeId = newTypeId,
-                    newTagIds = getTagsAfterActivityChange(
-                        currentTags = record.tagIds,
-                        newTypeId = newTypeId,
-                    ),
-                )
-            }
-            is Type.RecordUntracked -> {
-                val newTimeStarted = params.timeStarted
-                val newTimeEnded = params.timeEnded
-                Record(
-                    id = 0L,
-                    typeId = newTypeId,
-                    timeStarted = newTimeStarted,
-                    timeEnded = newTimeEnded,
-                    comment = "",
-                    tagIds = emptyList(),
-                ).let {
-                    addRecordMediator.add(it)
-                }
-            }
-            is Type.RecordRunning -> {
-                val recordId = params.id
-                val record = runningRecordInteractor.get(recordId) ?: return
-                changeRunningRecord(
-                    old = record,
-                    newTypeId = newTypeId,
-                    newTagIds = getTagsAfterActivityChange(
-                        currentTags = record.tagIds,
-                        newTypeId = newTypeId,
-                    ),
-                )
-            }
+        params.filterIsInstance<Type.RecordTracked>().let { trackedParams ->
+            val recordIds = trackedParams.map(Type.RecordTracked::id)
+            val records = recordIds
+                .mapNotNull { recordInteractor.get(it) }
+                .filter { it.typeId != newTypeId }
+            changeRecordType(
+                old = records,
+                newTypeId = newTypeId,
+            )
+        }
+
+        params.filterIsInstance<Type.RecordUntracked>().let { untrackedParams ->
+            changeUntrackedType(
+                params = untrackedParams,
+                newTypeId = newTypeId,
+            )
+        }
+
+        params.filterIsInstance<Type.RecordRunning>().let { runningParams ->
+            val recordIds = runningParams.map(Type.RecordRunning::id)
+            val records = recordIds
+                .mapNotNull { runningRecordInteractor.get(it) }
+                .filter { it.id != newTypeId }
+            changeRunningRecordType(
+                old = records,
+                newTypeId = newTypeId,
+            )
         }
     }
 
     suspend fun changeTags(
-        params: Type,
+        params: List<Type>,
         newTagIds: List<Long>,
     ) {
-        when (params) {
-            is Type.RecordTracked -> {
-                val recordId = params.id
-                val record = recordInteractor.get(recordId) ?: return
-                if (record.tagIds.sorted() == newTagIds.sorted()) return
-                changeRecord(
-                    old = record,
-                    newTypeId = record.typeId,
-                    newTagIds = newTagIds,
-                )
-            }
-            is Type.RecordUntracked -> {
-                // Do nothing. Should not be possible.
-            }
-            is Type.RecordRunning -> {
-                val recordId = params.id
-                val record = runningRecordInteractor.get(recordId) ?: return
-                changeRunningRecord(
-                    old = record,
-                    newTypeId = recordId,
-                    newTagIds = newTagIds,
-                )
-            }
+        params.filterIsInstance<Type.RecordTracked>().let { trackedParams ->
+            val recordIds = trackedParams.map(Type.RecordTracked::id)
+            val records = recordIds
+                .mapNotNull { recordInteractor.get(it) }
+                .filter { it.tagIds.sorted() != newTagIds.sorted() }
+            changeRecordTags(
+                old = records,
+                newTagIds = newTagIds,
+            )
+        }
+        params.filterIsInstance<Type.RecordUntracked>().let {
+            // Do nothing. Should not be possible.
+        }
+        params.filterIsInstance<Type.RecordRunning>().let { runningParams ->
+            val recordIds = runningParams.map { it.id }
+            val records = recordIds
+                .mapNotNull { runningRecordInteractor.get(it) }
+                .filter { it.tagIds.sorted() != newTagIds.sorted() }
+            changeRunningRecordTags(
+                old = records,
+                newTagIds = newTagIds,
+            )
         }
     }
 
     suspend fun move(
-        params: Type,
+        params: List<Type>,
         timestamp: Long,
+        changeOnlyDate: Boolean,
     ) {
-        val recordId = (params as? Type.RecordTracked)?.id ?: return
-        val record = recordInteractor.get(recordId) ?: return
-        val currentDuration = record.duration
-        record.copy(
-            timeStarted = timestamp,
-            timeEnded = timestamp + currentDuration,
-        ).let {
+        val recordIds = params.filterIsInstance<Type.RecordTracked>().map { it.id }
+        val records = recordIds.mapNotNull { recordInteractor.get(it) }
+        val calendar = Calendar.getInstance()
+
+        records.mapNotNull { record ->
+            val currentDuration = record.duration
+            val newTimeStarted = if (changeOnlyDate) {
+                changeOnlyDate(
+                    currentTimestamp = record.timeStarted,
+                    timestampWithDateSelected = timestamp,
+                    calendar = calendar,
+                )
+            } else {
+                timestamp
+            }
+            if (newTimeStarted == record.timeStarted) return@mapNotNull null
+            record.copy(
+                timeStarted = newTimeStarted,
+                timeEnded = newTimeStarted + currentDuration,
+            )
+        }.let {
             addRecordMediator.add(it)
         }
     }
 
-    private suspend fun changeRecord(
-        old: Record,
+    private suspend fun changeRecordType(
+        old: List<Record>,
         newTypeId: Long,
+    ) {
+        old.map { oldRecord ->
+            oldRecord.copy(
+                typeId = newTypeId,
+                tagIds = getTagsAfterActivityChange(
+                    currentTags = oldRecord.tagIds,
+                    newTypeId = newTypeId,
+                ),
+            )
+        }.let {
+            addRecordMediator.add(it)
+        }
+        old.mapNotNull { if (it.typeId != newTypeId) it.typeId else null }
+            .let { externalViewsInteractor.onRecordChangeType(it) }
+    }
+
+    private suspend fun changeRecordTags(
+        old: List<Record>,
         newTagIds: List<Long>,
     ) {
-        old.copy(
-            typeId = newTypeId,
-            tagIds = newTagIds,
-        ).let {
+        old.map { oldRecord ->
+            oldRecord.copy(tagIds = newTagIds)
+        }.let {
             addRecordMediator.add(it)
-            if (old.typeId != newTypeId) {
-                externalViewsInteractor.onRecordChangeType(old.typeId)
+        }
+    }
+
+    private suspend fun changeRunningRecordType(
+        old: List<RunningRecord>,
+        newTypeId: Long,
+    ) {
+        old.forEach { oldRecord ->
+            // Widgets will update on adding.
+            removeRunningRecordMediator.remove(
+                typeId = oldRecord.id,
+                updateWidgets = false,
+                updateNotificationSwitch = false,
+                checkPomodoroStop = oldRecord.id != newTypeId,
+            )
+        }
+        old.firstOrNull()?.let { oldRecord ->
+            addRunningRecordMediator.addAfterChange(
+                typeId = newTypeId,
+                timeStarted = oldRecord.timeStarted,
+                comment = oldRecord.comment,
+                tagIds = getTagsAfterActivityChange(
+                    currentTags = oldRecord.tagIds,
+                    newTypeId = newTypeId,
+                ),
+            )
+        }
+    }
+
+    private suspend fun changeRunningRecordTags(
+        old: List<RunningRecord>,
+        newTagIds: List<Long>,
+    ) {
+        old.forEach { oldRecord ->
+            oldRecord.copy(
+                tagIds = newTagIds,
+            ).let {
+                runningRecordInteractor.add(it)
             }
         }
+        old.map { it.id }.toSet().forEach { typeId ->
+            externalViewsInteractor.onRunningRecordAdd(
+                typeId = typeId,
+                updateNotificationSwitch = true,
+            )
+        }
     }
 
-    private suspend fun changeRunningRecord(
-        old: RunningRecord,
+    private suspend fun changeUntrackedType(
+        params: List<Type.RecordUntracked>,
         newTypeId: Long,
-        newTagIds: List<Long>,
     ) {
-        // Widgets will update on adding.
-        removeRunningRecordMediator.remove(
-            typeId = old.id,
-            updateWidgets = false,
-            updateNotificationSwitch = false,
-            checkPomodoroStop = old.id != newTypeId,
-        )
-        addRunningRecordMediator.addAfterChange(
-            typeId = newTypeId,
-            timeStarted = old.timeStarted,
-            comment = old.comment,
-            tagIds = newTagIds,
-        )
+        params.map { untrackedRecord ->
+            val newTimeStarted = untrackedRecord.timeStarted
+            val newTimeEnded = untrackedRecord.timeEnded
+            Record(
+                id = 0L,
+                typeId = newTypeId,
+                timeStarted = newTimeStarted,
+                timeEnded = newTimeEnded,
+                comment = "",
+                tagIds = emptyList(),
+            )
+        }.let {
+            addRecordMediator.add(it)
+        }
     }
 
     private suspend fun getTagsAfterActivityChange(
@@ -158,5 +220,25 @@ class RecordQuickActionsInteractor @Inject constructor(
         val selectableTags = getSelectableTagsInteractor.execute(newTypeId)
             .map(RecordTag::id)
         return currentTags.filter { it in selectableTags }
+    }
+
+    private fun changeOnlyDate(
+        currentTimestamp: Long,
+        timestampWithDateSelected: Long,
+        calendar: Calendar,
+    ): Long {
+        calendar.timeInMillis = timestampWithDateSelected
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+        calendar.apply {
+            timeInMillis = currentTimestamp
+            set(Calendar.YEAR, year)
+            set(Calendar.MONTH, month)
+            set(Calendar.DAY_OF_MONTH, day)
+        }
+
+        return calendar.timeInMillis
     }
 }
