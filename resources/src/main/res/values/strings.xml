@@ -145,6 +145,8 @@ This allows you to see how much time you\'re spending on productive versus unpro
     <string name="change_record_move_hint">Will change start time without changing duration</string>
     <string name="change_record_merge">Merge</string>
     <string name="change_record_merge_hint">Will add this time to previous record</string>
+    <string name="change_record_multiselect">Multiselect</string>
+    <string name="change_record_multiselect_hint">Select multiple records and open Actions menu again</string>
     <string name="change_record_adjust">Change</string>
     <string name="change_record_change_prev_record">Also change time of previous record</string>
     <string name="change_record_change_adjacent_records">Also change time of adjacent records</string>

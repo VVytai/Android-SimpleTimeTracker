@@ -11,15 +11,17 @@ import com.example.util.simpletimetracker.core.interactor.StatisticsDetailNaviga
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.domain.base.UNTRACKED_ITEM_ID
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
+import com.example.util.simpletimetracker.domain.record.interactor.RecordInteractor
+import com.example.util.simpletimetracker.domain.record.interactor.RecordsContainerMultiselectInteractor
+import com.example.util.simpletimetracker.domain.record.interactor.RemoveRunningRecordMediator
+import com.example.util.simpletimetracker.domain.record.interactor.RunningRecordInteractor
+import com.example.util.simpletimetracker.domain.record.model.MultiSelectedRecordId
+import com.example.util.simpletimetracker.domain.record.model.Record
 import com.example.util.simpletimetracker.domain.recordAction.interactor.RecordActionContinueMediator
 import com.example.util.simpletimetracker.domain.recordAction.interactor.RecordActionDuplicateMediator
 import com.example.util.simpletimetracker.domain.recordAction.interactor.RecordActionMergeMediator
 import com.example.util.simpletimetracker.domain.recordAction.interactor.RecordActionRepeatMediator
-import com.example.util.simpletimetracker.domain.record.interactor.RecordInteractor
-import com.example.util.simpletimetracker.domain.record.interactor.RemoveRunningRecordMediator
-import com.example.util.simpletimetracker.domain.record.interactor.RunningRecordInteractor
 import com.example.util.simpletimetracker.domain.statistics.model.ChartFilterType
-import com.example.util.simpletimetracker.domain.record.model.Record
 import com.example.util.simpletimetracker.feature_dialogs.R
 import com.example.util.simpletimetracker.feature_dialogs.recordQuickActions.interactor.RecordQuickActionsInteractor
 import com.example.util.simpletimetracker.feature_dialogs.recordQuickActions.interactor.RecordQuickActionsViewDataInteractor
@@ -52,6 +54,7 @@ class RecordQuickActionsViewModel @Inject constructor(
     private val recordActionMergeMediator: RecordActionMergeMediator,
     private val removeRunningRecordMediator: RemoveRunningRecordMediator,
     private val runningRecordInteractor: RunningRecordInteractor,
+    private val recordsContainerMultiselectInteractor: RecordsContainerMultiselectInteractor,
 ) : BaseViewModel() {
 
     lateinit var extra: RecordQuickActionsParams
@@ -79,6 +82,8 @@ class RecordQuickActionsViewModel @Inject constructor(
                 onButtonClick(onProceed = ::onMerge)
             RecordQuickActionsButton.STOP ->
                 onButtonClick(onProceed = ::onStop)
+            RecordQuickActionsButton.MULTISELECT ->
+                onButtonClick(onProceed = ::onMultiselect)
             RecordQuickActionsButton.CHANGE_ACTIVITY ->
                 onButtonClick(delayBlock = true, onProceed = ::onChangeActivity)
             RecordQuickActionsButton.CHANGE_TAG ->
@@ -95,6 +100,11 @@ class RecordQuickActionsViewModel @Inject constructor(
             isFullscreen = false,
         )
         router.navigate(params)
+    }
+
+    fun onMultiselectCancelClick() = viewModelScope.launch {
+        recordsContainerMultiselectInteractor.disable()
+        exit()
     }
 
     private suspend fun goToStatistics() {
@@ -214,6 +224,23 @@ class RecordQuickActionsViewModel @Inject constructor(
         exit()
     }
 
+    private suspend fun onMultiselect() {
+        // TODO MULTI translate texts
+        // TODO MULTI on calendar?
+        // TODO MULTI cancel on tab change?
+        // TODO MULTI disable throttle record click in multiselect
+        // TODO MULTI move record delete event to viewModel.
+        // TODO MULTI add tag change.
+        // TODO MULTI for Move allow only date change.
+        if (recordsContainerMultiselectInteractor.isEnabled) {
+            recordsContainerMultiselectInteractor.disable()
+        } else {
+            val id = mapMultiselectId() ?: return
+            recordsContainerMultiselectInteractor.enable(id)
+        }
+        exit()
+    }
+
     private fun onChangeActivity() {
         TypesSelectionDialogParams(
             tag = RECORD_QUICK_ACTIONS_TYPE_SELECTION_TAG,
@@ -288,6 +315,15 @@ class RecordQuickActionsViewModel @Inject constructor(
             if (buttonsBlocked) return@launch
             if (!delayBlock) buttonsBlocked = true
             onProceed()
+        }
+    }
+
+    private fun mapMultiselectId(): MultiSelectedRecordId? {
+        val extraType = extra.type ?: return null
+        return when (extraType) {
+            is Type.RecordTracked -> MultiSelectedRecordId.Tracked(extraType.id)
+            is Type.RecordUntracked -> MultiSelectedRecordId.Untracked(extraType.timeStarted)
+            is Type.RecordRunning -> MultiSelectedRecordId.Running(extraType.id)
         }
     }
 

@@ -82,6 +82,7 @@ class RecordQuickActionsDialogFragment :
 
     override fun initUx() = with(binding) {
         btnRecordQuickActionsHint.setOnClick(throttle(viewModel::onHintClick))
+        hintRecordQuickActionsMultiselect.setOnActionClick(throttle(viewModel::onMultiselectCancelClick))
     }
 
     override fun initViewModel(): Unit = with(viewModel) {
@@ -102,6 +103,8 @@ class RecordQuickActionsDialogFragment :
     private fun updateState(state: RecordQuickActionsState) = with(binding) {
         contentAdapter.replace(state.buttons)
         btnRecordQuickActionsHint.isVisible = state.hintData.isNotEmpty()
+        hintRecordQuickActionsMultiselect.isVisible = state.multiSelectHint.isNotEmpty()
+        hintRecordQuickActionsMultiselect.itemText = state.multiSelectHint
     }
 
     private fun prepareRemoveRecordViewModel() {

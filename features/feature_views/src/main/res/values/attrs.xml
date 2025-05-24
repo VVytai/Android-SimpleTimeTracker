@@ -162,7 +162,7 @@
     </declare-styleable>
 
     <declare-styleable name="HintBigView">
-        <attr name="itemHintText" format="reference" />
+        <attr name="itemHintText" format="string" />
         <attr name="itemInfoIconVisible" format="boolean" />
         <attr name="itemCloseIconVisible" format="boolean" />
         <attr name="itemActionButtonVisible" format="boolean" />

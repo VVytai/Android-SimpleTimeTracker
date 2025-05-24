@@ -28,10 +28,14 @@ import com.example.util.simpletimetracker.domain.recordType.model.RecordType
 import com.example.util.simpletimetracker.domain.recordType.model.RecordTypeGoal
 import com.example.util.simpletimetracker.domain.record.model.RunningRecord
 import com.example.util.simpletimetracker.domain.record.interactor.GetUntrackedRecordsInteractor
+import com.example.util.simpletimetracker.domain.record.interactor.RecordsContainerMultiselectInteractor
+import com.example.util.simpletimetracker.domain.record.model.MultiSelectedRecordId
 import com.example.util.simpletimetracker.domain.statistics.model.ChartFilterType
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.record.RecordViewData
+import com.example.util.simpletimetracker.feature_base_adapter.recordSelected.RecordSelectedViewData
 import com.example.util.simpletimetracker.feature_base_adapter.runningRecord.RunningRecordViewData
+import com.example.util.simpletimetracker.feature_base_adapter.runningRecordSelected.RunningRecordSelectedViewData
 import com.example.util.simpletimetracker.feature_records.customView.RecordsCalendarViewData
 import com.example.util.simpletimetracker.feature_records.mapper.RecordsViewDataMapper
 import com.example.util.simpletimetracker.feature_records.model.RecordsState
@@ -60,6 +64,7 @@ class RecordsViewDataInteractor @Inject constructor(
     private val calendarToListShiftMapper: CalendarToListShiftMapper,
     private val recordTypeCategoryInteractor: RecordTypeCategoryInteractor,
     private val daysInCalendarMapper: DaysInCalendarMapper,
+    private val recordsContainerMultiselectInteractor: RecordsContainerMultiselectInteractor,
 ) {
 
     suspend fun getViewData(
@@ -89,6 +94,7 @@ class RecordsViewDataInteractor @Inject constructor(
             DaysInCalendar.ONE
         }
         val daysCountInShift = daysInCalendarMapper.mapDaysCount(daysInCalendar)
+        val multiSelectedIds = recordsContainerMultiselectInteractor.selectedRecordIds
 
         return@withContext (daysCountInShift - 1 downTo 0).map { dayInShift ->
             val actualShift = calendarToListShiftMapper.mapCalendarToListShift(
@@ -143,6 +149,7 @@ class RecordsViewDataInteractor @Inject constructor(
                     data = data,
                     shift = shift,
                     forSharing = forSharing,
+                    multiSelectedIds = multiSelectedIds,
                 )
             }
         }
@@ -210,6 +217,7 @@ class RecordsViewDataInteractor @Inject constructor(
         data: List<ViewDataIntermediate>,
         shift: Int,
         forSharing: Boolean,
+        multiSelectedIds: List<MultiSelectedRecordId>,
     ): RecordsState.RecordsData {
         val records = data.firstOrNull()?.records.orEmpty()
 
@@ -241,12 +249,45 @@ class RecordsViewDataInteractor @Inject constructor(
             else -> {
                 records
                     .sortedWith(sortComparator)
-                    .map { it.data.value } +
+                    .map { remapForMultiselect(it, multiSelectedIds) } +
                     listOfNotNull(hint)
             }
         }
 
         return RecordsState.RecordsData(items)
+    }
+
+    private fun remapForMultiselect(
+        holder: RecordHolder,
+        multiSelectedIds: List<MultiSelectedRecordId>,
+    ): ViewHolderType {
+        // If disabled - return right away.
+        if (multiSelectedIds.isEmpty()) {
+            return holder.data.value
+        }
+        return when (holder.data) {
+            is RecordHolder.Data.RecordData -> {
+                val value = holder.data.value
+                val id = when (value) {
+                    is RecordViewData.Tracked -> MultiSelectedRecordId.Tracked(value.id)
+                    is RecordViewData.Untracked -> MultiSelectedRecordId.Untracked(value.timeStartedTimestamp)
+                }
+                if (id in multiSelectedIds) {
+                    RecordSelectedViewData(value)
+                } else {
+                    value
+                }
+            }
+            is RecordHolder.Data.RunningRecordData -> {
+                val value = holder.data.value
+                val id = MultiSelectedRecordId.Running(value.id)
+                if (id in multiSelectedIds) {
+                    RunningRecordSelectedViewData(value)
+                } else {
+                    value
+                }
+            }
+        }
     }
 
     private suspend fun getRecordsViewData(

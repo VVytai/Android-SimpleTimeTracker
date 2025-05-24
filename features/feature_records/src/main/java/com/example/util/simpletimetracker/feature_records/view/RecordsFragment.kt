@@ -25,7 +25,9 @@ import com.example.util.simpletimetracker.feature_base_adapter.hint.createHintAd
 import com.example.util.simpletimetracker.feature_base_adapter.hintBig.createHintBigAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.loader.createLoaderAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.record.createRecordAdapterDelegate
+import com.example.util.simpletimetracker.feature_base_adapter.recordSelected.createRecordSelectedAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.runningRecord.createRunningRecordAdapterDelegate
+import com.example.util.simpletimetracker.feature_base_adapter.runningRecordSelected.createRunningRecordSelectedAdapterDelegate
 import com.example.util.simpletimetracker.feature_records.R
 import com.example.util.simpletimetracker.feature_records.databinding.RecordsFragmentShareBinding
 import com.example.util.simpletimetracker.feature_records.extra.RecordsExtra
@@ -86,7 +88,7 @@ class RecordsFragment :
         binding.viewRecordsCalendar.root.setLongClickListener(throttle(viewModel::onCalendarLongClick))
     }
 
-    override fun initViewModel() = with(binding) {
+    override fun initViewModel() {
         with(viewModel) {
             extra = RecordsExtra(shift = arguments?.getInt(ARGS_POSITION).orZero())
             isCalendarView.observe(::switchState)
@@ -220,6 +222,14 @@ class RecordsFragment :
             createRecordAdapterDelegate(
                 onItemClick = throttle(viewModel::onRecordClick),
                 onItemLongClick = throttle(viewModel::onRecordLongClick),
+            ),
+            createRunningRecordSelectedAdapterDelegate(
+                onItemClick = viewModel::onRunningRecordClick,
+                onItemLongClick = viewModel::onRunningRecordLongClick,
+            ),
+            createRecordSelectedAdapterDelegate(
+                onItemClick = viewModel::onRecordClick,
+                onItemLongClick = viewModel::onRecordLongClick,
             ),
             createEmptyAdapterDelegate(),
             createLoaderAdapterDelegate(),

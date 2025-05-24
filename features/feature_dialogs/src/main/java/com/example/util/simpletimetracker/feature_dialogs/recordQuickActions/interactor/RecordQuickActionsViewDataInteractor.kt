@@ -4,12 +4,14 @@ import android.text.SpannableStringBuilder
 import androidx.core.text.bold
 import com.example.util.simpletimetracker.core.mapper.RecordQuickActionMapper
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
-import com.example.util.simpletimetracker.domain.recordTag.interactor.GetSelectableTagsInteractor
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.RecordInteractor
+import com.example.util.simpletimetracker.domain.record.interactor.RecordsContainerMultiselectInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.RunningRecordInteractor
+import com.example.util.simpletimetracker.domain.record.model.MultiSelectedRecordId
 import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.domain.recordAction.model.RecordQuickAction
+import com.example.util.simpletimetracker.domain.recordTag.interactor.GetSelectableTagsInteractor
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_dialogs.R
 import com.example.util.simpletimetracker.feature_dialogs.recordQuickActions.adapter.RecordQuickActionsButtonBigViewData
@@ -29,6 +31,7 @@ class RecordQuickActionsViewDataInteractor @Inject constructor(
     private val runningRecordInteractor: RunningRecordInteractor,
     private val recordQuickActionMapper: RecordQuickActionMapper,
     private val getSelectableTagsInteractor: GetSelectableTagsInteractor,
+    private val recordsContainerMultiselectInteractor: RecordsContainerMultiselectInteractor,
 ) {
 
     suspend fun getRecord(
@@ -47,16 +50,24 @@ class RecordQuickActionsViewDataInteractor @Inject constructor(
     ): RecordQuickActionsState {
         val isDarkTheme = prefsInteractor.getDarkMode()
         val retroactiveTrackingModeEnabled = prefsInteractor.getRetroactiveTrackingMode()
+        val multiSelectEnabled = recordsContainerMultiselectInteractor.isEnabled
         val canContinue = !retroactiveTrackingModeEnabled
-        val typeId = getRecord(extra)?.typeIds?.firstOrNull()
-        val hasTags = typeId
-            ?.let { getSelectableTagsInteractor.execute(it) }
-            .orEmpty().any { !it.archived }
-        val allowedButtons = getAllowedButtons(
-            extra = extra,
-            canContinue = canContinue,
-            hasTags = hasTags,
-        )
+        val allowedButtons = if (multiSelectEnabled) {
+            val multiSelectedIds = recordsContainerMultiselectInteractor.selectedRecordIds
+            getAllowedInMultiselectButtons(
+                hasTags = false,
+                multiSelectedIds = multiSelectedIds,
+            )
+        } else {
+            val hasTags = getRecord(extra)?.typeIds?.firstOrNull()
+                ?.let { getSelectableTagsInteractor.execute(it) }
+                .orEmpty().any { !it.archived }
+            getAllowedButtons(
+                extra = extra,
+                canContinue = canContinue,
+                hasTags = hasTags,
+            )
+        }
         val buttons = getAllButtons(
             allowedButtons = allowedButtons,
         ).let(::applyWidth)
@@ -64,17 +75,19 @@ class RecordQuickActionsViewDataInteractor @Inject constructor(
             allowedButtons = allowedButtons,
             isDarkTheme = isDarkTheme,
         )
+        val multiSelectHint = mapMultiSelectHint()
 
         return RecordQuickActionsState(
             buttons = buttons,
             hintData = hintData,
+            multiSelectHint = multiSelectHint,
         )
     }
 
     private fun getAllButtons(
         allowedButtons: List<RecordQuickActionsButton>,
     ): List<ViewHolderType> {
-        val allActions = listOf(
+        val allActionsOrder = listOf(
             RecordQuickActionsButton.STATISTICS,
             RecordQuickActionsButton.DELETE,
             RecordQuickActionsButton.CONTINUE,
@@ -83,13 +96,14 @@ class RecordQuickActionsViewDataInteractor @Inject constructor(
             RecordQuickActionsButton.MOVE,
             RecordQuickActionsButton.MERGE,
             RecordQuickActionsButton.STOP,
+            RecordQuickActionsButton.MULTISELECT,
             RecordQuickActionsButton.CHANGE_ACTIVITY,
             RecordQuickActionsButton.CHANGE_TAG,
         ).filter {
             it in allowedButtons
         }
 
-        return allActions.mapNotNull {
+        return allActionsOrder.mapNotNull {
             when (it) {
                 RecordQuickActionsButton.STATISTICS -> {
                     RecordQuickActionsButtonBigViewData(
@@ -117,6 +131,26 @@ class RecordQuickActionsViewDataInteractor @Inject constructor(
         }
     }
 
+    private fun getAllowedInMultiselectButtons(
+        hasTags: Boolean,
+        multiSelectedIds: List<MultiSelectedRecordId>,
+    ): List<RecordQuickActionsButton> {
+        return listOfNotNull(
+            RecordQuickActionsButton.DELETE.takeIf {
+                multiSelectedIds.none { it is MultiSelectedRecordId.Untracked }
+            },
+            RecordQuickActionsButton.DUPLICATE.takeIf {
+                multiSelectedIds.all { it is MultiSelectedRecordId.Tracked }
+            },
+            RecordQuickActionsButton.MOVE.takeIf {
+                multiSelectedIds.all { it is MultiSelectedRecordId.Tracked }
+            },
+            RecordQuickActionsButton.MULTISELECT,
+            RecordQuickActionsButton.CHANGE_ACTIVITY,
+            RecordQuickActionsButton.CHANGE_TAG.takeIf { hasTags },
+        )
+    }
+
     private fun getAllowedButtons(
         extra: RecordQuickActionsParams,
         canContinue: Boolean,
@@ -130,18 +164,21 @@ class RecordQuickActionsViewDataInteractor @Inject constructor(
                 RecordQuickActionsButton.REPEAT,
                 RecordQuickActionsButton.DUPLICATE,
                 RecordQuickActionsButton.MOVE,
+                RecordQuickActionsButton.MULTISELECT,
                 RecordQuickActionsButton.CHANGE_ACTIVITY,
                 RecordQuickActionsButton.CHANGE_TAG.takeIf { hasTags },
             )
             is Type.RecordUntracked -> listOfNotNull(
                 RecordQuickActionsButton.STATISTICS,
                 RecordQuickActionsButton.MERGE,
+                RecordQuickActionsButton.MULTISELECT,
                 RecordQuickActionsButton.CHANGE_ACTIVITY,
             )
             is Type.RecordRunning -> listOfNotNull(
                 RecordQuickActionsButton.STATISTICS,
                 RecordQuickActionsButton.DELETE,
                 RecordQuickActionsButton.STOP,
+                RecordQuickActionsButton.MULTISELECT,
                 RecordQuickActionsButton.CHANGE_ACTIVITY,
                 RecordQuickActionsButton.CHANGE_TAG.takeIf { hasTags },
             )
@@ -188,6 +225,7 @@ class RecordQuickActionsViewDataInteractor @Inject constructor(
             RecordQuickActionsButton.MOVE -> RecordQuickAction.MOVE
             RecordQuickActionsButton.MERGE -> RecordQuickAction.MERGE
             RecordQuickActionsButton.STOP -> RecordQuickAction.STOP
+            RecordQuickActionsButton.MULTISELECT -> RecordQuickAction.MULTISELECT
             RecordQuickActionsButton.CHANGE_ACTIVITY -> RecordQuickAction.CHANGE_ACTIVITY
             RecordQuickActionsButton.CHANGE_TAG -> RecordQuickAction.CHANGE_TAG
         }
@@ -229,5 +267,27 @@ class RecordQuickActionsViewDataInteractor @Inject constructor(
         }
 
         return builder
+    }
+
+    private fun mapMultiSelectHint(): String {
+        return if (recordsContainerMultiselectInteractor.isEnabled) {
+            // Ex. "Selected: 5 Records"
+            val recordsSelectedCount = recordsContainerMultiselectInteractor.selectedRecordIds.size
+            val recordsSelectedString = resourceRepo.getString(
+                R.string.separator_template,
+                recordsSelectedCount,
+                resourceRepo.getQuantityString(
+                    R.plurals.statistics_detail_times_tracked,
+                    recordsSelectedCount,
+                ),
+            )
+            resourceRepo.getString(
+                R.string.separator_template,
+                resourceRepo.getString(R.string.something_selected),
+                recordsSelectedString,
+            )
+        } else {
+            ""
+        }
     }
 }

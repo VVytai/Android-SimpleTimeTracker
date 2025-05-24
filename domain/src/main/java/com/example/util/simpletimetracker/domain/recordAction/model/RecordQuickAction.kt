@@ -9,6 +9,7 @@ enum class RecordQuickAction {
     SPLIT,
     ADJUST,
     STOP,
+    MULTISELECT,
     CHANGE_ACTIVITY,
     CHANGE_TAG,
 }

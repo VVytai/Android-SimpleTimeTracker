@@ -11,6 +11,7 @@ import com.example.util.simpletimetracker.domain.recordAction.model.RecordQuickA
 import com.example.util.simpletimetracker.domain.recordAction.model.RecordQuickAction.DUPLICATE
 import com.example.util.simpletimetracker.domain.recordAction.model.RecordQuickAction.MERGE
 import com.example.util.simpletimetracker.domain.recordAction.model.RecordQuickAction.MOVE
+import com.example.util.simpletimetracker.domain.recordAction.model.RecordQuickAction.MULTISELECT
 import com.example.util.simpletimetracker.domain.recordAction.model.RecordQuickAction.REPEAT
 import com.example.util.simpletimetracker.domain.recordAction.model.RecordQuickAction.SPLIT
 import com.example.util.simpletimetracker.domain.recordAction.model.RecordQuickAction.STOP
@@ -30,6 +31,7 @@ class RecordQuickActionMapper @Inject constructor(
             SPLIT -> R.string.change_record_split
             ADJUST -> R.string.change_record_adjust
             STOP -> R.string.notification_record_type_stop
+            MULTISELECT -> R.string.change_record_multiselect
             CHANGE_ACTIVITY -> R.string.data_edit_change_activity
             CHANGE_TAG -> R.string.data_edit_change_tag
         }.let(resourceRepo::getString)
@@ -45,6 +47,7 @@ class RecordQuickActionMapper @Inject constructor(
             SPLIT -> R.string.change_record_split_hint
             ADJUST -> R.string.change_record_change_adjacent_records
             STOP -> null
+            MULTISELECT -> R.string.change_record_multiselect_hint
             CHANGE_ACTIVITY -> null
             CHANGE_TAG -> null
         }?.let(resourceRepo::getString)
@@ -61,6 +64,7 @@ class RecordQuickActionMapper @Inject constructor(
             SPLIT -> R.drawable.action_divide
             ADJUST -> R.drawable.action_change
             STOP -> R.drawable.action_stop
+            MULTISELECT -> R.drawable.action_multiselect
             CHANGE_ACTIVITY, CHANGE_TAG -> R.drawable.action_change_item
         }
     }

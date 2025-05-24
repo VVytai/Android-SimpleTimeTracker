@@ -14,9 +14,11 @@ import com.example.util.simpletimetracker.core.model.NavigationTab
 import com.example.util.simpletimetracker.domain.darkMode.interactor.ThemeChangedInteractor
 import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
+import com.example.util.simpletimetracker.domain.record.interactor.RecordsContainerMultiselectInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.RecordsShareUpdateInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.RecordsUpdateInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.UpdateRunningRecordFromChangeScreenInteractor
+import com.example.util.simpletimetracker.domain.record.model.MultiSelectedRecordId
 import com.example.util.simpletimetracker.domain.statistics.model.ChartFilterType
 import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
@@ -54,6 +56,7 @@ class RecordsViewModel @Inject constructor(
     private val recordsViewDataMapper: RecordsViewDataMapper,
     private val updateRunningRecordFromChangeScreenInteractor: UpdateRunningRecordFromChangeScreenInteractor,
     private val getChangeRecordNavigationParamsInteractor: GetChangeRecordNavigationParamsInteractor,
+    private val recordsContainerMultiselectInteractor: RecordsContainerMultiselectInteractor,
     private val themeChangedInteractor: ThemeChangedInteractor,
 ) : ViewModel() {
 
@@ -96,6 +99,10 @@ class RecordsViewModel @Inject constructor(
         item: RunningRecordViewData,
         sharedElements: Pair<Any, String>? = null,
     ) = viewModelScope.launch {
+        if (recordsContainerMultiselectInteractor.isEnabled) {
+            onMultiselectRunningRecordClick(item)
+            return@launch
+        }
         val useMilitaryTimeFormat = prefsInteractor.getUseMilitaryTimeFormat()
         val showSeconds = prefsInteractor.getShowSeconds()
         val params = getChangeRecordNavigationParamsInteractor.execute(
@@ -115,6 +122,10 @@ class RecordsViewModel @Inject constructor(
         item: RecordViewData,
         sharedElements: Pair<Any, String>? = null,
     ) = viewModelScope.launch {
+        if (recordsContainerMultiselectInteractor.isEnabled) {
+            onMultiselectRecordClick(item)
+            return@launch
+        }
         val useMilitaryTimeFormat = prefsInteractor.getUseMilitaryTimeFormat()
         val showSeconds = prefsInteractor.getShowSeconds()
         val params = getChangeRecordNavigationParamsInteractor.execute(
@@ -136,6 +147,14 @@ class RecordsViewModel @Inject constructor(
         item: RunningRecordViewData,
         sharedElements: Pair<Any, String>? = null,
     ) {
+        if (recordsContainerMultiselectInteractor.isEnabled) {
+            val id = MultiSelectedRecordId.Running(item.id)
+            if (id !in recordsContainerMultiselectInteractor.selectedRecordIds) {
+                recordsContainerMultiselectInteractor.onRecordClick(id)
+                updateRecords()
+                return
+            }
+        }
         RecordQuickActionsParams(
             type = RecordQuickActionsParams.Type.RecordRunning(
                 id = item.id,
@@ -153,6 +172,17 @@ class RecordsViewModel @Inject constructor(
         item: RecordViewData,
         sharedElements: Pair<Any, String>? = null,
     ) {
+        if (recordsContainerMultiselectInteractor.isEnabled) {
+            val id = when (item) {
+                is RecordViewData.Tracked -> MultiSelectedRecordId.Tracked(item.id)
+                is RecordViewData.Untracked -> MultiSelectedRecordId.Untracked(item.timeStartedTimestamp)
+            }
+            if (id !in recordsContainerMultiselectInteractor.selectedRecordIds) {
+                recordsContainerMultiselectInteractor.onRecordClick(id)
+                updateRecords()
+                return
+            }
+        }
         val type = when (item) {
             is RecordViewData.Tracked -> RecordQuickActionsParams.Type.RecordTracked(
                 id = item.id,
@@ -234,6 +264,21 @@ class RecordsViewModel @Inject constructor(
         if (shift != 0) return
 
         previewUpdate.set(update)
+    }
+
+    private fun onMultiselectRunningRecordClick(item: RunningRecordViewData) {
+        val id = MultiSelectedRecordId.Running(item.id)
+        recordsContainerMultiselectInteractor.onRecordClick(id)
+        updateRecords()
+    }
+
+    private fun onMultiselectRecordClick(item: RecordViewData) {
+        val id = when (item) {
+            is RecordViewData.Tracked -> MultiSelectedRecordId.Tracked(item.id)
+            is RecordViewData.Untracked -> MultiSelectedRecordId.Untracked(item.timeStartedTimestamp)
+        }
+        recordsContainerMultiselectInteractor.onRecordClick(id)
+        updateRecords()
     }
 
     @Suppress("MoveVariableDeclarationIntoWhen")

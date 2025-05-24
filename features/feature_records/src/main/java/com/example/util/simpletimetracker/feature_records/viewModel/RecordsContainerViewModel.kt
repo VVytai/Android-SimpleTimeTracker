@@ -7,19 +7,23 @@ import com.example.util.simpletimetracker.core.extension.lazySuspend
 import com.example.util.simpletimetracker.core.extension.set
 import com.example.util.simpletimetracker.core.mapper.CalendarToListShiftMapper
 import com.example.util.simpletimetracker.core.mapper.TimeMapper
+import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.domain.daysOfWeek.model.DaysInCalendar
 import com.example.util.simpletimetracker.domain.extension.orFalse
 import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
+import com.example.util.simpletimetracker.domain.record.interactor.RecordsContainerMultiselectInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.RecordsContainerUpdateInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.RecordsShareUpdateInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.RecordsUpdateInteractor
 import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
+import com.example.util.simpletimetracker.feature_records.R
 import com.example.util.simpletimetracker.feature_records.mapper.RecordsContainerOptionsListMapper
 import com.example.util.simpletimetracker.feature_records.mapper.RecordsViewDataMapper
 import com.example.util.simpletimetracker.feature_records.model.RecordsContainerOptionsListItem
 import com.example.util.simpletimetracker.feature_records.model.RecordsContainerPosition
 import com.example.util.simpletimetracker.navigation.Router
+import com.example.util.simpletimetracker.navigation.params.notification.SnackBarParams
 import com.example.util.simpletimetracker.navigation.params.screen.ChangeRecordFromMainParams
 import com.example.util.simpletimetracker.navigation.params.screen.ChangeRecordParams
 import com.example.util.simpletimetracker.navigation.params.screen.ChartFilterDialogParams
@@ -34,6 +38,7 @@ import javax.inject.Inject
 class RecordsContainerViewModel @Inject constructor(
     private val router: Router,
     private val timeMapper: TimeMapper,
+    private val resourceRepo: ResourceRepo,
     private val recordsViewDataMapper: RecordsViewDataMapper,
     private val prefsInteractor: PrefsInteractor,
     private val recordsUpdateInteractor: RecordsUpdateInteractor,
@@ -41,6 +46,7 @@ class RecordsContainerViewModel @Inject constructor(
     private val recordsShareUpdateInteractor: RecordsShareUpdateInteractor,
     private val calendarToListShiftMapper: CalendarToListShiftMapper,
     private val recordsContainerOptionsListMapper: RecordsContainerOptionsListMapper,
+    private val recordsContainerMultiselectInteractor: RecordsContainerMultiselectInteractor,
 ) : BaseViewModel() {
 
     val title: LiveData<String>
@@ -178,6 +184,10 @@ class RecordsContainerViewModel @Inject constructor(
             recordsContainerUpdateInteractor.firstDayOfWeekUpdated
                 .collect { updateTitle(currentPosition) }
         }
+        viewModelScope.launch {
+            recordsContainerMultiselectInteractor.stateChanged
+                .collect { onMultiselectEnabled() }
+        }
     }
 
     private suspend fun recalculateRangeOnCalendarViewSwitched() {
@@ -224,6 +234,17 @@ class RecordsContainerViewModel @Inject constructor(
             ).end
         } else {
             shift
+        }
+    }
+
+    private fun onMultiselectEnabled() {
+        if (recordsContainerMultiselectInteractor.isEnabled) {
+            val params = SnackBarParams(
+                message = resourceRepo.getString(R.string.change_record_multiselect_hint),
+                duration = SnackBarParams.Duration.Long,
+                marginBottomDp = resourceRepo.getDimenInDp(R.dimen.button_height),
+            )
+            router.show(params)
         }
     }
 

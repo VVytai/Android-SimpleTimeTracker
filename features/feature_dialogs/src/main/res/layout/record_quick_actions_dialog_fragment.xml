@@ -11,8 +11,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp">
+        android:layout_marginTop="8dp">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:layout_width="match_parent"
@@ -50,11 +49,26 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <com.example.util.simpletimetracker.feature_views.HintBigView
+        android:id="@+id/hintRecordQuickActionsMultiselect"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="9dp"
+        android:layout_marginTop="8dp"
+        android:visibility="gone"
+        app:itemActionButtonText="@string/cancel"
+        app:itemActionButtonVisible="true"
+        app:itemCloseIconVisible="false"
+        app:itemInfoIconVisible="false"
+        tools:itemHintText="Selected: 5 Records"
+        tools:visibility="visible" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvRecordQuickActions"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="5dp"
+        android:layout_marginTop="8dp"
         tools:itemCount="5"
         tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         tools:listitem="@layout/record_quick_actions_button_item"
