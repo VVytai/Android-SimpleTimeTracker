@@ -21,6 +21,7 @@ data class RecordsCalendarViewData(
     data class Point(
         val start: Long,
         val end: Long,
+        val isSelected: Boolean,
         val data: Data,
     ) {
 

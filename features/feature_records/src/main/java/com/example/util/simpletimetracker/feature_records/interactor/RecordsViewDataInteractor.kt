@@ -143,6 +143,7 @@ class RecordsViewDataInteractor @Inject constructor(
                     shift = shift,
                     reverseOrder = reverseOrder,
                     showSeconds = showSeconds,
+                    multiSelectedIds = multiSelectedIds,
                 )
             } else {
                 mapRecordsData(
@@ -162,6 +163,7 @@ class RecordsViewDataInteractor @Inject constructor(
         shift: Int,
         reverseOrder: Boolean,
         showSeconds: Boolean,
+        multiSelectedIds: List<MultiSelectedRecordId>,
     ): RecordsState.CalendarData.Data {
         val currentTime = if (shift == 0) {
             timeMapper.mapFromStartOfDay(
@@ -193,6 +195,7 @@ class RecordsViewDataInteractor @Inject constructor(
                         rangeStart = column.rangeStart,
                         rangeEnd = column.rangeEnd,
                         showSeconds = showSeconds,
+                        multiSelectedIds = multiSelectedIds,
                     )
                 }
 
@@ -265,17 +268,11 @@ class RecordsViewDataInteractor @Inject constructor(
         if (multiSelectedIds.isEmpty()) {
             return holder.data.value
         }
+        val multiSelectedId = mapMultiSelectedId(holder)
         return when (holder.data) {
             is RecordHolder.Data.RecordData -> {
                 val value = holder.data.value
-                val id = when (value) {
-                    is RecordViewData.Tracked -> MultiSelectedRecordId.Tracked(value.id)
-                    is RecordViewData.Untracked -> MultiSelectedRecordId.Untracked(
-                        timeStartedTimestamp = value.timeStartedTimestamp,
-                        timeEndedTimestamp = value.timeEndedTimestamp,
-                    )
-                }
-                if (id in multiSelectedIds) {
+                if (multiSelectedId in multiSelectedIds) {
                     RecordSelectedViewData(value)
                 } else {
                     value
@@ -283,8 +280,7 @@ class RecordsViewDataInteractor @Inject constructor(
             }
             is RecordHolder.Data.RunningRecordData -> {
                 val value = holder.data.value
-                val id = MultiSelectedRecordId.Running(value.id)
-                if (id in multiSelectedIds) {
+                if (multiSelectedId in multiSelectedIds) {
                     RunningRecordSelectedViewData(value)
                 } else {
                     value
@@ -451,6 +447,7 @@ class RecordsViewDataInteractor @Inject constructor(
         rangeStart: Long,
         rangeEnd: Long,
         showSeconds: Boolean,
+        multiSelectedIds: List<MultiSelectedRecordId>,
     ): RecordsCalendarViewData.Point {
         // Record data already clamped.
         val timeStartedTimestamp = when (holder.data) {
@@ -478,9 +475,12 @@ class RecordsViewDataInteractor @Inject constructor(
 
         val end = start + duration
 
+        val isSelected = mapMultiSelectedId(holder) in multiSelectedIds
+
         return RecordsCalendarViewData.Point(
             start = start - startOfDayShift,
             end = end - startOfDayShift,
+            isSelected = isSelected,
             data = when (holder.data) {
                 is RecordHolder.Data.RecordData -> {
                     RecordsCalendarViewData.Point.Data.RecordData(holder.data.value)
@@ -490,6 +490,26 @@ class RecordsViewDataInteractor @Inject constructor(
                 }
             },
         )
+    }
+
+    private fun mapMultiSelectedId(
+        holder: RecordHolder,
+    ): MultiSelectedRecordId {
+        return when (holder.data) {
+            is RecordHolder.Data.RecordData -> {
+                when (val value = holder.data.value) {
+                    is RecordViewData.Tracked -> MultiSelectedRecordId.Tracked(value.id)
+                    is RecordViewData.Untracked -> MultiSelectedRecordId.Untracked(
+                        timeStartedTimestamp = value.timeStartedTimestamp,
+                        timeEndedTimestamp = value.timeEndedTimestamp,
+                    )
+                }
+            }
+            is RecordHolder.Data.RunningRecordData -> {
+                val value = holder.data.value
+                MultiSelectedRecordId.Running(value.id)
+            }
+        }
     }
 
     private data class RecordHolder(

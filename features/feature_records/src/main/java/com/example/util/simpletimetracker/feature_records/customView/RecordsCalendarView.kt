@@ -10,7 +10,6 @@ import android.graphics.Paint
 import android.graphics.Rect
 import android.graphics.RectF
 import android.graphics.Typeface
-import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.os.Parcelable
 import android.text.TextUtils
@@ -41,6 +40,9 @@ import com.example.util.simpletimetracker.feature_views.extension.toSpannableStr
 import com.example.util.simpletimetracker.feature_views.viewData.RecordTypeIcon
 import kotlinx.parcelize.Parcelize
 import java.util.concurrent.TimeUnit
+import androidx.core.graphics.withTranslation
+import androidx.core.content.withStyledAttributes
+import androidx.core.graphics.drawable.toDrawable
 
 class RecordsCalendarView @JvmOverloads constructor(
     context: Context,
@@ -90,6 +92,7 @@ class RecordsCalendarView @JvmOverloads constructor(
     private val recordVerticalPadding: Float = 2.dpToPx().toFloat()
     private val recordHorizontalPadding: Float = 4.dpToPx().toFloat()
     private val paddingBetweenDays: Float = 1.dpToPx().toFloat()
+    private val multiSelectedRecordIndicatorWidth: Float = 8.dpToPx().toFloat()
     private val dayInMillis = TimeUnit.DAYS.toMillis(1)
     private val hourInMillis = TimeUnit.HOURS.toMillis(1)
     private var selectedRecord: RecordsCalendarViewData.Point.Data? = null
@@ -213,7 +216,7 @@ class RecordsCalendarView @JvmOverloads constructor(
 
         calculateDimensions(w, h)
         drawTopLegend(canvas)
-        drawSideLegend(canvas, w)
+        drawSideLegend(canvas)
         data.forEachIndexed { index, column ->
             drawData(
                 canvas = canvas,
@@ -283,8 +286,7 @@ class RecordsCalendarView @JvmOverloads constructor(
         defStyleAttr: Int = 0,
     ) {
         context
-            .obtainStyledAttributes(attrs, R.styleable.RecordsCalendarView, defStyleAttr, 0)
-            .run {
+            .withStyledAttributes(attrs, R.styleable.RecordsCalendarView, defStyleAttr, 0) {
                 nameTextSize =
                     getDimensionPixelSize(R.styleable.RecordsCalendarView_calendarTextSize, 14).toFloat()
                 nameTextColor =
@@ -317,8 +319,6 @@ class RecordsCalendarView @JvmOverloads constructor(
                 if (hasValue(R.styleable.RecordsCalendarView_calendarColumnsCount)) {
                     columnsCount = getInt(R.styleable.RecordsCalendarView_calendarColumnsCount, 0)
                 }
-
-                recycle()
             }
     }
 
@@ -398,6 +398,7 @@ class RecordsCalendarView @JvmOverloads constructor(
         var boxRight: Float
         var boxTop: Float
         var boxBottom: Float
+        var isSelectedViewWidth: Float
 
         var iconLeft: Int
         var iconRight: Int
@@ -422,13 +423,6 @@ class RecordsCalendarView @JvmOverloads constructor(
             /************
              * Draw box *
              ************/
-            recordPaint.color = item.point.data.color.let {
-                if (selectedRecord == item.point.data) {
-                    selectedRecordColor
-                } else {
-                    it
-                }
-            }
             boxHeight = chartHeight * (item.point.end - item.point.start) / dayInMillis
             boxShift = chartHeight * item.point.start / dayInMillis
             boxWidth = columnWidth / item.columnCount
@@ -449,8 +443,31 @@ class RecordsCalendarView @JvmOverloads constructor(
             item.boxRight = boxRight
             item.boxBottom = boxBottom
 
+            if (item.point.isSelected) {
+                isSelectedViewWidth = multiSelectedRecordIndicatorWidth
+                recordPaint.color = currentTimeLegendColor
+                recordBounds.set(
+                    boxLeft + (paddingBetweenDays / 2),
+                    boxTop,
+                    boxLeft + (paddingBetweenDays / 2) + isSelectedViewWidth - paddingBetweenDays,
+                    boxBottom,
+                )
+                canvas.drawRoundRect(
+                    recordBounds,
+                    recordCornerRadius,
+                    recordCornerRadius,
+                    recordPaint,
+                )
+            } else {
+                isSelectedViewWidth = 0f
+            }
+            recordPaint.color = if (selectedRecord == item.point.data) {
+                selectedRecordColor
+            } else {
+                item.point.data.color
+            }
             recordBounds.set(
-                boxLeft + (paddingBetweenDays / 2),
+                boxLeft + (paddingBetweenDays / 2) + isSelectedViewWidth,
                 boxTop,
                 boxRight - (paddingBetweenDays / 2),
                 boxBottom,
@@ -513,10 +530,9 @@ class RecordsCalendarView @JvmOverloads constructor(
                 textLeft = recordBounds.left + iconMaxSize + 2 * recordHorizontalPadding
                 textTop = recordBounds.top + recordVerticalPadding
 
-                canvas.save()
-                canvas.translate(textLeft, textTop)
-                nameTextView.draw(canvas)
-                canvas.restore()
+                canvas.withTranslation(textLeft, textTop) {
+                    nameTextView.draw(this)
+                }
 
                 availableWidth = (availableWidth - nameTextView.measuredWidth - recordHorizontalPadding)
                     .coerceAtLeast(0f)
@@ -539,10 +555,9 @@ class RecordsCalendarView @JvmOverloads constructor(
                 textLeft = recordBounds.right - recordHorizontalPadding - durationTextView.measuredWidth
                 textTop = recordBounds.top + recordVerticalPadding
 
-                canvas.save()
-                canvas.translate(textLeft, textTop)
-                durationTextView.draw(canvas)
-                canvas.restore()
+                canvas.withTranslation(textLeft, textTop) {
+                    durationTextView.draw(this)
+                }
             } else if (
                 iconDrawn &&
                 textHeight < availableHeight
@@ -559,10 +574,9 @@ class RecordsCalendarView @JvmOverloads constructor(
                     textLeft = recordBounds.left + recordHorizontalPadding
                     textTop = recordBounds.top + recordVerticalPadding + iconMaxSize
 
-                    canvas.save()
-                    canvas.translate(textLeft, textTop)
-                    durationTextView.draw(canvas)
-                    canvas.restore()
+                    canvas.withTranslation(textLeft, textTop) {
+                        durationTextView.draw(this)
+                    }
 
                     availableHeight = (availableHeight - textHeight - recordVerticalPadding)
                         .coerceAtLeast(0f)
@@ -589,10 +603,9 @@ class RecordsCalendarView @JvmOverloads constructor(
                 textTop = recordBounds.top + recordVerticalPadding + iconMaxSize +
                     textHeight.takeIf { durationInSeparateLine }.orZero()
 
-                canvas.save()
-                canvas.translate(textLeft, textTop)
-                timeTextView.draw(canvas)
-                canvas.restore()
+                canvas.withTranslation(textLeft, textTop) {
+                    timeTextView.draw(this)
+                }
 
                 timesDrawn = true
                 availableHeight = (availableHeight - timesTextHeight - recordVerticalPadding)
@@ -628,15 +641,15 @@ class RecordsCalendarView @JvmOverloads constructor(
                         textHeight.takeIf { durationInSeparateLine }.orZero() +
                         timesTextHeight.takeIf { timesDrawn }.orZero()
 
-                    canvas.save()
-                    canvas.translate(textLeft, textTop)
-                    commentTextView.draw(canvas)
-                    canvas.restore()
+                    canvas.withTranslation(textLeft, textTop) {
+                        commentTextView.draw(this)
+                    }
                 }
             }
         }
     }
 
+    @SuppressLint("UseKtx")
     private fun drawTopLegend(canvas: Canvas) {
         if (!shouldDrawTopLegends) return
 
@@ -666,7 +679,8 @@ class RecordsCalendarView @JvmOverloads constructor(
         canvas.restore()
     }
 
-    private fun drawSideLegend(canvas: Canvas, w: Float) {
+    @SuppressLint("UseKtx")
+    private fun drawSideLegend(canvas: Canvas) {
         fun Float.checkReverse(): Float {
             return if (reverseOrder) {
                 chartTopBound + chartHeight * scaleFactor - (this - chartTopBound)
@@ -806,6 +820,7 @@ class RecordsCalendarView @JvmOverloads constructor(
                     RecordsCalendarViewData.Point(
                         start = start,
                         end = end,
+                        isSelected = it == 0,
                         data = RecordsCalendarViewData.Point.Data.RecordData(record),
                     )
                 }.let {
@@ -859,7 +874,7 @@ class RecordsCalendarView @JvmOverloads constructor(
                 measureExactly(iconMaxSize)
             }
             .getBitmapFromView()
-            .let { BitmapDrawable(resources, it) }
+            .toDrawable(resources)
     }
 
     private fun getItemName(item: RecordsCalendarViewData.Point.Data): CharSequence {

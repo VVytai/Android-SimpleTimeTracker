@@ -265,7 +265,6 @@ class RecordQuickActionsViewModel @Inject constructor(
     }
 
     private suspend fun onMultiselect() {
-        // TODO MULTI on calendar?
         // TODO MULTI cancel on tab change?
         // TODO MULTI disable throttle record click in multiselect
         if (recordsContainerMultiselectInteractor.isEnabled) {
