@@ -46,7 +46,7 @@ class RemoveRecordViewModel @Inject constructor(
         val typeIds = removedRecords.map(Record::typeId).distinct()
         removeRecordMediator.remove(
             recordIds = removedRecords.map { it.id },
-            typeIds = typeIds
+            typeIds = typeIds,
         )
 
         val removedRecordsCount = removedRecords.size

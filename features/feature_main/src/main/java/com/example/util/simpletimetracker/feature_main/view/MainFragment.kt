@@ -111,6 +111,9 @@ class MainFragment : BaseFragment<Binding>() {
 
                 override fun onTabUnselected(tab: TabLayout.Tab?) {
                     tab?.icon?.colorFilter = unselectedColorFilter
+                    tab?.position
+                        ?.let(mainTabsProvider::mapPositionToTab)
+                        ?.let(mainTabsViewModel::onTabUnselected)
                 }
 
                 override fun onTabSelected(tab: TabLayout.Tab?) {

@@ -265,7 +265,6 @@ class RecordQuickActionsViewModel @Inject constructor(
     }
 
     private suspend fun onMultiselect() {
-        // TODO MULTI cancel on tab change?
         if (recordsContainerMultiselectInteractor.isEnabled) {
             recordsContainerMultiselectInteractor.disable()
         } else {

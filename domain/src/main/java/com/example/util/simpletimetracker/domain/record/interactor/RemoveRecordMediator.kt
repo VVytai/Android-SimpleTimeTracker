@@ -11,7 +11,7 @@ class RemoveRecordMediator @Inject constructor(
     suspend fun remove(recordId: Long, typeId: Long) {
         remove(
             recordIds = listOf(recordId),
-            typeIds = listOf(typeId)
+            typeIds = listOf(typeId),
         )
     }
 
