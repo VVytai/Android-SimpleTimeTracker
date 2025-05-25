@@ -2,8 +2,8 @@ package com.example.util.simpletimetracker.feature_records.viewModel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.util.simpletimetracker.core.base.BaseViewModel
 import com.example.util.simpletimetracker.core.base.SingleLiveEvent
 import com.example.util.simpletimetracker.core.extension.set
 import com.example.util.simpletimetracker.core.extension.toParams
@@ -58,7 +58,7 @@ class RecordsViewModel @Inject constructor(
     private val getChangeRecordNavigationParamsInteractor: GetChangeRecordNavigationParamsInteractor,
     private val recordsContainerMultiselectInteractor: RecordsContainerMultiselectInteractor,
     private val themeChangedInteractor: ThemeChangedInteractor,
-) : ViewModel() {
+) : BaseViewModel() {
 
     var extra: RecordsExtra? = null
 
@@ -112,10 +112,12 @@ class RecordsViewModel @Inject constructor(
             showSeconds = showSeconds,
             sharedElements = sharedElements,
         )
-        router.navigate(
-            data = ChangeRunningRecordFromMainParams(params),
-            sharedElements = sharedElements?.let(::mapOf).orEmpty(),
-        )
+        throttle {
+            router.navigate(
+                data = ChangeRunningRecordFromMainParams(params),
+                sharedElements = sharedElements?.let(::mapOf).orEmpty(),
+            )
+        }.invoke()
     }
 
     fun onRecordClick(
@@ -136,10 +138,12 @@ class RecordsViewModel @Inject constructor(
             showSeconds = showSeconds,
             sharedElements = sharedElements,
         )
-        router.navigate(
-            data = ChangeRecordFromMainParams(params),
-            sharedElements = sharedElements?.let(::mapOf).orEmpty(),
-        )
+        throttle {
+            router.navigate(
+                data = ChangeRecordFromMainParams(params),
+                sharedElements = sharedElements?.let(::mapOf).orEmpty(),
+            )
+        }.invoke()
     }
 
     @Suppress("UNUSED_PARAMETER")
@@ -155,7 +159,7 @@ class RecordsViewModel @Inject constructor(
                 return
             }
         }
-        RecordQuickActionsParams(
+        val navParams = RecordQuickActionsParams(
             type = RecordQuickActionsParams.Type.RecordRunning(
                 id = item.id,
             ),
@@ -164,7 +168,10 @@ class RecordsViewModel @Inject constructor(
                 iconId = item.iconId.toParams(),
                 color = item.color,
             ),
-        ).let(router::navigate)
+        )
+        throttle {
+            router.navigate(navParams)
+        }.invoke()
     }
 
     @Suppress("UNUSED_PARAMETER")
@@ -195,14 +202,17 @@ class RecordsViewModel @Inject constructor(
                 timeEnded = item.timeEndedTimestamp,
             )
         }
-        RecordQuickActionsParams(
+        val navParams = RecordQuickActionsParams(
             type = type,
             preview = RecordQuickActionsParams.Preview(
                 name = item.name,
                 iconId = item.iconId.toParams(),
                 color = item.color,
             ),
-        ).let(router::navigate)
+        )
+        throttle {
+            router.navigate(navParams)
+        }.invoke()
     }
 
     fun onVisible() {

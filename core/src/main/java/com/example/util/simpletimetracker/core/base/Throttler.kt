@@ -1,12 +1,10 @@
 package com.example.util.simpletimetracker.core.base
 
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-interface Throttler : LifecycleOwner {
+interface Throttler : ScopeHolder {
 
     var throttleJob: Job?
 
@@ -30,7 +28,7 @@ interface Throttler : LifecycleOwner {
 
     private fun throttler(block: () -> Unit) {
         if (throttleJob?.isCompleted != false) {
-            throttleJob = lifecycleScope.launch {
+            throttleJob = getScope().launch {
                 block()
                 delay(THROTTLE_PERIOD_MS)
             }

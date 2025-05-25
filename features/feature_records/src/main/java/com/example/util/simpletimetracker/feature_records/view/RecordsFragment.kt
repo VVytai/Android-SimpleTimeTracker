@@ -84,8 +84,8 @@ class RecordsFragment :
     }
 
     override fun initUx() {
-        binding.viewRecordsCalendar.root.setClickListener(throttle(viewModel::onCalendarClick))
-        binding.viewRecordsCalendar.root.setLongClickListener(throttle(viewModel::onCalendarLongClick))
+        binding.viewRecordsCalendar.root.setClickListener(viewModel::onCalendarClick)
+        binding.viewRecordsCalendar.root.setLongClickListener(viewModel::onCalendarLongClick)
     }
 
     override fun initViewModel() {
@@ -216,12 +216,12 @@ class RecordsFragment :
         return BaseRecyclerAdapter(
             createRunningRecordAdapterDelegate(
                 transitionNamePrefix = TransitionNames.RUNNING_RECORD_FROM_RECORDS,
-                onItemClick = throttle(viewModel::onRunningRecordClick),
-                onItemLongClick = throttle(viewModel::onRunningRecordLongClick),
+                onItemClick = viewModel::onRunningRecordClick,
+                onItemLongClick = viewModel::onRunningRecordLongClick,
             ),
             createRecordAdapterDelegate(
-                onItemClick = throttle(viewModel::onRecordClick),
-                onItemLongClick = throttle(viewModel::onRecordLongClick),
+                onItemClick = viewModel::onRecordClick,
+                onItemLongClick = viewModel::onRecordLongClick,
             ),
             createRunningRecordSelectedAdapterDelegate(
                 onItemClick = viewModel::onRunningRecordClick,

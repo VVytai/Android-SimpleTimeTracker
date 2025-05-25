@@ -9,6 +9,7 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.updatePadding
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.lifecycleScope
 import androidx.viewbinding.ViewBinding
 import com.example.util.simpletimetracker.core.R
 import com.example.util.simpletimetracker.core.utils.applyNavBarInsets
@@ -17,6 +18,7 @@ import com.example.util.simpletimetracker.core.utils.getStatusBarInsets
 import com.example.util.simpletimetracker.navigation.Router
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import javax.inject.Inject
 
@@ -29,6 +31,10 @@ abstract class BaseBottomSheetFragment<T : ViewBinding> : BottomSheetDialogFragm
     override var throttleJob: Job? = null
     protected val binding: T get() = _binding!!
     private var _binding: T? = null
+
+    override fun getScope(): CoroutineScope {
+        return lifecycleScope
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
