@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.RecyclerView
 import com.example.util.simpletimetracker.core.base.BaseFragment
 import com.example.util.simpletimetracker.core.di.BaseViewModelFactory
 import com.example.util.simpletimetracker.core.dialog.OnTagSelectedListener
@@ -30,6 +31,7 @@ import com.example.util.simpletimetracker.feature_base_adapter.recordWithHint.cr
 import com.example.util.simpletimetracker.feature_base_adapter.runningRecord.createRunningRecordAdapterDelegate
 import com.example.util.simpletimetracker.feature_running_records.viewModel.RunningRecordsViewModel
 import com.example.util.simpletimetracker.feature_views.TransitionNames
+import com.example.util.simpletimetracker.feature_views.extension.addOnScrollListenerAdapter
 import com.example.util.simpletimetracker.feature_views.extension.pxToDp
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
@@ -101,6 +103,7 @@ class RunningRecordsFragment :
                 flexWrap = FlexWrap.WRAP
             }
             adapter = runningRecordsAdapter
+            setHasFixedSize(false)
         }
 
         view?.doOnApplyWindowInsetsListener {
@@ -109,6 +112,19 @@ class RunningRecordsFragment :
 
         setOnPreDrawListener {
             parentFragment?.startPostponedEnterTransition()
+        }
+    }
+
+    override fun initUx() = with(binding) {
+        // Problem. There are some problems with flexbox manager and long list of items,
+        // one of which is changing (ex. timer on running record).
+        // setHasFixedSize(false) causes items to lag on scroll.
+        // setHasFixedSize(true) causes items disappear on scrolling to bottom,
+        // opening another screen and returning back.
+        // Solution. Set to true only on scroll, return back to false on scroll stop
+        // and onPause (navigation).
+        rvRunningRecordsList.addOnScrollListenerAdapter { _, newState ->
+            rvRunningRecordsList.setHasFixedSize(newState != RecyclerView.SCROLL_STATE_IDLE)
         }
     }
 
@@ -130,6 +146,7 @@ class RunningRecordsFragment :
 
     override fun onPause() {
         super.onPause()
+        binding.rvRunningRecordsList.setHasFixedSize(false)
         viewModel.onHidden()
     }
 

@@ -11,7 +11,7 @@ javax = "1"
 
 appcompat = "1.7.0"
 constraintLayout = "2.1.4"
-recyclerView = "1.1.0"
+recyclerView = "1.3.2"
 room = "2.6.1"
 dagger = "2.52"
 viewpager2 = "1.0.0"
