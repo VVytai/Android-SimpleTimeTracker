@@ -35,7 +35,6 @@ import com.example.util.simpletimetracker.core.utils.EXTRA_RECORD_TIME_ENDED
 import com.example.util.simpletimetracker.core.utils.EXTRA_RECORD_TIME_STARTED
 import com.example.util.simpletimetracker.core.utils.EXTRA_RECORD_TYPE_ICON
 import com.example.util.simpletimetracker.core.utils.EXTRA_RECORD_TYPE_NOTE
-import com.example.util.simpletimetracker.domain.color.model.AppColor
 import com.example.util.simpletimetracker.domain.extension.indexesOf
 import com.example.util.simpletimetracker.domain.notifications.model.ExternalActionCommentMode
 import com.example.util.simpletimetracker.domain.notifications.model.ExternalActionFindRecordMode
@@ -229,7 +228,7 @@ class SettingsAutomatedTrackingMapper @Inject constructor(
                     extra = EXTRA_GOAL_VALUE,
                     description = resourceRepo.getString(R.string.settings_automated_tracking_goal_value),
                     values = emptyList(),
-                )
+                ),
             ),
         )
 

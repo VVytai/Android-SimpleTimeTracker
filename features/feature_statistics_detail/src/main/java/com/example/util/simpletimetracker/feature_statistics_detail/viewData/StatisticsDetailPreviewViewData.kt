@@ -10,7 +10,7 @@ data class StatisticsDetailPreviewViewData(
     val name: String,
     val iconId: RecordTypeIcon? = null,
     @ColorInt val color: Int,
-) : ViewHolderType {
+) : ViewHolderType, StatisticsDetailPreview {
 
     override fun getUniqueId(): Long = id
 

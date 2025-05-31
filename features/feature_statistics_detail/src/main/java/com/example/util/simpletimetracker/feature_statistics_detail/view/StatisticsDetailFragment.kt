@@ -62,7 +62,9 @@ class StatisticsDetailFragment :
 
     private val contentAdapter: BaseRecyclerAdapter by lazy {
         BaseRecyclerAdapter(
-            createStatisticsDetailPreviewsAdapterDelegate(),
+            createStatisticsDetailPreviewsAdapterDelegate(
+                onClick = viewModel::onPreviewItemClick,
+            ),
             createStatisticsDetailBarChartAdapterDelegate(),
             createStatisticsDetailPieChartAdapterDelegate(),
             createStatisticsDetailDayCalendarAdapterDelegate(),

@@ -7,7 +7,9 @@ import android.widget.FrameLayout
 import com.example.util.simpletimetracker.feature_base_adapter.BaseRecyclerAdapter
 import com.example.util.simpletimetracker.feature_statistics_detail.adapter.createStatisticsPreviewAdapterDelegate
 import com.example.util.simpletimetracker.feature_statistics_detail.adapter.createStatisticsPreviewCompareAdapterDelegate
+import com.example.util.simpletimetracker.feature_statistics_detail.adapter.createStatisticsPreviewMoreAdapterDelegate
 import com.example.util.simpletimetracker.feature_statistics_detail.databinding.StatisticsDetailPreviewsViewLayoutBinding
+import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailPreview
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailPreviewViewData
 import com.example.util.simpletimetracker.feature_views.extension.layoutInflater
 import com.google.android.flexbox.FlexDirection
@@ -28,15 +30,21 @@ class StatisticsDetailPreviewsView @JvmOverloads constructor(
     val adapter: BaseRecyclerAdapter by lazy {
         BaseRecyclerAdapter(
             createStatisticsPreviewCompareAdapterDelegate(),
+            createStatisticsPreviewMoreAdapterDelegate(::onItemClick),
             createStatisticsPreviewAdapterDelegate(),
         )
     }
 
     private val binding = StatisticsDetailPreviewsViewLayoutBinding.inflate(layoutInflater, this)
+    private var clickListener: (StatisticsDetailPreview) -> Unit = {}
 
     init {
         initRecycler()
         initEditMode()
+    }
+
+    fun setClickListener(listener: (StatisticsDetailPreview) -> Unit) {
+        clickListener = listener
     }
 
     private fun initRecycler() {
@@ -48,6 +56,10 @@ class StatisticsDetailPreviewsView @JvmOverloads constructor(
             }
             adapter = this@StatisticsDetailPreviewsView.adapter
         }
+    }
+
+    private fun onItemClick(item: StatisticsDetailPreview) {
+        clickListener(item)
     }
 
     private fun initEditMode() {

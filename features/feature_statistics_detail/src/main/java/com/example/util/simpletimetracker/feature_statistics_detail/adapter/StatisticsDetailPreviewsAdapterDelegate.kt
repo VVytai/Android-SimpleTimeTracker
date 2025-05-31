@@ -2,10 +2,13 @@ package com.example.util.simpletimetracker.feature_statistics_detail.adapter
 
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.createRecyclerBindingAdapterDelegate
+import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailPreview
 import com.example.util.simpletimetracker.feature_statistics_detail.adapter.StatisticsDetailPreviewsViewData as ViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.databinding.StatisticsDetailPreviewsItemBinding as Binding
 
-fun createStatisticsDetailPreviewsAdapterDelegate() = createRecyclerBindingAdapterDelegate<ViewData, Binding>(
+fun createStatisticsDetailPreviewsAdapterDelegate(
+    onClick: (StatisticsDetailPreview) -> Unit,
+) = createRecyclerBindingAdapterDelegate<ViewData, Binding>(
     Binding::inflate,
 ) { binding, item, _ ->
 
@@ -13,6 +16,7 @@ fun createStatisticsDetailPreviewsAdapterDelegate() = createRecyclerBindingAdapt
         item as ViewData
 
         root.adapter.replaceAsNew(item.data)
+        root.setClickListener(onClick)
     }
 }
 

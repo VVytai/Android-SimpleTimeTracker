@@ -20,6 +20,8 @@ import com.example.util.simpletimetracker.domain.record.model.RecordsFilter
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_statistics_detail.mapper.StatisticsDetailViewDataMapper
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailPreviewCompareViewData
+import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailPreviewMoreViewData
+import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailPreviewViewData
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -48,6 +50,7 @@ class StatisticsDetailPreviewInteractor @Inject constructor(
 
     suspend fun getPreviewData(
         filterParams: List<RecordsFilter>,
+        isExpanded: Boolean,
         isForComparison: Boolean,
     ): List<ViewHolderType> = withContext(Dispatchers.Default) {
         val isDarkTheme = prefsInteractor.getDarkMode()
@@ -136,6 +139,17 @@ class StatisticsDetailPreviewInteractor @Inject constructor(
                 val selectedIds = records.map { it.typeIds }.flatten().distinct()
                 mapActivities(selectedIds)
             }
+        }.let {
+            if (it.size > MAX_PREVIEWS_COUNT && !isExpanded) {
+                val type = if (isForComparison) {
+                    StatisticsDetailPreviewViewData.Type.COMPARISON
+                } else {
+                    StatisticsDetailPreviewViewData.Type.FILTER
+                }
+                it.take(MAX_PREVIEWS_COUNT) + StatisticsDetailPreviewMoreViewData(type)
+            } else {
+                it
+            }
         }
 
         return@withContext if (isForComparison) {
@@ -178,5 +192,9 @@ class StatisticsDetailPreviewInteractor @Inject constructor(
         object Categories : PreviewType
         object SelectedTags : PreviewType
         object ActivitiesFromRecords : PreviewType
+    }
+
+    companion object {
+        private const val MAX_PREVIEWS_COUNT = 5
     }
 }
