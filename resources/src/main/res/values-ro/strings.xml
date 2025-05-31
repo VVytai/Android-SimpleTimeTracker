@@ -405,6 +405,8 @@ Dacă opțiunea <b>\"%s\"</b> este activă, aplicația va trimite evenimente la 
     <string name="settings_automated_tracking_find_record_mode">selectează ce înregistrare să schimbe.</string>
     <string name="settings_automated_tracking_comment_mode">selectează modul de modificare a comentariului înregistrării selectate.</string>
     <string name="settings_automated_tracking_find_with_activity">selectează suplimentar înregistrarea după numele activității, dacă există mai multe înregistrări curente sau ultime.</string>
+    <string name="settings_automated_tracking_goal_type">Tipul obiectivului.</string>
+    <string name="settings_automated_tracking_goal_value">Valoarea obiectivului, durată în secunde sau număr de înregistrări.</string>
 
     <string name="settings_save_backup">Salvează backup</string>
     <string name="settings_save_description">Înainte de a salva, asigură-te ca ai ultima versiune a aplicației pentru a evita conflictele.</string>

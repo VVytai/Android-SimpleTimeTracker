@@ -405,6 +405,8 @@
     <string name="settings_automated_tracking_find_record_mode">выбирает, какую запись изменить.</string>
     <string name="settings_automated_tracking_comment_mode">выбирает способ изменения комментария выбранной записи.</string>
     <string name="settings_automated_tracking_find_with_activity">дополнительно выбирает запись по названию действия, если есть несколько текущих или последних записей.</string>
+    <string name="settings_automated_tracking_goal_type">Тип цели.</string>
+    <string name="settings_automated_tracking_goal_value">Значение цели, продолжительность в секундах или количество записей.</string>
 
     <string name="settings_save_backup">Сохранить резервную копию</string>
     <string name="settings_save_description">Перед сохранением убедитесь, что у вас установлена последняя версия приложения, чтобы избежать конфликтов.</string>

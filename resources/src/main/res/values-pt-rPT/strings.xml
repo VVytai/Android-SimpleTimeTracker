@@ -405,6 +405,8 @@ Se a definição <b>\"%s\"</b> estiver ativada, a aplicação enviará eventos n
     <string name="settings_automated_tracking_find_record_mode">seleciona qual o registo que será alterado.</string>
     <string name="settings_automated_tracking_comment_mode">seleciona como alterar o comentário do registo selecionado.</string>
     <string name="settings_automated_tracking_find_with_activity">seleciona adicionalmente o registo pelo nome da atividade, se existirem vários registos atuais ou últimos.</string>
+    <string name="settings_automated_tracking_goal_type">Tipo de objetivo.</string>
+    <string name="settings_automated_tracking_goal_value">Valor do objetivo, duração em segundos ou número de registos.</string>
 
     <string name="settings_save_backup">Guardar cópia de segurança</string>
     <string name="settings_save_description">Antes de guardar, verificar se a aplicação tem a versão mais recente para evitar conflitos.</string>

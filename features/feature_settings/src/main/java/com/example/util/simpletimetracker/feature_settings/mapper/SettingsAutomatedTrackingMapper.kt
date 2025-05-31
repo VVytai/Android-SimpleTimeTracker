@@ -1,9 +1,14 @@
 package com.example.util.simpletimetracker.feature_settings.mapper
 
+import android.graphics.Typeface
 import android.text.SpannableString
 import android.text.SpannableStringBuilder
+import android.text.Spanned
+import android.text.style.ForegroundColorSpan
+import android.text.style.StyleSpan
 import com.example.util.simpletimetracker.core.extension.fromHtml
 import com.example.util.simpletimetracker.core.manager.ClipboardManager
+import com.example.util.simpletimetracker.core.mapper.ColorMapper
 import com.example.util.simpletimetracker.core.provider.ApplicationDataProvider
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.core.utils.ACTION_EXTERNAL_ADD_RECORD
@@ -14,11 +19,15 @@ import com.example.util.simpletimetracker.core.utils.ACTION_EXTERNAL_STOP_ACTIVI
 import com.example.util.simpletimetracker.core.utils.ACTION_EXTERNAL_STOP_ALL_ACTIVITIES
 import com.example.util.simpletimetracker.core.utils.ACTION_EXTERNAL_STOP_LONGEST_ACTIVITY
 import com.example.util.simpletimetracker.core.utils.ACTION_EXTERNAL_STOP_SHORTEST_ACTIVITY
+import com.example.util.simpletimetracker.core.utils.EVENT_COMPLETED_GOAL
 import com.example.util.simpletimetracker.core.utils.EVENT_STARTED_ACTIVITY
 import com.example.util.simpletimetracker.core.utils.EVENT_STOPPED_ACTIVITY
 import com.example.util.simpletimetracker.core.utils.EXTRA_ACTIVITY_NAME
+import com.example.util.simpletimetracker.core.utils.EXTRA_CATEGORY_NAME
 import com.example.util.simpletimetracker.core.utils.EXTRA_FIND_RECORD_MODE
 import com.example.util.simpletimetracker.core.utils.EXTRA_FIND_RECORD_WITH_ACTIVITY_NAME
+import com.example.util.simpletimetracker.core.utils.EXTRA_GOAL_TYPE
+import com.example.util.simpletimetracker.core.utils.EXTRA_GOAL_VALUE
 import com.example.util.simpletimetracker.core.utils.EXTRA_RECORD_COMMENT
 import com.example.util.simpletimetracker.core.utils.EXTRA_RECORD_COMMENT_MODE
 import com.example.util.simpletimetracker.core.utils.EXTRA_RECORD_TAG_NAME
@@ -26,10 +35,13 @@ import com.example.util.simpletimetracker.core.utils.EXTRA_RECORD_TIME_ENDED
 import com.example.util.simpletimetracker.core.utils.EXTRA_RECORD_TIME_STARTED
 import com.example.util.simpletimetracker.core.utils.EXTRA_RECORD_TYPE_ICON
 import com.example.util.simpletimetracker.core.utils.EXTRA_RECORD_TYPE_NOTE
+import com.example.util.simpletimetracker.domain.color.model.AppColor
 import com.example.util.simpletimetracker.domain.extension.indexesOf
 import com.example.util.simpletimetracker.domain.notifications.model.ExternalActionCommentMode
 import com.example.util.simpletimetracker.domain.notifications.model.ExternalActionFindRecordMode
+import com.example.util.simpletimetracker.domain.notifications.model.ExternalEventGoalType
 import com.example.util.simpletimetracker.feature_settings.R
+import com.example.util.simpletimetracker.feature_views.TextViewRoundedSpans
 import com.example.util.simpletimetracker.feature_views.extension.setClickableSpan
 import com.example.util.simpletimetracker.feature_views.extension.setImageSpan
 import com.example.util.simpletimetracker.feature_views.extension.toSpannableString
@@ -41,6 +53,7 @@ import javax.inject.Inject
 class SettingsAutomatedTrackingMapper @Inject constructor(
     private val resourceRepo: ResourceRepo,
     private val router: Router,
+    private val colorMapper: ColorMapper,
     private val clipboardManager: ClipboardManager,
     private val applicationDataProvider: ApplicationDataProvider,
 ) {
@@ -154,6 +167,18 @@ class SettingsAutomatedTrackingMapper @Inject constructor(
                     ),
                     optional = emptyList(),
                 ),
+                AvailableAction(
+                    action = EVENT_COMPLETED_GOAL,
+                    extras = listOf(
+                        EXTRA_ACTIVITY_NAME,
+                        EXTRA_CATEGORY_NAME,
+                        EXTRA_GOAL_TYPE,
+                        EXTRA_GOAL_VALUE,
+                        EXTRA_RECORD_TYPE_NOTE,
+                        EXTRA_RECORD_TYPE_ICON,
+                    ),
+                    optional = emptyList(),
+                ),
             ),
             isDarkTheme = isDarkTheme,
         )
@@ -195,18 +220,31 @@ class SettingsAutomatedTrackingMapper @Inject constructor(
                     description = resourceRepo.getString(R.string.settings_automated_tracking_find_with_activity),
                     values = emptyList(),
                 ),
+                ExtraDescription(
+                    extra = EXTRA_GOAL_TYPE,
+                    description = resourceRepo.getString(R.string.settings_automated_tracking_goal_type),
+                    values = ExternalEventGoalType.entries.map { it.dataValue },
+                ),
+                ExtraDescription(
+                    extra = EXTRA_GOAL_VALUE,
+                    description = resourceRepo.getString(R.string.settings_automated_tracking_goal_value),
+                    values = emptyList(),
+                )
             ),
         )
 
         val availableActionsHint = resourceRepo.getString(
             R.string.settings_automated_tracking_available_actions,
         ).uppercase()
+            .let { setHintSpans(it, isDarkTheme) }
         val availableEventsHint = resourceRepo.getString(
             R.string.settings_automated_tracking_available_events,
         ).uppercase()
+            .let { setHintSpans(it, isDarkTheme) }
         val extrasDescriptionsHint = resourceRepo.getString(
             R.string.settings_automated_tracking_extras_description,
         ).uppercase()
+            .let { setHintSpans(it, isDarkTheme) }
 
         val finalText = SpannableStringBuilder()
             .append(mainText).append("\n")
@@ -374,6 +412,30 @@ class SettingsAutomatedTrackingMapper @Inject constructor(
             .format(*arguments.toTypedArray())
             .toSpannableString()
     }.getOrNull() ?: SpannableString("")
+
+    private fun setHintSpans(
+        text: String,
+        isDarkTheme: Boolean,
+    ): CharSequence {
+        val textColor = resourceRepo.getThemedAttr(
+            attrId = R.attr.appLightTextColor,
+            isDarkTheme = isDarkTheme,
+        )
+        val backgroundColor = resourceRepo.getThemedAttr(
+            attrId = R.attr.appInactiveColor,
+            isDarkTheme = isDarkTheme,
+        )
+        val spans = listOf(
+            ForegroundColorSpan(textColor),
+            StyleSpan(Typeface.BOLD),
+            TextViewRoundedSpans.MarkerSpan(backgroundColor),
+        )
+        return text.toSpannableString().apply {
+            for (span in spans) {
+                setSpan(span, 0, text.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            }
+        }
+    }
 
     private fun copyToClipboard(text: String) {
         clipboardManager.send(text)

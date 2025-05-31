@@ -405,6 +405,8 @@
     <string name="settings_automated_tracking_find_record_mode">चयन करता है कि कौन सा रिकॉर्ड बदलना है.</string>
     <string name="settings_automated_tracking_comment_mode">चयनित रिकॉर्ड की टिप्पणी को बदलने का तरीका चुनता है.</string>
     <string name="settings_automated_tracking_find_with_activity">इसके अतिरिक्त, यदि कई वर्तमान या अंतिम रिकॉर्ड हैं, तो गतिविधि नाम से रिकॉर्ड का चयन करता है।</string>
+    <string name="settings_automated_tracking_goal_type">लक्ष्य का प्रकार।</string>
+    <string name="settings_automated_tracking_goal_value">लक्ष्य मान, सेकंड में अवधि या रिकॉर्ड की संख्या।</string>
 
     <string name="settings_save_backup">बैकअप सहेजें</string>
     <string name="settings_save_description">सहेजने से पहले, सुनिश्चित करें कि आपके पास संघर्षों से बचने के लिए इंस्टॉल किए गए ऐप का नवीनतम संस्करण है।</string>

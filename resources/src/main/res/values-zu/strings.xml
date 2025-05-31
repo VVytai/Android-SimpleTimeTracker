@@ -405,6 +405,8 @@ Uma isethingi <b>\"%s\"</b> ivuliwe, uhlelo luzothumela izehlakalo uma umsebenzi
     <string name="settings_automated_tracking_find_record_mode">khetha irekhodi okufanele lishintshwe.</string>
     <string name="settings_automated_tracking_comment_mode">khetha indlela yokushintsha amazwana erekhodi ekhethiwe.</string>
     <string name="settings_automated_tracking_find_with_activity">ukhetha futhi irekhodi ngegama lomsebenzi uma kunezirekhodi eziningi ezisebenzayo noma zakamuva.</string>
+    <string name="settings_automated_tracking_goal_type">Uhlobo lwenhloso.</string>
+    <string name="settings_automated_tracking_goal_value">Inani lenhloso, isikhathi ngemizuzwana noma inani lamarekhodi.</string>
 
     <string name="settings_save_backup">Londoloza i-backup</string>
     <string name="settings_save_description">Ngaphambi kokulondoloza, qinisekisa ukuthi unayo inguqulo yakamuva yohlelo lokusebenza ukuvimbela ukungqubuzana.</string>

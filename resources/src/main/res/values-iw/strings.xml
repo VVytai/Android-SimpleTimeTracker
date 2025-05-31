@@ -405,6 +405,8 @@
     <string name="settings_automated_tracking_find_record_mode">בוחר איזו רשומה לשנות.</string>
     <string name="settings_automated_tracking_comment_mode">בוחר כיצד לשנות את ההערה של הרשומה שנבחרה.</string>
     <string name="settings_automated_tracking_find_with_activity">בוחר בנוסף רשומה לפי שם פעילות, אם יש כמה רשומות נוכחיות או אחרונות.</string>
+    <string name="settings_automated_tracking_goal_type">סוג יעד.</string>
+    <string name="settings_automated_tracking_goal_value">ערך היעד, משך בשניות או מספר רשומות.</string>
 
     <string name="settings_save_backup">שמור גיבוי</string>
     <string name="settings_save_description">לפני השמירה, יש לוודא שהגרסה העדכנית ביותר של היישום מותקנת כדי להימנע מקונפליקטים.</string>

@@ -10,6 +10,7 @@ import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTyp
 import com.example.util.simpletimetracker.domain.record.interactor.RunningRecordInteractor
 import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
 import com.example.util.simpletimetracker.domain.category.model.RecordTypeCategory
+import com.example.util.simpletimetracker.domain.notifications.interactor.ActivityStartedStoppedBroadcastInteractor
 import com.example.util.simpletimetracker.domain.recordType.model.RecordTypeGoal
 import com.example.util.simpletimetracker.domain.recordType.model.RecordTypeGoal.Range
 import com.example.util.simpletimetracker.domain.recordType.model.RecordTypeGoal.Type
@@ -25,6 +26,7 @@ class NotificationGoalCountInteractorImpl @Inject constructor(
     private val notificationGoalParamsInteractor: NotificationGoalParamsInteractor,
     private val recordTypeCategoryInteractor: RecordTypeCategoryInteractor,
     private val filterGoalsByDayOfWeekInteractor: FilterGoalsByDayOfWeekInteractor,
+    private val activityStartedStoppedBroadcastInteractor: ActivityStartedStoppedBroadcastInteractor,
 ) : NotificationGoalCountInteractor {
 
     override suspend fun checkAndShow(typeId: Long) {
@@ -211,10 +213,17 @@ class NotificationGoalCountInteractorImpl @Inject constructor(
     }
 
     private suspend fun show(idData: RecordTypeGoal.IdData, goalRange: Range) {
-        notificationGoalParamsInteractor.execute(
+        val params = notificationGoalParamsInteractor.execute(
             idData = idData,
             range = goalRange,
             type = NotificationGoalParamsInteractor.Type.Count,
-        )?.let(manager::show)
+        )
+        params?.let(manager::show)
+        params?.let {
+            activityStartedStoppedBroadcastInteractor.onGoalReached(
+                idData = idData,
+                goalType = it.goalType,
+            )
+        }
     }
 }

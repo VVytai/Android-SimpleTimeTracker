@@ -18,8 +18,10 @@ const val ACTION_EXTERNAL_CHANGE_RECORD = "com.razeeman.util.simpletimetracker.A
 
 const val EVENT_STARTED_ACTIVITY = "com.razeeman.util.simpletimetracker.EVENT_STARTED_ACTIVITY"
 const val EVENT_STOPPED_ACTIVITY = "com.razeeman.util.simpletimetracker.EVENT_STOPPED_ACTIVITY"
+const val EVENT_COMPLETED_GOAL = "com.razeeman.util.simpletimetracker.EVENT_COMPLETED_GOAL"
 
 const val EXTRA_ACTIVITY_NAME = "extra_activity_name"
+const val EXTRA_CATEGORY_NAME = "extra_category_name"
 const val EXTRA_RECORD_COMMENT = "extra_record_comment"
 const val EXTRA_RECORD_TAG_NAME = "extra_record_tag"
 const val EXTRA_RECORD_TYPE_NOTE = "extra_record_type_note"
@@ -29,3 +31,5 @@ const val EXTRA_RECORD_TIME_ENDED = "extra_record_time_ended"
 const val EXTRA_RECORD_COMMENT_MODE = "extra_record_comment_mode" // set, append, prefix
 const val EXTRA_FIND_RECORD_MODE = "extra_find_record_mode" // current_or_last, current, last
 const val EXTRA_FIND_RECORD_WITH_ACTIVITY_NAME = "extra_find_record_with_activity_name"
+const val EXTRA_GOAL_TYPE = "extra_goal_type" // duration, count
+const val EXTRA_GOAL_VALUE = "extra_goal_value"

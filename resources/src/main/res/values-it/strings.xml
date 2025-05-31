@@ -405,6 +405,8 @@ Se l\'impostazione <b>\"%s\"</b> è abilitata, l\'app invierà eventi sull\'atti
     <string name="settings_automated_tracking_find_record_mode">seleziona quale record modificare.</string>
     <string name="settings_automated_tracking_comment_mode">seleziona come modificare il commento del record selezionato.</string>
     <string name="settings_automated_tracking_find_with_activity">seleziona inoltre il record in base al nome dell\'attività, se sono presenti più record correnti o recenti.</string>
+    <string name="settings_automated_tracking_goal_type">Tipo di obiettivo.</string>
+    <string name="settings_automated_tracking_goal_value">Valore dell\'obiettivo, durata in secondi o numero di record.</string>
 
     <string name="settings_save_backup">Effettua un backup</string>
     <string name="settings_save_description">Prima di salvare, assicurati di avere l\'ultima versione dell\'app per evitare conflitti.</string>

@@ -405,6 +405,8 @@ Bu davranışı etkinleştirmek için bu uygulamaların şu parametrelerle \"int
     <string name="settings_automated_tracking_find_record_mode">hangi kaydın değiştirileceğini seçer.</string>
     <string name="settings_automated_tracking_comment_mode">seçili kaydın yorumunun nasıl değiştirileceğini seçer.</string>
     <string name="settings_automated_tracking_find_with_activity">ayrica, birden fazla geçerli veya son kayıt varsa, aktivite adına göre kaydı seçer.</string>
+    <string name="settings_automated_tracking_goal_type">Hedef türü.</string>
+    <string name="settings_automated_tracking_goal_value">Hedef değeri, saniye cinsinden süre veya kayıt sayısı.</string>
 
     <string name="settings_save_backup">Yedekleme kaydet</string>
     <string name="settings_save_description">Kaydetmeden önce, uyuşmazlık yaşamamak için uygulamanın güncel olduğundan emin olun.</string>

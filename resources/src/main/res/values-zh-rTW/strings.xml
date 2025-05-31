@@ -405,6 +405,8 @@
     <string name="settings_automated_tracking_find_record_mode">選擇要變更的記錄。</string>
     <string name="settings_automated_tracking_comment_mode">選擇如何變更所選記錄的註釋。</string>
     <string name="settings_automated_tracking_find_with_activity">如果有多個目前或最後的記錄，則也可以按活動名稱選擇記錄。</string>
+    <string name="settings_automated_tracking_goal_type">目標類型。</string>
+    <string name="settings_automated_tracking_goal_value">目標值，以秒為單位的持續時間或紀錄數。</string>
 
     <string name="settings_save_backup">儲存備份</string>
     <string name="settings_save_description">在保存之前，請確保您已安裝最新版本的應用程序以避免衝突。</string>

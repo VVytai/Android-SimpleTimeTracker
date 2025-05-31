@@ -405,6 +405,8 @@ Wenn die Einstellung <b>\"%s\"</b> aktiviert ist, sendet die App Ereignisse zu g
     <string name="settings_automated_tracking_find_record_mode">wählt aus, welcher Datensatz geändert werden soll.</string>
     <string name="settings_automated_tracking_comment_mode">wählt aus, wie der Kommentar des ausgewählten Datensatzes geändert wird.</string>
     <string name="settings_automated_tracking_find_with_activity">wählt Datensätze zusätzlich nach Aktivitätsnamen aus, wenn mehrere aktuelle oder letzte Datensätze vorhanden sind.</string>
+    <string name="settings_automated_tracking_goal_type">Zieltyp.</string>
+    <string name="settings_automated_tracking_goal_value">Zielwert, Dauer in Sekunden oder Anzahl der Einträge.</string>
 
     <string name="settings_save_backup">Backup speichern</string>
     <string name="settings_save_description">Stelle vor dem Speichern sicher, dass die neueste Version der App installiert ist, um Konflikte zu vermeiden.</string>

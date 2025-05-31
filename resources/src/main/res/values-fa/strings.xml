@@ -405,6 +405,8 @@
     <string name="settings_automated_tracking_find_record_mode">انتخاب می کند که کدام رکورد را تغییر دهد.</string>
     <string name="settings_automated_tracking_comment_mode">نحوه تغییر نظر رکورد انتخاب شده را انتخاب می کند.</string>
     <string name="settings_automated_tracking_find_with_activity">علاوه بر این، رکورد را با نام فعالیت انتخاب می کند، اگر چندین رکورد فعلی یا آخرین وجود داشته باشد.</string>
+    <string name="settings_automated_tracking_goal_type">نوع هدف.</string>
+    <string name="settings_automated_tracking_goal_value">مقدار هدف، مدت زمان به ثانیه یا تعداد رکوردها.</string>
 
     <string name="settings_save_backup">ذخیره نسخه پشتیبان</string>
     <string name="settings_save_description">قبل از ذخیره کردن، از اینکه آخرین نسخه برنامه را نصب کرده اید مطمئن شوید تا از ناسازگاری جلوگیری شود.</string>

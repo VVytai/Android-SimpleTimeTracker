@@ -405,6 +405,8 @@ Si la configuració <b>\"%s\"</b> és habilitada, l\'aplicació enviarà esdeven
     <string name="settings_automated_tracking_find_record_mode">selecciona quin registre es canviarà.</string>
     <string name="settings_automated_tracking_comment_mode">selecciona com canviar el comentari del registre seleccionat.</string>
     <string name="settings_automated_tracking_find_with_activity">a més, selecciona registre per nom de l\'activitat, si hi ha diversos registres actuals o darrers.</string>
+    <string name="settings_automated_tracking_goal_type">Tipus d\'objectiu.</string>
+    <string name="settings_automated_tracking_goal_value">Valor de l\'objectiu, durada en segons o nombre de registres.</string>
 
     <string name="settings_save_backup">Desa còpia de seguretat</string>
     <string name="settings_save_description">Abans de desar, assegureu-vos de tenir l\'última versió de l\'aplicació instal·lada per evitar conflictes.</string>

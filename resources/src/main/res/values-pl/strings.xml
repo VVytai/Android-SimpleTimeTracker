@@ -405,6 +405,8 @@ Jeśli <b>\"%s\"</b> jest włączone, aplikacja będzie wysyłać zdarzenia doty
     <string name="settings_automated_tracking_find_record_mode">wybiera rekord, który ma zostać zmieniony.</string>
     <string name="settings_automated_tracking_comment_mode">wybiera sposób zmiany komentarza wybranego rekordu.</string>
     <string name="settings_automated_tracking_find_with_activity">dodatkowo wybiera rekord według nazwy aktywności, jeśli istnieje kilka bieżących lub ostatnich rekordów.</string>
+    <string name="settings_automated_tracking_goal_type">Typ celu.</string>
+    <string name="settings_automated_tracking_goal_value">Wartość celu, czas trwania w sekundach lub liczba rekordów.</string>
 
     <string name="settings_save_backup">Zapisz kopię zapasową</string>
     <string name="settings_save_description">Przed zapisaniem upewnij się, że masz zainstalowaną najnowszą wersję aplikacji, aby uniknąć błędów.</string>

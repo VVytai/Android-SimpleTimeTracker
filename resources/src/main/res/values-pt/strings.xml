@@ -405,6 +405,8 @@ Se a configuração <b>\"%s\"</b> estiver habilitada, o aplicativo enviará even
     <string name="settings_automated_tracking_find_record_mode">seleciona qual registro alterar.</string>
     <string name="settings_automated_tracking_comment_mode">seleciona como alterar o comentário do registro selecionado.</string>
     <string name="settings_automated_tracking_find_with_activity">adicionalmente seleciona o registro pelo nome da atividade, se houver vários registros atuais ou últimos.</string>
+    <string name="settings_automated_tracking_goal_type">Tipo de meta.</string>
+    <string name="settings_automated_tracking_goal_value">Valor da meta, duração em segundos ou número de registros.</string>
 
     <string name="settings_save_backup">Salvar backup</string>
     <string name="settings_save_description">Antes de salvar, verifique se você tem a versão mais recente do aplicativo instalada para evitar conflitos.</string>

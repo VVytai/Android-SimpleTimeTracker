@@ -405,6 +405,8 @@
     <string name="settings_automated_tracking_find_record_mode">يختار السجل الذي تريد تغييره.</string>
     <string name="settings_automated_tracking_comment_mode">يختار كيفية تغيير تعليق السجل المحدد.</string>
     <string name="settings_automated_tracking_find_with_activity">بالإضافة إلى ذلك، يقوم بتحديد السجل حسب اسم النشاط، إذا كان هناك العديد من السجلات الحالية أو الأخيرة.</string>
+    <string name="settings_automated_tracking_goal_type">نوع الهدف.</string>
+    <string name="settings_automated_tracking_goal_value">قيمة الهدف، المدة بالثواني أو عدد السجلات.</string>
 
     <string name="settings_save_backup">حفظ نسخة احتياطية</string>
     <string name="settings_save_description">قبل الحفظ، تأكد من تثبيت أحدث إصدار من التطبيق لتجنب التعارضات.</string>

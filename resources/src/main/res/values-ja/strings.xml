@@ -405,6 +405,8 @@
     <string name="settings_automated_tracking_find_record_mode">変更するレコードを選択します。</string>
     <string name="settings_automated_tracking_comment_mode">選択したレコードのコメントを変更する方法を選択します。</string>
     <string name="settings_automated_tracking_find_with_activity">現在のレコードまたは最後のレコードが複数ある場合は、アクティビティ名でレコードをさらに選択します。</string>
+    <string name="settings_automated_tracking_goal_type">目標の種類。</string>
+    <string name="settings_automated_tracking_goal_value">目標値（秒単位の時間または記録数）。</string>
 
     <string name="settings_save_backup">バックアップの保存</string>
     <string name="settings_save_description">保存する前に競合を避けるため、最新バージョンのアプリがインストールされていることを確認してください。</string>

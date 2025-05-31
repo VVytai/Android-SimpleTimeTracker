@@ -405,6 +405,8 @@
     <string name="settings_automated_tracking_find_record_mode">вибирає, який запис змінити.</string>
     <string name="settings_automated_tracking_comment_mode">вибирає спосіб зміни коментаря вибраного запису.</string>
     <string name="settings_automated_tracking_find_with_activity">додатково вибирає запис за назвою дії, якщо поточних або останніх записів декілька.</string>
+    <string name="settings_automated_tracking_goal_type">Тип цілі.</string>
+    <string name="settings_automated_tracking_goal_value">Значення цілі, тривалість у секундах або кількість записів.</string>
 
     <string name="settings_save_backup">Зберегти резервну копію</string>
     <string name="settings_save_description">Перед збереженням переконайтесь, що у вас встановлена остання версія додатку, щоб уникнути конфліктів.</string>

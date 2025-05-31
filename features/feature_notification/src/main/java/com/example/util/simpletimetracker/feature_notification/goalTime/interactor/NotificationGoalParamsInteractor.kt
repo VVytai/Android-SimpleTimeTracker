@@ -120,6 +120,7 @@ class NotificationGoalParamsInteractor @Inject constructor(
         return NotificationGoalTimeParams(
             idData = idData,
             goalRange = range,
+            goalType = goal?.type,
             icon = recordType?.icon
                 ?.let(iconMapper::mapIcon)
                 ?: RecordTypeIcon.Text(""),

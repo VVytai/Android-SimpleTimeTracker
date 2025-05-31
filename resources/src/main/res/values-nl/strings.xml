@@ -405,6 +405,8 @@ Als de instelling <b>\"%s\"</b> is ingeschakeld, stuurt de app gebeurtenissen ov
     <string name="settings_automated_tracking_find_record_mode">selecteert welke record gewijzigd moet worden.</string>
     <string name="settings_automated_tracking_comment_mode">selecteert hoe de opmerking van het geselecteerde record moet worden gewijzigd.</string>
     <string name="settings_automated_tracking_find_with_activity">selecteert bovendien records op basis van de activiteitsnaam, als er meerdere huidige of laatste records zijn.</string>
+    <string name="settings_automated_tracking_goal_type">Doeltype.</string>
+    <string name="settings_automated_tracking_goal_value">Doelwaarde, duur in seconden of aantal records.</string>
 
     <string name="settings_save_backup">Back-up opslaan</string>
     <string name="settings_save_description">Zorg ervoor dat je de nieuwste versie van de app hebt geïnstalleerd voordat je opslaat om conflicten te voorkomen.</string>
