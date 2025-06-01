@@ -20,6 +20,9 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatTextView
+import androidx.core.content.withStyledAttributes
+import androidx.core.graphics.drawable.toDrawable
+import androidx.core.graphics.withTranslation
 import com.example.util.simpletimetracker.core.utils.CalendarIntersectionCalculator
 import com.example.util.simpletimetracker.core.utils.ScaleDetector
 import com.example.util.simpletimetracker.core.utils.SingleTapDetector
@@ -40,9 +43,6 @@ import com.example.util.simpletimetracker.feature_views.extension.toSpannableStr
 import com.example.util.simpletimetracker.feature_views.viewData.RecordTypeIcon
 import kotlinx.parcelize.Parcelize
 import java.util.concurrent.TimeUnit
-import androidx.core.graphics.withTranslation
-import androidx.core.content.withStyledAttributes
-import androidx.core.graphics.drawable.toDrawable
 
 class RecordsCalendarView @JvmOverloads constructor(
     context: Context,
@@ -97,6 +97,10 @@ class RecordsCalendarView @JvmOverloads constructor(
     private val hourInMillis = TimeUnit.HOURS.toMillis(1)
     private var selectedRecord: RecordsCalendarViewData.Point.Data? = null
     private var selectedRecordColor: Int = 0
+    private var isMilitary: Boolean = false
+
+    // Hour number to full hour text, ex. 03 to 03:00 / 03 to 03 am
+    private var hours: List<Pair<String, String>> = emptyList()
 
     private val recordPaint: Paint = Paint()
     private val legendTextPaint: Paint = Paint()
@@ -253,7 +257,9 @@ class RecordsCalendarView @JvmOverloads constructor(
         startOfDayShift = viewData.startOfDayShift
         reverseOrder = viewData.reverseOrder
         shouldDrawTopLegends = viewData.shouldDrawTopLegends
+        isMilitary = viewData.isMilitary
         data = viewData.points.map(::processData)
+        calculateHoursData()
         invalidate()
     }
 
@@ -358,7 +364,7 @@ class RecordsCalendarView @JvmOverloads constructor(
     }
 
     private fun calculateDimensions(w: Float, h: Float) {
-        val defaultLegendText = "00:00"
+        val defaultLegendText = if (isMilitary) "00:00" else "00 am"
         legendTextWidth = legendTextPaint.measureText(defaultLegendText)
 
         legendTextPaint.getTextBounds(defaultLegendText, 0, defaultLegendText.length, textBounds)
@@ -698,8 +704,6 @@ class RecordsCalendarView @JvmOverloads constructor(
             }
         }
 
-        val hours = (24 downTo 0)
-            .map { if (it == 24 && startOfDayShift != 0L) 0 else it }
         val lineStep = chartHeight / (hours.size - 1)
 
         val selectedMinutesRange = availableMinutesRanges.firstOrNull {
@@ -750,10 +754,8 @@ class RecordsCalendarView @JvmOverloads constructor(
                     chartTopBound + legendTextHeight,
                     chartTopBound + chartHeight * scaleFactor,
                 )
-            val hourText = hour.toString()
-                .padStart(2, '0')
             canvas.drawText(
-                hourText.let { "$it:00" },
+                hour.second,
                 chartRightBound + legendTextPadding,
                 textCenterY,
                 legendTextPaint,
@@ -781,7 +783,7 @@ class RecordsCalendarView @JvmOverloads constructor(
                     )
                 val minuteText = minute.toString()
                     .padStart(2, '0')
-                val fullText = "$hourText:$minuteText"
+                val fullText = "${hour.first}:$minuteText"
                 canvas.drawText(
                     fullText,
                     chartRightBound + legendTextPadding,
@@ -831,6 +833,7 @@ class RecordsCalendarView @JvmOverloads constructor(
                         points = List(columns) { points },
                         reverseOrder = reverseOrder,
                         shouldDrawTopLegends = true,
+                        isMilitary = true,
                     )
                 }.let(::setData)
         }
@@ -1005,6 +1008,31 @@ class RecordsCalendarView @JvmOverloads constructor(
             invalidate()
         }
         animator.start()
+    }
+
+    private fun calculateHoursData() {
+        val hoursNumbers = (24 downTo 0)
+            .map { if (it == 24 && startOfDayShift != 0L) 0 else it }
+        hours = if (isMilitary) {
+            hoursNumbers.map { hour ->
+                val hourText = hour
+                    .toString().padStart(2, '0')
+                val hourTextFull = "$hourText:00"
+                hourText to hourTextFull
+            }
+        } else {
+            hoursNumbers.map { hour ->
+                val isAfterMidday = hour > 12
+                val hourText = (if (isAfterMidday) hour - 12 else hour)
+                    .toString().padStart(2, '0')
+                val hourTextFull = context.getString(
+                    R.string.separator_template,
+                    hourText,
+                    if (isAfterMidday) "pm" else "am",
+                )
+                hourText to hourTextFull
+            }
+        }
     }
 
     private fun View.measureText(

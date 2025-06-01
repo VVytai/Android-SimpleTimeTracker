@@ -76,6 +76,7 @@ class RecordsViewDataInteractor @Inject constructor(
         val useMilitaryTime = prefsInteractor.getUseMilitaryTimeFormat()
         val useProportionalMinutes = prefsInteractor.getUseProportionalMinutes()
         val showSeconds = prefsInteractor.getShowSeconds()
+        val isMilitary = prefsInteractor.getUseMilitaryTimeFormat()
         val startOfDayShift = prefsInteractor.getStartOfDayShift()
         val firstDayOfWeek = prefsInteractor.getFirstDayOfWeek()
         val showUntrackedInRecords = prefsInteractor.getShowUntrackedInRecords()
@@ -143,6 +144,7 @@ class RecordsViewDataInteractor @Inject constructor(
                     shift = shift,
                     reverseOrder = reverseOrder,
                     showSeconds = showSeconds,
+                    isMilitary = isMilitary,
                     multiSelectedIds = multiSelectedIds,
                 )
             } else {
@@ -163,6 +165,7 @@ class RecordsViewDataInteractor @Inject constructor(
         shift: Int,
         reverseOrder: Boolean,
         showSeconds: Boolean,
+        isMilitary: Boolean,
         multiSelectedIds: List<MultiSelectedRecordId>,
     ): RecordsState.CalendarData.Data {
         val currentTime = if (shift == 0) {
@@ -211,6 +214,7 @@ class RecordsViewDataInteractor @Inject constructor(
                     points = list,
                     reverseOrder = reverseOrder,
                     shouldDrawTopLegends = shouldMapLegends,
+                    isMilitary = isMilitary,
                 )
             }
             .let(RecordsState.CalendarData::Data)
