@@ -93,12 +93,17 @@ class CalendarToListShiftMapper @Inject constructor(
         firstDayOfWeek: DayOfWeek,
     ): Int {
         // Find another range that contains last day of current range.
-        val listPosition = mapCalendarToListShift(
-            calendarShift = currentPosition,
-            daysInCalendar = currentDaysInCalendar,
-            startOfDayShift = startOfDayShift,
-            firstDayOfWeek = firstDayOfWeek,
-        ).end
+        // Or today if range contains today.
+        val listPosition = if (currentPosition == 0) {
+            0
+        } else {
+            mapCalendarToListShift(
+                calendarShift = currentPosition,
+                daysInCalendar = currentDaysInCalendar,
+                startOfDayShift = startOfDayShift,
+                firstDayOfWeek = firstDayOfWeek,
+            ).end
+        }
         return mapListToCalendarShift(
             listShift = listPosition,
             daysInCalendar = newDaysInCalendar,

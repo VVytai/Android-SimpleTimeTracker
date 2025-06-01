@@ -225,6 +225,8 @@ class RecordsContainerViewModel @Inject constructor(
 
     private suspend fun getActualShift(): Int {
         val shift = currentPosition
+        // Zero shift contains today, so return today.
+        if (shift == 0) return 0
         return if (prefsInteractor.getShowRecordsCalendar()) {
             calendarToListShiftMapper.mapCalendarToListShift(
                 calendarShift = shift,
