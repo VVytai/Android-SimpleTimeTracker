@@ -63,6 +63,7 @@ class SettingsFragment :
         viewModel.content.observe(contentAdapter::replaceAsNew)
         viewModel.resetScreen.observe {
             rvSettingsContent.smoothScrollToPosition(0)
+            viewModel.onResetScreen()
             mainTabsViewModel.onHandled()
         }
         viewModel.themeChanged.observe(::changeTheme)

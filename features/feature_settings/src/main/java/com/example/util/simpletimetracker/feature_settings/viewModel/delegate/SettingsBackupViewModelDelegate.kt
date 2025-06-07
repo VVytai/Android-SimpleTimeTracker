@@ -83,6 +83,10 @@ class SettingsBackupViewModelDelegate @Inject constructor(
         }
     }
 
+    fun collapse() {
+        isCollapsed = true
+    }
+
     private fun onCustomizeClick() {
         router.navigate(BackupOptionsParams)
     }

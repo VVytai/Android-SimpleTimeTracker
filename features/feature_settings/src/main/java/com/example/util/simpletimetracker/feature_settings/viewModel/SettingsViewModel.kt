@@ -143,6 +143,15 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
+    fun onResetScreen() = viewModelScope.launch {
+        notificationsDelegate.collapse()
+        displayDelegate.collapse()
+        additionalDelegate.collapse()
+        backupDelegate.collapse()
+        exportDelegate.collapse()
+        updateContent()
+    }
+
     fun onThemeChanged() = viewModelScope.launch {
         themeChangedInteractor.send()
     }

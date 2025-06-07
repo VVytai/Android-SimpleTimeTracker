@@ -108,6 +108,10 @@ class SettingsAdditionalViewModelDelegate @Inject constructor(
         onTypesSelectedDelegate(typeIds, tag)
     }
 
+    fun collapse() {
+        isCollapsed = true
+    }
+
     private fun onCollapseClick() = delegateScope.launch {
         isCollapsed = isCollapsed.flip()
         parent?.updateContent()
