@@ -11,7 +11,7 @@ data class StatisticsViewData(
     val percent: String,
     @ColorInt val color: Int,
     val icon: RecordTypeIcon?,
-    val transitionName: String,
+    val transitionName: String?,
 ) : ViewHolderType {
 
     override fun getUniqueId(): Long = id

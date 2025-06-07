@@ -5,12 +5,14 @@ import androidx.lifecycle.MutableLiveData
 import com.example.util.simpletimetracker.core.base.ViewModelDelegate
 import com.example.util.simpletimetracker.core.extension.set
 import com.example.util.simpletimetracker.core.view.buttonsRowView.ButtonsRowViewData
+import com.example.util.simpletimetracker.feature_base_adapter.statistics.StatisticsViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.interactor.StatisticsDetailDataDistributionInteractor
 import com.example.util.simpletimetracker.feature_statistics_detail.model.DataDistributionMode
 import com.example.util.simpletimetracker.feature_statistics_detail.model.DataDistributionGraph
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailDataDistributionModeViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailDataDistributionGraphViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailDataDistributionViewData
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -23,8 +25,10 @@ class StatisticsDetailDataDistributionViewModelDelegate @Inject constructor(
     }
 
     private var parent: StatisticsDetailViewModelDelegate.Parent? = null
+    private var updateViewDataJob: Job? = null
     private var dataDistributionMode = DataDistributionMode.ACTIVITY
     private var dataDistributionGraph = DataDistributionGraph.PIE_CHART
+    private var selectedItemId: Long? = null
 
     override fun attach(parent: StatisticsDetailViewModelDelegate.Parent) {
         this.parent = parent
@@ -33,6 +37,7 @@ class StatisticsDetailDataDistributionViewModelDelegate @Inject constructor(
     fun onDataDistributionModeClick(viewData: ButtonsRowViewData) {
         if (viewData !is StatisticsDetailDataDistributionModeViewData) return
         this.dataDistributionMode = viewData.mode
+        selectedItemId = null
         updateViewData()
     }
 
@@ -42,12 +47,29 @@ class StatisticsDetailDataDistributionViewModelDelegate @Inject constructor(
         updateViewData()
     }
 
-    fun updateViewData() = delegateScope.launch {
-        viewData.set(loadViewData())
-        parent?.updateContent()
+    fun onStatisticsItemClick(item: StatisticsViewData) {
+        selectedItemId = if (selectedItemId == item.id) null else item.id
+        updateViewData(animate = false)
     }
 
-    private suspend fun loadViewData(): StatisticsDetailDataDistributionViewData? {
+    fun onBarChartClick(barId: Long?) {
+        selectedItemId = barId
+        updateViewData(animate = false)
+    }
+
+    fun updateViewData(
+        animate: Boolean = true,
+    ) {
+        updateViewDataJob?.cancel()
+        updateViewDataJob = delegateScope.launch {
+            viewData.set(loadViewData(animate))
+            parent?.updateContent()
+        }
+    }
+
+    private suspend fun loadViewData(
+        animate: Boolean,
+    ): StatisticsDetailDataDistributionViewData? {
         val parent = parent ?: return null
 
         return dataDistributionInteractor.getViewData(
@@ -56,6 +78,8 @@ class StatisticsDetailDataDistributionViewModelDelegate @Inject constructor(
             rangePosition = parent.rangePosition,
             dataDistributionMode = dataDistributionMode,
             dataDistributionGraph = dataDistributionGraph,
+            selectedItemId = selectedItemId,
+            animate = animate,
         )
     }
 }

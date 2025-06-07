@@ -16,6 +16,7 @@ import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.domain.record.model.RecordsFilter
 import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
+import com.example.util.simpletimetracker.feature_base_adapter.statistics.StatisticsViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.adapter.StatisticsDetailBlock
 import com.example.util.simpletimetracker.feature_statistics_detail.adapter.StatisticsDetailPreviewsViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.customView.SeriesCalendarView
@@ -184,8 +185,25 @@ class StatisticsDetailViewModel @Inject constructor(
         }
     }
 
+    fun onStatisticsItemClick(
+        item: StatisticsViewData,
+        @Suppress("UNUSED_PARAMETER") sharedElements: Map<Any, String>,
+    ) {
+        dataDistributionDelegate.onStatisticsItemClick(item)
+    }
+
     fun onPreviewItemClick(item: StatisticsDetailPreview) {
         previewDelegate.onPreviewItemClick(item)
+    }
+
+    fun onBarChartClick(block: StatisticsDetailBlock, barId: Long?) {
+        when (block) {
+            StatisticsDetailBlock.DataDistributionBarChart ->
+                dataDistributionDelegate.onBarChartClick(barId)
+            else -> {
+                // Do nothing
+            }
+        }
     }
 
     fun onPreviousClick() {

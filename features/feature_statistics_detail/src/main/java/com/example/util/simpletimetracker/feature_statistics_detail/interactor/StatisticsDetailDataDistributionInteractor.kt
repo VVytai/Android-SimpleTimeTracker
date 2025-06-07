@@ -7,22 +7,22 @@ import com.example.util.simpletimetracker.core.mapper.StatisticsViewDataMapper
 import com.example.util.simpletimetracker.core.mapper.TimeMapper
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.core.viewData.StatisticsDataHolder
+import com.example.util.simpletimetracker.domain.base.OneShotValue
 import com.example.util.simpletimetracker.domain.base.UNCATEGORIZED_ITEM_ID
 import com.example.util.simpletimetracker.domain.base.UNTRACKED_ITEM_ID
-import com.example.util.simpletimetracker.domain.statistics.interactor.StatisticsCategoryInteractor
-import com.example.util.simpletimetracker.domain.statistics.interactor.StatisticsInteractor
-import com.example.util.simpletimetracker.domain.statistics.interactor.StatisticsTagInteractor
-import com.example.util.simpletimetracker.domain.statistics.model.ChartFilterType
-import com.example.util.simpletimetracker.domain.base.OneShotValue
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.record.mapper.RangeMapper
 import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTypeInteractor
 import com.example.util.simpletimetracker.domain.recordType.model.RecordType
+import com.example.util.simpletimetracker.domain.statistics.interactor.StatisticsCategoryInteractor
+import com.example.util.simpletimetracker.domain.statistics.interactor.StatisticsInteractor
+import com.example.util.simpletimetracker.domain.statistics.interactor.StatisticsTagInteractor
+import com.example.util.simpletimetracker.domain.statistics.model.ChartFilterType
 import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
 import com.example.util.simpletimetracker.domain.statistics.model.Statistics
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
-import com.example.util.simpletimetracker.feature_base_adapter.statistics.StatisticsViewData
+import com.example.util.simpletimetracker.feature_base_adapter.statistics.StatisticsSelectableViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.R
 import com.example.util.simpletimetracker.feature_statistics_detail.adapter.StatisticsDetailBarChartViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.adapter.StatisticsDetailBlock
@@ -64,6 +64,8 @@ class StatisticsDetailDataDistributionInteractor @Inject constructor(
         rangePosition: Int,
         dataDistributionMode: DataDistributionMode,
         dataDistributionGraph: DataDistributionGraph,
+        selectedItemId: Long?,
+        animate: Boolean,
     ): StatisticsDetailDataDistributionViewData = withContext(Dispatchers.Default) {
         val isDarkTheme = prefsInteractor.getDarkMode()
         val firstDayOfWeek = prefsInteractor.getFirstDayOfWeek()
@@ -82,6 +84,7 @@ class StatisticsDetailDataDistributionInteractor @Inject constructor(
         val splitData = mapDataDistribution(
             mode = dataDistributionMode,
             graph = dataDistributionGraph,
+            selectedItemId = selectedItemId,
             records = if (range.timeStarted == 0L && range.timeEnded == 0L) {
                 records
             } else {
@@ -92,6 +95,7 @@ class StatisticsDetailDataDistributionInteractor @Inject constructor(
             isDarkTheme = isDarkTheme,
             useProportionalMinutes = useProportionalMinutes,
             showSeconds = showSeconds,
+            animate = animate,
         )
 
         return@withContext StatisticsDetailDataDistributionViewData(
@@ -102,11 +106,13 @@ class StatisticsDetailDataDistributionInteractor @Inject constructor(
     private suspend fun mapDataDistribution(
         mode: DataDistributionMode,
         graph: DataDistributionGraph,
+        selectedItemId: Long?,
         records: List<RecordBase>,
         typesMap: Map<Long, RecordType>,
         isDarkTheme: Boolean,
         useProportionalMinutes: Boolean,
         showSeconds: Boolean,
+        animate: Boolean,
     ): List<ViewHolderType> {
         if (records.isEmpty()) return emptyList()
         val result = mutableListOf<ViewHolderType>()
@@ -125,15 +131,18 @@ class StatisticsDetailDataDistributionInteractor @Inject constructor(
         val chart = mapChart(
             graph = graph,
             filterType = filterType,
+            selectedItemId = selectedItemId,
             statistics = statistics,
             data = dataHolders,
             typesMap = typesMap,
             isDarkTheme = isDarkTheme,
+            animate = animate,
         )
         val items = mapItemsList(
             statistics = statistics,
             data = dataHolders,
             filterType = filterType,
+            selectedItemId = selectedItemId,
             isDarkTheme = isDarkTheme,
             useProportionalMinutes = useProportionalMinutes,
             showSeconds = showSeconds,
@@ -178,31 +187,39 @@ class StatisticsDetailDataDistributionInteractor @Inject constructor(
         statistics: List<Statistics>,
         data: Map<Long, StatisticsDataHolder>,
         filterType: ChartFilterType,
-        filteredIds: List<Long> = emptyList(),
+        selectedItemId: Long?,
         isDarkTheme: Boolean,
         useProportionalMinutes: Boolean,
         showSeconds: Boolean,
-    ): List<StatisticsViewData> {
+    ): List<ViewHolderType> {
         return statisticsViewDataMapper.mapItemsList(
             shift = shift,
             statistics = statistics,
             data = data,
             filterType = filterType,
-            filteredIds = filteredIds,
+            filteredIds = emptyList(),
             showDuration = true,
             isDarkTheme = isDarkTheme,
             useProportionalMinutes = useProportionalMinutes,
             showSeconds = showSeconds,
-        )
+            hasTransitions = false,
+        ).map {
+            StatisticsSelectableViewData(
+                data = it,
+                isSelected = it.id == selectedItemId,
+            )
+        }
     }
 
     private suspend fun mapChart(
         graph: DataDistributionGraph,
         filterType: ChartFilterType,
+        selectedItemId: Long?,
         statistics: List<Statistics>,
         data: Map<Long, StatisticsDataHolder>,
         typesMap: Map<Long, RecordType>,
         isDarkTheme: Boolean,
+        animate: Boolean,
     ): ViewHolderType {
         return when (graph) {
             DataDistributionGraph.PIE_CHART -> {
@@ -225,7 +242,9 @@ class StatisticsDetailDataDistributionInteractor @Inject constructor(
                 mapBarChartData(
                     statistics = statistics,
                     data = data,
+                    selectedItemId = selectedItemId,
                     isDarkTheme = isDarkTheme,
+                    animate = animate,
                 ).let {
                     StatisticsDetailBarChartViewData(
                         block = StatisticsDetailBlock.DataDistributionBarChart,
@@ -241,7 +260,9 @@ class StatisticsDetailDataDistributionInteractor @Inject constructor(
     private fun mapBarChartData(
         statistics: List<Statistics>,
         data: Map<Long, StatisticsDataHolder>,
+        selectedItemId: Long?,
         isDarkTheme: Boolean,
+        animate: Boolean,
     ): StatisticsDetailChartViewData {
         val chartData = statistics
             .mapNotNull { statistic ->
@@ -250,32 +271,37 @@ class StatisticsDetailDataDistributionInteractor @Inject constructor(
                     dataHolder = data[statistic.id],
                     isDarkTheme = isDarkTheme,
                 ) ?: return@mapNotNull null
-                chart to statistic.data.duration
+                chart to statistic
             }
-            .sortedBy { (_, duration) -> duration }
+            .sortedBy { (_, statistic) -> statistic.data.duration }
+        val selectedBarPosition = chartData
+            .indexOfFirst { it.second.id == selectedItemId }
+            .takeUnless { it == -1 }
+        val (legendSuffix, isMinutes) = chartData
             .map { (statistics, _) -> statistics }
-
-        val (legendSuffix, isMinutes) = statisticsDetailViewDataMapper.mapLegendSuffix(chartData)
+            .let { statisticsDetailViewDataMapper.mapLegendSuffix(it) }
 
         return StatisticsDetailChartViewData(
             visible = true,
-            data = chartData.map {
-                val value = it.durations.map { (duration, color) ->
+            data = chartData.map { (chart, statistic) ->
+                val value = chart.durations.map { (duration, color) ->
                     statisticsDetailViewDataMapper.formatInterval(duration, isMinutes) to color
                 }
                 BarChartView.ViewData(
+                    id = statistic.id,
                     value = value,
-                    legend = it.legend,
+                    legend = chart.legend,
                 )
             },
             legendSuffix = legendSuffix,
             addLegendToSelectedBar = false,
             shouldDrawHorizontalLegends = false,
             showSelectedBarOnStart = false,
+            selectedBarPosition = selectedBarPosition,
             goalValue = 0f,
             useSingleColor = true,
             drawRoundCaps = true,
-            animate = OneShotValue(true),
+            animate = OneShotValue(animate),
         )
     }
 

@@ -28,6 +28,7 @@ import kotlin.math.ceil
 import kotlin.math.floor
 import kotlin.math.max
 import kotlin.math.min
+import androidx.core.content.withStyledAttributes
 
 class BarChartView @JvmOverloads constructor(
     context: Context,
@@ -82,7 +83,7 @@ class BarChartView @JvmOverloads constructor(
     private var longestTextWidth: Float = 0f
     private var legendLinesPixelStep: Float = 0f
     private var horizontalLegendsSkipCount: Int = 1
-    private var selectedBar: Int = -1 // -1 nothing is selected
+    private var selectedBarPosition: Int? = null
     private val selectedBarTextPadding: Int = 6.dpToPx()
     private val selectedBarBackgroundPadding: Int = 4.dpToPx()
     private val selectedBarBackgroundRadius: Float = 4.dpToPx().toFloat()
@@ -92,6 +93,7 @@ class BarChartView @JvmOverloads constructor(
     private var selectedBarWasShownOnStart: Boolean = false
     private var singleColor: Int? = null
     private var drawRoundCaps: Boolean = true
+    private var onBarClickListener: ((Long?) -> Unit)? = null
 
     private val barPaint: Paint = Paint()
     private val selectedBarPaint: Paint = Paint()
@@ -167,10 +169,17 @@ class BarChartView @JvmOverloads constructor(
 
     fun setBars(
         data: List<ViewData>,
+        selectedBarPosition: Int?,
         animate: Boolean,
     ) {
-        bars = data.takeUnless { it.isEmpty() }
-            ?: listOf(ViewData(listOf(0f to Color.BLACK), "", ""))
+        bars = data.takeUnless { it.isEmpty() } ?: listOf(
+            ViewData(
+                id = 0,
+                value = listOf(0f to Color.BLACK),
+                legend = "",
+                selectedBarLegend = "",
+            )
+        )
         maxPositiveValue = data
             .map { barData -> barData.value.map { it.first }.sum() }
             .filter { it >= 0f }
@@ -180,10 +189,10 @@ class BarChartView @JvmOverloads constructor(
             .filter { it < 0f }
             .minOrNull() ?: 0f
         if (data.isNotEmpty() && showSelectedBarOnStart && !selectedBarWasShownOnStart) {
-            selectedBar = bars.size - 1
+            this.selectedBarPosition = bars.size - 1
             selectedBarWasShownOnStart = true
         } else {
-            selectedBar = -1
+            this.selectedBarPosition = selectedBarPosition
         }
         invalidate()
         if (!isInEditMode && animate) animateBars()
@@ -223,17 +232,20 @@ class BarChartView @JvmOverloads constructor(
         invalidate()
     }
 
+    fun setOnBarClickListener(listener: (Long?) -> Unit) {
+        onBarClickListener = listener
+    }
+
     private fun initArgs(
         context: Context,
         attrs: AttributeSet? = null,
         defStyleAttr: Int = 0,
     ) {
         context
-            .obtainStyledAttributes(
+            .withStyledAttributes(
                 attrs,
                 R.styleable.BarChartView, defStyleAttr, 0,
-            )
-            .run {
+            ) {
                 barCountInEdit =
                     getInt(R.styleable.BarChartView_barCount, 0)
                 barDividerMaxWidth =
@@ -262,7 +274,6 @@ class BarChartView @JvmOverloads constructor(
                     getBoolean(R.styleable.BarChartView_shouldDrawHorizontalLegends, true)
                 goalValue =
                     getFloat(R.styleable.BarChartView_goalValue, 0f)
-                recycle()
             }
     }
 
@@ -438,6 +449,7 @@ class BarChartView @JvmOverloads constructor(
         }
     }
 
+    @SuppressLint("UseKtx")
     private fun drawBars(canvas: Canvas) {
         var prevColor = 0
         radiusArr = floatArrayOf(
@@ -521,7 +533,7 @@ class BarChartView @JvmOverloads constructor(
             }
 
             // Draw selected bar
-            if (index == selectedBar) {
+            if (index == selectedBarPosition) {
                 bounds.set(
                     0f + barDividerWidth / 2,
                     pixelTopBound,
@@ -570,6 +582,7 @@ class BarChartView @JvmOverloads constructor(
     }
 
     private fun drawSelectedBarIcon(canvas: Canvas) {
+        val selectedBar = selectedBarPosition ?: return
         val bar = bars.getOrNull(selectedBar) ?: return
         val barValue = bar.value.map { it.first }.sum()
         val isOnPositiveChart = barValue >= 0f || valueDownerBound == 0L
@@ -680,6 +693,7 @@ class BarChartView @JvmOverloads constructor(
             (segments downTo 1).toList()
                 .map {
                     ViewData(
+                        id = it.toLong(),
                         value = listOf(it.toFloat() to Color.BLACK),
                         legend = it.toString(),
                         selectedBarLegend = it.toString(),
@@ -688,10 +702,10 @@ class BarChartView @JvmOverloads constructor(
                 .let {
                     setBars(
                         data = it,
+                        selectedBarPosition = barCountInEdit / 2,
                         animate = false,
                     )
                 }
-            selectedBar = barCountInEdit / 2
             singleColor = Color.BLACK
         }
     }
@@ -704,9 +718,11 @@ class BarChartView @JvmOverloads constructor(
         bars.getOrNull(clickedAroundBar)?.let {
             if (y > pixelTopBound && y < pixelBottomBound) {
                 // If clicked on the same bar - clear selection
-                selectedBar = if (isClick && selectedBar == clickedAroundBar) {
-                    -1
+                selectedBarPosition = if (isClick && selectedBarPosition == clickedAroundBar) {
+                    onBarClickListener?.invoke(null)
+                    null
                 } else {
+                    onBarClickListener?.invoke(it.id)
                     clickedAroundBar
                 }
                 invalidate()
@@ -714,7 +730,8 @@ class BarChartView @JvmOverloads constructor(
             }
         }
 
-        selectedBar = -1
+        selectedBarPosition = null
+        onBarClickListener?.invoke(null)
         invalidate()
     }
 
@@ -754,6 +771,7 @@ class BarChartView @JvmOverloads constructor(
     }
 
     data class ViewData(
+        val id: Long,
         val value: List<Pair<Float, Int>>,
         val legend: String,
         val selectedBarLegend: String = legend,

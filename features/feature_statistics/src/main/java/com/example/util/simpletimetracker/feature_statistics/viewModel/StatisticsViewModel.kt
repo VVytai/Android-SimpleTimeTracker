@@ -98,7 +98,7 @@ class StatisticsViewModel @Inject constructor(
         sharedElements: Map<Any, String>,
     ) = viewModelScope.launch {
         statisticsDetailNavigationInteractor.navigate(
-            transitionName = item.transitionName,
+            transitionName = item.transitionName.orEmpty(),
             filterType = prefsInteractor.getChartFilterType(),
             shift = getShift(),
             sharedElements = sharedElements,

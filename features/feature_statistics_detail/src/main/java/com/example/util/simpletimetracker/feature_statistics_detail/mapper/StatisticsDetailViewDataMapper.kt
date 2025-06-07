@@ -315,6 +315,7 @@ class StatisticsDetailViewDataMapper @Inject constructor(
             addLegendToSelectedBar = false,
             shouldDrawHorizontalLegends = false,
             showSelectedBarOnStart = false,
+            selectedBarPosition = null,
             goalValue = 0f,
             drawRoundCaps = true,
             useSingleColor = true,
@@ -353,6 +354,7 @@ class StatisticsDetailViewDataMapper @Inject constructor(
         val viewData = days.map { day ->
             val calendarDay = timeMapper.toCalendarDayOfWeek(day)
             BarChartView.ViewData(
+                id = 0,
                 value = listOf(data[calendarDay].orZero() to Color.TRANSPARENT),
                 legend = timeMapper.toShortDayOfWeekName(day),
             )
@@ -365,6 +367,7 @@ class StatisticsDetailViewDataMapper @Inject constructor(
             addLegendToSelectedBar = false,
             shouldDrawHorizontalLegends = true,
             showSelectedBarOnStart = false,
+            selectedBarPosition = null,
             goalValue = 0f,
             useSingleColor = true,
             drawRoundCaps = true,
@@ -383,6 +386,7 @@ class StatisticsDetailViewDataMapper @Inject constructor(
         val viewData = hourLegends
             .map { (hour, legend) ->
                 BarChartView.ViewData(
+                    id = 0,
                     value = listOf(data[hour].orZero() to Color.TRANSPARENT),
                     legend = legend,
                 )
@@ -395,6 +399,7 @@ class StatisticsDetailViewDataMapper @Inject constructor(
             addLegendToSelectedBar = false,
             shouldDrawHorizontalLegends = true,
             showSelectedBarOnStart = false,
+            selectedBarPosition = null,
             goalValue = 0f,
             useSingleColor = true,
             drawRoundCaps = true,
@@ -432,6 +437,7 @@ class StatisticsDetailViewDataMapper @Inject constructor(
                 val started = timeMapper.formatDuration(range.timeStarted / 1000)
                 val ended = timeMapper.formatDuration(range.timeEnded / 1000)
                 range to BarChartView.ViewData(
+                    id = 0,
                     value = listOf(percent to Color.TRANSPARENT),
                     legend = ended,
                     selectedBarLegend = "$started - $ended",
@@ -449,6 +455,7 @@ class StatisticsDetailViewDataMapper @Inject constructor(
             addLegendToSelectedBar = true,
             shouldDrawHorizontalLegends = true,
             showSelectedBarOnStart = false,
+            selectedBarPosition = null,
             goalValue = 0f,
             useSingleColor = true,
             drawRoundCaps = true,
@@ -646,6 +653,7 @@ class StatisticsDetailViewDataMapper @Inject constructor(
                     formatInterval(duration) to color
                 }
                 BarChartView.ViewData(
+                    id = 0,
                     value = value,
                     legend = it.legend,
                 )
@@ -663,6 +671,7 @@ class StatisticsDetailViewDataMapper @Inject constructor(
                 -> data.size <= 10
             },
             showSelectedBarOnStart = showSelectedBarOnStart,
+            selectedBarPosition = null,
             goalValue = formatInterval(goal),
             useSingleColor = useSingleColor,
             drawRoundCaps = drawRoundCaps,

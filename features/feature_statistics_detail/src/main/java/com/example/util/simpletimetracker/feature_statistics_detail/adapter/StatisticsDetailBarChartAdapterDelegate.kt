@@ -10,7 +10,9 @@ import com.example.util.simpletimetracker.feature_views.extension.setMargins
 import com.example.util.simpletimetracker.feature_statistics_detail.adapter.StatisticsDetailBarChartViewData as ViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.databinding.StatisticsDetailBarChartItemBinding as Binding
 
-fun createStatisticsDetailBarChartAdapterDelegate() = createRecyclerBindingAdapterDelegate<ViewData, Binding>(
+fun createStatisticsDetailBarChartAdapterDelegate(
+    onBarClick: (StatisticsDetailBlock, Long?) -> Unit,
+) = createRecyclerBindingAdapterDelegate<ViewData, Binding>(
     Binding::inflate,
 ) { binding, item, _ ->
 
@@ -23,6 +25,7 @@ fun createStatisticsDetailBarChartAdapterDelegate() = createRecyclerBindingAdapt
         showSelectedBarOnStart(viewData.showSelectedBarOnStart)
         setBars(
             data = viewData.data,
+            selectedBarPosition = viewData.selectedBarPosition,
             animate = viewData.animate.getValue().orFalse(),
         )
         setLegendTextSuffix(viewData.legendSuffix)
@@ -31,6 +34,7 @@ fun createStatisticsDetailBarChartAdapterDelegate() = createRecyclerBindingAdapt
         setGoalValue(viewData.goalValue)
         setSingleColor(item.singleColor.takeIf { viewData.useSingleColor })
         setDrawRoundCaps(viewData.drawRoundCaps)
+        setOnBarClickListener { onBarClick(item.block, it) }
     }
 }
 

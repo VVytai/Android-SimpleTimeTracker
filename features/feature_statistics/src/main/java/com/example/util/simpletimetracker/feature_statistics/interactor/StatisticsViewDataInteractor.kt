@@ -112,6 +112,7 @@ class StatisticsViewDataInteractor @Inject constructor(
             isDarkTheme = isDarkTheme,
             useProportionalMinutes = useProportionalMinutes,
             showSeconds = showSeconds,
+            hasTransitions = true,
         )
         // Don't show goals in the future if there is no records there.
         val goalsList = if (

@@ -10,6 +10,7 @@ data class StatisticsDetailChartViewData(
     val addLegendToSelectedBar: Boolean,
     val shouldDrawHorizontalLegends: Boolean,
     val showSelectedBarOnStart: Boolean,
+    val selectedBarPosition: Int?,
     val goalValue: Float,
     val useSingleColor: Boolean,
     val drawRoundCaps: Boolean,

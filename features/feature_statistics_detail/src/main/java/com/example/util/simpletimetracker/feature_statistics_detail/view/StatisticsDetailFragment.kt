@@ -19,6 +19,7 @@ import com.example.util.simpletimetracker.domain.record.model.Range
 import com.example.util.simpletimetracker.feature_base_adapter.BaseRecyclerAdapter
 import com.example.util.simpletimetracker.feature_base_adapter.hint.createHintAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.statistics.createStatisticsAdapterDelegate
+import com.example.util.simpletimetracker.feature_base_adapter.statistics.createStatisticsSelectableAdapterDelegate
 import com.example.util.simpletimetracker.feature_statistics_detail.adapter.createStatisticsDetailBarChartAdapterDelegate
 import com.example.util.simpletimetracker.feature_statistics_detail.adapter.createStatisticsDetailButtonAdapterDelegate
 import com.example.util.simpletimetracker.feature_statistics_detail.adapter.createStatisticsDetailButtonsRowAdapterDelegate
@@ -65,7 +66,9 @@ class StatisticsDetailFragment :
             createStatisticsDetailPreviewsAdapterDelegate(
                 onClick = viewModel::onPreviewItemClick,
             ),
-            createStatisticsDetailBarChartAdapterDelegate(),
+            createStatisticsDetailBarChartAdapterDelegate(
+                onBarClick = viewModel::onBarChartClick,
+            ),
             createStatisticsDetailPieChartAdapterDelegate(),
             createStatisticsDetailDayCalendarAdapterDelegate(),
             createStatisticsDetailButtonsRowAdapterDelegate(
@@ -90,6 +93,9 @@ class StatisticsDetailFragment :
             createHintAdapterDelegate(),
             createStatisticsAdapterDelegate(
                 onItemClick = null,
+            ),
+            createStatisticsSelectableAdapterDelegate(
+                onItemClick = viewModel::onStatisticsItemClick,
             ),
         )
     }
