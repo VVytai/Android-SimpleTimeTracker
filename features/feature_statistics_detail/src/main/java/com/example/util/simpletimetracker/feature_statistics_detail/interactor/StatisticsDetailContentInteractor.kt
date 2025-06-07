@@ -18,6 +18,7 @@ import com.example.util.simpletimetracker.feature_statistics_detail.adapter.Stat
 import com.example.util.simpletimetracker.feature_statistics_detail.adapter.StatisticsDetailSeriesChartViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailChartCompositeViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailChartViewData
+import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailDataDistributionViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailGoalsCompositeViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailPreviewCompositeViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailPreviewViewData
@@ -44,6 +45,7 @@ class StatisticsDetailContentInteractor @Inject constructor(
         comparisonDurationSplitChartViewData: StatisticsDetailChartViewData?,
         nextActivitiesViewData: List<ViewHolderType>?,
         goalsViewData: StatisticsDetailGoalsCompositeViewData?,
+        dataDistributionViewData: StatisticsDetailDataDistributionViewData?,
     ): List<ViewHolderType> {
         val result = mutableListOf<ViewHolderType>()
 
@@ -298,9 +300,7 @@ class StatisticsDetailContentInteractor @Inject constructor(
 
         result += goalsViewData?.viewData.orEmpty()
 
-        statsViewData?.let { viewData ->
-            result += viewData.splitData
-        }
+        result += dataDistributionViewData?.splitData.orEmpty()
 
         return result
     }

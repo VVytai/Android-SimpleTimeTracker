@@ -37,8 +37,6 @@ class StatisticsDetailStatsInteractor @Inject constructor(
         showComparison: Boolean,
         rangeLength: RangeLength,
         rangePosition: Int,
-        dataDistributionMode: DataDistributionMode,
-        dataDistributionGraph: DataDistributionGraph,
     ): StatisticsDetailStatsViewData = withContext(Dispatchers.Default) {
         val isDarkTheme = prefsInteractor.getDarkMode()
         val firstDayOfWeek = prefsInteractor.getFirstDayOfWeek()
@@ -70,8 +68,6 @@ class StatisticsDetailStatsInteractor @Inject constructor(
             },
             showComparison = showComparison,
             types = types,
-            dataDistributionMode = dataDistributionMode,
-            dataDistributionGraph = dataDistributionGraph,
             isDarkTheme = isDarkTheme,
             useMilitaryTime = useMilitaryTime,
             useProportionalMinutes = useProportionalMinutes,
@@ -98,17 +94,14 @@ class StatisticsDetailStatsInteractor @Inject constructor(
             compareFirstRecord = "",
             lastRecord = "",
             compareLastRecord = "",
-            splitData = emptyList(),
         )
     }
 
-    private suspend fun mapStatsData(
+    private fun mapStatsData(
         records: List<RecordBase>,
         compareRecords: List<RecordBase>,
         showComparison: Boolean,
         types: List<RecordType>,
-        dataDistributionMode: DataDistributionMode,
-        dataDistributionGraph: DataDistributionGraph,
         isDarkTheme: Boolean,
         useMilitaryTime: Boolean,
         useProportionalMinutes: Boolean,
@@ -134,15 +127,6 @@ class StatisticsDetailStatsInteractor @Inject constructor(
             } else {
                 R.color.colorInactive
             }.let(resourceRepo::getColor),
-        )
-        val splitData = dataDistributionInteractor.mapDataDistribution(
-            mode = dataDistributionMode,
-            graph = dataDistributionGraph,
-            records = records,
-            typesMap = typesMap,
-            isDarkTheme = isDarkTheme,
-            useProportionalMinutes = useProportionalMinutes,
-            showSeconds = showSeconds,
         )
 
         fun formatInterval(value: Long?): String {
@@ -233,7 +217,6 @@ class StatisticsDetailStatsInteractor @Inject constructor(
             compareLastRecord = compareRecordsSorted.lastOrNull()?.timeEnded
                 .let(::formatDateTimeYear)
                 .let(::processComparisonString),
-            splitData = splitData,
         )
     }
 
@@ -255,7 +238,6 @@ class StatisticsDetailStatsInteractor @Inject constructor(
         compareFirstRecord: String,
         lastRecord: String,
         compareLastRecord: String,
-        splitData: List<ViewHolderType>,
     ): StatisticsDetailStatsViewData {
         return StatisticsDetailStatsViewData(
             totalDuration = listOf(
@@ -318,7 +300,6 @@ class StatisticsDetailStatsInteractor @Inject constructor(
                     description = resourceRepo.getString(R.string.statistics_detail_last_record),
                 ),
             ),
-            splitData = splitData,
         )
     }
 }

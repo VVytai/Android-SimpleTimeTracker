@@ -4,6 +4,7 @@ import com.example.util.simpletimetracker.core.interactor.StatisticsChartViewDat
 import com.example.util.simpletimetracker.core.interactor.StatisticsMediator
 import com.example.util.simpletimetracker.core.mapper.ColorMapper
 import com.example.util.simpletimetracker.core.mapper.StatisticsViewDataMapper
+import com.example.util.simpletimetracker.core.mapper.TimeMapper
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.core.viewData.StatisticsDataHolder
 import com.example.util.simpletimetracker.domain.base.UNCATEGORIZED_ITEM_ID
@@ -13,8 +14,12 @@ import com.example.util.simpletimetracker.domain.statistics.interactor.Statistic
 import com.example.util.simpletimetracker.domain.statistics.interactor.StatisticsTagInteractor
 import com.example.util.simpletimetracker.domain.statistics.model.ChartFilterType
 import com.example.util.simpletimetracker.domain.base.OneShotValue
+import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
+import com.example.util.simpletimetracker.domain.record.mapper.RangeMapper
 import com.example.util.simpletimetracker.domain.record.model.RecordBase
+import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTypeInteractor
 import com.example.util.simpletimetracker.domain.recordType.model.RecordType
+import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
 import com.example.util.simpletimetracker.domain.statistics.model.Statistics
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.statistics.StatisticsViewData
@@ -32,9 +37,18 @@ import com.example.util.simpletimetracker.feature_statistics_detail.model.DataDi
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailChartViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailDataDistributionGraphViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailDataDistributionModeViewData
+import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailDataDistributionViewData
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class StatisticsDetailDataDistributionInteractor @Inject constructor(
+    private val colorMapper: ColorMapper,
+    private val resourceRepo: ResourceRepo,
+    private val prefsInteractor: PrefsInteractor,
+    private val recordTypeInteractor: RecordTypeInteractor,
+    private val timeMapper: TimeMapper,
+    private val rangeMapper: RangeMapper,
     private val statisticsInteractor: StatisticsInteractor,
     private val statisticsTagInteractor: StatisticsTagInteractor,
     private val statisticsCategoryInteractor: StatisticsCategoryInteractor,
@@ -42,11 +56,50 @@ class StatisticsDetailDataDistributionInteractor @Inject constructor(
     private val statisticsChartViewDataInteractor: StatisticsChartViewDataInteractor,
     private val statisticsDetailViewDataMapper: StatisticsDetailViewDataMapper,
     private val statisticsViewDataMapper: StatisticsViewDataMapper,
-    private val colorMapper: ColorMapper,
-    private val resourceRepo: ResourceRepo,
 ) {
 
-    suspend fun mapDataDistribution(
+    suspend fun getViewData(
+        records: List<RecordBase>,
+        rangeLength: RangeLength,
+        rangePosition: Int,
+        dataDistributionMode: DataDistributionMode,
+        dataDistributionGraph: DataDistributionGraph,
+    ): StatisticsDetailDataDistributionViewData = withContext(Dispatchers.Default) {
+        val isDarkTheme = prefsInteractor.getDarkMode()
+        val firstDayOfWeek = prefsInteractor.getFirstDayOfWeek()
+        val startOfDayShift = prefsInteractor.getStartOfDayShift()
+        val useProportionalMinutes = prefsInteractor.getUseProportionalMinutes()
+        val showSeconds = prefsInteractor.getShowSeconds()
+        val types = recordTypeInteractor.getAll()
+
+        val typesMap = types.associateBy(RecordType::id)
+        val range = timeMapper.getRangeStartAndEnd(
+            rangeLength = rangeLength,
+            shift = rangePosition,
+            firstDayOfWeek = firstDayOfWeek,
+            startOfDayShift = startOfDayShift,
+        )
+        val splitData = mapDataDistribution(
+            mode = dataDistributionMode,
+            graph = dataDistributionGraph,
+            records = if (range.timeStarted == 0L && range.timeEnded == 0L) {
+                records
+            } else {
+                rangeMapper.getRecordsFromRange(records, range)
+                    .map { rangeMapper.clampRecordToRange(it, range) }
+            },
+            typesMap = typesMap,
+            isDarkTheme = isDarkTheme,
+            useProportionalMinutes = useProportionalMinutes,
+            showSeconds = showSeconds,
+        )
+
+        return@withContext StatisticsDetailDataDistributionViewData(
+            splitData = splitData,
+        )
+    }
+
+    private suspend fun mapDataDistribution(
         mode: DataDistributionMode,
         graph: DataDistributionGraph,
         records: List<RecordBase>,

@@ -30,6 +30,7 @@ import com.example.util.simpletimetracker.feature_statistics_detail.viewData.Sta
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailPreviewCompositeViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.viewModel.delegate.StatisticsDetailChartViewModelDelegate
 import com.example.util.simpletimetracker.feature_statistics_detail.viewModel.delegate.StatisticsDetailDailyCalendarViewModelDelegate
+import com.example.util.simpletimetracker.feature_statistics_detail.viewModel.delegate.StatisticsDetailDataDistributionViewModelDelegate
 import com.example.util.simpletimetracker.feature_statistics_detail.viewModel.delegate.StatisticsDetailDurationSplitViewModelDelegate
 import com.example.util.simpletimetracker.feature_statistics_detail.viewModel.delegate.StatisticsDetailFilterViewModelDelegate
 import com.example.util.simpletimetracker.feature_statistics_detail.viewModel.delegate.StatisticsDetailGoalsViewModelDelegate
@@ -66,6 +67,7 @@ class StatisticsDetailViewModel @Inject constructor(
     private val filterDelegate: StatisticsDetailFilterViewModelDelegate,
     private val dailyCalendarDelegate: StatisticsDetailDailyCalendarViewModelDelegate,
     private val goalsDelegate: StatisticsDetailGoalsViewModelDelegate,
+    private val dataDistributionDelegate: StatisticsDetailDataDistributionViewModelDelegate,
     private val statisticsDetailOptionsListMapper: StatisticsDetailOptionsListMapper,
 ) : BaseViewModel() {
 
@@ -90,6 +92,7 @@ class StatisticsDetailViewModel @Inject constructor(
         filterDelegate,
         dailyCalendarDelegate,
         goalsDelegate,
+        dataDistributionDelegate,
     )
 
     init {
@@ -137,9 +140,9 @@ class StatisticsDetailViewModel @Inject constructor(
             StatisticsDetailBlock.SplitChartGrouping ->
                 splitChartDelegate.onSplitChartGroupingClick(viewData)
             StatisticsDetailBlock.DataDistributionMode ->
-                statsDelegate.onDataDistributionModeClick(viewData)
+                dataDistributionDelegate.onDataDistributionModeClick(viewData)
             StatisticsDetailBlock.DataDistributionGraph ->
-                statsDelegate.onDataDistributionGraphClick(viewData)
+                dataDistributionDelegate.onDataDistributionGraphClick(viewData)
             else -> {
                 // Do nothing
             }
@@ -265,6 +268,7 @@ class StatisticsDetailViewModel @Inject constructor(
         durationSplitDelegate.updateViewData()
         nextActivitiesDelegate.updateViewData()
         goalsDelegate.updateViewData()
+        dataDistributionDelegate.updateViewData()
     }
 
     private fun updateContent() {
@@ -291,6 +295,7 @@ class StatisticsDetailViewModel @Inject constructor(
             comparisonDurationSplitChartViewData = durationSplitDelegate.comparisonViewData.value,
             nextActivitiesViewData = nextActivitiesDelegate.viewData.value,
             goalsViewData = goalsDelegate.viewData.value,
+            dataDistributionViewData = dataDistributionDelegate.viewData.value,
         )
     }
 
