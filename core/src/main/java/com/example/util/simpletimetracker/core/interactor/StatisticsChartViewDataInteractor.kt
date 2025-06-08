@@ -82,6 +82,7 @@ class StatisticsChartViewDataInteractor @Inject constructor(
         return when {
             statistics.id == UNTRACKED_ITEM_ID -> {
                 PiePortion(
+                    id = statistics.id,
                     value = statistics.data.duration,
                     colorInt = colorMapper.toUntrackedColor(isDarkTheme),
                     iconId = RecordTypeIcon.Image(R.drawable.unknown),
@@ -89,6 +90,7 @@ class StatisticsChartViewDataInteractor @Inject constructor(
             }
             statistics.id == UNCATEGORIZED_ITEM_ID -> {
                 PiePortion(
+                    id = statistics.id,
                     value = statistics.data.duration,
                     colorInt = colorMapper.toUntrackedColor(isDarkTheme),
                     iconId = RecordTypeIcon.Image(R.drawable.untagged),
@@ -96,6 +98,7 @@ class StatisticsChartViewDataInteractor @Inject constructor(
             }
             dataHolder != null -> {
                 PiePortion(
+                    id = statistics.id,
                     value = statistics.data.duration,
                     colorInt = dataHolder.color
                         .let { colorMapper.mapToColorInt(it, isDarkTheme) },

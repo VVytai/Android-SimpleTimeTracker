@@ -5,32 +5,25 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <androidx.cardview.widget.CardView
         android:id="@+id/ivRecordSelectedItemCheck"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_width="24dp"
+        android:layout_height="0dp"
         android:layout_marginStart="4dp"
-        android:tint="?colorSecondary"
+        app:cardBackgroundColor="?colorAccent"
+        app:cardCornerRadius="@dimen/record_type_card_corner_radius"
+        app:cardElevation="@dimen/record_type_card_elevation"
+        app:cardPreventCornerOverlap="false"
+        app:cardUseCompatPadding="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/record_type_check_unmarked" />
-
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/ivRecordSelectedItemCheckmark"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:tint="?appBackgroundColor"
-        app:layout_constraintBottom_toBottomOf="@id/ivRecordSelectedItemCheck"
-        app:layout_constraintEnd_toEndOf="@id/ivRecordSelectedItemCheck"
-        app:layout_constraintStart_toStartOf="@id/ivRecordSelectedItemCheck"
-        app:layout_constraintTop_toTopOf="@id/ivRecordSelectedItemCheck"
-        app:srcCompat="@drawable/record_type_check_mark" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.example.util.simpletimetracker.feature_views.RecordView
         android:id="@+id/viewRecordItem"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="-4dp"
         android:layout_marginEnd="4dp"
         app:cardElevation="@dimen/record_type_card_elevation"
         app:itemTagColor="@color/white_alpha_60"

@@ -29,7 +29,7 @@ import com.example.util.simpletimetracker.feature_statistics_detail.adapter.Stat
 import com.example.util.simpletimetracker.feature_statistics_detail.adapter.StatisticsDetailButtonsRowViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.adapter.StatisticsDetailCardViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.adapter.StatisticsDetailHintViewData
-import com.example.util.simpletimetracker.feature_statistics_detail.customView.BarChartView
+import com.example.util.simpletimetracker.feature_views.barChart.BarChartView
 import com.example.util.simpletimetracker.feature_statistics_detail.model.ChartBarDataDuration
 import com.example.util.simpletimetracker.feature_statistics_detail.model.ChartBarDataRange
 import com.example.util.simpletimetracker.feature_statistics_detail.model.ChartGrouping

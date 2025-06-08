@@ -24,10 +24,10 @@ import androidx.core.content.withStyledAttributes
 import androidx.core.graphics.drawable.toDrawable
 import androidx.core.graphics.withTranslation
 import com.example.util.simpletimetracker.core.utils.CalendarIntersectionCalculator
-import com.example.util.simpletimetracker.core.utils.ScaleDetector
-import com.example.util.simpletimetracker.core.utils.SingleTapDetector
-import com.example.util.simpletimetracker.core.utils.SwipeDetector
-import com.example.util.simpletimetracker.core.utils.isHorizontal
+import com.example.util.simpletimetracker.feature_views.ScaleDetector
+import com.example.util.simpletimetracker.feature_views.SingleTapDetector
+import com.example.util.simpletimetracker.feature_views.SwipeDetector
+import com.example.util.simpletimetracker.feature_views.isHorizontal
 import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.record.RecordViewData

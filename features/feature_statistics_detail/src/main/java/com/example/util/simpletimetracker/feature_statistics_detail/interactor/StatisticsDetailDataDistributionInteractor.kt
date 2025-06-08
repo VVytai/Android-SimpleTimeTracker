@@ -29,7 +29,7 @@ import com.example.util.simpletimetracker.feature_statistics_detail.adapter.Stat
 import com.example.util.simpletimetracker.feature_statistics_detail.adapter.StatisticsDetailButtonsRowViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.adapter.StatisticsDetailHintViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.adapter.StatisticsDetailPieChartViewData
-import com.example.util.simpletimetracker.feature_statistics_detail.customView.BarChartView
+import com.example.util.simpletimetracker.feature_views.barChart.BarChartView
 import com.example.util.simpletimetracker.feature_statistics_detail.mapper.StatisticsDetailViewDataMapper
 import com.example.util.simpletimetracker.feature_statistics_detail.model.ChartBarDataDuration
 import com.example.util.simpletimetracker.feature_statistics_detail.model.DataDistributionGraph
@@ -230,11 +230,15 @@ class StatisticsDetailDataDistributionInteractor @Inject constructor(
                     dataHolders = data,
                     types = typesMap,
                     isDarkTheme = isDarkTheme,
-                ).let {
+                ).let { chartData ->
+                    val selectedPiePosition = chartData
+                        .indexOfFirst { it.id == selectedItemId }
+                        .takeUnless { it == -1 }
                     StatisticsDetailPieChartViewData(
                         block = StatisticsDetailBlock.DataDistributionPieChart,
-                        data = it,
-                        animate = OneShotValue(true),
+                        data = chartData,
+                        selectedPiePosition = selectedPiePosition,
+                        animate = OneShotValue(animate),
                     )
                 }
             }
@@ -245,12 +249,12 @@ class StatisticsDetailDataDistributionInteractor @Inject constructor(
                     selectedItemId = selectedItemId,
                     isDarkTheme = isDarkTheme,
                     animate = animate,
-                ).let {
+                ).let { chartData ->
                     StatisticsDetailBarChartViewData(
                         block = StatisticsDetailBlock.DataDistributionBarChart,
                         singleColor = null,
                         marginTopDp = 0,
-                        data = it,
+                        data = chartData,
                     )
                 }
             }

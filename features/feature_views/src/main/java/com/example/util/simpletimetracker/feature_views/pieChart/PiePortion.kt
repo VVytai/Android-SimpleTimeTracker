@@ -7,6 +7,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class PiePortion(
+    val id: Long,
     val value: Long,
     @ColorInt val colorInt: Int,
     val iconId: RecordTypeIcon? = null,

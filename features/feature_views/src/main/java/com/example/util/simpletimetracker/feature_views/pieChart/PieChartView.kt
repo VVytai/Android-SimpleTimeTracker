@@ -1,6 +1,7 @@
 package com.example.util.simpletimetracker.feature_views.pieChart
 
 import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BlurMaskFilter
@@ -14,6 +15,7 @@ import android.graphics.Rect
 import android.graphics.RectF
 import android.util.AttributeSet
 import android.view.ContextThemeWrapper
+import android.view.MotionEvent
 import android.view.View
 import androidx.annotation.FloatRange
 import com.example.util.simpletimetracker.feature_views.IconView
@@ -28,6 +30,12 @@ import kotlin.math.floor
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.sin
+import androidx.core.content.withStyledAttributes
+import com.example.util.simpletimetracker.feature_views.ColorUtils
+import com.example.util.simpletimetracker.feature_views.SingleTapDetector
+import kotlin.math.atan2
+import kotlin.math.pow
+import kotlin.math.sqrt
 
 class PieChartView @JvmOverloads constructor(
     context: Context,
@@ -47,13 +55,17 @@ class PieChartView @JvmOverloads constructor(
     private var segmentCount: Int = 0
     private var drawIcons: Boolean = false
     private var drawParticles: Boolean = false
+    private var selectedPieColor: Int = 0
     // End of attrs
 
     private val segmentPaint: Paint = Paint()
+    private val selectedSegmentPaint: Paint = Paint()
     private val shadowPaint: Paint = Paint()
     private val particlePaint: Paint = Paint()
 
     private var attachedListener: ((Boolean) -> Unit)? = null
+    private var onPieClickListener: ((Long?) -> Unit)? = null
+    private var piesAreClickable: Boolean = false
     private val segmentsOpenAnimator = ValueAnimator.ofFloat(0f, 1f)
     private val particlesAppearAnimator = ValueAnimator.ofFloat(0f, 1f)
     private val bounds: RectF = RectF(0f, 0f, 0f, 0f)
@@ -68,9 +80,16 @@ class PieChartView @JvmOverloads constructor(
     private var shouldAnimateParticlesAppearing: Boolean = true
     private var animateParticles: Boolean = false
     private var animateParticlesPaused: Boolean = false
+    private var selectedPiePosition: Int? = null
     private val cornerRadius = 2.dpToPx()
+    private val selectedPiePadding = 16.dpToPx()
     private val angleGapCutoff = 2f
     private val iconView: IconView = IconView(ContextThemeWrapper(context, R.style.AppTheme))
+
+    private val singleTapDetector = SingleTapDetector(
+        context = context,
+        onSingleTap = ::onTouch,
+    )
 
     init {
         initArgs(context, attrs, defStyleAttr)
@@ -98,6 +117,17 @@ class PieChartView @JvmOverloads constructor(
         drawIcons(canvas, w, h, r)
     }
 
+    @SuppressLint("ClickableViewAccessibility")
+    override fun onTouchEvent(event: MotionEvent): Boolean {
+        var handled = false
+
+        when (event.action) {
+            MotionEvent.ACTION_DOWN -> handled = true
+        }
+
+        return handled or singleTapDetector.onTouchEvent(event)
+    }
+
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
         attachedListener?.invoke(true)
@@ -123,8 +153,12 @@ class PieChartView @JvmOverloads constructor(
 
     fun setSegments(
         data: List<PiePortion>,
+        selectedPiePosition: Int?,
+        piesAreClickable: Boolean,
         animateOpen: Boolean,
     ) {
+        this.piesAreClickable = piesAreClickable
+
         val res = mutableListOf<Arc>()
         val valuesSum = data.map(PiePortion::value).sum()
         var segmentPercent: Float
@@ -141,21 +175,30 @@ class PieChartView @JvmOverloads constructor(
             } else {
                 1f / data.size
             }
-            res.add(
-                Arc(
-                    color = segment.colorInt,
-                    drawable = drawable,
-                    arcPercent = segmentPercent,
-                ),
+            res += Arc(
+                id = segment.id,
+                color = segment.colorInt,
+                drawable = drawable,
+                arcPercent = segmentPercent,
             )
         }
 
         segments = res
+        if (piesAreClickable) {
+            this.selectedPiePosition = selectedPiePosition
+        } else {
+            this.selectedPiePosition = null
+        }
+
         invalidate()
         if (!isInEditMode && animateOpen) {
             animateSegmentsAppearing()
             animateParticlesAppearing()
         }
+    }
+
+    fun setOnPieClickListener(listener: (Long?) -> Unit) {
+        onPieClickListener = listener
     }
 
     private fun initArgs(
@@ -164,11 +207,10 @@ class PieChartView @JvmOverloads constructor(
         defStyleAttr: Int = 0,
     ) {
         context
-            .obtainStyledAttributes(
+            .withStyledAttributes(
                 attrs,
                 R.styleable.PieChartView, defStyleAttr, 0,
-            )
-            .run {
+            ) {
                 innerRadiusRatio =
                     getFloat(R.styleable.PieChartView_innerRadiusRatio, 0f)
                 dividerWidth =
@@ -183,7 +225,8 @@ class PieChartView @JvmOverloads constructor(
                     getBoolean(R.styleable.PieChartView_drawIcons, false)
                 drawParticles =
                     getBoolean(R.styleable.PieChartView_drawParticles, false)
-                recycle()
+                selectedPieColor =
+                    getColor(R.styleable.PieChartView_selectedPieColor, Color.BLACK)
             }
     }
 
@@ -191,6 +234,11 @@ class PieChartView @JvmOverloads constructor(
         segmentPaint.apply {
             isAntiAlias = true
             style = Paint.Style.FILL
+        }
+        selectedSegmentPaint.apply {
+            isAntiAlias = true
+            color = ColorUtils.changeAlpha(selectedPieColor, 0.10f)
+            style = Paint.Style.STROKE
         }
         segmentPath.apply {
             segmentPath.fillType = Path.FillType.EVEN_ODD
@@ -224,6 +272,7 @@ class PieChartView @JvmOverloads constructor(
         )
     }
 
+    @SuppressLint("UseKtx")
     @Suppress("DEPRECATION")
     private fun drawSegments(canvas: Canvas, w: Float, h: Float, r: Float) {
         val segmentWidth = r - r * innerRadiusRatio
@@ -271,10 +320,9 @@ class PieChartView @JvmOverloads constructor(
         canvas.save()
         canvas.translate(w / 2f, h / 2f)
         layerBounds.set(-r, -r, r, r)
-        segments.forEach {
+        segments.forEachIndexed { index, arc ->
             canvas.saveLayerAlpha(layerBounds, 0xFF, Canvas.ALL_SAVE_FLAG)
-            sweepAngle = it.arcPercent * 360f * segmentAnimationScale
-            segmentPaint.color = it.color
+            sweepAngle = arc.arcPercent * 360f * segmentAnimationScale
 
             actualOuterAngleGap = when {
                 sweepAngle - outerAngleGap > angleGapCutoff -> outerAngleGap
@@ -375,15 +423,25 @@ class PieChartView @JvmOverloads constructor(
             // Left side from bottom to top.
             segmentPath.close()
 
+            segmentPaint.color = arc.color
             canvas.drawPath(segmentPath, segmentPaint)
 
             drawParticles(
-                segment = it,
+                segment = arc,
                 canvas = canvas,
                 currentSweepAngle = currentSweepAngle,
                 sweepAngle = sweepAngle,
                 r = r,
             )
+
+            if (index == selectedPiePosition) {
+                drawSelectedSegment(
+                    canvas = canvas,
+                    currentSweepAngle = currentSweepAngle,
+                    sweepAngle = sweepAngle,
+                    r = r,
+                )
+            }
 
             currentSweepAngle += sweepAngle
             canvas.restore()
@@ -391,6 +449,42 @@ class PieChartView @JvmOverloads constructor(
         canvas.restore()
     }
 
+    private fun drawSelectedSegment(
+        canvas: Canvas,
+        currentSweepAngle: Float,
+        sweepAngle: Float,
+        r: Float,
+    ) {
+        val segmentWidth = r - r * innerRadiusRatio + selectedPiePadding
+        val segmentCenterLine = r - segmentWidth / 2f
+        val minAngle = 4f
+        val actualSweepAngle: Float
+        val actualCurrentSweepAngle: Float
+        if (sweepAngle < minAngle) {
+            actualSweepAngle = minAngle
+            actualCurrentSweepAngle = currentSweepAngle + sweepAngle / 2 - actualSweepAngle / 2
+        } else {
+            actualSweepAngle = sweepAngle
+            actualCurrentSweepAngle = currentSweepAngle
+        }
+
+        selectedSegmentPaint.strokeWidth = segmentWidth
+
+        bounds.set(
+            -segmentCenterLine, -segmentCenterLine,
+            segmentCenterLine, +segmentCenterLine,
+        )
+
+        canvas.drawArc(
+            bounds,
+            actualCurrentSweepAngle,
+            actualSweepAngle,
+            false,
+            selectedSegmentPaint,
+        )
+    }
+
+    @SuppressLint("UseKtx")
     private fun drawParticles(
         segment: Arc,
         canvas: Canvas,
@@ -518,6 +612,7 @@ class PieChartView @JvmOverloads constructor(
             (segments downTo 1)
                 .map {
                     PiePortion(
+                        id = it.toLong(),
                         value = it.toLong(),
                         colorInt = Color.BLACK,
                         iconId = RecordTypeIcon.Image(R.drawable.unknown),
@@ -525,6 +620,8 @@ class PieChartView @JvmOverloads constructor(
                 }.let {
                     setSegments(
                         data = it,
+                        selectedPiePosition = segmentCount / 2,
+                        piesAreClickable = true,
                         animateOpen = false,
                     )
                 }
@@ -538,6 +635,50 @@ class PieChartView @JvmOverloads constructor(
                 measureExactly(iconMaxSize)
             }
             .getBitmapFromView()
+    }
+
+    private fun onTouch(event: MotionEvent) {
+        if (!piesAreClickable) return
+
+        val x = event.x
+        val y = event.y
+        val centeredX = x - width / 2
+        val centeredY = y - height / 2
+        val r = height / 2
+        val rBottomBound = r * innerRadiusRatio - selectedPiePadding
+        var currentSweepAngle = 0f
+        var sweepAngle: Float
+        val clickedAngle = Math.toDegrees(
+            atan2(centeredY, centeredX).toDouble(),
+        ).let {
+            if (it < 0) it + 360 else it
+        }.plus(90).let {
+            if (it > 360) it - 360 else it
+        }
+        val clickedRadius = sqrt(centeredX.pow(2) + centeredY.pow(2))
+        val clickedPiePosition = segments.indexOfFirst {
+            sweepAngle = it.arcPercent * 360f * segmentAnimationScale
+            val found = clickedAngle in (currentSweepAngle..currentSweepAngle + sweepAngle)
+            currentSweepAngle += sweepAngle
+            found
+        }
+        val clickedPie = segments.getOrNull(clickedPiePosition)
+
+        if (clickedPie != null && clickedRadius > rBottomBound && clickedRadius < r) {
+            // If clicked on the same bar - clear selection
+            if (selectedPiePosition == clickedPiePosition) {
+                onPieClickListener?.invoke(null)
+                selectedPiePosition = null
+            } else {
+                onPieClickListener?.invoke(clickedPie.id)
+                selectedPiePosition = clickedPiePosition
+            }
+            invalidate()
+        } else {
+            selectedPiePosition = null
+            onPieClickListener?.invoke(null)
+            invalidate()
+        }
     }
 
     private fun animateSegmentsAppearing() {
@@ -575,6 +716,7 @@ class PieChartView @JvmOverloads constructor(
     }
 
     private inner class Arc(
+        val id: Long,
         val color: Int,
         val drawable: Lazy<Bitmap>? = null,
         val arcPercent: Float,

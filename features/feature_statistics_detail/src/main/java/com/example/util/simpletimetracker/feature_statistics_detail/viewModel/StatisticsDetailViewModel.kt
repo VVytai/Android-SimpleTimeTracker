@@ -196,10 +196,12 @@ class StatisticsDetailViewModel @Inject constructor(
         previewDelegate.onPreviewItemClick(item)
     }
 
-    fun onBarChartClick(block: StatisticsDetailBlock, barId: Long?) {
+    fun onChartClick(block: StatisticsDetailBlock, barId: Long?) {
         when (block) {
             StatisticsDetailBlock.DataDistributionBarChart ->
-                dataDistributionDelegate.onBarChartClick(barId)
+                dataDistributionDelegate.onChartClick(barId)
+            StatisticsDetailBlock.DataDistributionPieChart ->
+                dataDistributionDelegate.onChartClick(barId)
             else -> {
                 // Do nothing
             }

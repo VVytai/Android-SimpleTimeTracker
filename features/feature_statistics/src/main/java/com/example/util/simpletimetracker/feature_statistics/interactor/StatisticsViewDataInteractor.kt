@@ -93,6 +93,7 @@ class StatisticsViewDataInteractor @Inject constructor(
             val data = it
                 .takeUnless { it.isEmpty() }
                 ?: PiePortion(
+                    id = 0,
                     value = 0,
                     colorInt = colorMapper.toUntrackedColor(isDarkTheme),
                 ).let(::listOf)

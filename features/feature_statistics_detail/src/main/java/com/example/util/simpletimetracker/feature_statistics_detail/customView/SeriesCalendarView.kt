@@ -11,9 +11,9 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import androidx.annotation.ColorInt
-import com.example.util.simpletimetracker.core.utils.SingleTapDetector
-import com.example.util.simpletimetracker.core.utils.SwipeDetector
-import com.example.util.simpletimetracker.core.utils.isHorizontal
+import com.example.util.simpletimetracker.feature_views.SingleTapDetector
+import com.example.util.simpletimetracker.feature_views.SwipeDetector
+import com.example.util.simpletimetracker.feature_views.isHorizontal
 import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.domain.base.Coordinates
 import com.example.util.simpletimetracker.feature_statistics_detail.R

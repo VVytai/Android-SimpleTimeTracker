@@ -8,7 +8,9 @@ import com.example.util.simpletimetracker.feature_views.pieChart.PiePortion
 import com.example.util.simpletimetracker.feature_statistics_detail.adapter.StatisticsDetailPieChartViewData as ViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.databinding.StatisticsDetailPieChartItemBinding as Binding
 
-fun createStatisticsDetailPieChartAdapterDelegate() = createRecyclerBindingAdapterDelegate<ViewData, Binding>(
+fun createStatisticsDetailPieChartAdapterDelegate(
+    onPieClick: (StatisticsDetailBlock, Long?) -> Unit,
+) = createRecyclerBindingAdapterDelegate<ViewData, Binding>(
     Binding::inflate,
 ) { binding, item, _ ->
 
@@ -19,14 +21,18 @@ fun createStatisticsDetailPieChartAdapterDelegate() = createRecyclerBindingAdapt
         resetAnimation()
         setSegments(
             data = item.data,
+            selectedPiePosition = item.selectedPiePosition,
+            piesAreClickable = true,
             animateOpen = item.animate.getValue().orFalse(),
         )
+        setOnPieClickListener { onPieClick(item.block, it) }
     }
 }
 
 data class StatisticsDetailPieChartViewData(
     val block: StatisticsDetailBlock,
     val data: List<PiePortion>,
+    val selectedPiePosition: Int?,
     val animate: OneShotValue<Boolean>,
 ) : ViewHolderType {
 

@@ -67,9 +67,11 @@ class StatisticsDetailFragment :
                 onClick = viewModel::onPreviewItemClick,
             ),
             createStatisticsDetailBarChartAdapterDelegate(
-                onBarClick = viewModel::onBarChartClick,
+                onBarClick = viewModel::onChartClick,
             ),
-            createStatisticsDetailPieChartAdapterDelegate(),
+            createStatisticsDetailPieChartAdapterDelegate(
+                onPieClick = viewModel::onChartClick,
+            ),
             createStatisticsDetailDayCalendarAdapterDelegate(),
             createStatisticsDetailButtonsRowAdapterDelegate(
                 onClick = viewModel::onButtonsRowClick,

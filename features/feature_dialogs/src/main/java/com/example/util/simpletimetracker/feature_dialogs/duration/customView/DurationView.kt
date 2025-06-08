@@ -11,7 +11,7 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import androidx.core.animation.doOnEnd
-import com.example.util.simpletimetracker.core.utils.SwipeDetector
+import com.example.util.simpletimetracker.feature_views.SwipeDetector
 import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.domain.extension.toDuration
 import com.example.util.simpletimetracker.feature_dialogs.R

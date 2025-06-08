@@ -52,7 +52,7 @@ class StatisticsDetailDataDistributionViewModelDelegate @Inject constructor(
         updateViewData(animate = false)
     }
 
-    fun onBarChartClick(barId: Long?) {
+    fun onChartClick(barId: Long?) {
         selectedItemId = barId
         updateViewData(animate = false)
     }

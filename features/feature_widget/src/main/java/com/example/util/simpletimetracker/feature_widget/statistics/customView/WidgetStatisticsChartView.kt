@@ -46,6 +46,8 @@ class WidgetStatisticsChartView @JvmOverloads constructor(
             switchDataVisibility(hasData = true)
             chartWidgetStatistics.setSegments(
                 data = data,
+                selectedPiePosition = null,
+                piesAreClickable = false,
                 animateOpen = false,
             )
             tvWidgetStatisticsTotal.text = total

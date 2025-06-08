@@ -1,23 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="BarChartView">
-        <!-- Used for layout preview -->
-        <attr name="barCount" format="integer" />
-        <attr name="dividerMaxWidth" format="dimension" />
-        <attr name="barCornerRadius" format="dimension" />
-        <attr name="legendTextSuffix" format="string" />
-        <attr name="legendTextSize" format="dimension" />
-        <attr name="legendTextColor" format="color" />
-        <attr name="legendLineColor" format="color" />
-        <attr name="selectedBarBackgroundColor" format="color" />
-        <attr name="selectedBarTextColor" format="color" />
-        <attr name="selectedBarColor" format="color" />
-        <attr name="showSelectedBarOnStart" format="boolean" />
-        <attr name="addLegendToSelectedBar" format="boolean" />
-        <attr name="shouldDrawHorizontalLegends" format="boolean" />
-        <attr name="goalValue" format="float" />
-    </declare-styleable>
-
     <declare-styleable name="StatisticsDetailCardView">
         <!-- Used for layout preview -->
         <attr name="itemCount" format="integer" />

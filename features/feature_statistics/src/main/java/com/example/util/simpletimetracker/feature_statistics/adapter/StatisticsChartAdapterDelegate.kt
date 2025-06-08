@@ -15,6 +15,8 @@ fun createStatisticsChartAdapterDelegate(
 
         chartStatisticsItem.setSegments(
             data = item.data,
+            selectedPiePosition = null,
+            piesAreClickable = false,
             animateOpen = item.animatedOpen,
         )
         chartStatisticsItem.setAttachedListener(onChartAttached)

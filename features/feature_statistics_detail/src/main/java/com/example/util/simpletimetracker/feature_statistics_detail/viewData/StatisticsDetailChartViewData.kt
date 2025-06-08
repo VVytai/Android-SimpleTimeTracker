@@ -1,7 +1,7 @@
 package com.example.util.simpletimetracker.feature_statistics_detail.viewData
 
 import com.example.util.simpletimetracker.domain.base.OneShotValue
-import com.example.util.simpletimetracker.feature_statistics_detail.customView.BarChartView
+import com.example.util.simpletimetracker.feature_views.barChart.BarChartView
 
 data class StatisticsDetailChartViewData(
     val visible: Boolean,

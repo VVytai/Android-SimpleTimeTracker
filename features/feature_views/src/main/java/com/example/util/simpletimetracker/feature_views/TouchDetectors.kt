@@ -1,4 +1,4 @@
-package com.example.util.simpletimetracker.core.utils
+package com.example.util.simpletimetracker.feature_views
 
 import android.content.Context
 import android.view.GestureDetector

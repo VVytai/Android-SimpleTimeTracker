@@ -1,4 +1,4 @@
-package com.example.util.simpletimetracker.feature_statistics_detail.customView
+package com.example.util.simpletimetracker.feature_views.barChart
 
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
@@ -15,11 +15,9 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import androidx.annotation.ColorInt
-import com.example.util.simpletimetracker.core.utils.SingleTapDetector
-import com.example.util.simpletimetracker.core.utils.SwipeDetector
-import com.example.util.simpletimetracker.core.utils.isHorizontal
-import com.example.util.simpletimetracker.domain.extension.orZero
-import com.example.util.simpletimetracker.feature_statistics_detail.R
+import com.example.util.simpletimetracker.feature_views.SingleTapDetector
+import com.example.util.simpletimetracker.feature_views.SwipeDetector
+import com.example.util.simpletimetracker.feature_views.isHorizontal
 import com.example.util.simpletimetracker.feature_views.ColorUtils
 import com.example.util.simpletimetracker.feature_views.extension.dpToPx
 import kotlinx.parcelize.Parcelize
@@ -29,6 +27,8 @@ import kotlin.math.floor
 import kotlin.math.max
 import kotlin.math.min
 import androidx.core.content.withStyledAttributes
+import com.example.util.simpletimetracker.feature_views.R
+import com.example.util.simpletimetracker.feature_views.extension.ifNull
 
 class BarChartView @JvmOverloads constructor(
     context: Context,
@@ -178,7 +178,7 @@ class BarChartView @JvmOverloads constructor(
                 value = listOf(0f to Color.BLACK),
                 legend = "",
                 selectedBarLegend = "",
-            )
+            ),
         )
         maxPositiveValue = data
             .map { barData -> barData.value.map { it.first }.sum() }
@@ -370,7 +370,7 @@ class BarChartView @JvmOverloads constructor(
         chartWidth = pixelRightBound - pixelLeftBound
         chartHeight = pixelBottomBound - pixelTopBound
         barWidth = chartWidth / bars.size
-        barDividerWidth = barDividerMaxWidth.takeIf { it < barWidth / 2 }?.toFloat().orZero()
+        barDividerWidth = barDividerMaxWidth.takeIf { it < barWidth / 2 }?.toFloat().ifNull { 0f }
 
         // Pixel y coordinate of zero value.
         // Equals pixelBottomBound if there are no negative values.
@@ -464,7 +464,7 @@ class BarChartView @JvmOverloads constructor(
             barCornerRadius, barCornerRadius,
             barCornerRadius, barCornerRadius,
         )
-        if (singleColor != null) barPaint.color = singleColor.orZero()
+        if (singleColor != null) barPaint.color = singleColor.ifNull { 0 }
 
         canvas.save()
 
@@ -713,26 +713,25 @@ class BarChartView @JvmOverloads constructor(
     private fun onTouch(event: MotionEvent, isClick: Boolean) {
         val x = event.x
         val y = event.y
+
         val clickedAroundBar = floor(x / barWidth).toInt()
+        val clickedBar = bars.getOrNull(clickedAroundBar)
 
-        bars.getOrNull(clickedAroundBar)?.let {
-            if (y > pixelTopBound && y < pixelBottomBound) {
-                // If clicked on the same bar - clear selection
-                selectedBarPosition = if (isClick && selectedBarPosition == clickedAroundBar) {
-                    onBarClickListener?.invoke(null)
-                    null
-                } else {
-                    onBarClickListener?.invoke(it.id)
-                    clickedAroundBar
-                }
-                invalidate()
-                return
+        if (clickedBar != null && y > pixelTopBound && y < pixelBottomBound) {
+            // If clicked on the same bar - clear selection
+            if (isClick && selectedBarPosition == clickedAroundBar) {
+                onBarClickListener?.invoke(null)
+                selectedBarPosition = null
+            } else {
+                onBarClickListener?.invoke(clickedBar.id)
+                selectedBarPosition = clickedAroundBar
             }
+            invalidate()
+        } else {
+            selectedBarPosition = null
+            onBarClickListener?.invoke(null)
+            invalidate()
         }
-
-        selectedBarPosition = null
-        onBarClickListener?.invoke(null)
-        invalidate()
     }
 
     @Suppress("UNUSED_PARAMETER")
