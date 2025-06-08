@@ -226,7 +226,7 @@ class StatisticsDetailFragment :
 
         val context = rvStatisticsDetailContent.context
         rvStatisticsDetailContent.onItemSwiped(
-            iconRes = R.drawable.delete, // TODO
+            iconRes = R.drawable.hide,
             iconColor = context.getThemedAttr(R.attr.appContrastColor),
             backgroundColor = ColorUtils.changeAlpha(
                 context.getThemedAttr(R.attr.appContrastColor), 0.10f,

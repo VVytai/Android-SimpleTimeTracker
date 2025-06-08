@@ -50,6 +50,8 @@ class RecordsFilterUpdateInteractor @Inject constructor(
         currentFilters: List<RecordsFilter>,
         recordTypes: List<RecordType>,
         recordTypeCategories: List<RecordTypeCategory>,
+        recordTags: List<RecordTag>,
+        typesToTags: List<RecordTypeToTag>,
     ): List<RecordsFilter> {
         val filters = currentFilters.toMutableList()
         val currentIds = filters.getTypeIds().toMutableList()
@@ -65,12 +67,27 @@ class RecordsFilterUpdateInteractor @Inject constructor(
 
         val newIds = currentIds.toMutableList().apply { addOrRemove(id) }
 
-        return handleSelectTypes(filters, newIds)
+        return handleSelectTypes(
+            currentFilters = filters,
+            newIds = newIds,
+        ).let {
+            checkTagFilterConsistency(
+                currentFilters = it,
+                recordTypes = recordTypes,
+                recordTypeCategories = recordTypeCategories,
+                recordTags = recordTags,
+                typesToTags = typesToTags,
+            )
+        }
     }
 
     fun handleCategoryClick(
         id: Long,
         currentFilters: List<RecordsFilter>,
+        recordTypes: List<RecordType>,
+        recordTypeCategories: List<RecordTypeCategory>,
+        recordTags: List<RecordTag>,
+        typesToTags: List<RecordTypeToTag>,
     ): List<RecordsFilter> {
         val filters = currentFilters.toMutableList()
         val currentItems = filters.getCategoryItems()
@@ -81,7 +98,18 @@ class RecordsFilterUpdateInteractor @Inject constructor(
             RecordsFilter.CategoryItem.Categorized(id)
         }.let { currentItems.toMutableList().apply { addOrRemove(it) } }
 
-        return handleSelectCategories(filters, newItems)
+        return handleSelectCategories(
+            currentFilters = filters,
+            newItems = newItems,
+        ).let {
+            checkTagFilterConsistency(
+                currentFilters = it,
+                recordTypes = recordTypes,
+                recordTypeCategories = recordTypeCategories,
+                recordTags = recordTags,
+                typesToTags = typesToTags,
+            )
+        }
     }
 
     fun handleTagClick(
@@ -372,6 +400,9 @@ class RecordsFilterUpdateInteractor @Inject constructor(
         currentFilters: List<RecordsFilter>,
         subtype: RecordsFilterSelectionButtonType.Subtype,
         recordTypes: List<RecordType>,
+        recordTypeCategories: List<RecordTypeCategory>,
+        recordTags: List<RecordTag>,
+        typesToTags: List<RecordTypeToTag>,
     ): List<RecordsFilter> {
         val newIds = when (subtype) {
             is RecordsFilterSelectionButtonType.Subtype.SelectAll -> recordTypes.map { it.id }
@@ -380,13 +411,25 @@ class RecordsFilterUpdateInteractor @Inject constructor(
         return handleSelectTypes(
             currentFilters = currentFilters,
             newIds = newIds,
-        )
+        ).let {
+            checkTagFilterConsistency(
+                currentFilters = it,
+                recordTypes = recordTypes,
+                recordTypeCategories = recordTypeCategories,
+                recordTags = recordTags,
+                typesToTags = typesToTags,
+            )
+        }
     }
 
     fun onCategoriesSelectionButtonClick(
         currentFilters: List<RecordsFilter>,
         subtype: RecordsFilterSelectionButtonType.Subtype,
         categories: List<Category>,
+        recordTypes: List<RecordType>,
+        recordTypeCategories: List<RecordTypeCategory>,
+        recordTags: List<RecordTag>,
+        typesToTags: List<RecordTypeToTag>,
     ): List<RecordsFilter> {
         val newItems = when (subtype) {
             is RecordsFilterSelectionButtonType.Subtype.SelectAll -> {
@@ -401,7 +444,15 @@ class RecordsFilterUpdateInteractor @Inject constructor(
         return handleSelectCategories(
             currentFilters = currentFilters,
             newItems = newItems,
-        )
+        ).let {
+            checkTagFilterConsistency(
+                currentFilters = it,
+                recordTypes = recordTypes,
+                recordTypeCategories = recordTypeCategories,
+                recordTags = recordTags,
+                typesToTags = typesToTags,
+            )
+        }
     }
 
     fun onTagsSelectionButtonClick(
@@ -427,7 +478,7 @@ class RecordsFilterUpdateInteractor @Inject constructor(
         )
     }
 
-    fun checkTagFilterConsistency(
+    private fun checkTagFilterConsistency(
         currentFilters: List<RecordsFilter>,
         recordTypes: List<RecordType>,
         recordTypeCategories: List<RecordTypeCategory>,
@@ -440,20 +491,18 @@ class RecordsFilterUpdateInteractor @Inject constructor(
             recordTypes = recordTypes,
             recordTypeCategories = recordTypeCategories,
         )
+        val tagIds = recordTags.map(RecordTag::id)
+        val selectableTagIds = filterSelectableTagsInteractor.execute(
+            tagIds = tagIds,
+            typesToTags = typesToTags,
+            typeIds = newTypeIds,
+        )
 
         fun update(tags: List<RecordsFilter.TagItem>): List<RecordsFilter.TagItem> {
             return tags.filter {
                 when (it) {
                     is RecordsFilter.TagItem.Tagged -> {
-                        it.tagId in recordTags
-                            .map { tag -> tag.id }
-                            .let { tags ->
-                                filterSelectableTagsInteractor.execute(
-                                    tagIds = tags,
-                                    typesToTags = typesToTags,
-                                    typeIds = newTypeIds,
-                                )
-                            }
+                        it.tagId in selectableTagIds
                     }
                     is RecordsFilter.TagItem.Untagged -> {
                         true
@@ -463,12 +512,10 @@ class RecordsFilterUpdateInteractor @Inject constructor(
         }
 
         val newSelectedTags = update(filters.getSelectedTags())
-
         filters.removeAll { filter -> filter is RecordsFilter.SelectedTags }
         if (newSelectedTags.isNotEmpty()) filters.add(RecordsFilter.SelectedTags(newSelectedTags))
 
         val newFilteredTags = update(filters.getFilteredTags())
-
         filters.removeAll { filter -> filter is RecordsFilter.FilteredTags }
         if (newFilteredTags.isNotEmpty()) filters.add(RecordsFilter.FilteredTags(newFilteredTags))
 

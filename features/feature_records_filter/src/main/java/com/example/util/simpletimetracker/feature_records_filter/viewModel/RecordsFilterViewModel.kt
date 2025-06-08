@@ -209,8 +209,10 @@ class RecordsFilterViewModel @Inject constructor(
                     currentFilters = filters,
                     subtype = subtype,
                     recordTypes = getTypesCache(),
+                    recordTypeCategories = getRecordTypeCategoriesCache(),
+                    recordTags = getTagsCache(),
+                    typesToTags = getRecordTypeToTagCache(),
                 )
-                checkTagFilterConsistency()
             }
             is RecordsFilterSelectionButtonType.Type.Categories -> {
                 filterSelectionState = RecordsFilterSelectionState.Visible(RecordFilterType.Category)
@@ -218,8 +220,11 @@ class RecordsFilterViewModel @Inject constructor(
                     currentFilters = filters,
                     subtype = subtype,
                     categories = getCategoriesCache(),
+                    recordTypes = getTypesCache(),
+                    recordTypeCategories = getRecordTypeCategoriesCache(),
+                    recordTags = getTagsCache(),
+                    typesToTags = getRecordTypeToTagCache(),
                 )
-                checkTagFilterConsistency()
             }
             is RecordsFilterSelectionButtonType.Type.Tags -> {
                 filters = recordsFilterUpdateInteractor.onTagsSelectionButtonClick(
@@ -348,8 +353,9 @@ class RecordsFilterViewModel @Inject constructor(
             currentFilters = filters,
             recordTypes = getTypesCache(),
             recordTypeCategories = getRecordTypeCategoriesCache(),
+            recordTags = getTagsCache(),
+            typesToTags = getRecordTypeToTagCache(),
         )
-        checkTagFilterConsistency()
     }
 
     private suspend fun handleCategoryClick(id: Long) {
@@ -357,8 +363,11 @@ class RecordsFilterViewModel @Inject constructor(
         filters = recordsFilterUpdateInteractor.handleCategoryClick(
             id = id,
             currentFilters = filters,
+            recordTypes = getTypesCache(),
+            recordTypeCategories = getRecordTypeCategoriesCache(),
+            recordTags = getTagsCache(),
+            typesToTags = getRecordTypeToTagCache(),
         )
-        checkTagFilterConsistency()
     }
 
     private fun handleUntrackedClick() {
@@ -418,16 +427,6 @@ class RecordsFilterViewModel @Inject constructor(
             id = id,
         )
         checkManualFilterVisibility()
-    }
-
-    private suspend fun checkTagFilterConsistency() {
-        filters = recordsFilterUpdateInteractor.checkTagFilterConsistency(
-            currentFilters = filters,
-            recordTypes = getTypesCache(),
-            recordTypeCategories = getRecordTypeCategoriesCache(),
-            recordTags = getTagsCache(),
-            typesToTags = getRecordTypeToTagCache(),
-        )
     }
 
     private fun removeFilter(type: RecordFilterType) {
