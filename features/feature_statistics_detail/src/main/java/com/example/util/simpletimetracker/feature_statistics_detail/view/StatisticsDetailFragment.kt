@@ -10,16 +10,21 @@ import com.example.util.simpletimetracker.core.dialog.DateTimeDialogListener
 import com.example.util.simpletimetracker.core.dialog.DurationDialogListener
 import com.example.util.simpletimetracker.core.dialog.OptionsListDialogListener
 import com.example.util.simpletimetracker.core.dialog.RecordsFilterListener
+import com.example.util.simpletimetracker.core.extension.onItemSwiped
 import com.example.util.simpletimetracker.core.extension.setSharedTransitions
 import com.example.util.simpletimetracker.core.extension.toViewData
 import com.example.util.simpletimetracker.core.utils.InsetConfiguration
 import com.example.util.simpletimetracker.core.utils.fragmentArgumentDelegate
 import com.example.util.simpletimetracker.core.viewData.RangesViewData
+import com.example.util.simpletimetracker.domain.extension.orFalse
 import com.example.util.simpletimetracker.domain.record.model.Range
 import com.example.util.simpletimetracker.feature_base_adapter.BaseRecyclerAdapter
+import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.hint.createHintAdapterDelegate
+import com.example.util.simpletimetracker.feature_base_adapter.statistics.StatisticsSelectableViewData
 import com.example.util.simpletimetracker.feature_base_adapter.statistics.createStatisticsAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.statistics.createStatisticsSelectableAdapterDelegate
+import com.example.util.simpletimetracker.feature_statistics_detail.R
 import com.example.util.simpletimetracker.feature_statistics_detail.adapter.createStatisticsDetailBarChartAdapterDelegate
 import com.example.util.simpletimetracker.feature_statistics_detail.adapter.createStatisticsDetailButtonAdapterDelegate
 import com.example.util.simpletimetracker.feature_statistics_detail.adapter.createStatisticsDetailButtonsRowAdapterDelegate
@@ -35,6 +40,8 @@ import com.example.util.simpletimetracker.feature_statistics_detail.adapter.crea
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailPreviewCompositeViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailPreviewViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.viewModel.StatisticsDetailViewModel
+import com.example.util.simpletimetracker.feature_views.ColorUtils
+import com.example.util.simpletimetracker.feature_views.extension.getThemedAttr
 import com.example.util.simpletimetracker.feature_views.extension.setOnClick
 import com.example.util.simpletimetracker.feature_views.extension.setOnLongClick
 import com.example.util.simpletimetracker.feature_views.extension.visible
@@ -125,6 +132,7 @@ class StatisticsDetailFragment :
         btnStatisticsDetailNext.setOnClick(viewModel::onNextClick)
         btnStatisticsDetailToday.setOnClick { spinnerStatisticsDetail.performClick() }
         btnStatisticsDetailToday.setOnLongClick(viewModel::onTodayClick)
+        initOnItemSwiped()
     }
 
     override fun onDateTimeSet(timestamp: Long, tag: String?) {
@@ -209,6 +217,30 @@ class StatisticsDetailFragment :
     private fun scrollToTop() {
         binding.appBarStatisticsDetail.setExpanded(true)
         binding.rvStatisticsDetailContent.apply { post { smoothScrollToPosition(0) } }
+    }
+
+    private fun initOnItemSwiped() = with(binding) {
+        fun ViewHolderType.canBeSwiped(): Boolean {
+            return this is StatisticsSelectableViewData
+        }
+
+        val context = rvStatisticsDetailContent.context
+        rvStatisticsDetailContent.onItemSwiped(
+            iconRes = R.drawable.delete, // TODO
+            iconColor = context.getThemedAttr(R.attr.appContrastColor),
+            backgroundColor = ColorUtils.changeAlpha(
+                context.getThemedAttr(R.attr.appContrastColor), 0.10f,
+            ),
+            getIsSelectable = { viewHolder ->
+                viewHolder?.adapterPosition
+                    ?.let { contentAdapter.getItemByPosition(it) }
+                    ?.canBeSwiped()
+                    .orFalse()
+            },
+            onSwiped = { viewHolder ->
+                viewModel.onSwiped(viewHolder as? ViewHolderType)
+            },
+        )
     }
 
     companion object {

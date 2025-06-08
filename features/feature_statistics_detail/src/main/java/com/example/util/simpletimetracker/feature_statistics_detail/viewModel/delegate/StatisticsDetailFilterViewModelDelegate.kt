@@ -9,6 +9,7 @@ import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteracto
 import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.domain.record.model.RecordsFilter
 import com.example.util.simpletimetracker.feature_statistics_detail.R
+import com.example.util.simpletimetracker.feature_statistics_detail.model.DataDistributionMode
 import com.example.util.simpletimetracker.navigation.Router
 import com.example.util.simpletimetracker.navigation.params.screen.RecordsFilterParam
 import com.example.util.simpletimetracker.navigation.params.screen.RecordsFilterParams
@@ -83,12 +84,15 @@ class StatisticsDetailFilterViewModelDelegate @Inject constructor(
 
     fun onTypesFilterDismissed(tag: String) {
         if (tag !in listOf(FILTER_TAG, COMPARE_TAG)) return
+        onFiltersChanged()
+    }
 
-        loadJob?.cancel()
-        loadJob = delegateScope.launch {
-            loadRecordsCache()
-            parent?.onTypesFilterDismissed()
-        }
+    fun onStatisticsHidden(id: Long, mode: DataDistributionMode) {
+        // TODO change filter
+        // TODO check tag consistency
+        // TODO multitask?
+        // TODO untracked?
+        onFiltersChanged()
     }
 
     fun provideRecords(): List<RecordBase> {
@@ -105,6 +109,14 @@ class StatisticsDetailFilterViewModelDelegate @Inject constructor(
 
     fun provideComparisonFilter(): List<RecordsFilter> {
         return comparisonFilter.filter { it !is RecordsFilter.Date }
+    }
+
+    private fun onFiltersChanged() {
+        loadJob?.cancel()
+        loadJob = delegateScope.launch {
+            loadRecordsCache()
+            parent?.onTypesFilterDismissed()
+        }
     }
 
     private suspend fun openFilter(

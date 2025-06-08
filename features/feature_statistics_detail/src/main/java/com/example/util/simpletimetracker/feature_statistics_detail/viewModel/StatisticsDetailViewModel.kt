@@ -22,6 +22,7 @@ import com.example.util.simpletimetracker.feature_statistics_detail.adapter.Stat
 import com.example.util.simpletimetracker.feature_statistics_detail.customView.SeriesCalendarView
 import com.example.util.simpletimetracker.feature_statistics_detail.interactor.StatisticsDetailContentInteractor
 import com.example.util.simpletimetracker.feature_statistics_detail.mapper.StatisticsDetailOptionsListMapper
+import com.example.util.simpletimetracker.feature_statistics_detail.model.DataDistributionMode
 import com.example.util.simpletimetracker.feature_statistics_detail.model.StatisticsDetailOptionsListItem
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailCardInternalViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailClickableLongest
@@ -208,6 +209,11 @@ class StatisticsDetailViewModel @Inject constructor(
         }
     }
 
+    fun onSwiped(item: ViewHolderType?) {
+        item ?: return
+        dataDistributionDelegate.onStatisticsItemSwiped(item)
+    }
+
     fun onPreviousClick() {
         rangeDelegate.onPreviousClick()
     }
@@ -359,6 +365,10 @@ class StatisticsDetailViewModel @Inject constructor(
                 previewDelegate.updateViewData()
                 streaksDelegate.updateStreaksGoalViewData()
                 updateViewData()
+            }
+
+            override fun onStatisticsHidden(id: Long, mode: DataDistributionMode) {
+                filterDelegate.onStatisticsHidden(id, mode)
             }
         }
     }

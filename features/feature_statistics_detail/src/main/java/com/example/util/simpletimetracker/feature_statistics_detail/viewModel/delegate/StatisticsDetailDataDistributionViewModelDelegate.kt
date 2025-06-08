@@ -5,6 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import com.example.util.simpletimetracker.core.base.ViewModelDelegate
 import com.example.util.simpletimetracker.core.extension.set
 import com.example.util.simpletimetracker.core.view.buttonsRowView.ButtonsRowViewData
+import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
+import com.example.util.simpletimetracker.feature_base_adapter.statistics.StatisticsSelectableViewData
 import com.example.util.simpletimetracker.feature_base_adapter.statistics.StatisticsViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.interactor.StatisticsDetailDataDistributionInteractor
 import com.example.util.simpletimetracker.feature_statistics_detail.model.DataDistributionMode
@@ -55,6 +57,14 @@ class StatisticsDetailDataDistributionViewModelDelegate @Inject constructor(
     fun onChartClick(barId: Long?) {
         selectedItemId = barId
         updateViewData(animate = false)
+    }
+
+    fun onStatisticsItemSwiped(item: ViewHolderType) {
+        val id = (item as? StatisticsSelectableViewData)?.data?.id ?: return
+        parent?.onStatisticsHidden(
+            id = id,
+            mode = dataDistributionMode,
+        )
     }
 
     fun updateViewData(
