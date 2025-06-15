@@ -417,7 +417,7 @@ class RecordsFilterViewModel @Inject constructor(
         filters = recordsFilterUpdateInteractor.handleTagClick(
             currentState = filterSelectionState.type ?: return,
             currentFilters = filters,
-            item = item,
+            itemId = item.id,
         )
     }
 

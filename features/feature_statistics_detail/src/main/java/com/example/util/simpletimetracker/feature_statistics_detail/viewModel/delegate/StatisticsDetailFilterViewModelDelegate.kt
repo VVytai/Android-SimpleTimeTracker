@@ -8,12 +8,14 @@ import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.domain.record.model.RecordsFilter
+import com.example.util.simpletimetracker.feature_records_filter.api.RecordsFilterExcludeInteractor
 import com.example.util.simpletimetracker.feature_statistics_detail.R
 import com.example.util.simpletimetracker.feature_statistics_detail.model.DataDistributionMode
 import com.example.util.simpletimetracker.navigation.Router
 import com.example.util.simpletimetracker.navigation.params.screen.RecordsFilterParam
 import com.example.util.simpletimetracker.navigation.params.screen.RecordsFilterParams
 import com.example.util.simpletimetracker.navigation.params.screen.RecordsFilterResultParams
+import com.example.util.simpletimetracker.navigation.params.screen.StatisticsDetailParams
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -24,12 +26,13 @@ class StatisticsDetailFilterViewModelDelegate @Inject constructor(
     private val resourceRepo: ResourceRepo,
     private val recordFilterInteractor: RecordFilterInteractor,
     private val prefsInteractor: PrefsInteractor,
+    private val recordsFilterExcludeInteractor: RecordsFilterExcludeInteractor,
 ) : StatisticsDetailViewModelDelegate, ViewModelDelegate() {
 
     private var parent: StatisticsDetailViewModelDelegate.Parent? = null
 
-    private val filter: MutableList<RecordsFilter> by lazy { loadFilter().toMutableList() }
-    private val comparisonFilter: MutableList<RecordsFilter> = mutableListOf()
+    private var filter: List<RecordsFilter> = emptyList()
+    private var comparisonFilter: List<RecordsFilter> = mutableListOf()
     private var records: List<RecordBase> = emptyList() // all records with selected ids
     private var compareRecords: List<RecordBase> = emptyList() // all records with selected ids
     private var loadJob: Job? = null
@@ -37,6 +40,10 @@ class StatisticsDetailFilterViewModelDelegate @Inject constructor(
 
     override fun attach(parent: StatisticsDetailViewModelDelegate.Parent) {
         this.parent = parent
+    }
+
+    fun initialize(extra: StatisticsDetailParams) {
+        filter = loadFilter(extra).toMutableList()
     }
 
     fun onVisible() {
@@ -69,14 +76,8 @@ class StatisticsDetailFilterViewModelDelegate @Inject constructor(
         val finalFilters = result.filters.filter { it !is RecordsFilter.Date }
 
         when (result.tag) {
-            FILTER_TAG -> {
-                filter.clear()
-                filter.addAll(finalFilters)
-            }
-            COMPARE_TAG -> {
-                comparisonFilter.clear()
-                comparisonFilter.addAll(finalFilters)
-            }
+            FILTER_TAG -> filter = finalFilters
+            COMPARE_TAG -> comparisonFilter = finalFilters
         }
 
         // Update is on dismiss.
@@ -88,10 +89,16 @@ class StatisticsDetailFilterViewModelDelegate @Inject constructor(
     }
 
     fun onStatisticsHidden(id: Long, mode: DataDistributionMode) {
-        // TODO change filter
-        // TODO check tag consistency
-        // TODO multitask?
-        // TODO untracked?
+        val type = when (mode) {
+            DataDistributionMode.ACTIVITY -> RecordsFilterExcludeInteractor.ExcludeType.Activity
+            DataDistributionMode.CATEGORY -> RecordsFilterExcludeInteractor.ExcludeType.Category
+            DataDistributionMode.TAG -> RecordsFilterExcludeInteractor.ExcludeType.Tag
+        }
+        filter = recordsFilterExcludeInteractor.exclude(
+            id = id,
+            type = type,
+            currentFilters = filter,
+        )
         onFiltersChanged()
     }
 
@@ -115,7 +122,7 @@ class StatisticsDetailFilterViewModelDelegate @Inject constructor(
         loadJob?.cancel()
         loadJob = delegateScope.launch {
             loadRecordsCache()
-            parent?.onTypesFilterDismissed()
+            parent?.onFiltersChanged()
         }
     }
 
@@ -163,10 +170,8 @@ class StatisticsDetailFilterViewModelDelegate @Inject constructor(
         compareRecords = recordFilterInteractor.getByFilter(comparisonFilter)
     }
 
-    private fun loadFilter(): List<RecordsFilter> {
-        val parent = parent ?: return emptyList()
-
-        return parent.extra.filter.map(RecordsFilterParam::toModel)
+    private fun loadFilter(extra: StatisticsDetailParams): List<RecordsFilter> {
+        return extra.filter.map(RecordsFilterParam::toModel)
     }
 
     companion object {

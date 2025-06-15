@@ -26,7 +26,6 @@ import com.example.util.simpletimetracker.domain.recordTag.model.RecordTag
 import com.example.util.simpletimetracker.domain.recordTag.model.RecordTypeToTag
 import com.example.util.simpletimetracker.domain.recordType.model.RecordType
 import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
-import com.example.util.simpletimetracker.feature_base_adapter.category.CategoryViewData
 import com.example.util.simpletimetracker.feature_base_adapter.record.RecordViewData
 import com.example.util.simpletimetracker.feature_base_adapter.recordFilter.FilterViewData
 import com.example.util.simpletimetracker.feature_records_filter.mapper.RecordsFilterViewDataMapper
@@ -115,7 +114,7 @@ class RecordsFilterUpdateInteractor @Inject constructor(
     fun handleTagClick(
         currentState: RecordFilterType,
         currentFilters: List<RecordsFilter>,
-        item: CategoryViewData.Record,
+        itemId: Long,
     ): List<RecordsFilter> {
         val filters = currentFilters.toMutableList()
         val currentTags = when (currentState) {
@@ -124,9 +123,9 @@ class RecordsFilterUpdateInteractor @Inject constructor(
             else -> return currentFilters
         }
 
-        val newTags = when (item) {
-            is CategoryViewData.Record.Tagged -> RecordsFilter.TagItem.Tagged(item.id)
-            is CategoryViewData.Record.Untagged -> RecordsFilter.TagItem.Untagged
+        val newTags = when (itemId) {
+            UNCATEGORIZED_ITEM_ID -> RecordsFilter.TagItem.Untagged
+            else -> RecordsFilter.TagItem.Tagged(itemId)
         }.let { currentTags.toMutableList().apply { addOrRemove(it) } }
 
         return handleSelectTags(currentState, filters, newTags)

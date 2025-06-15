@@ -111,6 +111,7 @@ class StatisticsDetailViewModel @Inject constructor(
         if (this::extra.isInitialized) return
         this.extra = extra
         rangeDelegate.initialize(extra)
+        filterDelegate.initialize(extra)
     }
 
     fun onVisible() {
@@ -360,7 +361,7 @@ class StatisticsDetailViewModel @Inject constructor(
                 return rangeDelegate.getDateFilter()
             }
 
-            override suspend fun onTypesFilterDismissed() {
+            override suspend fun onFiltersChanged() {
                 streaksDelegate.onTypesFilterDismissed()
                 previewDelegate.updateViewData()
                 streaksDelegate.updateStreaksGoalViewData()

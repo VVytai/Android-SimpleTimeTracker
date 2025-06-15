@@ -117,6 +117,7 @@ dependencies {
     implementation(project(":feature_tag_selection"))
     implementation(project(":feature_data_edit"))
     implementation(project(":feature_records_filter"))
+    implementation(project(":feature_records_filter:api"))
     implementation(project(":feature_goals"))
     implementation(project(":feature_pomodoro"))
     implementation(project(":feature_complex_rules"))

@@ -238,7 +238,9 @@ class StatisticsDetailFragment :
                     .orFalse()
             },
             onSwiped = { viewHolder ->
-                viewModel.onSwiped(viewHolder as? ViewHolderType)
+                viewHolder?.adapterPosition
+                    ?.let { contentAdapter.getItemByPosition(it) }
+                    ?.let(viewModel::onSwiped)
             },
         )
     }
