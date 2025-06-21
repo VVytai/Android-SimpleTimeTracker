@@ -232,10 +232,11 @@ class StatisticsDetailFragment :
                 context.getThemedAttr(R.attr.appContrastColor), 0.10f,
             ),
             getIsSelectable = { viewHolder ->
-                viewHolder?.adapterPosition
+                val itemsCount = contentAdapter.currentList
+                    .filterIsInstance<StatisticsSelectableViewData>().size
+                val currentItem = viewHolder?.adapterPosition
                     ?.let { contentAdapter.getItemByPosition(it) }
-                    ?.canBeSwiped()
-                    .orFalse()
+                itemsCount > 1 && currentItem?.canBeSwiped().orFalse()
             },
             onSwiped = { viewHolder ->
                 viewHolder?.adapterPosition

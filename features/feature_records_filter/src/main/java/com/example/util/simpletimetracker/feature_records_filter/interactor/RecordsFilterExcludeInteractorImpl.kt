@@ -33,7 +33,6 @@ class RecordsFilterExcludeInteractorImpl @Inject constructor(
     ): List<RecordsFilter> {
         // TODO manually filter running records, untracked and multitask.
         // TODO multitasking filter by Read doesn't work.
-        // TODO disable swipe delete if only one item.
         // TODO records filter, showing all records, selecting multiselect doesn't change records.
         if (id == UNTRACKED_ITEM_ID) {
             return recordsFilterUpdateInteractor.handleUntrackedClick(currentFilters)

@@ -556,7 +556,13 @@ class RecordsFilterUpdateInteractor @Inject constructor(
         filters.removeAll { it is RecordsFilter.Untracked }
         filters.removeAll { it is RecordsFilter.Activity }
         if (type is RecordFilterSelectionType.Select) {
+            val currentFilteredItems = filters.getFilteredCategoryItems()
+            val newCategoryFilter = RecordsFilter.Category(
+                selected = emptyList(),
+                filtered = currentFilteredItems,
+            )
             filters.removeAll { it is RecordsFilter.Category }
+            if (currentFilteredItems.isNotEmpty()) filters.add(newCategoryFilter)
         }
         if (newFilter.selected.isNotEmpty() || newFilter.filtered.isNotEmpty()) {
             filters.add(newFilter)
@@ -585,7 +591,13 @@ class RecordsFilterUpdateInteractor @Inject constructor(
         filters.removeAll { it is RecordsFilter.Untracked }
         filters.removeAll { it is RecordsFilter.Category }
         if (type is RecordFilterSelectionType.Select) {
+            val currentFilteredIds = filters.getFilteredTypeIds()
+            val newActivityFilter = RecordsFilter.Activity(
+                selected = emptyList(),
+                filtered = currentFilteredIds,
+            )
             filters.removeAll { it is RecordsFilter.Activity }
+            if (currentFilteredIds.isNotEmpty()) filters.add(newActivityFilter)
         }
         if (newFilter.selected.isNotEmpty() || newFilter.filtered.isNotEmpty()) {
             filters.add(newFilter)
