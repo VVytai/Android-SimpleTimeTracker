@@ -6,9 +6,9 @@ import com.example.util.simpletimetracker.domain.category.interactor.RecordTypeC
 import com.example.util.simpletimetracker.domain.record.extension.getCategoryItems
 import com.example.util.simpletimetracker.domain.record.extension.getSelectedTags
 import com.example.util.simpletimetracker.domain.record.extension.getTypeIds
-import com.example.util.simpletimetracker.domain.record.extension.hasActivityFilter
-import com.example.util.simpletimetracker.domain.record.extension.hasCategoryFilter
-import com.example.util.simpletimetracker.domain.record.extension.hasTagsFilter
+import com.example.util.simpletimetracker.domain.record.extension.hasSelectedActivityFilter
+import com.example.util.simpletimetracker.domain.record.extension.hasSelectedCategoryFilter
+import com.example.util.simpletimetracker.domain.record.extension.hasSelectedTagsFilter
 import com.example.util.simpletimetracker.domain.record.model.RecordsFilter
 import com.example.util.simpletimetracker.domain.recordTag.interactor.RecordTagInteractor
 import com.example.util.simpletimetracker.domain.recordTag.interactor.RecordTypeToTagInteractor
@@ -38,7 +38,7 @@ class RecordsFilterExcludeInteractorImpl @Inject constructor(
         }
         return when (type) {
             is ExcludeType.Activity -> {
-                val itemIsSelected = currentFilters.hasActivityFilter() &&
+                val itemIsSelected = currentFilters.hasSelectedActivityFilter() &&
                     id in currentFilters.getTypeIds()
                 recordsFilterUpdateInteractor.handleTypeClick(
                     type = if (itemIsSelected) {
@@ -60,7 +60,7 @@ class RecordsFilterExcludeInteractorImpl @Inject constructor(
                 } else {
                     RecordsFilter.CategoryItem.Categorized(id)
                 }
-                val itemIsSelected = currentFilters.hasCategoryFilter() &&
+                val itemIsSelected = currentFilters.hasSelectedCategoryFilter() &&
                     item in currentFilters.getCategoryItems()
                 recordsFilterUpdateInteractor.handleCategoryClick(
                     type = if (itemIsSelected) {
@@ -82,7 +82,7 @@ class RecordsFilterExcludeInteractorImpl @Inject constructor(
                 } else {
                     RecordsFilter.TagItem.Tagged(id)
                 }
-                val itemIsSelected = currentFilters.hasTagsFilter() &&
+                val itemIsSelected = currentFilters.hasSelectedTagsFilter() &&
                     item in currentFilters.getSelectedTags()
                 recordsFilterUpdateInteractor.handleTagClick(
                     type = if (itemIsSelected) {

@@ -27,7 +27,6 @@ import com.example.util.simpletimetracker.domain.record.extension.getManuallyFil
 import com.example.util.simpletimetracker.domain.record.extension.getSelectedTags
 import com.example.util.simpletimetracker.domain.record.extension.getTaggedIds
 import com.example.util.simpletimetracker.domain.record.extension.getTimeOfDay
-import com.example.util.simpletimetracker.domain.record.extension.hasCategoryFilter
 import com.example.util.simpletimetracker.domain.record.extension.hasManuallyFiltered
 import com.example.util.simpletimetracker.domain.record.extension.hasUncategorizedItem
 import com.example.util.simpletimetracker.domain.record.extension.hasUntaggedItem
@@ -47,8 +46,11 @@ import com.example.util.simpletimetracker.domain.extension.plus
 import com.example.util.simpletimetracker.domain.record.extension.getFilteredCategoryIds
 import com.example.util.simpletimetracker.domain.record.extension.getFilteredCategoryItems
 import com.example.util.simpletimetracker.domain.record.extension.getFilteredTypeIds
-import com.example.util.simpletimetracker.domain.record.extension.hasActivityFilter
 import com.example.util.simpletimetracker.domain.record.extension.hasDuplicationsFilter
+import com.example.util.simpletimetracker.domain.record.extension.hasFilteredActivityFilter
+import com.example.util.simpletimetracker.domain.record.extension.hasFilteredCategoryFilter
+import com.example.util.simpletimetracker.domain.record.extension.hasSelectedActivityFilter
+import com.example.util.simpletimetracker.domain.record.extension.hasSelectedCategoryFilter
 import com.example.util.simpletimetracker.domain.recordType.model.RecordTypeGoal
 import com.example.util.simpletimetracker.domain.recordTag.model.RecordTypeToTag
 import com.example.util.simpletimetracker.domain.record.model.RecordsFilter
@@ -278,10 +280,11 @@ class RecordsFilterViewDataInteractor @Inject constructor(
 
         val availableFilters = listOfNotNull(
             when {
-                // Same logic as in stats detail preview generation.
                 hasUntracked -> RecordFilterType.Untracked
-                filters.hasActivityFilter() -> RecordFilterType.Activity
-                filters.hasCategoryFilter() -> RecordFilterType.Category
+                filters.hasSelectedActivityFilter() -> RecordFilterType.Activity
+                filters.hasSelectedCategoryFilter() -> RecordFilterType.Category
+                filters.hasFilteredActivityFilter() -> RecordFilterType.Activity
+                filters.hasFilteredCategoryFilter() -> RecordFilterType.Category
                 else -> RecordFilterType.Activity
             },
             RecordFilterType.Tags.takeUnless { hasUntracked },

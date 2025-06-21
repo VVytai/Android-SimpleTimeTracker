@@ -144,16 +144,28 @@ fun List<RecordsFilter>.hasMultitaskFilter(): Boolean {
     return any { it is RecordsFilter.Multitask }
 }
 
-fun List<RecordsFilter>.hasActivityFilter(): Boolean {
-    return any { it is RecordsFilter.Activity }
+fun List<RecordsFilter>.hasSelectedActivityFilter(): Boolean {
+    return filterIsInstance<RecordsFilter.Activity>().any {
+        it.selected.isNotEmpty()
+    }
 }
 
-fun List<RecordsFilter>.hasCategoryFilter(): Boolean {
-    return any { it is RecordsFilter.Category }
+fun List<RecordsFilter>.hasFilteredActivityFilter(): Boolean {
+    return filterIsInstance<RecordsFilter.Activity>().any {
+        it.filtered.isNotEmpty()
+    }
+}
+
+fun List<RecordsFilter>.hasSelectedCategoryFilter(): Boolean {
+    return filterIsInstance<RecordsFilter.Category>().any {
+        it.selected.isNotEmpty()
+    }
 }
 
 fun List<RecordsFilter>.hasFilteredCategoryFilter(): Boolean {
-    return any { it is RecordsFilter.Category }
+    return filterIsInstance<RecordsFilter.Category>().any {
+        it.filtered.isNotEmpty()
+    }
 }
 
 fun List<RecordsFilter.CommentItem>.hasNoComment(): Boolean {
@@ -167,10 +179,6 @@ fun List<RecordsFilter.CommentItem>.hasAnyComment(): Boolean {
 fun List<RecordsFilter.CommentItem>.getComments(): List<String> {
     return filterIsInstance<RecordsFilter.CommentItem.Comment>()
         .map(RecordsFilter.CommentItem.Comment::text)
-}
-
-fun List<RecordsFilter>.hasTagsFilter(): Boolean {
-    return any { it is RecordsFilter.Tags }
 }
 
 fun List<RecordsFilter>.hasSelectedTagsFilter(): Boolean {

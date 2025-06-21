@@ -4,14 +4,14 @@ import com.example.util.simpletimetracker.core.interactor.RecordFilterInteractor
 import com.example.util.simpletimetracker.domain.record.extension.getCategoryItems
 import com.example.util.simpletimetracker.domain.record.extension.getSelectedTags
 import com.example.util.simpletimetracker.domain.record.extension.getTypeIds
-import com.example.util.simpletimetracker.domain.record.extension.hasActivityFilter
-import com.example.util.simpletimetracker.domain.record.extension.hasCategoryFilter
 import com.example.util.simpletimetracker.domain.record.extension.hasMultitaskFilter
 import com.example.util.simpletimetracker.domain.record.extension.hasSelectedTagsFilter
 import com.example.util.simpletimetracker.domain.record.extension.hasUntrackedFilter
 import com.example.util.simpletimetracker.domain.category.interactor.CategoryInteractor
 import com.example.util.simpletimetracker.domain.category.model.Category
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
+import com.example.util.simpletimetracker.domain.record.extension.hasSelectedActivityFilter
+import com.example.util.simpletimetracker.domain.record.extension.hasSelectedCategoryFilter
 import com.example.util.simpletimetracker.domain.recordTag.interactor.RecordTagInteractor
 import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTypeInteractor
 import com.example.util.simpletimetracker.domain.recordTag.model.RecordTag
@@ -41,8 +41,8 @@ class StatisticsDetailPreviewInteractor @Inject constructor(
         return when {
             filterParams.hasUntrackedFilter() -> PreviewType.Untracked
             filterParams.hasMultitaskFilter() -> PreviewType.Multitask
-            filterParams.hasActivityFilter() -> PreviewType.Activities
-            filterParams.hasCategoryFilter() -> PreviewType.Categories
+            filterParams.hasSelectedActivityFilter() -> PreviewType.Activities
+            filterParams.hasSelectedCategoryFilter() -> PreviewType.Categories
             filterParams.hasSelectedTagsFilter() -> PreviewType.SelectedTags
             else -> PreviewType.ActivitiesFromRecords
         }

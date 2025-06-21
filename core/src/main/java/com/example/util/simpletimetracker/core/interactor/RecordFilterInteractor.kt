@@ -14,7 +14,6 @@ import com.example.util.simpletimetracker.domain.record.extension.getTaggedIds
 import com.example.util.simpletimetracker.domain.record.extension.getTimeOfDay
 import com.example.util.simpletimetracker.domain.record.extension.getTypeIds
 import com.example.util.simpletimetracker.domain.record.extension.hasAnyComment
-import com.example.util.simpletimetracker.domain.record.extension.hasCategoryFilter
 import com.example.util.simpletimetracker.domain.record.extension.hasMultitaskFilter
 import com.example.util.simpletimetracker.domain.record.extension.hasNoComment
 import com.example.util.simpletimetracker.domain.record.extension.hasUntaggedItem
@@ -35,6 +34,7 @@ import com.example.util.simpletimetracker.domain.record.extension.getDuplication
 import com.example.util.simpletimetracker.domain.record.extension.getFilteredTypeIds
 import com.example.util.simpletimetracker.domain.record.extension.hasDuplicationsFilter
 import com.example.util.simpletimetracker.domain.record.extension.hasFilteredCategoryFilter
+import com.example.util.simpletimetracker.domain.record.extension.hasSelectedCategoryFilter
 import com.example.util.simpletimetracker.domain.record.interactor.GetDuplicatedRecordsInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.GetUntrackedRecordsInteractor
 import com.example.util.simpletimetracker.domain.record.model.MultitaskRecord
@@ -93,7 +93,7 @@ class RecordFilterInteractor @Inject constructor(
         val startOfDayShift = prefsInteractor.getStartOfDayShift()
         val calendar: Calendar = Calendar.getInstance()
         val typeIds: List<Long> = when {
-            filters.hasCategoryFilter() -> {
+            filters.hasSelectedCategoryFilter() -> {
                 val types = recordTypeInteractor.getAll()
                 val typeCategories = recordTypeCategoryInteractor.getAll()
                 filters.getAllTypeIds(types, typeCategories)
