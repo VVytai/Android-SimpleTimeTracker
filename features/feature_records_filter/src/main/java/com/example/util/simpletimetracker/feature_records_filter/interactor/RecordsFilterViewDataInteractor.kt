@@ -261,7 +261,7 @@ class RecordsFilterViewDataInteractor @Inject constructor(
                 filterSelected = filterSelected,
             ),
             showListButtonIsVisible = filterSelected,
-            recordsViewData = viewData,
+            recordsViewData = RecordsFilterSelectedRecordsViewData.RecordsViewData.Content(viewData),
         )
     }
 

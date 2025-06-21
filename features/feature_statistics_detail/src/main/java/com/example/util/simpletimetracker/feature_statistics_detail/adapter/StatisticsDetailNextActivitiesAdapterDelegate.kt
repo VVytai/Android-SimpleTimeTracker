@@ -12,7 +12,7 @@ fun createStatisticsDetailNextActivitiesAdapterDelegate() = createRecyclerBindin
     with(binding) {
         item as ViewData
 
-        root.adapter.replaceAsNew(item.data)
+        root.adapter.replaceFast(item.data)
     }
 }
 

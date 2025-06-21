@@ -16,6 +16,7 @@ import com.example.util.simpletimetracker.feature_records_all.interactor.Records
 import com.example.util.simpletimetracker.feature_records_all.mapper.RecordsAllViewDataMapper
 import com.example.util.simpletimetracker.feature_records_all.model.RecordsAllSortOrder
 import com.example.util.simpletimetracker.feature_records_all.viewData.RecordsAllSortOrderViewData
+import com.example.util.simpletimetracker.feature_records_all.viewData.RecordsAllViewDataState
 import com.example.util.simpletimetracker.navigation.Router
 import com.example.util.simpletimetracker.navigation.params.screen.ChangeRecordFromRecordsAllParams
 import com.example.util.simpletimetracker.navigation.params.screen.ChangeRecordParams
@@ -38,11 +39,11 @@ class RecordsAllViewModel @Inject constructor(
 
     lateinit var extra: RecordsAllParams
 
-    val records: LiveData<List<ViewHolderType>> by lazy {
-        return@lazy MutableLiveData<List<ViewHolderType>>().let { initial ->
+    val records: LiveData<RecordsAllViewDataState> by lazy {
+        return@lazy MutableLiveData<RecordsAllViewDataState>().let { initial ->
             viewModelScope.launch {
-                initial.value = listOf(LoaderViewData())
-                initial.value = loadRecordsViewData()
+                initial.value = RecordsAllViewDataState.Loading(listOf(LoaderViewData()))
+                initial.value = RecordsAllViewDataState.Content(loadRecordsViewData())
             }
             initial
         }
@@ -106,14 +107,14 @@ class RecordsAllViewModel @Inject constructor(
 
     fun onRecordTypeOrderSelected(position: Int) {
         sortOrder = recordsAllViewDataMapper.toSortOrder(position)
-        records.set(listOf(LoaderViewData()))
+        records.set(RecordsAllViewDataState.Loading(listOf(LoaderViewData())))
         updateRecords()
         updateSortOrderViewData()
     }
 
     private fun updateRecords() = viewModelScope.launch {
         val data = loadRecordsViewData()
-        records.set(data)
+        records.set(RecordsAllViewDataState.Content(data))
     }
 
     private suspend fun loadRecordsViewData(): List<ViewHolderType> {

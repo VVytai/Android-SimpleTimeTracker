@@ -20,6 +20,7 @@ import com.example.util.simpletimetracker.feature_base_adapter.record.createReco
 import com.example.util.simpletimetracker.feature_base_adapter.recordsDateDivider.createRecordsDateDividerAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.runningRecord.createRunningRecordAdapterDelegate
 import com.example.util.simpletimetracker.feature_records_all.viewData.RecordsAllSortOrderViewData
+import com.example.util.simpletimetracker.feature_records_all.viewData.RecordsAllViewDataState
 import com.example.util.simpletimetracker.feature_records_all.viewModel.RecordsAllViewModel
 import com.example.util.simpletimetracker.feature_views.TransitionNames
 import com.example.util.simpletimetracker.navigation.Router
@@ -84,7 +85,7 @@ class RecordsAllFragment : BaseFragment<Binding>() {
     override fun initViewModel() {
         with(viewModel) {
             extra = params
-            records.observe(recordsAdapter::replaceAsNew)
+            records.observe(::setContent)
             sortOrderViewData.observe(::updateSortOrderViewData)
         }
         with(removeRecordViewModel) {
@@ -97,6 +98,13 @@ class RecordsAllFragment : BaseFragment<Binding>() {
         super.onResume()
         viewModel.onVisible()
         binding.spinnerRecordsAllSort.jumpDrawablesToCurrentState()
+    }
+
+    private fun setContent(data: RecordsAllViewDataState) {
+        when (data) {
+            is RecordsAllViewDataState.Loading -> recordsAdapter.replaceFast(data.viewData)
+            is RecordsAllViewDataState.Content -> recordsAdapter.replace(data.viewData)
+        }
     }
 
     private fun showMessage(message: SnackBarParams?) {

@@ -186,7 +186,14 @@ class RecordsFilterFragment :
         tvRecordsFilterTitle.isInvisible = viewData.isLoading
         tvRecordsFilterTitle.text = viewData.selectedRecordsCount
         ivRecordsFilterShowList.isVisible = !viewData.isLoading && viewData.showListButtonIsVisible
-        recordsAdapter.replace(viewData.recordsViewData)
+        when (viewData.recordsViewData) {
+            is RecordsFilterSelectedRecordsViewData.RecordsViewData.Loading -> {
+                recordsAdapter.replaceFast(viewData.recordsViewData.viewData)
+            }
+            is RecordsFilterSelectedRecordsViewData.RecordsViewData.Content -> {
+                recordsAdapter.replace(viewData.recordsViewData.viewData)
+            }
+        }
     }
 
     private fun showKeyboard(visible: Boolean) {

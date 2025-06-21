@@ -15,7 +15,7 @@ fun createStatisticsDetailPreviewsAdapterDelegate(
     with(binding) {
         item as ViewData
 
-        root.adapter.replaceAsNew(item.data)
+        root.adapter.replaceFast(item.data)
         root.setClickListener(onClick)
     }
 }

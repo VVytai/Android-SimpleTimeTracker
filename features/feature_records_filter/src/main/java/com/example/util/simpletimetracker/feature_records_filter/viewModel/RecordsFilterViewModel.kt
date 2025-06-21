@@ -652,16 +652,18 @@ class RecordsFilterViewModel @Inject constructor(
     private fun getRecordsLoadState(
         showLoader: Boolean,
     ): RecordsFilterSelectedRecordsViewData {
-        val currentState = recordsViewData.value
+        val loadingViewData = RecordsFilterSelectedRecordsViewData.RecordsViewData.Loading(
+            viewData = listOf(LoaderViewData()),
+        )
 
         return RecordsFilterSelectedRecordsViewData(
             isLoading = true,
             selectedRecordsCount = "",
             showListButtonIsVisible = false,
             recordsViewData = if (showLoader) {
-                listOf(LoaderViewData())
+                loadingViewData
             } else {
-                currentState?.recordsViewData.orEmpty()
+                recordsViewData.value?.recordsViewData ?: loadingViewData
             },
         )
     }

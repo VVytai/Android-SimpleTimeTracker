@@ -36,10 +36,17 @@ class BaseRecyclerAdapter(
     fun getItemByPosition(position: Int): ViewHolderType? =
         currentList.getOrNull(position)
 
-    fun replace(newItems: List<ViewHolderType>) {
+    fun replace(newItems: List<ViewHolderType>?) {
         submitList(newItems)
     }
 
+    // Will reset scroll position.
+    fun replaceFast(newItems: List<ViewHolderType>) {
+        replace(null)
+        replace(newItems)
+    }
+
+    // Replace without diff animations.
     fun replaceAsNew(newItems: List<ViewHolderType>) {
         submitList(emptyList())
         submitList(newItems)

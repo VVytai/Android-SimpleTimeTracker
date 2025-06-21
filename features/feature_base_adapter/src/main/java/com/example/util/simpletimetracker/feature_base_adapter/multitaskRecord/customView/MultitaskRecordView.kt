@@ -36,7 +36,7 @@ class MultitaskRecordView @JvmOverloads constructor(
     }
 
     fun setData(data: ViewData) {
-        adapter.replaceAsNew(data.items)
+        adapter.replaceFast(data.items)
         binding.tvRecordItemTimeStarted.text = data.timeStarted
         binding.tvRecordItemTimeFinished.text = data.timeFinished
         binding.tvMultitaskRecordItemDuration.text = data.duration

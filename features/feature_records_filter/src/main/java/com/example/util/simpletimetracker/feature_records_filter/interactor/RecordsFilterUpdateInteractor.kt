@@ -6,6 +6,8 @@ import com.example.util.simpletimetracker.domain.category.model.Category
 import com.example.util.simpletimetracker.domain.category.model.RecordTypeCategory
 import com.example.util.simpletimetracker.domain.daysOfWeek.model.DayOfWeek
 import com.example.util.simpletimetracker.domain.extension.addOrRemove
+import com.example.util.simpletimetracker.domain.extension.orEmpty
+import com.example.util.simpletimetracker.domain.extension.tryCast
 import com.example.util.simpletimetracker.domain.record.extension.getAllTypeIds
 import com.example.util.simpletimetracker.domain.record.extension.getCategoryItems
 import com.example.util.simpletimetracker.domain.record.extension.getCommentItems
@@ -37,6 +39,7 @@ import com.example.util.simpletimetracker.feature_records_filter.model.RecordFil
 import com.example.util.simpletimetracker.feature_records_filter.model.RecordFilterSelectionType
 import com.example.util.simpletimetracker.feature_records_filter.model.RecordFilterType
 import com.example.util.simpletimetracker.feature_records_filter.model.RecordsFilterSelectedRecordsViewData
+import com.example.util.simpletimetracker.feature_records_filter.model.RecordsFilterSelectedRecordsViewData.RecordsViewData
 import com.example.util.simpletimetracker.feature_records_filter.viewData.RecordsFilterSelectionButtonType
 import javax.inject.Inject
 
@@ -290,11 +293,12 @@ class RecordsFilterUpdateInteractor @Inject constructor(
 
         val filters = currentFilters.toMutableList()
         val filteredIds = filters.getManuallyFilteredRecordIds()
-        val selectedIds = recordsViewData
-            .recordsViewData
-            .filterIsInstance<RecordViewData.Tracked>()
-            .filter { it.id !in filteredIds }
-            .map { it.id }
+        val selectedIds = recordsViewData.recordsViewData.tryCast<RecordsViewData.Content>()
+            ?.viewData.orEmpty()
+            .mapNotNull {
+                if (it !is RecordViewData.Tracked) return@mapNotNull null
+                if (it.id !in filteredIds) it.id else null
+            }
 
         filters.removeAll { it is RecordsFilter.ManuallyFiltered }
         if (selectedIds.isNotEmpty()) filters.add(RecordsFilter.ManuallyFiltered(selectedIds))
@@ -314,8 +318,8 @@ class RecordsFilterUpdateInteractor @Inject constructor(
             filters = filters.getDuplicationItems(),
             records = records,
         )
-        val selectedIds = recordsViewData
-            .recordsViewData
+        val selectedIds = recordsViewData.recordsViewData.tryCast<RecordsViewData.Content>()
+            ?.viewData.orEmpty()
             .mapNotNull {
                 if (it !is RecordViewData.Tracked) return@mapNotNull null
                 if (it.id in result.duplications) it.id else null
