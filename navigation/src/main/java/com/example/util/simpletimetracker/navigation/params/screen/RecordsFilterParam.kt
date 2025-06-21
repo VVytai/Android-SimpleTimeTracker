@@ -28,7 +28,7 @@ sealed interface RecordsFilterParam : Parcelable {
     data class Tags(val selected: List<TagItem>, val filtered: List<TagItem>) : RecordsFilterParam
 
     @Parcelize
-    data class ManuallyFiltered(val recordIds: List<Long>) : RecordsFilterParam
+    data class ManuallyFiltered(val items: List<ManuallyFilteredItem>) : RecordsFilterParam
 
     @Parcelize
     data class DaysOfWeek(val items: List<DayOfWeek>) : RecordsFilterParam
@@ -75,5 +75,22 @@ sealed interface RecordsFilterParam : Parcelable {
 
         @Parcelize
         object SameTimes : DuplicationsItem
+    }
+
+    sealed interface ManuallyFilteredItem : Parcelable {
+        @Parcelize
+        data class Tracked(val id: Long) : ManuallyFilteredItem
+
+        @Parcelize
+        data class Running(val id: Long) : ManuallyFilteredItem
+
+        @Parcelize
+        data class Untracked(
+            val timeStartedTimestamp: Long,
+            val timeEndedTimestamp: Long,
+        ) : ManuallyFilteredItem
+
+        @Parcelize
+        data class Multitask(val ids: List<Long>) : ManuallyFilteredItem
     }
 }

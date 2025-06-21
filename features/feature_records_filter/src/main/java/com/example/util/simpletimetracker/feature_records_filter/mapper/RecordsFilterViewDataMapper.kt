@@ -148,7 +148,7 @@ class RecordsFilterViewDataMapper @Inject constructor(
                 "${filter.selected.size + filter.filtered.size}"
             }
             is RecordsFilter.ManuallyFiltered -> {
-                "${filter.recordIds.size}"
+                "${filter.items.size}"
             }
             is RecordsFilter.DaysOfWeek -> {
                 "${filter.items.size}"

@@ -68,6 +68,26 @@ class RecordViewDataMapper @Inject constructor(
         )
     }
 
+    fun map(
+        record: Record,
+        recordTypes: Map<Long, RecordType>,
+        recordTags: List<RecordTag>,
+        isDarkTheme: Boolean,
+        useMilitaryTime: Boolean,
+        useProportionalMinutes: Boolean,
+        showSeconds: Boolean,
+    ): RecordViewData.Tracked? {
+        return map(
+            record = record,
+            recordType = recordTypes[record.typeId] ?: return null,
+            recordTags = recordTags.filter { it.id in record.tagIds },
+            isDarkTheme = isDarkTheme,
+            useMilitaryTime = useMilitaryTime,
+            useProportionalMinutes = useProportionalMinutes,
+            showSeconds = showSeconds,
+        )
+    }
+
     fun mapToUntracked(
         timeStarted: Long,
         timeEnded: Long,
@@ -104,30 +124,19 @@ class RecordViewDataMapper @Inject constructor(
         )
     }
 
-    fun mapFilteredRecord(
-        record: Record,
-        recordTypes: Map<Long, RecordType>,
-        allRecordTags: List<RecordTag>,
+    fun mapFiltered(
+        viewData: RecordViewData,
         isDarkTheme: Boolean,
-        useMilitaryTime: Boolean,
-        useProportionalMinutes: Boolean,
-        showSeconds: Boolean,
         isFiltered: Boolean,
-    ): RecordViewData.Tracked? {
-        return map(
-            record = record,
-            recordType = recordTypes[record.typeId] ?: return null,
-            recordTags = allRecordTags.filter { it.id in record.tagIds },
-            isDarkTheme = isDarkTheme,
-            useMilitaryTime = useMilitaryTime,
-            useProportionalMinutes = useProportionalMinutes,
-            showSeconds = showSeconds,
-        ).let {
-            if (isFiltered) {
-                it.copy(color = colorMapper.toFilteredColor(isDarkTheme))
-            } else {
-                it
+    ): RecordViewData {
+        return when {
+            isFiltered && viewData is RecordViewData.Tracked -> {
+                viewData.copy(color = colorMapper.toFilteredColor(isDarkTheme))
             }
+            isFiltered && viewData is RecordViewData.Untracked -> {
+                viewData.copy(color = colorMapper.toFilteredColor(isDarkTheme))
+            }
+            else -> viewData
         }
     }
 

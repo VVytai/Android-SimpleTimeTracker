@@ -4,11 +4,12 @@ import com.example.util.simpletimetracker.domain.record.model.MultitaskRecord
 import com.example.util.simpletimetracker.domain.record.model.Record
 import com.example.util.simpletimetracker.domain.recordTag.model.RecordTag
 import com.example.util.simpletimetracker.domain.recordType.model.RecordType
-import com.example.util.simpletimetracker.feature_base_adapter.multitaskRecord.customView.MultitaskRecordView
 import com.example.util.simpletimetracker.feature_base_adapter.multitaskRecord.MultitaskRecordViewData
+import com.example.util.simpletimetracker.feature_base_adapter.multitaskRecord.customView.MultitaskRecordView
 import javax.inject.Inject
 
 class MultitaskRecordViewDataMapper @Inject constructor(
+    private val colorMapper: ColorMapper,
     private val recordViewDataMapper: RecordViewDataMapper,
 ) {
 
@@ -35,7 +36,7 @@ class MultitaskRecordViewDataMapper @Inject constructor(
         }
 
         return MultitaskRecordViewData(
-            id = ids.hashCode().toLong(),
+            ids = ids,
             data = MultitaskRecordView.ViewData(
                 timeStarted = records.firstOrNull()?.timeStarted.orEmpty(),
                 timeFinished = records.firstOrNull()?.timeFinished.orEmpty(),
@@ -51,5 +52,25 @@ class MultitaskRecordViewDataMapper @Inject constructor(
                 },
             ),
         )
+    }
+
+    fun mapFiltered(
+        viewData: MultitaskRecordViewData,
+        isDarkTheme: Boolean,
+        isFiltered: Boolean,
+    ): MultitaskRecordViewData {
+        return when {
+            isFiltered -> {
+                val newColor = colorMapper.toFilteredColor(isDarkTheme)
+                viewData.copy(
+                    data = viewData.data.copy(
+                        items = viewData.data.items.map {
+                            it.copy(color = newColor)
+                        },
+                    ),
+                )
+            }
+            else -> viewData
+        }
     }
 }

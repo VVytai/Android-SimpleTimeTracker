@@ -10,35 +10,37 @@ import com.example.util.simpletimetracker.core.interactor.RecordFilterInteractor
 import com.example.util.simpletimetracker.core.mapper.TimeMapper
 import com.example.util.simpletimetracker.domain.base.ARCHIVED_BUTTON_ITEM_ID
 import com.example.util.simpletimetracker.domain.base.UNTRACKED_ITEM_ID
+import com.example.util.simpletimetracker.domain.category.interactor.CategoryInteractor
+import com.example.util.simpletimetracker.domain.category.interactor.RecordTypeCategoryInteractor
+import com.example.util.simpletimetracker.domain.category.model.Category
+import com.example.util.simpletimetracker.domain.category.model.RecordTypeCategory
+import com.example.util.simpletimetracker.domain.daysOfWeek.model.DayOfWeek
+import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.record.extension.getDate
 import com.example.util.simpletimetracker.domain.record.extension.getDuration
 import com.example.util.simpletimetracker.domain.record.extension.getTimeOfDay
 import com.example.util.simpletimetracker.domain.record.extension.hasManuallyFiltered
-import com.example.util.simpletimetracker.domain.category.interactor.CategoryInteractor
-import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
+import com.example.util.simpletimetracker.domain.record.model.Range
+import com.example.util.simpletimetracker.domain.record.model.RecordsFilter
 import com.example.util.simpletimetracker.domain.recordTag.interactor.RecordTagInteractor
-import com.example.util.simpletimetracker.domain.category.interactor.RecordTypeCategoryInteractor
-import com.example.util.simpletimetracker.domain.category.model.Category
+import com.example.util.simpletimetracker.domain.recordTag.interactor.RecordTypeToTagInteractor
+import com.example.util.simpletimetracker.domain.recordTag.model.RecordTag
+import com.example.util.simpletimetracker.domain.recordTag.model.RecordTypeToTag
 import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTypeGoalInteractor
 import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTypeInteractor
-import com.example.util.simpletimetracker.domain.recordTag.interactor.RecordTypeToTagInteractor
-import com.example.util.simpletimetracker.domain.daysOfWeek.model.DayOfWeek
-import com.example.util.simpletimetracker.domain.record.model.Range
-import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
-import com.example.util.simpletimetracker.domain.recordTag.model.RecordTag
 import com.example.util.simpletimetracker.domain.recordType.model.RecordType
-import com.example.util.simpletimetracker.domain.category.model.RecordTypeCategory
 import com.example.util.simpletimetracker.domain.recordType.model.RecordTypeGoal
-import com.example.util.simpletimetracker.domain.recordTag.model.RecordTypeToTag
-import com.example.util.simpletimetracker.domain.record.model.RecordsFilter
+import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.buttonDouble.DoubleButtonsViewData
 import com.example.util.simpletimetracker.feature_base_adapter.category.CategoryViewData
 import com.example.util.simpletimetracker.feature_base_adapter.dayOfWeek.DayOfWeekViewData
 import com.example.util.simpletimetracker.feature_base_adapter.loader.LoaderViewData
+import com.example.util.simpletimetracker.feature_base_adapter.multitaskRecord.MultitaskRecordViewData
 import com.example.util.simpletimetracker.feature_base_adapter.record.RecordViewData
 import com.example.util.simpletimetracker.feature_base_adapter.recordFilter.FilterViewData
 import com.example.util.simpletimetracker.feature_base_adapter.recordType.RecordTypeViewData
+import com.example.util.simpletimetracker.feature_base_adapter.runningRecord.RunningRecordViewData
 import com.example.util.simpletimetracker.feature_records_filter.adapter.RecordsFilterButtonViewData
 import com.example.util.simpletimetracker.feature_records_filter.adapter.RecordsFilterRangeViewData
 import com.example.util.simpletimetracker.feature_records_filter.interactor.RecordsFilterUpdateInteractor
@@ -331,9 +333,20 @@ class RecordsFilterViewModel @Inject constructor(
         item: RecordViewData,
         @Suppress("UNUSED_PARAMETER") sharedElements: Pair<Any, String>,
     ) {
-        if (item is RecordViewData.Untracked) return // TODO manually filter untracked records?
-        handleRecordClick(item.getUniqueId())
-        updateViewDataOnFiltersChanged(showLoader = false)
+        handleRecordClick(item)
+    }
+
+    fun onRunningRecordClick(
+        item: RunningRecordViewData,
+        @Suppress("UNUSED_PARAMETER") sharedElements: Pair<Any, String>? = null,
+    ) {
+        handleRecordClick(item)
+    }
+
+    fun onMultitaskRecordClick(
+        item: MultitaskRecordViewData,
+    ) {
+        handleRecordClick(item)
     }
 
     fun onInnerFilterButtonClick(viewData: RecordsFilterButtonViewData) {
@@ -462,12 +475,13 @@ class RecordsFilterViewModel @Inject constructor(
         )
     }
 
-    private fun handleRecordClick(id: Long) {
+    private fun handleRecordClick(viewData: ViewHolderType) {
         filters = recordsFilterUpdateInteractor.handleRecordClick(
             currentFilters = filters,
-            id = id,
+            viewData = viewData,
         )
         checkManualFilterVisibility()
+        updateViewDataOnFiltersChanged(showLoader = false)
     }
 
     private fun removeFilter(type: RecordFilterType) {
@@ -811,6 +825,7 @@ class RecordsFilterViewModel @Inject constructor(
                     filters = filters,
                     recordTypes = getTypesCache().associateBy(RecordType::id),
                     recordTags = getTagsCache(),
+                    goals = getGoalsCache().groupBy { it.idData.value },
                 )
             }
             RecordFilterType.DaysOfWeek -> {

@@ -10,10 +10,15 @@ import com.example.util.simpletimetracker.core.mapper.DayOfWeekViewDataMapper
 import com.example.util.simpletimetracker.core.mapper.MultitaskRecordViewDataMapper
 import com.example.util.simpletimetracker.core.mapper.RecordTypeViewDataMapper
 import com.example.util.simpletimetracker.core.mapper.RecordViewDataMapper
+import com.example.util.simpletimetracker.core.mapper.RunningRecordViewDataMapper
 import com.example.util.simpletimetracker.core.mapper.TimeMapper
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.domain.base.UNTRACKED_ITEM_ID
 import com.example.util.simpletimetracker.domain.category.model.Category
+import com.example.util.simpletimetracker.domain.category.model.RecordTypeCategory
+import com.example.util.simpletimetracker.domain.extension.orEmpty
+import com.example.util.simpletimetracker.domain.extension.plus
+import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.record.extension.getAllTypeIds
 import com.example.util.simpletimetracker.domain.record.extension.getCategoryIds
 import com.example.util.simpletimetracker.domain.record.extension.getCategoryItems
@@ -22,51 +27,49 @@ import com.example.util.simpletimetracker.domain.record.extension.getComments
 import com.example.util.simpletimetracker.domain.record.extension.getDate
 import com.example.util.simpletimetracker.domain.record.extension.getDaysOfWeek
 import com.example.util.simpletimetracker.domain.record.extension.getDuration
+import com.example.util.simpletimetracker.domain.record.extension.getFilteredCategoryIds
+import com.example.util.simpletimetracker.domain.record.extension.getFilteredCategoryItems
 import com.example.util.simpletimetracker.domain.record.extension.getFilteredTags
-import com.example.util.simpletimetracker.domain.record.extension.getManuallyFilteredRecordIds
+import com.example.util.simpletimetracker.domain.record.extension.getFilteredTypeIds
+import com.example.util.simpletimetracker.domain.record.extension.getManuallyFilteredItems
 import com.example.util.simpletimetracker.domain.record.extension.getSelectedTags
 import com.example.util.simpletimetracker.domain.record.extension.getTaggedIds
 import com.example.util.simpletimetracker.domain.record.extension.getTimeOfDay
-import com.example.util.simpletimetracker.domain.record.extension.hasManuallyFiltered
-import com.example.util.simpletimetracker.domain.record.extension.hasUncategorizedItem
-import com.example.util.simpletimetracker.domain.record.extension.hasUntaggedItem
-import com.example.util.simpletimetracker.domain.record.extension.hasUntrackedFilter
-import com.example.util.simpletimetracker.domain.extension.orEmpty
-import com.example.util.simpletimetracker.domain.recordTag.interactor.FilterSelectableTagsInteractor
-import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
-import com.example.util.simpletimetracker.domain.record.interactor.RecordInteractor
-import com.example.util.simpletimetracker.domain.record.model.MultitaskRecord
-import com.example.util.simpletimetracker.domain.record.model.Range
-import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
-import com.example.util.simpletimetracker.domain.record.model.Record
-import com.example.util.simpletimetracker.domain.recordTag.model.RecordTag
-import com.example.util.simpletimetracker.domain.recordType.model.RecordType
-import com.example.util.simpletimetracker.domain.category.model.RecordTypeCategory
-import com.example.util.simpletimetracker.domain.extension.plus
-import com.example.util.simpletimetracker.domain.record.extension.getFilteredCategoryIds
-import com.example.util.simpletimetracker.domain.record.extension.getFilteredCategoryItems
-import com.example.util.simpletimetracker.domain.record.extension.getFilteredTypeIds
 import com.example.util.simpletimetracker.domain.record.extension.hasDuplicationsFilter
 import com.example.util.simpletimetracker.domain.record.extension.hasFilteredActivityFilter
 import com.example.util.simpletimetracker.domain.record.extension.hasFilteredCategoryFilter
+import com.example.util.simpletimetracker.domain.record.extension.hasManuallyFiltered
 import com.example.util.simpletimetracker.domain.record.extension.hasSelectedActivityFilter
 import com.example.util.simpletimetracker.domain.record.extension.hasSelectedCategoryFilter
-import com.example.util.simpletimetracker.domain.recordType.model.RecordTypeGoal
-import com.example.util.simpletimetracker.domain.recordTag.model.RecordTypeToTag
+import com.example.util.simpletimetracker.domain.record.extension.hasUncategorizedItem
+import com.example.util.simpletimetracker.domain.record.extension.hasUntaggedItem
+import com.example.util.simpletimetracker.domain.record.extension.hasUntrackedFilter
+import com.example.util.simpletimetracker.domain.record.extension.toManuallyFilteredItem
+import com.example.util.simpletimetracker.domain.record.interactor.RecordInteractor
+import com.example.util.simpletimetracker.domain.record.interactor.RunningRecordInteractor
+import com.example.util.simpletimetracker.domain.record.model.MultitaskRecord
+import com.example.util.simpletimetracker.domain.record.model.Range
+import com.example.util.simpletimetracker.domain.record.model.Record
 import com.example.util.simpletimetracker.domain.record.model.RecordsFilter
 import com.example.util.simpletimetracker.domain.record.model.RunningRecord
+import com.example.util.simpletimetracker.domain.recordTag.interactor.FilterSelectableTagsInteractor
+import com.example.util.simpletimetracker.domain.recordTag.model.RecordTag
+import com.example.util.simpletimetracker.domain.recordTag.model.RecordTypeToTag
+import com.example.util.simpletimetracker.domain.recordType.model.RecordType
+import com.example.util.simpletimetracker.domain.recordType.model.RecordTypeGoal
+import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.category.CategoryViewData
+import com.example.util.simpletimetracker.feature_base_adapter.commentField.CommentFieldViewData
 import com.example.util.simpletimetracker.feature_base_adapter.dayOfWeek.DayOfWeekViewData
 import com.example.util.simpletimetracker.feature_base_adapter.divider.DividerViewData
 import com.example.util.simpletimetracker.feature_base_adapter.emptySpace.EmptySpaceViewData
 import com.example.util.simpletimetracker.feature_base_adapter.hint.HintViewData
 import com.example.util.simpletimetracker.feature_base_adapter.recordFilter.FilterViewData
-import com.example.util.simpletimetracker.feature_records_filter.R
-import com.example.util.simpletimetracker.feature_records_filter.adapter.RecordsFilterButtonViewData
-import com.example.util.simpletimetracker.feature_base_adapter.commentField.CommentFieldViewData
 import com.example.util.simpletimetracker.feature_base_adapter.recordType.RecordTypeViewData
 import com.example.util.simpletimetracker.feature_base_adapter.recordTypeSuggestion.RecordTypeSuggestionViewData
+import com.example.util.simpletimetracker.feature_records_filter.R
+import com.example.util.simpletimetracker.feature_records_filter.adapter.RecordsFilterButtonViewData
 import com.example.util.simpletimetracker.feature_records_filter.adapter.RecordsFilterRangeViewData
 import com.example.util.simpletimetracker.feature_records_filter.mapper.RecordsFilterViewDataMapper
 import com.example.util.simpletimetracker.feature_records_filter.model.RecordFilterActivitiesType
@@ -94,11 +97,13 @@ class RecordsFilterViewDataInteractor @Inject constructor(
     private val recordFilterInteractor: RecordFilterInteractor,
     private val filterSelectableTagsInteractor: FilterSelectableTagsInteractor,
     private val recordInteractor: RecordInteractor,
+    private val runningRecordInteractor: RunningRecordInteractor,
     private val prefsInteractor: PrefsInteractor,
     private val mapper: RecordsFilterViewDataMapper,
     private val recordTypeViewDataMapper: RecordTypeViewDataMapper,
     private val categoryViewDataMapper: CategoryViewDataMapper,
     private val recordViewDataMapper: RecordViewDataMapper,
+    private val runningRecordViewDataMapper: RunningRecordViewDataMapper,
     private val multitaskRecordViewDataMapper: MultitaskRecordViewDataMapper,
     private val getRunningRecordViewDataMediator: GetRunningRecordViewDataMediator,
     private val dateDividerViewDataMapper: DateDividerViewDataMapper,
@@ -162,7 +167,7 @@ class RecordsFilterViewDataInteractor @Inject constructor(
         val useMilitaryTime = prefsInteractor.getUseMilitaryTimeFormat()
         val useProportionalMinutes = prefsInteractor.getUseProportionalMinutes()
         val showSeconds = prefsInteractor.getShowSeconds()
-        val manuallyFilteredIds = filters.getManuallyFilteredRecordIds()
+        val manuallyFilteredItems = filters.getManuallyFilteredItems()
             .keys.toList()
         val finalFilters = filters
             .takeUnless {
@@ -189,31 +194,29 @@ class RecordsFilterViewDataInteractor @Inject constructor(
         val viewData = records
             .mapNotNull { record ->
                 ensureActive()
+                val isManuallyFiltered = record.toManuallyFilteredItem() in manuallyFilteredItems
                 val viewData = when (record) {
                     is Record -> if (record.typeId != UNTRACKED_ITEM_ID) {
-                        if (record.id in manuallyFilteredIds) {
-                            filtered += 1
-                            recordViewDataMapper.mapFilteredRecord(
-                                record = record,
-                                recordTypes = recordTypes,
-                                allRecordTags = recordTags,
-                                isDarkTheme = isDarkTheme,
-                                useMilitaryTime = useMilitaryTime,
-                                useProportionalMinutes = useProportionalMinutes,
-                                showSeconds = showSeconds,
-                                isFiltered = true,
-                            ) ?: return@mapNotNull null
-                        } else {
-                            recordViewDataMapper.map(
-                                record = record,
-                                recordType = recordTypes[record.typeId] ?: return@mapNotNull null,
-                                recordTags = recordTags.filter { it.id in record.tagIds },
-                                isDarkTheme = isDarkTheme,
-                                useMilitaryTime = useMilitaryTime,
-                                useProportionalMinutes = useProportionalMinutes,
-                                showSeconds = showSeconds,
-                            )
-                        }
+                        recordViewDataMapper.map(
+                            record = record,
+                            recordTypes = recordTypes,
+                            recordTags = recordTags,
+                            isDarkTheme = isDarkTheme,
+                            useMilitaryTime = useMilitaryTime,
+                            useProportionalMinutes = useProportionalMinutes,
+                            showSeconds = showSeconds,
+                        )?.let {
+                            if (isManuallyFiltered) {
+                                filtered += 1
+                                recordViewDataMapper.mapFiltered(
+                                    viewData = it,
+                                    isDarkTheme = isDarkTheme,
+                                    isFiltered = true,
+                                )
+                            } else {
+                                it
+                            }
+                        } ?: return@mapNotNull null
                     } else {
                         recordViewDataMapper.mapToUntracked(
                             timeStarted = record.timeStarted,
@@ -222,7 +225,18 @@ class RecordsFilterViewDataInteractor @Inject constructor(
                             useMilitaryTime = useMilitaryTime,
                             useProportionalMinutes = useProportionalMinutes,
                             showSeconds = showSeconds,
-                        )
+                        ).let {
+                            if (isManuallyFiltered) {
+                                filtered += 1
+                                recordViewDataMapper.mapFiltered(
+                                    viewData = it,
+                                    isDarkTheme = isDarkTheme,
+                                    isFiltered = true,
+                                )
+                            } else {
+                                it
+                            }
+                        }
                     }
                     is RunningRecord -> getRunningRecordViewDataMediator.execute(
                         type = recordTypes[record.id] ?: return@mapNotNull null,
@@ -236,7 +250,18 @@ class RecordsFilterViewDataInteractor @Inject constructor(
                         useMilitaryTime = useMilitaryTime,
                         useProportionalMinutes = useProportionalMinutes,
                         showSeconds = showSeconds,
-                    )
+                    ).let {
+                        if (isManuallyFiltered) {
+                            filtered += 1
+                            runningRecordViewDataMapper.mapFiltered(
+                                viewData = it,
+                                isDarkTheme = isDarkTheme,
+                                isFiltered = true,
+                            )
+                        } else {
+                            it
+                        }
+                    }
                     is MultitaskRecord -> multitaskRecordViewDataMapper.map(
                         multitaskRecord = record,
                         recordTypes = recordTypes,
@@ -245,7 +270,18 @@ class RecordsFilterViewDataInteractor @Inject constructor(
                         useMilitaryTime = useMilitaryTime,
                         useProportionalMinutes = useProportionalMinutes,
                         showSeconds = showSeconds,
-                    )
+                    ).let {
+                        if (isManuallyFiltered) {
+                            filtered += 1
+                            multitaskRecordViewDataMapper.mapFiltered(
+                                viewData = it,
+                                isDarkTheme = isDarkTheme,
+                                isFiltered = true,
+                            )
+                        } else {
+                            it
+                        }
+                    }
                 }
                 record.timeStarted to viewData
             }
@@ -295,7 +331,7 @@ class RecordsFilterViewDataInteractor @Inject constructor(
             RecordFilterType.Duration,
             RecordFilterType.Multitask.takeIf { extra.flags.multitaskSelectionAvailable && !hasUntracked },
             RecordFilterType.Duplications.takeIf { extra.flags.duplicationsSelectionAvailable },
-            RecordFilterType.ManuallyFiltered.takeIf { filters.hasManuallyFiltered() && !hasUntracked },
+            RecordFilterType.ManuallyFiltered.takeIf { filters.hasManuallyFiltered() },
         )
 
         return@withContext availableFilters.mapIndexed { index, type ->
@@ -659,36 +695,114 @@ class RecordsFilterViewDataInteractor @Inject constructor(
         filters: List<RecordsFilter>,
         recordTypes: Map<Long, RecordType>,
         recordTags: List<RecordTag>,
+        goals: Map<Long, List<RecordTypeGoal>>,
     ): List<ViewHolderType> = withContext(Dispatchers.Default) {
         val isDarkTheme = prefsInteractor.getDarkMode()
         val useMilitaryTime = prefsInteractor.getUseMilitaryTimeFormat()
         val useProportionalMinutes = prefsInteractor.getUseProportionalMinutes()
         val showSeconds = prefsInteractor.getShowSeconds()
-        val manuallyFilteredIds = filters.getManuallyFilteredRecordIds()
+        val manuallyFilteredItems = filters.getManuallyFilteredItems()
             .keys.toList()
         val button = RecordsFilterButtonViewData(
             type = RecordsFilterButtonViewData.Type.INVERT_SELECTION,
             text = resourceRepo.getString(R.string.records_filter_invert_selection),
         )
-        val manuallyFilteredRecords = if (manuallyFilteredIds.size > 10) {
-            recordInteractor.getAll().filter { it.id in manuallyFilteredIds }
-        } else {
-            manuallyFilteredIds.mapNotNull { recordInteractor.get(it) }
-        }
 
-        return@withContext button.let(::listOf) + manuallyFilteredRecords
-            .mapNotNull { record ->
-                val mapped = recordViewDataMapper.mapFilteredRecord(
-                    record = record,
-                    recordTypes = recordTypes,
-                    allRecordTags = recordTags,
-                    isDarkTheme = isDarkTheme,
-                    useMilitaryTime = useMilitaryTime,
-                    useProportionalMinutes = useProportionalMinutes,
-                    showSeconds = showSeconds,
-                    isFiltered = false,
-                ) ?: return@mapNotNull null
-                record.timeStarted to mapped
+        val manuallyFilteredTracked = manuallyFilteredItems
+            .filterIsInstance<RecordsFilter.ManuallyFilteredItem.Tracked>()
+        val manuallyFilteredRunning = manuallyFilteredItems
+            .filterIsInstance<RecordsFilter.ManuallyFilteredItem.Running>()
+        val manuallyFilteredMultitask = manuallyFilteredItems
+            .filterIsInstance<RecordsFilter.ManuallyFilteredItem.Multitask>()
+
+        val manuallyFilteredRecords = if (manuallyFilteredTracked.size > 10) {
+            recordInteractor.getAll()
+        } else {
+            manuallyFilteredTracked.map { it.id }
+                .mapNotNull { recordInteractor.get(it) }
+        }.associateBy { it.id }
+        val manuallyFilteredRunningRecords = if (manuallyFilteredRunning.isNotEmpty()) {
+            runningRecordInteractor.getAll()
+        } else {
+            emptyList()
+        }.associateBy { it.id }
+        val manuallyFilteredMultitaskRecords = if (manuallyFilteredMultitask.size > 10) {
+            recordInteractor.getAll()
+        } else {
+            manuallyFilteredMultitask.map { it.ids }.flatten().distinct()
+                .mapNotNull { recordInteractor.get(it) }
+        }.associateBy { it.id }
+
+        return@withContext button.let(::listOf) + manuallyFilteredItems
+            .mapNotNull { item ->
+                when (item) {
+                    is RecordsFilter.ManuallyFilteredItem.Tracked -> {
+                        val record = manuallyFilteredRecords[item.id]
+                            ?: return@mapNotNull null
+                        val mapped = recordViewDataMapper.map(
+                            record = record,
+                            recordTypes = recordTypes,
+                            recordTags = recordTags,
+                            isDarkTheme = isDarkTheme,
+                            useMilitaryTime = useMilitaryTime,
+                            useProportionalMinutes = useProportionalMinutes,
+                            showSeconds = showSeconds,
+                        )?.let {
+                            recordViewDataMapper.mapFiltered(
+                                viewData = it,
+                                isDarkTheme = isDarkTheme,
+                                isFiltered = false,
+                            )
+                        } ?: return@mapNotNull null
+                        record.timeStarted to mapped
+                    }
+                    is RecordsFilter.ManuallyFilteredItem.Untracked -> {
+                        val mapped = recordViewDataMapper.mapToUntracked(
+                            timeStarted = item.timeStartedTimestamp,
+                            timeEnded = item.timeEndedTimestamp,
+                            isDarkTheme = isDarkTheme,
+                            useMilitaryTime = useMilitaryTime,
+                            useProportionalMinutes = useProportionalMinutes,
+                            showSeconds = showSeconds,
+                        )
+                        item.timeStartedTimestamp to mapped
+                    }
+                    is RecordsFilter.ManuallyFilteredItem.Running -> {
+                        val record = manuallyFilteredRunningRecords[item.id]
+                            ?: return@mapNotNull null
+                        val mapped = getRunningRecordViewDataMediator.execute(
+                            type = recordTypes[record.id] ?: return@mapNotNull null,
+                            tags = recordTags.filter { it.id in record.tagIds },
+                            goals = goals[record.id].orEmpty(),
+                            record = record,
+                            nowIconVisible = true,
+                            goalsVisible = false,
+                            totalDurationVisible = false,
+                            isDarkTheme = isDarkTheme,
+                            useMilitaryTime = useMilitaryTime,
+                            useProportionalMinutes = useProportionalMinutes,
+                            showSeconds = showSeconds,
+                        )
+                        record.timeStarted to mapped
+                    }
+                    is RecordsFilter.ManuallyFilteredItem.Multitask -> {
+                        val records = item.ids
+                            .mapNotNull { manuallyFilteredMultitaskRecords[it] }
+                            .takeUnless { it.isEmpty() }
+                            ?: return@mapNotNull null
+                        val record = MultitaskRecord(records)
+                        val mapped = multitaskRecordViewDataMapper.map(
+                            multitaskRecord = record,
+                            recordTypes = recordTypes,
+                            recordTags = recordTags,
+                            isDarkTheme = isDarkTheme,
+                            useMilitaryTime = useMilitaryTime,
+                            useProportionalMinutes = useProportionalMinutes,
+                            showSeconds = showSeconds,
+                        )
+                        record.timeStarted to mapped
+                    }
+                }
             }
             .sortedByDescending { (timeStarted, _) -> timeStarted }
             .let(dateDividerViewDataMapper::addDateViewData)

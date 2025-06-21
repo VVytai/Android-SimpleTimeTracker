@@ -16,7 +16,7 @@ import com.example.util.simpletimetracker.domain.record.extension.getDuplication
 import com.example.util.simpletimetracker.domain.record.extension.getFilteredCategoryItems
 import com.example.util.simpletimetracker.domain.record.extension.getFilteredTags
 import com.example.util.simpletimetracker.domain.record.extension.getFilteredTypeIds
-import com.example.util.simpletimetracker.domain.record.extension.getManuallyFilteredRecordIds
+import com.example.util.simpletimetracker.domain.record.extension.getManuallyFilteredItems
 import com.example.util.simpletimetracker.domain.record.extension.getSelectedTags
 import com.example.util.simpletimetracker.domain.record.extension.getTypeIds
 import com.example.util.simpletimetracker.domain.record.extension.getTypeIdsFromCategories
@@ -30,8 +30,11 @@ import com.example.util.simpletimetracker.domain.recordTag.model.RecordTag
 import com.example.util.simpletimetracker.domain.recordTag.model.RecordTypeToTag
 import com.example.util.simpletimetracker.domain.recordType.model.RecordType
 import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
+import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
+import com.example.util.simpletimetracker.feature_base_adapter.multitaskRecord.MultitaskRecordViewData
 import com.example.util.simpletimetracker.feature_base_adapter.record.RecordViewData
 import com.example.util.simpletimetracker.feature_base_adapter.recordFilter.FilterViewData
+import com.example.util.simpletimetracker.feature_base_adapter.runningRecord.RunningRecordViewData
 import com.example.util.simpletimetracker.feature_records_filter.mapper.RecordsFilterViewDataMapper
 import com.example.util.simpletimetracker.feature_records_filter.model.RecordFilterCommentType
 import com.example.util.simpletimetracker.feature_records_filter.model.RecordFilterDateType
@@ -181,6 +184,7 @@ class RecordsFilterUpdateInteractor @Inject constructor(
     ): List<RecordsFilter> {
         val filters = currentFilters.toMutableList()
 
+        filters.removeAll { it is RecordsFilter.ManuallyFiltered }
         if (!filters.hasMultitaskFilter()) {
             filters.removeAll { it is RecordsFilter.Untracked }
             filters.add(RecordsFilter.Multitask)
@@ -274,14 +278,17 @@ class RecordsFilterUpdateInteractor @Inject constructor(
 
     fun handleRecordClick(
         currentFilters: List<RecordsFilter>,
-        id: Long,
+        viewData: ViewHolderType,
     ): List<RecordsFilter> {
         val filters = currentFilters.toMutableList()
-        val newIds = filters.getManuallyFilteredRecordIds()
+        val newItem = viewData.toManuallyFilteredItem() ?: return currentFilters
+        val newItems = filters.getManuallyFilteredItems()
             .toMutableMap()
-            .apply { addOrRemove(id, true) }
+            .apply { addOrRemove(newItem, true) }
         filters.removeAll { it is RecordsFilter.ManuallyFiltered }
-        if (newIds.isNotEmpty()) filters.add(RecordsFilter.ManuallyFiltered(newIds.keys.toList()))
+        if (newItems.isNotEmpty()) {
+            filters.add(RecordsFilter.ManuallyFiltered(newItems.keys.toList()))
+        }
         return filters
     }
 
@@ -292,16 +299,16 @@ class RecordsFilterUpdateInteractor @Inject constructor(
         if (recordsViewData == null || recordsViewData.isLoading) return currentFilters
 
         val filters = currentFilters.toMutableList()
-        val filteredIds = filters.getManuallyFilteredRecordIds()
-        val selectedIds = recordsViewData.recordsViewData.tryCast<RecordsViewData.Content>()
+        val filteredItems = filters.getManuallyFilteredItems()
+        val selectedItems = recordsViewData.recordsViewData.tryCast<RecordsViewData.Content>()
             ?.viewData.orEmpty()
             .mapNotNull {
-                if (it !is RecordViewData.Tracked) return@mapNotNull null
-                if (it.id !in filteredIds) it.id else null
+                val item = it.toManuallyFilteredItem() ?: return@mapNotNull null
+                if (item !in filteredItems) item else null
             }
 
         filters.removeAll { it is RecordsFilter.ManuallyFiltered }
-        if (selectedIds.isNotEmpty()) filters.add(RecordsFilter.ManuallyFiltered(selectedIds))
+        if (selectedItems.isNotEmpty()) filters.add(RecordsFilter.ManuallyFiltered(selectedItems))
         return filters
     }
 
@@ -322,7 +329,7 @@ class RecordsFilterUpdateInteractor @Inject constructor(
             ?.viewData.orEmpty()
             .mapNotNull {
                 if (it !is RecordViewData.Tracked) return@mapNotNull null
-                if (it.id in result.duplications) it.id else null
+                if (it.id in result.duplications) it.toManuallyFilteredItem() else null
             }
 
         if (selectedIds.isNotEmpty()) filters.add(RecordsFilter.ManuallyFiltered(selectedIds))
@@ -634,5 +641,19 @@ class RecordsFilterUpdateInteractor @Inject constructor(
         }
 
         return filters
+    }
+
+    private fun ViewHolderType.toManuallyFilteredItem(): RecordsFilter.ManuallyFilteredItem? {
+        return when (this) {
+            is RecordViewData.Tracked ->
+                RecordsFilter.ManuallyFilteredItem.Tracked(this.id)
+            is RecordViewData.Untracked ->
+                RecordsFilter.ManuallyFilteredItem.Untracked(this.timeStartedTimestamp, this.timeEndedTimestamp)
+            is RunningRecordViewData ->
+                RecordsFilter.ManuallyFilteredItem.Running(this.id)
+            is MultitaskRecordViewData ->
+                RecordsFilter.ManuallyFilteredItem.Multitask(this.ids)
+            else -> null
+        }
     }
 }

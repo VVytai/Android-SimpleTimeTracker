@@ -121,15 +121,15 @@ fun RecordsFilterParam.toModel(): RecordsFilter {
         )
         is RecordsFilterParam.Category -> RecordsFilter.Category(
             selected = selected.map { it.toModel() },
-            filtered = filtered.map { it.toModel() }
+            filtered = filtered.map { it.toModel() },
         )
         is RecordsFilterParam.Comment -> RecordsFilter.Comment(items.map { it.toModel() })
         is RecordsFilterParam.Date -> RecordsFilter.Date(range.toModel(), position)
         is RecordsFilterParam.Tags -> RecordsFilter.Tags(
             selected = selected.map { it.toModel() },
-            filtered = filtered.map { it.toModel() }
+            filtered = filtered.map { it.toModel() },
         )
-        is RecordsFilterParam.ManuallyFiltered -> RecordsFilter.ManuallyFiltered(recordIds)
+        is RecordsFilterParam.ManuallyFiltered -> RecordsFilter.ManuallyFiltered(items.map { it.toModel() })
         is RecordsFilterParam.DaysOfWeek -> RecordsFilter.DaysOfWeek(items)
         is RecordsFilterParam.TimeOfDay -> RecordsFilter.TimeOfDay(range.toModel())
         is RecordsFilterParam.Duration -> RecordsFilter.Duration(range.toModel())
@@ -155,7 +155,7 @@ fun RecordsFilter.toParams(): RecordsFilterParam {
             selected = selected.map { it.toParams() },
             filtered = filtered.map { it.toParams() },
         )
-        is RecordsFilter.ManuallyFiltered -> RecordsFilterParam.ManuallyFiltered(recordIds)
+        is RecordsFilter.ManuallyFiltered -> RecordsFilterParam.ManuallyFiltered(items.map { it.toParams() })
         is RecordsFilter.DaysOfWeek -> RecordsFilterParam.DaysOfWeek(items)
         is RecordsFilter.TimeOfDay -> RecordsFilterParam.TimeOfDay(range.toParams())
         is RecordsFilter.Duration -> RecordsFilterParam.Duration(range.toParams())
@@ -204,6 +204,32 @@ fun RecordsFilter.TagItem.toParams(): RecordsFilterParam.TagItem {
     return when (this) {
         is RecordsFilter.TagItem.Tagged -> RecordsFilterParam.TagItem.Tagged(tagId)
         is RecordsFilter.TagItem.Untagged -> RecordsFilterParam.TagItem.Untagged
+    }
+}
+
+fun RecordsFilterParam.ManuallyFilteredItem.toModel(): RecordsFilter.ManuallyFilteredItem {
+    return when (this) {
+        is RecordsFilterParam.ManuallyFilteredItem.Tracked ->
+            RecordsFilter.ManuallyFilteredItem.Tracked(id)
+        is RecordsFilterParam.ManuallyFilteredItem.Running ->
+            RecordsFilter.ManuallyFilteredItem.Running(id)
+        is RecordsFilterParam.ManuallyFilteredItem.Untracked ->
+            RecordsFilter.ManuallyFilteredItem.Untracked(timeStartedTimestamp, timeEndedTimestamp)
+        is RecordsFilterParam.ManuallyFilteredItem.Multitask ->
+            RecordsFilter.ManuallyFilteredItem.Multitask(ids)
+    }
+}
+
+fun RecordsFilter.ManuallyFilteredItem.toParams(): RecordsFilterParam.ManuallyFilteredItem {
+    return when (this) {
+        is RecordsFilter.ManuallyFilteredItem.Tracked ->
+            RecordsFilterParam.ManuallyFilteredItem.Tracked(id)
+        is RecordsFilter.ManuallyFilteredItem.Running ->
+            RecordsFilterParam.ManuallyFilteredItem.Running(id)
+        is RecordsFilter.ManuallyFilteredItem.Untracked ->
+            RecordsFilterParam.ManuallyFilteredItem.Untracked(timeStartedTimestamp, timeEndedTimestamp)
+        is RecordsFilter.ManuallyFilteredItem.Multitask ->
+            RecordsFilterParam.ManuallyFilteredItem.Multitask(ids)
     }
 }
 

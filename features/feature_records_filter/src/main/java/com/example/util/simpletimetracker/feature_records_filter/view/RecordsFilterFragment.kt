@@ -84,7 +84,16 @@ class RecordsFilterFragment :
                 withTransition = false,
             ),
             createCategoryAdapterDelegate(viewModel::onCategoryClick),
-            createRecordAdapterDelegate(onItemClick = viewModel::onRecordClick),
+            createRunningRecordAdapterDelegate(
+                transitionNamePrefix = "",
+                onItemClick = viewModel::onRunningRecordClick,
+            ),
+            createRecordAdapterDelegate(
+                onItemClick = viewModel::onRecordClick,
+            ),
+            createMultitaskRecordAdapterDelegate(
+                onItemClick = viewModel::onMultitaskRecordClick,
+            ),
             createDoubleButtonsAdapterDelegate(viewModel::onSelectionButtonClick),
             createCommentFieldAdapterDelegate(viewModel::onCommentChange),
             createRecordsFilterButtonAdapterDelegate(viewModel::onInnerFilterButtonClick),
@@ -101,9 +110,16 @@ class RecordsFilterFragment :
             createLoaderAdapterDelegate(),
             createEmptyAdapterDelegate(),
             createRecordsDateDividerAdapterDelegate(),
-            createRunningRecordAdapterDelegate(""),
-            createRecordAdapterDelegate(viewModel::onRecordClick),
-            createMultitaskRecordAdapterDelegate(),
+            createRunningRecordAdapterDelegate(
+                transitionNamePrefix = "",
+                onItemClick = viewModel::onRunningRecordClick,
+            ),
+            createRecordAdapterDelegate(
+                onItemClick = viewModel::onRecordClick,
+            ),
+            createMultitaskRecordAdapterDelegate(
+                onItemClick = viewModel::onMultitaskRecordClick,
+            ),
         )
     }
     private val params: RecordsFilterParams by fragmentArgumentDelegate(

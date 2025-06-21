@@ -3,13 +3,13 @@ package com.example.util.simpletimetracker.core.mapper
 import com.example.util.simpletimetracker.core.R
 import com.example.util.simpletimetracker.core.interactor.GetCurrentRecordsDurationInteractor
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
-import com.example.util.simpletimetracker.domain.recordType.extension.getDaily
 import com.example.util.simpletimetracker.domain.extension.getFullName
-import com.example.util.simpletimetracker.domain.recordType.extension.getSession
+import com.example.util.simpletimetracker.domain.record.model.RunningRecord
 import com.example.util.simpletimetracker.domain.recordTag.model.RecordTag
+import com.example.util.simpletimetracker.domain.recordType.extension.getDaily
+import com.example.util.simpletimetracker.domain.recordType.extension.getSession
 import com.example.util.simpletimetracker.domain.recordType.model.RecordType
 import com.example.util.simpletimetracker.domain.recordType.model.RecordTypeGoal
-import com.example.util.simpletimetracker.domain.record.model.RunningRecord
 import com.example.util.simpletimetracker.feature_base_adapter.runningRecord.GoalTimeViewData
 import com.example.util.simpletimetracker.feature_base_adapter.runningRecord.RunningRecordViewData
 import javax.inject.Inject
@@ -72,6 +72,19 @@ class RunningRecordViewDataMapper @Inject constructor(
             comment = runningRecord.comment,
             nowIconVisible = nowIconVisible,
         )
+    }
+
+    fun mapFiltered(
+        viewData: RunningRecordViewData,
+        isDarkTheme: Boolean,
+        isFiltered: Boolean,
+    ): RunningRecordViewData {
+        return when {
+            isFiltered -> {
+                viewData.copy(color = colorMapper.toFilteredColor(isDarkTheme))
+            }
+            else -> viewData
+        }
     }
 
     private fun mapTotalDuration(

@@ -8,7 +8,6 @@ import com.example.util.simpletimetracker.domain.record.extension.getDate
 import com.example.util.simpletimetracker.domain.record.extension.getDaysOfWeek
 import com.example.util.simpletimetracker.domain.record.extension.getDuration
 import com.example.util.simpletimetracker.domain.record.extension.getFilteredTags
-import com.example.util.simpletimetracker.domain.record.extension.getManuallyFilteredRecordIds
 import com.example.util.simpletimetracker.domain.record.extension.getSelectedTags
 import com.example.util.simpletimetracker.domain.record.extension.getTaggedIds
 import com.example.util.simpletimetracker.domain.record.extension.getTimeOfDay
@@ -32,9 +31,11 @@ import com.example.util.simpletimetracker.domain.extension.plus
 import com.example.util.simpletimetracker.domain.record.extension.getAllFilteredTypeIds
 import com.example.util.simpletimetracker.domain.record.extension.getDuplicationItems
 import com.example.util.simpletimetracker.domain.record.extension.getFilteredTypeIds
+import com.example.util.simpletimetracker.domain.record.extension.getManuallyFilteredItems
 import com.example.util.simpletimetracker.domain.record.extension.hasDuplicationsFilter
 import com.example.util.simpletimetracker.domain.record.extension.hasFilteredCategoryFilter
 import com.example.util.simpletimetracker.domain.record.extension.hasSelectedCategoryFilter
+import com.example.util.simpletimetracker.domain.record.extension.toManuallyFilteredItem
 import com.example.util.simpletimetracker.domain.record.interactor.GetDuplicatedRecordsInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.GetUntrackedRecordsInteractor
 import com.example.util.simpletimetracker.domain.record.model.MultitaskRecord
@@ -123,7 +124,7 @@ class RecordFilterInteractor @Inject constructor(
         val filteredTagItems: List<RecordsFilter.TagItem> = filters.getFilteredTags()
         val filteredTaggedIds: List<Long> = filteredTagItems.getTaggedIds()
         val filteredUntagged: Boolean = filteredTagItems.hasUntaggedItem()
-        val manuallyFilteredIds: Map<Long, Boolean> = filters.getManuallyFilteredRecordIds()
+        val manuallyFilteredItems: Map<RecordsFilter.ManuallyFilteredItem, Boolean> = filters.getManuallyFilteredItems()
         val daysOfWeek: Set<DayOfWeek> = filters.getDaysOfWeek()
         val timeOfDay: Range? = filters.getTimeOfDay()
         val durations: List<Range> = filters.getDuration()?.let(::listOf).orEmpty()
@@ -245,9 +246,8 @@ class RecordFilterInteractor @Inject constructor(
         }
 
         fun RecordBase.isManuallyFiltered(): Boolean {
-            if (manuallyFilteredIds.isEmpty()) return false
-            if (this !is Record) return false
-            return id in manuallyFilteredIds
+            if (manuallyFilteredItems.isEmpty()) return false
+            return this.toManuallyFilteredItem() in manuallyFilteredItems
         }
 
         fun RecordBase.selectedByDuplications(): Boolean {

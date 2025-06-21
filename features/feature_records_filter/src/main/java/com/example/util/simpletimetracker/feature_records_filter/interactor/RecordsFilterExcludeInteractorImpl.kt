@@ -31,11 +31,10 @@ class RecordsFilterExcludeInteractorImpl @Inject constructor(
         type: ExcludeType,
         currentFilters: List<RecordsFilter>,
     ): List<RecordsFilter> {
-        // TODO manually filter running records, untracked and multitask.
         // TODO multitasking filter by Read doesn't work.
-        if (id == UNTRACKED_ITEM_ID) {
-            return recordsFilterUpdateInteractor.handleUntrackedClick(currentFilters)
-        }
+        // Shouldn't be possible
+        if (id == UNTRACKED_ITEM_ID) return currentFilters
+
         return when (type) {
             is ExcludeType.Activity -> {
                 val itemIsSelected = currentFilters.hasSelectedActivityFilter() &&

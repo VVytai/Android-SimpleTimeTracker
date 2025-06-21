@@ -12,6 +12,7 @@ import com.example.util.simpletimetracker.feature_base_adapter.databinding.Multi
 import com.example.util.simpletimetracker.feature_views.extension.getThemedAttr
 import com.example.util.simpletimetracker.feature_views.R
 import com.example.util.simpletimetracker.feature_views.extension.layoutInflater
+import com.example.util.simpletimetracker.feature_views.extension.setOnClick
 import com.example.util.simpletimetracker.feature_views.viewData.RecordTypeIcon
 
 class MultitaskRecordView @JvmOverloads constructor(
@@ -40,6 +41,10 @@ class MultitaskRecordView @JvmOverloads constructor(
         binding.tvRecordItemTimeStarted.text = data.timeStarted
         binding.tvRecordItemTimeFinished.text = data.timeFinished
         binding.tvMultitaskRecordItemDuration.text = data.duration
+    }
+
+    fun setOnClick(listener: () -> Unit) {
+        binding.viewMultitaskRecordClickable.setOnClick { listener.invoke() }
     }
 
     private fun initProps() {

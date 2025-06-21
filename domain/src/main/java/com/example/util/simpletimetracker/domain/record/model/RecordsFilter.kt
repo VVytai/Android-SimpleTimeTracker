@@ -20,7 +20,7 @@ sealed interface RecordsFilter {
 
     data class Tags(val selected: List<TagItem>, val filtered: List<TagItem>) : RecordsFilter
 
-    data class ManuallyFiltered(val recordIds: List<Long>) : RecordsFilter
+    data class ManuallyFiltered(val items: List<ManuallyFilteredItem>) : RecordsFilter
 
     data class DaysOfWeek(val items: List<DayOfWeek>) : RecordsFilter
 
@@ -31,23 +31,37 @@ sealed interface RecordsFilter {
     data class Duplications(val items: List<DuplicationsItem>) : RecordsFilter
 
     sealed interface CommentItem {
-        object NoComment : CommentItem
-        object AnyComment : CommentItem
+        data object NoComment : CommentItem
+        data object AnyComment : CommentItem
         data class Comment(val text: String) : CommentItem
     }
 
     sealed interface CategoryItem {
         data class Categorized(val categoryId: Long) : CategoryItem
-        object Uncategorized : CategoryItem
+        data object Uncategorized : CategoryItem
     }
 
     sealed interface TagItem {
         data class Tagged(val tagId: Long) : TagItem
-        object Untagged : TagItem
+        data object Untagged : TagItem
     }
 
     sealed interface DuplicationsItem {
-        object SameActivity : DuplicationsItem
-        object SameTimes : DuplicationsItem
+        data object SameActivity : DuplicationsItem
+        data object SameTimes : DuplicationsItem
+    }
+
+    sealed interface ManuallyFilteredItem {
+        data class Tracked(val id: Long) : ManuallyFilteredItem
+        data class Running(val id: Long) : ManuallyFilteredItem
+        data class Multitask(val ids: List<Long>) : ManuallyFilteredItem
+        data class Untracked(
+            val timeStartedTimestamp: Long,
+            val timeEndedTimestamp: Long,
+        ) : ManuallyFilteredItem {
+            private val id: Long = timeStartedTimestamp
+            override fun equals(other: Any?): Boolean = (other as? Untracked)?.id == id
+            override fun hashCode(): Int = id.hashCode()
+        }
     }
 }

@@ -1,12 +1,17 @@
 package com.example.util.simpletimetracker.domain.record.extension
 
+import com.example.util.simpletimetracker.domain.base.UNTRACKED_ITEM_ID
 import com.example.util.simpletimetracker.domain.daysOfWeek.model.DayOfWeek
 import com.example.util.simpletimetracker.domain.recordType.model.RecordType
 import com.example.util.simpletimetracker.domain.category.model.RecordTypeCategory
 import com.example.util.simpletimetracker.domain.extension.orEmpty
 import com.example.util.simpletimetracker.domain.extension.plus
+import com.example.util.simpletimetracker.domain.record.model.MultitaskRecord
 import com.example.util.simpletimetracker.domain.record.model.Range
+import com.example.util.simpletimetracker.domain.record.model.Record
+import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.domain.record.model.RecordsFilter
+import com.example.util.simpletimetracker.domain.record.model.RunningRecord
 
 fun List<RecordsFilter>.getTypeIds(): List<Long> {
     return filterIsInstance<RecordsFilter.Activity>()
@@ -105,9 +110,9 @@ fun List<RecordsFilter>.getFilteredTags(): List<RecordsFilter.TagItem> {
         .flatten()
 }
 
-fun List<RecordsFilter>.getManuallyFilteredRecordIds(): Map<Long, Boolean> {
+fun List<RecordsFilter>.getManuallyFilteredItems(): Map<RecordsFilter.ManuallyFilteredItem, Boolean> {
     return filterIsInstance<RecordsFilter.ManuallyFiltered>()
-        .map(RecordsFilter.ManuallyFiltered::recordIds)
+        .map(RecordsFilter.ManuallyFiltered::items)
         .flatten()
         .associateWith { true }
 }
@@ -215,6 +220,22 @@ fun List<RecordsFilter.DuplicationsItem>.hasSameActivity(): Boolean {
 
 fun List<RecordsFilter.DuplicationsItem>.hasSameTimes(): Boolean {
     return any { it is RecordsFilter.DuplicationsItem.SameTimes }
+}
+
+fun RecordBase.toManuallyFilteredItem(): RecordsFilter.ManuallyFilteredItem {
+    return when (this) {
+        is Record -> if (this.typeId == UNTRACKED_ITEM_ID) {
+            RecordsFilter.ManuallyFilteredItem.Untracked(this.timeStarted, this.timeEnded)
+        } else {
+            RecordsFilter.ManuallyFilteredItem.Tracked(this.id)
+        }
+        is RunningRecord -> {
+            RecordsFilter.ManuallyFilteredItem.Running(this.id)
+        }
+        is MultitaskRecord -> {
+            RecordsFilter.ManuallyFilteredItem.Multitask(this.records.map { it.id })
+        }
+    }
 }
 
 private fun getTypeIdsFromCategories(

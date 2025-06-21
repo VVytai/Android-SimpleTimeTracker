@@ -127,16 +127,21 @@ class PartialRestoreSelectionViewDataInteractor @Inject constructor(
                 val typesMap = data.types.mapValues { it.value.data }
                 val tags = data.tags.values.map { it.data }
                 data.records.values.getNotExistingValues().mapNotNull {
-                    val viewData = recordViewDataMapper.mapFilteredRecord(
+                    val viewData = recordViewDataMapper.map(
                         record = it,
                         recordTypes = typesMap,
-                        allRecordTags = tags,
+                        recordTags = tags,
                         isDarkTheme = isDarkTheme,
                         useMilitaryTime = useMilitaryTime,
                         useProportionalMinutes = useProportionalMinutes,
                         showSeconds = showSeconds,
-                        isFiltered = it.id in dataIdsFiltered,
-                    ) ?: return@mapNotNull null
+                    )?.let { mapped ->
+                        recordViewDataMapper.mapFiltered(
+                            viewData = mapped,
+                            isDarkTheme = isDarkTheme,
+                            isFiltered = mapped.id in dataIdsFiltered,
+                        )
+                    } ?: return@mapNotNull null
                     it.timeStarted to viewData
                 }.sortedByDescending { (timeStarted, _) ->
                     timeStarted
