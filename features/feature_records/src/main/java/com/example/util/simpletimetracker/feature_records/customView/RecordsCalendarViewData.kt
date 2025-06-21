@@ -11,7 +11,7 @@ data class RecordsCalendarViewData(
     val points: List<Points>,
     val reverseOrder: Boolean,
     val shouldDrawTopLegends: Boolean,
-    val isMilitary: Boolean
+    val isMilitary: Boolean,
 ) {
 
     data class Points(

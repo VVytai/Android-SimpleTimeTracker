@@ -9,6 +9,7 @@ import androidx.fragment.app.viewModels
 import com.example.util.simpletimetracker.core.base.BaseFragment
 import com.example.util.simpletimetracker.core.dialog.OnTagSelectedListener
 import com.example.util.simpletimetracker.core.utils.InsetConfiguration
+import com.example.util.simpletimetracker.core.viewData.RecordTypeSuggestionType
 import com.example.util.simpletimetracker.feature_base_adapter.BaseRecyclerAdapter
 import com.example.util.simpletimetracker.feature_base_adapter.activityFilter.createActivityFilterAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.activityFilter.createActivityFilterAddAdapterDelegate
@@ -44,7 +45,7 @@ class WidgetUniversalFragment :
             createActivityFilterAdapterDelegate(viewModel::onActivityFilterClick),
             createActivityFilterAddAdapterDelegate(viewModel::onActivityFilterSpecialClick),
             createRecordTypeAdapterDelegate(viewModel::onRecordTypeClick),
-            createRecordTypeSuggestionAdapterDelegate(viewModel::onRecordTypeClick),
+            createRecordTypeSuggestionAdapterDelegate(RecordTypeSuggestionType, viewModel::onRecordTypeClick),
             createRunningRecordTypeSpecialAdapterDelegate(viewModel::onSpecialRecordTypeClick),
             createDividerAdapterDelegate(),
             createEmptyAdapterDelegate(),

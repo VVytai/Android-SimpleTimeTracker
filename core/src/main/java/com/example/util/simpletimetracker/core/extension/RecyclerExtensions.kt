@@ -102,7 +102,6 @@ fun RecyclerView.onItemSwiped(
     getIsSelectable: (RecyclerView.ViewHolder?) -> Boolean = { true },
     onSwiped: (RecyclerView.ViewHolder?) -> Unit,
 ) {
-
     val swipeDirections = ItemTouchHelper.START
     val deleteIcon by lazy {
         ContextCompat.getDrawable(context, iconRes)?.mutate()?.apply { setTint(iconColor) }

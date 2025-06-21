@@ -573,11 +573,11 @@ Exemple:<br/>
     <!--  Records filter  -->
     <string name="records_filter_duplications">Duplicacions</string>
     <string name="records_filter_select_tags">Seleccioneu etiquetes</string>
-    <string name="records_filter_filter_tags">Exclou etiquetes</string>
     <string name="records_filter_manually_filtered">Filtrat</string>
     <string name="records_filter_no_comment">Sense comentaris</string>
     <string name="records_filter_any_comment">Qualsevol comentari</string>
     <string name="records_filter_select">Seleccioneu</string>
+    <string name="records_filter_exclude">Excloure</string>
     <string name="records_filter_invert_selection">Inverteix la selecció</string>
     <string name="records_filter_duration_min">Mínim</string>
     <string name="records_filter_duration_max">Màxim</string>

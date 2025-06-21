@@ -573,11 +573,11 @@ Contoh:<br/>
     <!--  Records filter  -->
     <string name="records_filter_duplications">Duplikasi</string>
     <string name="records_filter_select_tags">Pilih tag</string>
-    <string name="records_filter_filter_tags">Kecualikan tag</string>
     <string name="records_filter_manually_filtered">Tersaring</string>
     <string name="records_filter_no_comment">Tidak ada komentar</string>
     <string name="records_filter_any_comment">Ada komentar</string>
     <string name="records_filter_select">Pilih</string>
+    <string name="records_filter_exclude">Kecualikan</string>
     <string name="records_filter_invert_selection">Pilihan sebaliknya</string>
     <string name="records_filter_duration_min">Minimum</string>
     <string name="records_filter_duration_max">Maksimum</string>

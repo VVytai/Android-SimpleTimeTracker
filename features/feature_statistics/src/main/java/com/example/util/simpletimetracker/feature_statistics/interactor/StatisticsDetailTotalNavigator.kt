@@ -31,7 +31,7 @@ class StatisticsDetailTotalNavigator @Inject constructor(
             ChartFilterType.ACTIVITY -> {
                 val typeIds = recordTypeInteractor.getAll()
                     .map(RecordType::id)
-                RecordsFilter.Activity(typeIds)
+                RecordsFilter.Activity(selected = typeIds, filtered = emptyList())
             }
             ChartFilterType.CATEGORY -> {
                 val categoryIds = categoryInteractor.getAll()
@@ -39,7 +39,7 @@ class StatisticsDetailTotalNavigator @Inject constructor(
                 val items = categoryIds
                     .map(RecordsFilter.CategoryItem::Categorized) +
                     RecordsFilter.CategoryItem.Uncategorized
-                RecordsFilter.Category(items)
+                RecordsFilter.Category(selected = items, filtered = emptyList())
             }
             ChartFilterType.RECORD_TAG -> {
                 val tagIds = recordTagInteractor.getAll()
@@ -47,7 +47,7 @@ class StatisticsDetailTotalNavigator @Inject constructor(
                 val items = tagIds
                     .map(RecordsFilter.TagItem::Tagged) +
                     RecordsFilter.TagItem.Untagged
-                RecordsFilter.SelectedTags(items)
+                RecordsFilter.Tags(selected = items, filtered = emptyList())
             }
         }
 

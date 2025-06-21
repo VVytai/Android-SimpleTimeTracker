@@ -10,7 +10,13 @@ import com.example.util.simpletimetracker.domain.record.extension.getComments
 import com.example.util.simpletimetracker.domain.record.extension.hasAnyComment
 import com.example.util.simpletimetracker.domain.record.extension.hasNoComment
 import com.example.util.simpletimetracker.domain.daysOfWeek.model.DayOfWeek
+import com.example.util.simpletimetracker.domain.record.extension.getCategoryItems
 import com.example.util.simpletimetracker.domain.record.extension.getDuplicationItems
+import com.example.util.simpletimetracker.domain.record.extension.getFilteredCategoryItems
+import com.example.util.simpletimetracker.domain.record.extension.getFilteredTags
+import com.example.util.simpletimetracker.domain.record.extension.getFilteredTypeIds
+import com.example.util.simpletimetracker.domain.record.extension.getSelectedTags
+import com.example.util.simpletimetracker.domain.record.extension.getTypeIds
 import com.example.util.simpletimetracker.domain.record.extension.hasSameActivity
 import com.example.util.simpletimetracker.domain.record.extension.hasSameTimes
 import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
@@ -19,9 +25,11 @@ import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.buttonDouble.DoubleButtonsViewData
 import com.example.util.simpletimetracker.feature_base_adapter.recordFilter.FilterViewData
 import com.example.util.simpletimetracker.feature_records_filter.R
+import com.example.util.simpletimetracker.feature_records_filter.model.RecordFilterActivitiesType
 import com.example.util.simpletimetracker.feature_records_filter.model.RecordFilterCommentType
 import com.example.util.simpletimetracker.feature_records_filter.model.RecordFilterDateType
 import com.example.util.simpletimetracker.feature_records_filter.model.RecordFilterDuplicationsType
+import com.example.util.simpletimetracker.feature_records_filter.model.RecordFilterSelectionType
 import com.example.util.simpletimetracker.feature_records_filter.model.RecordFilterType
 import com.example.util.simpletimetracker.feature_records_filter.viewData.RecordsFilterSelectionButtonType
 import com.example.util.simpletimetracker.navigation.params.screen.RecordsFilterParams
@@ -76,8 +84,7 @@ class RecordsFilterViewDataMapper @Inject constructor(
             RecordFilterType.Category -> R.string.category_hint
             RecordFilterType.Comment -> R.string.change_record_comment_field
             RecordFilterType.Date -> R.string.date_time_dialog_date
-            RecordFilterType.SelectedTags -> R.string.records_filter_select_tags
-            RecordFilterType.FilteredTags -> R.string.records_filter_filter_tags
+            RecordFilterType.Tags -> R.string.record_tag_hint
             RecordFilterType.ManuallyFiltered -> R.string.records_filter_manually_filtered
             RecordFilterType.DaysOfWeek -> R.string.range_day
             RecordFilterType.TimeOfDay -> R.string.date_time_dialog_time
@@ -104,10 +111,10 @@ class RecordsFilterViewDataMapper @Inject constructor(
                 ""
             }
             is RecordsFilter.Activity -> {
-                "${filter.typeIds.size}"
+                "${filter.selected.size + filter.filtered.size}"
             }
             is RecordsFilter.Category -> {
-                "${filter.items.size}"
+                "${filter.selected.size + filter.filtered.size}"
             }
             is RecordsFilter.Comment -> {
                 val items = filter.items
@@ -137,11 +144,8 @@ class RecordsFilterViewDataMapper @Inject constructor(
                     firstDayOfWeek = firstDayOfWeek,
                 )
             }
-            is RecordsFilter.SelectedTags -> {
-                "${filter.items.size}"
-            }
-            is RecordsFilter.FilteredTags -> {
-                "${filter.items.size}"
+            is RecordsFilter.Tags -> {
+                "${filter.selected.size + filter.filtered.size}"
             }
             is RecordsFilter.ManuallyFiltered -> {
                 "${filter.recordIds.size}"
@@ -171,7 +175,7 @@ class RecordsFilterViewDataMapper @Inject constructor(
             }
         }
 
-        return if (filterValue.isNotEmpty()) "$filterName ($filterValue)" else filterName
+        return mapFilterName(filterName = filterName, filterValue = filterValue)
     }
 
     fun mapCommentFilter(
@@ -240,6 +244,82 @@ class RecordsFilterViewDataMapper @Inject constructor(
         )
     }
 
+    fun mapActivitiesSelectionTypeFilter(
+        type: RecordFilterActivitiesType,
+        filters: List<RecordsFilter>,
+        currentType: RecordFilterActivitiesType,
+        isDarkTheme: Boolean,
+    ): ViewHolderType {
+        val enabled = type == currentType
+        val name: String
+        val tagCount: Int
+
+        when (type) {
+            RecordFilterActivitiesType.Activities -> {
+                name = resourceRepo.getString(R.string.activity_hint)
+                tagCount = filters.getTypeIds().size + filters.getFilteredTypeIds().size
+            }
+            RecordFilterActivitiesType.Categories -> {
+                name = resourceRepo.getString(R.string.category_hint)
+                tagCount = filters.getCategoryItems().size + filters.getFilteredCategoryItems().size
+            }
+        }
+
+        return FilterViewData(
+            id = type.hashCode().toLong(),
+            type = type,
+            name = mapFilterName(
+                filterName = name,
+                filterValue = tagCount.takeIf { it > 0 }?.toString().orEmpty(),
+            ),
+            color = if (enabled) {
+                colorMapper.toActiveColor(isDarkTheme)
+            } else {
+                colorMapper.toInactiveColor(isDarkTheme)
+            },
+            selected = enabled,
+            removeBtnVisible = false,
+        )
+    }
+
+    fun mapTagSelectionTypeFilter(
+        type: RecordFilterSelectionType,
+        filters: List<RecordsFilter>,
+        currentType: RecordFilterSelectionType,
+        isDarkTheme: Boolean,
+    ): ViewHolderType {
+        val enabled = type == currentType
+        val name: String
+        val tagCount: Int
+
+        when (type) {
+            RecordFilterSelectionType.Select -> {
+                name = resourceRepo.getString(R.string.records_filter_select)
+                tagCount = filters.getSelectedTags().size
+            }
+            RecordFilterSelectionType.Filter -> {
+                name = resourceRepo.getString(R.string.records_filter_exclude)
+                tagCount = filters.getFilteredTags().size
+            }
+        }
+
+        return FilterViewData(
+            id = type.hashCode().toLong(),
+            type = type,
+            name = mapFilterName(
+                filterName = name,
+                filterValue = tagCount.takeIf { it > 0 }?.toString().orEmpty(),
+            ),
+            color = if (enabled) {
+                colorMapper.toActiveColor(isDarkTheme)
+            } else {
+                colorMapper.toInactiveColor(isDarkTheme)
+            },
+            selected = enabled,
+            removeBtnVisible = false,
+        )
+    }
+
     fun mapDateRangeFilter(
         rangeLength: RangeLength,
         filter: RecordsFilter.Date?,
@@ -279,8 +359,7 @@ class RecordsFilterViewDataMapper @Inject constructor(
             RecordFilterType.Category -> RecordsFilter.Category::class.java
             RecordFilterType.Comment -> RecordsFilter.Comment::class.java
             RecordFilterType.Date -> RecordsFilter.Date::class.java
-            RecordFilterType.SelectedTags -> RecordsFilter.SelectedTags::class.java
-            RecordFilterType.FilteredTags -> RecordsFilter.FilteredTags::class.java
+            RecordFilterType.Tags -> RecordsFilter.Tags::class.java
             RecordFilterType.ManuallyFiltered -> RecordsFilter.ManuallyFiltered::class.java
             RecordFilterType.DaysOfWeek -> RecordsFilter.DaysOfWeek::class.java
             RecordFilterType.TimeOfDay -> RecordsFilter.TimeOfDay::class.java
@@ -328,6 +407,13 @@ class RecordsFilterViewDataMapper @Inject constructor(
         }
     }
 
+    private fun mapFilterName(
+        filterName: String,
+        filterValue: String,
+    ): String {
+        return if (filterValue.isNotEmpty()) "$filterName ($filterValue)" else filterName
+    }
+
     private fun mapToViewData(filter: RecordsFilter): RecordFilterType {
         return when (filter) {
             is RecordsFilter.Untracked -> RecordFilterType.Untracked
@@ -336,8 +422,7 @@ class RecordsFilterViewDataMapper @Inject constructor(
             is RecordsFilter.Category -> RecordFilterType.Category
             is RecordsFilter.Comment -> RecordFilterType.Comment
             is RecordsFilter.Date -> RecordFilterType.Date
-            is RecordsFilter.SelectedTags -> RecordFilterType.SelectedTags
-            is RecordsFilter.FilteredTags -> RecordFilterType.FilteredTags
+            is RecordsFilter.Tags -> RecordFilterType.Tags
             is RecordsFilter.ManuallyFiltered -> RecordFilterType.ManuallyFiltered
             is RecordsFilter.DaysOfWeek -> RecordFilterType.DaysOfWeek
             is RecordsFilter.TimeOfDay -> RecordFilterType.TimeOfDay

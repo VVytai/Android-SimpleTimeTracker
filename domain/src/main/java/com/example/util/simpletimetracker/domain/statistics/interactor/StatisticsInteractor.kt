@@ -1,6 +1,5 @@
 package com.example.util.simpletimetracker.domain.statistics.interactor
 
-import com.example.util.simpletimetracker.domain.base.UNTRACKED_ITEM_ID
 import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.domain.extension.toRange
 import com.example.util.simpletimetracker.domain.record.interactor.GetUntrackedRecordsInteractor
@@ -9,6 +8,7 @@ import com.example.util.simpletimetracker.domain.record.model.Range
 import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.domain.record.interactor.RecordInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.RunningRecordInteractor
+import com.example.util.simpletimetracker.domain.record.model.Record
 import com.example.util.simpletimetracker.domain.statistics.model.Statistics
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -26,11 +26,9 @@ class StatisticsInteractor @Inject constructor(
         addUntracked: Boolean,
     ): List<Statistics> = withContext(Dispatchers.IO) {
         val records = getRecords(range)
-        val activityToRecords = getActivityRecords(records)
-
-        getStatistics(range, activityToRecords).plus(
-            getUntracked(range, records, addUntracked),
-        )
+        val untrackedRecords = getUntracked(range, records, addUntracked)
+        val recordsMap = getActivityRecords(records + untrackedRecords)
+        getStatistics(range, recordsMap)
     }
 
     suspend fun getRecords(range: Range): List<RecordBase> {
@@ -113,27 +111,15 @@ class StatisticsInteractor @Inject constructor(
         range: Range,
         records: List<RecordBase>,
         addUntracked: Boolean,
-    ): List<Statistics> {
-        if (addUntracked) {
-            val untrackedRanges = getUntrackedRecordsInteractor.get(
-                range = range,
-                records = records.map(RecordBase::toRange),
-            )
-            val untrackedTime = untrackedRanges.sumOf { it.duration }
-            val untrackedCount = untrackedRanges.size
+    ): List<RecordBase> {
+        if (!addUntracked) return emptyList()
 
-            if (untrackedTime > 0L) {
-                return Statistics(
-                    id = UNTRACKED_ITEM_ID,
-                    data = Statistics.Data(
-                        duration = untrackedTime,
-                        count = untrackedCount.toLong(),
-                    ),
-                ).let(::listOf)
-            }
-        }
-
-        return emptyList()
+        val untrackedRanges = getUntrackedRecordsInteractor.get(
+            range = range,
+            records = records.map(RecordBase::toRange),
+        )
+        val untrackedTime = untrackedRanges.sumOf(Record::duration)
+        return if (untrackedTime > 0L) untrackedRanges else emptyList()
     }
 
     private fun rangeIsAllRecords(range: Range): Boolean {

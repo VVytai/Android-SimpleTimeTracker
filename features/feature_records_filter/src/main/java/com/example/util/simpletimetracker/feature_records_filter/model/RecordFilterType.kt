@@ -9,8 +9,7 @@ sealed interface RecordFilterType : FilterViewData.Type {
     object Category : RecordFilterType
     object Comment : RecordFilterType
     object Date : RecordFilterType
-    object SelectedTags : RecordFilterType
-    object FilteredTags : RecordFilterType
+    object Tags : RecordFilterType
     object ManuallyFiltered : RecordFilterType
     object DaysOfWeek : RecordFilterType
     object TimeOfDay : RecordFilterType

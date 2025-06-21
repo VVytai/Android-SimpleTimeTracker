@@ -21,12 +21,12 @@ class RecordsFilterMapper @Inject constructor() {
                 ChartFilterType.CATEGORY -> {
                     return RecordsFilter.CategoryItem.Uncategorized
                         .let(::listOf)
-                        .let(RecordsFilter::Category)
+                        .let { RecordsFilter.Category(selected = it, filtered = emptyList()) }
                 }
                 ChartFilterType.RECORD_TAG -> {
                     return RecordsFilter.TagItem.Untagged
                         .let(::listOf)
-                        .let(RecordsFilter::SelectedTags)
+                        .let { RecordsFilter.Tags(selected = it, filtered = emptyList()) }
                 }
                 ChartFilterType.ACTIVITY -> {
                     // Shouldn't happen normally.
@@ -37,15 +37,15 @@ class RecordsFilterMapper @Inject constructor() {
         return when (filterType) {
             ChartFilterType.ACTIVITY -> {
                 listOf(selectedId)
-                    .let(RecordsFilter::Activity)
+                    .let { RecordsFilter.Activity(selected = it, filtered = emptyList()) }
             }
             ChartFilterType.CATEGORY -> {
                 listOf(selectedId).map(RecordsFilter.CategoryItem::Categorized)
-                    .let(RecordsFilter::Category)
+                    .let { RecordsFilter.Category(selected = it, filtered = emptyList()) }
             }
             ChartFilterType.RECORD_TAG -> {
                 listOf(selectedId).map(RecordsFilter.TagItem::Tagged)
-                    .let(RecordsFilter::SelectedTags)
+                    .let { RecordsFilter.Tags(selected = it, filtered = emptyList()) }
             }
         }
     }

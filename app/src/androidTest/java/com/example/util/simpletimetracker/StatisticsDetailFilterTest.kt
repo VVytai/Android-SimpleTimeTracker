@@ -273,7 +273,7 @@ class StatisticsDetailFilterTest : BaseUiTest() {
         checkRecordsCard(7)
 
         longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
-        clickOnView(withSubstring(getString(coreR.string.records_filter_filter_tags)))
+        clickOnView(withSubstring(getString(coreR.string.records_filter_exclude)))
         clickOnView(
             allOf(isDescendantOfA(withId(baseR.id.viewCategoryItem)), withText(coreR.string.change_record_untagged)),
         )
@@ -281,19 +281,19 @@ class StatisticsDetailFilterTest : BaseUiTest() {
         checkRecordsCard(6)
 
         longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
-        clickOnView(withSubstring(getString(coreR.string.records_filter_filter_tags)))
+        clickOnView(withSubstring(getString(coreR.string.records_filter_exclude)))
         clickOnView(allOf(isDescendantOfA(withId(baseR.id.viewCategoryItem)), withText(tag1)))
         pressBack()
         checkRecordsCard(2)
 
         longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
-        clickOnView(withSubstring(getString(coreR.string.records_filter_filter_tags)))
+        clickOnView(withSubstring(getString(coreR.string.records_filter_exclude)))
         clickOnView(allOf(isDescendantOfA(withId(baseR.id.viewCategoryItem)), withText(tag2)))
         pressBack()
         checkRecordsCard(1)
 
         longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
-        clickOnView(withSubstring(getString(coreR.string.records_filter_filter_tags)))
+        clickOnView(withSubstring(getString(coreR.string.records_filter_exclude)))
         clickOnView(allOf(isDescendantOfA(withId(baseR.id.viewCategoryItem)), withText(tag3)))
         pressBack()
         checkRecordsCard(0)
@@ -301,17 +301,17 @@ class StatisticsDetailFilterTest : BaseUiTest() {
         longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
         clickOnView(
             allOf(
-                hasSibling(withSubstring(getString(coreR.string.records_filter_filter_tags))),
+                hasSibling(withSubstring(getString(coreR.string.records_filter_exclude))),
                 withId(baseR.id.ivFilterItemRemove),
             ),
         )
-        clickOnView(withSubstring(getString(coreR.string.records_filter_filter_tags)))
+        clickOnView(withSubstring(getString(coreR.string.records_filter_exclude)))
         clickOnView(allOf(isDescendantOfA(withId(baseR.id.viewCategoryItem)), withText(tag3)))
         pressBack()
         checkRecordsCard(4)
 
         longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
-        clickOnView(withSubstring(getString(coreR.string.records_filter_filter_tags)))
+        clickOnView(withSubstring(getString(coreR.string.records_filter_exclude)))
         clickOnView(allOf(isDescendantOfA(withId(baseR.id.viewCategoryItem)), withText(tag1)))
         pressBack()
         checkRecordsCard(2)
@@ -451,7 +451,7 @@ class StatisticsDetailFilterTest : BaseUiTest() {
         clickOnView(
             allOf(isDescendantOfA(withId(baseR.id.viewCategoryItem)), withText(tag1)),
         )
-        clickOnView(withSubstring(getString(coreR.string.records_filter_filter_tags)))
+        clickOnView(withSubstring(getString(coreR.string.records_filter_exclude)))
         clickOnView(
             allOf(isDescendantOfA(withId(baseR.id.viewCategoryItem)), withText(tag3)),
         )
@@ -905,7 +905,7 @@ class StatisticsDetailFilterTest : BaseUiTest() {
         checkRecordsCard(2)
 
         longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
-        clickOnView(withSubstring(getString(coreR.string.records_filter_filter_tags)))
+        clickOnView(withSubstring(getString(coreR.string.records_filter_exclude)))
         clickOnView(
             allOf(isDescendantOfA(withId(baseR.id.viewCategoryItem)), withText(tag2)),
         )

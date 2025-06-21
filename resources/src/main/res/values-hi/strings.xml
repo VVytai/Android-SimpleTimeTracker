@@ -573,11 +573,11 @@ csv फ़ाइल में कॉमा से अलग किए गए य
     <!--  Records filter  -->
     <string name="records_filter_duplications">दोहराव</string>
     <string name="records_filter_select_tags">टैग चुनें</string>
-    <string name="records_filter_filter_tags">टैग हटाएं</string>
     <string name="records_filter_manually_filtered">छाना हुआ</string>
     <string name="records_filter_no_comment">कोई टिप्पणी नहीं</string>
     <string name="records_filter_any_comment">कोई टिप्पणी</string>
     <string name="records_filter_select">चुनना</string>
+    <string name="records_filter_exclude">बाहर रखें</string>
     <string name="records_filter_invert_selection">उलट चयन</string>
     <string name="records_filter_duration_min">न्यूनतम</string>
     <string name="records_filter_duration_max">अधिकतम</string>

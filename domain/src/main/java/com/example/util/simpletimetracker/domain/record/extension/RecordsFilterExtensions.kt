@@ -4,18 +4,31 @@ import com.example.util.simpletimetracker.domain.daysOfWeek.model.DayOfWeek
 import com.example.util.simpletimetracker.domain.recordType.model.RecordType
 import com.example.util.simpletimetracker.domain.category.model.RecordTypeCategory
 import com.example.util.simpletimetracker.domain.extension.orEmpty
+import com.example.util.simpletimetracker.domain.extension.plus
 import com.example.util.simpletimetracker.domain.record.model.Range
 import com.example.util.simpletimetracker.domain.record.model.RecordsFilter
 
 fun List<RecordsFilter>.getTypeIds(): List<Long> {
     return filterIsInstance<RecordsFilter.Activity>()
-        .map(RecordsFilter.Activity::typeIds)
+        .map(RecordsFilter.Activity::selected)
+        .flatten()
+}
+
+fun List<RecordsFilter>.getFilteredTypeIds(): List<Long> {
+    return filterIsInstance<RecordsFilter.Activity>()
+        .map(RecordsFilter.Activity::filtered)
         .flatten()
 }
 
 fun List<RecordsFilter>.getCategoryItems(): List<RecordsFilter.CategoryItem> {
     return filterIsInstance<RecordsFilter.Category>()
-        .map(RecordsFilter.Category::items)
+        .map(RecordsFilter.Category::selected)
+        .flatten()
+}
+
+fun List<RecordsFilter>.getFilteredCategoryItems(): List<RecordsFilter.CategoryItem> {
+    return filterIsInstance<RecordsFilter.Category>()
+        .map(RecordsFilter.Category::filtered)
         .flatten()
 }
 
@@ -25,31 +38,34 @@ fun List<RecordsFilter>.getCategoryIds(): List<Long> {
         .map(RecordsFilter.CategoryItem.Categorized::categoryId)
 }
 
+fun List<RecordsFilter>.getFilteredCategoryIds(): List<Long> {
+    return getFilteredCategoryItems()
+        .filterIsInstance<RecordsFilter.CategoryItem.Categorized>()
+        .map(RecordsFilter.CategoryItem.Categorized::categoryId)
+}
+
 fun List<RecordsFilter>.getTypeIdsFromCategories(
     recordTypes: List<RecordType>,
     recordTypeCategories: List<RecordTypeCategory>,
 ): List<Long> {
-    return getCategoryIds()
-        .takeUnless { it.isEmpty() }
-        ?.let { categoryIds ->
-            recordTypeCategories
-                .filter { it.categoryId in categoryIds }
-                .map(RecordTypeCategory::recordTypeId)
-        }
-        .orEmpty()
-        .let { selectedCategorizedTypes ->
-            if (getCategoryItems().hasUncategorizedItem()) {
-                val categorizedTypes = recordTypeCategories
-                    .map(RecordTypeCategory::recordTypeId)
-                    .distinct()
+    return getTypeIdsFromCategories(
+        categoryIds = getCategoryIds(),
+        categoryItems = getCategoryItems(),
+        recordTypes = recordTypes,
+        recordTypeCategories = recordTypeCategories,
+    )
+}
 
-                selectedCategorizedTypes + recordTypes
-                    .filter { it.id !in categorizedTypes }
-                    .map(RecordType::id)
-            } else {
-                selectedCategorizedTypes
-            }
-        }
+fun List<RecordsFilter>.getTypeIdsFromFilteredCategories(
+    recordTypes: List<RecordType>,
+    recordTypeCategories: List<RecordTypeCategory>,
+): List<Long> {
+    return getTypeIdsFromCategories(
+        categoryIds = getFilteredCategoryIds(),
+        categoryItems = getFilteredCategoryItems(),
+        recordTypes = recordTypes,
+        recordTypeCategories = recordTypeCategories,
+    )
 }
 
 fun List<RecordsFilter>.getAllTypeIds(
@@ -57,6 +73,13 @@ fun List<RecordsFilter>.getAllTypeIds(
     recordTypeCategories: List<RecordTypeCategory>,
 ): List<Long> {
     return getTypeIds() + getTypeIdsFromCategories(recordTypes, recordTypeCategories)
+}
+
+fun List<RecordsFilter>.getAllFilteredTypeIds(
+    recordTypes: List<RecordType>,
+    recordTypeCategories: List<RecordTypeCategory>,
+): List<Long> {
+    return getFilteredTypeIds() + getTypeIdsFromFilteredCategories(recordTypes, recordTypeCategories)
 }
 
 fun List<RecordsFilter>.getCommentItems(): List<RecordsFilter.CommentItem> {
@@ -71,14 +94,14 @@ fun List<RecordsFilter>.getDate(): RecordsFilter.Date? {
 }
 
 fun List<RecordsFilter>.getSelectedTags(): List<RecordsFilter.TagItem> {
-    return filterIsInstance<RecordsFilter.SelectedTags>()
-        .map(RecordsFilter.SelectedTags::items)
+    return filterIsInstance<RecordsFilter.Tags>()
+        .map(RecordsFilter.Tags::selected)
         .flatten()
 }
 
 fun List<RecordsFilter>.getFilteredTags(): List<RecordsFilter.TagItem> {
-    return filterIsInstance<RecordsFilter.FilteredTags>()
-        .map(RecordsFilter.FilteredTags::items)
+    return filterIsInstance<RecordsFilter.Tags>()
+        .map(RecordsFilter.Tags::filtered)
         .flatten()
 }
 
@@ -129,6 +152,10 @@ fun List<RecordsFilter>.hasCategoryFilter(): Boolean {
     return any { it is RecordsFilter.Category }
 }
 
+fun List<RecordsFilter>.hasFilteredCategoryFilter(): Boolean {
+    return any { it is RecordsFilter.Category }
+}
+
 fun List<RecordsFilter.CommentItem>.hasNoComment(): Boolean {
     return any { it is RecordsFilter.CommentItem.NoComment }
 }
@@ -142,12 +169,14 @@ fun List<RecordsFilter.CommentItem>.getComments(): List<String> {
         .map(RecordsFilter.CommentItem.Comment::text)
 }
 
-fun List<RecordsFilter>.hasDateFilter(): Boolean {
-    return any { it is RecordsFilter.Date }
+fun List<RecordsFilter>.hasTagsFilter(): Boolean {
+    return any { it is RecordsFilter.Tags }
 }
 
 fun List<RecordsFilter>.hasSelectedTagsFilter(): Boolean {
-    return any { it is RecordsFilter.SelectedTags }
+    return filterIsInstance<RecordsFilter.Tags>().any {
+        it.selected.isNotEmpty()
+    }
 }
 
 fun List<RecordsFilter.TagItem>.hasUntaggedItem(): Boolean {
@@ -178,4 +207,33 @@ fun List<RecordsFilter.DuplicationsItem>.hasSameActivity(): Boolean {
 
 fun List<RecordsFilter.DuplicationsItem>.hasSameTimes(): Boolean {
     return any { it is RecordsFilter.DuplicationsItem.SameTimes }
+}
+
+private fun getTypeIdsFromCategories(
+    categoryIds: List<Long>,
+    categoryItems: List<RecordsFilter.CategoryItem>,
+    recordTypes: List<RecordType>,
+    recordTypeCategories: List<RecordTypeCategory>,
+): List<Long> {
+    return categoryIds
+        .takeUnless { it.isEmpty() }
+        ?.let {
+            recordTypeCategories
+                .filter { it.categoryId in categoryIds }
+                .map(RecordTypeCategory::recordTypeId)
+        }
+        .orEmpty()
+        .let { selectedCategorizedTypes ->
+            if (categoryItems.hasUncategorizedItem()) {
+                val categorizedTypes = recordTypeCategories
+                    .map(RecordTypeCategory::recordTypeId)
+                    .distinct()
+
+                selectedCategorizedTypes + recordTypes
+                    .filter { it.id !in categorizedTypes }
+                    .map(RecordType::id)
+            } else {
+                selectedCategorizedTypes
+            }
+        }
 }

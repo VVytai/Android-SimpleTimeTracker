@@ -4,15 +4,15 @@ import com.example.util.simpletimetracker.domain.record.model.RecordsFilter
 
 interface RecordsFilterExcludeInteractor {
 
-    fun exclude(
+    suspend fun exclude(
         id: Long,
         type: ExcludeType,
         currentFilters: List<RecordsFilter>,
     ): List<RecordsFilter>
 
     sealed interface ExcludeType {
-        data object Activity: ExcludeType
-        data object Category: ExcludeType
-        data object Tag: ExcludeType
+        data object Activity : ExcludeType
+        data object Category : ExcludeType
+        data object Tag : ExcludeType
     }
 }

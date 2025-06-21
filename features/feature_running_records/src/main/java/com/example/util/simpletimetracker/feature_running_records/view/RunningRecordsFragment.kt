@@ -14,6 +14,7 @@ import com.example.util.simpletimetracker.core.utils.InsetConfiguration
 import com.example.util.simpletimetracker.core.utils.doOnApplyWindowInsetsListener
 import com.example.util.simpletimetracker.core.utils.getNavBarInsets
 import com.example.util.simpletimetracker.core.utils.updateRunningRecordPreview
+import com.example.util.simpletimetracker.core.viewData.RecordTypeSuggestionType
 import com.example.util.simpletimetracker.domain.record.interactor.UpdateRunningRecordFromChangeScreenInteractor
 import com.example.util.simpletimetracker.feature_base_adapter.BaseRecyclerAdapter
 import com.example.util.simpletimetracker.feature_base_adapter.activityFilter.createActivityFilterAdapterDelegate
@@ -80,6 +81,7 @@ class RunningRecordsFragment :
                 withTransition = true,
             ),
             createRecordTypeSuggestionAdapterDelegate(
+                type = RecordTypeSuggestionType,
                 onItemClick = viewModel::onRecordTypeClick,
                 onItemLongClick = viewModel::onRecordTypeLongClick,
             ),

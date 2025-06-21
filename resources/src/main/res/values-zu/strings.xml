@@ -573,11 +573,11 @@ Isibonelo:<br/>
     <!--  Records filter  -->
     <string name="records_filter_duplications">Ukuphindaphinda</string>
     <string name="records_filter_select_tags">Khetha amathegi</string>
-    <string name="records_filter_filter_tags">Khipha amathegi</string>
     <string name="records_filter_manually_filtered">Kuhlungiwe ngesandla</string>
     <string name="records_filter_no_comment">Azikho izimvo</string>
     <string name="records_filter_any_comment">Noma iyiphi imvumo</string>
     <string name="records_filter_select">Khetha</string>
+    <string name="records_filter_exclude">Khipha ngaphandle</string>
     <string name="records_filter_invert_selection">Phendula ukukhetha</string>
     <string name="records_filter_duration_min">Ubuncane</string>
     <string name="records_filter_duration_max">Ubukhulu</string>

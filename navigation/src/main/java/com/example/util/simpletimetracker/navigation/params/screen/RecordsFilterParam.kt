@@ -13,10 +13,10 @@ sealed interface RecordsFilterParam : Parcelable {
     object Multitask : RecordsFilterParam
 
     @Parcelize
-    data class Activity(val typeIds: List<Long>) : RecordsFilterParam
+    data class Activity(val selected: List<Long>, val filtered: List<Long>) : RecordsFilterParam
 
     @Parcelize
-    data class Category(val items: List<CategoryItem>) : RecordsFilterParam
+    data class Category(val selected: List<CategoryItem>, val filtered: List<CategoryItem>) : RecordsFilterParam
 
     @Parcelize
     data class Comment(val items: List<CommentItem>) : RecordsFilterParam
@@ -25,10 +25,7 @@ sealed interface RecordsFilterParam : Parcelable {
     data class Date(val range: RangeLengthParams, val position: Int) : RecordsFilterParam
 
     @Parcelize
-    data class SelectedTags(val items: List<TagItem>) : RecordsFilterParam
-
-    @Parcelize
-    data class FilteredTags(val items: List<TagItem>) : RecordsFilterParam
+    data class Tags(val selected: List<TagItem>, val filtered: List<TagItem>) : RecordsFilterParam
 
     @Parcelize
     data class ManuallyFiltered(val recordIds: List<Long>) : RecordsFilterParam

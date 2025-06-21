@@ -573,11 +573,11 @@ Exempel:<br/>
     <!--  Records filter  -->
     <string name="records_filter_duplications">Dupliceringar</string>
     <string name="records_filter_select_tags">Välj taggar</string>
-    <string name="records_filter_filter_tags">Uteslut taggar</string>
     <string name="records_filter_manually_filtered">Filtrerad</string>
     <string name="records_filter_no_comment">Ingen kommentar</string>
     <string name="records_filter_any_comment">Någon kommentar</string>
     <string name="records_filter_select">Välj</string>
+    <string name="records_filter_exclude">Exkludera</string>
     <string name="records_filter_invert_selection">Invertera urval</string>
     <string name="records_filter_duration_min">Minimum</string>
     <string name="records_filter_duration_max">Maximal</string>

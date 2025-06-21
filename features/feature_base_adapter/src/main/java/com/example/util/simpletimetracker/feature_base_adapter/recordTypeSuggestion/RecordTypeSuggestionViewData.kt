@@ -5,11 +5,15 @@ import com.example.util.simpletimetracker.feature_base_adapter.recordType.Record
 
 data class RecordTypeSuggestionViewData(
     val data: RecordTypeViewData,
+    val type: Type,
 ) : ViewHolderType {
 
     override fun getUniqueId(): Long = data.id
 
-    override fun isValidType(other: ViewHolderType): Boolean = other is RecordTypeSuggestionViewData
+    override fun isValidType(other: ViewHolderType): Boolean =
+        other is RecordTypeSuggestionViewData && other.type == type
+
+    interface Type
 
     companion object {
         const val TEST_TAG = "RecordTypeSuggestionViewData"

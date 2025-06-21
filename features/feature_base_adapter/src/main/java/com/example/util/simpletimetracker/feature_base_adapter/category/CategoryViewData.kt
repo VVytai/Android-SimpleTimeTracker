@@ -9,6 +9,7 @@ sealed class CategoryViewData : ViewHolderType {
     abstract val name: String
     abstract val iconColor: Int
     abstract val color: Int
+    open val type: Type = Type.Default
 
     override fun getUniqueId(): Long = id
 
@@ -17,9 +18,11 @@ sealed class CategoryViewData : ViewHolderType {
         override val name: String,
         @ColorInt override val iconColor: Int,
         @ColorInt override val color: Int,
+        override val type: Type = Type.Default,
     ) : CategoryViewData() {
 
-        override fun isValidType(other: ViewHolderType): Boolean = other is Category
+        override fun isValidType(other: ViewHolderType): Boolean = other is Category &&
+            other.type == type
     }
 
     sealed class Record : CategoryViewData() {
@@ -35,7 +38,8 @@ sealed class CategoryViewData : ViewHolderType {
             override val iconAlpha: Float = 1.0f,
         ) : Record() {
 
-            override fun isValidType(other: ViewHolderType): Boolean = other is Tagged
+            override fun isValidType(other: ViewHolderType): Boolean = other is Tagged &&
+                other.type == type
         }
 
         data class Untagged(
@@ -47,7 +51,12 @@ sealed class CategoryViewData : ViewHolderType {
             override val iconAlpha: Float = 1.0f,
         ) : Record() {
 
-            override fun isValidType(other: ViewHolderType): Boolean = other is Untagged
+            override fun isValidType(other: ViewHolderType): Boolean = other is Untagged &&
+                other.type == type
         }
+    }
+
+    interface Type {
+        data object Default : Type
     }
 }

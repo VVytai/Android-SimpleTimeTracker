@@ -573,11 +573,11 @@ csv 文件必须包含以逗号分隔的这些列：<br/>
     <!--  Records filter  -->
     <string name="records_filter_duplications">重复记录</string>
     <string name="records_filter_select_tags">选择标签</string>
-    <string name="records_filter_filter_tags">排除标签</string>
     <string name="records_filter_manually_filtered">已过滤</string>
     <string name="records_filter_no_comment">无备注</string>
     <string name="records_filter_any_comment">有备注</string>
     <string name="records_filter_select">选择</string>
+    <string name="records_filter_exclude">排除</string>
     <string name="records_filter_invert_selection">反转选择</string>
     <string name="records_filter_duration_min">最小值</string>
     <string name="records_filter_duration_max">最大值</string>

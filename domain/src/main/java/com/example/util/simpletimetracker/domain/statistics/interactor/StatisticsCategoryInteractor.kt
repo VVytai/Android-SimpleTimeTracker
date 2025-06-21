@@ -1,6 +1,7 @@
 package com.example.util.simpletimetracker.domain.statistics.interactor
 
 import com.example.util.simpletimetracker.domain.base.UNCATEGORIZED_ITEM_ID
+import com.example.util.simpletimetracker.domain.base.UNTRACKED_ITEM_ID
 import com.example.util.simpletimetracker.domain.record.model.Range
 import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.domain.category.model.RecordTypeCategory
@@ -21,11 +22,9 @@ class StatisticsCategoryInteractor @Inject constructor(
         addUncategorized: Boolean,
     ): List<Statistics> = withContext(Dispatchers.IO) {
         val records = statisticsInteractor.getRecords(range)
-        val categoryToRecords = getCategoryRecords(records, addUncategorized)
-
-        statisticsInteractor.getStatistics(range, categoryToRecords).plus(
-            statisticsInteractor.getUntracked(range, records, addUntracked),
-        )
+        val untrackedRecords = statisticsInteractor.getUntracked(range, records, addUntracked)
+        val recordsMap = getCategoryRecords(records + untrackedRecords, addUncategorized)
+        statisticsInteractor.getStatistics(range, recordsMap)
     }
 
     suspend fun getCategoryRecords(
@@ -39,12 +38,15 @@ class StatisticsCategoryInteractor @Inject constructor(
         val categories: MutableMap<Long, MutableList<RecordBase>> = mutableMapOf()
 
         allRecords.forEach { record ->
+            val isUntracked = record.typeIds.any { it == UNTRACKED_ITEM_ID }
             record.typeIds.forEach { typeId ->
                 recordTypeCategories[typeId]?.forEach { category ->
                     categories.getOrPut(category) { mutableListOf() }.add(record)
                 }
             }
-            if (addUncategorized && record.typeIds.all { it !in recordTypeCategories }) {
+            if (isUntracked) {
+                categories.getOrPut(UNTRACKED_ITEM_ID) { mutableListOf() }.add(record)
+            } else if (addUncategorized && record.typeIds.all { it !in recordTypeCategories }) {
                 categories.getOrPut(UNCATEGORIZED_ITEM_ID) { mutableListOf() }.add(record)
             }
         }

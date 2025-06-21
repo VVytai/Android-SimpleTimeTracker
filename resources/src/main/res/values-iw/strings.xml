@@ -573,11 +573,11 @@
     <!--  Records filter  -->
     <string name="records_filter_duplications">כפילויות</string>
     <string name="records_filter_select_tags">בחר תגיות</string>
-    <string name="records_filter_filter_tags">החרג תגיות</string>
     <string name="records_filter_manually_filtered">מסונן</string>
     <string name="records_filter_no_comment">ללא הערה</string>
     <string name="records_filter_any_comment">הערה כלשהי</string>
     <string name="records_filter_select">בחר</string>
+    <string name="records_filter_exclude">לא לכלול</string>
     <string name="records_filter_invert_selection">הפוך בחירה</string>
     <string name="records_filter_duration_min">מִינִימוּם</string>
     <string name="records_filter_duration_max">מַקסִימוּם</string>

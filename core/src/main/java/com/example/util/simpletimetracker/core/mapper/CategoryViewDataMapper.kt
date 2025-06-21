@@ -3,7 +3,6 @@ package com.example.util.simpletimetracker.core.mapper
 import com.example.util.simpletimetracker.core.R
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.domain.base.ARCHIVED_BUTTON_ITEM_ID
-import com.example.util.simpletimetracker.domain.base.MULTITASK_ITEM_ID
 import com.example.util.simpletimetracker.domain.base.UNCATEGORIZED_ITEM_ID
 import com.example.util.simpletimetracker.domain.base.UNTRACKED_ITEM_ID
 import com.example.util.simpletimetracker.domain.category.model.Category
@@ -44,7 +43,7 @@ class CategoryViewDataMapper @Inject constructor(
     fun mapToUncategorizedItem(
         isFiltered: Boolean,
         isDarkTheme: Boolean,
-    ): CategoryViewData {
+    ): CategoryViewData.Category {
         return CategoryViewData.Category(
             id = UNCATEGORIZED_ITEM_ID,
             name = R.string.uncategorized_time_name
@@ -180,27 +179,6 @@ class CategoryViewDataMapper @Inject constructor(
         return CategoryShowAllViewData(
             name = resourceRepo.getString(R.string.types_filter_show_all),
             color = colorMapper.toInactiveColor(isDarkTheme),
-        )
-    }
-
-    fun mapToMultitaskItem(
-        isFiltered: Boolean,
-        isDarkTheme: Boolean,
-    ): CategoryViewData {
-        return CategoryViewData.Record.Tagged(
-            id = MULTITASK_ITEM_ID,
-            name = R.string.multitask_time_name
-                .let(resourceRepo::getString),
-            icon = RecordTypeIcon.Image(R.drawable.multitask),
-            iconColor = getTextColor(
-                isDarkTheme = isDarkTheme,
-                isFiltered = isFiltered,
-            ),
-            color = if (isFiltered) {
-                colorMapper.toFilteredColor(isDarkTheme)
-            } else {
-                colorMapper.toUntrackedColor(isDarkTheme)
-            },
         )
     }
 

@@ -9,6 +9,6 @@ data class MultitaskRecord(
     override val typeIds: List<Long> = records.map(Record::typeIds).flatten()
     override val timeStarted: Long = records.firstOrNull()?.timeStarted.orZero()
     override val timeEnded: Long = records.firstOrNull()?.timeEnded.orZero()
-    override val comment: String = ""
+    override val comment: String = records.map(Record::comment).distinct().joinToString(separator = " ")
     override val tagIds: List<Long> = records.map(Record::tagIds).flatten()
 }

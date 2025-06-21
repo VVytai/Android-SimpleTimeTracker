@@ -29,7 +29,6 @@ import com.example.util.simpletimetracker.domain.record.extension.getTaggedIds
 import com.example.util.simpletimetracker.domain.record.extension.getTimeOfDay
 import com.example.util.simpletimetracker.domain.record.extension.hasCategoryFilter
 import com.example.util.simpletimetracker.domain.record.extension.hasManuallyFiltered
-import com.example.util.simpletimetracker.domain.record.extension.hasMultitaskFilter
 import com.example.util.simpletimetracker.domain.record.extension.hasUncategorizedItem
 import com.example.util.simpletimetracker.domain.record.extension.hasUntaggedItem
 import com.example.util.simpletimetracker.domain.record.extension.hasUntrackedFilter
@@ -45,12 +44,17 @@ import com.example.util.simpletimetracker.domain.recordTag.model.RecordTag
 import com.example.util.simpletimetracker.domain.recordType.model.RecordType
 import com.example.util.simpletimetracker.domain.category.model.RecordTypeCategory
 import com.example.util.simpletimetracker.domain.extension.plus
+import com.example.util.simpletimetracker.domain.record.extension.getFilteredCategoryIds
+import com.example.util.simpletimetracker.domain.record.extension.getFilteredCategoryItems
+import com.example.util.simpletimetracker.domain.record.extension.getFilteredTypeIds
+import com.example.util.simpletimetracker.domain.record.extension.hasActivityFilter
 import com.example.util.simpletimetracker.domain.record.extension.hasDuplicationsFilter
 import com.example.util.simpletimetracker.domain.recordType.model.RecordTypeGoal
 import com.example.util.simpletimetracker.domain.recordTag.model.RecordTypeToTag
 import com.example.util.simpletimetracker.domain.record.model.RecordsFilter
 import com.example.util.simpletimetracker.domain.record.model.RunningRecord
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
+import com.example.util.simpletimetracker.feature_base_adapter.category.CategoryViewData
 import com.example.util.simpletimetracker.feature_base_adapter.dayOfWeek.DayOfWeekViewData
 import com.example.util.simpletimetracker.feature_base_adapter.divider.DividerViewData
 import com.example.util.simpletimetracker.feature_base_adapter.emptySpace.EmptySpaceViewData
@@ -59,13 +63,19 @@ import com.example.util.simpletimetracker.feature_base_adapter.recordFilter.Filt
 import com.example.util.simpletimetracker.feature_records_filter.R
 import com.example.util.simpletimetracker.feature_records_filter.adapter.RecordsFilterButtonViewData
 import com.example.util.simpletimetracker.feature_base_adapter.commentField.CommentFieldViewData
+import com.example.util.simpletimetracker.feature_base_adapter.recordType.RecordTypeViewData
+import com.example.util.simpletimetracker.feature_base_adapter.recordTypeSuggestion.RecordTypeSuggestionViewData
 import com.example.util.simpletimetracker.feature_records_filter.adapter.RecordsFilterRangeViewData
 import com.example.util.simpletimetracker.feature_records_filter.mapper.RecordsFilterViewDataMapper
+import com.example.util.simpletimetracker.feature_records_filter.model.RecordFilterActivitiesType
 import com.example.util.simpletimetracker.feature_records_filter.model.RecordFilterCommentType
 import com.example.util.simpletimetracker.feature_records_filter.model.RecordFilterDuplicationsType
+import com.example.util.simpletimetracker.feature_records_filter.model.RecordFilterSelectionType
 import com.example.util.simpletimetracker.feature_records_filter.model.RecordFilterType
 import com.example.util.simpletimetracker.feature_records_filter.model.RecordsFilterSelectedRecordsViewData
 import com.example.util.simpletimetracker.feature_records_filter.model.RecordsFilterSelectionState
+import com.example.util.simpletimetracker.feature_records_filter.viewData.CategoryFilteredType
+import com.example.util.simpletimetracker.feature_records_filter.viewData.RecordTypeFilteredType
 import com.example.util.simpletimetracker.feature_records_filter.viewData.RecordsFilterSelectionButtonType
 import com.example.util.simpletimetracker.feature_views.GoalCheckmarkView
 import com.example.util.simpletimetracker.navigation.params.screen.DateTimeDialogParams
@@ -265,26 +275,24 @@ class RecordsFilterViewDataInteractor @Inject constructor(
         val startOfDayShift = prefsInteractor.getStartOfDayShift()
         val firstDayOfWeek = prefsInteractor.getFirstDayOfWeek()
         val hasUntracked = filters.hasUntrackedFilter()
-        val hasMultitask = filters.hasMultitaskFilter()
 
         val availableFilters = listOfNotNull(
             when {
+                // Same logic as in stats detail preview generation.
                 hasUntracked -> RecordFilterType.Untracked
-                hasMultitask -> RecordFilterType.Multitask
+                filters.hasActivityFilter() -> RecordFilterType.Activity
                 filters.hasCategoryFilter() -> RecordFilterType.Category
                 else -> RecordFilterType.Activity
             },
-            RecordFilterType.Comment.takeUnless { hasUntracked || hasMultitask },
-            RecordFilterType.SelectedTags.takeUnless { hasUntracked || hasMultitask },
-            RecordFilterType.FilteredTags.takeUnless { hasUntracked || hasMultitask },
+            RecordFilterType.Tags.takeUnless { hasUntracked },
+            RecordFilterType.Comment.takeUnless { hasUntracked },
             RecordFilterType.Date.takeIf { extra.flags.dateSelectionAvailable },
             RecordFilterType.DaysOfWeek,
             RecordFilterType.TimeOfDay,
             RecordFilterType.Duration,
+            RecordFilterType.Multitask.takeIf { extra.flags.multitaskSelectionAvailable && !hasUntracked },
             RecordFilterType.Duplications.takeIf { extra.flags.duplicationsSelectionAvailable },
-            RecordFilterType.ManuallyFiltered.takeIf {
-                filters.hasManuallyFiltered() && !hasUntracked && !hasMultitask
-            },
+            RecordFilterType.ManuallyFiltered.takeIf { filters.hasManuallyFiltered() && !hasUntracked },
         )
 
         return@withContext availableFilters.mapIndexed { index, type ->
@@ -320,6 +328,7 @@ class RecordsFilterViewDataInteractor @Inject constructor(
     }
 
     suspend fun getActivityFilterSelectionViewData(
+        type: RecordFilterActivitiesType,
         extra: RecordsFilterParams,
         filters: List<RecordsFilter>,
         isArchivedShown: Boolean,
@@ -329,93 +338,105 @@ class RecordsFilterViewDataInteractor @Inject constructor(
     ): List<ViewHolderType> = withContext(Dispatchers.Default) {
         val result: MutableList<ViewHolderType> = mutableListOf()
 
-        val numberOfCards = prefsInteractor.getNumberOfCards()
         val isDarkTheme = prefsInteractor.getDarkMode()
-        val showArchived = types.any { it.hidden }
+        val numberOfCards = prefsInteractor.getNumberOfCards()
 
-        val selectedCategoryItems: List<RecordsFilter.CategoryItem> = filters.getCategoryItems()
-        val selectedCategoryIds: List<Long> = filters.getCategoryIds()
-        val allSelectedTypeIds: List<Long> = filters.getAllTypeIds(types, recordTypeCategories)
-
-        val typesViewData = types.mapNotNull { type ->
-            if (!isArchivedShown && type.hidden) {
-                return@mapNotNull null
-            }
-            recordTypeViewDataMapper.mapFiltered(
-                recordType = type,
-                numberOfCards = numberOfCards,
+        result += EmptySpaceViewData(
+            id = 1,
+            width = EmptySpaceViewData.ViewDimension.MatchParent,
+            height = EmptySpaceViewData.ViewDimension.ExactSizeDp(6),
+        )
+        result += listOf(
+            RecordFilterActivitiesType.Activities,
+            RecordFilterActivitiesType.Categories,
+        ).map {
+            mapper.mapActivitiesSelectionTypeFilter(
+                type = it,
+                filters = filters,
+                currentType = type,
                 isDarkTheme = isDarkTheme,
-                isFiltered = type.id !in allSelectedTypeIds,
-                checkState = GoalCheckmarkView.CheckState.HIDDEN,
-                isComplete = false,
             )
-        }.plus(
-            if (showArchived) {
-                recordTypeViewDataMapper.mapToArchivedItem(
-                    isEnabled = isArchivedShown,
-                    numberOfCards = numberOfCards,
-                    isDarkTheme = isDarkTheme,
-                )
-            } else {
-                null
-            },
-        )
+        }
+        result += DividerViewData(1)
 
-        val typesSelectionButtons = mapper.mapToSelectionButtons(
-            type = RecordsFilterSelectionButtonType.Type.Activities,
-        )
-
-        val categoriesViewData = categories
-            .map { category ->
-                categoryViewDataMapper.mapCategory(
-                    category = category,
-                    isDarkTheme = isDarkTheme,
-                    isFiltered = category.id !in selectedCategoryIds,
-                )
+        when (type) {
+            is RecordFilterActivitiesType.Activities -> {
+                if (types.isNotEmpty()) {
+                    val typesViewData = mapActivitiesViewData(
+                        types = types,
+                        isArchivedShown = isArchivedShown,
+                        showArchived = types.any { it.hidden },
+                        numberOfCards = numberOfCards,
+                        isDarkTheme = isDarkTheme,
+                        allSelectedTypeIds = filters.getAllTypeIds(types, recordTypeCategories),
+                    )
+                    val typesSelectionButtons = mapper.mapToSelectionButtons(
+                        type = RecordsFilterSelectionButtonType.Type.Activities,
+                    )
+                    result += typesSelectionButtons
+                    result += typesViewData
+                    val filteredTypeIds = filters.getFilteredTypeIds()
+                    if (filteredTypeIds.isNotEmpty()) {
+                        result += DividerViewData(3)
+                        result += HintViewData(resourceRepo.getString(R.string.records_filter_exclude))
+                        result += mapActivitiesViewData(
+                            types = types.filter { it.id in filteredTypeIds },
+                            isArchivedShown = true,
+                            showArchived = false,
+                            numberOfCards = numberOfCards,
+                            isDarkTheme = isDarkTheme,
+                            allSelectedTypeIds = filteredTypeIds,
+                        ).map {
+                            RecordTypeSuggestionViewData(
+                                data = it,
+                                type = RecordTypeFilteredType,
+                            )
+                        }
+                    }
+                } else {
+                    result += HintViewData(resourceRepo.getString(R.string.record_types_empty))
+                }
             }
-            .plus(
-                categoryViewDataMapper.mapToUncategorizedItem(
-                    isFiltered = !selectedCategoryItems.hasUncategorizedItem(),
-                    isDarkTheme = isDarkTheme,
-                ),
-            )
+            is RecordFilterActivitiesType.Categories -> {
+                if (categories.isNotEmpty()) {
+                    val categoriesViewData = mapCategoriesViewData(
+                        categories = categories,
+                        isDarkTheme = isDarkTheme,
+                        selectedCategoryIds = filters.getCategoryIds(),
+                        selectedCategoryItems = filters.getCategoryItems(),
+                        addUncategorizedItem = true,
+                    )
+                    val categoriesSelectionButtons = mapper.mapToSelectionButtons(
+                        type = RecordsFilterSelectionButtonType.Type.Categories,
+                    )
+                    result += categoriesSelectionButtons
+                    result += categoriesViewData
+                    val filteredCategoryIds = filters.getFilteredCategoryIds()
+                    val filteredCategoryItems = filters.getFilteredCategoryItems()
+                    if (filteredCategoryItems.isNotEmpty()) {
+                        result += DividerViewData(3)
+                        result += HintViewData(resourceRepo.getString(R.string.records_filter_exclude))
+                        result += mapCategoriesViewData(
+                            categories = categories.filter { it.id in filteredCategoryIds },
+                            isDarkTheme = isDarkTheme,
+                            selectedCategoryIds = filteredCategoryIds,
+                            selectedCategoryItems = filteredCategoryItems,
+                            addUncategorizedItem = filteredCategoryItems.hasUncategorizedItem(),
+                        ).map {
+                            it.copy(type = CategoryFilteredType)
+                        }
+                    }
 
-        val categoriesSelectionButtons = mapper.mapToSelectionButtons(
-            type = RecordsFilterSelectionButtonType.Type.Categories,
-        )
-
-        if (categories.isNotEmpty()) {
-            HintViewData(resourceRepo.getString(R.string.category_hint)).let(result::add)
-            categoriesSelectionButtons.let(result::addAll)
-            categoriesViewData.let(result::addAll)
-            DividerViewData(1).let(result::add)
-        }
-
-        if (types.isNotEmpty()) {
-            HintViewData(resourceRepo.getString(R.string.activity_hint)).let(result::add)
-            typesSelectionButtons.let(result::addAll)
-            typesViewData.let(result::addAll)
-        } else {
-            HintViewData(resourceRepo.getString(R.string.record_types_empty)).let(result::add)
-        }
-
-        if (
-            extra.flags.untrackedSelectionAvailable ||
-            extra.flags.multitaskSelectionAvailable
-        ) {
-            DividerViewData(2).let(result::add)
+                } else {
+                    result += HintViewData(resourceRepo.getString(R.string.change_record_type_categories_empty))
+                }
+            }
         }
 
         if (extra.flags.untrackedSelectionAvailable) {
+            DividerViewData(2).let(result::add)
             categoryViewDataMapper.mapToTagUntrackedItem(
                 isFiltered = !filters.hasUntrackedFilter(),
-                isDarkTheme = isDarkTheme,
-            ).let(result::add)
-        }
-
-        if (extra.flags.multitaskSelectionAvailable) {
-            categoryViewDataMapper.mapToMultitaskItem(
-                isFiltered = !filters.hasMultitaskFilter(),
                 isDarkTheme = isDarkTheme,
             ).let(result::add)
         }
@@ -496,7 +517,7 @@ class RecordsFilterViewDataInteractor @Inject constructor(
     }
 
     suspend fun getTagsFilterSelectionViewData(
-        type: RecordFilterType,
+        type: RecordFilterSelectionType,
         filters: List<RecordsFilter>,
         isArchivedShown: Boolean,
         types: List<RecordType>,
@@ -513,9 +534,8 @@ class RecordsFilterViewDataInteractor @Inject constructor(
             .takeUnless { it.isEmpty() }
             ?: types.map(RecordType::id)
         val selectedTags: List<RecordsFilter.TagItem> = when (type) {
-            RecordFilterType.SelectedTags -> filters.getSelectedTags()
-            RecordFilterType.FilteredTags -> filters.getFilteredTags()
-            else -> emptyList()
+            is RecordFilterSelectionType.Select -> filters.getSelectedTags()
+            is RecordFilterSelectionType.Filter -> filters.getFilteredTags()
         }
         val selectedTaggedIds: List<Long> = selectedTags.getTaggedIds()
         val selectableTagIds = filterSelectableTagsInteractor.execute(
@@ -526,48 +546,41 @@ class RecordsFilterViewDataInteractor @Inject constructor(
         val selectableTags = recordTags.filter { it.id in selectableTagIds }
         val showArchived = selectableTags.any { it.archived }
 
-        val recordTagsViewData = selectableTags
-            .mapNotNull { tag ->
-                if (!isArchivedShown && tag.archived) {
-                    return@mapNotNull null
-                }
-                categoryViewDataMapper.mapRecordTag(
-                    tag = tag,
-                    type = typesMap[tag.iconColorSource],
-                    isDarkTheme = isDarkTheme,
-                    isFiltered = tag.id !in selectedTaggedIds,
-                )
-            }
-            .takeUnless { selectableTags.isEmpty() }
-            ?.plus(
-                categoryViewDataMapper.mapToUntaggedItem(
-                    isFiltered = !selectedTags.hasUntaggedItem(),
-                    isDarkTheme = isDarkTheme,
-                ),
-            )
-            ?.plus(
-                if (showArchived) {
-                    categoryViewDataMapper.mapToTagArchiveItem(
-                        isEnabled = isArchivedShown,
-                        isDarkTheme = isDarkTheme,
-                    )
-                } else {
-                    null
-                },
-            )
-            .orEmpty()
-
-        val selectionButtons = mapper.mapToSelectionButtons(
-            type = RecordsFilterSelectionButtonType.Type.Tags,
+        val recordTagsViewData = mapTagsViewData(
+            isArchivedShown = isArchivedShown,
+            selectedTagIds = selectedTaggedIds,
+            selectableTags = selectableTags,
+            typesMap = typesMap,
+            isDarkTheme = isDarkTheme,
+            showArchived = showArchived,
+            hasUntaggedItem = selectedTags.hasUntaggedItem(),
         )
 
-        if (recordTagsViewData.isNotEmpty()) {
-            HintViewData(resourceRepo.getString(R.string.record_tag_hint)).let(result::add)
-            selectionButtons.let(result::addAll)
-            recordTagsViewData.let(result::addAll)
-        } else {
-            HintViewData(resourceRepo.getString(R.string.change_record_categories_empty)).let(result::add)
+        if (recordTagsViewData.isEmpty()) {
+            return@withContext listOf(HintViewData(resourceRepo.getString(R.string.change_record_categories_empty)))
         }
+
+        result += EmptySpaceViewData(
+            id = 1,
+            width = EmptySpaceViewData.ViewDimension.MatchParent,
+            height = EmptySpaceViewData.ViewDimension.ExactSizeDp(6),
+        )
+        result += listOf(
+            RecordFilterSelectionType.Select,
+            RecordFilterSelectionType.Filter,
+        ).map {
+            mapper.mapTagSelectionTypeFilter(
+                type = it,
+                filters = filters,
+                currentType = type,
+                isDarkTheme = isDarkTheme,
+            )
+        }
+        result += DividerViewData(1)
+        result += mapper.mapToSelectionButtons(
+            type = RecordsFilterSelectionButtonType.Type.Tags,
+        )
+        result += recordTagsViewData
 
         return@withContext result
     }
@@ -768,5 +781,106 @@ class RecordsFilterViewDataInteractor @Inject constructor(
         )
 
         return result
+    }
+
+    private fun mapActivitiesViewData(
+        types: List<RecordType>,
+        isArchivedShown: Boolean,
+        showArchived: Boolean,
+        numberOfCards: Int,
+        isDarkTheme: Boolean,
+        allSelectedTypeIds: List<Long>,
+    ): List<RecordTypeViewData> {
+        return types.mapNotNull { type ->
+            if (!isArchivedShown && type.hidden) {
+                return@mapNotNull null
+            }
+            recordTypeViewDataMapper.mapFiltered(
+                recordType = type,
+                numberOfCards = numberOfCards,
+                isDarkTheme = isDarkTheme,
+                isFiltered = type.id !in allSelectedTypeIds,
+                checkState = GoalCheckmarkView.CheckState.HIDDEN,
+                isComplete = false,
+            )
+        }.plus(
+            if (showArchived) {
+                recordTypeViewDataMapper.mapToArchivedItem(
+                    isEnabled = isArchivedShown,
+                    numberOfCards = numberOfCards,
+                    isDarkTheme = isDarkTheme,
+                )
+            } else {
+                null
+            },
+        )
+    }
+
+    private fun mapCategoriesViewData(
+        categories: List<Category>,
+        isDarkTheme: Boolean,
+        selectedCategoryIds: List<Long>,
+        selectedCategoryItems: List<RecordsFilter.CategoryItem>,
+        addUncategorizedItem: Boolean,
+    ): List<CategoryViewData.Category> {
+        return categories
+            .map { category ->
+                categoryViewDataMapper.mapCategory(
+                    category = category,
+                    isDarkTheme = isDarkTheme,
+                    isFiltered = category.id !in selectedCategoryIds,
+                )
+            }
+            .plus(
+                if (addUncategorizedItem) {
+                    categoryViewDataMapper.mapToUncategorizedItem(
+                        isFiltered = !selectedCategoryItems.hasUncategorizedItem(),
+                        isDarkTheme = isDarkTheme,
+                    )
+                } else {
+                    null
+                },
+            )
+    }
+
+    private fun mapTagsViewData(
+        isArchivedShown: Boolean,
+        selectedTagIds: List<Long>,
+        selectableTags: List<RecordTag>,
+        typesMap: Map<Long, RecordType>,
+        isDarkTheme: Boolean,
+        showArchived: Boolean,
+        hasUntaggedItem: Boolean,
+    ): List<CategoryViewData> {
+        return selectableTags
+            .mapNotNull { tag ->
+                if (!isArchivedShown && tag.archived) {
+                    return@mapNotNull null
+                }
+                categoryViewDataMapper.mapRecordTag(
+                    tag = tag,
+                    type = typesMap[tag.iconColorSource],
+                    isDarkTheme = isDarkTheme,
+                    isFiltered = tag.id !in selectedTagIds,
+                )
+            }
+            .takeUnless { selectableTags.isEmpty() }
+            ?.plus(
+                categoryViewDataMapper.mapToUntaggedItem(
+                    isFiltered = !hasUntaggedItem,
+                    isDarkTheme = isDarkTheme,
+                ),
+            )
+            ?.plus(
+                if (showArchived) {
+                    categoryViewDataMapper.mapToTagArchiveItem(
+                        isEnabled = isArchivedShown,
+                        isDarkTheme = isDarkTheme,
+                    )
+                } else {
+                    null
+                },
+            )
+            .orEmpty()
     }
 }

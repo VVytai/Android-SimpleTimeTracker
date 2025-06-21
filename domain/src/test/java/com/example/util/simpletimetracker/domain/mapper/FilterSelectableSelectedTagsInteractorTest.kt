@@ -5,7 +5,7 @@ import com.example.util.simpletimetracker.domain.recordTag.model.RecordTypeToTag
 import org.junit.Assert
 import org.junit.Test
 
-class FilterSelectableTagsInteractorTest {
+class FilterSelectableSelectedTagsInteractorTest {
 
     private val subject = FilterSelectableTagsInteractor()
 

@@ -1,6 +1,7 @@
 package com.example.util.simpletimetracker.core.interactor
 
 import com.example.util.simpletimetracker.core.mapper.RecordTypeViewDataMapper
+import com.example.util.simpletimetracker.core.viewData.RecordTypeSuggestionType
 import com.example.util.simpletimetracker.domain.activitySuggestion.interactor.GetCurrentActivitySuggestionsInteractor
 import com.example.util.simpletimetracker.domain.record.model.RunningRecord
 import com.example.util.simpletimetracker.domain.recordType.model.RecordType
@@ -40,7 +41,10 @@ class ActivitySuggestionViewDataInteractor @Inject constructor(
                 ),
                 isComplete = recordType.id in completeTypeIds,
             ).let {
-                RecordTypeSuggestionViewData(it)
+                RecordTypeSuggestionViewData(
+                    data = it,
+                    type = RecordTypeSuggestionType,
+                )
             }
         }
     }

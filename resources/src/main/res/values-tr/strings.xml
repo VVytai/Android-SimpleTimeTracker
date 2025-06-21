@@ -573,11 +573,11 @@ CSV dosyası virgülle ayrılmış şu sütunları içermelidir:<br/>
     <!--  Records filter  -->
     <string name="records_filter_duplications">Çoğaltmalar</string>
     <string name="records_filter_select_tags">Etiketleri seçin</string>
-    <string name="records_filter_filter_tags">Etiketleri hariç tut</string>
     <string name="records_filter_manually_filtered">Filtrelendi</string>
     <string name="records_filter_no_comment">Yorum yok</string>
     <string name="records_filter_any_comment">Herhangi bir yorum</string>
     <string name="records_filter_select">Seçme</string>
+    <string name="records_filter_exclude">Hariç tut</string>
     <string name="records_filter_invert_selection">Zıt seçim</string>
     <string name="records_filter_duration_min">Asgari</string>
     <string name="records_filter_duration_max">Maksimum</string>

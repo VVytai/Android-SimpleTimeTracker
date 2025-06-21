@@ -30,7 +30,7 @@ class StatisticsViewDataMapper @Inject constructor(
         isDarkTheme: Boolean,
         useProportionalMinutes: Boolean,
         showSeconds: Boolean,
-        hasTransitions: Boolean
+        hasTransitions: Boolean,
     ): List<StatisticsViewData> {
         val statisticsFiltered = statistics.filterNot { it.id in filteredIds }
         val sumDuration = statisticsFiltered.sumOf { it.data.duration }
@@ -49,7 +49,7 @@ class StatisticsViewDataMapper @Inject constructor(
                     statisticsSize = statisticsSize,
                     useProportionalMinutes = useProportionalMinutes,
                     showSeconds = showSeconds,
-                    hasTransitions = hasTransitions
+                    hasTransitions = hasTransitions,
                 ) ?: return@mapNotNull null
 
                 item to statistic.data.duration
@@ -69,7 +69,7 @@ class StatisticsViewDataMapper @Inject constructor(
         statisticsSize: Int,
         useProportionalMinutes: Boolean,
         showSeconds: Boolean,
-        hasTransitions: Boolean
+        hasTransitions: Boolean,
     ): StatisticsViewData? {
         val durationPercent = statisticsMapper.getDurationPercentString(
             sumDuration = sumDuration,

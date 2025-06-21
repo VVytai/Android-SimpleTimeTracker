@@ -1,6 +1,7 @@
 package com.example.util.simpletimetracker.domain.statistics.interactor
 
 import com.example.util.simpletimetracker.domain.base.UNCATEGORIZED_ITEM_ID
+import com.example.util.simpletimetracker.domain.base.UNTRACKED_ITEM_ID
 import com.example.util.simpletimetracker.domain.record.model.Range
 import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.domain.statistics.model.Statistics
@@ -18,11 +19,9 @@ class StatisticsTagInteractor @Inject constructor(
         addUncategorized: Boolean,
     ): List<Statistics> = withContext(Dispatchers.IO) {
         val records = statisticsInteractor.getRecords(range)
-        val tagToRecords = getTagRecords(records, addUncategorized)
-
-        statisticsInteractor.getStatistics(range, tagToRecords).plus(
-            statisticsInteractor.getUntracked(range, records, addUntracked),
-        )
+        val untrackedRecords = statisticsInteractor.getUntracked(range, records, addUntracked)
+        val recordsMap = getTagRecords(records + untrackedRecords, addUncategorized)
+        statisticsInteractor.getStatistics(range, recordsMap)
     }
 
     fun getTagRecords(
@@ -32,10 +31,13 @@ class StatisticsTagInteractor @Inject constructor(
         val tags: MutableMap<Long, MutableList<RecordBase>> = mutableMapOf()
 
         allRecords.forEach { record ->
+            val isUntracked = record.typeIds.any { it == UNTRACKED_ITEM_ID }
             record.tagIds.forEach { tagId ->
                 tags.getOrPut(tagId) { mutableListOf() }.add(record)
             }
-            if (addUncategorized && record.tagIds.isEmpty()) {
+            if (isUntracked) {
+                tags.getOrPut(UNTRACKED_ITEM_ID) { mutableListOf() }.add(record)
+            } else if (addUncategorized && record.tagIds.isEmpty()) {
                 tags.getOrPut(UNCATEGORIZED_ITEM_ID) { mutableListOf() }.add(record)
             }
         }

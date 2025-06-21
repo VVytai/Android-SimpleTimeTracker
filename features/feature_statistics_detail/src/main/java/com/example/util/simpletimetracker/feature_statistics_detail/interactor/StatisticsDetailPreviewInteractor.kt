@@ -186,12 +186,12 @@ class StatisticsDetailPreviewInteractor @Inject constructor(
     }
 
     sealed interface PreviewType {
-        object Untracked : PreviewType
-        object Multitask : PreviewType
-        object Activities : PreviewType
-        object Categories : PreviewType
-        object SelectedTags : PreviewType
-        object ActivitiesFromRecords : PreviewType
+        data object Untracked : PreviewType
+        data object Multitask : PreviewType
+        data object Activities : PreviewType
+        data object Categories : PreviewType
+        data object SelectedTags : PreviewType
+        data object ActivitiesFromRecords : PreviewType
     }
 
     companion object {

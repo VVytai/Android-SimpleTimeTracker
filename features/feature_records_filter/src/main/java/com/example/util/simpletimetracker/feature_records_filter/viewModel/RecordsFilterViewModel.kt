@@ -9,7 +9,6 @@ import com.example.util.simpletimetracker.core.extension.toModel
 import com.example.util.simpletimetracker.core.interactor.RecordFilterInteractor
 import com.example.util.simpletimetracker.core.mapper.TimeMapper
 import com.example.util.simpletimetracker.domain.base.ARCHIVED_BUTTON_ITEM_ID
-import com.example.util.simpletimetracker.domain.base.MULTITASK_ITEM_ID
 import com.example.util.simpletimetracker.domain.base.UNTRACKED_ITEM_ID
 import com.example.util.simpletimetracker.domain.record.extension.getDate
 import com.example.util.simpletimetracker.domain.record.extension.getDuration
@@ -45,13 +44,16 @@ import com.example.util.simpletimetracker.feature_records_filter.adapter.Records
 import com.example.util.simpletimetracker.feature_records_filter.interactor.RecordsFilterUpdateInteractor
 import com.example.util.simpletimetracker.feature_records_filter.interactor.RecordsFilterViewDataInteractor
 import com.example.util.simpletimetracker.feature_records_filter.mapper.RecordsFilterViewDataMapper
+import com.example.util.simpletimetracker.feature_records_filter.model.RecordFilterActivitiesType
 import com.example.util.simpletimetracker.feature_records_filter.model.RecordFilterCommentType
 import com.example.util.simpletimetracker.feature_records_filter.model.RecordFilterDateType
 import com.example.util.simpletimetracker.feature_records_filter.model.RecordFilterDuplicationsType
+import com.example.util.simpletimetracker.feature_records_filter.model.RecordFilterSelectionType
 import com.example.util.simpletimetracker.feature_records_filter.model.RecordFilterType
 import com.example.util.simpletimetracker.feature_records_filter.model.RecordsFilterSelectedRecordsViewData
 import com.example.util.simpletimetracker.feature_records_filter.model.RecordsFilterSelectionState
 import com.example.util.simpletimetracker.feature_records_filter.model.type
+import com.example.util.simpletimetracker.feature_records_filter.viewData.CategoryFilteredType
 import com.example.util.simpletimetracker.feature_records_filter.viewData.RecordsFilterSelectionButtonType
 import com.example.util.simpletimetracker.navigation.Router
 import com.example.util.simpletimetracker.navigation.params.screen.DateTimeDialogParams
@@ -120,6 +122,8 @@ class RecordsFilterViewModel @Inject constructor(
 
     private var filters: List<RecordsFilter> = emptyList()
     private var filterSelectionState: RecordsFilterSelectionState = RecordsFilterSelectionState.Hidden
+    private var tagSelectionState: RecordFilterSelectionType = RecordFilterSelectionType.Select
+    private var activitiesSelectionState: RecordFilterActivitiesType = RecordFilterActivitiesType.Activities
     private var isArchivedTypesShown: Boolean = false
     private var isArchivedTagsShown: Boolean = false
     private val defaultRange: Range by lazy { viewDataInteractor.getDefaultDateRange() }
@@ -149,6 +153,13 @@ class RecordsFilterViewModel @Inject constructor(
 
     fun onFilterClick(item: FilterViewData) {
         val itemType = item.type as? RecordFilterType ?: return
+
+        if (itemType is RecordFilterType.Multitask) {
+            handleMultitaskClick()
+            updateViewDataOnFiltersChanged()
+            return
+        }
+
         filterSelectionState = when (val currentFilterState = filterSelectionState) {
             is RecordsFilterSelectionState.Hidden -> {
                 RecordsFilterSelectionState.Visible(itemType)
@@ -177,19 +188,23 @@ class RecordsFilterViewModel @Inject constructor(
         if (item.id == ARCHIVED_BUTTON_ITEM_ID) {
             handleArchivedTypeClick()
         } else {
-            handleTypeClick(item.id)
+            handleTypeClick(RecordFilterSelectionType.Select, item.id)
         }
+        updateViewDataOnFiltersChanged()
+    }
+
+    fun onFilteredRecordTypeClick(item: RecordTypeViewData) = viewModelScope.launch {
+        handleTypeClick(RecordFilterSelectionType.Filter, item.id)
         updateViewDataOnFiltersChanged()
     }
 
     fun onCategoryClick(item: CategoryViewData) = viewModelScope.launch {
         when (item) {
             is CategoryViewData.Category -> {
-                handleCategoryClick(item.id)
+                handleCategoryClick(item)
             }
             is CategoryViewData.Record -> when (item.id) {
                 UNTRACKED_ITEM_ID -> handleUntrackedClick()
-                MULTITASK_ITEM_ID -> handleMultitaskClick()
                 ARCHIVED_BUTTON_ITEM_ID -> handleArchivedTagClick()
                 else -> handleTagClick(item)
             }
@@ -201,11 +216,13 @@ class RecordsFilterViewModel @Inject constructor(
         val data = item
             as? RecordsFilterSelectionButtonType
             ?: return@launch
+        val type = data.type
         val subtype = data.subtype
-        when (data.type) {
+        when (type) {
             is RecordsFilterSelectionButtonType.Type.Activities -> {
                 filterSelectionState = RecordsFilterSelectionState.Visible(RecordFilterType.Activity)
                 filters = recordsFilterUpdateInteractor.onTypesSelectionButtonClick(
+                    type = RecordFilterSelectionType.Select,
                     currentFilters = filters,
                     subtype = subtype,
                     recordTypes = getTypesCache(),
@@ -217,6 +234,7 @@ class RecordsFilterViewModel @Inject constructor(
             is RecordsFilterSelectionButtonType.Type.Categories -> {
                 filterSelectionState = RecordsFilterSelectionState.Visible(RecordFilterType.Category)
                 filters = recordsFilterUpdateInteractor.onCategoriesSelectionButtonClick(
+                    type = RecordFilterSelectionType.Select,
                     currentFilters = filters,
                     subtype = subtype,
                     categories = getCategoriesCache(),
@@ -230,7 +248,7 @@ class RecordsFilterViewModel @Inject constructor(
                 filters = recordsFilterUpdateInteractor.onTagsSelectionButtonClick(
                     currentFilters = filters,
                     subtype = subtype,
-                    currentState = filterSelectionState.type ?: return@launch,
+                    type = tagSelectionState,
                     tags = getTagsCache(),
                 )
             }
@@ -239,15 +257,17 @@ class RecordsFilterViewModel @Inject constructor(
     }
 
     fun onInnerFilterClick(item: FilterViewData) = viewModelScope.launch {
-        when (item.type) {
+        val type = item.type
+        when (type) {
             is RecordFilterCommentType -> handleCommentFilterClick(item)
             is RecordFilterDateType -> onDateRangeClick(item)
             is RecordFilterDuplicationsType -> handleDuplicationsFilterClick(item)
+            is RecordFilterSelectionType -> handleTagSelectionTypeClick(type)
+            is RecordFilterActivitiesType -> handleActivitiesSelectionClick(type)
             else -> {
                 // Do nothing.
             }
         }
-        updateViewDataOnFiltersChanged()
     }
 
     fun onCommentChange(text: String) {
@@ -338,6 +358,7 @@ class RecordsFilterViewModel @Inject constructor(
             itemType = viewData.type,
             currentRange = getCurrentRange(),
         )
+        updateViewDataOnFiltersChanged()
     }
 
     fun onShowRecordsListClick() {
@@ -346,9 +367,13 @@ class RecordsFilterViewModel @Inject constructor(
         updateFilterSelectionVisibility()
     }
 
-    private suspend fun handleTypeClick(id: Long) {
+    private suspend fun handleTypeClick(
+        type: RecordFilterSelectionType,
+        id: Long,
+    ) {
         filterSelectionState = RecordsFilterSelectionState.Visible(RecordFilterType.Activity)
         filters = recordsFilterUpdateInteractor.handleTypeClick(
+            type = type,
             id = id,
             currentFilters = filters,
             recordTypes = getTypesCache(),
@@ -358,10 +383,15 @@ class RecordsFilterViewModel @Inject constructor(
         )
     }
 
-    private suspend fun handleCategoryClick(id: Long) {
+    private suspend fun handleCategoryClick(item: CategoryViewData) {
         filterSelectionState = RecordsFilterSelectionState.Visible(RecordFilterType.Category)
         filters = recordsFilterUpdateInteractor.handleCategoryClick(
-            id = id,
+            type = if (item.type is CategoryFilteredType) {
+                RecordFilterSelectionType.Filter
+            } else {
+                RecordFilterSelectionType.Select
+            },
+            id = item.id,
             currentFilters = filters,
             recordTypes = getTypesCache(),
             recordTypeCategories = getRecordTypeCategoriesCache(),
@@ -378,7 +408,6 @@ class RecordsFilterViewModel @Inject constructor(
     }
 
     private fun handleMultitaskClick() {
-        filterSelectionState = RecordsFilterSelectionState.Visible(RecordFilterType.Multitask)
         filters = recordsFilterUpdateInteractor.handleMultitaskClick(
             currentFilters = filters,
         )
@@ -397,6 +426,7 @@ class RecordsFilterViewModel @Inject constructor(
             currentFilters = filters,
             itemType = item.type,
         )
+        updateViewDataOnFiltersChanged()
     }
 
     private fun handleDuplicationsFilterClick(item: FilterViewData) {
@@ -404,6 +434,17 @@ class RecordsFilterViewModel @Inject constructor(
             currentFilters = filters,
             itemType = item.type,
         )
+        updateViewDataOnFiltersChanged()
+    }
+
+    private fun handleTagSelectionTypeClick(type: RecordFilterSelectionType) {
+        tagSelectionState = type
+        updateFilterSelectionViewData()
+    }
+
+    private fun handleActivitiesSelectionClick(type: RecordFilterActivitiesType) {
+        activitiesSelectionState = type
+        updateFilterSelectionViewData()
     }
 
     private fun handleCommentChange(text: String) {
@@ -415,7 +456,7 @@ class RecordsFilterViewModel @Inject constructor(
 
     private fun handleTagClick(item: CategoryViewData.Record) {
         filters = recordsFilterUpdateInteractor.handleTagClick(
-            currentState = filterSelectionState.type ?: return,
+            type = tagSelectionState,
             currentFilters = filters,
             itemId = item.id,
         )
@@ -731,6 +772,7 @@ class RecordsFilterViewModel @Inject constructor(
             RecordFilterType.Category,
             -> {
                 viewDataInteractor.getActivityFilterSelectionViewData(
+                    type = activitiesSelectionState,
                     extra = extra,
                     filters = filters,
                     isArchivedShown = isArchivedTypesShown,
@@ -744,11 +786,9 @@ class RecordsFilterViewModel @Inject constructor(
                     filters = filters,
                 )
             }
-            RecordFilterType.SelectedTags,
-            RecordFilterType.FilteredTags,
-            -> {
+            RecordFilterType.Tags -> {
                 viewDataInteractor.getTagsFilterSelectionViewData(
-                    type = type,
+                    type = tagSelectionState,
                     filters = filters,
                     isArchivedShown = isArchivedTagsShown,
                     types = getTypesCache(),

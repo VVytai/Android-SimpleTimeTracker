@@ -11,7 +11,9 @@ import com.example.util.simpletimetracker.domain.record.extension.getCategoryIte
 import com.example.util.simpletimetracker.domain.record.extension.getCommentItems
 import com.example.util.simpletimetracker.domain.record.extension.getDaysOfWeek
 import com.example.util.simpletimetracker.domain.record.extension.getDuplicationItems
+import com.example.util.simpletimetracker.domain.record.extension.getFilteredCategoryItems
 import com.example.util.simpletimetracker.domain.record.extension.getFilteredTags
+import com.example.util.simpletimetracker.domain.record.extension.getFilteredTypeIds
 import com.example.util.simpletimetracker.domain.record.extension.getManuallyFilteredRecordIds
 import com.example.util.simpletimetracker.domain.record.extension.getSelectedTags
 import com.example.util.simpletimetracker.domain.record.extension.getTypeIds
@@ -32,6 +34,7 @@ import com.example.util.simpletimetracker.feature_records_filter.mapper.RecordsF
 import com.example.util.simpletimetracker.feature_records_filter.model.RecordFilterCommentType
 import com.example.util.simpletimetracker.feature_records_filter.model.RecordFilterDateType
 import com.example.util.simpletimetracker.feature_records_filter.model.RecordFilterDuplicationsType
+import com.example.util.simpletimetracker.feature_records_filter.model.RecordFilterSelectionType
 import com.example.util.simpletimetracker.feature_records_filter.model.RecordFilterType
 import com.example.util.simpletimetracker.feature_records_filter.model.RecordsFilterSelectedRecordsViewData
 import com.example.util.simpletimetracker.feature_records_filter.viewData.RecordsFilterSelectionButtonType
@@ -45,6 +48,7 @@ class RecordsFilterUpdateInteractor @Inject constructor(
 ) {
 
     fun handleTypeClick(
+        type: RecordFilterSelectionType,
         id: Long,
         currentFilters: List<RecordsFilter>,
         recordTypes: List<RecordType>,
@@ -53,20 +57,26 @@ class RecordsFilterUpdateInteractor @Inject constructor(
         typesToTags: List<RecordTypeToTag>,
     ): List<RecordsFilter> {
         val filters = currentFilters.toMutableList()
-        val currentIds = filters.getTypeIds().toMutableList()
+        val currentIds = when (type) {
+            is RecordFilterSelectionType.Select -> filters.getTypeIds()
+            is RecordFilterSelectionType.Filter -> filters.getFilteredTypeIds()
+        }.toMutableList()
         val currentIdsFromCategories = filters.getTypeIdsFromCategories(
             recordTypes = recordTypes,
             recordTypeCategories = recordTypeCategories,
         )
 
         // Switch from categories to types in these categories.
-        if (currentIdsFromCategories.isNotEmpty()) {
+        if (type is RecordFilterSelectionType.Select &&
+            currentIdsFromCategories.isNotEmpty()
+        ) {
             currentIds.addAll(currentIdsFromCategories)
         }
 
         val newIds = currentIds.toMutableList().apply { addOrRemove(id) }
 
         return handleSelectTypes(
+            type = type,
             currentFilters = filters,
             newIds = newIds,
         ).let {
@@ -81,6 +91,7 @@ class RecordsFilterUpdateInteractor @Inject constructor(
     }
 
     fun handleCategoryClick(
+        type: RecordFilterSelectionType,
         id: Long,
         currentFilters: List<RecordsFilter>,
         recordTypes: List<RecordType>,
@@ -89,15 +100,18 @@ class RecordsFilterUpdateInteractor @Inject constructor(
         typesToTags: List<RecordTypeToTag>,
     ): List<RecordsFilter> {
         val filters = currentFilters.toMutableList()
-        val currentItems = filters.getCategoryItems()
+        val currentItems = when (type) {
+            RecordFilterSelectionType.Select -> filters.getCategoryItems()
+            RecordFilterSelectionType.Filter -> filters.getFilteredCategoryItems()
+        }
 
-        val newItems = if (id == UNCATEGORIZED_ITEM_ID) {
-            RecordsFilter.CategoryItem.Uncategorized
-        } else {
-            RecordsFilter.CategoryItem.Categorized(id)
+        val newItems = when (id) {
+            UNCATEGORIZED_ITEM_ID -> RecordsFilter.CategoryItem.Uncategorized
+            else -> RecordsFilter.CategoryItem.Categorized(id)
         }.let { currentItems.toMutableList().apply { addOrRemove(it) } }
 
         return handleSelectCategories(
+            type = type,
             currentFilters = filters,
             newItems = newItems,
         ).let {
@@ -112,15 +126,14 @@ class RecordsFilterUpdateInteractor @Inject constructor(
     }
 
     fun handleTagClick(
-        currentState: RecordFilterType,
+        type: RecordFilterSelectionType,
         currentFilters: List<RecordsFilter>,
         itemId: Long,
     ): List<RecordsFilter> {
         val filters = currentFilters.toMutableList()
-        val currentTags = when (currentState) {
-            RecordFilterType.SelectedTags -> filters.getSelectedTags()
-            RecordFilterType.FilteredTags -> filters.getFilteredTags()
-            else -> return currentFilters
+        val currentTags = when (type) {
+            RecordFilterSelectionType.Select -> filters.getSelectedTags()
+            RecordFilterSelectionType.Filter -> filters.getFilteredTags()
         }
 
         val newTags = when (itemId) {
@@ -128,7 +141,11 @@ class RecordsFilterUpdateInteractor @Inject constructor(
             else -> RecordsFilter.TagItem.Tagged(itemId)
         }.let { currentTags.toMutableList().apply { addOrRemove(it) } }
 
-        return handleSelectTags(currentState, filters, newTags)
+        return handleSelectTags(
+            type = type,
+            currentFilters = filters,
+            newItems = newTags,
+        )
     }
 
     fun handleUntrackedClick(
@@ -160,19 +177,9 @@ class RecordsFilterUpdateInteractor @Inject constructor(
         currentFilters: List<RecordsFilter>,
     ): List<RecordsFilter> {
         val filters = currentFilters.toMutableList()
-        val hasMultitaskFilter = filters.hasMultitaskFilter()
 
-        if (!hasMultitaskFilter) {
-            val filtersAvailableWithMultitaskFilter = listOf(
-                RecordsFilter.Date::class.java,
-                RecordsFilter.DaysOfWeek::class.java,
-                RecordsFilter.TimeOfDay::class.java,
-                RecordsFilter.Duration::class.java,
-            )
-            filters.removeAll {
-                it::class.java !in filtersAvailableWithMultitaskFilter
-            }
-
+        if (!filters.hasMultitaskFilter()) {
+            filters.removeAll { it is RecordsFilter.Untracked }
             filters.add(RecordsFilter.Multitask)
         } else {
             filters.removeAll { it is RecordsFilter.Multitask }
@@ -378,6 +385,11 @@ class RecordsFilterUpdateInteractor @Inject constructor(
         val filters = currentFilters.toMutableList()
         val filterClass = recordsFilterViewDataMapper.mapToClass(type)
         filters.removeAll { filterClass.isInstance(it) }
+        when (type) {
+            is RecordFilterType.Activity -> filters.removeAll { it is RecordsFilter.Category }
+            is RecordFilterType.Category -> filters.removeAll { it is RecordsFilter.Activity }
+            else -> Unit
+        }
         return filters
     }
 
@@ -396,6 +408,7 @@ class RecordsFilterUpdateInteractor @Inject constructor(
     }
 
     fun onTypesSelectionButtonClick(
+        type: RecordFilterSelectionType,
         currentFilters: List<RecordsFilter>,
         subtype: RecordsFilterSelectionButtonType.Subtype,
         recordTypes: List<RecordType>,
@@ -408,6 +421,7 @@ class RecordsFilterUpdateInteractor @Inject constructor(
             is RecordsFilterSelectionButtonType.Subtype.SelectNone -> emptyList()
         }
         return handleSelectTypes(
+            type = type,
             currentFilters = currentFilters,
             newIds = newIds,
         ).let {
@@ -422,6 +436,7 @@ class RecordsFilterUpdateInteractor @Inject constructor(
     }
 
     fun onCategoriesSelectionButtonClick(
+        type: RecordFilterSelectionType,
         currentFilters: List<RecordsFilter>,
         subtype: RecordsFilterSelectionButtonType.Subtype,
         categories: List<Category>,
@@ -441,6 +456,7 @@ class RecordsFilterUpdateInteractor @Inject constructor(
             }
         }
         return handleSelectCategories(
+            type = type,
             currentFilters = currentFilters,
             newItems = newItems,
         ).let {
@@ -457,7 +473,7 @@ class RecordsFilterUpdateInteractor @Inject constructor(
     fun onTagsSelectionButtonClick(
         currentFilters: List<RecordsFilter>,
         subtype: RecordsFilterSelectionButtonType.Subtype,
-        currentState: RecordFilterType,
+        type: RecordFilterSelectionType,
         tags: List<RecordTag>,
     ): List<RecordsFilter> {
         val newItems = when (subtype) {
@@ -471,7 +487,7 @@ class RecordsFilterUpdateInteractor @Inject constructor(
             }
         }
         return handleSelectTags(
-            currentState = currentState,
+            type = type,
             currentFilters = currentFilters,
             newItems = newItems,
         )
@@ -511,61 +527,96 @@ class RecordsFilterUpdateInteractor @Inject constructor(
         }
 
         val newSelectedTags = update(filters.getSelectedTags())
-        filters.removeAll { filter -> filter is RecordsFilter.SelectedTags }
-        if (newSelectedTags.isNotEmpty()) filters.add(RecordsFilter.SelectedTags(newSelectedTags))
-
         val newFilteredTags = update(filters.getFilteredTags())
-        filters.removeAll { filter -> filter is RecordsFilter.FilteredTags }
-        if (newFilteredTags.isNotEmpty()) filters.add(RecordsFilter.FilteredTags(newFilteredTags))
+        filters.removeAll { filter -> filter is RecordsFilter.Tags }
+        if (newSelectedTags.isNotEmpty() || newFilteredTags.isNotEmpty()) {
+            filters.add(RecordsFilter.Tags(selected = newSelectedTags, filtered = newFilteredTags))
+        }
 
         return filters
     }
 
     private fun handleSelectTypes(
+        type: RecordFilterSelectionType,
         currentFilters: List<RecordsFilter>,
         newIds: List<Long>,
     ): List<RecordsFilter> {
         val filters = currentFilters.toMutableList()
-        filters.removeAll { it is RecordsFilter.Activity }
-        filters.removeAll { it is RecordsFilter.Category }
+
+        val newFilter = when (type) {
+            is RecordFilterSelectionType.Select -> RecordsFilter.Activity(
+                selected = newIds,
+                filtered = filters.getFilteredTypeIds().filter { it !in newIds },
+            )
+            is RecordFilterSelectionType.Filter -> RecordsFilter.Activity(
+                selected = filters.getTypeIds().filter { it !in newIds },
+                filtered = newIds,
+            )
+        }
         filters.removeAll { it is RecordsFilter.Untracked }
-        filters.removeAll { it is RecordsFilter.Multitask }
-        if (newIds.isNotEmpty()) filters.add(RecordsFilter.Activity(newIds))
+        filters.removeAll { it is RecordsFilter.Activity }
+        if (type is RecordFilterSelectionType.Select) {
+            filters.removeAll { it is RecordsFilter.Category }
+        }
+        if (newFilter.selected.isNotEmpty() || newFilter.filtered.isNotEmpty()) {
+            filters.add(newFilter)
+        }
+
         return filters
     }
 
     private fun handleSelectCategories(
+        type: RecordFilterSelectionType,
         currentFilters: List<RecordsFilter>,
         newItems: List<RecordsFilter.CategoryItem>,
     ): List<RecordsFilter> {
         val filters = currentFilters.toMutableList()
-        filters.removeAll { it is RecordsFilter.Activity }
-        filters.removeAll { it is RecordsFilter.Category }
+
+        val newFilter = when (type) {
+            is RecordFilterSelectionType.Select -> RecordsFilter.Category(
+                selected = newItems,
+                filtered = filters.getFilteredCategoryItems().filter { it !in newItems },
+            )
+            is RecordFilterSelectionType.Filter -> RecordsFilter.Category(
+                selected = filters.getCategoryItems().filter { it !in newItems },
+                filtered = newItems,
+            )
+        }
         filters.removeAll { it is RecordsFilter.Untracked }
-        filters.removeAll { it is RecordsFilter.Multitask }
-        if (newItems.isNotEmpty()) filters.add(RecordsFilter.Category(newItems))
+        filters.removeAll { it is RecordsFilter.Category }
+        if (type is RecordFilterSelectionType.Select) {
+            filters.removeAll { it is RecordsFilter.Activity }
+        }
+        if (newFilter.selected.isNotEmpty() || newFilter.filtered.isNotEmpty()) {
+            filters.add(newFilter)
+        }
+
         return filters
     }
 
     private fun handleSelectTags(
-        currentState: RecordFilterType,
+        type: RecordFilterSelectionType,
         currentFilters: List<RecordsFilter>,
         newItems: List<RecordsFilter.TagItem>,
     ): List<RecordsFilter> {
         val filters = currentFilters.toMutableList()
-        filters.removeAll { it is RecordsFilter.Untracked }
-        filters.removeAll { it is RecordsFilter.Multitask }
-        when (currentState) {
-            RecordFilterType.SelectedTags -> {
-                filters.removeAll { it is RecordsFilter.SelectedTags }
-                if (newItems.isNotEmpty()) filters.add(RecordsFilter.SelectedTags(newItems))
-            }
-            RecordFilterType.FilteredTags -> {
-                filters.removeAll { it is RecordsFilter.FilteredTags }
-                if (newItems.isNotEmpty()) filters.add(RecordsFilter.FilteredTags(newItems))
-            }
-            else -> return currentFilters
+
+        val newFilter = when (type) {
+            RecordFilterSelectionType.Select -> RecordsFilter.Tags(
+                selected = newItems,
+                filtered = filters.getFilteredTags().filter { it !in newItems },
+            )
+            RecordFilterSelectionType.Filter -> RecordsFilter.Tags(
+                selected = filters.getSelectedTags().filter { it !in newItems },
+                filtered = newItems,
+            )
         }
+        filters.removeAll { it is RecordsFilter.Untracked }
+        filters.removeAll { it is RecordsFilter.Tags }
+        if (newFilter.selected.isNotEmpty() || newFilter.filtered.isNotEmpty()) {
+            filters.add(newFilter)
+        }
+
         return filters
     }
 }

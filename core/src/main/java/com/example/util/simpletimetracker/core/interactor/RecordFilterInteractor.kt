@@ -29,10 +29,15 @@ import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTyp
 import com.example.util.simpletimetracker.domain.record.interactor.RunningRecordInteractor
 import com.example.util.simpletimetracker.domain.record.mapper.RangeMapper
 import com.example.util.simpletimetracker.domain.daysOfWeek.model.DayOfWeek
+import com.example.util.simpletimetracker.domain.extension.plus
+import com.example.util.simpletimetracker.domain.record.extension.getAllFilteredTypeIds
 import com.example.util.simpletimetracker.domain.record.extension.getDuplicationItems
+import com.example.util.simpletimetracker.domain.record.extension.getFilteredTypeIds
 import com.example.util.simpletimetracker.domain.record.extension.hasDuplicationsFilter
+import com.example.util.simpletimetracker.domain.record.extension.hasFilteredCategoryFilter
 import com.example.util.simpletimetracker.domain.record.interactor.GetDuplicatedRecordsInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.GetUntrackedRecordsInteractor
+import com.example.util.simpletimetracker.domain.record.model.MultitaskRecord
 import com.example.util.simpletimetracker.domain.record.model.Range
 import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
 import com.example.util.simpletimetracker.domain.record.model.Record
@@ -95,6 +100,16 @@ class RecordFilterInteractor @Inject constructor(
             }
             else -> filters.getTypeIds()
         }
+        val filteredTypeIds: List<Long> = when {
+            filters.hasFilteredCategoryFilter() -> {
+                val types = recordTypeInteractor.getAll()
+                val typeCategories = recordTypeCategoryInteractor.getAll()
+                filters.getAllFilteredTypeIds(types, typeCategories)
+            }
+            else -> filters.getFilteredTypeIds()
+        }
+        val hasUntracked: Boolean = filters.hasUntrackedFilter()
+        val hasMultitask: Boolean = filters.hasMultitaskFilter()
         val runningRecords = runningRecordInteractor.getAll()
         val selectedCommentItems: List<RecordsFilter.CommentItem> = filters.getCommentItems()
         val comments: List<String> = selectedCommentItems.getComments().map(String::lowercase)
@@ -117,16 +132,11 @@ class RecordFilterInteractor @Inject constructor(
         // TODO Use different queries for optimization.
         // TODO by tag (tagged, untagged).
         val records: List<RecordBase> = when {
-            filters.hasUntrackedFilter() -> {
+            hasUntracked -> {
                 val range = definedRanges.firstOrNull() ?: Range(0, 0)
                 val records = getAllRecords(range, runningRecords)
                     .map(RecordBase::toRange)
                 getUntrackedRecordsInteractor.get(range, records)
-            }
-            filters.hasMultitaskFilter() -> {
-                val range = definedRanges.firstOrNull() ?: Range(0, 0)
-                val records = getAllRecords(range, runningRecords)
-                getMultitaskRecordsInteractor.get(records)
             }
             typeIds.isNotEmpty() && definedRanges.isNotEmpty() -> {
                 val result = mutableMapOf<Long, Record>()
@@ -163,12 +173,17 @@ class RecordFilterInteractor @Inject constructor(
             }
             else -> interactor.getAll()
         }.let {
-            // For these filter running records are added separately.
-            if (filters.hasUntrackedFilter() || filters.hasMultitaskFilter()) {
-                it
+            // For untracked filter running records are added separately.
+            if (hasUntracked) return@let it
+            val multitaskRecords = if (hasMultitask) {
+                // Need to calculate multitask on all records.
+                val range = definedRanges.firstOrNull() ?: Range(0, 0)
+                val records = getAllRecords(range, runningRecords)
+                getMultitaskRecordsInteractor.get(records)
             } else {
-                it + runningRecords
+                emptyList()
             }
+            it + multitaskRecords + runningRecords
         }
 
         val duplicationIds: Map<Long, Boolean> = if (filters.hasDuplicationsFilter()) {
@@ -182,10 +197,18 @@ class RecordFilterInteractor @Inject constructor(
             emptyMap()
         }
 
-        // TODO multitask filters.
-
         fun RecordBase.selectedByActivity(): Boolean {
-            return typeIds.isEmpty() || this.typeIds.firstOrNull().orZero() in typeIds
+            if (typeIds.isEmpty()) return true
+            return this.typeIds.firstOrNull().orZero() in typeIds
+        }
+
+        fun RecordBase.filteredByActivity(): Boolean {
+            if (filteredTypeIds.isEmpty()) return false
+            return this.typeIds.any { it in filteredTypeIds }
+        }
+
+        fun RecordBase.selectedByMultitask(): Boolean {
+            return !hasMultitask || this is MultitaskRecord
         }
 
         fun RecordBase.selectedByComment(): Boolean {
@@ -307,6 +330,8 @@ class RecordFilterInteractor @Inject constructor(
 
         return@withContext records.filter { record ->
             record.selectedByActivity() &&
+                !record.filteredByActivity() &&
+                record.selectedByMultitask() &&
                 record.selectedByComment() &&
                 record.selectedByDate() &&
                 record.selectedByTag() &&

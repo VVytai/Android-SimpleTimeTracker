@@ -6,21 +6,19 @@ import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
 sealed interface RecordsFilter {
 
     // Incompatible with Activity, Category, Comment, SelectedTags, FilteredTags, ManuallyFiltered.
-    object Untracked : RecordsFilter
+    data object Untracked : RecordsFilter
 
-    object Multitask : RecordsFilter
+    data object Multitask : RecordsFilter
 
-    data class Activity(val typeIds: List<Long>) : RecordsFilter
+    data class Activity(val selected: List<Long>, val filtered: List<Long>) : RecordsFilter
 
-    data class Category(val items: List<CategoryItem>) : RecordsFilter
+    data class Category(val selected: List<CategoryItem>, val filtered: List<CategoryItem>) : RecordsFilter
 
     data class Comment(val items: List<CommentItem>) : RecordsFilter
 
     data class Date(val range: RangeLength, val position: Int) : RecordsFilter
 
-    data class SelectedTags(val items: List<TagItem>) : RecordsFilter
-
-    data class FilteredTags(val items: List<TagItem>) : RecordsFilter
+    data class Tags(val selected: List<TagItem>, val filtered: List<TagItem>) : RecordsFilter
 
     data class ManuallyFiltered(val recordIds: List<Long>) : RecordsFilter
 

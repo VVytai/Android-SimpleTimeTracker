@@ -573,11 +573,11 @@ Ví dụ:<br/>
     <!--  Records filter  -->
     <string name="records_filter_duplications">Bản sao</string>
     <string name="records_filter_select_tags">Chọn thẻ</string>
-    <string name="records_filter_filter_tags">Loại trừ thẻ</string>
     <string name="records_filter_manually_filtered">Đã lọc</string>
     <string name="records_filter_no_comment">Không có nhận xét</string>
     <string name="records_filter_any_comment">Mọi nhận xét</string>
     <string name="records_filter_select">Chọn</string>
+    <string name="records_filter_exclude">Loại trừ</string>
     <string name="records_filter_invert_selection">Đảo ngược lựa chọn</string>
     <string name="records_filter_duration_min">Tối thiểu</string>
     <string name="records_filter_duration_max">Tối đa</string>

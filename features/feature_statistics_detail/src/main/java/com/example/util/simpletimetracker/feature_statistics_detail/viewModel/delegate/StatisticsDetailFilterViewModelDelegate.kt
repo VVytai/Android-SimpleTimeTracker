@@ -88,7 +88,7 @@ class StatisticsDetailFilterViewModelDelegate @Inject constructor(
         onFiltersChanged()
     }
 
-    fun onStatisticsHidden(id: Long, mode: DataDistributionMode) {
+    fun onStatisticsHidden(id: Long, mode: DataDistributionMode) = delegateScope.launch {
         val type = when (mode) {
             DataDistributionMode.ACTIVITY -> RecordsFilterExcludeInteractor.ExcludeType.Activity
             DataDistributionMode.CATEGORY -> RecordsFilterExcludeInteractor.ExcludeType.Category

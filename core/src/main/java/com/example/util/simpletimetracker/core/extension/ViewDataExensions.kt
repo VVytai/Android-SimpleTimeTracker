@@ -115,12 +115,20 @@ fun RecordsFilterParam.toModel(): RecordsFilter {
     return when (this) {
         is RecordsFilterParam.Untracked -> RecordsFilter.Untracked
         is RecordsFilterParam.Multitask -> RecordsFilter.Multitask
-        is RecordsFilterParam.Activity -> RecordsFilter.Activity(typeIds)
-        is RecordsFilterParam.Category -> RecordsFilter.Category(items.map { it.toModel() })
+        is RecordsFilterParam.Activity -> RecordsFilter.Activity(
+            selected = selected,
+            filtered = filtered,
+        )
+        is RecordsFilterParam.Category -> RecordsFilter.Category(
+            selected = selected.map { it.toModel() },
+            filtered = filtered.map { it.toModel() }
+        )
         is RecordsFilterParam.Comment -> RecordsFilter.Comment(items.map { it.toModel() })
         is RecordsFilterParam.Date -> RecordsFilter.Date(range.toModel(), position)
-        is RecordsFilterParam.SelectedTags -> RecordsFilter.SelectedTags(items.map { it.toModel() })
-        is RecordsFilterParam.FilteredTags -> RecordsFilter.FilteredTags(items.map { it.toModel() })
+        is RecordsFilterParam.Tags -> RecordsFilter.Tags(
+            selected = selected.map { it.toModel() },
+            filtered = filtered.map { it.toModel() }
+        )
         is RecordsFilterParam.ManuallyFiltered -> RecordsFilter.ManuallyFiltered(recordIds)
         is RecordsFilterParam.DaysOfWeek -> RecordsFilter.DaysOfWeek(items)
         is RecordsFilterParam.TimeOfDay -> RecordsFilter.TimeOfDay(range.toModel())
@@ -133,12 +141,20 @@ fun RecordsFilter.toParams(): RecordsFilterParam {
     return when (this) {
         is RecordsFilter.Untracked -> RecordsFilterParam.Untracked
         is RecordsFilter.Multitask -> RecordsFilterParam.Multitask
-        is RecordsFilter.Activity -> RecordsFilterParam.Activity(typeIds)
-        is RecordsFilter.Category -> RecordsFilterParam.Category(items.map { it.toParams() })
+        is RecordsFilter.Activity -> RecordsFilterParam.Activity(
+            selected = selected,
+            filtered = filtered,
+        )
+        is RecordsFilter.Category -> RecordsFilterParam.Category(
+            selected = selected.map { it.toParams() },
+            filtered = filtered.map { it.toParams() },
+        )
         is RecordsFilter.Comment -> RecordsFilterParam.Comment(items.map { it.toParams() })
         is RecordsFilter.Date -> RecordsFilterParam.Date(range.toParams(), position)
-        is RecordsFilter.SelectedTags -> RecordsFilterParam.SelectedTags(items.map { it.toParams() })
-        is RecordsFilter.FilteredTags -> RecordsFilterParam.FilteredTags(items.map { it.toParams() })
+        is RecordsFilter.Tags -> RecordsFilterParam.Tags(
+            selected = selected.map { it.toParams() },
+            filtered = filtered.map { it.toParams() },
+        )
         is RecordsFilter.ManuallyFiltered -> RecordsFilterParam.ManuallyFiltered(recordIds)
         is RecordsFilter.DaysOfWeek -> RecordsFilterParam.DaysOfWeek(items)
         is RecordsFilter.TimeOfDay -> RecordsFilterParam.TimeOfDay(range.toParams())
