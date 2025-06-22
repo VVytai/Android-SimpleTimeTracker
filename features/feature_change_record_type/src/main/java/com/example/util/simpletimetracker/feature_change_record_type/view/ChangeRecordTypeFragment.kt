@@ -7,6 +7,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
+import androidx.core.view.setPadding
+import androidx.core.view.updateLayoutParams
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
@@ -47,6 +49,7 @@ import com.example.util.simpletimetracker.feature_base_adapter.loader.createLoad
 import com.example.util.simpletimetracker.feature_base_adapter.recordType.RecordTypeViewData
 import com.example.util.simpletimetracker.feature_change_goals.api.ChangeRecordTypeGoalsViewData
 import com.example.util.simpletimetracker.feature_change_goals.views.GoalsViewDelegate
+import com.example.util.simpletimetracker.feature_change_record_type.R
 import com.example.util.simpletimetracker.feature_change_record_type.viewData.ChangeRecordTypeAdditionalState
 import com.example.util.simpletimetracker.feature_change_record_type.viewData.ChangeRecordTypeCategoriesViewData
 import com.example.util.simpletimetracker.feature_change_record_type.viewData.ChangeRecordTypeChooserState.Additional
@@ -416,6 +419,16 @@ class ChangeRecordTypeFragment :
         fieldChangeRecordTypeCategory.isVisible = isClosed || state.current is Category
         fieldChangeRecordTypeGoalTime.isVisible = isClosed || state.current is GoalTime
         fieldChangeRecordTypeAdditional.isVisible = isClosed || state.current is Additional
+
+        // Chooser size
+        val sizeDefault = resources.getDimensionPixelSize(R.dimen.input_field_height)
+        val sizeBig = resources.getDimensionPixelSize(R.dimen.input_field_height_big)
+        val colorSize = if (state.current is Color) sizeDefault else sizeBig
+        fieldChangeRecordTypeColor.updateLayoutParams { height = colorSize }
+        val iconSize = if (state.current is Icon) sizeDefault else sizeBig
+        fieldChangeRecordTypeIcon.updateLayoutParams { height = iconSize }
+        val iconPreviewPadding = if (state.current is Icon) 4 else 8
+        iconChangeRecordTypeIconPreview.setPadding(iconPreviewPadding.dpToPx())
     }
 
     private fun updateGoalsState(state: ChangeRecordTypeGoalsViewData) = with(binding) {

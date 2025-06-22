@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.core.view.updateLayoutParams
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.viewModels
 import com.example.util.simpletimetracker.core.base.BaseFragment
@@ -29,6 +30,7 @@ import com.example.util.simpletimetracker.feature_base_adapter.empty.createEmpty
 import com.example.util.simpletimetracker.feature_base_adapter.hint.createHintAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.info.createInfoAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.recordType.createRecordTypeAdapterDelegate
+import com.example.util.simpletimetracker.feature_change_activity_filter.R
 import com.example.util.simpletimetracker.feature_change_activity_filter.viewData.ChangeActivityFilterChooserState.Closed
 import com.example.util.simpletimetracker.feature_change_activity_filter.viewData.ChangeActivityFilterChooserState.Color
 import com.example.util.simpletimetracker.feature_change_activity_filter.viewData.ChangeActivityFilterChooserState.Type
@@ -207,6 +209,12 @@ class ChangeActivityFilterFragment :
         // Chooser fields
         fieldChangeActivityFilterColor.isVisible = isClosed || state.current is Color
         fieldChangeActivityFilterType.isVisible = isClosed || state.current is Type
+
+        // Chooser size
+        val sizeDefault = resources.getDimensionPixelSize(R.dimen.input_field_height)
+        val sizeBig = resources.getDimensionPixelSize(R.dimen.input_field_height_big)
+        val colorSize = if (state.current is Color) sizeDefault else sizeBig
+        fieldChangeActivityFilterColor.updateLayoutParams { height = colorSize }
     }
 
     private fun updateTypes(

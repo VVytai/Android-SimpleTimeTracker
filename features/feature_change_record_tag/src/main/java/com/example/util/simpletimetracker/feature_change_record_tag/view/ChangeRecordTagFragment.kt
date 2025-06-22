@@ -7,6 +7,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
+import androidx.core.view.setPadding
+import androidx.core.view.updateLayoutParams
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
@@ -53,6 +55,7 @@ import com.example.util.simpletimetracker.feature_change_record_tag.viewData.Cha
 import com.example.util.simpletimetracker.feature_change_record_tag.viewData.ChangeRecordTagTypesViewData
 import com.example.util.simpletimetracker.feature_change_record_tag.viewModel.ChangeRecordTagViewModel
 import com.example.util.simpletimetracker.feature_views.extension.animateColor
+import com.example.util.simpletimetracker.feature_views.extension.dpToPx
 import com.example.util.simpletimetracker.feature_views.extension.setCompoundDrawableWithIntrinsicBounds
 import com.example.util.simpletimetracker.feature_views.extension.setOnClick
 import com.example.util.simpletimetracker.feature_views.extension.visible
@@ -358,6 +361,7 @@ class ChangeRecordTagFragment :
         )
 
         val isClosed = state.current is Closed
+        spaceChangeRecordTagFieldsTop.isVisible = !isClosed
         inputChangeRecordTagName.isVisible = isClosed
         btnChangeRecordTagSelectActivity.isVisible = isClosed
         btnChangeRecordTagStatistics.isVisible =
@@ -374,6 +378,16 @@ class ChangeRecordTagFragment :
         fieldChangeRecordTagIcon.isVisible = isClosed || state.current is Icon
         fieldChangeRecordTagType.isVisible = isClosed || state.current is Type
         fieldChangeRecordTagDefaultType.isVisible = isClosed || state.current is DefaultType
+
+        // Chooser size
+        val sizeDefault = resources.getDimensionPixelSize(R.dimen.input_field_height)
+        val sizeBig = resources.getDimensionPixelSize(R.dimen.input_field_height_big)
+        val colorSize = if (state.current is Color) sizeDefault else sizeBig
+        fieldChangeRecordTagColor.updateLayoutParams { height = colorSize }
+        val iconSize = if (state.current is Icon) sizeDefault else sizeBig
+        fieldChangeRecordTagIcon.updateLayoutParams { height = iconSize }
+        val iconPreviewPadding = if (state.current is Icon) 4 else 8
+        iconChangeRecordTagIconPreview.setPadding(iconPreviewPadding.dpToPx())
     }
 
     private fun updateIconColorSourceSelected(selected: Boolean) = with(binding) {

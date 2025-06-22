@@ -156,7 +156,7 @@
                 app:constraint_referenced_ids="btnChangeRecordTypeStatistics, btnChangeRecordTypeArchive, btnChangeRecordTypeDelete" />
 
             <Space
-                android:id="@+id/space_change_record_type_fields_top"
+                android:id="@+id/spaceChangeRecordTypeFieldsTop"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/edit_screen_field_top_margin"
                 android:visibility="gone"
@@ -170,7 +170,7 @@
                 android:layout_marginHorizontal="@dimen/edit_screen_margin_horizontal"
                 android:layout_marginTop="@dimen/edit_screen_field_top_margin"
                 app:errorIconDrawable="@null"
-                app:layout_constraintTop_toBottomOf="@id/space_change_record_type_fields_top">
+                app:layout_constraintTop_toBottomOf="@id/spaceChangeRecordTypeFieldsTop">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etChangeRecordTypeName"
@@ -185,12 +185,15 @@
                 android:id="@+id/fieldChangeRecordTypeColor"
                 style="@style/InputFieldCard"
                 android:layout_width="0dp"
-                android:layout_height="@dimen/input_field_height"
-                android:layout_marginHorizontal="@dimen/edit_screen_field_margin_horizontal"
+                android:layout_height="@dimen/input_field_height_big"
+                android:layout_marginStart="@dimen/edit_screen_field_margin_horizontal"
                 android:layout_marginTop="3dp"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginEnd="0dp"
+                app:layout_constraintEnd_toStartOf="@id/fieldChangeRecordTypeIcon"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/inputChangeRecordTypeName">
+                app:layout_constraintTop_toBottomOf="@id/inputChangeRecordTypeName"
+                app:layout_goneMarginEnd="@dimen/edit_screen_field_margin_horizontal"
+                app:layout_goneMarginTop="0dp">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -229,11 +232,15 @@
                 android:id="@+id/fieldChangeRecordTypeIcon"
                 style="@style/InputFieldCard"
                 android:layout_width="0dp"
-                android:layout_height="@dimen/input_field_height"
-                android:layout_marginHorizontal="@dimen/edit_screen_field_margin_horizontal"
+                android:layout_height="@dimen/input_field_height_big"
+                android:layout_marginStart="0dp"
+                android:layout_marginTop="3dp"
+                android:layout_marginEnd="@dimen/edit_screen_field_margin_horizontal"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/fieldChangeRecordTypeColor">
+                app:layout_constraintStart_toEndOf="@id/fieldChangeRecordTypeColor"
+                app:layout_constraintTop_toBottomOf="@id/inputChangeRecordTypeName"
+                app:layout_goneMarginStart="@dimen/edit_screen_field_margin_horizontal"
+                app:layout_goneMarginTop="0dp">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -252,7 +259,8 @@
                             android:id="@+id/iconChangeRecordTypeIconPreview"
                             style="@style/EditScreenPreviewIcon"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent" />
+                            android:layout_height="match_parent"
+                            android:padding="8dp" />
 
                     </com.google.android.material.card.MaterialCardView>
 
@@ -276,6 +284,13 @@
 
             </androidx.cardview.widget.CardView>
 
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/barrierChangeRecordTypeMain"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:barrierDirection="bottom"
+                app:constraint_referenced_ids="fieldChangeRecordTypeColor, fieldChangeRecordTypeIcon" />
+
             <androidx.cardview.widget.CardView
                 android:id="@+id/fieldChangeRecordTypeCategory"
                 style="@style/InputFieldCard"
@@ -284,7 +299,7 @@
                 android:layout_marginHorizontal="@dimen/edit_screen_field_margin_horizontal"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/fieldChangeRecordTypeIcon">
+                app:layout_constraintTop_toBottomOf="@id/barrierChangeRecordTypeMain">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -411,8 +426,8 @@
                 android:layout_width="0dp"
                 android:layout_height="@dimen/input_field_height"
                 android:layout_marginHorizontal="@dimen/edit_screen_field_margin_horizontal"
-                app:layout_constraintEnd_toEndOf="parent"
                 android:layout_marginTop="4dp"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/inputChangeRecordTypeNote">
 
