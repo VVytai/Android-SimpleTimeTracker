@@ -399,6 +399,9 @@ class RecordsFilterUpdateInteractor @Inject constructor(
         when (type) {
             is RecordFilterType.Activity -> filters.removeAll { it is RecordsFilter.Category }
             is RecordFilterType.Category -> filters.removeAll { it is RecordsFilter.Activity }
+            is RecordFilterType.Multitask,
+            is RecordFilterType.Untracked,
+            -> filters.removeAll { it is RecordsFilter.ManuallyFiltered }
             else -> Unit
         }
         return filters
