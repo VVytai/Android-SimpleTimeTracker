@@ -16,6 +16,7 @@ data class RecordsCalendarViewData(
 
     data class Points(
         val legend: String,
+        val highlighted: Boolean,
         val data: List<Point>,
     )
 

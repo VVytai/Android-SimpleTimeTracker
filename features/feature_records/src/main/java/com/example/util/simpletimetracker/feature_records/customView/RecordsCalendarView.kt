@@ -24,10 +24,6 @@ import androidx.core.content.withStyledAttributes
 import androidx.core.graphics.drawable.toDrawable
 import androidx.core.graphics.withTranslation
 import com.example.util.simpletimetracker.core.utils.CalendarIntersectionCalculator
-import com.example.util.simpletimetracker.feature_views.ScaleDetector
-import com.example.util.simpletimetracker.feature_views.SingleTapDetector
-import com.example.util.simpletimetracker.feature_views.SwipeDetector
-import com.example.util.simpletimetracker.feature_views.isHorizontal
 import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.record.RecordViewData
@@ -35,11 +31,15 @@ import com.example.util.simpletimetracker.feature_base_adapter.runningRecord.Run
 import com.example.util.simpletimetracker.feature_records.R
 import com.example.util.simpletimetracker.feature_views.ColorUtils
 import com.example.util.simpletimetracker.feature_views.IconView
+import com.example.util.simpletimetracker.feature_views.ScaleDetector
+import com.example.util.simpletimetracker.feature_views.SingleTapDetector
+import com.example.util.simpletimetracker.feature_views.SwipeDetector
 import com.example.util.simpletimetracker.feature_views.extension.dpToPx
 import com.example.util.simpletimetracker.feature_views.extension.getBitmapFromView
 import com.example.util.simpletimetracker.feature_views.extension.measureExactly
 import com.example.util.simpletimetracker.feature_views.extension.setForegroundSpan
 import com.example.util.simpletimetracker.feature_views.extension.toSpannableString
+import com.example.util.simpletimetracker.feature_views.isHorizontal
 import com.example.util.simpletimetracker.feature_views.viewData.RecordTypeIcon
 import kotlinx.parcelize.Parcelize
 import java.util.concurrent.TimeUnit
@@ -667,6 +667,11 @@ class RecordsCalendarView @JvmOverloads constructor(
         canvas.translate(0f, panFactor)
 
         data.forEachIndexed { index, column ->
+            legendTopTextPaint.color = if (column.highlighted) {
+                currentTimeLegendColor
+            } else {
+                legendTextColor
+            }
             currentText = column.legend
             textWidth = legendTopTextPaint.measureText(currentText)
             textLeft = chartLeftBound +
@@ -826,11 +831,17 @@ class RecordsCalendarView @JvmOverloads constructor(
                         data = RecordsCalendarViewData.Point.Data.RecordData(record),
                     )
                 }.let {
-                    val points = RecordsCalendarViewData.Points("Sun", it)
+                    val points = RecordsCalendarViewData.Points(
+                        legend = "Sun",
+                        highlighted = false,
+                        data = it,
+                    )
                     RecordsCalendarViewData(
                         currentTime = 18 * hourInMillis,
                         startOfDayShift = 0,
-                        points = List(columns) { points },
+                        points = List(columns) { index ->
+                            points.copy(highlighted = index == 0)
+                        },
                         reverseOrder = reverseOrder,
                         shouldDrawTopLegends = true,
                         isMilitary = true,
@@ -866,6 +877,7 @@ class RecordsCalendarView @JvmOverloads constructor(
 
         return Column(
             legend = data.legend,
+            highlighted = data.highlighted,
             data = res,
         )
     }
@@ -1049,6 +1061,7 @@ class RecordsCalendarView @JvmOverloads constructor(
 
     private inner class Column(
         val legend: String,
+        val highlighted: Boolean,
         val data: List<Data>,
     )
 

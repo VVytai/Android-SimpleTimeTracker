@@ -133,6 +133,7 @@ class RecordsViewDataInteractor @Inject constructor(
             ViewDataIntermediate(
                 rangeStart = range.timeStarted,
                 rangeEnd = range.timeEnded,
+                isToday = actualShift == 0,
                 records = data,
             )
         }.let { data ->
@@ -204,6 +205,7 @@ class RecordsViewDataInteractor @Inject constructor(
 
                 RecordsCalendarViewData.Points(
                     legend = legend,
+                    highlighted = column.isToday,
                     data = points,
                 )
             }
@@ -542,6 +544,7 @@ class RecordsViewDataInteractor @Inject constructor(
     private data class ViewDataIntermediate(
         val rangeStart: Long,
         val rangeEnd: Long,
+        val isToday: Boolean,
         val records: List<RecordHolder>,
     )
 
