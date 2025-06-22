@@ -527,6 +527,7 @@ Examplu:<br/>
     <string name="widget_quick_settings_name">Setări rapide</string>
     <string name="widget_load_error">Nu a fost găsit</string>
     <string name="widget_statistics_ignore_new_items">Ignoră elementele noi adăugate ulterior</string>
+    <string name="widget_universal_open_app">Deschide aplicația</string>
 
     <!--  Notification  -->
     <string name="notification_inactivity_title">Memento inactivitate</string>

@@ -527,6 +527,7 @@
     <string name="widget_quick_settings_name">إعدادات سريعة</string>
     <string name="widget_load_error">غير موجود</string>
     <string name="widget_statistics_ignore_new_items">تجاهل العناصر الجديدة التي أُضيفت لاحقًا</string>
+    <string name="widget_universal_open_app">افتح التطبيق</string>
 
     <!--  Notification  -->
     <string name="notification_inactivity_title">مذكر الخمول</string>

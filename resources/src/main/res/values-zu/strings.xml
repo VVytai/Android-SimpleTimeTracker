@@ -527,6 +527,7 @@ Isibonelo:<br/>
     <string name="widget_quick_settings_name">Izilungiselelo ezisheshayo</string>
     <string name="widget_load_error">Akutholakali</string>
     <string name="widget_statistics_ignore_new_items">Yeka izinto ezintsha ezengezwe kamuva</string>
+    <string name="widget_universal_open_app">Vula uhlelo lokusebenza</string>
 
     <!--  Notification  -->
     <string name="notification_inactivity_title">Isikhumbuzi sokungasebenzi</string>

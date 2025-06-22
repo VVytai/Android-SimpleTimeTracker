@@ -527,6 +527,7 @@
     <string name="widget_quick_settings_name">הגדרות מהירות</string>
     <string name="widget_load_error">לא נמצא</string>
     <string name="widget_statistics_ignore_new_items">התעלם מפריטים חדשים שנוספו מאוחר יותר</string>
+    <string name="widget_universal_open_app">פתח אפליקציה</string>
 
     <!--  Notification  -->
     <string name="notification_inactivity_title">תזכורת לחוסר פעילות</string>

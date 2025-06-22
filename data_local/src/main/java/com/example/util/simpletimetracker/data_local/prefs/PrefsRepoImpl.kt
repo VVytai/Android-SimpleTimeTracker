@@ -11,6 +11,7 @@ import com.example.util.simpletimetracker.domain.prefs.repo.PrefsRepo
 import java.util.Calendar
 import javax.inject.Inject
 import javax.inject.Singleton
+import androidx.core.content.edit
 
 @Singleton
 class PrefsRepoImpl @Inject constructor(
@@ -405,13 +406,13 @@ class PrefsRepoImpl @Inject constructor(
     )
 
     override var statisticsDetailStreakType: Int by prefs.delegate(
-        KEY_STATISTICS_DETAIL_STREAK_TYPE, 0
+        KEY_STATISTICS_DETAIL_STREAK_TYPE, 0,
     )
 
     override fun setWidget(widgetId: Int, recordType: Long) {
         val key = KEY_WIDGET + widgetId
         logPrefsDataAccess("set $key")
-        prefs.edit().putLong(key, recordType).apply()
+        prefs.edit { putLong(key, recordType) }
     }
 
     override fun getWidget(widgetId: Int): Long {
@@ -423,7 +424,7 @@ class PrefsRepoImpl @Inject constructor(
     override fun removeWidget(widgetId: Int) {
         val key = KEY_WIDGET + widgetId
         logPrefsDataAccess("remove $key")
-        prefs.edit().remove(key).apply()
+        prefs.edit { remove(key) }
     }
 
     override fun setStatisticsWidget(widgetId: Int, data: StatisticsWidgetData) {
@@ -451,19 +452,17 @@ class PrefsRepoImpl @Inject constructor(
             StatisticsWidgetData.FilterType.SELECT -> 1
         }
 
-        prefs.edit()
-            .putInt(KEY_STATISTICS_WIDGET_FILTER_TYPE + widgetId, filterTypeData)
-            .putInt(KEY_STATISTICS_WIDGET_RANGE + widgetId, rangeData)
-            .apply {
-                if (rangeDataLastDays != null) {
-                    putInt(KEY_STATISTICS_WIDGET_RANGE_LAST_DAYS + widgetId, rangeDataLastDays)
-                }
+        prefs.edit {
+            putInt(KEY_STATISTICS_WIDGET_FILTER_TYPE + widgetId, filterTypeData)
+            putInt(KEY_STATISTICS_WIDGET_RANGE + widgetId, rangeData)
+            if (rangeDataLastDays != null) {
+                putInt(KEY_STATISTICS_WIDGET_RANGE_LAST_DAYS + widgetId, rangeDataLastDays)
             }
-            .putStringSet(KEY_STATISTICS_WIDGET_FILTERED_TYPES + widgetId, filteredTypesData)
-            .putStringSet(KEY_STATISTICS_WIDGET_FILTERED_CATEGORIES + widgetId, filteredCategoriesData)
-            .putStringSet(KEY_STATISTICS_WIDGET_FILTERED_TAGS + widgetId, filteredTagsData)
-            .putInt(KEY_STATISTICS_WIDGET_FILTERING_TYPE + widgetId, filteringType)
-            .apply()
+            putStringSet(KEY_STATISTICS_WIDGET_FILTERED_TYPES + widgetId, filteredTypesData)
+            putStringSet(KEY_STATISTICS_WIDGET_FILTERED_CATEGORIES + widgetId, filteredCategoriesData)
+            putStringSet(KEY_STATISTICS_WIDGET_FILTERED_TAGS + widgetId, filteredTagsData)
+            putInt(KEY_STATISTICS_WIDGET_FILTERING_TYPE + widgetId, filteringType)
+        }
     }
 
     override fun getStatisticsWidget(widgetId: Int): StatisticsWidgetData {
@@ -519,14 +518,14 @@ class PrefsRepoImpl @Inject constructor(
 
     override fun removeStatisticsWidget(widgetId: Int) {
         logPrefsDataAccess("removeStatisticsWidget $widgetId")
-        prefs.edit()
-            .remove(KEY_STATISTICS_WIDGET_FILTER_TYPE + widgetId)
-            .remove(KEY_STATISTICS_WIDGET_RANGE + widgetId)
-            .remove(KEY_STATISTICS_WIDGET_RANGE_LAST_DAYS + widgetId)
-            .remove(KEY_STATISTICS_WIDGET_FILTERED_TYPES + widgetId)
-            .remove(KEY_STATISTICS_WIDGET_FILTERED_CATEGORIES + widgetId)
-            .remove(KEY_STATISTICS_WIDGET_FILTERED_TAGS + widgetId)
-            .apply()
+        prefs.edit {
+            remove(KEY_STATISTICS_WIDGET_FILTER_TYPE + widgetId)
+            remove(KEY_STATISTICS_WIDGET_RANGE + widgetId)
+            remove(KEY_STATISTICS_WIDGET_RANGE_LAST_DAYS + widgetId)
+            remove(KEY_STATISTICS_WIDGET_FILTERED_TYPES + widgetId)
+            remove(KEY_STATISTICS_WIDGET_FILTERED_CATEGORIES + widgetId)
+            remove(KEY_STATISTICS_WIDGET_FILTERED_TAGS + widgetId)
+        }
     }
 
     override fun setQuickSettingsWidget(widgetId: Int, data: QuickSettingsWidgetType) {
@@ -536,7 +535,7 @@ class PrefsRepoImpl @Inject constructor(
             is QuickSettingsWidgetType.AllowMultitasking -> 0L
             is QuickSettingsWidgetType.ShowRecordTagSelection -> 1L
         }
-        prefs.edit().putLong(key, type).apply()
+        prefs.edit { putLong(key, type) }
     }
 
     override fun getQuickSettingsWidget(widgetId: Int): QuickSettingsWidgetType {
@@ -552,30 +551,32 @@ class PrefsRepoImpl @Inject constructor(
     override fun removeQuickSettingsWidget(widgetId: Int) {
         val key = KEY_QUICK_SETTINGS_WIDGET_TYPE + widgetId
         logPrefsDataAccess("remove $key")
-        prefs.edit().remove(key).apply()
+        prefs.edit { remove(key) }
     }
 
     override fun clear() {
-        prefs.edit().clear().apply()
+        prefs.edit { clear() }
     }
 
     override fun clearDefaultTypesHidden() {
-        prefs.edit().remove(KEY_DEFAULT_TYPES_HIDDEN).apply()
+        prefs.edit { remove(KEY_DEFAULT_TYPES_HIDDEN) }
     }
 
     override fun clearRetroactiveMultitaskingHidden() {
-        prefs.edit().remove(KEY_RETROACTIVE_MULTITASKING_HINT_WAS_HIDDEN).apply()
+        prefs.edit { remove(KEY_RETROACTIVE_MULTITASKING_HINT_WAS_HIDDEN) }
     }
 
     override fun clearPomodoroSettingsClick() {
-        prefs.edit().remove(KEY_POMODORO_FOCUS_TIME).apply()
-        prefs.edit().remove(KEY_POMODORO_BREAK_TIME).apply()
-        prefs.edit().remove(KEY_POMODORO_LONG_BREAK_TIME).apply()
-        prefs.edit().remove(KEY_POMODORO_PERIODS_UNTIL_LONG_BREAK).apply()
+        prefs.edit {
+            remove(KEY_POMODORO_FOCUS_TIME)
+            remove(KEY_POMODORO_BREAK_TIME)
+            remove(KEY_POMODORO_LONG_BREAK_TIME)
+            remove(KEY_POMODORO_PERIODS_UNTIL_LONG_BREAK)
+        }
     }
 
     override fun clearDurationSuggestionsPrepopulated() {
-        prefs.edit().remove(KEY_DURATION_SUGGESTIONS_WAS_PREPOPULATED).apply()
+        prefs.edit { remove(KEY_DURATION_SUGGESTIONS_WAS_PREPOPULATED) }
     }
 
     override fun hasValueSaved(key: String): Boolean {

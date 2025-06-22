@@ -8,11 +8,14 @@ import com.example.util.simpletimetracker.domain.record.model.Record
 import com.example.util.simpletimetracker.domain.recordType.model.RecordType
 import com.example.util.simpletimetracker.domain.record.model.RunningRecord
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
+import com.example.util.simpletimetracker.feature_base_adapter.button.ButtonViewData
+import com.example.util.simpletimetracker.feature_base_adapter.emptySpace.EmptySpaceViewData
 import com.example.util.simpletimetracker.feature_base_adapter.hint.HintViewData
 import com.example.util.simpletimetracker.feature_views.viewData.RecordTypeIcon
 import com.example.util.simpletimetracker.feature_widget.R
 import com.example.util.simpletimetracker.feature_widget.universal.customView.IconStackData
 import com.example.util.simpletimetracker.feature_widget.universal.customView.WidgetUniversalViewData
+import com.example.util.simpletimetracker.feature_widget.universal.viewData.WidgetUniversalButtonViewData
 import javax.inject.Inject
 
 class WidgetUniversalViewDataMapper @Inject constructor(
@@ -99,5 +102,31 @@ class WidgetUniversalViewDataMapper @Inject constructor(
             R.string.running_records_empty
         }.let(resourceRepo::getString)
         return HintViewData(text = text)
+    }
+
+    fun mapOpenInAppButton(
+        isDarkTheme: Boolean,
+    ): List<ViewHolderType> {
+        val result = mutableListOf<ViewHolderType>()
+
+        result += EmptySpaceViewData(
+            id = "openInAppButtonViewData".hashCode().toLong(),
+            width = EmptySpaceViewData.ViewDimension.MatchParent,
+            height = EmptySpaceViewData.ViewDimension.ExactSizeDp(24),
+        )
+        result += ButtonViewData(
+            id = WidgetUniversalButtonViewData,
+            text = resourceRepo.getString(R.string.widget_universal_open_app),
+            icon = ButtonViewData.Icon.Present(
+                icon = R.drawable.app_ic_launcher_monochrome,
+                iconColor = resourceRepo.getThemedAttr(R.attr.appLightTextColor, isDarkTheme),
+                iconBackgroundColor = resourceRepo.getThemedAttr(R.attr.appInactiveColor, isDarkTheme),
+            ),
+            backgroundColor = resourceRepo.getThemedAttr(R.attr.appActiveColor, isDarkTheme),
+            isEnabled = true,
+            marginHorizontalDp = 4,
+        )
+
+        return result
     }
 }

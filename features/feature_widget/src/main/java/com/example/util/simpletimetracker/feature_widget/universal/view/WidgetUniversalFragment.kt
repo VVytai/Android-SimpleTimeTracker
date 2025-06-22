@@ -9,18 +9,23 @@ import androidx.fragment.app.viewModels
 import com.example.util.simpletimetracker.core.base.BaseFragment
 import com.example.util.simpletimetracker.core.dialog.OnTagSelectedListener
 import com.example.util.simpletimetracker.core.utils.InsetConfiguration
+import com.example.util.simpletimetracker.core.utils.doOnApplyWindowInsetsListener
+import com.example.util.simpletimetracker.core.utils.getNavBarInsets
 import com.example.util.simpletimetracker.core.viewData.RecordTypeSuggestionType
 import com.example.util.simpletimetracker.feature_base_adapter.BaseRecyclerAdapter
 import com.example.util.simpletimetracker.feature_base_adapter.activityFilter.createActivityFilterAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.activityFilter.createActivityFilterAddAdapterDelegate
+import com.example.util.simpletimetracker.feature_base_adapter.button.createButtonAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.divider.createDividerAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.empty.createEmptyAdapterDelegate
+import com.example.util.simpletimetracker.feature_base_adapter.emptySpace.createEmptySpaceAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.hint.createHintAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.loader.createLoaderAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.recordType.createRecordTypeAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.recordTypeSpecial.createRunningRecordTypeSpecialAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.recordTypeSuggestion.createRecordTypeSuggestionAdapterDelegate
-import com.example.util.simpletimetracker.feature_widget.universal.activity.viewModel.WidgetUniversalViewModel
+import com.example.util.simpletimetracker.feature_views.extension.pxToDp
+import com.example.util.simpletimetracker.feature_widget.universal.viewModel.WidgetUniversalViewModel
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
@@ -36,7 +41,7 @@ class WidgetUniversalFragment :
         Binding::inflate
 
     override var insetConfiguration: InsetConfiguration =
-        InsetConfiguration.ApplyToView { binding.rvWidgetUniversalRecordType }
+        InsetConfiguration.DoNotApply
 
     private val viewModel: WidgetUniversalViewModel by viewModels()
 
@@ -47,6 +52,8 @@ class WidgetUniversalFragment :
             createRecordTypeAdapterDelegate(viewModel::onRecordTypeClick),
             createRecordTypeSuggestionAdapterDelegate(RecordTypeSuggestionType, viewModel::onRecordTypeClick),
             createRunningRecordTypeSpecialAdapterDelegate(viewModel::onSpecialRecordTypeClick),
+            createButtonAdapterDelegate(viewModel::onButtonClick),
+            createEmptySpaceAdapterDelegate(),
             createDividerAdapterDelegate(),
             createEmptyAdapterDelegate(),
             createLoaderAdapterDelegate(),
@@ -62,6 +69,10 @@ class WidgetUniversalFragment :
                 flexWrap = FlexWrap.WRAP
             }
             adapter = typesAdapter
+        }
+
+        view?.doOnApplyWindowInsetsListener {
+            viewModel.onChangeInsets(navBarHeight = it.getNavBarInsets().bottom.pxToDp())
         }
     }
 

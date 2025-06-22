@@ -527,6 +527,7 @@ Contoh:<br/>
     <string name="widget_quick_settings_name">Pengaturan cepat</string>
     <string name="widget_load_error">Tidak ditemukan</string>
     <string name="widget_statistics_ignore_new_items">Abaikan item baru yang ditambahkan nanti</string>
+    <string name="widget_universal_open_app">Buka aplikasi</string>
 
     <!--  Notification  -->
     <string name="notification_inactivity_title">Pengingat tidak berkegiatan</string>

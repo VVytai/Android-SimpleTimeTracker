@@ -527,6 +527,7 @@ CSV dosyası virgülle ayrılmış şu sütunları içermelidir:<br/>
     <string name="widget_quick_settings_name">Hızlı Ayarlar</string>
     <string name="widget_load_error">Bulunamadı</string>
     <string name="widget_statistics_ignore_new_items">Daha sonra eklenen yeni öğeleri yok say</string>
+    <string name="widget_universal_open_app">Uygulamayı aç</string>
 
     <!--  Notification  -->
     <string name="notification_inactivity_title">İnaktivite hatırlatıcısı</string>

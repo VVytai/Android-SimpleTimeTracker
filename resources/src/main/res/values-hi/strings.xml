@@ -527,6 +527,7 @@ csv फ़ाइल में कॉमा से अलग किए गए य
     <string name="widget_quick_settings_name">त्वरित सेटिंग</string>
     <string name="widget_load_error">नहीं मिला</string>
     <string name="widget_statistics_ignore_new_items">बाद में जोड़े गए नए आइटम्स को नज़रअंदाज़ करें</string>
+    <string name="widget_universal_open_app">ऐप खोलें</string>
 
     <!--  Notification  -->
     <string name="notification_inactivity_title">निष्क्रियता अनुस्मारक</string>

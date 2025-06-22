@@ -527,6 +527,7 @@ Exempel:<br/>
     <string name="widget_quick_settings_name">Snabbinställningar</string>
     <string name="widget_load_error">Saknas</string>
     <string name="widget_statistics_ignore_new_items">Ignorera nya objekt som lagts till senare</string>
+    <string name="widget_universal_open_app">Öppna app</string>
 
     <!--  Notification  -->
     <string name="notification_inactivity_title">Inaktivitetspåminnelse</string>

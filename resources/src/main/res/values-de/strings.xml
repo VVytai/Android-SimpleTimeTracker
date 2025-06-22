@@ -527,6 +527,7 @@ Beispiel:<br/>
     <string name="widget_quick_settings_name">Schnelleinstellungen</string>
     <string name="widget_load_error">Nicht gefunden</string>
     <string name="widget_statistics_ignore_new_items">Neue später hinzugefügte Elemente ignorieren</string>
+    <string name="widget_universal_open_app">App öffnen</string>
 
     <!--  Notification  -->
     <string name="notification_inactivity_title">Inaktivitätserinnerung</string>

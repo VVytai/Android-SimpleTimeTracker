@@ -1,4 +1,4 @@
-package com.example.util.simpletimetracker.feature_widget.universal.activity.viewModel
+package com.example.util.simpletimetracker.feature_widget.universal.viewModel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -13,25 +13,28 @@ import com.example.util.simpletimetracker.core.interactor.FilterGoalsByDayOfWeek
 import com.example.util.simpletimetracker.core.interactor.GetCurrentRecordsDurationInteractor
 import com.example.util.simpletimetracker.core.interactor.RecordRepeatInteractor
 import com.example.util.simpletimetracker.core.mapper.RecordTypeViewDataMapper
-import com.example.util.simpletimetracker.domain.extension.orZero
-import com.example.util.simpletimetracker.domain.record.interactor.AddRunningRecordMediator
 import com.example.util.simpletimetracker.domain.activityFilter.interactor.ChangeSelectedActivityFilterMediator
+import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
-import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTypeGoalInteractor
-import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTypeInteractor
+import com.example.util.simpletimetracker.domain.record.interactor.AddRunningRecordMediator
 import com.example.util.simpletimetracker.domain.record.interactor.RemoveRunningRecordMediator
 import com.example.util.simpletimetracker.domain.record.interactor.RunningRecordInteractor
 import com.example.util.simpletimetracker.domain.record.model.RecordDataSelectionDialogResult
-import com.example.util.simpletimetracker.domain.recordType.model.RecordType
 import com.example.util.simpletimetracker.domain.record.model.RunningRecord
+import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTypeGoalInteractor
+import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTypeInteractor
+import com.example.util.simpletimetracker.domain.recordType.model.RecordType
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.activityFilter.ActivityFilterAddViewData
 import com.example.util.simpletimetracker.feature_base_adapter.activityFilter.ActivityFilterViewData
+import com.example.util.simpletimetracker.feature_base_adapter.button.ButtonViewData
 import com.example.util.simpletimetracker.feature_base_adapter.divider.DividerViewData
+import com.example.util.simpletimetracker.feature_base_adapter.emptySpace.EmptySpaceViewData
 import com.example.util.simpletimetracker.feature_base_adapter.loader.LoaderViewData
 import com.example.util.simpletimetracker.feature_base_adapter.recordType.RecordTypeViewData
 import com.example.util.simpletimetracker.feature_base_adapter.recordTypeSpecial.RunningRecordTypeSpecialViewData
 import com.example.util.simpletimetracker.feature_widget.universal.mapper.WidgetUniversalViewDataMapper
+import com.example.util.simpletimetracker.feature_widget.universal.viewData.WidgetUniversalButtonViewData
 import com.example.util.simpletimetracker.navigation.Router
 import com.example.util.simpletimetracker.navigation.params.screen.RecordTagSelectionParams
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -73,6 +76,14 @@ class WidgetUniversalViewModel @Inject constructor(
 
     private var completeTypeJob: Job? = null
     private var completeTypeIds: Set<Long> = emptySet()
+    private var navBarHeightDp: Int = 0
+
+    fun onChangeInsets(navBarHeight: Int) {
+        if (navBarHeightDp != navBarHeight) {
+            navBarHeightDp = navBarHeight
+            updateRecordTypesViewData()
+        }
+    }
 
     fun onRecordTypeClick(item: RecordTypeViewData) {
         viewModelScope.launch {
@@ -133,6 +144,11 @@ class WidgetUniversalViewModel @Inject constructor(
                 updateRecordTypesViewData()
             }
         }
+    }
+
+    fun onButtonClick(data: ButtonViewData) {
+        if (data.id !is WidgetUniversalButtonViewData) return
+        router.startApp()
     }
 
     fun onTagSelected() {
@@ -232,18 +248,28 @@ class WidgetUniversalViewModel @Inject constructor(
             numberOfCards = numberOfCards,
             isDarkTheme = isDarkTheme,
         )
+        val openInAppButtonViewData = widgetUniversalViewDataMapper.mapOpenInAppButton(
+            isDarkTheme = isDarkTheme,
+        )
+        val bottomSpace = EmptySpaceViewData(
+            id = "widgets_universal_nav_bar_space".hashCode().toLong(),
+            height = EmptySpaceViewData.ViewDimension.ExactSizeDp(navBarHeightDp),
+            wrapBefore = true,
+        )
 
-        return mutableListOf<ViewHolderType>().apply {
-            filtersViewData.let(::addAll)
-            suggestionsViewData.let(::addAll)
-            if (recordTypesViewData.isEmpty()) {
-                recordTypeViewDataMapper.mapToEmpty().let(::addAll)
-            } else {
-                recordTypesViewData.let(::addAll)
-                repeatViewData.let(::add)
-                widgetUniversalViewDataMapper.mapToHint(retroactiveTrackingMode).let(::add)
-            }
+        val result = mutableListOf<ViewHolderType>()
+        result += filtersViewData
+        result += suggestionsViewData
+        if (recordTypesViewData.isEmpty()) {
+            result += recordTypeViewDataMapper.mapToEmpty()
+        } else {
+            result += recordTypesViewData
+            result += repeatViewData
+            result += widgetUniversalViewDataMapper.mapToHint(retroactiveTrackingMode)
         }
+        result += openInAppButtonViewData
+        result += bottomSpace
+        return result
     }
 
     companion object {

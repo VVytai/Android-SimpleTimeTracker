@@ -527,6 +527,7 @@ Exemple:<br/>
     <string name="widget_quick_settings_name">Configuració ràpida</string>
     <string name="widget_load_error">No trobat</string>
     <string name="widget_statistics_ignore_new_items">Ignora els elements nous afegits més tard</string>
+    <string name="widget_universal_open_app">Obre l\'aplicació</string>
 
     <!--  Notification  -->
     <string name="notification_inactivity_title">Recordatori d\'inactivitat</string>

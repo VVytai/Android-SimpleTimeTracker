@@ -527,6 +527,7 @@ csv 文件必須包含以逗號分隔的這些列：<br/>
     <string name="widget_quick_settings_name">快速設置</string>
     <string name="widget_load_error">未找到</string>
     <string name="widget_statistics_ignore_new_items">忽略稍後新增的項目</string>
+    <string name="widget_universal_open_app">開啟應用程式</string>
 
     <!--  Notification  -->
     <string name="notification_inactivity_title">無活動提示器</string>
