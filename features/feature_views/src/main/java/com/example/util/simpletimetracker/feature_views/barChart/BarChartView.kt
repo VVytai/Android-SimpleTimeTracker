@@ -8,6 +8,7 @@ import android.graphics.Color
 import android.graphics.LinearGradient
 import android.graphics.Paint
 import android.graphics.Path
+import android.graphics.Rect
 import android.graphics.RectF
 import android.graphics.Shader
 import android.os.Parcelable
@@ -57,6 +58,7 @@ class BarChartView @JvmOverloads constructor(
     // End of attrs
 
     private val bounds: RectF = RectF(0f, 0f, 0f, 0f)
+    private val textBounds: Rect = Rect(0, 0, 0, 0)
     private var radiusArr: FloatArray = floatArrayOf(0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f)
     private var radiusArrNegative: FloatArray = floatArrayOf(0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f)
     private var barPath: Path = Path()
@@ -87,7 +89,7 @@ class BarChartView @JvmOverloads constructor(
     private val selectedBarTextPadding: Int = 6.dpToPx()
     private val selectedBarBackgroundPadding: Int = 4.dpToPx()
     private val selectedBarBackgroundRadius: Float = 4.dpToPx().toFloat()
-    private val selectedBarArrowWidth: Float = 4.dpToPx().toFloat()
+    private val selectedBarArrowWidth: Float = 6.dpToPx().toFloat()
     private var barAnimationScale: Float = 1f
     private val barAnimationDuration: Long = 300L // ms
     private var selectedBarWasShownOnStart: Boolean = false
@@ -601,7 +603,10 @@ class BarChartView @JvmOverloads constructor(
         val barCenterX = barWidth * selectedBar + barWidth / 2
         val pointText = getSelectedBarText(bar)
         val textWidth = selectedBarTextPaint.measureText(pointText)
-        val textHeight = selectedBarTextPaint.fontMetrics.let { it.descent - it.ascent }
+        // Use one static text to avoid height jumps between bars.
+        val textToMeasure = getSelectedBarText(bars.firstOrNull() ?: bar)
+        selectedBarTextPaint.getTextBounds(textToMeasure, 0, textToMeasure.length, textBounds)
+        val textHeight = textBounds.height().toFloat()
 
         val backgroundWidth = textWidth + 2 * selectedBarTextPadding
         val backgroundHeight = textHeight + 2 * selectedBarTextPadding
