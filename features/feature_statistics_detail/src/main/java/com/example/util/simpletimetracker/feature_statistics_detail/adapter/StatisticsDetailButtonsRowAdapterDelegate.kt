@@ -16,10 +16,15 @@ fun createStatisticsDetailButtonsRowAdapterDelegate(
     with(binding.root) {
         item as ViewData
 
-        tag = item.block
         setMargins(top = item.marginTopDp)
-        adapter.replace(item.data)
+        // Replace without animation on reuse for different buttons.
+        if (tag != item.block) {
+            adapter.replaceFast(item.data)
+        } else {
+            adapter.replace(item.data)
+        }
         listener = { onClick(item.block, it) }
+        tag = item.block
     }
 }
 
