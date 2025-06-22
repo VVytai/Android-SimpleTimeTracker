@@ -5,7 +5,6 @@ import com.example.util.simpletimetracker.feature_base_adapter.BaseRecyclerBindi
 import com.example.util.simpletimetracker.feature_base_adapter.RecyclerAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.recordType.createRecordTypeAdapterDelegate
-import com.example.util.simpletimetracker.feature_base_adapter.recordTypeSuggestion.RecordTypeSuggestionViewData
 import com.example.util.simpletimetracker.feature_views.TransitionNames
 import com.example.util.simpletimetracker.feature_views.extension.layoutInflater
 import com.example.util.simpletimetracker.feature_base_adapter.databinding.ItemRecordTypeLayoutBinding as BaseBinding
@@ -15,7 +14,7 @@ import com.example.util.simpletimetracker.feature_base_adapter.recordTypeSuggest
 // Wrapper around RecordType delegate.
 // Passes all calls to other delegate.
 fun createRecordTypeSuggestionAdapterDelegate(
-    type: RecordTypeSuggestionViewData.Type,
+    type: ViewData.Type,
     onItemClick: ((BaseViewData) -> Unit)? = null,
     onItemLongClick: ((BaseViewData, Pair<Any, String>) -> Unit)? = null,
     withTransition: Boolean = true,

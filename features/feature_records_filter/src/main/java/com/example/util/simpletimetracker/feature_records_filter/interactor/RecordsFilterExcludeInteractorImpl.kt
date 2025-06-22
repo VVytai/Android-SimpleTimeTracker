@@ -31,7 +31,6 @@ class RecordsFilterExcludeInteractorImpl @Inject constructor(
         type: ExcludeType,
         currentFilters: List<RecordsFilter>,
     ): List<RecordsFilter> {
-        // TODO multitasking filter by Read doesn't work.
         // Shouldn't be possible
         if (id == UNTRACKED_ITEM_ID) return currentFilters
 

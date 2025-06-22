@@ -465,7 +465,6 @@ class RecordsFilterViewDataInteractor @Inject constructor(
                             it.copy(type = CategoryFilteredType)
                         }
                     }
-
                 } else {
                     result += HintViewData(resourceRepo.getString(R.string.change_record_type_categories_empty))
                 }

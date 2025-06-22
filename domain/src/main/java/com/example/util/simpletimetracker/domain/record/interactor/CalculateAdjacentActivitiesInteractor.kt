@@ -5,7 +5,9 @@ import com.example.util.simpletimetracker.domain.record.model.Record
 import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import javax.inject.Inject
 
-class CalculateAdjacentActivitiesInteractor @Inject constructor() {
+class CalculateAdjacentActivitiesInteractor @Inject constructor(
+    private val getMultitaskRecordsInteractor: GetMultitaskRecordsInteractor,
+) {
 
     // TODO count multitask also
     // Doesn't count multitask activities.
@@ -47,7 +49,6 @@ class CalculateAdjacentActivitiesInteractor @Inject constructor() {
         }
     }
 
-    // TODO make more precise calculations?
     fun calculateMultitasking(
         typeId: Long,
         records: List<RecordBase>,
@@ -55,25 +56,14 @@ class CalculateAdjacentActivitiesInteractor @Inject constructor() {
     ): List<CalculationResult> {
         val counts = mutableMapOf<Long, Long>()
 
-        val recordsSorted = records.sortedBy { it.timeStarted }
-        var currentRecord: RecordBase? = null
-        recordsSorted.forEach { record ->
-            val currentTimeStarted = currentRecord?.timeStarted
-            val currentTimeEnded = currentRecord?.timeEnded
-            if (currentTimeStarted != null &&
-                currentTimeEnded != null &&
-                // Find next records that was started after this one but before this one ends.
-                currentTimeStarted <= record.timeStarted &&
-                currentTimeEnded > record.timeStarted &&
-                // Cutoff short intersections.
-                currentTimeEnded - record.timeStarted > 1_000L
-            ) {
-                record.typeIds.firstOrNull()?.let { id ->
+        getMultitaskRecordsInteractor.get(records).forEach { record ->
+            if (typeId !in record.typeIds) return@forEach
+            if (record.duration <= SHORT_MULTITASK_CUTOFF_MS) return@forEach
+
+            record.typeIds.forEach { id ->
+                if (id != typeId) {
                     counts[id] = counts[id].orZero() + 1
                 }
-            }
-            if (typeId in record.typeIds) {
-                currentRecord = record
             }
         }
 
@@ -87,4 +77,8 @@ class CalculateAdjacentActivitiesInteractor @Inject constructor() {
         val typeId: Long,
         val count: Long,
     )
+
+    companion object {
+        private const val SHORT_MULTITASK_CUTOFF_MS = 1_000L
+    }
 }

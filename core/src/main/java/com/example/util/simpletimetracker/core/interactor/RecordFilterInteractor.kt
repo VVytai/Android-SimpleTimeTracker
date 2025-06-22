@@ -17,7 +17,6 @@ import com.example.util.simpletimetracker.domain.record.extension.hasMultitaskFi
 import com.example.util.simpletimetracker.domain.record.extension.hasNoComment
 import com.example.util.simpletimetracker.domain.record.extension.hasUntaggedItem
 import com.example.util.simpletimetracker.domain.record.extension.hasUntrackedFilter
-import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.domain.extension.toRange
 import com.example.util.simpletimetracker.domain.record.interactor.GetMultitaskRecordsInteractor
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
@@ -139,6 +138,11 @@ class RecordFilterInteractor @Inject constructor(
                     .map(RecordBase::toRange)
                 getUntrackedRecordsInteractor.get(range, records)
             }
+            hasMultitask -> {
+                val range = definedRanges.firstOrNull() ?: Range(0, 0)
+                val records = getAllRecords(range, runningRecords)
+                getMultitaskRecordsInteractor.get(records)
+            }
             typeIds.isNotEmpty() && definedRanges.isNotEmpty() -> {
                 val result = mutableMapOf<Long, Record>()
                 definedRanges
@@ -174,17 +178,12 @@ class RecordFilterInteractor @Inject constructor(
             }
             else -> interactor.getAll()
         }.let {
-            // For untracked filter running records are added separately.
-            if (hasUntracked) return@let it
-            val multitaskRecords = if (hasMultitask) {
-                // Need to calculate multitask on all records.
-                val range = definedRanges.firstOrNull() ?: Range(0, 0)
-                val records = getAllRecords(range, runningRecords)
-                getMultitaskRecordsInteractor.get(records)
+            // For these filter running records are added separately.
+            if (filters.hasUntrackedFilter() || filters.hasMultitaskFilter()) {
+                it
             } else {
-                emptyList()
+                it + runningRecords
             }
-            it + multitaskRecords + runningRecords
         }
 
         val duplicationIds: Map<Long, Boolean> = if (filters.hasDuplicationsFilter()) {
@@ -200,7 +199,7 @@ class RecordFilterInteractor @Inject constructor(
 
         fun RecordBase.selectedByActivity(): Boolean {
             if (typeIds.isEmpty()) return true
-            return this.typeIds.firstOrNull().orZero() in typeIds
+            return this.typeIds.any { it in typeIds }
         }
 
         fun RecordBase.filteredByActivity(): Boolean {
