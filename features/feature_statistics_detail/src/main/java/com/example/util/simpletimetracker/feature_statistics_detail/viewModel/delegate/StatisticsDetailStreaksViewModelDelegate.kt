@@ -8,6 +8,7 @@ import com.example.util.simpletimetracker.core.mapper.TimeMapper
 import com.example.util.simpletimetracker.core.view.buttonsRowView.ButtonsRowViewData
 import com.example.util.simpletimetracker.domain.recordType.extension.getDaily
 import com.example.util.simpletimetracker.domain.base.Coordinates
+import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.recordType.model.RecordTypeGoal
 import com.example.util.simpletimetracker.domain.record.model.RecordsFilter
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
@@ -15,7 +16,6 @@ import com.example.util.simpletimetracker.feature_statistics_detail.customView.S
 import com.example.util.simpletimetracker.feature_statistics_detail.interactor.StatisticsDetailGetGoalFromFilterInteractor
 import com.example.util.simpletimetracker.feature_statistics_detail.interactor.StatisticsDetailStreaksInteractor
 import com.example.util.simpletimetracker.feature_statistics_detail.model.StreaksGoal
-import com.example.util.simpletimetracker.feature_statistics_detail.model.StreaksType
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailStreaksGoalViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailStreaksTypeViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailStreaksViewData
@@ -27,6 +27,7 @@ import javax.inject.Inject
 class StatisticsDetailStreaksViewModelDelegate @Inject constructor(
     private val router: Router,
     private val timeMapper: TimeMapper,
+    private val prefsInteractor: PrefsInteractor,
     private val streaksInteractor: StatisticsDetailStreaksInteractor,
     private val statisticsDetailGetGoalFromFilterInteractor: StatisticsDetailGetGoalFromFilterInteractor,
 ) : StatisticsDetailViewModelDelegate, ViewModelDelegate() {
@@ -42,7 +43,6 @@ class StatisticsDetailStreaksViewModelDelegate @Inject constructor(
     }
 
     private var parent: StatisticsDetailViewModelDelegate.Parent? = null
-    private var streaksType: StreaksType = StreaksType.LONGEST
     private var streaksGoal: StreaksGoal = StreaksGoal.ANY
     private var dailyGoal: Result<RecordTypeGoal?>? = null
     private var compareDailyGoal: Result<RecordTypeGoal?>? = null
@@ -62,7 +62,7 @@ class StatisticsDetailStreaksViewModelDelegate @Inject constructor(
     }
 
     @Suppress("MemberVisibilityCanBePrivate")
-    fun updateStreaksTypeViewData() {
+    fun updateStreaksTypeViewData() = delegateScope.launch {
         streaksTypeViewData.set(loadStreaksTypeViewData())
         parent?.updateContent()
     }
@@ -73,9 +73,9 @@ class StatisticsDetailStreaksViewModelDelegate @Inject constructor(
         compareDailyGoal = Result.success(getDailyGoalType(parent.comparisonFilter))
     }
 
-    fun onStreaksTypeClick(viewData: ButtonsRowViewData) {
-        if (viewData !is StatisticsDetailStreaksTypeViewData) return
-        streaksType = viewData.type
+    fun onStreaksTypeClick(viewData: ButtonsRowViewData) = delegateScope.launch {
+        if (viewData !is StatisticsDetailStreaksTypeViewData) return@launch
+        prefsInteractor.setStatisticsStreaksType(viewData.type)
         updateStreaksTypeViewData()
         updateStreaksViewData()
     }
@@ -141,14 +141,15 @@ class StatisticsDetailStreaksViewModelDelegate @Inject constructor(
             showComparison = parent.comparisonFilter.isNotEmpty(),
             rangeLength = parent.rangeLength,
             rangePosition = parent.rangePosition,
-            streaksType = streaksType,
+            streaksType = prefsInteractor.getStatisticsStreaksType(),
             streaksGoal = streaksGoal,
             goal = getDailyGoal(),
             compareGoal = getCompareDailyGoal(),
         )
     }
 
-    private fun loadStreaksTypeViewData(): List<ViewHolderType> {
+    private suspend fun loadStreaksTypeViewData(): List<ViewHolderType> {
+        val streaksType = prefsInteractor.getStatisticsStreaksType()
         return streaksInteractor.mapToStreaksTypeViewData(streaksType)
     }
 

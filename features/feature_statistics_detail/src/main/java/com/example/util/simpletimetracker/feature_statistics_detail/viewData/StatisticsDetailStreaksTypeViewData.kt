@@ -1,10 +1,10 @@
 package com.example.util.simpletimetracker.feature_statistics_detail.viewData
 
 import com.example.util.simpletimetracker.core.view.buttonsRowView.ButtonsRowViewData
-import com.example.util.simpletimetracker.feature_statistics_detail.model.StreaksType
+import com.example.util.simpletimetracker.domain.statistics.model.StatisticsStreaksType
 
 data class StatisticsDetailStreaksTypeViewData(
-    val type: StreaksType,
+    val type: StatisticsStreaksType,
     override val name: String,
     override val isSelected: Boolean,
 ) : ButtonsRowViewData() {

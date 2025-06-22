@@ -73,6 +73,7 @@ import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Compani
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_STATISTICS_DETAIL_RANGE_CUSTOM_END
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_STATISTICS_DETAIL_RANGE_CUSTOM_START
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_STATISTICS_DETAIL_RANGE_LAST_DAYS
+import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_STATISTICS_DETAIL_STREAK_TYPE
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_STATISTICS_RANGE
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_STATISTICS_RANGE_CUSTOM_END
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_STATISTICS_RANGE_CUSTOM_START
@@ -226,6 +227,7 @@ class BackupPrefsRepo @Inject constructor(
             PrefsProcessor(KEY_IS_ARCHIVE_SEARCH_ENABLED, ::isArchiveSearchEnabled),
             PrefsProcessor(KEY_IS_COMMENT_SELECTION_SUGGESTIONS_ENABLED, ::isCommentSelectionSuggestionsEnabled),
             PrefsProcessor(KEY_DURATION_SUGGESTIONS_WAS_PREPOPULATED, ::durationSuggestionsWasPrepopulated),
+            PrefsProcessor(KEY_STATISTICS_DETAIL_STREAK_TYPE, ::statisticsDetailStreakType),
         )
     }
 

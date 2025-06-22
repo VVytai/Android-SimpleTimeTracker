@@ -14,6 +14,7 @@ import com.example.util.simpletimetracker.domain.widget.model.QuickSettingsWidge
 import com.example.util.simpletimetracker.domain.record.model.Range
 import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
 import com.example.util.simpletimetracker.domain.record.model.RepeatButtonType
+import com.example.util.simpletimetracker.domain.statistics.model.StatisticsStreaksType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -897,6 +898,21 @@ class PrefsInteractor @Inject constructor(
 
     suspend fun setDurationSuggestionsWasPrepopulated(value: Boolean) = withContext(Dispatchers.IO) {
         prefsRepo.durationSuggestionsWasPrepopulated = value
+    }
+
+    suspend fun getStatisticsStreaksType(): StatisticsStreaksType = withContext(Dispatchers.IO) {
+        when (prefsRepo.statisticsDetailStreakType) {
+            0 -> StatisticsStreaksType.LONGEST
+            1 -> StatisticsStreaksType.LATEST
+            else -> StatisticsStreaksType.LONGEST
+        }
+    }
+
+    suspend fun setStatisticsStreaksType(type: StatisticsStreaksType) = withContext(Dispatchers.IO) {
+        prefsRepo.statisticsDetailStreakType = when (type) {
+            StatisticsStreaksType.LONGEST -> 0
+            StatisticsStreaksType.LATEST -> 1
+        }
     }
 
     suspend fun clear() = withContext(Dispatchers.IO) {

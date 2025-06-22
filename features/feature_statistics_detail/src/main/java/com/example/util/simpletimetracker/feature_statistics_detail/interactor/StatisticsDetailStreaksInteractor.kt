@@ -20,7 +20,7 @@ import com.example.util.simpletimetracker.feature_statistics_detail.customView.S
 import com.example.util.simpletimetracker.feature_statistics_detail.customView.SeriesView
 import com.example.util.simpletimetracker.feature_statistics_detail.mapper.StatisticsDetailViewDataMapper
 import com.example.util.simpletimetracker.feature_statistics_detail.model.StreaksGoal
-import com.example.util.simpletimetracker.feature_statistics_detail.model.StreaksType
+import com.example.util.simpletimetracker.domain.statistics.model.StatisticsStreaksType
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailCardInternalViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailStreaksGoalViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailStreaksTypeViewData
@@ -68,7 +68,7 @@ class StatisticsDetailStreaksInteractor @Inject constructor(
         showComparison: Boolean,
         rangeLength: RangeLength,
         rangePosition: Int,
-        streaksType: StreaksType,
+        streaksType: StatisticsStreaksType,
         streaksGoal: StreaksGoal,
         goal: RecordTypeGoal?,
         compareGoal: RecordTypeGoal?,
@@ -168,11 +168,11 @@ class StatisticsDetailStreaksInteractor @Inject constructor(
     }
 
     fun mapToStreaksTypeViewData(
-        streaksType: StreaksType,
+        streaksType: StatisticsStreaksType,
     ): List<ViewHolderType> {
         val types = listOf(
-            StreaksType.LONGEST,
-            StreaksType.LATEST,
+            StatisticsStreaksType.LONGEST,
+            StatisticsStreaksType.LATEST,
         )
 
         return types.map {
@@ -211,10 +211,10 @@ class StatisticsDetailStreaksInteractor @Inject constructor(
         }
     }
 
-    private fun mapToStreakTypeName(streaksType: StreaksType): String {
+    private fun mapToStreakTypeName(streaksType: StatisticsStreaksType): String {
         return when (streaksType) {
-            StreaksType.LONGEST -> R.string.statistics_detail_streaks_longest
-            StreaksType.LATEST -> R.string.statistics_detail_streaks_latest
+            StatisticsStreaksType.LONGEST -> R.string.statistics_detail_streaks_longest
+            StatisticsStreaksType.LATEST -> R.string.statistics_detail_streaks_latest
         }.let(resourceRepo::getString)
     }
 
@@ -231,7 +231,7 @@ class StatisticsDetailStreaksInteractor @Inject constructor(
         rangeLength: RangeLength,
         firstDayOfWeek: DayOfWeek,
         startOfDayShift: Long,
-        streaksType: StreaksType,
+        streaksType: StatisticsStreaksType,
         streaksGoal: StreaksGoal,
         goal: RecordTypeGoal?,
     ): IntermediateData {
@@ -281,7 +281,7 @@ class StatisticsDetailStreaksInteractor @Inject constructor(
         records: List<RecordBase>,
         firstDayOfWeek: DayOfWeek,
         startOfDayShift: Long,
-        streaksType: StreaksType,
+        streaksType: StatisticsStreaksType,
         streaksGoal: StreaksGoal,
         goal: RecordTypeGoal?,
         rangeLength: RangeLength,
@@ -380,8 +380,8 @@ class StatisticsDetailStreaksInteractor @Inject constructor(
             }
         }
         when (streaksType) {
-            StreaksType.LONGEST -> data.sortByDescending { it.value }
-            StreaksType.LATEST -> data.sortByDescending { it.streakEnd }
+            StatisticsStreaksType.LONGEST -> data.sortByDescending { it.value }
+            StatisticsStreaksType.LATEST -> data.sortByDescending { it.streakEnd }
         }
         val rangeCurrentData = data.take(MAX_STREAKS_IN_CHART)
         val calendarData = mapDurationsToCalendarData(
