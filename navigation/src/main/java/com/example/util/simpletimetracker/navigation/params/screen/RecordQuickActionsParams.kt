@@ -5,8 +5,8 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class RecordQuickActionsParams(
-    val type: Type? = null,
-    val preview: Preview? = null,
+    val type: Type,
+    val preview: Preview,
 ) : ScreenParams, Parcelable {
 
     sealed interface Type : Parcelable {
@@ -34,4 +34,15 @@ data class RecordQuickActionsParams(
         val iconId: RecordTypeIconParams,
         val color: Int,
     ) : Parcelable
+
+    companion object {
+        val Empty = RecordQuickActionsParams(
+            type = Type.RecordTracked(0),
+            preview = Preview(
+                name = "",
+                iconId = RecordTypeIconParams.Text(""),
+                color = 0,
+            ),
+        )
+    }
 }

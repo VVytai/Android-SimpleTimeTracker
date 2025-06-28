@@ -94,7 +94,7 @@ class RecordQuickActionsViewModel @Inject constructor(
     }
 
     fun onHintClick() {
-        val hintData = state.value?.hintData ?: return
+        val hintData = state.value?.helpData ?: return
         if (hintData.isEmpty()) return
         val params = HelpDialogParams(
             title = resourceRepo.getString(R.string.change_record_actions_hint),

@@ -56,7 +56,7 @@ class RecordQuickActionsDialogFragment :
     }
 
     private val params: RecordQuickActionsParams by fragmentArgumentDelegate(
-        key = ARGS_PARAMS, default = RecordQuickActionsParams(),
+        key = ARGS_PARAMS, default = RecordQuickActionsParams.Empty,
     )
     private var listener: RecordQuickActionDialogListener? = null
 
@@ -106,9 +106,29 @@ class RecordQuickActionsDialogFragment :
 
     private fun updateState(state: RecordQuickActionsState) = with(binding) {
         contentAdapter.replace(state.buttons)
-        btnRecordQuickActionsHint.isVisible = state.hintData.isNotEmpty()
-        hintRecordQuickActionsMultiselect.isVisible = state.multiSelectHint.isNotEmpty()
-        hintRecordQuickActionsMultiselect.itemText = state.multiSelectHint
+        btnRecordQuickActionsHint.isVisible = state.helpData.isNotEmpty()
+        setHintData(state.hintData)
+    }
+
+    private fun setHintData(data: RecordQuickActionsState.Hint?) = with(binding) {
+        dividerRecordQuickActions.isVisible = data != null
+        hintRecordQuickActionsMultiselect.isVisible = data is RecordQuickActionsState.Hint.MultiSelect
+        hintRecordQuickActionsSelected.isVisible = data is RecordQuickActionsState.Hint.Record
+
+        when (data) {
+            is RecordQuickActionsState.Hint.Record -> {
+                hintRecordQuickActionsSelected.itemName = data.name
+                hintRecordQuickActionsSelected.itemIcon = data.iconId
+                hintRecordQuickActionsSelected.itemColor = data.color
+                hintRecordQuickActionsSelected.itemTimeStarted = data.timeStarted
+                hintRecordQuickActionsSelected.itemTimeEnded = data.timeEnded.orEmpty()
+                hintRecordQuickActionsSelected.itemDuration = data.duration
+            }
+            is RecordQuickActionsState.Hint.MultiSelect -> {
+                hintRecordQuickActionsMultiselect.itemText = data.hint
+            }
+            null -> Unit
+        }
     }
 
     private fun onActionComplete() {

@@ -194,7 +194,7 @@ class RecordViewDataMapper @Inject constructor(
         )
     }
 
-    private fun mapDuration(
+    fun mapDuration(
         timeStarted: Long,
         timeEnded: Long,
         showSeconds: Boolean,

@@ -2,7 +2,10 @@ package com.example.util.simpletimetracker.feature_dialogs.recordQuickActions.in
 
 import android.text.SpannableStringBuilder
 import androidx.core.text.bold
+import com.example.util.simpletimetracker.core.extension.toViewData
 import com.example.util.simpletimetracker.core.mapper.RecordQuickActionMapper
+import com.example.util.simpletimetracker.core.mapper.RecordViewDataMapper
+import com.example.util.simpletimetracker.core.mapper.TimeMapper
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.RecordInteractor
@@ -25,7 +28,9 @@ import com.example.util.simpletimetracker.navigation.params.screen.RecordQuickAc
 import javax.inject.Inject
 
 class RecordQuickActionsViewDataInteractor @Inject constructor(
+    private val timeMapper: TimeMapper,
     private val resourceRepo: ResourceRepo,
+    private val recordViewDataMapper: RecordViewDataMapper,
     private val prefsInteractor: PrefsInteractor,
     private val recordInteractor: RecordInteractor,
     private val runningRecordInteractor: RunningRecordInteractor,
@@ -41,7 +46,6 @@ class RecordQuickActionsViewDataInteractor @Inject constructor(
             is Type.RecordTracked -> recordInteractor.get(params.id)
             is Type.RecordUntracked -> null
             is Type.RecordRunning -> runningRecordInteractor.get(params.id)
-            null -> null
         }
     }
 
@@ -80,6 +84,9 @@ class RecordQuickActionsViewDataInteractor @Inject constructor(
         extra: RecordQuickActionsParams,
     ): RecordQuickActionsState {
         val isDarkTheme = prefsInteractor.getDarkMode()
+        val useMilitaryTime = prefsInteractor.getUseMilitaryTimeFormat()
+        val showSeconds = prefsInteractor.getShowSeconds()
+        val useProportionalMinutes = prefsInteractor.getUseProportionalMinutes()
         val retroactiveTrackingModeEnabled = prefsInteractor.getRetroactiveTrackingMode()
         val multiSelectEnabled = recordsContainerMultiselectInteractor.isEnabled
         val canContinue = !retroactiveTrackingModeEnabled
@@ -106,16 +113,22 @@ class RecordQuickActionsViewDataInteractor @Inject constructor(
         val buttons = getAllButtons(
             allowedButtons = allowedButtons,
         ).let(::applyWidth)
-        val hintData = mapHint(
+        val helpData = mapHelpData(
             allowedButtons = allowedButtons,
             isDarkTheme = isDarkTheme,
         )
-        val multiSelectHint = mapMultiSelectHint()
+        val hintData = mapHintData(
+            extra = extra,
+            record = getRecord(extra),
+            useMilitaryTime = useMilitaryTime,
+            showSeconds = showSeconds,
+            useProportionalMinutes = useProportionalMinutes,
+        )
 
         return RecordQuickActionsState(
             buttons = buttons,
+            helpData = helpData,
             hintData = hintData,
-            multiSelectHint = multiSelectHint,
         )
     }
 
@@ -219,7 +232,6 @@ class RecordQuickActionsViewDataInteractor @Inject constructor(
                 RecordQuickActionsButton.CHANGE_ACTIVITY,
                 RecordQuickActionsButton.CHANGE_TAG.takeIf { hasTags },
             )
-            null -> emptyList()
         }
     }
 
@@ -268,7 +280,7 @@ class RecordQuickActionsViewDataInteractor @Inject constructor(
         }
     }
 
-    private fun mapHint(
+    private fun mapHelpData(
         allowedButtons: List<RecordQuickActionsButton>,
         isDarkTheme: Boolean,
     ): CharSequence {
@@ -306,25 +318,111 @@ class RecordQuickActionsViewDataInteractor @Inject constructor(
         return builder
     }
 
-    private fun mapMultiSelectHint(): String {
+    private fun mapHintData(
+        extra: RecordQuickActionsParams,
+        record: RecordBase?,
+        useMilitaryTime: Boolean,
+        showSeconds: Boolean,
+        useProportionalMinutes: Boolean,
+    ): RecordQuickActionsState.Hint? {
         return if (recordsContainerMultiselectInteractor.isEnabled) {
-            // Ex. "Selected: 5 Records"
-            val recordsSelectedCount = recordsContainerMultiselectInteractor.selectedRecordIds.size
-            val recordsSelectedString = resourceRepo.getString(
-                R.string.separator_template,
-                recordsSelectedCount,
-                resourceRepo.getQuantityString(
-                    R.plurals.statistics_detail_times_tracked,
-                    recordsSelectedCount,
-                ),
-            )
-            resourceRepo.getString(
-                R.string.separator_template,
-                resourceRepo.getString(R.string.something_selected),
-                recordsSelectedString,
-            )
+            mapMultiSelectHint()
         } else {
-            ""
+            mapSelectedRecordHint(
+                extra = extra,
+                record = record,
+                useMilitaryTime = useMilitaryTime,
+                showSeconds = showSeconds,
+                useProportionalMinutes = useProportionalMinutes,
+            )
         }
+    }
+
+    private fun mapSelectedRecordHint(
+        extra: RecordQuickActionsParams,
+        record: RecordBase?,
+        useMilitaryTime: Boolean,
+        showSeconds: Boolean,
+        useProportionalMinutes: Boolean,
+    ): RecordQuickActionsState.Hint.Record? {
+        fun formatRecordDuration(timeStarted: Long, timeEnded: Long): String {
+            return timeMapper.formatInterval(
+                interval = recordViewDataMapper.mapDuration(
+                    timeStarted = timeStarted,
+                    timeEnded = timeEnded,
+                    showSeconds = showSeconds,
+                ),
+                forceSeconds = showSeconds,
+                useProportionalMinutes = useProportionalMinutes,
+            )
+        }
+
+        fun formatRunningDuration(timeStarted: Long): String {
+            return timeMapper.formatInterval(
+                interval = System.currentTimeMillis() - timeStarted,
+                forceSeconds = true,
+                useProportionalMinutes = false,
+            )
+        }
+
+        val timeStarted: Long
+        val timeEnded: Long?
+        val duration: String
+
+        when (val type = extra.type) {
+            is Type.RecordTracked -> {
+                timeStarted = record?.timeStarted ?: return null
+                timeEnded = record.timeEnded
+                duration = formatRecordDuration(timeStarted, timeEnded)
+            }
+            is Type.RecordUntracked -> {
+                timeStarted = type.timeStarted
+                timeEnded = type.timeEnded
+                duration = formatRecordDuration(timeStarted, timeEnded)
+            }
+            is Type.RecordRunning -> {
+                timeStarted = record?.timeStarted ?: return null
+                timeEnded = null
+                duration = formatRunningDuration(timeStarted)
+            }
+        }
+
+        return RecordQuickActionsState.Hint.Record(
+            name = extra.preview.name,
+            iconId = extra.preview.iconId.toViewData(),
+            color = extra.preview.color,
+            timeStarted = timeMapper.formatTime(
+                time = timeStarted,
+                useMilitaryTime = useMilitaryTime,
+                showSeconds = showSeconds,
+            ),
+            timeEnded = timeEnded?.let {
+                timeMapper.formatTime(
+                    time = it,
+                    useMilitaryTime = useMilitaryTime,
+                    showSeconds = showSeconds,
+                )
+            },
+            duration = duration,
+        )
+    }
+
+    private fun mapMultiSelectHint(): RecordQuickActionsState.Hint.MultiSelect {
+        // Ex. "Selected: 5 Records"
+        val recordsSelectedCount = recordsContainerMultiselectInteractor.selectedRecordIds.size
+        val recordsSelectedString = resourceRepo.getString(
+            R.string.separator_template,
+            recordsSelectedCount,
+            resourceRepo.getQuantityString(
+                R.plurals.statistics_detail_times_tracked,
+                recordsSelectedCount,
+            ),
+        )
+        val text = resourceRepo.getString(
+            R.string.separator_template,
+            resourceRepo.getString(R.string.something_selected),
+            recordsSelectedString,
+        )
+        return RecordQuickActionsState.Hint.MultiSelect(text)
     }
 }
