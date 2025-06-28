@@ -39,47 +39,20 @@
                 android:layout_width="match_parent"
                 app:layout_constraintTop_toBottomOf="@id/previewChangeActivityFilter" />
 
-            <androidx.cardview.widget.CardView
+            <com.example.util.simpletimetracker.feature_views.ButtonIconView
                 android:id="@+id/btnChangeActivityFilterDelete"
-                style="@style/EditScreenControlButton"
                 android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/edit_screen_button_margin_horizontal"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="@dimen/edit_screen_button_margin_horizontal"
                 android:visibility="gone"
+                app:itemButtonIconRes="@drawable/delete"
+                app:itemButtonIconText="@string/archive_dialog_delete"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/dividerChangeActivityFilterPreview"
-                tools:visibility="visible">
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/tvBtnChangeRecordTypeArchive"
-                        style="@style/EditScreenControlButtonText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:text="@string/archive_dialog_delete"
-                        app:layout_constraintEnd_toStartOf="@id/ivBtnChangeRecordTypeArchive"
-                        app:layout_constraintHorizontal_chainStyle="packed"
-                        app:layout_constraintStart_toStartOf="parent" />
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/ivBtnChangeRecordTypeArchive"
-                        style="@style/EditScreenControlButtonImage"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:src="@drawable/delete"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@id/tvBtnChangeRecordTypeArchive"
-                        tools:ignore="ContentDescription" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-            </androidx.cardview.widget.CardView>
+                tools:visibility="visible" />
 
             <androidx.constraintlayout.widget.Barrier
                 android:id="@+id/barrierChangeRecordTypeButtons"
@@ -110,7 +83,7 @@
                 android:id="@+id/fieldChangeActivityFilterColor"
                 style="@style/InputFieldCard"
                 android:layout_width="0dp"
-                android:layout_height="@dimen/input_field_height_big"
+                android:layout_height="@dimen/input_field_height"
                 android:layout_marginHorizontal="@dimen/edit_screen_field_margin_horizontal"
                 android:layout_marginTop="3dp"
                 app:layout_constraintEnd_toEndOf="parent"

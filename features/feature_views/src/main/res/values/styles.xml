@@ -42,6 +42,7 @@
         <item name="appActiveColor">@color/colorActive</item>
         <item name="appActiveGradientEndColor">@color/colorActiveGradientEnd</item>
         <item name="appInactiveColor">@color/colorInactive</item>
+        <item name="appControlColor">@color/colorInactive</item>
         <item name="appIconColor">@color/colorIcon</item>
         <item name="appLegendColor">@color/colorLegend</item>
         <item name="appLegendSecondaryColor">@color/colorLegendSecondary</item>
@@ -88,6 +89,7 @@
         <item name="appActiveColor">@color/colorActiveDark</item>
         <item name="appActiveGradientEndColor">@color/colorActiveGradientEndDark</item>
         <item name="appInactiveColor">@color/colorInactiveDark</item>
+        <item name="appControlColor">@color/colorActiveDark</item>
         <item name="appIconColor">@color/colorIconDark</item>
         <item name="appLegendColor">@color/colorLegendDark</item>
         <item name="appLegendSecondaryColor">@color/colorLegendSecondaryDark</item>
@@ -271,19 +273,30 @@
     <style name="EditScreenControlButton" parent="SettingsCard">
         <item name="android:layout_height">@dimen/input_field_height</item>
         <item name="android:foreground">?selectableItemBackground</item>
+        <item name="cardBackgroundColor">?appControlColor</item>
     </style>
 
     <style name="EditScreenControlButtonText" parent="InputFieldCardText">
+        <item name="android:textColor">?appLightTextColor</item>
         <item name="android:ellipsize">end</item>
         <item name="android:gravity">center</item>
         <item name="android:maxLines">2</item>
         <item name="layout_constrainedWidth">true</item>
     </style>
 
+    <style name="EditScreenControlButtonCard">
+        <item name="android:layout_width">32dp</item>
+        <item name="android:layout_height">32dp</item>
+        <item name="cardBackgroundColor">?appControlColor</item>
+        <item name="cardCornerRadius">8dp</item>
+        <item name="cardElevation">0dp</item>
+        <item name="android:foreground">?selectableItemBackground</item>
+    </style>
+
     <style name="EditScreenControlButtonImage">
-        <item name="android:scaleType">center</item>
-        <item name="android:tint">?appInactiveColor</item>
-        <item name="layout_constraintDimensionRatio">h,1:1</item>
+        <item name="android:scaleType">centerCrop</item>
+        <item name="android:tint">?appLightTextColor</item>
+        <item name="android:padding">4dp</item>
     </style>
 
     <style name="EditScreenField" parent="InputFieldCardText">

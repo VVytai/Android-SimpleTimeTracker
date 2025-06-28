@@ -10,6 +10,7 @@ import com.example.util.simpletimetracker.feature_views.databinding.IconViewLayo
 import com.example.util.simpletimetracker.feature_views.extension.layoutInflater
 import com.example.util.simpletimetracker.feature_views.extension.visible
 import com.example.util.simpletimetracker.feature_views.viewData.RecordTypeIcon
+import androidx.core.content.withStyledAttributes
 
 class IconView @JvmOverloads constructor(
     context: Context,
@@ -25,14 +26,15 @@ class IconView @JvmOverloads constructor(
 
     init {
         context
-            .obtainStyledAttributes(attrs, R.styleable.IconView, defStyleAttr, 0)
-            .run {
+            .withStyledAttributes(attrs, R.styleable.IconView, defStyleAttr, 0) {
                 if (hasValue(R.styleable.IconView_itemIcon)) {
-                    itemIcon = getResourceId(R.styleable.IconView_itemIcon, R.drawable.unknown).let(RecordTypeIcon::Image)
+                    itemIcon = getResourceId(R.styleable.IconView_itemIcon, R.drawable.unknown)
+                        .let(RecordTypeIcon::Image)
                 }
 
                 if (hasValue(R.styleable.IconView_itemIconText)) {
-                    itemIcon = getString(R.styleable.IconView_itemIconText).orEmpty().let(RecordTypeIcon::Text)
+                    itemIcon = getString(R.styleable.IconView_itemIconText).orEmpty()
+                        .let(RecordTypeIcon::Text)
                 }
 
                 if (hasValue(R.styleable.IconView_itemIconColor)) {
@@ -42,8 +44,6 @@ class IconView @JvmOverloads constructor(
                 if (hasValue(R.styleable.IconView_itemIconAlpha)) {
                     itemIconAlpha = getFloat(R.styleable.IconView_itemIconAlpha, 1.0f)
                 }
-
-                recycle()
             }
     }
 

@@ -7,6 +7,7 @@ import androidx.core.view.isVisible
 import com.example.util.simpletimetracker.feature_views.databinding.HintBigViewLayoutBinding
 import com.example.util.simpletimetracker.feature_views.extension.layoutInflater
 import com.example.util.simpletimetracker.feature_views.extension.setOnClick
+import androidx.core.content.withStyledAttributes
 
 class HintBigView @JvmOverloads constructor(
     context: Context,
@@ -67,8 +68,8 @@ class HintBigView @JvmOverloads constructor(
         attrs: AttributeSet?,
         defStyleAttr: Int,
     ) {
-        context.obtainStyledAttributes(attrs, R.styleable.HintBigView, defStyleAttr, 0)
-            .run {
+        context
+            .withStyledAttributes(attrs, R.styleable.HintBigView, defStyleAttr, 0) {
                 if (hasValue(R.styleable.HintBigView_itemHintText)) {
                     itemText = getString(
                         R.styleable.HintBigView_itemHintText,
@@ -98,8 +99,6 @@ class HintBigView @JvmOverloads constructor(
                         R.styleable.HintBigView_itemActionButtonText,
                     ).orEmpty()
                 }
-
-                recycle()
             }
     }
 }

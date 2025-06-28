@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
-import androidx.core.view.updateLayoutParams
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.viewModels
 import com.example.util.simpletimetracker.core.base.BaseFragment
@@ -32,7 +31,6 @@ import com.example.util.simpletimetracker.feature_base_adapter.empty.createEmpty
 import com.example.util.simpletimetracker.feature_base_adapter.hint.createHintAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.info.createInfoAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.recordType.createRecordTypeAdapterDelegate
-import com.example.util.simpletimetracker.feature_change_category.R
 import com.example.util.simpletimetracker.feature_change_category.viewData.ChangeCategoryChooserState.Closed
 import com.example.util.simpletimetracker.feature_change_category.viewData.ChangeCategoryChooserState.Color
 import com.example.util.simpletimetracker.feature_change_category.viewData.ChangeCategoryChooserState.GoalTime
@@ -279,12 +277,6 @@ class ChangeCategoryFragment :
         fieldChangeCategoryColor.isVisible = isClosed || state.current is Color
         fieldChangeCategoryType.isVisible = isClosed || state.current is Type
         fieldChangeCategoryGoalTime.isVisible = isClosed || state.current is GoalTime
-
-        // Chooser size
-        val sizeDefault = resources.getDimensionPixelSize(R.dimen.input_field_height)
-        val sizeBig = resources.getDimensionPixelSize(R.dimen.input_field_height_big)
-        val colorSize = if (state.current is Color) sizeDefault else sizeBig
-        fieldChangeCategoryColor.updateLayoutParams { height = colorSize }
     }
 
     private fun updateGoalsState(state: ChangeRecordTypeGoalsViewData) = with(binding) {

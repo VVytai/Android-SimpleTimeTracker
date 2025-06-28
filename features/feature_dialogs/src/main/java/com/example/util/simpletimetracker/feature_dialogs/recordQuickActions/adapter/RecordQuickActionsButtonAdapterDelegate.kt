@@ -18,9 +18,9 @@ fun createRecordQuickActionsButtonAdapterDelegate(
     with(binding) {
         item as ViewData
 
-        tvRecordQuickActionsButton.text = item.text
-        ivRecordQuickActionsButton.setImageResource(item.icon)
-        itemRecordQuickActionsButton.setOnClickWith(item.block, onClick)
+        root.buttonIconText = item.text
+        root.buttonIconRes = item.icon
+        root.setOnClickWith(item.block, onClick)
     }
 }
 

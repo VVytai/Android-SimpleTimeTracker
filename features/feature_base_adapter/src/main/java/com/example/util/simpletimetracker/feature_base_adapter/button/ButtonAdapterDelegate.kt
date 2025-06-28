@@ -1,9 +1,7 @@
 package com.example.util.simpletimetracker.feature_base_adapter.button
 
-import android.content.res.ColorStateList
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
-import androidx.core.view.isVisible
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.createRecyclerBindingAdapterDelegate
 import com.example.util.simpletimetracker.feature_views.extension.setMargins
@@ -27,19 +25,17 @@ fun createButtonAdapterDelegate(
             start = item.marginHorizontalDp,
             end = item.marginHorizontalDp,
         )
-        tvButton.text = item.text
+        itemButton.buttonIconText = item.text
         when (item.icon) {
             is ViewData.Icon.Hidden -> {
-                cardButton.isVisible = false
+                itemButton.buttonIconVisible = false
             }
             is ViewData.Icon.Present -> {
-                cardButton.isVisible = true
-                ivButton.setImageResource(item.icon.icon)
-                ivButton.imageTintList = ColorStateList.valueOf(item.icon.iconColor)
-                cardButton.setCardBackgroundColor(item.icon.iconBackgroundColor)
+                itemButton.buttonIconVisible = true
+                itemButton.buttonIconRes = item.icon.icon
+                itemButton.buttonIconBackgroundColor = item.icon.iconBackgroundColor
             }
         }
-        root.setCardBackgroundColor(item.backgroundColor)
         itemButton.isEnabled = item.isEnabled
         itemButton.setOnClickWith(item, onClick)
     }

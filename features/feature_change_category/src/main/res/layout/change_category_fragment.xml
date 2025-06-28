@@ -39,89 +39,35 @@
                 android:layout_width="match_parent"
                 app:layout_constraintTop_toBottomOf="@id/previewChangeCategory" />
 
-            <androidx.cardview.widget.CardView
+            <com.example.util.simpletimetracker.feature_views.ButtonIconView
                 android:id="@+id/btnChangeCategoryStatistics"
-                style="@style/EditScreenControlButton"
                 android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/edit_screen_button_margin_horizontal"
                 android:layout_marginTop="8dp"
                 android:visibility="gone"
+                app:itemButtonIconRes="@drawable/statistics"
+                app:itemButtonIconText="@string/shortcut_navigation_statistics"
                 app:layout_constraintEnd_toStartOf="@id/btnChangeCategoryDelete"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/dividerChangeCategoryPreview"
                 app:layout_goneMarginEnd="@dimen/edit_screen_button_margin_horizontal"
-                tools:visibility="visible">
+                tools:visibility="visible" />
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/tvBtnChangeCategoryStatistics"
-                        style="@style/EditScreenControlButtonText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:text="@string/shortcut_navigation_statistics"
-                        app:layout_constraintEnd_toStartOf="@id/ivBtnChangeCategoryStatistics"
-                        app:layout_constraintHorizontal_chainStyle="packed"
-                        app:layout_constraintStart_toStartOf="parent" />
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/ivBtnChangeCategoryStatistics"
-                        style="@style/EditScreenControlButtonImage"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:src="@drawable/statistics"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@id/tvBtnChangeCategoryStatistics"
-                        tools:ignore="ContentDescription" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
+            <com.example.util.simpletimetracker.feature_views.ButtonIconView
                 android:id="@+id/btnChangeCategoryDelete"
-                style="@style/EditScreenControlButton"
                 android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="@dimen/edit_screen_button_margin_horizontal"
                 android:visibility="gone"
+                app:itemButtonIconRes="@drawable/delete"
+                app:itemButtonIconText="@string/archive_dialog_delete"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/btnChangeCategoryStatistics"
                 app:layout_constraintTop_toBottomOf="@id/dividerChangeCategoryPreview"
                 app:layout_goneMarginStart="@dimen/edit_screen_button_margin_horizontal"
-                tools:visibility="visible">
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/tvBtnChangeCategoryArchive"
-                        style="@style/EditScreenControlButtonText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:text="@string/archive_dialog_delete"
-                        app:layout_constraintEnd_toStartOf="@id/ivBtnChangeCategoryArchive"
-                        app:layout_constraintHorizontal_chainStyle="packed"
-                        app:layout_constraintStart_toStartOf="parent" />
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/ivBtnChangeCategoryArchive"
-                        style="@style/EditScreenControlButtonImage"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:src="@drawable/delete"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@id/tvBtnChangeCategoryArchive"
-                        tools:ignore="ContentDescription" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-            </androidx.cardview.widget.CardView>
+                tools:visibility="visible" />
 
             <androidx.constraintlayout.widget.Barrier
                 android:id="@+id/barrierChangeCategoryButtons"
@@ -153,7 +99,7 @@
                 android:id="@+id/fieldChangeCategoryColor"
                 style="@style/InputFieldCard"
                 android:layout_width="0dp"
-                android:layout_height="@dimen/input_field_height_big"
+                android:layout_height="@dimen/input_field_height"
                 android:layout_marginHorizontal="@dimen/edit_screen_field_margin_horizontal"
                 android:layout_marginTop="3dp"
                 app:layout_constraintEnd_toEndOf="parent"

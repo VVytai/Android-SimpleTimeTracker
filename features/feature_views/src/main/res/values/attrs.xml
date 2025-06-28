@@ -25,6 +25,7 @@
     <attr name="appActiveColor" format="reference" />
     <attr name="appActiveGradientEndColor" format="reference" />
     <attr name="appInactiveColor" format="reference" />
+    <attr name="appControlColor" format="reference" />
     <attr name="appIconColor" format="reference" />
     <attr name="appLegendColor" format="reference" />
     <attr name="appLegendSecondaryColor" format="reference" />
@@ -186,5 +187,19 @@
         <attr name="itemCloseIconVisible" format="boolean" />
         <attr name="itemActionButtonVisible" format="boolean" />
         <attr name="itemActionButtonText" format="string" />
+    </declare-styleable>
+
+    <declare-styleable name="ButtonIconView">
+        <attr name="itemButtonIconSize" format="enum">
+            <enum name="normal" value="0" />
+            <enum name="big" value="1" />
+            <enum name="extraBig" value="2" />
+        </attr>
+        <attr name="itemButtonIconColor" format="color" />
+        <attr name="itemButtonIconText" format="string" />
+        <attr name="itemButtonIconVisible" format="boolean" />
+        <attr name="itemButtonIconRes" format="reference" />
+        <attr name="itemButtonIconBackgroundColor" format="color" />
+        <attr name="itemButtonIconAlignedStart" format="boolean" />
     </declare-styleable>
 </resources>
