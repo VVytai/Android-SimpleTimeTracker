@@ -193,6 +193,7 @@ This allows you to see how much time you\'re spending on productive versus unpro
     <string name="change_record_type_goal_duration">Duration</string>
     <string name="change_record_type_goal_count">Count</string>
     <string name="change_record_type_delete_alert">Delete?</string>
+    <string name="change_record_type_more_fields">More</string>
 
     <!--  Complex rules  -->
     <string name="complex_rules_hint">Allows for more fine tuned application of some settings</string>

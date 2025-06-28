@@ -154,7 +154,7 @@
                 android:id="@+id/fieldChangeCategoryType"
                 style="@style/InputFieldCard"
                 android:layout_width="0dp"
-                android:layout_height="@dimen/input_field_height"
+                android:layout_height="@dimen/input_field_height_big"
                 android:layout_marginHorizontal="@dimen/edit_screen_field_margin_horizontal"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -205,6 +205,50 @@
 
             </androidx.cardview.widget.CardView>
 
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/containerChangeCategoryMoreFields"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/fieldChangeCategoryType">
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="2dp"
+                    android:background="?appDividerColor"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintWidth_percent="0.5" />
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/tvChangeCategoryMoreFields"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:foreground="?selectableItemBackground"
+                    app:cardBackgroundColor="?appBackgroundColor"
+                    app:cardCornerRadius="@dimen/input_field_corner_radius"
+                    app:cardElevation="0dp"
+                    app:cardUseCompatPadding="false"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="?appInputFieldBorder"
+                        android:gravity="center"
+                        android:paddingHorizontal="12dp"
+                        android:text="@string/change_record_type_more_fields" />
+
+                </androidx.cardview.widget.CardView>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
             <androidx.cardview.widget.CardView
                 android:id="@+id/fieldChangeCategoryGoalTime"
                 style="@style/InputFieldCard"
@@ -213,7 +257,7 @@
                 android:layout_marginHorizontal="@dimen/edit_screen_field_margin_horizontal"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/fieldChangeCategoryType"
+                app:layout_constraintTop_toBottomOf="@id/containerChangeCategoryMoreFields"
                 app:layout_goneMarginTop="@dimen/edit_screen_field_top_margin">
 
                 <androidx.constraintlayout.widget.ConstraintLayout

@@ -193,6 +193,7 @@ I <b>tag</b> ti permettono di aggiungere maggiori dettagli a un\'attività speci
     <string name="change_record_type_goal_duration">Durata</string>
     <string name="change_record_type_goal_count">Contare</string>
     <string name="change_record_type_delete_alert">Eliminare?</string>
+    <string name="change_record_type_more_fields">Altro</string>
 
     <!--  Complex rules  -->
     <string name="complex_rules_hint">Consente un\'applicazione più precisa di alcune impostazioni</string>

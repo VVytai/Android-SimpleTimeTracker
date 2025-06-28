@@ -220,6 +220,8 @@ class ChangeActivityFilterFragment :
         val sizeBig = resources.getDimensionPixelSize(R.dimen.input_field_height_big)
         val colorSize = if (state.current is Color) sizeDefault else sizeBig
         fieldChangeActivityFilterColor.updateLayoutParams { height = colorSize }
+        val activitiesSize = if (state.current is Type) sizeDefault else sizeBig
+        fieldChangeActivityFilterType.updateLayoutParams { height = activitiesSize }
     }
 
     private fun updateTypes(

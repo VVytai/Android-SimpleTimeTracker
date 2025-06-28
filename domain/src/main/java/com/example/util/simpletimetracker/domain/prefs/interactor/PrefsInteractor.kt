@@ -900,6 +900,30 @@ class PrefsInteractor @Inject constructor(
         prefsRepo.durationSuggestionsWasPrepopulated = value
     }
 
+    suspend fun getTypeAdditionalFieldsShown(): Boolean = withContext(Dispatchers.IO) {
+        prefsRepo.typeAdditionalFieldsShown
+    }
+
+    suspend fun setTypeAdditionalFieldsShown(value: Boolean) = withContext(Dispatchers.IO) {
+        prefsRepo.typeAdditionalFieldsShown = value
+    }
+
+    suspend fun getCategoryAdditionalFieldsShown(): Boolean = withContext(Dispatchers.IO) {
+        prefsRepo.categoryAdditionalFieldsShown
+    }
+
+    suspend fun setCategoryAdditionalFieldsShown(value: Boolean) = withContext(Dispatchers.IO) {
+        prefsRepo.categoryAdditionalFieldsShown = value
+    }
+
+    suspend fun getTagAdditionalFieldsShown(): Boolean = withContext(Dispatchers.IO) {
+        prefsRepo.tagAdditionalFieldsShown
+    }
+
+    suspend fun setTagAdditionalFieldsShown(value: Boolean) = withContext(Dispatchers.IO) {
+        prefsRepo.tagAdditionalFieldsShown = value
+    }
+
     suspend fun getStatisticsStreaksType(): StatisticsStreaksType = withContext(Dispatchers.IO) {
         when (prefsRepo.statisticsDetailStreakType) {
             0 -> StatisticsStreaksType.LONGEST

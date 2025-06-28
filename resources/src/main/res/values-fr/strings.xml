@@ -193,6 +193,7 @@ Cela vous permet de voir combien de temps vous passez globalement sur des activi
     <string name="change_record_type_goal_duration">Durée</string>
     <string name="change_record_type_goal_count">Compter</string>
     <string name="change_record_type_delete_alert">Supprimer?</string>
+    <string name="change_record_type_more_fields">Plus</string>
 
     <!--  Complex rules  -->
     <string name="complex_rules_hint">Permet une application plus fine de certains paramètres</string>

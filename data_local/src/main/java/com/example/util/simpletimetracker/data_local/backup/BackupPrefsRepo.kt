@@ -13,6 +13,7 @@ import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Compani
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_CARD_ORDER_MANUAL
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_CATEGORIES_TYPES_FILTERED_ON_CHART
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_CATEGORIES_TYPES_FILTERED_ON_LIST
+import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_CATEGORY_ADDITIONAL_FIELDS_SHOWN
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_CATEGORY_ORDER
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_CATEGORY_ORDER_MANUAL
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_CHART_FILTER_TYPE
@@ -80,8 +81,10 @@ import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Compani
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_STATISTICS_RANGE_LAST_DAYS
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_TAGS_FILTERED_ON_CHART
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_TAGS_FILTERED_ON_LIST
+import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_TAG_ADDITIONAL_FIELDS_SHOWN
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_TAG_ORDER
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_TAG_ORDER_MANUAL
+import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_TYPE_ADDITIONAL_FIELDS_SHOWN
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_UNTRACKED_RANGE_ENABLED
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_UNTRACKED_RANGE_END
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_UNTRACKED_RANGE_START
@@ -227,6 +230,9 @@ class BackupPrefsRepo @Inject constructor(
             PrefsProcessor(KEY_IS_ARCHIVE_SEARCH_ENABLED, ::isArchiveSearchEnabled),
             PrefsProcessor(KEY_IS_COMMENT_SELECTION_SUGGESTIONS_ENABLED, ::isCommentSelectionSuggestionsEnabled),
             PrefsProcessor(KEY_DURATION_SUGGESTIONS_WAS_PREPOPULATED, ::durationSuggestionsWasPrepopulated),
+            PrefsProcessor(KEY_TYPE_ADDITIONAL_FIELDS_SHOWN, ::typeAdditionalFieldsShown),
+            PrefsProcessor(KEY_CATEGORY_ADDITIONAL_FIELDS_SHOWN, ::categoryAdditionalFieldsShown),
+            PrefsProcessor(KEY_TAG_ADDITIONAL_FIELDS_SHOWN, ::tagAdditionalFieldsShown),
             PrefsProcessor(KEY_STATISTICS_DETAIL_STREAK_TYPE, ::statisticsDetailStreakType),
         )
     }

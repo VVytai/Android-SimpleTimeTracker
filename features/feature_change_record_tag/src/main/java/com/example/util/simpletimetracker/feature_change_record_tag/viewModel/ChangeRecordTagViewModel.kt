@@ -4,10 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.util.simpletimetracker.core.base.BaseViewModel
 import com.example.util.simpletimetracker.core.delegates.colorSelection.ColorSelectionViewModelDelegate
 import com.example.util.simpletimetracker.core.delegates.colorSelection.ColorSelectionViewModelDelegateImpl
 import com.example.util.simpletimetracker.core.delegates.iconSelection.viewModelDelegate.IconSelectionViewModelDelegate
 import com.example.util.simpletimetracker.core.delegates.iconSelection.viewModelDelegate.IconSelectionViewModelDelegateImpl
+import com.example.util.simpletimetracker.core.extension.lazySuspend
 import com.example.util.simpletimetracker.core.extension.set
 import com.example.util.simpletimetracker.core.extension.trimIfNotBlank
 import com.example.util.simpletimetracker.core.interactor.SnackBarMessageNavigationInteractor
@@ -25,6 +27,7 @@ import com.example.util.simpletimetracker.domain.recordTag.interactor.RemoveReco
 import com.example.util.simpletimetracker.domain.notifications.interactor.UpdateExternalViewsInteractor
 import com.example.util.simpletimetracker.domain.color.model.AppColor
 import com.example.util.simpletimetracker.domain.extension.addOrRemove
+import com.example.util.simpletimetracker.domain.extension.orFalse
 import com.example.util.simpletimetracker.domain.statistics.model.ChartFilterType
 import com.example.util.simpletimetracker.domain.recordTag.model.RecordTag
 import com.example.util.simpletimetracker.feature_base_adapter.category.CategoryViewData
@@ -58,7 +61,7 @@ class ChangeRecordTagViewModel @Inject constructor(
     private val externalViewsInteractor: UpdateExternalViewsInteractor,
     private val colorSelectionViewModelDelegateImpl: ColorSelectionViewModelDelegateImpl,
     private val iconSelectionViewModelDelegateImpl: IconSelectionViewModelDelegateImpl,
-) : ViewModel(),
+) : BaseViewModel(),
     ColorSelectionViewModelDelegate by colorSelectionViewModelDelegateImpl,
     IconSelectionViewModelDelegate by iconSelectionViewModelDelegateImpl {
 
@@ -106,6 +109,9 @@ class ChangeRecordTagViewModel @Inject constructor(
             }
             initial
         }
+    }
+    val additionalChoosersVisibility: LiveData<Boolean> by lazySuspend {
+        prefsInteractor.getTagAdditionalFieldsShown()
     }
     val archiveButtonEnabled: LiveData<Boolean> = MutableLiveData(true)
     val deleteButtonEnabled: LiveData<Boolean> = MutableLiveData(true)
@@ -260,6 +266,12 @@ class ChangeRecordTagViewModel @Inject constructor(
             itemIcon = preview.icon,
             itemColor = preview.color,
         )
+    }
+
+    fun onMoreFieldsClick() = viewModelScope.launch {
+        val newValue = !prefsInteractor.getTagAdditionalFieldsShown()
+        prefsInteractor.setTagAdditionalFieldsShown(newValue)
+        additionalChoosersVisibility.set(newValue)
     }
 
     fun onSaveClick() {

@@ -101,6 +101,8 @@ class ChangeCategoryFragment :
     )
 
     override fun initUi(): Unit = with(binding) {
+        postponeEnterTransition()
+
         setPreview()
 
         setSharedTransitions(
@@ -131,6 +133,10 @@ class ChangeCategoryFragment :
             layout = binding.layoutChangeCategoryGoals,
             dayOfWeekAdapter = dailyGoalDayOfWeekAdapter,
         )
+
+        setOnPreDrawListener {
+            startPostponedEnterTransition()
+        }
     }
 
     override fun initUx(): Unit = with(binding) {
@@ -142,6 +148,7 @@ class ChangeCategoryFragment :
         btnChangeCategorySave.setOnClick(viewModel::onSaveClick)
         btnChangeCategoryDelete.setOnClick(viewModel::onDeleteClick)
         btnChangeCategoryStatistics.setOnClick(viewModel::onStatisticsClick)
+        tvChangeCategoryMoreFields.setOnClick(viewModel::onMoreFieldsClick)
         GoalsViewDelegate.initGoalUx(
             viewModel = viewModel,
             layout = layoutChangeCategoryGoals,
@@ -167,6 +174,7 @@ class ChangeCategoryFragment :
                 layoutChangeCategoryGoals.containerChangeRecordTypeGoalNotificationsHint::visible::set,
             )
             chooserState.observe(::updateChooserState)
+            additionalChoosersVisibility.observe { chooserState.value?.let(::updateChooserState) }
             keyboardVisibility.observe { visible ->
                 if (visible) showKeyboard(etChangeCategoryName) else hideKeyboard()
             }
@@ -277,19 +285,25 @@ class ChangeCategoryFragment :
             viewModel.statsIconVisibility.value.orFalse() && isClosed
         btnChangeCategoryDelete.isVisible =
             viewModel.deleteIconVisibility.value.orFalse() && isClosed
-        inputChangeRecordCategoryNote.isVisible = isClosed
-        dividerChangeCategoryBottom.isInvisible = isClosed
 
-        // Chooser fields
+        // Main fields
         fieldChangeCategoryColor.isVisible = isClosed || state.current is Color
         fieldChangeCategoryType.isVisible = isClosed || state.current is Type
-        fieldChangeCategoryGoalTime.isVisible = isClosed || state.current is GoalTime
+
+        // Additional fields
+        val isAdditionalVisible = viewModel.additionalChoosersVisibility.value.orFalse()
+        containerChangeCategoryMoreFields.isVisible = isClosed
+        fieldChangeCategoryGoalTime.isVisible = (isAdditionalVisible && isClosed) || state.current is GoalTime
+        inputChangeRecordCategoryNote.isVisible = isAdditionalVisible && isClosed
+        dividerChangeCategoryBottom.isInvisible = isClosed
 
         // Chooser size
         val sizeDefault = resources.getDimensionPixelSize(R.dimen.input_field_height)
         val sizeBig = resources.getDimensionPixelSize(R.dimen.input_field_height_big)
         val colorSize = if (state.current is Color) sizeDefault else sizeBig
         fieldChangeCategoryColor.updateLayoutParams { height = colorSize }
+        val activitiesSize = if (state.current is Type) sizeDefault else sizeBig
+        fieldChangeCategoryType.updateLayoutParams { height = activitiesSize }
     }
 
     private fun updateGoalsState(state: ChangeRecordTypeGoalsViewData) = with(binding) {

@@ -145,6 +145,8 @@ class ChangeRecordTagFragment :
     )
 
     override fun initUi(): Unit = with(binding) {
+        postponeEnterTransition()
+
         setPreview()
 
         setSharedTransitions(
@@ -189,6 +191,10 @@ class ChangeRecordTagFragment :
             }
             adapter = defaultTypesAdapter
         }
+
+        setOnPreDrawListener {
+            startPostponedEnterTransition()
+        }
     }
 
     override fun initUx(): Unit = with(binding) {
@@ -203,6 +209,7 @@ class ChangeRecordTagFragment :
         btnChangeRecordTagArchive.setOnClick(viewModel::onArchiveClick)
         btnChangeRecordTagDelete.setOnClick(throttle(viewModel::onDeleteClick))
         btnChangeRecordTagStatistics.setOnClick(viewModel::onStatisticsClick)
+        tvChangeRecordTagMoreFields.setOnClick(viewModel::onMoreFieldsClick)
         containerChangeRecordTypeIcon.btnIconSelectionNoIcon.setOnClick(viewModel::onNoIconClick)
         IconSelectionViewDelegate.initUx(
             viewModel = viewModel,
@@ -228,6 +235,7 @@ class ChangeRecordTagFragment :
             types.observe(::updateTypes)
             defaultTypes.observe(::updateDefaultTypes)
             chooserState.observe(::updateChooserState)
+            additionalChoosersVisibility.observe { chooserState.value?.let(::updateChooserState) }
             nameErrorMessage.observe(::updateNameErrorMessage)
             noteState.observe(::updateNoteState)
             keyboardVisibility.observe { visible ->
@@ -364,21 +372,25 @@ class ChangeRecordTagFragment :
         val isClosed = state.current is Closed
         spaceChangeRecordTagFieldsTop.isVisible = !isClosed
         inputChangeRecordTagName.isVisible = isClosed
-        btnChangeRecordTagSelectActivity.isVisible = isClosed
         btnChangeRecordTagStatistics.isVisible =
             viewModel.statsIconVisibility.value.orFalse() && isClosed
         btnChangeRecordTagArchive.isVisible =
             viewModel.archiveIconVisibility.value.orFalse() && isClosed
         btnChangeRecordTagDelete.isVisible =
             viewModel.deleteIconVisibility.value.orFalse() && isClosed
-        inputChangeRecordTagNote.isVisible = isClosed
-        dividerChangeRecordTagBottom.isInvisible = isClosed
 
-        // Chooser fields
+        // Main fields
         fieldChangeRecordTagColor.isVisible = isClosed || state.current is Color
         fieldChangeRecordTagIcon.isVisible = isClosed || state.current is Icon
         fieldChangeRecordTagType.isVisible = isClosed || state.current is Type
-        fieldChangeRecordTagDefaultType.isVisible = isClosed || state.current is DefaultType
+
+        // Additional fields
+        val isAdditionalVisible = viewModel.additionalChoosersVisibility.value.orFalse()
+        containerChangeRecordTagMoreFields.isVisible = isClosed
+        fieldChangeRecordTagDefaultType.isVisible = (isAdditionalVisible && isClosed) || state.current is DefaultType
+        btnChangeRecordTagSelectActivity.isVisible = isAdditionalVisible && isClosed
+        inputChangeRecordTagNote.isVisible = isAdditionalVisible && isClosed
+        dividerChangeRecordTagBottom.isInvisible = isClosed
 
         // Chooser size
         val sizeDefault = resources.getDimensionPixelSize(R.dimen.input_field_height)
@@ -389,6 +401,8 @@ class ChangeRecordTagFragment :
         fieldChangeRecordTagIcon.updateLayoutParams { height = iconSize }
         val iconPreviewPadding = if (state.current is Icon) 4 else 8
         iconChangeRecordTagIconPreview.setPadding(iconPreviewPadding.dpToPx())
+        val activitiesSize = if (state.current is Type) sizeDefault else sizeBig
+        fieldChangeRecordTagType.updateLayoutParams { height = activitiesSize }
     }
 
     private fun updateIconColorSourceSelected(selected: Boolean) = with(binding) {

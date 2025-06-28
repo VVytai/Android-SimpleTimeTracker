@@ -193,6 +193,7 @@
     <string name="change_record_type_goal_duration">משך</string>
     <string name="change_record_type_goal_count">מספר</string>
     <string name="change_record_type_delete_alert">למחוק?</string>
+    <string name="change_record_type_more_fields">עוד</string>
 
     <!--  Complex rules  -->
     <string name="complex_rules_hint">מאפשר יישום מכוונן יותר של כמה הגדרות</string>

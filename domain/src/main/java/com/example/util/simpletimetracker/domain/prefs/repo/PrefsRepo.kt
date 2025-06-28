@@ -176,6 +176,12 @@ interface PrefsRepo {
 
     var durationSuggestionsWasPrepopulated: Boolean
 
+    var typeAdditionalFieldsShown: Boolean
+
+    var categoryAdditionalFieldsShown: Boolean
+
+    var tagAdditionalFieldsShown: Boolean
+
     var statisticsDetailStreakType: Int
 
     fun setWidget(widgetId: Int, recordType: Long)

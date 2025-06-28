@@ -211,6 +211,7 @@ class ChangeRecordTypeFragment :
         btnChangeRecordTypeArchive.setOnClick(viewModel::onArchiveClick)
         btnChangeRecordTypeDelete.setOnClick(throttle(viewModel::onDeleteClick))
         btnChangeRecordTypeStatistics.setOnClick(viewModel::onStatisticsClick)
+        tvChangeRecordTypeMoreFields.setOnClick(viewModel::onMoreFieldsClick)
         layoutChangeRecordTypeAdditional.btnChangeRecordTypeAdditionalDuplicate
             .setOnClick(viewModel::onDuplicateClick)
         layoutChangeRecordTypeAdditional.groupChangeRecordTypeAdditionalDefaultDurationSelector
@@ -251,6 +252,7 @@ class ChangeRecordTypeFragment :
                 layoutChangeRecordTypeGoals.containerChangeRecordTypeGoalNotificationsHint::visible::set,
             )
             chooserState.observe(::updateChooserState)
+            additionalChoosersVisibility.observe { chooserState.value?.let(::updateChooserState) }
             keyboardVisibility.observe { visible ->
                 if (visible) showKeyboard(etChangeRecordTypeName) else hideKeyboard()
             }
@@ -415,15 +417,19 @@ class ChangeRecordTypeFragment :
             viewModel.archiveIconVisibility.value.orFalse() && isClosed
         btnChangeRecordTypeDelete.isVisible =
             viewModel.deleteIconVisibility.value.orFalse() && isClosed
-        inputChangeRecordTypeNote.isVisible = isClosed
-        dividerChangeRecordTypeBottom.isInvisible = isClosed
 
-        // Chooser fields
+        // Main fields
         fieldChangeRecordTypeColor.isVisible = isClosed || state.current is Color
         fieldChangeRecordTypeIcon.isVisible = isClosed || state.current is Icon
-        fieldChangeRecordTypeCategory.isVisible = isClosed || state.current is Category
-        fieldChangeRecordTypeGoalTime.isVisible = isClosed || state.current is GoalTime
-        fieldChangeRecordTypeAdditional.isVisible = isClosed || state.current is Additional
+
+        // Additional fields
+        val isAdditionalVisible = viewModel.additionalChoosersVisibility.value.orFalse()
+        containerChangeRecordTypeMoreFields.isVisible = isClosed
+        fieldChangeRecordTypeCategory.isVisible = (isAdditionalVisible && isClosed) || state.current is Category
+        fieldChangeRecordTypeGoalTime.isVisible = (isAdditionalVisible && isClosed) || state.current is GoalTime
+        fieldChangeRecordTypeAdditional.isVisible = (isAdditionalVisible && isClosed) || state.current is Additional
+        inputChangeRecordTypeNote.isVisible = isAdditionalVisible && isClosed
+        dividerChangeRecordTypeBottom.isInvisible = isClosed
 
         // Chooser size
         val sizeDefault = resources.getDimensionPixelSize(R.dimen.input_field_height)

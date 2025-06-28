@@ -193,6 +193,7 @@ Isso permite ver quanto tempo você está gastando em atividades produtivas vers
     <string name="change_record_type_goal_duration">Duração</string>
     <string name="change_record_type_goal_count">Contar</string>
     <string name="change_record_type_delete_alert">Excluir?</string>
+    <string name="change_record_type_more_fields">Mais</string>
 
     <!--  Complex rules  -->
     <string name="complex_rules_hint">Permite uma aplicação mais precisa de algumas configurações</string>

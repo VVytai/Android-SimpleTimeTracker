@@ -405,6 +405,18 @@ class PrefsRepoImpl @Inject constructor(
         KEY_DURATION_SUGGESTIONS_WAS_PREPOPULATED, false,
     )
 
+    override var typeAdditionalFieldsShown: Boolean by prefs.delegate(
+        KEY_TYPE_ADDITIONAL_FIELDS_SHOWN, false,
+    )
+
+    override var categoryAdditionalFieldsShown: Boolean by prefs.delegate(
+        KEY_CATEGORY_ADDITIONAL_FIELDS_SHOWN, false,
+    )
+
+    override var tagAdditionalFieldsShown: Boolean by prefs.delegate(
+        KEY_TAG_ADDITIONAL_FIELDS_SHOWN, false,
+    )
+
     override var statisticsDetailStreakType: Int by prefs.delegate(
         KEY_STATISTICS_DETAIL_STREAK_TYPE, 0,
     )
@@ -678,6 +690,9 @@ class PrefsRepoImpl @Inject constructor(
         const val KEY_IS_ARCHIVE_SEARCH_ENABLED = "isArchiveSearchEnabled"
         const val KEY_IS_COMMENT_SELECTION_SUGGESTIONS_ENABLED = "isCommentSelectionSuggestionsEnabled"
         const val KEY_DURATION_SUGGESTIONS_WAS_PREPOPULATED = "durationSuggestionsWasPrepopulated"
+        const val KEY_TYPE_ADDITIONAL_FIELDS_SHOWN = "typeAdditionalFieldsShown"
+        const val KEY_CATEGORY_ADDITIONAL_FIELDS_SHOWN = "categoryAdditionalFieldsShown"
+        const val KEY_TAG_ADDITIONAL_FIELDS_SHOWN = "tagAdditionalFieldsShown"
         const val KEY_STATISTICS_DETAIL_STREAK_TYPE = "statisticsDetailStreakType"
         const val KEY_CARD_ORDER_MANUAL = "cardOrderManual"
         const val KEY_CATEGORY_ORDER_MANUAL = "categoryOrderManual"

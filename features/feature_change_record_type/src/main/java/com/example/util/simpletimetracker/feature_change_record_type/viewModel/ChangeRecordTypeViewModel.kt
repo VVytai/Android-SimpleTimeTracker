@@ -2,13 +2,14 @@ package com.example.util.simpletimetracker.feature_change_record_type.viewModel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.util.simpletimetracker.core.base.BaseViewModel
 import com.example.util.simpletimetracker.core.base.ViewModelDelegate
 import com.example.util.simpletimetracker.core.delegates.colorSelection.ColorSelectionViewModelDelegate
 import com.example.util.simpletimetracker.core.delegates.colorSelection.ColorSelectionViewModelDelegateImpl
 import com.example.util.simpletimetracker.core.delegates.iconSelection.viewModelDelegate.IconSelectionViewModelDelegate
 import com.example.util.simpletimetracker.core.delegates.iconSelection.viewModelDelegate.IconSelectionViewModelDelegateImpl
+import com.example.util.simpletimetracker.core.extension.lazySuspend
 import com.example.util.simpletimetracker.core.extension.set
 import com.example.util.simpletimetracker.core.extension.trimIfNotBlank
 import com.example.util.simpletimetracker.core.interactor.SnackBarMessageNavigationInteractor
@@ -17,20 +18,20 @@ import com.example.util.simpletimetracker.core.mapper.RecordTypeViewDataMapper
 import com.example.util.simpletimetracker.core.mapper.TimeMapper
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.core.view.ViewChooserStateDelegate
+import com.example.util.simpletimetracker.domain.activityFilter.interactor.ActivityFilterInteractor
+import com.example.util.simpletimetracker.domain.category.interactor.RecordTypeCategoryInteractor
+import com.example.util.simpletimetracker.domain.color.model.AppColor
 import com.example.util.simpletimetracker.domain.extension.addOrRemove
 import com.example.util.simpletimetracker.domain.extension.orZero
-import com.example.util.simpletimetracker.domain.activityFilter.interactor.ActivityFilterInteractor
+import com.example.util.simpletimetracker.domain.notifications.interactor.UpdateExternalViewsInteractor
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
-import com.example.util.simpletimetracker.domain.category.interactor.RecordTypeCategoryInteractor
-import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTypeInteractor
-import com.example.util.simpletimetracker.domain.recordType.interactor.RemoveRecordTypeMediator
 import com.example.util.simpletimetracker.domain.record.interactor.RemoveRunningRecordMediator
 import com.example.util.simpletimetracker.domain.record.interactor.RunningRecordInteractor
-import com.example.util.simpletimetracker.domain.notifications.interactor.UpdateExternalViewsInteractor
-import com.example.util.simpletimetracker.domain.color.model.AppColor
-import com.example.util.simpletimetracker.domain.statistics.model.ChartFilterType
+import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTypeInteractor
+import com.example.util.simpletimetracker.domain.recordType.interactor.RemoveRecordTypeMediator
 import com.example.util.simpletimetracker.domain.recordType.model.RecordType
 import com.example.util.simpletimetracker.domain.recordType.model.RecordTypeGoal
+import com.example.util.simpletimetracker.domain.statistics.model.ChartFilterType
 import com.example.util.simpletimetracker.feature_base_adapter.category.CategoryViewData
 import com.example.util.simpletimetracker.feature_base_adapter.recordType.RecordTypeViewData
 import com.example.util.simpletimetracker.feature_change_goals.api.GoalsViewModelDelegate
@@ -70,7 +71,7 @@ class ChangeRecordTypeViewModel @Inject constructor(
     private val goalsViewModelDelegate: GoalsViewModelDelegate,
     private val colorSelectionViewModelDelegateImpl: ColorSelectionViewModelDelegateImpl,
     private val iconSelectionViewModelDelegateImpl: IconSelectionViewModelDelegateImpl,
-) : ViewModel(),
+) : BaseViewModel(),
     GoalsViewModelDelegate by goalsViewModelDelegate,
     ColorSelectionViewModelDelegate by colorSelectionViewModelDelegateImpl,
     IconSelectionViewModelDelegate by iconSelectionViewModelDelegateImpl {
@@ -118,6 +119,9 @@ class ChangeRecordTypeViewModel @Inject constructor(
             }
             initial
         }
+    }
+    val additionalChoosersVisibility: LiveData<Boolean> by lazySuspend {
+        prefsInteractor.getTypeAdditionalFieldsShown()
     }
     val archiveButtonEnabled: LiveData<Boolean> = MutableLiveData(true)
     val deleteButtonEnabled: LiveData<Boolean> = MutableLiveData(true)
@@ -276,6 +280,12 @@ class ChangeRecordTypeViewModel @Inject constructor(
             itemIcon = preview.iconId,
             itemColor = preview.color,
         )
+    }
+
+    fun onMoreFieldsClick() = viewModelScope.launch {
+        val newValue = !prefsInteractor.getTypeAdditionalFieldsShown()
+        prefsInteractor.setTypeAdditionalFieldsShown(newValue)
+        additionalChoosersVisibility.set(newValue)
     }
 
     fun onSaveClick() {
