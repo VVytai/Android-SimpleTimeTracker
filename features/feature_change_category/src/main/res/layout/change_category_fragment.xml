@@ -99,7 +99,7 @@
                 android:id="@+id/fieldChangeCategoryColor"
                 style="@style/InputFieldCard"
                 android:layout_width="0dp"
-                android:layout_height="@dimen/input_field_height"
+                android:layout_height="@dimen/input_field_height_big"
                 android:layout_marginHorizontal="@dimen/edit_screen_field_margin_horizontal"
                 android:layout_marginTop="3dp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -111,6 +111,16 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="?appInputFieldBorder">
+
+                    <View
+                        android:id="@+id/viewChangeCategoryColorPreviewLong"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:alpha="0.25"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="1"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintWidth_percent="0.66" />
 
                     <com.google.android.material.card.MaterialCardView
                         android:id="@+id/layoutChangeCategoryColorPreview"

@@ -1,10 +1,12 @@
 package com.example.util.simpletimetracker.feature_change_record_type.view
 
 import android.animation.ValueAnimator
+import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.annotation.ColorInt
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.core.view.setPadding
@@ -63,6 +65,7 @@ import com.example.util.simpletimetracker.feature_views.extension.animateColor
 import com.example.util.simpletimetracker.feature_views.extension.dpToPx
 import com.example.util.simpletimetracker.feature_views.extension.setOnClick
 import com.example.util.simpletimetracker.feature_views.extension.visible
+import com.example.util.simpletimetracker.feature_views.viewData.RecordTypeIcon
 import com.example.util.simpletimetracker.navigation.params.screen.ChangeRecordTypeParams
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
@@ -70,6 +73,7 @@ import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
+import android.graphics.Color as AndroidColor
 import com.example.util.simpletimetracker.feature_change_record_type.databinding.ChangeRecordTypeFragmentBinding as Binding
 
 @AndroidEntryPoint
@@ -138,6 +142,9 @@ class ChangeRecordTypeFragment :
     private var typeColorAnimator: ValueAnimator? = null
     private var iconTextWatcher: TextWatcher? = null
     private var goalTextWatchers: GoalsViewDelegate.TextWatchers? = null
+    private val colorPreviewGradient = GradientDrawable().apply {
+        orientation = GradientDrawable.Orientation.LEFT_RIGHT
+    }
 
     private val params: ChangeRecordTypeParams by fragmentArgumentDelegate(
         key = ARGS_PARAMS,
@@ -333,13 +340,12 @@ class ChangeRecordTypeFragment :
                 to = item.color,
                 doOnUpdate = { value ->
                     itemColor = value
-                    binding.layoutChangeRecordTypeColorPreview.setCardBackgroundColor(value)
+                    updateColorPreview(value)
                 },
             )
         }
         with(binding) {
-            layoutChangeRecordTypeIconPreview.setCardBackgroundColor(item.color)
-            iconChangeRecordTypeIconPreview.itemIcon = item.iconId
+            updateIconPreview(item.iconId, item.color)
             layoutChangeRecordTypeCategoriesPreview.setCardBackgroundColor(item.color)
             layoutChangeRecordTypeGoalPreview.setCardBackgroundColor(item.color)
         }
@@ -358,9 +364,8 @@ class ChangeRecordTypeFragment :
                 itemIcon = it.iconId.toViewData()
                 itemColor = it.color
 
-                binding.layoutChangeRecordTypeColorPreview.setCardBackgroundColor(it.color)
-                binding.layoutChangeRecordTypeIconPreview.setCardBackgroundColor(it.color)
-                binding.iconChangeRecordTypeIconPreview.itemIcon = it.iconId.toViewData()
+                updateColorPreview(it.color)
+                updateIconPreview(it.iconId.toViewData(), it.color)
                 binding.layoutChangeRecordTypeCategoriesPreview.setCardBackgroundColor(it.color)
                 binding.layoutChangeRecordTypeGoalPreview.setCardBackgroundColor(it.color)
             }
@@ -467,6 +472,21 @@ class ChangeRecordTypeFragment :
         viewChangeRecordTypeAdditionalDuplicateDivider.isVisible = data.isDuplicateVisible
 
         tvChangeRecordTypeAdditionalDefaultDurationSelectorValue.text = data.defaultDuration
+    }
+
+    private fun updateColorPreview(@ColorInt color: Int) = with(binding) {
+        colorPreviewGradient.colors = intArrayOf(AndroidColor.TRANSPARENT, color)
+        layoutChangeRecordTypeColorPreview.setCardBackgroundColor(color)
+        viewChangeRecordTypeColorPreviewLong.background = colorPreviewGradient
+    }
+
+    private fun updateIconPreview(
+        iconId: RecordTypeIcon,
+        @ColorInt color: Int,
+    ) = with(binding) {
+        layoutChangeRecordTypeIconPreview.setCardBackgroundColor(color)
+        iconChangeRecordTypeIconPreview.itemIcon = iconId
+        viewChangeRecordTypeIconPreviewLong.setIcon(iconId)
     }
 
     companion object {

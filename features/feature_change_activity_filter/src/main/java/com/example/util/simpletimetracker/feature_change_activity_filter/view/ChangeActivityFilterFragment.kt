@@ -1,10 +1,13 @@
 package com.example.util.simpletimetracker.feature_change_activity_filter.view
 
 import android.animation.ValueAnimator
+import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.annotation.ColorInt
 import androidx.core.view.isVisible
+import androidx.core.view.updateLayoutParams
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.viewModels
 import com.example.util.simpletimetracker.core.base.BaseFragment
@@ -29,6 +32,7 @@ import com.example.util.simpletimetracker.feature_base_adapter.empty.createEmpty
 import com.example.util.simpletimetracker.feature_base_adapter.hint.createHintAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.info.createInfoAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.recordType.createRecordTypeAdapterDelegate
+import com.example.util.simpletimetracker.feature_change_activity_filter.R
 import com.example.util.simpletimetracker.feature_change_activity_filter.viewData.ChangeActivityFilterChooserState.Closed
 import com.example.util.simpletimetracker.feature_change_activity_filter.viewData.ChangeActivityFilterChooserState.Color
 import com.example.util.simpletimetracker.feature_change_activity_filter.viewData.ChangeActivityFilterChooserState.Type
@@ -76,6 +80,9 @@ class ChangeActivityFilterFragment :
         )
     }
     private var typeColorAnimator: ValueAnimator? = null
+    private val colorPreviewGradient = GradientDrawable().apply {
+        orientation = GradientDrawable.Orientation.LEFT_RIGHT
+    }
 
     private val params: ChangeActivityFilterParams by fragmentArgumentDelegate(
         key = ARGS_PARAMS, default = ChangeActivityFilterParams.New,
@@ -157,7 +164,7 @@ class ChangeActivityFilterFragment :
                 itemName = it.name
                 itemColor = it.color
 
-                binding.layoutChangeActivityFilterColorPreview.setCardBackgroundColor(it.color)
+                updateColorPreview(it.color)
                 binding.layoutChangeActivityFilterTypePreview.setCardBackgroundColor(it.color)
             }
         }
@@ -173,7 +180,7 @@ class ChangeActivityFilterFragment :
                 to = item.color,
                 doOnUpdate = { value ->
                     itemColor = value
-                    binding.layoutChangeActivityFilterColorPreview.setCardBackgroundColor(value)
+                    updateColorPreview(value)
                 },
             )
             with(binding) {
@@ -207,6 +214,12 @@ class ChangeActivityFilterFragment :
         // Chooser fields
         fieldChangeActivityFilterColor.isVisible = isClosed || state.current is Color
         fieldChangeActivityFilterType.isVisible = isClosed || state.current is Type
+
+        // Chooser size
+        val sizeDefault = resources.getDimensionPixelSize(R.dimen.input_field_height)
+        val sizeBig = resources.getDimensionPixelSize(R.dimen.input_field_height_big)
+        val colorSize = if (state.current is Color) sizeDefault else sizeBig
+        fieldChangeActivityFilterColor.updateLayoutParams { height = colorSize }
     }
 
     private fun updateTypes(
@@ -215,6 +228,12 @@ class ChangeActivityFilterFragment :
         viewDataAdapter.replace(data.viewData)
         layoutChangeActivityFilterTypePreview.isVisible = data.selectedCount > 0
         tvChangeActivityFilterTypePreview.text = data.selectedCount.toString()
+    }
+
+    private fun updateColorPreview(@ColorInt color: Int) = with(binding) {
+        colorPreviewGradient.colors = intArrayOf(android.graphics.Color.TRANSPARENT, color)
+        layoutChangeActivityFilterColorPreview.setCardBackgroundColor(color)
+        viewChangeActivityFilterColorPreviewLong.background = colorPreviewGradient
     }
 
     companion object {

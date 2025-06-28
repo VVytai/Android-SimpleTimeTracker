@@ -1,11 +1,14 @@
 package com.example.util.simpletimetracker.feature_change_category.view
 
 import android.animation.ValueAnimator
+import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.annotation.ColorInt
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
+import androidx.core.view.updateLayoutParams
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.viewModels
 import com.example.util.simpletimetracker.core.base.BaseFragment
@@ -31,6 +34,7 @@ import com.example.util.simpletimetracker.feature_base_adapter.empty.createEmpty
 import com.example.util.simpletimetracker.feature_base_adapter.hint.createHintAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.info.createInfoAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.recordType.createRecordTypeAdapterDelegate
+import com.example.util.simpletimetracker.feature_change_category.R
 import com.example.util.simpletimetracker.feature_change_category.viewData.ChangeCategoryChooserState.Closed
 import com.example.util.simpletimetracker.feature_change_category.viewData.ChangeCategoryChooserState.Color
 import com.example.util.simpletimetracker.feature_change_category.viewData.ChangeCategoryChooserState.GoalTime
@@ -88,6 +92,9 @@ class ChangeCategoryFragment :
     }
     private var typeColorAnimator: ValueAnimator? = null
     private var goalTextWatchers: GoalsViewDelegate.TextWatchers? = null
+    private val colorPreviewGradient = GradientDrawable().apply {
+        orientation = GradientDrawable.Orientation.LEFT_RIGHT
+    }
 
     private val params: ChangeTagData by fragmentArgumentDelegate(
         key = ARGS_PARAMS, default = ChangeTagData.New(),
@@ -215,7 +222,7 @@ class ChangeCategoryFragment :
                 itemName = it.name
                 itemColor = it.color
 
-                binding.layoutChangeCategoryColorPreview.setCardBackgroundColor(it.color)
+                updateColorPreview(it.color)
                 binding.layoutChangeCategoryTypePreview.setCardBackgroundColor(it.color)
                 binding.layoutChangeCategoryGoalPreview.setCardBackgroundColor(it.color)
             }
@@ -232,7 +239,7 @@ class ChangeCategoryFragment :
                 to = item.color,
                 doOnUpdate = { value ->
                     itemColor = value
-                    binding.layoutChangeCategoryColorPreview.setCardBackgroundColor(value)
+                    updateColorPreview(value)
                 },
             )
         }
@@ -277,6 +284,12 @@ class ChangeCategoryFragment :
         fieldChangeCategoryColor.isVisible = isClosed || state.current is Color
         fieldChangeCategoryType.isVisible = isClosed || state.current is Type
         fieldChangeCategoryGoalTime.isVisible = isClosed || state.current is GoalTime
+
+        // Chooser size
+        val sizeDefault = resources.getDimensionPixelSize(R.dimen.input_field_height)
+        val sizeBig = resources.getDimensionPixelSize(R.dimen.input_field_height_big)
+        val colorSize = if (state.current is Color) sizeDefault else sizeBig
+        fieldChangeCategoryColor.updateLayoutParams { height = colorSize }
     }
 
     private fun updateGoalsState(state: ChangeRecordTypeGoalsViewData) = with(binding) {
@@ -305,6 +318,12 @@ class ChangeCategoryFragment :
         if (etChangeRecordCategoryNote.text.toString() != text) {
             etChangeRecordCategoryNote.setText(text)
         }
+    }
+
+    private fun updateColorPreview(@ColorInt color: Int) = with(binding) {
+        colorPreviewGradient.colors = intArrayOf(android.graphics.Color.TRANSPARENT, color)
+        layoutChangeCategoryColorPreview.setCardBackgroundColor(color)
+        viewChangeCategoryColorPreviewLong.background = colorPreviewGradient
     }
 
     companion object {

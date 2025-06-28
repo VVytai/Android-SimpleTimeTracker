@@ -181,6 +181,11 @@
         <attr name="selectedPieColor" format="color" />
     </declare-styleable>
 
+    <declare-styleable name="IconsPreviewView">
+        <attr name="iconsPreviewMaxSize" format="dimension"/>
+        <attr name="iconsPreviewColor" format="color" />
+    </declare-styleable>
+
     <declare-styleable name="HintBigView">
         <attr name="itemHintText" format="string" />
         <attr name="itemInfoIconVisible" format="boolean" />

@@ -17,7 +17,6 @@ import android.util.AttributeSet
 import android.view.ContextThemeWrapper
 import android.view.MotionEvent
 import android.view.View
-import androidx.annotation.FloatRange
 import com.example.util.simpletimetracker.feature_views.IconView
 import com.example.util.simpletimetracker.feature_views.R
 import com.example.util.simpletimetracker.feature_views.extension.dpToPx
@@ -32,6 +31,8 @@ import kotlin.math.min
 import kotlin.math.sin
 import androidx.core.content.withStyledAttributes
 import com.example.util.simpletimetracker.feature_views.ColorUtils
+import com.example.util.simpletimetracker.feature_views.ParticlesAnimationUtils.interpolate
+import com.example.util.simpletimetracker.feature_views.ParticlesAnimationUtils.pseudoRandom
 import com.example.util.simpletimetracker.feature_views.SingleTapDetector
 import kotlin.math.atan2
 import kotlin.math.pow
@@ -703,16 +704,6 @@ class PieChartView @JvmOverloads constructor(
             particlesAppearAnimator.start()
             shouldAnimateParticlesAppearing = false
         }
-    }
-
-    @FloatRange(from = 0.0, to = 1.0)
-    private fun pseudoRandom(seed: Double): Double {
-        return sin(seed) / 2.0 + 0.5
-    }
-
-    @Suppress("SameParameterValue")
-    private fun interpolate(a: Float, b: Float, f: Double): Double {
-        return a + f * (b - a)
     }
 
     private inner class Arc(

@@ -1,10 +1,12 @@
 package com.example.util.simpletimetracker.feature_change_record_tag.view
 
 import android.animation.ValueAnimator
+import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.annotation.ColorInt
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.core.view.setPadding
@@ -59,6 +61,7 @@ import com.example.util.simpletimetracker.feature_views.extension.dpToPx
 import com.example.util.simpletimetracker.feature_views.extension.setCompoundDrawableWithIntrinsicBounds
 import com.example.util.simpletimetracker.feature_views.extension.setOnClick
 import com.example.util.simpletimetracker.feature_views.extension.visible
+import com.example.util.simpletimetracker.feature_views.viewData.RecordTypeIcon
 import com.example.util.simpletimetracker.navigation.params.screen.ChangeRecordTagFromScreen
 import com.example.util.simpletimetracker.navigation.params.screen.ChangeTagData
 import com.google.android.flexbox.FlexDirection
@@ -133,6 +136,9 @@ class ChangeRecordTagFragment :
     private var iconsLayoutManager: GridLayoutManager? = null
     private var typeColorAnimator: ValueAnimator? = null
     private var iconTextWatcher: TextWatcher? = null
+    private val colorPreviewGradient = GradientDrawable().apply {
+        orientation = GradientDrawable.Orientation.LEFT_RIGHT
+    }
 
     private val params: ChangeTagData by fragmentArgumentDelegate(
         key = ARGS_PARAMS, default = ChangeTagData.New(),
@@ -286,15 +292,12 @@ class ChangeRecordTagFragment :
                 if (icon != null) {
                     itemIconVisible = true
                     itemIcon = icon.toViewData()
-                    binding.layoutChangeRecordTagIconPreview.isVisible = true
-                    binding.iconChangeRecordTagIconPreview.itemIcon = icon.toViewData()
                 } else {
                     itemIconVisible = false
-                    binding.layoutChangeRecordTagIconPreview.isVisible = false
                 }
 
-                binding.layoutChangeRecordTagColorPreview.setCardBackgroundColor(it.color)
-                binding.layoutChangeRecordTagIconPreview.setCardBackgroundColor(it.color)
+                updateColorPreview(it.color)
+                updateIconPreview(icon?.toViewData(), it.color)
                 binding.layoutChangeRecordTagTypesPreview.setCardBackgroundColor(it.color)
                 binding.layoutChangeRecordTagDefaultTypePreview.setCardBackgroundColor(it.color)
             }
@@ -308,11 +311,8 @@ class ChangeRecordTagFragment :
             if (icon != null) {
                 itemIconVisible = true
                 itemIcon = icon
-                binding.layoutChangeRecordTagIconPreview.isVisible = true
-                binding.iconChangeRecordTagIconPreview.itemIcon = icon
             } else {
                 itemIconVisible = false
-                binding.layoutChangeRecordTagIconPreview.isVisible = false
             }
 
             typeColorAnimator?.cancel()
@@ -321,12 +321,13 @@ class ChangeRecordTagFragment :
                 to = item.color,
                 doOnUpdate = { value ->
                     itemColor = value
-                    binding.layoutChangeRecordTagColorPreview.setCardBackgroundColor(value)
+                    updateColorPreview(value)
                 },
             )
         }
+
         with(binding) {
-            layoutChangeRecordTagIconPreview.setCardBackgroundColor(item.color)
+            updateIconPreview(item.icon, item.color)
             layoutChangeRecordTagTypesPreview.setCardBackgroundColor(item.color)
             layoutChangeRecordTagDefaultTypePreview.setCardBackgroundColor(item.color)
         }
@@ -421,6 +422,29 @@ class ChangeRecordTagFragment :
     private fun updateNoteState(text: String) = with(binding) {
         if (etChangeRecordTagNote.text.toString() != text) {
             etChangeRecordTagNote.setText(text)
+        }
+    }
+
+    private fun updateColorPreview(@ColorInt color: Int) = with(binding) {
+        colorPreviewGradient.colors = intArrayOf(android.graphics.Color.TRANSPARENT, color)
+        layoutChangeRecordTagColorPreview.setCardBackgroundColor(color)
+        viewChangeRecordTagColorPreviewLong.background = colorPreviewGradient
+    }
+
+    private fun updateIconPreview(
+        iconId: RecordTypeIcon?,
+        @ColorInt color: Int,
+    ) = with(binding) {
+        if (iconId != null) {
+            binding.layoutChangeRecordTagIconPreview.isVisible = true
+            binding.viewChangeRecordTagIconPreviewLong.isVisible = true
+
+            layoutChangeRecordTagIconPreview.setCardBackgroundColor(color)
+            iconChangeRecordTagIconPreview.itemIcon = iconId
+            viewChangeRecordTagIconPreviewLong.setIcon(iconId)
+        } else {
+            binding.layoutChangeRecordTagIconPreview.isVisible = false
+            binding.viewChangeRecordTagIconPreviewLong.isVisible = false
         }
     }
 
