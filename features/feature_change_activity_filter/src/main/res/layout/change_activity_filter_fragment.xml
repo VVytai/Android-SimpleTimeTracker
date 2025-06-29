@@ -170,12 +170,13 @@
                     </com.google.android.material.card.MaterialCardView>
 
                     <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tvChangeActivityFilterType"
                         style="@style/EditScreenField"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:text="@string/change_category_types_hint"
                         app:layout_constraintEnd_toStartOf="@id/layoutChangeActivityFilterTypePreview"
-                        app:layout_constraintStart_toStartOf="parent" />
+                        app:layout_constraintStart_toStartOf="parent"
+                        tools:text="@string/change_category_types_hint" />
 
                     <ImageView
                         android:id="@+id/arrowChangeActivityFilterType"

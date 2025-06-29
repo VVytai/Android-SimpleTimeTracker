@@ -228,6 +228,7 @@ class ChangeActivityFilterFragment :
         data: ChangeActivityFilterTypesViewData,
     ) = with(binding) {
         viewDataAdapter.replace(data.viewData)
+        tvChangeActivityFilterType.text = data.typeHint
         layoutChangeActivityFilterTypePreview.isVisible = data.selectedCount > 0
         tvChangeActivityFilterTypePreview.text = data.selectedCount.toString()
     }

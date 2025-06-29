@@ -3,17 +3,20 @@ package com.example.util.simpletimetracker.feature_change_activity_filter.intera
 import com.example.util.simpletimetracker.core.mapper.CategoryViewDataMapper
 import com.example.util.simpletimetracker.core.mapper.CommonViewDataMapper
 import com.example.util.simpletimetracker.core.mapper.RecordTypeViewDataMapper
+import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.domain.category.interactor.CategoryInteractor
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTypeInteractor
 import com.example.util.simpletimetracker.domain.activityFilter.model.ActivityFilter
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.divider.DividerViewData
+import com.example.util.simpletimetracker.feature_change_activity_filter.R
 import com.example.util.simpletimetracker.feature_change_activity_filter.viewData.ChangeActivityFilterTypesViewData
 import com.example.util.simpletimetracker.feature_views.GoalCheckmarkView
 import javax.inject.Inject
 
 class ChangeActivityFilterViewDataInteractor @Inject constructor(
+    private val resourceRepo: ResourceRepo,
     private val prefsInteractor: PrefsInteractor,
     private val recordTypeInteractor: RecordTypeInteractor,
     private val categoryInteractor: CategoryInteractor,
@@ -28,6 +31,10 @@ class ChangeActivityFilterViewDataInteractor @Inject constructor(
     ): ChangeActivityFilterTypesViewData {
         val numberOfCards = prefsInteractor.getNumberOfCards()
         val isDarkTheme = prefsInteractor.getDarkMode()
+        val typeHint = when (type) {
+            is ActivityFilter.Type.Activity -> R.string.activity_hint
+            is ActivityFilter.Type.Category -> R.string.category_hint
+        }.let(resourceRepo::getString)
         val data = when (type) {
             is ActivityFilter.Type.Activity -> {
                 recordTypeInteractor.getAll()
@@ -67,11 +74,13 @@ class ChangeActivityFilterViewDataInteractor @Inject constructor(
             available.let(viewData::addAll)
 
             ChangeActivityFilterTypesViewData(
+                typeHint = typeHint,
                 selectedCount = selected.size,
                 viewData = viewData,
             )
         } else {
             ChangeActivityFilterTypesViewData(
+                typeHint = typeHint,
                 selectedCount = 0,
                 viewData = when (type) {
                     is ActivityFilter.Type.Activity -> {
