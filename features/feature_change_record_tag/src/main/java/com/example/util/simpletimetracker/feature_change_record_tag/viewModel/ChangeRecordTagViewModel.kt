@@ -27,7 +27,6 @@ import com.example.util.simpletimetracker.domain.recordTag.interactor.RemoveReco
 import com.example.util.simpletimetracker.domain.notifications.interactor.UpdateExternalViewsInteractor
 import com.example.util.simpletimetracker.domain.color.model.AppColor
 import com.example.util.simpletimetracker.domain.extension.addOrRemove
-import com.example.util.simpletimetracker.domain.extension.orFalse
 import com.example.util.simpletimetracker.domain.statistics.model.ChartFilterType
 import com.example.util.simpletimetracker.domain.recordTag.model.RecordTag
 import com.example.util.simpletimetracker.feature_base_adapter.category.CategoryViewData
@@ -35,6 +34,7 @@ import com.example.util.simpletimetracker.feature_base_adapter.recordType.Record
 import com.example.util.simpletimetracker.feature_change_record_tag.R
 import com.example.util.simpletimetracker.feature_change_record_tag.interactor.ChangeRecordTagViewDataInteractor
 import com.example.util.simpletimetracker.feature_change_record_tag.viewData.ChangeRecordTagChooserState
+import com.example.util.simpletimetracker.feature_change_record_tag.viewData.ChangeRecordTagFieldsState
 import com.example.util.simpletimetracker.feature_change_record_tag.viewData.ChangeRecordTagTypesViewData
 import com.example.util.simpletimetracker.navigation.Router
 import com.example.util.simpletimetracker.navigation.params.screen.ChangeTagData
@@ -94,13 +94,16 @@ class ChangeRecordTagViewModel @Inject constructor(
             initial
         }
     }
-    val chooserState: LiveData<ViewChooserStateDelegate.States> by lazy {
-        return@lazy MutableLiveData(
-            ViewChooserStateDelegate.States(
-                current = ChangeRecordTagChooserState.Closed,
-                previous = ChangeRecordTagChooserState.Closed,
+    val chooserState: LiveData<ChangeRecordTagFieldsState> by lazy {
+        return@lazy MutableLiveData<ChangeRecordTagFieldsState>(
+            ChangeRecordTagFieldsState(
+                chooserState = ViewChooserStateDelegate.States(
+                    current = ChangeRecordTagChooserState.Closed,
+                    previous = ChangeRecordTagChooserState.Closed,
+                ),
+                additionalFieldsVisible = false,
             ),
-        )
+        ).also { viewModelScope.launch { initializeChooserState() } }
     }
     val noteState: LiveData<String> by lazy {
         return@lazy MutableLiveData<String>().let { initial ->
@@ -109,9 +112,6 @@ class ChangeRecordTagViewModel @Inject constructor(
             }
             initial
         }
-    }
-    val additionalChoosersVisibility: LiveData<Boolean> by lazySuspend {
-        prefsInteractor.getTagAdditionalFieldsShown()
     }
     val archiveButtonEnabled: LiveData<Boolean> = MutableLiveData(true)
     val deleteButtonEnabled: LiveData<Boolean> = MutableLiveData(true)
@@ -271,7 +271,16 @@ class ChangeRecordTagViewModel @Inject constructor(
     fun onMoreFieldsClick() = viewModelScope.launch {
         val newValue = !prefsInteractor.getTagAdditionalFieldsShown()
         prefsInteractor.setTagAdditionalFieldsShown(newValue)
-        additionalChoosersVisibility.set(newValue)
+
+        val currentState = chooserState.value ?: return@launch
+        val newState = ChangeRecordTagFieldsState(
+            chooserState = ViewChooserStateDelegate.States(
+                current = currentState.chooserState.current,
+                previous = currentState.chooserState.current,
+            ),
+            additionalFieldsVisible = newValue,
+        )
+        chooserState.set(newState)
     }
 
     fun onSaveClick() {
@@ -301,7 +310,7 @@ class ChangeRecordTagViewModel @Inject constructor(
     }
 
     fun onBackPressed() {
-        if (chooserState.value?.current !is ChangeRecordTagChooserState.Closed) {
+        if (chooserState.value?.chooserState?.current !is ChangeRecordTagChooserState.Closed) {
             onNewChooserState(ChangeRecordTagChooserState.Closed)
         } else {
             router.back()
@@ -346,24 +355,31 @@ class ChangeRecordTagViewModel @Inject constructor(
     private fun onNewChooserState(
         newState: ChangeRecordTagChooserState,
     ) {
-        val current = chooserState.value?.current
-            ?: ChangeRecordTagChooserState.Closed
-        keyboardVisibility.set(false)
-        if (current == newState) {
-            chooserState.set(
-                ViewChooserStateDelegate.States(
-                    current = ChangeRecordTagChooserState.Closed,
-                    previous = current,
-                ),
+        val currentState = chooserState.value ?: return
+        val current = currentState.chooserState.current
+
+        val newChooserState = if (current == newState) {
+            ViewChooserStateDelegate.States(
+                current = ChangeRecordTagChooserState.Closed,
+                previous = current,
             )
         } else {
-            chooserState.set(
-                ViewChooserStateDelegate.States(
-                    current = newState,
-                    previous = current,
-                ),
+            ViewChooserStateDelegate.States(
+                current = newState,
+                previous = current,
             )
         }
+
+        keyboardVisibility.set(false)
+        chooserState.set(currentState.copy(chooserState = newChooserState))
+    }
+
+    private suspend fun initializeChooserState() {
+        val current = chooserState.value ?: return
+        val newState = current.copy(
+            additionalFieldsVisible = prefsInteractor.getTagAdditionalFieldsShown(),
+        )
+        chooserState.set(newState)
     }
 
     private suspend fun initializeTypes() {

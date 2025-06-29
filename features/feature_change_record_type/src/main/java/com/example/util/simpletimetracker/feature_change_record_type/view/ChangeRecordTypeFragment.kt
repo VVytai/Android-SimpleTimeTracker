@@ -60,6 +60,7 @@ import com.example.util.simpletimetracker.feature_change_record_type.viewData.Ch
 import com.example.util.simpletimetracker.feature_change_record_type.viewData.ChangeRecordTypeChooserState.Color
 import com.example.util.simpletimetracker.feature_change_record_type.viewData.ChangeRecordTypeChooserState.GoalTime
 import com.example.util.simpletimetracker.feature_change_record_type.viewData.ChangeRecordTypeChooserState.Icon
+import com.example.util.simpletimetracker.feature_change_record_type.viewData.ChangeRecordTypeFieldsState
 import com.example.util.simpletimetracker.feature_change_record_type.viewModel.ChangeRecordTypeViewModel
 import com.example.util.simpletimetracker.feature_views.extension.animateColor
 import com.example.util.simpletimetracker.feature_views.extension.dpToPx
@@ -252,7 +253,6 @@ class ChangeRecordTypeFragment :
                 layoutChangeRecordTypeGoals.containerChangeRecordTypeGoalNotificationsHint::visible::set,
             )
             chooserState.observe(::updateChooserState)
-            additionalChoosersVisibility.observe { chooserState.value?.let(::updateChooserState) }
             keyboardVisibility.observe { visible ->
                 if (visible) showKeyboard(etChangeRecordTypeName) else hideKeyboard()
             }
@@ -375,8 +375,9 @@ class ChangeRecordTypeFragment :
     }
 
     private fun updateChooserState(
-        state: ViewChooserStateDelegate.States,
+        fieldsState: ChangeRecordTypeFieldsState,
     ) = with(binding) {
+        val state = fieldsState.chooserState
         ViewChooserStateDelegate.updateChooser<Color>(
             state = state,
             chooserData = rvChangeRecordTypeColor,
@@ -423,7 +424,7 @@ class ChangeRecordTypeFragment :
         fieldChangeRecordTypeIcon.isVisible = isClosed || state.current is Icon
 
         // Additional fields
-        val isAdditionalVisible = viewModel.additionalChoosersVisibility.value.orFalse()
+        val isAdditionalVisible = fieldsState.additionalFieldsVisible
         containerChangeRecordTypeMoreFields.isVisible = isClosed
         fieldChangeRecordTypeCategory.isVisible = (isAdditionalVisible && isClosed) || state.current is Category
         fieldChangeRecordTypeGoalTime.isVisible = (isAdditionalVisible && isClosed) || state.current is GoalTime

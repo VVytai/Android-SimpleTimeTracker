@@ -54,6 +54,7 @@ import com.example.util.simpletimetracker.feature_change_record_tag.viewData.Cha
 import com.example.util.simpletimetracker.feature_change_record_tag.viewData.ChangeRecordTagChooserState.DefaultType
 import com.example.util.simpletimetracker.feature_change_record_tag.viewData.ChangeRecordTagChooserState.Icon
 import com.example.util.simpletimetracker.feature_change_record_tag.viewData.ChangeRecordTagChooserState.Type
+import com.example.util.simpletimetracker.feature_change_record_tag.viewData.ChangeRecordTagFieldsState
 import com.example.util.simpletimetracker.feature_change_record_tag.viewData.ChangeRecordTagTypesViewData
 import com.example.util.simpletimetracker.feature_change_record_tag.viewModel.ChangeRecordTagViewModel
 import com.example.util.simpletimetracker.feature_views.extension.animateColor
@@ -235,7 +236,6 @@ class ChangeRecordTagFragment :
             types.observe(::updateTypes)
             defaultTypes.observe(::updateDefaultTypes)
             chooserState.observe(::updateChooserState)
-            additionalChoosersVisibility.observe { chooserState.value?.let(::updateChooserState) }
             nameErrorMessage.observe(::updateNameErrorMessage)
             noteState.observe(::updateNoteState)
             keyboardVisibility.observe { visible ->
@@ -342,8 +342,9 @@ class ChangeRecordTagFragment :
     }
 
     private fun updateChooserState(
-        state: ViewChooserStateDelegate.States,
+        fieldsState: ChangeRecordTagFieldsState,
     ) = with(binding) {
+        val state = fieldsState.chooserState
         ViewChooserStateDelegate.updateChooser<Color>(
             state = state,
             chooserData = rvChangeRecordTagColor,
@@ -385,7 +386,7 @@ class ChangeRecordTagFragment :
         fieldChangeRecordTagType.isVisible = isClosed || state.current is Type
 
         // Additional fields
-        val isAdditionalVisible = viewModel.additionalChoosersVisibility.value.orFalse()
+        val isAdditionalVisible = fieldsState.additionalFieldsVisible
         containerChangeRecordTagMoreFields.isVisible = isClosed
         fieldChangeRecordTagDefaultType.isVisible = (isAdditionalVisible && isClosed) || state.current is DefaultType
         btnChangeRecordTagSelectActivity.isVisible = isAdditionalVisible && isClosed

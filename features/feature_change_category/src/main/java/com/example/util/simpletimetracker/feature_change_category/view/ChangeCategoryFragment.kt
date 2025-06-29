@@ -39,6 +39,7 @@ import com.example.util.simpletimetracker.feature_change_category.viewData.Chang
 import com.example.util.simpletimetracker.feature_change_category.viewData.ChangeCategoryChooserState.Color
 import com.example.util.simpletimetracker.feature_change_category.viewData.ChangeCategoryChooserState.GoalTime
 import com.example.util.simpletimetracker.feature_change_category.viewData.ChangeCategoryChooserState.Type
+import com.example.util.simpletimetracker.feature_change_category.viewData.ChangeCategoryFieldsState
 import com.example.util.simpletimetracker.feature_change_category.viewData.ChangeCategoryTypesViewData
 import com.example.util.simpletimetracker.feature_change_category.viewModel.ChangeCategoryViewModel
 import com.example.util.simpletimetracker.feature_change_goals.api.ChangeRecordTypeGoalsViewData
@@ -174,7 +175,6 @@ class ChangeCategoryFragment :
                 layoutChangeCategoryGoals.containerChangeRecordTypeGoalNotificationsHint::visible::set,
             )
             chooserState.observe(::updateChooserState)
-            additionalChoosersVisibility.observe { chooserState.value?.let(::updateChooserState) }
             keyboardVisibility.observe { visible ->
                 if (visible) showKeyboard(etChangeCategoryName) else hideKeyboard()
             }
@@ -258,8 +258,9 @@ class ChangeCategoryFragment :
     }
 
     private fun updateChooserState(
-        state: ViewChooserStateDelegate.States,
+        fieldsState: ChangeCategoryFieldsState,
     ) = with(binding) {
+        val state = fieldsState.chooserState
         ViewChooserStateDelegate.updateChooser<Color>(
             state = state,
             chooserData = rvChangeCategoryColor,
@@ -291,7 +292,7 @@ class ChangeCategoryFragment :
         fieldChangeCategoryType.isVisible = isClosed || state.current is Type
 
         // Additional fields
-        val isAdditionalVisible = viewModel.additionalChoosersVisibility.value.orFalse()
+        val isAdditionalVisible = fieldsState.additionalFieldsVisible
         containerChangeCategoryMoreFields.isVisible = isClosed
         fieldChangeCategoryGoalTime.isVisible = (isAdditionalVisible && isClosed) || state.current is GoalTime
         inputChangeRecordCategoryNote.isVisible = isAdditionalVisible && isClosed

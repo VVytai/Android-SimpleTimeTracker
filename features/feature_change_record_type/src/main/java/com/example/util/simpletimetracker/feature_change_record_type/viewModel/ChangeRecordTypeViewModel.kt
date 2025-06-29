@@ -9,7 +9,6 @@ import com.example.util.simpletimetracker.core.delegates.colorSelection.ColorSel
 import com.example.util.simpletimetracker.core.delegates.colorSelection.ColorSelectionViewModelDelegateImpl
 import com.example.util.simpletimetracker.core.delegates.iconSelection.viewModelDelegate.IconSelectionViewModelDelegate
 import com.example.util.simpletimetracker.core.delegates.iconSelection.viewModelDelegate.IconSelectionViewModelDelegateImpl
-import com.example.util.simpletimetracker.core.extension.lazySuspend
 import com.example.util.simpletimetracker.core.extension.set
 import com.example.util.simpletimetracker.core.extension.trimIfNotBlank
 import com.example.util.simpletimetracker.core.interactor.SnackBarMessageNavigationInteractor
@@ -40,6 +39,7 @@ import com.example.util.simpletimetracker.feature_change_record_type.interactor.
 import com.example.util.simpletimetracker.feature_change_record_type.viewData.ChangeRecordTypeAdditionalState
 import com.example.util.simpletimetracker.feature_change_record_type.viewData.ChangeRecordTypeCategoriesViewData
 import com.example.util.simpletimetracker.feature_change_record_type.viewData.ChangeRecordTypeChooserState
+import com.example.util.simpletimetracker.feature_change_record_type.viewData.ChangeRecordTypeFieldsState
 import com.example.util.simpletimetracker.navigation.Router
 import com.example.util.simpletimetracker.navigation.params.screen.ChangeCategoryFromChangeActivityParams
 import com.example.util.simpletimetracker.navigation.params.screen.ChangeRecordTypeParams
@@ -96,13 +96,16 @@ class ChangeRecordTypeViewModel @Inject constructor(
             initial
         }
     }
-    val chooserState: LiveData<ViewChooserStateDelegate.States> by lazy {
-        return@lazy MutableLiveData(
-            ViewChooserStateDelegate.States(
-                current = ChangeRecordTypeChooserState.Closed,
-                previous = ChangeRecordTypeChooserState.Closed,
+    val chooserState: LiveData<ChangeRecordTypeFieldsState> by lazy {
+        return@lazy MutableLiveData<ChangeRecordTypeFieldsState>(
+            ChangeRecordTypeFieldsState(
+                chooserState = ViewChooserStateDelegate.States(
+                    current = ChangeRecordTypeChooserState.Closed,
+                    previous = ChangeRecordTypeChooserState.Closed,
+                ),
+                additionalFieldsVisible = false,
             ),
-        )
+        ).also { viewModelScope.launch { initializeChooserState() } }
     }
     val additionalState: LiveData<ChangeRecordTypeAdditionalState> by lazy {
         return@lazy MutableLiveData<ChangeRecordTypeAdditionalState>().let { initial ->
@@ -119,9 +122,6 @@ class ChangeRecordTypeViewModel @Inject constructor(
             }
             initial
         }
-    }
-    val additionalChoosersVisibility: LiveData<Boolean> by lazySuspend {
-        prefsInteractor.getTypeAdditionalFieldsShown()
     }
     val archiveButtonEnabled: LiveData<Boolean> = MutableLiveData(true)
     val deleteButtonEnabled: LiveData<Boolean> = MutableLiveData(true)
@@ -285,7 +285,16 @@ class ChangeRecordTypeViewModel @Inject constructor(
     fun onMoreFieldsClick() = viewModelScope.launch {
         val newValue = !prefsInteractor.getTypeAdditionalFieldsShown()
         prefsInteractor.setTypeAdditionalFieldsShown(newValue)
-        additionalChoosersVisibility.set(newValue)
+
+        val currentState = chooserState.value ?: return@launch
+        val newState = ChangeRecordTypeFieldsState(
+            chooserState = ViewChooserStateDelegate.States(
+                current = currentState.chooserState.current,
+                previous = currentState.chooserState.current,
+            ),
+            additionalFieldsVisible = newValue,
+        )
+        chooserState.set(newState)
     }
 
     fun onSaveClick() {
@@ -302,7 +311,7 @@ class ChangeRecordTypeViewModel @Inject constructor(
     }
 
     fun onBackPressed() {
-        if (chooserState.value?.current !is ChangeRecordTypeChooserState.Closed) {
+        if (chooserState.value?.chooserState?.current !is ChangeRecordTypeChooserState.Closed) {
             onNewChooserState(ChangeRecordTypeChooserState.Closed)
         } else {
             router.back()
@@ -381,25 +390,23 @@ class ChangeRecordTypeViewModel @Inject constructor(
     private fun onNewChooserState(
         newState: ChangeRecordTypeChooserState,
     ) {
-        val current = chooserState.value?.current
-            ?: ChangeRecordTypeChooserState.Closed
+        val currentState = chooserState.value ?: return
+        val current = currentState.chooserState.current
 
-        keyboardVisibility.set(false)
-        if (current == newState) {
-            chooserState.set(
-                ViewChooserStateDelegate.States(
-                    current = ChangeRecordTypeChooserState.Closed,
-                    previous = current,
-                ),
+        val newChooserState = if (current == newState) {
+            ViewChooserStateDelegate.States(
+                current = ChangeRecordTypeChooserState.Closed,
+                previous = current,
             )
         } else {
-            chooserState.set(
-                ViewChooserStateDelegate.States(
-                    current = newState,
-                    previous = current,
-                ),
+            ViewChooserStateDelegate.States(
+                current = newState,
+                previous = current,
             )
         }
+
+        keyboardVisibility.set(false)
+        chooserState.set(currentState.copy(chooserState = newChooserState))
     }
 
     private suspend fun saveRecordType(): Long {
@@ -448,6 +455,14 @@ class ChangeRecordTypeViewModel @Inject constructor(
 
         recordTypeCategoryInteractor.addCategories(typeId, addedCategories)
         recordTypeCategoryInteractor.removeCategories(typeId, removedCategories)
+    }
+
+    private suspend fun initializeChooserState() {
+        val current = chooserState.value ?: return
+        val newState = current.copy(
+            additionalFieldsVisible = prefsInteractor.getTypeAdditionalFieldsShown(),
+        )
+        chooserState.set(newState)
     }
 
     private suspend fun initializeRecordTypeData() {

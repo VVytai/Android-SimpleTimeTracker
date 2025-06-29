@@ -31,6 +31,7 @@ import com.example.util.simpletimetracker.feature_change_category.R
 import com.example.util.simpletimetracker.feature_change_category.interactor.ChangeCategoryViewDataInteractor
 import com.example.util.simpletimetracker.feature_change_category.viewData.ChangeCategoryTypesViewData
 import com.example.util.simpletimetracker.feature_change_category.viewData.ChangeCategoryChooserState
+import com.example.util.simpletimetracker.feature_change_category.viewData.ChangeCategoryFieldsState
 import com.example.util.simpletimetracker.feature_change_goals.api.GoalsViewModelDelegate
 import com.example.util.simpletimetracker.navigation.Router
 import com.example.util.simpletimetracker.navigation.params.screen.ChangeTagData
@@ -76,13 +77,16 @@ class ChangeCategoryViewModel @Inject constructor(
             initial
         }
     }
-    val chooserState: LiveData<ViewChooserStateDelegate.States> by lazy {
-        return@lazy MutableLiveData(
-            ViewChooserStateDelegate.States(
-                current = ChangeCategoryChooserState.Closed,
-                previous = ChangeCategoryChooserState.Closed,
+    val chooserState: LiveData<ChangeCategoryFieldsState> by lazy {
+        return@lazy MutableLiveData<ChangeCategoryFieldsState>(
+            ChangeCategoryFieldsState(
+                chooserState = ViewChooserStateDelegate.States(
+                    current = ChangeCategoryChooserState.Closed,
+                    previous = ChangeCategoryChooserState.Closed,
+                ),
+                additionalFieldsVisible = false,
             ),
-        )
+        ).also { viewModelScope.launch { initializeChooserState() } }
     }
     val noteState: LiveData<String> by lazy {
         return@lazy MutableLiveData<String>().let { initial ->
@@ -91,9 +95,6 @@ class ChangeCategoryViewModel @Inject constructor(
             }
             initial
         }
-    }
-    val additionalChoosersVisibility: LiveData<Boolean> by lazySuspend {
-        prefsInteractor.getCategoryAdditionalFieldsShown()
     }
     val deleteButtonEnabled: LiveData<Boolean> = MutableLiveData(true)
     val saveButtonEnabled: LiveData<Boolean> = MutableLiveData(true)
@@ -202,7 +203,16 @@ class ChangeCategoryViewModel @Inject constructor(
     fun onMoreFieldsClick() = viewModelScope.launch {
         val newValue = !prefsInteractor.getCategoryAdditionalFieldsShown()
         prefsInteractor.setCategoryAdditionalFieldsShown(newValue)
-        additionalChoosersVisibility.set(newValue)
+
+        val currentState = chooserState.value ?: return@launch
+        val newState = ChangeCategoryFieldsState(
+            chooserState = ViewChooserStateDelegate.States(
+                current = currentState.chooserState.current,
+                previous = currentState.chooserState.current,
+            ),
+            additionalFieldsVisible = newValue,
+        )
+        chooserState.set(newState)
     }
 
     fun onSaveClick() {
@@ -231,7 +241,7 @@ class ChangeCategoryViewModel @Inject constructor(
     }
 
     fun onBackPressed() {
-        if (chooserState.value?.current !is ChangeCategoryChooserState.Closed) {
+        if (chooserState.value?.chooserState?.current !is ChangeCategoryChooserState.Closed) {
             onNewChooserState(ChangeCategoryChooserState.Closed)
         } else {
             router.back()
@@ -249,24 +259,31 @@ class ChangeCategoryViewModel @Inject constructor(
     private fun onNewChooserState(
         newState: ChangeCategoryChooserState,
     ) {
-        val current = chooserState.value?.current
-            ?: ChangeCategoryChooserState.Closed
-        keyboardVisibility.set(false)
-        if (current == newState) {
-            chooserState.set(
-                ViewChooserStateDelegate.States(
-                    current = ChangeCategoryChooserState.Closed,
-                    previous = current,
-                ),
+        val currentState = chooserState.value ?: return
+        val current = currentState.chooserState.current
+
+        val newChooserState = if (current == newState) {
+            ViewChooserStateDelegate.States(
+                current = ChangeCategoryChooserState.Closed,
+                previous = current,
             )
         } else {
-            chooserState.set(
-                ViewChooserStateDelegate.States(
-                    current = newState,
-                    previous = current,
-                ),
+            ViewChooserStateDelegate.States(
+                current = newState,
+                previous = current,
             )
         }
+
+        keyboardVisibility.set(false)
+        chooserState.set(currentState.copy(chooserState = newChooserState))
+    }
+
+    private suspend fun initializeChooserState() {
+        val current = chooserState.value ?: return
+        val newState = current.copy(
+            additionalFieldsVisible = prefsInteractor.getCategoryAdditionalFieldsShown(),
+        )
+        chooserState.set(newState)
     }
 
     private suspend fun initializeSelectedTypes() {
