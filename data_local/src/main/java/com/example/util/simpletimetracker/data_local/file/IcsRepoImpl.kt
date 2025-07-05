@@ -27,6 +27,7 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.TimeZone
 import javax.inject.Inject
+import androidx.core.net.toUri
 
 class IcsRepoImpl @Inject constructor(
     private val contentResolver: ContentResolver,
@@ -56,7 +57,7 @@ class IcsRepoImpl @Inject constructor(
         var fileOutputStream: BufferedOutputStream? = null
 
         try {
-            val uri = Uri.parse(uriString)
+            val uri = uriString.toUri()
             fileDescriptor = contentResolver.openFileDescriptor(uri, "w")
             fileOutputStream = fileDescriptor?.fileDescriptor
                 ?.let(::FileOutputStream)?.buffered()
@@ -119,21 +120,30 @@ class IcsRepoImpl @Inject constructor(
 
         val commentString = record.comment.clean()
             .wrapText(commentTitle)
-        val categoriesString = categories.joinToString(separator = ", ") { it.name.clean() }
+        val categoriesString = categories
+            .joinToString(separator = ", ", transform = { it.name.clean() })
             .wrapText(categoryTitle)
-        val tagsString = recordTags.joinToString(separator = ", ") { it.name.clean() }
+        val tagsString = recordTags
+            .joinToString(separator = ", ", transform = { it.name.clean() })
             .wrapText(tagsTitle)
         val description = commentString + categoriesString + tagsString
+        val categoriesProperty = categories
+            .joinToString(separator = ",", transform = { it.name.clean() })
 
-        return StringBuilder()
-            .append("BEGIN:VEVENT\n")
-            .append("DTSTART:${formatDateTime(record.timeStarted)}\n")
-            .append("DTEND:${formatDateTime(record.timeEnded)}\n")
-            .append("UID:recordId_${record.id}@stt\n")
-            .append("SUMMARY:${recordType.name.clean()}\n")
-            .append("DESCRIPTION:$description\n")
-            .append("END:VEVENT\n")
-            .toString()
+        return buildString {
+            append("BEGIN:VEVENT\n")
+            append("DTSTART:${formatDateTime(record.timeStarted)}\n")
+            append("DTEND:${formatDateTime(record.timeEnded)}\n")
+            append("UID:recordId_${record.id}@stt\n")
+            append("SUMMARY:${recordType.name.clean()}\n")
+            if (description.isNotEmpty()) {
+                append("DESCRIPTION:$description\n")
+            }
+            if (categoriesProperty.isNotEmpty()) {
+                append("CATEGORIES:$categoriesProperty\n")
+            }
+            append("END:VEVENT\n")
+        }
     }
 
     private fun formatDateTime(timestamp: Long): String {
