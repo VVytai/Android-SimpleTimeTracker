@@ -2,9 +2,11 @@ package com.example.util.simpletimetracker.core.interactor
 
 import com.example.util.simpletimetracker.core.mapper.ActivityFilterViewDataMapper
 import com.example.util.simpletimetracker.domain.activityFilter.interactor.ActivityFilterInteractor
-import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
-import com.example.util.simpletimetracker.domain.category.interactor.RecordTypeCategoryInteractor
+import com.example.util.simpletimetracker.domain.activityFilter.interactor.PredefinedFilterInteractor
 import com.example.util.simpletimetracker.domain.activityFilter.model.ActivityFilter
+import com.example.util.simpletimetracker.domain.activityFilter.model.PredefinedFilter
+import com.example.util.simpletimetracker.domain.category.interactor.RecordTypeCategoryInteractor
+import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.recordType.model.RecordType
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import javax.inject.Inject
@@ -12,14 +14,17 @@ import javax.inject.Inject
 class ActivityFilterViewDataInteractor @Inject constructor(
     private val prefsInteractor: PrefsInteractor,
     private val activityFilterInteractor: ActivityFilterInteractor,
+    private val predefinedFilterInteractor: PredefinedFilterInteractor,
     private val recordTypeCategoryInteractor: RecordTypeCategoryInteractor,
     private val activityFilterViewDataMapper: ActivityFilterViewDataMapper,
 ) {
 
     suspend fun getFilter(): Filter {
         return if (prefsInteractor.getShowActivityFilters()) {
-            val activityFilters = activityFilterInteractor.getAll()
-            Filter.ApplyFilter(activityFilters)
+            Filter.ApplyFilter(
+                userFilters = activityFilterInteractor.getAll(),
+                predefinedFilters = predefinedFilterInteractor.getAll(),
+            )
         } else {
             Filter.NoFilter
         }
@@ -36,18 +41,28 @@ class ActivityFilterViewDataInteractor @Inject constructor(
                 emptyList()
             }
             is Filter.ApplyFilter -> {
+                val filtersSize = filter.userFilters.size + filter.predefinedFilters.size
+
                 val result = mutableListOf<ViewHolderType>()
                 if (!isFiltersCollapsed) {
-                    result += filter.activityFilters.map {
-                        activityFilterViewDataMapper.map(
+                    result += filter.predefinedFilters.map {
+                        activityFilterViewDataMapper.mapFiltered(
                             filter = it,
                             isDarkTheme = isDarkTheme,
+                            selected = it.selected,
+                        )
+                    }
+                    result += filter.userFilters.map {
+                        activityFilterViewDataMapper.mapFiltered(
+                            filter = it,
+                            isDarkTheme = isDarkTheme,
+                            selected = it.selected,
                         )
                     }
                 }
                 // Show collapse button if there are several filters,
                 // or if they are collapsed, just in case (collapse and then remove all but one).
-                if (filter.activityFilters.size > 1 || isFiltersCollapsed) {
+                if (filtersSize > 1 || isFiltersCollapsed) {
                     result += activityFilterViewDataMapper.mapToActivityFilterToggleItem(
                         isFiltersCollapsed = isFiltersCollapsed,
                         isDarkTheme = isDarkTheme,
@@ -67,18 +82,30 @@ class ActivityFilterViewDataInteractor @Inject constructor(
         list: List<RecordType>,
         filter: Filter,
     ): List<RecordType> {
-        return if (filter is Filter.ApplyFilter && filter.activityFilters.any { it.selected }) {
-            val selectedTypes = getSelectedTypeIds(filter.activityFilters)
+        if (filter !is Filter.ApplyFilter) return list
+
+        val hasAnySelectedFilters = filter.userFilters.any { it.selected } ||
+            filter.predefinedFilters.any { it.selected }
+
+        return if (hasAnySelectedFilters) {
+            val selectedTypes = getSelectedTypeIds(filter)
             list.filter { it.id in selectedTypes }
         } else {
             list
         }
     }
 
-    private suspend fun getSelectedTypeIds(filters: List<ActivityFilter>): List<Long> {
-        val selectedFilters = filters.filter { it.selected }
+    private suspend fun getSelectedTypeIds(
+        filter: Filter.ApplyFilter,
+    ): List<Long> {
+        val selectedFilters = filter.userFilters.filter { it.selected }
+        val predefinedSelectedFilters = filter.predefinedFilters.filter { it.selected }
 
-        if (selectedFilters.isEmpty()) return emptyList()
+        if (selectedFilters.isEmpty() &&
+            predefinedSelectedFilters.isEmpty()
+        ) {
+            return emptyList()
+        }
 
         val activityIds: List<Long> = selectedFilters
             .filter { it.type is ActivityFilter.Type.Activity }
@@ -90,25 +117,32 @@ class ActivityFilterViewDataInteractor @Inject constructor(
             .map { it.selectedIds }
             .flatten()
             .takeUnless { it.isEmpty() }
-            ?.let { tagIds ->
-                val recordTypeCategories = recordTypeCategoryInteractor.getAll()
-                    .groupBy { it.categoryId }
-                    .mapValues { (_, value) -> value.map { it.recordTypeId } }
-                tagIds.mapNotNull { tagId -> recordTypeCategories[tagId] }.flatten()
-            }
+            ?.let { getTypeIdsFromCategories(it) }
             .orEmpty()
 
-        return when {
-            fromCategoryIds.isEmpty() -> activityIds
-            activityIds.isEmpty() -> fromCategoryIds
-            else -> activityIds + fromCategoryIds
-        }
+        val fromPredefinedFilters: List<Long> = predefinedSelectedFilters
+            .map { it.categoryId }
+            .takeUnless { it.isEmpty() }
+            ?.let { getTypeIdsFromCategories(it) }
+            .orEmpty()
+
+        return (activityIds + fromCategoryIds + fromPredefinedFilters).distinct()
+    }
+
+    private suspend fun getTypeIdsFromCategories(
+        tagIds: List<Long>,
+    ): List<Long> {
+        val recordTypeCategories = recordTypeCategoryInteractor.getAll()
+            .groupBy { it.categoryId }
+            .mapValues { (_, value) -> value.map { it.recordTypeId } }
+        return tagIds.mapNotNull { tagId -> recordTypeCategories[tagId] }.flatten()
     }
 
     sealed interface Filter {
-        object NoFilter : Filter
+        data object NoFilter : Filter
         data class ApplyFilter(
-            val activityFilters: List<ActivityFilter>,
+            val userFilters: List<ActivityFilter>,
+            val predefinedFilters: List<PredefinedFilter>,
         ) : Filter
     }
 }

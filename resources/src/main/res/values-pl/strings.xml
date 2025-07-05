@@ -314,6 +314,7 @@ Pozwala to zobaczyć, ile czasu spędzasz na produktywnych i nieproduktywnych ak
     <string name="settings_show_activity_filters">Pokaż filtry aktywności na ekranie głównym</string>
     <string name="settings_allow_multiple_activity_filters">Zezwalaj na wiele filtrów aktywności</string>
     <string name="settings_allow_multiple_activity_filters_hint">Jeśli opcja jest wyłączona, wybranie filtra spowoduje wyłączenie innych filtrów aktywności.</string>
+    <string name="settings_show_categories_as_predefined_filters">Pokaż kategorie jako predefiniowane filtry</string>
     <string name="settings_enable_pomodoro_mode">Pokaż przycisk Pomodoro na ekranie głównym</string>
     <string name="settings_show_goals_separately">Pokaż cele na osobnej karcie</string>
     <string name="settings_show_nav_bar_at_the_bottom">Pokaż pasek nawigacyjny na dole</string>

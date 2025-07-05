@@ -68,6 +68,12 @@ interface PrefsRepo {
 
     var isActivityFiltersCollapsed: Boolean
 
+    var allowMultipleActivityFilters: Boolean
+
+    var showCategoriesAsPredefinedFilters: Boolean
+
+    var selectedPredefinedFilters: Set<String>
+
     var enableRepeatButton: Boolean
 
     var enablePomodoroMode: Boolean
@@ -81,8 +87,6 @@ interface PrefsRepo {
     var pomodoroLongBreakTime: Long // in seconds, 0 - disabled
 
     var pomodoroPeriodsUntilLongBreak: Long // 0 - disabled
-
-    var allowMultipleActivityFilters: Boolean
 
     var showGoalsSeparately: Boolean
 

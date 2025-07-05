@@ -314,6 +314,7 @@ Dies ermöglicht es dir, zu sehen, wie viel Zeit du insgesamt für produktive ve
     <string name="settings_show_activity_filters">Aktivitätsfilter auf dem Hauptbildschirm anzeigen</string>
     <string name="settings_allow_multiple_activity_filters">Erlauben Sie mehrere Aktivitätsfilter</string>
     <string name="settings_allow_multiple_activity_filters_hint">Wenn die Option deaktiviert ist, werden durch die Auswahl eines Filters andere Aktivitätsfilter deaktiviert.</string>
+    <string name="settings_show_categories_as_predefined_filters">Kategorien als vordefinierte Filter anzeigen</string>
     <string name="settings_enable_pomodoro_mode">Pomodoro-Schaltfläche auf dem Hauptbildschirm anzeigen</string>
     <string name="settings_show_goals_separately">Ziele auf einer separaten Registerkarte anzeigen</string>
     <string name="settings_show_nav_bar_at_the_bottom">Navigationsleiste unten anzeigen</string>

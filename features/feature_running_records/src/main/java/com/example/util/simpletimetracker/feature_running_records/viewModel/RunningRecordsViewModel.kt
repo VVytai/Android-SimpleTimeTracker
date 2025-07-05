@@ -14,6 +14,7 @@ import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.domain.record.interactor.AddRunningRecordMediator
 import com.example.util.simpletimetracker.domain.activityFilter.interactor.ChangeSelectedActivityFilterMediator
+import com.example.util.simpletimetracker.domain.activityFilter.model.ActivityFilterType
 import com.example.util.simpletimetracker.domain.base.UNTRACKED_ITEM_ID
 import com.example.util.simpletimetracker.domain.darkMode.interactor.ThemeChangedInteractor
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
@@ -236,12 +237,17 @@ class RunningRecordsViewModel @Inject constructor(
 
     fun onActivityFilterClick(item: ActivityFilterViewData) {
         viewModelScope.launch {
-            changeSelectedActivityFilterMediator.onFilterClicked(item.id, item.selected)
+            changeSelectedActivityFilterMediator.onFilterClicked(
+                id = item.id,
+                type = item.type,
+                selected = item.selected
+            )
             updateRunningRecords()
         }
     }
 
     fun onActivityFilterLongClick(item: ActivityFilterViewData, sharedElements: Pair<Any, String>) {
+        if (item.type !is ActivityFilterType.Default) return
         router.navigate(
             data = ChangeActivityFilterParams.Change(
                 transitionName = sharedElements.second,

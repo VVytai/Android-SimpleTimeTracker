@@ -314,6 +314,7 @@ Acest lucru îți permite să vezi cât timp petreci în activități productive
     <string name="settings_show_activity_filters">Afișează filtrele de activitate pe ecranul principal</string>
     <string name="settings_allow_multiple_activity_filters">Permite mai multe filtre de activitate</string>
     <string name="settings_allow_multiple_activity_filters_hint">Dacă este dezactivată, selectarea unui filtru va dezactiva alte filtre de activitate.</string>
+    <string name="settings_show_categories_as_predefined_filters">Afișează categoriile ca filtre predefinite</string>
     <string name="settings_enable_pomodoro_mode">Afișați butonul Pomodoro pe ecranul principal</string>
     <string name="settings_show_goals_separately">Afișează țelurile într-o foaie separată</string>
     <string name="settings_show_nav_bar_at_the_bottom">Afișați bara de navigare în partea de jos</string>

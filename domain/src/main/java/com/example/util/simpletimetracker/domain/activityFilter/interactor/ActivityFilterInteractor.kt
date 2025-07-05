@@ -29,8 +29,8 @@ class ActivityFilterInteractor @Inject constructor(
         activityFilterRepo.changeSelected(id, selected)
     }
 
-    suspend fun changeSelectedAll(selected: Boolean) {
-        activityFilterRepo.changeSelectedAll(selected)
+    suspend fun disableAll() {
+        activityFilterRepo.changeSelectedAll(selected = false)
     }
 
     suspend fun remove(id: Long) {

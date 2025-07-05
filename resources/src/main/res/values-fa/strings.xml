@@ -314,6 +314,7 @@
     <string name="settings_show_activity_filters">فیلتر فعالیت ها را در صفحه اصلی نمایش بده</string>
     <string name="settings_allow_multiple_activity_filters">فیلترهای فعالیت چندگانه مجاز است</string>
     <string name="settings_allow_multiple_activity_filters_hint">اگر غیرفعال باشد، انتخاب فیلتر، سایر فیلترهای فعالیت را غیرفعال می کند.</string>
+    <string name="settings_show_categories_as_predefined_filters">نمایش دسته‌بندی‌ها به عنوان فیلترهای از پیش‌تعریف‌شده</string>
     <string name="settings_enable_pomodoro_mode">نمایش دکمه Pomodoro در صفحه اصلی</string>
     <string name="settings_show_goals_separately">نمایش اهداف در یک برگه جداگانه</string>
     <string name="settings_show_nav_bar_at_the_bottom">نمایش نوار پیمایش در پایین</string>

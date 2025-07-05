@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.util.simpletimetracker.core.delegates.iconSelection.viewData.IconSelectionViewData
 import com.example.util.simpletimetracker.core.extension.set
+import com.example.util.simpletimetracker.domain.activityFilter.model.ActivityFilterType
 import com.example.util.simpletimetracker.domain.extension.addOrRemove
 import com.example.util.simpletimetracker.domain.backup.model.PartialBackupRestoreData
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
@@ -58,6 +59,7 @@ class PartialRestoreSelectionViewModel @Inject constructor(
     }
 
     fun onActivityFilterClick(item: ActivityFilterViewData) {
+        if (item.type !is ActivityFilterType.Default) return
         addOrRemoveId(item.id)
     }
 

@@ -314,6 +314,7 @@ Dit stelt je in staat om te zien hoeveel tijd je in totaal besteedt aan producti
     <string name="settings_show_activity_filters">Activiteitsfilters weergeven op hoofdscherm</string>
     <string name="settings_allow_multiple_activity_filters">Sta meerdere activiteitsfilters toe</string>
     <string name="settings_allow_multiple_activity_filters_hint">Indien uitgeschakeld, zal het selecteren van een filter andere activiteitsfilters uitschakelen.</string>
+    <string name="settings_show_categories_as_predefined_filters">Categorieën tonen als vooraf ingestelde filters</string>
     <string name="settings_enable_pomodoro_mode">Toon de Pomodoro-knop op het hoofdscherm</string>
     <string name="settings_show_goals_separately">Toon doelen op een apart tabblad</string>
     <string name="settings_show_nav_bar_at_the_bottom">Toon navigatiebalk onderaan</string>

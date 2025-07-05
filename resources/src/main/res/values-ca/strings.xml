@@ -314,6 +314,7 @@ Això et permet veure quant de temps dediques a activitats productives versus no
     <string name="settings_show_activity_filters">Mostra els filtres d\'activitat a la pantalla principal.</string>
     <string name="settings_allow_multiple_activity_filters">Permet diversos filtres d\'activitat</string>
     <string name="settings_allow_multiple_activity_filters_hint">Si està desactivat, seleccionar un filtre desactivarà altres filtres d\'activitat.</string>
+    <string name="settings_show_categories_as_predefined_filters">Mostra les categories com a filtres predefinits</string>
     <string name="settings_enable_pomodoro_mode">Mostra el botó Pomodoro a la pantalla principal</string>
     <string name="settings_show_goals_separately">Mostra els objectius en una pestanya separada</string>
     <string name="settings_show_nav_bar_at_the_bottom">Mostra la barra de navegació a la part inferior</string>

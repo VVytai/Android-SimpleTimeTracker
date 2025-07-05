@@ -314,6 +314,7 @@ This allows you to see how much time you\'re spending on productive versus unpro
     <string name="settings_show_activity_filters">Show activity filters on main screen</string>
     <string name="settings_allow_multiple_activity_filters">Allow multiple activity filters</string>
     <string name="settings_allow_multiple_activity_filters_hint">If disabled, selecting a filter will disable other activity filters.</string>
+    <string name="settings_show_categories_as_predefined_filters">Show categories as predefined filters</string>
     <string name="settings_enable_pomodoro_mode">Show Pomodoro button on main screen</string>
     <string name="settings_show_goals_separately">Show goals on a separate tab</string>
     <string name="settings_show_nav_bar_at_the_bottom">Show navigation bar at the bottom</string>

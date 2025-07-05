@@ -314,6 +314,7 @@ Lokhu kukuvumela ukuthi ubone isikhathi osichitha emisebenzini esebenzayo nezing
     <string name="settings_show_activity_filters">Bonisa izihlungi zemisebenzi ekhasini eliyinhloko</string>
     <string name="settings_allow_multiple_activity_filters">Vumela izihlungi eziningi zemisebenzi</string>
     <string name="settings_allow_multiple_activity_filters_hint">Uma kungavunyelwe, ukukhetha isihlungi kuzokhubaza ezinye izihlungi.</string>
+    <string name="settings_show_categories_as_predefined_filters">Bonisa izigaba njengamafayela okuhlunga angakhethwa</string>
     <string name="settings_enable_pomodoro_mode">Bonisa inkinobho yePomodoro ekhasini eliyinhloko</string>
     <string name="settings_show_goals_separately">Bonisa imigomo kuthebhu ehlukile</string>
     <string name="settings_show_nav_bar_at_the_bottom">Bonisa ibha yokuzulazula phansi</string>

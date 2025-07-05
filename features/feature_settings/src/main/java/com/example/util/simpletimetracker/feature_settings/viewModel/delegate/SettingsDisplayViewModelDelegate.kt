@@ -69,6 +69,7 @@ class SettingsDisplayViewModelDelegate @Inject constructor(
             SettingsBlock.DisplayEnableRepeatButton -> onEnableRepeatButtonClicked()
             SettingsBlock.DisplayPomodoroModeActivities -> onPomodoroModeActivitiesClicked()
             SettingsBlock.DisplayAllowMultipleActivityFilters -> onAllowMultipleActivityFiltersClicked()
+            SettingsBlock.DisplayShowCategoriesAsPredefinedFilters -> onShowCategoriesAsPredefinedFiltersClicked()
             SettingsBlock.DisplayGoalsOnSeparateTabs -> onShowGoalsSeparatelyClicked()
             SettingsBlock.DisplayNavBarAtTheBottom -> onShowNavBarAtTheBottomClicked()
             SettingsBlock.DisplayMilitaryFormat -> onUseMilitaryTimeClicked()
@@ -283,6 +284,14 @@ class SettingsDisplayViewModelDelegate @Inject constructor(
         delegateScope.launch {
             val newValue = !prefsInteractor.getAllowMultipleActivityFilters()
             prefsInteractor.setAllowMultipleActivityFilters(newValue)
+            parent?.updateContent()
+        }
+    }
+
+    private fun onShowCategoriesAsPredefinedFiltersClicked() {
+        delegateScope.launch {
+            val newValue = !prefsInteractor.getShowCategoriesAsPredefinedFilters()
+            prefsInteractor.setShowCategoriesAsPredefinedFilters(newValue)
             parent?.updateContent()
         }
     }

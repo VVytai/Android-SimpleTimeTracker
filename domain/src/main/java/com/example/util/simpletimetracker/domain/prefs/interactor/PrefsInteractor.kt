@@ -438,6 +438,24 @@ class PrefsInteractor @Inject constructor(
         prefsRepo.allowMultipleActivityFilters = isAllowed
     }
 
+    suspend fun getShowCategoriesAsPredefinedFilters(): Boolean = withContext(Dispatchers.IO) {
+        prefsRepo.showCategoriesAsPredefinedFilters
+    }
+
+    suspend fun setShowCategoriesAsPredefinedFilters(isAllowed: Boolean) = withContext(Dispatchers.IO) {
+        prefsRepo.showCategoriesAsPredefinedFilters = isAllowed
+    }
+
+    suspend fun getSelectedPredefinedFilters(): List<Long> = withContext(Dispatchers.IO) {
+        prefsRepo.selectedPredefinedFilters
+            .mapNotNull(String::toLongOrNull)
+    }
+
+    suspend fun setSelectedPredefinedFilters(ids: List<Long>) = withContext(Dispatchers.IO) {
+        prefsRepo.selectedPredefinedFilters = ids
+            .map(Long::toString).toSet()
+    }
+
     suspend fun getShowGoalsSeparately(): Boolean = withContext(Dispatchers.IO) {
         prefsRepo.showGoalsSeparately
     }

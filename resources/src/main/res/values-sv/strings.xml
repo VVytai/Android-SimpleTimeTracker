@@ -314,6 +314,7 @@ Detta gör att du kan se hur mycket tid du spenderar på produktiva kontra icke-
     <string name="settings_show_activity_filters">Visa aktivitetsfilter på huvudskärmen</string>
     <string name="settings_allow_multiple_activity_filters">Tillåt flera aktivitetsfilter</string>
     <string name="settings_allow_multiple_activity_filters_hint">Om det är inaktiverat kommer andra aktivitetsfilter att inaktiveras om du väljer ett filter.</string>
+    <string name="settings_show_categories_as_predefined_filters">Visa kategorier som fördefinierade filter</string>
     <string name="settings_enable_pomodoro_mode">Visa Pomodoro-knappen på huvudskärmen</string>
     <string name="settings_show_goals_separately">Visa mål på en separat flik</string>
     <string name="settings_show_nav_bar_at_the_bottom">Visa navigeringsfältet längst ned</string>

@@ -314,6 +314,7 @@ Cela vous permet de voir combien de temps vous passez globalement sur des activi
     <string name="settings_show_activity_filters">Afficher les filtres d\'activité sur l\'écran principal</string>
     <string name="settings_allow_multiple_activity_filters">Autoriser plusieurs filtres d\'activité</string>
     <string name="settings_allow_multiple_activity_filters_hint">S\'il est désactivé, la sélection d\'un filtre désactivera les autres filtres d\'activité.</string>
+    <string name="settings_show_categories_as_predefined_filters">Afficher les catégories comme filtres prédéfinis</string>
     <string name="settings_enable_pomodoro_mode">Afficher le bouton Pomodoro sur l\'écran principal</string>
     <string name="settings_show_goals_separately">Afficher les objectifs dans un onglet séparé</string>
     <string name="settings_show_nav_bar_at_the_bottom">Afficher la barre de navigation en bas</string>

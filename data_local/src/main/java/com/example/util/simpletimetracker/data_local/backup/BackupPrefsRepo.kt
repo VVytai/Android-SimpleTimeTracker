@@ -55,8 +55,10 @@ import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Compani
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_REPEAT_BUTTON_TYPE
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_RETROACTIVE_TRACKING_MODE
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_REVERSE_ORDER_IN_CALENDAR
+import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_SELECTED_PREDEFINED_FILTERS
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_SHOW_ACTIVITY_FILTERS
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_SHOW_CALENDAR_BUTTON_ON_RECORDS_TAB
+import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_SHOW_CATEGORIES_AS_PREDEFINED_FILTERS
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_SHOW_COMMENT_INPUT
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_SHOW_COMMENT_INPUT_EXCLUDE_ACTIVITIES
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_SHOW_GOALS_SEPARATELY
@@ -183,13 +185,15 @@ class BackupPrefsRepo @Inject constructor(
             PrefsProcessor(KEY_DAYS_IN_CALENDAR, ::daysInCalendar),
             PrefsProcessor(KEY_SHOW_ACTIVITY_FILTERS, ::showActivityFilters),
             PrefsProcessor(KEY_IS_ACTIVITY_FILTERS_COLLAPSED, ::isActivityFiltersCollapsed),
+            PrefsProcessor(KEY_ALLOW_MULTIPLE_ACTIVITY_FILTERS, ::allowMultipleActivityFilters),
+            PrefsProcessor(KEY_SHOW_CATEGORIES_AS_PREDEFINED_FILTERS, ::showCategoriesAsPredefinedFilters),
+            PrefsProcessor(KEY_SELECTED_PREDEFINED_FILTERS, ::selectedPredefinedFilters),
             PrefsProcessor(KEY_ENABLE_REPEAT_BUTTON, ::enableRepeatButton),
             PrefsProcessor(KEY_ENABLE_POMODORO_MODE, ::enablePomodoroMode),
             PrefsProcessor(KEY_POMODORO_FOCUS_TIME, ::pomodoroFocusTime),
             PrefsProcessor(KEY_POMODORO_BREAK_TIME, ::pomodoroBreakTime),
             PrefsProcessor(KEY_POMODORO_LONG_BREAK_TIME, ::pomodoroLongBreakTime),
             PrefsProcessor(KEY_POMODORO_PERIODS_UNTIL_LONG_BREAK, ::pomodoroPeriodsUntilLongBreak),
-            PrefsProcessor(KEY_ALLOW_MULTIPLE_ACTIVITY_FILTERS, ::allowMultipleActivityFilters),
             PrefsProcessor(KEY_SHOW_GOALS_SEPARATELY, ::showGoalsSeparately),
             PrefsProcessor(KEY_ALLOW_MULTITASKING, ::allowMultitasking),
             PrefsProcessor(KEY_SHOW_NOTIFICATIONS, ::showNotifications),

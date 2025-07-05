@@ -145,6 +145,14 @@ class SettingsDisplayViewDataInteractor @Inject constructor(
                     title = resourceRepo.getString(R.string.settings_allow_multiple_activity_filters),
                     subtitle = resourceRepo.getString(R.string.settings_allow_multiple_activity_filters_hint),
                     isChecked = prefsInteractor.getAllowMultipleActivityFilters(),
+                    bottomSpaceIsVisible = false,
+                    dividerIsVisible = false,
+                )
+                result += SettingsCheckboxViewData(
+                    block = SettingsBlock.DisplayShowCategoriesAsPredefinedFilters,
+                    title = resourceRepo.getString(R.string.settings_show_categories_as_predefined_filters),
+                    subtitle = "",
+                    isChecked = prefsInteractor.getShowCategoriesAsPredefinedFilters(),
                     bottomSpaceIsVisible = true,
                     dividerIsVisible = true,
                 )

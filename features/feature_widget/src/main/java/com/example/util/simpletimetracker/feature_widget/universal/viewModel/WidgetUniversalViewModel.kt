@@ -128,7 +128,11 @@ class WidgetUniversalViewModel @Inject constructor(
 
     fun onActivityFilterClick(item: ActivityFilterViewData) {
         viewModelScope.launch {
-            changeSelectedActivityFilterMediator.onFilterClicked(item.id, item.selected)
+            changeSelectedActivityFilterMediator.onFilterClicked(
+                id = item.id,
+                type = item.type,
+                selected = item.selected
+            )
             updateRecordTypesViewData()
         }
     }

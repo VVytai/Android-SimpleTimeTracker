@@ -314,6 +314,7 @@ Isto permite-lhe ver quanto tempo está a gastar em atividades produtivas versus
     <string name="settings_show_activity_filters">Mostrar filtros de atividade no ecrã principal</string>
     <string name="settings_allow_multiple_activity_filters">Permitir vários filtros de atividades</string>
     <string name="settings_allow_multiple_activity_filters_hint">Se desativado, a seleção de um filtro desativará outros filtros de atividades.</string>
+    <string name="settings_show_categories_as_predefined_filters">Mostrar categorias como filtros predefinidos</string>
     <string name="settings_enable_pomodoro_mode">Mostrar botão Pomodoro na tela principal</string>
     <string name="settings_show_goals_separately">Mostrar metas num separador à parte</string>
     <string name="settings_show_nav_bar_at_the_bottom">Mostrar barra de navegação na parte inferior</string>

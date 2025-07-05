@@ -314,6 +314,7 @@ Esto te permite ver cuánto tiempo estás dedicando a actividades productivas fr
     <string name="settings_show_activity_filters">Mostrar filtros de actividad en la pantalla principal</string>
     <string name="settings_allow_multiple_activity_filters">Permitir múltiples filtros de actividad</string>
     <string name="settings_allow_multiple_activity_filters_hint">Si está deshabilitado, al seleccionar un filtro se deshabilitarán otros filtros de actividad.</string>
+    <string name="settings_show_categories_as_predefined_filters">Mostrar categorías como filtros predefinidos</string>
     <string name="settings_enable_pomodoro_mode">Mostrar el botón Pomodoro en la pantalla principal</string>
     <string name="settings_show_goals_separately">Mostrar objetivos en una pestaña separada</string>
     <string name="settings_show_nav_bar_at_the_bottom">Mostrar barra de navegación en la parte inferior</string>

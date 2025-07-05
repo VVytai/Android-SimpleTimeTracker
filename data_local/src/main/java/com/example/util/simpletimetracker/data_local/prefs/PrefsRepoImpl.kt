@@ -189,6 +189,18 @@ class PrefsRepoImpl @Inject constructor(
         KEY_IS_ACTIVITY_FILTERS_COLLAPSED, false,
     )
 
+    override var allowMultipleActivityFilters: Boolean by prefs.delegate(
+        KEY_ALLOW_MULTIPLE_ACTIVITY_FILTERS, true,
+    )
+
+    override var showCategoriesAsPredefinedFilters: Boolean by prefs.delegate(
+        KEY_SHOW_CATEGORIES_AS_PREDEFINED_FILTERS, false
+    )
+
+    override var selectedPredefinedFilters: Set<String> by prefs.delegate(
+        KEY_SELECTED_PREDEFINED_FILTERS, emptySet()
+    )
+
     override var enableRepeatButton: Boolean by prefs.delegate(
         KEY_ENABLE_REPEAT_BUTTON, false,
     )
@@ -215,10 +227,6 @@ class PrefsRepoImpl @Inject constructor(
 
     override var pomodoroPeriodsUntilLongBreak: Long by prefs.delegate(
         KEY_POMODORO_PERIODS_UNTIL_LONG_BREAK, POMODORO_DEFAULT_UNTIL_LONG_BREAK,
-    )
-
-    override var allowMultipleActivityFilters: Boolean by prefs.delegate(
-        KEY_ALLOW_MULTIPLE_ACTIVITY_FILTERS, true,
     )
 
     override var showGoalsSeparately: Boolean by prefs.delegate(
@@ -650,6 +658,8 @@ class PrefsRepoImpl @Inject constructor(
         const val KEY_POMODORO_LONG_BREAK_TIME = "pomodoroLongBreakTime"
         const val KEY_POMODORO_PERIODS_UNTIL_LONG_BREAK = "pomodoroPeriodsUntilLongBreak"
         const val KEY_ALLOW_MULTIPLE_ACTIVITY_FILTERS = "allowMultipleActivityFilters"
+        const val KEY_SHOW_CATEGORIES_AS_PREDEFINED_FILTERS = "showCategoriesAsPredefinedFilters"
+        const val KEY_SELECTED_PREDEFINED_FILTERS = "selectedPredefinedFilters"
         const val KEY_SHOW_GOALS_SEPARATELY = "showGoalsSeparately"
         const val KEY_ALLOW_MULTITASKING = "allowMultitasking"
         const val KEY_SHOW_NOTIFICATIONS = "showNotifications"

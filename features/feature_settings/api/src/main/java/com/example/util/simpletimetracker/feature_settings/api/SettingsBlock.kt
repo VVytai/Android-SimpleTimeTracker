@@ -48,6 +48,7 @@ enum class SettingsBlock {
     DisplayDaysInCalendar,
     DisplayShowActivityFilters,
     DisplayAllowMultipleActivityFilters,
+    DisplayShowCategoriesAsPredefinedFilters,
     DisplayEnablePomodoroMode,
     DisplayEnableRepeatButton,
     DisplayRepeatButtonMode,

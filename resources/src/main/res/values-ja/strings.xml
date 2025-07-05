@@ -314,6 +314,7 @@
     <string name="settings_show_activity_filters">メイン画面にアクティビティ フィルタを表示する</string>
     <string name="settings_allow_multiple_activity_filters">複数のアクティビティフィルターを許可する</string>
     <string name="settings_allow_multiple_activity_filters_hint">無効にした場合、フィルターを選択すると他のアクティビティ フィルターが無効になります。</string>
+    <string name="settings_show_categories_as_predefined_filters">カテゴリを定義済みフィルターとして表示</string>
     <string name="settings_enable_pomodoro_mode">メイン画面にポモドーロボタンを表示</string>
     <string name="settings_show_goals_separately">別のタブに目標を表示する</string>
     <string name="settings_show_nav_bar_at_the_bottom">下部にナビゲーションバーを表示</string>

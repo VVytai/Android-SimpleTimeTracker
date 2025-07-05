@@ -263,7 +263,13 @@ class ChangeActivityFilterViewModel @Inject constructor(
             name = newName,
             color = colorSelectionViewModelDelegateImpl.newColor,
             selected = true,
-        ).let { activityFilterViewDataMapper.map(it, isDarkTheme) }
+        ).let {
+            activityFilterViewDataMapper.mapFiltered(
+                filter = it,
+                isDarkTheme = isDarkTheme,
+                selected = it.selected,
+            )
+        }
     }
 
     private fun updateTagTypeViewData() {

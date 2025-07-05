@@ -44,6 +44,9 @@ class CategoryInteractor @Inject constructor(
         prefsInteractor.getFilteredCategoriesOnList().toMutableList()
             .apply { remove(id) }
             .let { prefsInteractor.setFilteredCategoriesOnList(it) }
+        prefsInteractor.getSelectedPredefinedFilters().toMutableList()
+            .apply { remove(id) }
+            .let { prefsInteractor.setSelectedPredefinedFilters(it) }
         recordTypeCategoryRepo.removeAll(id)
         recordTypeGoalRepo.removeByCategory(id)
         categoryRepo.remove(id)

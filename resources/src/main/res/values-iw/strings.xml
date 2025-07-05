@@ -314,6 +314,7 @@
     <string name="settings_show_activity_filters">הצג מסנני פעילות במסך ראשי</string>
     <string name="settings_allow_multiple_activity_filters">אפשר מסנני פעילות מרובים</string>
     <string name="settings_allow_multiple_activity_filters_hint">אם מושבת, בחירת מסנן תשבית מסנני פעילות אחרים.</string>
+    <string name="settings_show_categories_as_predefined_filters">הצג קטגוריות כסינונים מוגדרים מראש</string>
     <string name="settings_enable_pomodoro_mode">הצג כפתור פומודורו במסך ראשי</string>
     <string name="settings_show_goals_separately">הצג מטרות בלשונית נפרדת</string>
     <string name="settings_show_nav_bar_at_the_bottom">הצג סרגל ניווט בתחתית</string>
