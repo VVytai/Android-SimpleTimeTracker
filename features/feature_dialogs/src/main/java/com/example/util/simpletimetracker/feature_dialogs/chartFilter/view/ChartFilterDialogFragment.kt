@@ -13,6 +13,7 @@ import com.example.util.simpletimetracker.core.extension.findListener
 import com.example.util.simpletimetracker.core.extension.setSkipCollapsed
 import com.example.util.simpletimetracker.core.utils.fragmentArgumentDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.BaseRecyclerAdapter
+import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.category.createCategoryAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.empty.createEmptyAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.loader.createLoaderAdapterDelegate
@@ -84,8 +85,19 @@ class ChartFilterDialogFragment : BaseBottomSheetFragment<Binding>() {
     override fun initViewModel(): Unit = with(viewModel) {
         extra = params
         filterTypeViewData.observe(binding.buttonsChartFilterType.adapter::replace)
-        types.observe(recordTypesAdapter::replace)
+        types.observe(::setViewData)
         onDataSelected.observe(::onDataSelected)
+    }
+
+    private fun setViewData(data: List<ViewHolderType>) = with(binding) {
+        val current = recordTypesAdapter.currentList
+        recordTypesAdapter.replace(data)
+        // Flexbox is collapsing to zero height when it is scrolled to bottom
+        // and data is replaces with shorter list.
+        // Scroll to top to prevent this.
+        if (data.size < current.size) {
+            rvChartFilterContainer.scrollToPosition(0)
+        }
     }
 
     private fun onDataSelected(result: ChartFilterDataSelectionResult) {
