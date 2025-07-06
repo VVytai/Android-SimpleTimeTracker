@@ -8,11 +8,11 @@ object Base {
     const val versionCode = 101
     const val versionName = "1.49"
     const val minSDK = 21
-    const val currentSDK = 34
+    const val currentSDK = 35
 
     const val versionCodeWear = versionCode + 1
     const val versionNameWear = versionName + "w"
     const val minSDKWear = 26
     const val currentSDKWear = currentSDK
-    const val targetSDKWear = 33
+    const val targetSDKWear = 34
 }
