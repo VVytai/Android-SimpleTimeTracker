@@ -14,6 +14,7 @@ import com.example.util.simpletimetracker.core.utils.InsetConfiguration
 import com.example.util.simpletimetracker.core.utils.fragmentArgumentDelegate
 import com.example.util.simpletimetracker.core.view.ViewChooserStateDelegate
 import com.example.util.simpletimetracker.domain.extension.orFalse
+import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.feature_base_adapter.BaseRecyclerAdapter
 import com.example.util.simpletimetracker.feature_base_adapter.dayOfWeek.createDayOfWeekAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.divider.createDividerAdapterDelegate
@@ -141,7 +142,11 @@ class ChangeComplexRuleFragment :
         }
     }
 
-    override fun onDataSelected(dataIds: List<Long>, tag: String?) {
+    override fun onDataSelected(
+        tag: String?,
+        dataIds: List<Long>,
+        tagValues: List<RecordBase.Tag>,
+    ) {
         viewModel.onDataSelected(dataIds, tag)
     }
 

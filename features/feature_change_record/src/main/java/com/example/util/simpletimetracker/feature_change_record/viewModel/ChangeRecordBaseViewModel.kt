@@ -13,19 +13,21 @@ import com.example.util.simpletimetracker.core.view.timeAdjustment.TimeAdjustmen
 import com.example.util.simpletimetracker.domain.extension.addOrRemove
 import com.example.util.simpletimetracker.domain.extension.orFalse
 import com.example.util.simpletimetracker.domain.favourite.interactor.FavouriteCommentInteractor
+import com.example.util.simpletimetracker.domain.favourite.model.FavouriteComment
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.RecordInteractor
-import com.example.util.simpletimetracker.domain.recordTag.interactor.RecordTypeToTagInteractor
-import com.example.util.simpletimetracker.domain.favourite.model.FavouriteComment
 import com.example.util.simpletimetracker.domain.record.model.Record
+import com.example.util.simpletimetracker.domain.record.model.RecordBase
+import com.example.util.simpletimetracker.domain.recordTag.interactor.NeedTagValueSelectionInteractor
 import com.example.util.simpletimetracker.domain.recordTag.interactor.RecordTagInteractor
+import com.example.util.simpletimetracker.domain.recordTag.interactor.RecordTypeToTagInteractor
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.button.ButtonViewData
 import com.example.util.simpletimetracker.feature_base_adapter.category.CategoryViewData
+import com.example.util.simpletimetracker.feature_base_adapter.recordComment.RecordCommentViewData
 import com.example.util.simpletimetracker.feature_base_adapter.recordType.RecordTypeViewData
 import com.example.util.simpletimetracker.feature_change_record.R
 import com.example.util.simpletimetracker.feature_change_record.adapter.ChangeRecordChangePreviewViewData
-import com.example.util.simpletimetracker.feature_base_adapter.recordComment.RecordCommentViewData
 import com.example.util.simpletimetracker.feature_change_record.adapter.ChangeRecordSliderViewData
 import com.example.util.simpletimetracker.feature_change_record.adapter.ChangeRecordTimeAdjustmentViewData
 import com.example.util.simpletimetracker.feature_change_record.adapter.ChangeRecordTimeDoublePreviewViewData
@@ -47,6 +49,7 @@ import com.example.util.simpletimetracker.navigation.params.screen.ChangeTagData
 import com.example.util.simpletimetracker.navigation.params.screen.DateTimeDialogParams
 import com.example.util.simpletimetracker.navigation.params.screen.DateTimeDialogType
 import com.example.util.simpletimetracker.navigation.params.screen.DurationDialogParams
+import com.example.util.simpletimetracker.navigation.params.screen.RecordTagValueSelectionParams
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -64,6 +67,7 @@ abstract class ChangeRecordBaseViewModel(
     private val recordTypeToTagInteractor: RecordTypeToTagInteractor,
     private val favouriteCommentInteractor: FavouriteCommentInteractor,
     private val changeRecordActionsDelegate: ChangeRecordActionsDelegateImpl,
+    private val needTagValueSelectionInteractor: NeedTagValueSelectionInteractor,
 ) : ViewModel() {
 
     val types: LiveData<List<ViewHolderType>> by lazy {
@@ -114,7 +118,7 @@ abstract class ChangeRecordBaseViewModel(
     protected var newTimeStarted: Long = 0
     protected var newTimeSplit: Long = 0
     protected var newComment: String = ""
-    protected var newCategoryIds: MutableList<Long> = mutableListOf()
+    protected var newTags: List<RecordBase.Tag> = emptyList()
     protected var originalRecordId: Long = 0
     protected var originalTypeId: Long = 0
     protected var originalTimeStarted: Long = 0
@@ -285,7 +289,7 @@ abstract class ChangeRecordBaseViewModel(
         viewModelScope.launch {
             if (item.id != newTypeId) {
                 newTypeId = item.id
-                newCategoryIds.clear()
+                newTags = emptyList()
                 viewModelScope.launch {
                     updatePreview()
                     updateCategoriesViewData()
@@ -304,13 +308,39 @@ abstract class ChangeRecordBaseViewModel(
         viewModelScope.launch {
             when (item) {
                 is CategoryViewData.Record.Tagged -> {
-                    newCategoryIds.addOrRemove(item.id)
+                    val needValueSelection = needTagValueSelectionInteractor.execute(
+                        selectedTagIds = newTags.map { it.tagId },
+                        clickedTagId = item.id,
+                    )
+                    if (needValueSelection) {
+                        RecordTagValueSelectionParams(
+                            tag = CHANGE_RECORD_TAG_VALUE_SELECTION,
+                            tagId = item.id,
+                        ).let(router::navigate)
+                    } else {
+                        newTags = newTags.addOrRemove(item.id)
+                    }
                 }
                 is CategoryViewData.Record.Untagged -> {
-                    newCategoryIds.clear()
+                    newTags = emptyList()
                 }
                 else -> return@launch
             }
+            updatePreview()
+            updateCategoriesViewData()
+        }
+    }
+
+    fun onCategoryValueSelected(
+        params: RecordTagValueSelectionParams,
+        value: Double,
+    ) {
+        if (params.tag != CHANGE_RECORD_TAG_VALUE_SELECTION) return
+        viewModelScope.launch {
+            newTags = newTags + RecordBase.Tag(
+                tagId = params.tagId,
+                numericValue = value,
+            )
             updatePreview()
             updateCategoriesViewData()
         }
@@ -800,7 +830,7 @@ abstract class ChangeRecordBaseViewModel(
                         newTimeStarted = newTimeStarted,
                         newTimeEnded = newTimeEnded,
                         newComment = newComment,
-                        newCategoryIds = newCategoryIds,
+                        newTags = newTags,
                         isButtonEnabled = saveButtonEnabled.value.orFalse(),
                     ),
                     splitParams = ViewDataParams.SplitParams(
@@ -860,7 +890,7 @@ abstract class ChangeRecordBaseViewModel(
 
     private suspend fun loadCategoriesViewData(): ChangeRecordTagsViewData {
         return recordTagViewDataInteractor.getViewData(
-            selectedTags = newCategoryIds,
+            selectedTags = newTags,
             typeId = newTypeId,
             showAllTags = showAllTags,
             multipleChoiceAvailable = true,
@@ -918,8 +948,9 @@ abstract class ChangeRecordBaseViewModel(
     }
 
     companion object {
-        const val TIME_STARTED_TAG = "time_started_tag"
-        const val TIME_ENDED_TAG = "time_ended_tag"
-        const val TIME_SPLIT_TAG = "time_split_tag"
+        private const val TIME_STARTED_TAG = "time_started_tag"
+        private const val TIME_ENDED_TAG = "time_ended_tag"
+        private const val TIME_SPLIT_TAG = "time_split_tag"
+        private const val CHANGE_RECORD_TAG_VALUE_SELECTION = "CHANGE_RECORD_TAG_VALUE_SELECTION"
     }
 }

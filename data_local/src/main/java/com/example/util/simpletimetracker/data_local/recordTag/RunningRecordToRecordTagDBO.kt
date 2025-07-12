@@ -7,6 +7,10 @@ import androidx.room.Entity
 data class RunningRecordToRecordTagDBO(
     @ColumnInfo(name = "running_record_id")
     val runningRecordId: Long,
+
     @ColumnInfo(name = "record_tag_id")
     val recordTagId: Long,
+
+    @ColumnInfo(name = "record_tag_numeric_value")
+    val recordTagNumericValue: Double?,
 )

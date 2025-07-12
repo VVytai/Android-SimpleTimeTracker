@@ -34,6 +34,7 @@ class AppDatabaseMigrations {
                 migration_23_24,
                 migration_24_25,
                 migration_25_26,
+                migration_26_27,
             )
 
         private val migration_1_2 = object : Migration(1, 2) {
@@ -322,6 +323,23 @@ class AppDatabaseMigrations {
             override fun migrate(database: SupportSQLiteDatabase) {
                 database.execSQL(
                     "CREATE TABLE IF NOT EXISTS `durationSuggestions` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `valueSeconds` INTEGER NOT NULL)",
+                )
+            }
+        }
+
+        private val migration_26_27 = object : Migration(26, 27) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL(
+                    "ALTER TABLE recordTags ADD COLUMN `value_type` INTEGER",
+                )
+                database.execSQL(
+                    "ALTER TABLE recordTags ADD COLUMN `value_suffix` TEXT",
+                )
+                database.execSQL(
+                    "ALTER TABLE recordToRecordTag ADD COLUMN `record_tag_numeric_value` REAL",
+                )
+                database.execSQL(
+                    "ALTER TABLE runningRecordToRecordTag ADD COLUMN `record_tag_numeric_value` REAL",
                 )
             }
         }

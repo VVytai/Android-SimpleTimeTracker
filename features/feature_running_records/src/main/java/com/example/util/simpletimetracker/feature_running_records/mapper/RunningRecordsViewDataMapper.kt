@@ -78,6 +78,7 @@ class RunningRecordsViewDataMapper @Inject constructor(
                     id = UNTRACKED_ITEM_ID,
                     timeStarted = prevRecords.firstOrNull()?.timeEnded.orZero(),
                     comment = "",
+                    tags = emptyList(),
                 ),
                 dailyCurrent = null,
                 recordType = RecordType(

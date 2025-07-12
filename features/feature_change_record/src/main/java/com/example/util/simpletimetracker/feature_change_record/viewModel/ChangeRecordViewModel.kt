@@ -22,7 +22,9 @@ import com.example.util.simpletimetracker.domain.statistics.model.ChartFilterTyp
 import com.example.util.simpletimetracker.domain.daysOfWeek.model.DayOfWeek
 import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
 import com.example.util.simpletimetracker.domain.record.model.Record
+import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.domain.recordTag.interactor.AddTagToTypeIfNotExistMediator
+import com.example.util.simpletimetracker.domain.recordTag.interactor.NeedTagValueSelectionInteractor
 import com.example.util.simpletimetracker.domain.recordTag.interactor.RecordTagInteractor
 import com.example.util.simpletimetracker.feature_change_record.interactor.ChangeRecordViewDataInteractor
 import com.example.util.simpletimetracker.feature_change_record.viewData.ChangeRecordViewData
@@ -44,6 +46,7 @@ class ChangeRecordViewModel @Inject constructor(
     recordTagInteractor: RecordTagInteractor,
     recordTypeToTagInteractor: RecordTypeToTagInteractor,
     favouriteCommentInteractor: FavouriteCommentInteractor,
+    needTagValueSelectionInteractor: NeedTagValueSelectionInteractor,
     private val prefsInteractor: PrefsInteractor,
     private val router: Router,
     private val recordInteractor: RecordInteractor,
@@ -65,6 +68,7 @@ class ChangeRecordViewModel @Inject constructor(
     recordTypeToTagInteractor = recordTypeToTagInteractor,
     favouriteCommentInteractor = favouriteCommentInteractor,
     changeRecordActionsDelegate = changeRecordActionsDelegate,
+    needTagValueSelectionInteractor = needTagValueSelectionInteractor,
 ) {
 
     lateinit var extra: ChangeRecordParams
@@ -139,22 +143,22 @@ class ChangeRecordViewModel @Inject constructor(
             timeStarted = newTimeStarted,
             timeEnded = newTimeEnded,
             comment = newComment,
-            tagIds = newCategoryIds,
+            tags = newTags,
         ).let {
             addRecordMediator.add(it)
-            if (showAllTags) {
-                addTagToTypeIfNotExistMediator.execute(
-                    typeId = newTypeId,
-                    tagIds = newCategoryIds,
-                )
-            }
-            if (newTypeId != originalTypeId) {
-                externalViewsInteractor.onRecordChangeType(listOf(originalTypeId))
-            }
-            doAfter()
-            warmupCache(extra.daysFromToday)
-            router.back()
         }
+        if (showAllTags) {
+            addTagToTypeIfNotExistMediator.execute(
+                typeId = newTypeId,
+                tagIds = newTags.map(RecordBase.Tag::tagId),
+            )
+        }
+        if (newTypeId != originalTypeId) {
+            externalViewsInteractor.onRecordChangeType(listOf(originalTypeId))
+        }
+        doAfter()
+        warmupCache(extra.daysFromToday)
+        router.back()
     }
 
     override fun getChangeCategoryParams(data: ChangeTagData): ChangeRecordTagFromScreen {
@@ -210,7 +214,7 @@ class ChangeRecordViewModel @Inject constructor(
                     newTimeStarted = record.timeStarted
                     newTimeEnded = record.timeEnded
                     newComment = record.comment
-                    newCategoryIds = record.tagIds.toMutableList()
+                    newTags = record.tags
                 }
             }
             is ChangeRecordParams.Untracked -> {
@@ -237,7 +241,7 @@ class ChangeRecordViewModel @Inject constructor(
             timeStarted = newTimeStarted,
             timeEnded = newTimeEnded,
             comment = newComment,
-            tagIds = newCategoryIds,
+            tags = newTags,
         )
 
         return changeRecordViewDataInteractor.getPreviewViewData(

@@ -15,6 +15,7 @@ import com.example.util.simpletimetracker.feature_dialogs.helpDialog.HelpDialogF
 import com.example.util.simpletimetracker.feature_dialogs.optionsDialog.OptionsListDialogFragment
 import com.example.util.simpletimetracker.feature_dialogs.recordQuickActions.view.RecordQuickActionsDialogFragment
 import com.example.util.simpletimetracker.feature_dialogs.recordTagSelection.RecordTagSelectionDialogFragment
+import com.example.util.simpletimetracker.feature_dialogs.recordTagValueSelection.view.RecordTagValueSelectionDialogFragment
 import com.example.util.simpletimetracker.feature_dialogs.typesSelection.view.TypesSelectionDialogFragment
 import com.example.util.simpletimetracker.feature_dialogs.standard.StandardDialogFragment
 import com.example.util.simpletimetracker.feature_records_filter.view.RecordsFilterFragment
@@ -44,6 +45,7 @@ import com.example.util.simpletimetracker.navigation.params.screen.PomodoroSetti
 import com.example.util.simpletimetracker.navigation.params.screen.RecordQuickActionsParams
 import com.example.util.simpletimetracker.navigation.params.screen.RecordTagSelectionParams
 import com.example.util.simpletimetracker.navigation.params.screen.OptionsListParams
+import com.example.util.simpletimetracker.navigation.params.screen.RecordTagValueSelectionParams
 import com.example.util.simpletimetracker.navigation.params.screen.TypesSelectionDialogParams
 import com.example.util.simpletimetracker.navigation.params.screen.RecordsFilterParams
 import com.example.util.simpletimetracker.navigation.params.screen.StandardDialogParams
@@ -194,6 +196,16 @@ class NavigationDialogMapModule {
         return NavigationData(
             R.id.recordTagSelectionDialogFragment,
             bundleCreatorDelegate(RecordTagSelectionDialogFragment::createBundle),
+        )
+    }
+
+    @IntoMap
+    @Provides
+    @ScreenKey(RecordTagValueSelectionParams::class)
+    fun recordTagValueSelectionDialog(): NavigationData {
+        return NavigationData(
+            R.id.recordTagValueSelectionDialogFragment,
+            bundleCreatorDelegate(RecordTagValueSelectionDialogFragment::createBundle),
         )
     }
 

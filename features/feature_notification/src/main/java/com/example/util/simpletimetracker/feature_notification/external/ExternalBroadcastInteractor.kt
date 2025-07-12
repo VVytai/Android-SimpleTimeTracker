@@ -12,6 +12,7 @@ import com.example.util.simpletimetracker.domain.record.interactor.RunningRecord
 import com.example.util.simpletimetracker.domain.notifications.model.ExternalActionCommentMode
 import com.example.util.simpletimetracker.domain.notifications.model.ExternalActionFindRecordMode
 import com.example.util.simpletimetracker.domain.record.model.Record
+import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import java.text.SimpleDateFormat
 import java.util.Locale
 import javax.inject.Inject
@@ -42,7 +43,7 @@ class ExternalBroadcastInteractor @Inject constructor(
         addRunningRecordMediator.startTimer(
             typeId = typeId,
             comment = comment.orEmpty(),
-            tagIds = tagIds,
+            tags = mapTagIdsToTags(tagIds),
             timeStarted = if (newTimeStarted != null) {
                 AddRunningRecordMediator.StartTime.Timestamp(newTimeStarted)
             } else {
@@ -97,9 +98,10 @@ class ExternalBroadcastInteractor @Inject constructor(
             typeId = typeId,
             comment = comment
                 ?: previousRecord.comment,
-            tagIds = tagIds
+            tags = tagIds
                 .takeUnless { tagNames.isEmpty() }
-                ?: previousRecord.tagIds,
+                ?.let(::mapTagIdsToTags)
+                ?: previousRecord.tags,
         )
     }
 
@@ -121,7 +123,7 @@ class ExternalBroadcastInteractor @Inject constructor(
             timeStarted = newTimeStarted,
             timeEnded = newTimeEnded,
             comment = comment.orEmpty(),
-            tagIds = tagIds,
+            tags = mapTagIdsToTags(tagIds),
         ).let {
             addRecordMediator.add(it)
             recordsUpdateInteractor.send()
@@ -223,6 +225,15 @@ class ExternalBroadcastInteractor @Inject constructor(
             runCatching {
                 dateTimeFormat.parse(timeString)
             }.getOrNull()?.time
+        }
+    }
+
+    private fun mapTagIdsToTags(ids: List<Long>): List<RecordBase.Tag> {
+        return ids.map {
+            RecordBase.Tag(
+                tagId = it,
+                numericValue = null, // TODO TAG value selection?
+            )
         }
     }
 

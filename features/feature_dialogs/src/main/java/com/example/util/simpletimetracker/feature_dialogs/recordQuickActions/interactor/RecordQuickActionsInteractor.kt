@@ -7,6 +7,7 @@ import com.example.util.simpletimetracker.domain.record.interactor.RecordInterac
 import com.example.util.simpletimetracker.domain.record.interactor.RemoveRunningRecordMediator
 import com.example.util.simpletimetracker.domain.record.interactor.RunningRecordInteractor
 import com.example.util.simpletimetracker.domain.record.model.Record
+import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.domain.record.model.RunningRecord
 import com.example.util.simpletimetracker.domain.recordTag.interactor.GetSelectableTagsInteractor
 import com.example.util.simpletimetracker.domain.recordTag.model.RecordTag
@@ -61,16 +62,24 @@ class RecordQuickActionsInteractor @Inject constructor(
 
     suspend fun changeTags(
         params: List<Type>,
-        newTagIds: List<Long>,
+        newTags: List<RecordBase.Tag>,
     ) {
         params.filterIsInstance<Type.RecordTracked>().let { trackedParams ->
             val recordIds = trackedParams.map(Type.RecordTracked::id)
             val records = recordIds
                 .mapNotNull { recordInteractor.get(it) }
-                .filter { it.tagIds.sorted() != newTagIds.sorted() }
+                .filter {
+                    // TODO TAG translate strings
+                    // TODO TAG add to widget single
+                    // TODO TAG add to widget universal
+                    // TODO TAG add to notification
+                    // TODO TAG add to wear
+                    it.tags.sortedBy(RecordBase.Tag::tagId) !=
+                        newTags.sortedBy(RecordBase.Tag::tagId)
+                }
             changeRecordTags(
                 old = records,
-                newTagIds = newTagIds,
+                newTags = newTags,
             )
         }
         params.filterIsInstance<Type.RecordUntracked>().let {
@@ -80,10 +89,13 @@ class RecordQuickActionsInteractor @Inject constructor(
             val recordIds = runningParams.map { it.id }
             val records = recordIds
                 .mapNotNull { runningRecordInteractor.get(it) }
-                .filter { it.tagIds.sorted() != newTagIds.sorted() }
+                .filter {
+                    it.tags.sortedBy(RecordBase.Tag::tagId) !=
+                        newTags.sortedBy(RecordBase.Tag::tagId)
+                }
             changeRunningRecordTags(
                 old = records,
-                newTagIds = newTagIds,
+                newTags = newTags,
             )
         }
     }
@@ -125,8 +137,8 @@ class RecordQuickActionsInteractor @Inject constructor(
         old.map { oldRecord ->
             oldRecord.copy(
                 typeId = newTypeId,
-                tagIds = getTagsAfterActivityChange(
-                    currentTags = oldRecord.tagIds,
+                tags = getTagsAfterActivityChange(
+                    currentTags = oldRecord.tags,
                     newTypeId = newTypeId,
                 ),
             )
@@ -139,10 +151,10 @@ class RecordQuickActionsInteractor @Inject constructor(
 
     private suspend fun changeRecordTags(
         old: List<Record>,
-        newTagIds: List<Long>,
+        newTags: List<RecordBase.Tag>,
     ) {
         old.map { oldRecord ->
-            oldRecord.copy(tagIds = newTagIds)
+            oldRecord.copy(tags = newTags)
         }.let {
             addRecordMediator.add(it)
         }
@@ -166,8 +178,8 @@ class RecordQuickActionsInteractor @Inject constructor(
                 typeId = newTypeId,
                 timeStarted = oldRecord.timeStarted,
                 comment = oldRecord.comment,
-                tagIds = getTagsAfterActivityChange(
-                    currentTags = oldRecord.tagIds,
+                tags = getTagsAfterActivityChange(
+                    currentTags = oldRecord.tags,
                     newTypeId = newTypeId,
                 ),
             )
@@ -176,11 +188,11 @@ class RecordQuickActionsInteractor @Inject constructor(
 
     private suspend fun changeRunningRecordTags(
         old: List<RunningRecord>,
-        newTagIds: List<Long>,
+        newTags: List<RecordBase.Tag>,
     ) {
         old.forEach { oldRecord ->
             oldRecord.copy(
-                tagIds = newTagIds,
+                tags = newTags,
             ).let {
                 runningRecordInteractor.add(it)
             }
@@ -206,7 +218,7 @@ class RecordQuickActionsInteractor @Inject constructor(
                 timeStarted = newTimeStarted,
                 timeEnded = newTimeEnded,
                 comment = "",
-                tagIds = emptyList(),
+                tags = emptyList(),
             )
         }.let {
             addRecordMediator.add(it)
@@ -214,12 +226,12 @@ class RecordQuickActionsInteractor @Inject constructor(
     }
 
     private suspend fun getTagsAfterActivityChange(
-        currentTags: List<Long>,
+        currentTags: List<RecordBase.Tag>,
         newTypeId: Long,
-    ): List<Long> {
+    ): List<RecordBase.Tag> {
         val selectableTags = getSelectableTagsInteractor.execute(newTypeId)
             .map(RecordTag::id)
-        return currentTags.filter { it in selectableTags }
+        return currentTags.filter { it.tagId in selectableTags }
     }
 
     private fun changeOnlyDate(

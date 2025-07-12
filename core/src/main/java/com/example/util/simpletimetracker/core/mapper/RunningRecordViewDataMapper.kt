@@ -3,7 +3,6 @@ package com.example.util.simpletimetracker.core.mapper
 import com.example.util.simpletimetracker.core.R
 import com.example.util.simpletimetracker.core.interactor.GetCurrentRecordsDurationInteractor
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
-import com.example.util.simpletimetracker.domain.extension.getFullName
 import com.example.util.simpletimetracker.domain.record.model.RunningRecord
 import com.example.util.simpletimetracker.domain.recordTag.model.RecordTag
 import com.example.util.simpletimetracker.domain.recordType.extension.getDaily
@@ -20,6 +19,7 @@ class RunningRecordViewDataMapper @Inject constructor(
     private val colorMapper: ColorMapper,
     private val timeMapper: TimeMapper,
     private val goalViewDataMapper: GoalViewDataMapper,
+    private val recordTagFullNameMapper: RecordTagFullNameMapper,
 ) {
 
     fun map(
@@ -41,8 +41,10 @@ class RunningRecordViewDataMapper @Inject constructor(
         return RunningRecordViewData(
             id = runningRecord.id,
             name = recordType.name,
-            tagName = recordTags
-                .getFullName(),
+            tagName = recordTagFullNameMapper.getFullName(
+                tags = recordTags,
+                tagData = runningRecord.tags,
+            ),
             timeStarted = timeMapper.formatTime(
                 time = runningRecord.timeStarted,
                 useMilitaryTime = useMilitaryTime,

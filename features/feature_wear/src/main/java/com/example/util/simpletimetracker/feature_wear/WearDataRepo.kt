@@ -21,6 +21,7 @@ import com.example.util.simpletimetracker.domain.record.interactor.RunningRecord
 import com.example.util.simpletimetracker.domain.statistics.interactor.SettingsDataUpdateInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.ShouldShowRecordDataSelectionInteractor
 import com.example.util.simpletimetracker.domain.notifications.interactor.UpdateExternalViewsInteractor
+import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.domain.widget.interactor.WidgetInteractor
 import com.example.util.simpletimetracker.domain.record.model.RecordDataSelectionDialogResult
 import com.example.util.simpletimetracker.domain.recordTag.model.RecordTag
@@ -151,7 +152,12 @@ class WearDataRepo @Inject constructor(
     override suspend fun startActivity(request: WearStartActivityRequest) {
         addRunningRecordMediator.get().startTimer(
             typeId = request.id,
-            tagIds = request.tagIds,
+            tags = request.tagIds.map {
+                RecordBase.Tag(
+                    tagId = it,
+                    numericValue = null, // TODO TAG add value selection to wear
+                )
+            },
             comment = "",
         )
         if (recordTypeInteractor.get(request.id)?.defaultDuration.orZero() > 0) {

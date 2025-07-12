@@ -6,7 +6,7 @@ data class Record(
     override val timeStarted: Long,
     override val timeEnded: Long,
     override val comment: String,
-    override val tagIds: List<Long> = emptyList(),
+    override val tags: List<RecordBase.Tag>,
 ) : RecordBase {
 
     override val typeIds: List<Long> = listOf(typeId)

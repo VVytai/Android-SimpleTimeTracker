@@ -19,7 +19,7 @@ import com.example.util.simpletimetracker.core.delegates.iconSelection.viewData.
 import com.example.util.simpletimetracker.core.delegates.iconSelection.viewData.IconSelectionSwitchViewData
 import com.example.util.simpletimetracker.core.delegates.iconSelection.viewModelDelegate.IconSelectionViewModelDelegate
 import com.example.util.simpletimetracker.core.repo.DeviceRepo
-import com.example.util.simpletimetracker.core.view.buttonsRowView.ButtonsRowViewData
+import com.example.util.simpletimetracker.feature_base_adapter.buttonsRow.view.ButtonsRowViewData
 import com.example.util.simpletimetracker.domain.icon.IconEmojiType
 import com.example.util.simpletimetracker.domain.icon.IconImageState
 import com.example.util.simpletimetracker.domain.icon.IconType
@@ -62,7 +62,7 @@ object IconSelectionViewDelegate {
         }
 
         rvIconSelectionCategory.apply {
-            layoutManager = GridLayoutManager(context, IconEmojiType.values().size)
+            layoutManager = GridLayoutManager(context, IconEmojiType.entries.size)
             adapter = iconCategoriesAdapter
             itemAnimator = null
         }

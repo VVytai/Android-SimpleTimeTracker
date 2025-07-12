@@ -8,14 +8,17 @@ import android.view.View
 import android.view.View.MeasureSpec
 import android.view.ViewGroup
 import android.view.ViewOutlineProvider
+import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.SeekBar
 import android.widget.TextView
 import androidx.annotation.DrawableRes
 import androidx.appcompat.widget.AppCompatSpinner
+import androidx.core.content.getSystemService
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.tabs.TabLayout
+import androidx.core.graphics.createBitmap
 
 var View.visible: Boolean
     set(value) {
@@ -128,10 +131,10 @@ fun View.getBitmapFromView(): Bitmap {
     val defaultSize by lazy { 100.dpToPx() }
     fun Int.checkValue(): Int = this.takeUnless { it <= 0 } ?: defaultSize
 
-    return Bitmap.createBitmap(
-        measuredWidth.checkValue(),
-        measuredHeight.checkValue(),
-        Bitmap.Config.ARGB_8888,
+    return createBitmap(
+        width = measuredWidth.checkValue(),
+        height = measuredHeight.checkValue(),
+        config = Bitmap.Config.ARGB_8888,
     ).also {
         draw(Canvas(it))
     }
@@ -215,4 +218,9 @@ inline fun <reified T : ViewGroup.LayoutParams> View.safeUpdateLayoutParams(
     val params = layoutParams as? T ?: return
     block(params)
     layoutParams = params
+}
+
+fun View.showKeyboard() {
+    requestFocus()
+    context.getSystemService<InputMethodManager>()?.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
 }

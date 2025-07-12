@@ -325,9 +325,11 @@ class SettingsDisplayViewModelDelegate @Inject constructor(
             ),
             type = TypesSelectionDialogParams.Type.Activity,
             selectedTypeIds = prefsInteractor.getAutostartPomodoroActivities(),
+            selectedTagValues = emptyList(),
             isMultiSelectAvailable = true,
             idsShouldBeVisible = emptyList(),
             showHints = true,
+            allowTagValueSelection = false,
         ).let(router::navigate)
     }
 

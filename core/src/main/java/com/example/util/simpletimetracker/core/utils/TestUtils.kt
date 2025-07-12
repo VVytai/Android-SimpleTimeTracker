@@ -30,10 +30,12 @@ import com.example.util.simpletimetracker.domain.favourite.model.FavouriteColor
 import com.example.util.simpletimetracker.domain.favourite.model.FavouriteComment
 import com.example.util.simpletimetracker.domain.favourite.model.FavouriteIcon
 import com.example.util.simpletimetracker.domain.record.model.Record
+import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.domain.recordTag.model.RecordTag
 import com.example.util.simpletimetracker.domain.recordType.model.RecordType
 import com.example.util.simpletimetracker.domain.recordType.model.RecordTypeGoal
 import com.example.util.simpletimetracker.domain.record.model.RunningRecord
+import com.example.util.simpletimetracker.domain.recordTag.model.RecordTagValueType
 import kotlinx.coroutines.runBlocking
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -142,7 +144,12 @@ class TestUtils @Inject constructor(
             timeEnded = timeEnded
                 ?: System.currentTimeMillis(),
             comment = comment,
-            tagIds = tagIds,
+            tags = tagIds.map {
+                RecordBase.Tag(
+                    tagId = it,
+                    numericValue = null,
+                )
+            },
         )
 
         recordInteractor.add(data)
@@ -163,7 +170,12 @@ class TestUtils @Inject constructor(
             id = type.id,
             timeStarted = timeStarted ?: System.currentTimeMillis(),
             comment = comment,
-            tagIds = tagIds,
+            tags = tagIds.map {
+                RecordBase.Tag(
+                    tagId = it,
+                    numericValue = null,
+                )
+            },
         )
 
         runningRecordInteractor.add(data)
@@ -219,6 +231,8 @@ class TestUtils @Inject constructor(
             iconColorSource = type?.id.orZero(),
             note = note,
             archived = archived,
+            valueType = RecordTagValueType.NONE, // TODO TAG
+            valueSuffix = "", // TODO TAG
         )
 
         val tagId = recordTagInteractor.add(data)

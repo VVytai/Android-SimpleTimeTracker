@@ -4,10 +4,10 @@ import com.example.util.simpletimetracker.core.mapper.ChangeRecordDateTimeMapper
 import com.example.util.simpletimetracker.core.mapper.ColorMapper
 import com.example.util.simpletimetracker.core.mapper.IconMapper
 import com.example.util.simpletimetracker.core.mapper.RecordQuickActionMapper
+import com.example.util.simpletimetracker.core.mapper.RecordTagFullNameMapper
 import com.example.util.simpletimetracker.core.mapper.RecordViewDataMapper
 import com.example.util.simpletimetracker.core.mapper.TimeMapper
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
-import com.example.util.simpletimetracker.domain.extension.getFullName
 import com.example.util.simpletimetracker.domain.record.model.Record
 import com.example.util.simpletimetracker.domain.recordAction.model.RecordQuickAction
 import com.example.util.simpletimetracker.domain.recordTag.model.RecordTag
@@ -29,6 +29,7 @@ class ChangeRecordViewDataMapper @Inject constructor(
     private val recordViewDataMapper: RecordViewDataMapper,
     private val changeRecordDateTimeMapper: ChangeRecordDateTimeMapper,
     private val recordQuickActionMapper: RecordQuickActionMapper,
+    private val recordTagFullNameMapper: RecordTagFullNameMapper,
 ) {
 
     fun map(
@@ -44,8 +45,10 @@ class ChangeRecordViewDataMapper @Inject constructor(
         return ChangeRecordViewData(
             name = recordType?.name
                 ?: resourceRepo.getString(R.string.untracked_time_name),
-            tagName = recordTags
-                .getFullName(),
+            tagName = recordTagFullNameMapper.getFullName(
+                tags = recordTags,
+                tagData = record.tags,
+            ),
             timeStarted = timeMapper.formatTime(
                 time = record.timeStarted,
                 useMilitaryTime = useMilitaryTime,

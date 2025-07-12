@@ -14,6 +14,7 @@ import com.example.util.simpletimetracker.core.utils.ITEM_SCALE_SELECTED
 import com.example.util.simpletimetracker.core.utils.InsetConfiguration
 import com.example.util.simpletimetracker.domain.extension.orFalse
 import com.example.util.simpletimetracker.domain.extension.orZero
+import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.feature_base_adapter.BaseRecyclerAdapter
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.button.createButtonAdapterDelegate
@@ -80,7 +81,11 @@ class ActivitySuggestionsFragment :
         viewData.observe(viewDataAdapter::replace)
     }
 
-    override fun onDataSelected(dataIds: List<Long>, tag: String?) {
+    override fun onDataSelected(
+        tag: String?,
+        dataIds: List<Long>,
+        tagValues: List<RecordBase.Tag>,
+    ) {
         viewModel.onTypesSelected(dataIds, tag)
     }
 

@@ -24,7 +24,7 @@ class ChangeSelectedActivityFilterMediator @Inject constructor(
             is ActivityFilterType.Default -> {
                 activityFilterInteractor.changeSelected(id, newValue)
             }
-            is ActivityFilterType.Predefined-> {
+            is ActivityFilterType.Predefined -> {
                 predefinedFilterInteractor.changeSelected(id, newValue)
             }
         }

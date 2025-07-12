@@ -9,6 +9,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.viewModels
 import com.example.util.simpletimetracker.core.base.BaseFragment
 import com.example.util.simpletimetracker.core.dialog.OnTagSelectedListener
+import com.example.util.simpletimetracker.core.dialog.OnTagValueSelectedListener
 import com.example.util.simpletimetracker.core.extension.findListeners
 import com.example.util.simpletimetracker.core.manager.KeyboardVisibilityManager
 import com.example.util.simpletimetracker.core.utils.InsetConfiguration
@@ -30,6 +31,7 @@ import com.example.util.simpletimetracker.feature_views.extension.safeUpdateLayo
 import com.example.util.simpletimetracker.feature_views.extension.setOnClick
 import com.example.util.simpletimetracker.feature_views.extension.visible
 import com.example.util.simpletimetracker.navigation.params.screen.RecordTagSelectionParams
+import com.example.util.simpletimetracker.navigation.params.screen.RecordTagValueSelectionParams
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
@@ -38,7 +40,9 @@ import dagger.hilt.android.AndroidEntryPoint
 import com.example.util.simpletimetracker.feature_tag_selection.databinding.RecordTagSelectionFragmentBinding as Binding
 
 @AndroidEntryPoint
-class RecordTagSelectionFragment : BaseFragment<Binding>() {
+class RecordTagSelectionFragment :
+    BaseFragment<Binding>(),
+    OnTagValueSelectedListener {
 
     override val inflater: (LayoutInflater, ViewGroup?, Boolean) -> Binding =
         Binding::inflate
@@ -104,6 +108,10 @@ class RecordTagSelectionFragment : BaseFragment<Binding>() {
         restoreSoftInputMode()
         KeyboardVisibilityManager.removeObserver(this@RecordTagSelectionFragment)
         super.onDestroy()
+    }
+
+    override fun onTagValueSelected(params: RecordTagValueSelectionParams, data: Double) {
+        viewModel.onCategoryValueSelected(params, data)
     }
 
     private fun onTagSelected() {

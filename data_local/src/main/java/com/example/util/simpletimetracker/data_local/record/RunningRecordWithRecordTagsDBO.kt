@@ -11,7 +11,6 @@ data class RunningRecordWithRecordTagsDBO(
         parentColumn = "id",
         entityColumn = "running_record_id",
         entity = RunningRecordToRecordTagDBO::class,
-        projection = ["record_tag_id"],
     )
-    val recordTags: List<Long>,
+    val recordTags: List<RunningRecordToRecordTagDBO>,
 )

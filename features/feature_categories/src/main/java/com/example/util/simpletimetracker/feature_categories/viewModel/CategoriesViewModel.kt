@@ -179,9 +179,11 @@ class CategoriesViewModel @Inject constructor(
             subtitle = "",
             type = TypesSelectionDialogParams.Type.Activity,
             selectedTypeIds = selectedTypeIds,
+            selectedTagValues = emptyList(),
             isMultiSelectAvailable = true,
             idsShouldBeVisible = archivedTypeIds,
             showHints = true,
+            allowTagValueSelection = false,
         ).let(router::navigate)
     }
 

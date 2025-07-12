@@ -43,7 +43,7 @@ class ChangeRecordActionsDuplicateDelegate @Inject constructor(
             timeStarted = params.baseParams.newTimeStarted,
             timeEnded = params.baseParams.newTimeEnded,
             comment = params.baseParams.newComment,
-            tagIds = params.baseParams.newCategoryIds,
+            tagIds = params.baseParams.newTags,
         )
         bridge?.send(ChangeRecordDelegateBridge.Action.OnSaveClickDelegate())
     }

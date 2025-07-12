@@ -2,6 +2,7 @@ package com.example.util.simpletimetracker.data_local.recordTag
 
 import com.example.util.simpletimetracker.domain.color.model.AppColor
 import com.example.util.simpletimetracker.domain.recordTag.model.RecordTag
+import com.example.util.simpletimetracker.domain.recordTag.model.RecordTagValueType
 import javax.inject.Inject
 
 class RecordTagDataLocalMapper @Inject constructor() {
@@ -18,6 +19,12 @@ class RecordTagDataLocalMapper @Inject constructor() {
             iconColorSource = dbo.iconColorSource,
             note = dbo.note,
             archived = dbo.archived,
+            valueType = when (dbo.valueType) {
+                null -> RecordTagValueType.NONE
+                1 -> RecordTagValueType.NUMERIC
+                else -> RecordTagValueType.NONE
+            },
+            valueSuffix = dbo.valueSuffix.orEmpty(),
         )
     }
 
@@ -32,6 +39,12 @@ class RecordTagDataLocalMapper @Inject constructor() {
             iconColorSource = domain.iconColorSource,
             note = domain.note,
             archived = domain.archived,
+            valueType = when (domain.valueType) {
+                // Store null to save storage.
+                RecordTagValueType.NONE -> null
+                RecordTagValueType.NUMERIC -> 1
+            },
+            valueSuffix = domain.valueSuffix.takeIf(String::isNotEmpty),
         )
     }
 }

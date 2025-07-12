@@ -51,7 +51,7 @@
         android:textColor="?appTextHintColor" />
 
     <!--  TODO No idea why putting buttons on top stops recycler from scrolling  -->
-    <com.example.util.simpletimetracker.core.view.buttonsRowView.ButtonsRowView
+    <com.example.util.simpletimetracker.feature_base_adapter.buttonsRow.view.ButtonsRowView
         android:id="@+id/buttonsChartFilterType"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

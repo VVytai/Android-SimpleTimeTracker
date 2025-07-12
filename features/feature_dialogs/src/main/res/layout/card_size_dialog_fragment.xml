@@ -31,7 +31,7 @@
         android:text="@string/card_size_hint"
         android:textColor="?appTextHintColor" />
 
-    <com.example.util.simpletimetracker.core.view.buttonsRowView.ButtonsRowView
+    <com.example.util.simpletimetracker.feature_base_adapter.buttonsRow.view.ButtonsRowView
         android:id="@+id/buttonsCardSize"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

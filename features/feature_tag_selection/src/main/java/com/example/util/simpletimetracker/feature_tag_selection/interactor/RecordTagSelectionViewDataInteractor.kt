@@ -4,6 +4,7 @@ import com.example.util.simpletimetracker.core.interactor.RecordCommentSearchVie
 import com.example.util.simpletimetracker.core.interactor.RecordTagViewDataInteractor
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
+import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.commentField.CommentFieldViewData
 import com.example.util.simpletimetracker.feature_base_adapter.emptySpace.EmptySpaceViewData
@@ -21,7 +22,7 @@ class RecordTagSelectionViewDataInteractor @Inject constructor(
 
     suspend fun getViewData(
         extra: RecordTagSelectionParams,
-        selectedTags: List<Long>,
+        selectedTags: List<RecordBase.Tag>,
         showAllTags: Boolean,
         comment: String,
         fromCommentChange: Boolean,
@@ -44,6 +45,7 @@ class RecordTagSelectionViewDataInteractor @Inject constructor(
                 text = if (fromCommentChange) null else comment,
                 marginTopDp = 0,
                 marginHorizontal = resourceRepo.getDimenInDp(R.dimen.edit_screen_margin_horizontal),
+                hint = resourceRepo.getString(R.string.change_record_comment_hint),
             )
 
             if (showSuggestions) {

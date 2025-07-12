@@ -18,9 +18,11 @@ import com.example.util.simpletimetracker.domain.recordTag.interactor.RecordType
 import com.example.util.simpletimetracker.domain.record.interactor.RemoveRunningRecordMediator
 import com.example.util.simpletimetracker.domain.record.interactor.RunningRecordInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.UpdateRunningRecordFromChangeScreenInteractor
+import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.domain.statistics.model.ChartFilterType
 import com.example.util.simpletimetracker.domain.record.model.RunningRecord
 import com.example.util.simpletimetracker.domain.recordTag.interactor.AddTagToTypeIfNotExistMediator
+import com.example.util.simpletimetracker.domain.recordTag.interactor.NeedTagValueSelectionInteractor
 import com.example.util.simpletimetracker.domain.recordTag.interactor.RecordTagInteractor
 import com.example.util.simpletimetracker.feature_change_record.interactor.ChangeRecordViewDataInteractor
 import com.example.util.simpletimetracker.feature_change_record.viewData.ChangeRecordChooserState
@@ -56,6 +58,7 @@ class ChangeRunningRecordViewModel @Inject constructor(
     recordTypeToTagInteractor: RecordTypeToTagInteractor,
     favouriteCommentInteractor: FavouriteCommentInteractor,
     snackBarMessageNavigationInteractor: SnackBarMessageNavigationInteractor,
+    needTagValueSelectionInteractor: NeedTagValueSelectionInteractor,
     private val router: Router,
     private val addRunningRecordMediator: AddRunningRecordMediator,
     private val removeRunningRecordMediator: RemoveRunningRecordMediator,
@@ -78,6 +81,7 @@ class ChangeRunningRecordViewModel @Inject constructor(
     recordTypeToTagInteractor = recordTypeToTagInteractor,
     favouriteCommentInteractor = favouriteCommentInteractor,
     changeRecordActionsDelegate = changeRecordActionsDelegate,
+    needTagValueSelectionInteractor = needTagValueSelectionInteractor,
 ) {
 
     lateinit var extra: ChangeRunningRecordParams
@@ -146,12 +150,12 @@ class ChangeRunningRecordViewModel @Inject constructor(
             typeId = newTypeId,
             timeStarted = newTimeStarted,
             comment = newComment,
-            tagIds = newCategoryIds,
+            tags = newTags,
         )
         if (showAllTags) {
             addTagToTypeIfNotExistMediator.execute(
                 typeId = newTypeId,
-                tagIds = newCategoryIds,
+                tagIds = newTags.map(RecordBase.Tag::tagId),
             )
         }
         doAfter()
@@ -211,7 +215,7 @@ class ChangeRunningRecordViewModel @Inject constructor(
                 newTimeStarted = record.timeStarted
                 newTimeEnded = System.currentTimeMillis()
                 newComment = record.comment
-                newCategoryIds = record.tagIds.toMutableList()
+                newTags = record.tags.toMutableList()
             }
             newTimeSplit = newTimeStarted
             originalTypeId = newTypeId
@@ -228,7 +232,7 @@ class ChangeRunningRecordViewModel @Inject constructor(
             id = newTypeId,
             timeStarted = newTimeStarted,
             comment = newComment,
-            tagIds = newCategoryIds,
+            tags = newTags,
         )
 
         return changeRunningRecordViewDataInteractor.getPreviewViewData(

@@ -216,6 +216,7 @@ class ChangeRecordActionsAdjustDelegate @Inject constructor(
                 timeStarted = originalTimeStarted,
                 timeEnded = originalTimeEnded,
                 comment = "",
+                tags = emptyList(),
             ),
             changedRecord = Record(
                 id = 0,
@@ -223,6 +224,7 @@ class ChangeRecordActionsAdjustDelegate @Inject constructor(
                 timeStarted = newTimeStarted,
                 timeEnded = adjustPreviewTimeEnded,
                 comment = "",
+                tags = emptyList(),
             ),
             showTimeEnded = showTimeEnded,
         )

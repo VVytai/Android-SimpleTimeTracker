@@ -60,7 +60,7 @@ import com.example.util.simpletimetracker.data_local.recordType.RecordTypeGoalDa
         ActivitySuggestionDBO::class,
         DurationSuggestionDBO::class,
     ],
-    version = 26,
+    version = 27,
     exportSchema = true,
 )
 abstract class AppDatabase : RoomDatabase() {

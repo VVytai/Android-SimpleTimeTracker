@@ -1,6 +1,8 @@
 package com.example.util.simpletimetracker.feature_statistics_detail.adapter
 
-enum class StatisticsDetailBlock {
+import com.example.util.simpletimetracker.feature_base_adapter.buttonsRow.ButtonsRowItemViewData
+
+enum class StatisticsDetailBlock : ButtonsRowItemViewData.ButtonsRowId {
     PreviewItems,
     ChartData,
     ChartDataComparison,

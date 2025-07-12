@@ -7,6 +7,7 @@ import com.example.util.simpletimetracker.domain.base.UNCATEGORIZED_ITEM_ID
 import com.example.util.simpletimetracker.domain.base.UNTRACKED_ITEM_ID
 import com.example.util.simpletimetracker.domain.category.model.Category
 import com.example.util.simpletimetracker.domain.color.model.AppColor
+import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.domain.recordTag.model.RecordTag
 import com.example.util.simpletimetracker.domain.recordType.model.RecordType
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
@@ -25,6 +26,7 @@ class CategoryViewDataMapper @Inject constructor(
     private val iconMapper: IconMapper,
     private val resourceRepo: ResourceRepo,
     private val recordTagViewDataMapper: RecordTagViewDataMapper,
+    private val recordTagFullNameMapper: RecordTagFullNameMapper,
 ) {
 
     fun mapCategory(
@@ -85,7 +87,7 @@ class CategoryViewDataMapper @Inject constructor(
         type: RecordType?,
         isDarkTheme: Boolean,
         isFiltered: Boolean = false,
-    ): CategoryViewData.Record {
+    ): CategoryViewData.Record.Tagged {
         val icon = recordTagViewDataMapper.mapIcon(tag, type)
             ?.let(iconMapper::mapIcon)
         val color = recordTagViewDataMapper.mapColor(tag, type)
@@ -98,6 +100,31 @@ class CategoryViewDataMapper @Inject constructor(
             color = getColor(color, isDarkTheme, isFiltered),
             icon = icon,
         )
+    }
+
+    fun mapRecordTagWithValue(
+        tag: RecordTag,
+        tagData: RecordBase.Tag?,
+        type: RecordType?,
+        isDarkTheme: Boolean,
+        isFiltered: Boolean = false,
+    ): CategoryViewData.Record {
+        val viewData = mapRecordTag(
+            tag = tag,
+            type = type,
+            isDarkTheme = isDarkTheme,
+            isFiltered = isFiltered,
+        )
+        val value = tagData?.numericValue
+        return if (value != null) {
+            val newName = recordTagFullNameMapper.getNameWithValue(
+                name = viewData.name,
+                value = value,
+            )
+            return viewData.copy(name = newName)
+        } else {
+            viewData
+        }
     }
 
     fun groupToTagGroups(

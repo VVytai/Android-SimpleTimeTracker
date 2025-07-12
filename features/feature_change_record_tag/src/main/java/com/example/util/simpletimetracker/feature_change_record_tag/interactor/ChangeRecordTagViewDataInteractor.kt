@@ -2,16 +2,25 @@ package com.example.util.simpletimetracker.feature_change_record_tag.interactor
 
 import com.example.util.simpletimetracker.core.mapper.CommonViewDataMapper
 import com.example.util.simpletimetracker.core.mapper.RecordTypeViewDataMapper
+import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
+import com.example.util.simpletimetracker.domain.recordTag.model.RecordTagValueType
 import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTypeInteractor
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
+import com.example.util.simpletimetracker.feature_base_adapter.buttonsRow.ButtonsRowItemViewData
 import com.example.util.simpletimetracker.feature_base_adapter.divider.DividerViewData
+import com.example.util.simpletimetracker.feature_base_adapter.hint.HintViewData
+import com.example.util.simpletimetracker.feature_change_record_tag.R
 import com.example.util.simpletimetracker.feature_change_record_tag.mapper.ChangeRecordTagMapper
+import com.example.util.simpletimetracker.feature_change_record_tag.viewData.ChangeRecordTagButtonsRowId
 import com.example.util.simpletimetracker.feature_change_record_tag.viewData.ChangeRecordTagTypesViewData
+import com.example.util.simpletimetracker.feature_change_record_tag.viewData.ChangeRecordTagValueTypeViewData
+import com.example.util.simpletimetracker.feature_change_record_tag.viewData.ChangeRecordTagValueViewData
 import com.example.util.simpletimetracker.feature_views.GoalCheckmarkView
 import javax.inject.Inject
 
 class ChangeRecordTagViewDataInteractor @Inject constructor(
+    private val resourceRepo: ResourceRepo,
     private val prefsInteractor: PrefsInteractor,
     private val recordTypeInteractor: RecordTypeInteractor,
     private val recordTypeViewDataMapper: RecordTypeViewDataMapper,
@@ -41,6 +50,47 @@ class ChangeRecordTagViewDataInteractor @Inject constructor(
             hintViewDataProvider = {
                 changeRecordTagMapper.mapDefaultTypeHint()
             },
+        )
+    }
+
+    fun getTagValueState(
+        valueType: RecordTagValueType,
+        valueSuffix: String,
+    ): ChangeRecordTagValueViewData {
+        fun mapValueTypeName(type: RecordTagValueType): String {
+            return when (type) {
+                RecordTagValueType.NONE -> R.string.change_record_type_goal_time_disabled
+                RecordTagValueType.NUMERIC -> R.string.settings_dark_mode_enabled
+            }.let(resourceRepo::getString)
+        }
+
+        val result = mutableListOf<ViewHolderType>()
+
+        result += HintViewData(
+            // TODO TAG change hint
+            text = resourceRepo.getString(R.string.change_record_type_value_type_hint),
+        )
+        result += ButtonsRowItemViewData(
+            block = ChangeRecordTagButtonsRowId.VALUE_TYPE,
+            marginTopDp = 0,
+            data = listOf(
+                RecordTagValueType.NONE,
+                RecordTagValueType.NUMERIC,
+            ).map {
+                ChangeRecordTagValueTypeViewData(
+                    valueType = it,
+                    name = mapValueTypeName(it),
+                    isSelected = it == valueType,
+                )
+            },
+        )
+        if (valueType == RecordTagValueType.NUMERIC) {
+            // TODO TAG add input field for suffix
+        }
+
+        return ChangeRecordTagValueViewData(
+            hint = mapValueTypeName(valueType),
+            viewData = result,
         )
     }
 

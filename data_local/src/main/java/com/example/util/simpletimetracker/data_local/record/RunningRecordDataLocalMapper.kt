@@ -1,6 +1,8 @@
 package com.example.util.simpletimetracker.data_local.record
 
+import com.example.util.simpletimetracker.data_local.recordTag.RunningRecordToRecordTagDBO
 import com.example.util.simpletimetracker.domain.extension.dropMillis
+import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.domain.record.model.RunningRecord
 import javax.inject.Inject
 
@@ -11,7 +13,7 @@ class RunningRecordDataLocalMapper @Inject constructor() {
             id = dbo.runningRecord.id,
             timeStarted = dbo.runningRecord.timeStarted,
             comment = dbo.runningRecord.comment,
-            tagIds = dbo.recordTags,
+            tags = dbo.recordTags.map(::map),
         )
     }
 
@@ -21,6 +23,13 @@ class RunningRecordDataLocalMapper @Inject constructor() {
             timeStarted = domain.timeStarted.dropMillis(),
             comment = domain.comment,
             tagId = 0,
+        )
+    }
+
+    fun map(dbo: RunningRecordToRecordTagDBO): RecordBase.Tag {
+        return RecordBase.Tag(
+            tagId = dbo.recordTagId,
+            numericValue = dbo.recordTagNumericValue,
         )
     }
 }

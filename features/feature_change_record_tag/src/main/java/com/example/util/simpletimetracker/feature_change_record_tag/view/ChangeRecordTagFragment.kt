@@ -14,6 +14,7 @@ import androidx.core.view.updateLayoutParams
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.util.simpletimetracker.core.base.BaseFragment
 import com.example.util.simpletimetracker.core.delegates.iconSelection.adapter.createIconSelectionAdapterDelegate
 import com.example.util.simpletimetracker.core.delegates.iconSelection.adapter.createIconSelectionCategoryAdapterDelegate
@@ -35,7 +36,9 @@ import com.example.util.simpletimetracker.core.utils.fragmentArgumentDelegate
 import com.example.util.simpletimetracker.core.view.ViewChooserStateDelegate
 import com.example.util.simpletimetracker.domain.extension.orFalse
 import com.example.util.simpletimetracker.domain.extension.orZero
+import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.feature_base_adapter.BaseRecyclerAdapter
+import com.example.util.simpletimetracker.feature_base_adapter.buttonsRow.createButtonsRowAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.category.CategoryViewData
 import com.example.util.simpletimetracker.feature_base_adapter.color.createColorAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.color.createColorFavouriteAdapterDelegate
@@ -54,8 +57,10 @@ import com.example.util.simpletimetracker.feature_change_record_tag.viewData.Cha
 import com.example.util.simpletimetracker.feature_change_record_tag.viewData.ChangeRecordTagChooserState.DefaultType
 import com.example.util.simpletimetracker.feature_change_record_tag.viewData.ChangeRecordTagChooserState.Icon
 import com.example.util.simpletimetracker.feature_change_record_tag.viewData.ChangeRecordTagChooserState.Type
+import com.example.util.simpletimetracker.feature_change_record_tag.viewData.ChangeRecordTagChooserState.ValueType
 import com.example.util.simpletimetracker.feature_change_record_tag.viewData.ChangeRecordTagFieldsState
 import com.example.util.simpletimetracker.feature_change_record_tag.viewData.ChangeRecordTagTypesViewData
+import com.example.util.simpletimetracker.feature_change_record_tag.viewData.ChangeRecordTagValueViewData
 import com.example.util.simpletimetracker.feature_change_record_tag.viewModel.ChangeRecordTagViewModel
 import com.example.util.simpletimetracker.feature_views.extension.animateColor
 import com.example.util.simpletimetracker.feature_views.extension.dpToPx
@@ -134,6 +139,13 @@ class ChangeRecordTagFragment :
             createHintBigAdapterDelegate(),
         )
     }
+    private val valueStateAdapter: BaseRecyclerAdapter by lazy {
+        BaseRecyclerAdapter(
+            createHintAdapterDelegate(),
+            createDividerAdapterDelegate(),
+            createButtonsRowAdapterDelegate(viewModel::onButtonsRowClick),
+        )
+    }
     private var iconsLayoutManager: GridLayoutManager? = null
     private var typeColorAnimator: ValueAnimator? = null
     private var iconTextWatcher: TextWatcher? = null
@@ -193,6 +205,11 @@ class ChangeRecordTagFragment :
             adapter = defaultTypesAdapter
         }
 
+        rvChangeRecordTagValueType.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = valueStateAdapter
+        }
+
         setOnPreDrawListener {
             startPostponedEnterTransition()
         }
@@ -205,6 +222,7 @@ class ChangeRecordTagFragment :
         fieldChangeRecordTagIcon.setOnClick(viewModel::onIconChooserClick)
         fieldChangeRecordTagType.setOnClick(viewModel::onTypeChooserClick)
         fieldChangeRecordTagDefaultType.setOnClick(viewModel::onDefaultTypeChooserClick)
+        fieldChangeRecordTagValueType.setOnClick(viewModel::onValueTypeChooserClick)
         btnChangeRecordTagSelectActivity.setOnClick(viewModel::onSelectActivityClick)
         btnChangeRecordTagSave.setOnClick(viewModel::onSaveClick)
         btnChangeRecordTagArchive.setOnClick(viewModel::onArchiveClick)
@@ -235,6 +253,7 @@ class ChangeRecordTagFragment :
             colors.observe(colorsAdapter::replace)
             types.observe(::updateTypes)
             defaultTypes.observe(::updateDefaultTypes)
+            valueState.observe(::updateValueState)
             chooserState.observe(::updateChooserState)
             nameErrorMessage.observe(::updateNameErrorMessage)
             noteState.observe(::updateNoteState)
@@ -273,7 +292,11 @@ class ChangeRecordTagFragment :
         viewModel.onCustomColorSelected(colorInt)
     }
 
-    override fun onDataSelected(dataIds: List<Long>, tag: String?) {
+    override fun onDataSelected(
+        tag: String?,
+        dataIds: List<Long>,
+        tagValues: List<RecordBase.Tag>,
+    ) {
         viewModel.onTypesSelected(dataIds, tag)
     }
 
@@ -308,6 +331,7 @@ class ChangeRecordTagFragment :
                 updateIconPreview(icon?.toViewData(), it.color)
                 binding.layoutChangeRecordTagTypesPreview.setCardBackgroundColor(it.color)
                 binding.layoutChangeRecordTagDefaultTypePreview.setCardBackgroundColor(it.color)
+                binding.layoutChangeRecordTagValueTypePreview.setCardBackgroundColor(it.color)
             }
         }
     }
@@ -338,6 +362,7 @@ class ChangeRecordTagFragment :
             updateIconPreview(item.icon, item.color)
             layoutChangeRecordTagTypesPreview.setCardBackgroundColor(item.color)
             layoutChangeRecordTagDefaultTypePreview.setCardBackgroundColor(item.color)
+            binding.layoutChangeRecordTagValueTypePreview.setCardBackgroundColor(item.color)
         }
     }
 
@@ -369,6 +394,12 @@ class ChangeRecordTagFragment :
             chooserView = fieldChangeRecordTagDefaultType,
             chooserArrow = arrowChangeRecordTagDefaultType,
         )
+        ViewChooserStateDelegate.updateChooser<ValueType>(
+            state = state,
+            chooserData = rvChangeRecordTagValueType,
+            chooserView = fieldChangeRecordTagValueType,
+            chooserArrow = arrowChangeRecordTagValueType,
+        )
 
         val isClosed = state.current is Closed
         spaceChangeRecordTagFieldsTop.isVisible = !isClosed
@@ -389,6 +420,7 @@ class ChangeRecordTagFragment :
         val isAdditionalVisible = fieldsState.additionalFieldsVisible
         containerChangeRecordTagMoreFields.isVisible = isClosed
         fieldChangeRecordTagDefaultType.isVisible = (isAdditionalVisible && isClosed) || state.current is DefaultType
+        fieldChangeRecordTagValueType.isVisible = (isAdditionalVisible && isClosed) || state.current is ValueType
         btnChangeRecordTagSelectActivity.isVisible = isAdditionalVisible && isClosed
         inputChangeRecordTagNote.isVisible = isAdditionalVisible && isClosed
         dividerChangeRecordTagBottom.isInvisible = isClosed
@@ -427,6 +459,13 @@ class ChangeRecordTagFragment :
         defaultTypesAdapter.replace(data.viewData)
         layoutChangeRecordTagDefaultTypePreview.isVisible = data.selectedCount > 0
         tvChangeRecordTagDefaultTypePreview.text = data.selectedCount.toString()
+    }
+
+    private fun updateValueState(
+        data: ChangeRecordTagValueViewData,
+    ) = with(binding) {
+        valueStateAdapter.replace(data.viewData)
+        tvChangeRecordTagValueTypePreview.text = data.hint
     }
 
     private fun updateNameErrorMessage(error: String) = with(binding) {

@@ -1,6 +1,6 @@
 package com.example.util.simpletimetracker.feature_statistics_detail.viewData
 
-import com.example.util.simpletimetracker.core.view.buttonsRowView.ButtonsRowViewData
+import com.example.util.simpletimetracker.feature_base_adapter.buttonsRow.view.ButtonsRowViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.model.DataDistributionGraph
 
 data class StatisticsDetailDataDistributionGraphViewData(

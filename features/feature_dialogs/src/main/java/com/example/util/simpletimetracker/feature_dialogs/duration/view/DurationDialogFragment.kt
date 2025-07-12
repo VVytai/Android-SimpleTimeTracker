@@ -44,7 +44,7 @@ class DurationDialogFragment : BaseBottomSheetFragment<Binding>() {
             ),
         )
     }
-    private var listeners: List<DurationDialogListener> = mutableListOf()
+    private var listeners: List<DurationDialogListener> = emptyList()
     private val params: DurationDialogParams by fragmentArgumentDelegate(
         key = ARGS_PARAMS, default = DurationDialogParams(),
     )

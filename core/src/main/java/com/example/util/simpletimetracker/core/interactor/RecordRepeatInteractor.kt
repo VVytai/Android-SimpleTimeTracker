@@ -72,7 +72,7 @@ class RecordRepeatInteractor @Inject constructor(
 
         addRunningRecordMediator.startTimer(
             typeId = prevRecord.typeId,
-            tagIds = prevRecord.tagIds,
+            tags = prevRecord.tags,
             comment = prevRecord.comment,
         )
         return ActionResult.Started

@@ -4,7 +4,6 @@ import android.text.SpannableStringBuilder
 import com.example.util.simpletimetracker.core.R
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.domain.extension.dropSeconds
-import com.example.util.simpletimetracker.domain.extension.getFullName
 import com.example.util.simpletimetracker.domain.record.model.Record
 import com.example.util.simpletimetracker.domain.recordTag.model.RecordTag
 import com.example.util.simpletimetracker.domain.recordType.model.RecordType
@@ -23,6 +22,7 @@ class RecordViewDataMapper @Inject constructor(
     private val iconMapper: IconMapper,
     private val colorMapper: ColorMapper,
     private val resourceRepo: ResourceRepo,
+    private val recordTagFullNameMapper: RecordTagFullNameMapper,
 ) {
 
     fun map(
@@ -39,8 +39,10 @@ class RecordViewDataMapper @Inject constructor(
             timeStartedTimestamp = record.timeStarted,
             timeEndedTimestamp = record.timeEnded,
             name = recordType.name,
-            tagName = recordTags
-                .getFullName(),
+            tagName = recordTagFullNameMapper.getFullName(
+                tags = recordTags,
+                tagData = record.tags,
+            ),
             timeStarted = timeMapper.formatTime(
                 time = record.timeStarted,
                 useMilitaryTime = useMilitaryTime,

@@ -5,7 +5,13 @@ sealed interface RecordBase {
     val timeStarted: Long
     val timeEnded: Long
     val comment: String
-    val tagIds: List<Long>
+    val tags: List<Tag>
 
     val duration: Long get() = timeEnded - timeStarted
+    val tagIds: List<Long> get() = tags.map { it.tagId }
+
+    data class Tag(
+        val tagId: Long,
+        val numericValue: Double?,
+    )
 }

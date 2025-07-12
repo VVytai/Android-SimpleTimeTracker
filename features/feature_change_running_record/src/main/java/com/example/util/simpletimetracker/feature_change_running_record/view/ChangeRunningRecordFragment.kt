@@ -8,6 +8,7 @@ import androidx.fragment.app.viewModels
 import com.example.util.simpletimetracker.core.base.BaseFragment
 import com.example.util.simpletimetracker.core.dialog.DateTimeDialogListener
 import com.example.util.simpletimetracker.core.dialog.DurationDialogListener
+import com.example.util.simpletimetracker.core.dialog.OnTagValueSelectedListener
 import com.example.util.simpletimetracker.core.extension.setSharedTransitions
 import com.example.util.simpletimetracker.core.extension.toViewData
 import com.example.util.simpletimetracker.core.utils.InsetConfiguration
@@ -24,6 +25,7 @@ import com.example.util.simpletimetracker.navigation.Router
 import com.example.util.simpletimetracker.navigation.params.notification.SnackBarParams
 import com.example.util.simpletimetracker.navigation.params.screen.ChangeRunningRecordFromScreen
 import com.example.util.simpletimetracker.navigation.params.screen.ChangeRunningRecordParams
+import com.example.util.simpletimetracker.navigation.params.screen.RecordTagValueSelectionParams
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import com.example.util.simpletimetracker.feature_change_running_record.databinding.ChangeRunningRecordFragmentBinding as Binding
@@ -32,7 +34,8 @@ import com.example.util.simpletimetracker.feature_change_running_record.databind
 class ChangeRunningRecordFragment :
     BaseFragment<Binding>(),
     DateTimeDialogListener,
-    DurationDialogListener {
+    DurationDialogListener,
+    OnTagValueSelectedListener {
 
     override val inflater: (LayoutInflater, ViewGroup?, Boolean) -> Binding =
         Binding::inflate
@@ -106,6 +109,10 @@ class ChangeRunningRecordFragment :
 
     override fun onDurationSet(durationSeconds: Long, tag: String?) {
         viewModel.onDurationSet(durationSeconds, tag)
+    }
+
+    override fun onTagValueSelected(params: RecordTagValueSelectionParams, data: Double) {
+        viewModel.onCategoryValueSelected(params, data)
     }
 
     private fun setPreview() = params.preview?.let { preview ->

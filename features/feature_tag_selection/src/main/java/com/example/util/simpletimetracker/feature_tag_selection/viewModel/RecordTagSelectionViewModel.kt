@@ -9,13 +9,17 @@ import com.example.util.simpletimetracker.core.extension.set
 import com.example.util.simpletimetracker.domain.extension.addOrRemove
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.AddRunningRecordMediator
+import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.domain.recordTag.interactor.AddTagToTypeIfNotExistMediator
+import com.example.util.simpletimetracker.domain.recordTag.interactor.NeedTagValueSelectionInteractor
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.category.CategoryViewData
 import com.example.util.simpletimetracker.feature_base_adapter.loader.LoaderViewData
 import com.example.util.simpletimetracker.feature_base_adapter.recordComment.RecordCommentViewData
 import com.example.util.simpletimetracker.feature_tag_selection.interactor.RecordTagSelectionViewDataInteractor
+import com.example.util.simpletimetracker.navigation.Router
 import com.example.util.simpletimetracker.navigation.params.screen.RecordTagSelectionParams
+import com.example.util.simpletimetracker.navigation.params.screen.RecordTagValueSelectionParams
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -23,10 +27,12 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RecordTagSelectionViewModel @Inject constructor(
+    private val router: Router,
     private val viewDataInteractor: RecordTagSelectionViewDataInteractor,
     private val addRunningRecordMediator: AddRunningRecordMediator,
     private val prefsInteractor: PrefsInteractor,
     private val addTagToTypeIfNotExistMediator: AddTagToTypeIfNotExistMediator,
+    private val needTagValueSelectionInteractor: NeedTagValueSelectionInteractor,
 ) : BaseViewModel() {
 
     lateinit var extra: RecordTagSelectionParams
@@ -45,7 +51,7 @@ class RecordTagSelectionViewModel @Inject constructor(
     val saveClicked: LiveData<Unit> = MutableLiveData()
 
     private var newComment: String = ""
-    private var newCategoryIds: MutableList<Long> = mutableListOf()
+    private var newTags: List<RecordBase.Tag> = emptyList()
     private var searchLoadJob: Job? = null
 
     // Keep in mind that tags would be added to new types only if show all was selected before,
@@ -56,18 +62,37 @@ class RecordTagSelectionViewModel @Inject constructor(
         viewModelScope.launch {
             when (item) {
                 is CategoryViewData.Record.Tagged -> {
-                    newCategoryIds.addOrRemove(item.id)
+                    val needValueSelection = needTagValueSelectionInteractor.execute(
+                        selectedTagIds = newTags.map { it.tagId },
+                        clickedTagId = item.id,
+                    )
+                    if (needValueSelection) {
+                        RecordTagValueSelectionParams(
+                            tag = RECORD_TAG_SELECTION_TAG_VALUE_SELECTION,
+                            tagId = item.id,
+                        ).let(router::navigate)
+                    } else {
+                        newTags = newTags.addOrRemove(item.id)
+                        onTagSelected()
+                    }
                 }
                 is CategoryViewData.Record.Untagged -> {
-                    newCategoryIds.clear()
+                    newTags = emptyList()
+                    onTagSelected()
                 }
                 else -> return@launch
             }
-            if (prefsInteractor.getRecordTagSelectionCloseAfterOne()) {
-                saveClicked()
-            } else {
-                updateViewData()
-            }
+        }
+    }
+
+    fun onCategoryValueSelected(
+        params: RecordTagValueSelectionParams,
+        value: Double,
+    ) {
+        if (params.tag != RECORD_TAG_SELECTION_TAG_VALUE_SELECTION) return
+        viewModelScope.launch {
+            newTags = newTags + RecordBase.Tag(tagId = params.tagId, numericValue = value)
+            onTagSelected()
         }
     }
 
@@ -100,16 +125,24 @@ class RecordTagSelectionViewModel @Inject constructor(
         }
     }
 
+    private suspend fun onTagSelected() {
+        if (prefsInteractor.getRecordTagSelectionCloseAfterOne()) {
+            saveClicked()
+        } else {
+            updateViewData()
+        }
+    }
+
     private suspend fun saveClicked() {
         addRunningRecordMediator.startTimer(
             typeId = extra.typeId,
-            tagIds = newCategoryIds,
+            tags = newTags,
             comment = newComment,
         )
         if (showAllTags) {
             addTagToTypeIfNotExistMediator.execute(
                 typeId = extra.typeId,
-                tagIds = newCategoryIds,
+                tagIds = newTags.map(RecordBase.Tag::tagId),
             )
         }
         saveClicked.set(Unit)
@@ -142,10 +175,14 @@ class RecordTagSelectionViewModel @Inject constructor(
     ): List<ViewHolderType> {
         return viewDataInteractor.getViewData(
             extra = extra,
-            selectedTags = newCategoryIds,
+            selectedTags = newTags,
             showAllTags = showAllTags,
             comment = newComment,
             fromCommentChange = fromCommentChange,
         )
+    }
+
+    companion object {
+        private const val RECORD_TAG_SELECTION_TAG_VALUE_SELECTION = "RECORD_TAG_SELECTION_TAG_VALUE_SELECTION"
     }
 }

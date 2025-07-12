@@ -18,6 +18,7 @@ import com.example.util.simpletimetracker.domain.record.interactor.RemoveRunning
 import com.example.util.simpletimetracker.domain.record.interactor.RunningRecordInteractor
 import com.example.util.simpletimetracker.domain.record.model.MultiSelectedRecordId
 import com.example.util.simpletimetracker.domain.record.model.Record
+import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.domain.recordAction.interactor.RecordActionContinueMediator
 import com.example.util.simpletimetracker.domain.recordAction.interactor.RecordActionDuplicateMediator
 import com.example.util.simpletimetracker.domain.recordAction.interactor.RecordActionMergeMediator
@@ -110,8 +111,8 @@ class RecordQuickActionsViewModel @Inject constructor(
     }
 
     private suspend fun goToStatistics() {
-        val params = extra.type ?: return
-        val preview = extra.preview ?: return
+        val params = extra.type
+        val preview = extra.preview
         val itemId = when (params) {
             is Type.RecordTracked -> recordInteractor.get(params.id)?.typeId ?: return
             is Type.RecordUntracked -> UNTRACKED_ITEM_ID
@@ -141,8 +142,7 @@ class RecordQuickActionsViewModel @Inject constructor(
             router.back()
             return
         }
-        val params = extra.type ?: return
-        when (params) {
+        when (val params = extra.type) {
             is Type.RecordTracked -> {
                 // Removal handled in separate viewModel.
                 val recordId = (params as? Type.RecordTracked)?.id.orZero()
@@ -178,7 +178,7 @@ class RecordQuickActionsViewModel @Inject constructor(
             typeId = record.typeId,
             timeStarted = record.timeStarted,
             comment = record.comment,
-            tagIds = record.tagIds,
+            tags = record.tags,
         )
         exit()
     }
@@ -188,7 +188,7 @@ class RecordQuickActionsViewModel @Inject constructor(
         recordActionRepeatMediator.execute(
             typeId = record.typeId,
             comment = record.comment,
-            tagIds = record.tagIds,
+            tags = record.tags,
         )
         exit()
     }
@@ -211,7 +211,7 @@ class RecordQuickActionsViewModel @Inject constructor(
             timeStarted = record.timeStarted,
             timeEnded = record.timeEnded,
             comment = record.comment,
-            tagIds = record.tagIds,
+            tagIds = record.tags,
         )
         exit()
     }
@@ -268,7 +268,7 @@ class RecordQuickActionsViewModel @Inject constructor(
         if (recordsContainerMultiselectInteractor.isEnabled) {
             recordsContainerMultiselectInteractor.disable()
         } else {
-            val id = mapMultiselectId() ?: return
+            val id = mapMultiselectId()
             recordsContainerMultiselectInteractor.enable(id)
         }
         exit()
@@ -281,24 +281,29 @@ class RecordQuickActionsViewModel @Inject constructor(
             subtitle = "",
             type = TypesSelectionDialogParams.Type.Activity,
             selectedTypeIds = emptyList(),
+            selectedTagValues = emptyList(),
             isMultiSelectAvailable = false,
             idsShouldBeVisible = emptyList(),
             showHints = false,
+            allowTagValueSelection = false,
         ).let(router::navigate)
     }
 
     private fun onChangeTag() = viewModelScope.launch {
         val typeIds: List<Long>
         val selectedTypeIds: List<Long>
+        val selectedTagValues: List<RecordBase.Tag>
         if (recordsContainerMultiselectInteractor.isEnabled) {
             val multiSelectedIds = recordsContainerMultiselectInteractor.selectedRecordIds
             val records = recordQuickActionsViewDataInteractor.getRecords(multiSelectedIds)
             typeIds = records.map { it.typeIds }.flatten().distinct()
             selectedTypeIds = emptyList()
+            selectedTagValues = emptyList()
         } else {
             val record = recordQuickActionsViewDataInteractor.getRecord(extra)
             typeIds = listOfNotNull(record?.typeIds?.firstOrNull())
             selectedTypeIds = record?.tagIds.orEmpty()
+            selectedTagValues = record?.tags.orEmpty()
         }
 
         TypesSelectionDialogParams(
@@ -307,25 +312,43 @@ class RecordQuickActionsViewModel @Inject constructor(
             subtitle = "",
             type = TypesSelectionDialogParams.Type.Tag.ByType(typeIds),
             selectedTypeIds = selectedTypeIds,
+            selectedTagValues = selectedTagValues.map {
+                TypesSelectionDialogParams.TagData(
+                    tagId = it.tagId,
+                    numericValue = it.numericValue,
+                )
+            },
             isMultiSelectAvailable = true,
             idsShouldBeVisible = selectedTypeIds,
             showHints = true,
+            allowTagValueSelection = true,
         ).let(router::navigate)
     }
 
-    fun onTypesSelected(typeIds: List<Long>, tag: String?) = viewModelScope.launch {
+    fun onTypesSelected(
+        tag: String?,
+        dataIds: List<Long>,
+        tagValues: List<RecordBase.Tag>,
+    ) = viewModelScope.launch {
         val paramsList = recordQuickActionsViewDataInteractor.getParamsList(extra)
         when (tag) {
             RECORD_QUICK_ACTIONS_TYPE_SELECTION_TAG -> {
                 buttonsBlocked = true
-                val typeId = typeIds.firstOrNull() ?: return@launch
+                val typeId = dataIds.firstOrNull() ?: return@launch
                 recordQuickActionsInteractor.changeType(paramsList, typeId)
                 recordsContainerMultiselectInteractor.disable()
                 exit()
             }
             RECORD_QUICK_ACTIONS_TAG_SELECTION_TAG -> {
                 buttonsBlocked = true
-                recordQuickActionsInteractor.changeTags(paramsList, typeIds)
+                val tagValuesMap = tagValues.associateBy { it.tagId }
+                val newTags = dataIds.map {
+                    RecordBase.Tag(
+                        tagId = it,
+                        numericValue = tagValuesMap[it]?.numericValue,
+                    )
+                }
+                recordQuickActionsInteractor.changeTags(paramsList, newTags)
                 recordsContainerMultiselectInteractor.disable()
                 exit()
             }
@@ -367,9 +390,8 @@ class RecordQuickActionsViewModel @Inject constructor(
         }
     }
 
-    private fun mapMultiselectId(): MultiSelectedRecordId? {
-        val extraType = extra.type ?: return null
-        return when (extraType) {
+    private fun mapMultiselectId(): MultiSelectedRecordId {
+        return when (val extraType = extra.type) {
             is Type.RecordTracked ->
                 MultiSelectedRecordId.Tracked(extraType.id)
             is Type.RecordUntracked ->

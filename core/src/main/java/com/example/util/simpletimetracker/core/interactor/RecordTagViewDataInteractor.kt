@@ -6,6 +6,7 @@ import com.example.util.simpletimetracker.core.mapper.CommonViewDataMapper
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.domain.extension.plusAssign
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
+import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.domain.recordTag.interactor.GetSelectableTagsInteractor
 import com.example.util.simpletimetracker.domain.recordTag.interactor.RecordTagInteractor
 import com.example.util.simpletimetracker.domain.recordTag.model.RecordTag
@@ -28,7 +29,7 @@ class RecordTagViewDataInteractor @Inject constructor(
 
     // typeId == null - show all tags.
     suspend fun getViewData(
-        selectedTags: List<Long>,
+        selectedTags: List<RecordBase.Tag>,
         typeId: Long?,
         showAllTags: Boolean,
         multipleChoiceAvailable: Boolean,
@@ -54,10 +55,12 @@ class RecordTagViewDataInteractor @Inject constructor(
         val types = recordTypeInteractor.getAll().associateBy { it.id }
 
         return if (allTags.isNotEmpty()) {
-            val selected = allTags.filter { it.id in selectedTags }
-            val available = recordTags.filter { it.id !in selectedTags }
+            val selectedTagsMap = selectedTags.associateBy { it.tagId }
+            val selectedTagIds = selectedTagsMap.keys
+            val selected = allTags.filter { it.id in selectedTagIds }
+            val available = recordTags.filter { it.id !in selectedTagIds }
             val availableFromOtherActivities = if (showAllTags) {
-                tagsFromOtherActivities.filter { it.id !in selectedTags }
+                tagsFromOtherActivities.filter { it.id !in selectedTagIds }
             } else {
                 emptyList()
             }
@@ -79,8 +82,9 @@ class RecordTagViewDataInteractor @Inject constructor(
             }
 
             viewData += selected.map {
-                categoryViewDataMapper.mapRecordTag(
+                categoryViewDataMapper.mapRecordTagWithValue(
                     tag = it,
+                    tagData = selectedTagsMap[it.id],
                     type = types[it.iconColorSource],
                     isDarkTheme = isDarkTheme,
                 )

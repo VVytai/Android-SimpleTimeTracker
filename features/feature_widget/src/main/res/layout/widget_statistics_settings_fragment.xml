@@ -39,7 +39,7 @@
         android:textColor="?appTextHintColor"
         app:layout_constraintBottom_toTopOf="@id/buttonsWidgetStatisticsSettingsFilterType" />
 
-    <com.example.util.simpletimetracker.core.view.buttonsRowView.ButtonsRowView
+    <com.example.util.simpletimetracker.feature_base_adapter.buttonsRow.view.ButtonsRowView
         android:id="@+id/buttonsWidgetStatisticsSettingsFilterType"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

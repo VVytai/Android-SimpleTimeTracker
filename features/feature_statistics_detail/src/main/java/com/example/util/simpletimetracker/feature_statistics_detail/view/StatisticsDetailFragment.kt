@@ -27,7 +27,7 @@ import com.example.util.simpletimetracker.feature_base_adapter.statistics.create
 import com.example.util.simpletimetracker.feature_statistics_detail.R
 import com.example.util.simpletimetracker.feature_statistics_detail.adapter.createStatisticsDetailBarChartAdapterDelegate
 import com.example.util.simpletimetracker.feature_statistics_detail.adapter.createStatisticsDetailButtonAdapterDelegate
-import com.example.util.simpletimetracker.feature_statistics_detail.adapter.createStatisticsDetailButtonsRowAdapterDelegate
+import com.example.util.simpletimetracker.feature_base_adapter.buttonsRow.createButtonsRowAdapterDelegate
 import com.example.util.simpletimetracker.feature_statistics_detail.adapter.createStatisticsDetailCardAdapterDelegate
 import com.example.util.simpletimetracker.feature_statistics_detail.adapter.createStatisticsDetailCardDoubleAdapterDelegate
 import com.example.util.simpletimetracker.feature_statistics_detail.adapter.createStatisticsDetailDayCalendarAdapterDelegate
@@ -80,7 +80,7 @@ class StatisticsDetailFragment :
                 onPieClick = viewModel::onChartClick,
             ),
             createStatisticsDetailDayCalendarAdapterDelegate(),
-            createStatisticsDetailButtonsRowAdapterDelegate(
+            createButtonsRowAdapterDelegate(
                 onClick = viewModel::onButtonsRowClick,
             ),
             createStatisticsDetailButtonAdapterDelegate(

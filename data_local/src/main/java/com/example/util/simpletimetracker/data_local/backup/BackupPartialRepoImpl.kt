@@ -41,6 +41,7 @@ import com.example.util.simpletimetracker.domain.recordTag.repo.RecordTypeToTagR
 import com.example.util.simpletimetracker.domain.backup.repo.BackupPartialRepo
 import com.example.util.simpletimetracker.domain.backup.model.ResultCode
 import com.example.util.simpletimetracker.domain.category.model.Category
+import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -240,7 +241,7 @@ class BackupPartialRepoImpl @Inject constructor(
         val types: MutableList<RecordType> = mutableListOf()
         val typesCurrent: List<RecordType> = recordTypeRepo.getAll()
         val records: MutableList<Record> = mutableListOf()
-        val recordsCurrent: List<Record> = recordRepo.getAll().map { it.copy(tagIds = emptyList()) }
+        val recordsCurrent: List<Record> = recordRepo.getAll().map { it.copy(tags = emptyList()) }
         val categories: MutableList<Category> = mutableListOf()
         val categoriesCurrent: List<Category> = categoryRepo.getAll()
         val typeToCategory: MutableList<RecordTypeCategory> = mutableListOf()
@@ -457,7 +458,14 @@ class BackupPartialRepoImpl @Inject constructor(
         }
         val newRecordsWithTags = newRecords.map { record ->
             val thisTags = newRecordToTagMap[record.data.id].orEmpty().map { it.data }
-            val newData = record.data.copy(tagIds = thisTags.map(RecordToRecordTag::recordTagId))
+            val newData = record.data.copy(
+                tags = thisTags.map {
+                    RecordBase.Tag(
+                        tagId = it.recordTagId,
+                        numericValue = it.recordTagNumericValue,
+                    )
+                },
+            )
             record.copy(data = newData)
         }
 

@@ -26,7 +26,7 @@ import com.example.util.simpletimetracker.feature_statistics_detail.R
 import com.example.util.simpletimetracker.feature_statistics_detail.adapter.StatisticsDetailBarChartViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.adapter.StatisticsDetailBlock
 import com.example.util.simpletimetracker.feature_statistics_detail.adapter.StatisticsDetailButtonViewData
-import com.example.util.simpletimetracker.feature_statistics_detail.adapter.StatisticsDetailButtonsRowViewData
+import com.example.util.simpletimetracker.feature_base_adapter.buttonsRow.ButtonsRowItemViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.adapter.StatisticsDetailCardViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.adapter.StatisticsDetailHintViewData
 import com.example.util.simpletimetracker.feature_views.barChart.BarChartView
@@ -869,7 +869,7 @@ class StatisticsDetailViewDataMapper @Inject constructor(
         }
 
         if (chartGroupingViewData.size > 1) {
-            items += StatisticsDetailButtonsRowViewData(
+            items += ButtonsRowItemViewData(
                 block = StatisticsDetailBlock.GoalChartGrouping,
                 marginTopDp = 4,
                 data = chartGroupingViewData,
@@ -878,9 +878,9 @@ class StatisticsDetailViewDataMapper @Inject constructor(
 
         if (chartLengthViewData.isNotEmpty()) {
             // Update margin top depending if has buttons before.
-            val hasButtonsBefore = items.lastOrNull() is StatisticsDetailButtonsRowViewData
+            val hasButtonsBefore = items.lastOrNull() is ButtonsRowItemViewData
             val marginTopDp = if (hasButtonsBefore) -10 else 4
-            items += StatisticsDetailButtonsRowViewData(
+            items += ButtonsRowItemViewData(
                 block = StatisticsDetailBlock.GoalChartLength,
                 marginTopDp = marginTopDp,
                 data = chartLengthViewData,

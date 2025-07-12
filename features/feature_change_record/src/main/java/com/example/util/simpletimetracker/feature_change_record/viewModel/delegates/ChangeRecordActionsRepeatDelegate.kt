@@ -44,7 +44,7 @@ class ChangeRecordActionsRepeatDelegate @Inject constructor(
                 recordActionRepeatMediator.execute(
                     typeId = params.baseParams.newTypeId,
                     comment = params.baseParams.newComment,
-                    tagIds = params.baseParams.newCategoryIds,
+                    tags = params.baseParams.newTags,
                 )
             },
         ).let { bridge?.send(it) }

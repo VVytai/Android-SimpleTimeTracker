@@ -8,7 +8,6 @@ import com.example.util.simpletimetracker.core.base.ViewModelDelegate
 import com.example.util.simpletimetracker.core.extension.lazySuspend
 import com.example.util.simpletimetracker.core.extension.set
 import com.example.util.simpletimetracker.core.extension.toParams
-import com.example.util.simpletimetracker.core.view.buttonsRowView.ButtonsRowViewData
 import com.example.util.simpletimetracker.core.viewData.RangesViewData
 import com.example.util.simpletimetracker.domain.base.Coordinates
 import com.example.util.simpletimetracker.domain.record.model.Range
@@ -16,6 +15,8 @@ import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.domain.record.model.RecordsFilter
 import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
+import com.example.util.simpletimetracker.feature_base_adapter.buttonsRow.ButtonsRowItemViewData
+import com.example.util.simpletimetracker.feature_base_adapter.buttonsRow.view.ButtonsRowViewData
 import com.example.util.simpletimetracker.feature_base_adapter.statistics.StatisticsViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.adapter.StatisticsDetailBlock
 import com.example.util.simpletimetracker.feature_statistics_detail.adapter.StatisticsDetailPreviewsViewData
@@ -126,7 +127,10 @@ class StatisticsDetailViewModel @Inject constructor(
         filterDelegate.onTypesFilterDismissed(tag)
     }
 
-    fun onButtonsRowClick(block: StatisticsDetailBlock, viewData: ButtonsRowViewData) {
+    fun onButtonsRowClick(
+        block: ButtonsRowItemViewData.ButtonsRowId,
+        viewData: ButtonsRowViewData,
+    ) {
         when (block) {
             StatisticsDetailBlock.ChartGrouping ->
                 chartDelegate.onChartGroupingClick(viewData)

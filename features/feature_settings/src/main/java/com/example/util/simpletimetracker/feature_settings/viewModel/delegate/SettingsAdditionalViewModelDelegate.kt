@@ -216,9 +216,11 @@ class SettingsAdditionalViewModelDelegate @Inject constructor(
             ),
             type = TypesSelectionDialogParams.Type.Activity,
             selectedTypeIds = prefsInteractor.getRecordTagSelectionExcludeActivities(),
+            selectedTagValues = emptyList(),
             isMultiSelectAvailable = true,
             idsShouldBeVisible = emptyList(),
             showHints = true,
+            allowTagValueSelection = false,
         ).let(router::navigate)
     }
 
@@ -249,9 +251,11 @@ class SettingsAdditionalViewModelDelegate @Inject constructor(
             ),
             type = TypesSelectionDialogParams.Type.Activity,
             selectedTypeIds = prefsInteractor.getCommentInputExcludeActivities(),
+            selectedTagValues = emptyList(),
             isMultiSelectAvailable = true,
             idsShouldBeVisible = emptyList(),
             showHints = true,
+            allowTagValueSelection = false,
         ).let(router::navigate)
     }
 

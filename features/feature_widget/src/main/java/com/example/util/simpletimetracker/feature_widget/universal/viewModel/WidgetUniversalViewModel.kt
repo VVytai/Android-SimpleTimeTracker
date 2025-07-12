@@ -131,7 +131,7 @@ class WidgetUniversalViewModel @Inject constructor(
             changeSelectedActivityFilterMediator.onFilterClicked(
                 id = item.id,
                 type = item.type,
-                selected = item.selected
+                selected = item.selected,
             )
             updateRecordTypesViewData()
         }

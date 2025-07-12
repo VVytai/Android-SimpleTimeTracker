@@ -6,6 +6,7 @@ import com.example.util.simpletimetracker.core.mapper.RecordTypeViewDataMapper
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.domain.recordTag.interactor.GetSelectableTagsInteractor
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
+import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.domain.recordTag.interactor.RecordTagInteractor
 import com.example.util.simpletimetracker.domain.recordType.model.RecordType
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
@@ -58,11 +59,13 @@ class TypesSelectionViewDataInteractor @Inject constructor(
         extra: TypesSelectionDialogParams,
         types: List<RecordType>,
         dataIdsSelected: List<Long>,
+        tagValuesSelected: List<RecordBase.Tag>,
         viewDataCache: List<TypesSelectionCacheHolder>,
     ): List<ViewHolderType> {
         val numberOfCards = prefsInteractor.getNumberOfCards()
         val isDarkTheme = prefsInteractor.getDarkMode()
         val typesMap = types.associateBy(RecordType::id)
+        val tagDataMap = tagValuesSelected.associateBy { it.tagId }
 
         fun map(type: TypesSelectionCacheHolder): ViewHolderType {
             return when (type) {
@@ -76,8 +79,9 @@ class TypesSelectionViewDataInteractor @Inject constructor(
                     )
                 }
                 is TypesSelectionCacheHolder.Tag -> {
-                    categoryViewDataMapper.mapRecordTag(
+                    categoryViewDataMapper.mapRecordTagWithValue(
                         tag = type.data,
+                        tagData = tagDataMap[type.data.id],
                         type = typesMap[type.data.iconColorSource],
                         isDarkTheme = isDarkTheme,
                     )

@@ -70,9 +70,11 @@ class ActivitySuggestionsViewModel @Inject constructor(
                     subtitle = "",
                     type = TypesSelectionDialogParams.Type.Activity,
                     selectedTypeIds = suggestions[forTypeId].orEmpty().toList(),
+                    selectedTagValues = emptyList(),
                     isMultiSelectAvailable = true,
                     idsShouldBeVisible = emptyList(),
                     showHints = true,
+                    allowTagValueSelection = false,
                 ).let(router::navigate)
             }
             is ActivitySuggestionSpecialViewData.Type.Calculate -> viewModelScope.launch {
@@ -100,9 +102,11 @@ class ActivitySuggestionsViewModel @Inject constructor(
                     subtitle = resourceRepo.getString(R.string.activity_suggestions_select_activity_hint),
                     type = TypesSelectionDialogParams.Type.Activity,
                     selectedTypeIds = suggestions.keys.toList(),
+                    selectedTagValues = emptyList(),
                     isMultiSelectAvailable = true,
                     idsShouldBeVisible = emptyList(),
                     showHints = true,
+                    allowTagValueSelection = false,
                 ).let(router::navigate)
             }
             ActivitySuggestionsButtonViewData.Block.CALCULATE -> viewModelScope.launch {

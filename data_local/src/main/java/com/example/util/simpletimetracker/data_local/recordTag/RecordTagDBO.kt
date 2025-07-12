@@ -35,4 +35,10 @@ data class RecordTagDBO(
 
     @ColumnInfo(name = "note")
     val note: String,
+
+    @ColumnInfo(name = "value_type")
+    val valueType: Int?,
+
+    @ColumnInfo(name = "value_suffix")
+    val valueSuffix: String?,
 )

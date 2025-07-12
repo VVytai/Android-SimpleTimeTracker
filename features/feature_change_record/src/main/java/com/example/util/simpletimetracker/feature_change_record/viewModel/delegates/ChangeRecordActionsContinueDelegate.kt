@@ -45,7 +45,7 @@ class ChangeRecordActionsContinueDelegate @Inject constructor(
             typeId = params.baseParams.newTypeId,
             timeStarted = params.baseParams.newTimeStarted,
             comment = params.baseParams.newComment,
-            tagIds = params.baseParams.newCategoryIds,
+            tags = params.baseParams.newTags,
         )
         // Exit.
         router.back()

@@ -10,6 +10,7 @@ import com.example.util.simpletimetracker.core.base.BaseFragment
 import com.example.util.simpletimetracker.core.di.BaseViewModelFactory
 import com.example.util.simpletimetracker.core.dialog.DateTimeDialogListener
 import com.example.util.simpletimetracker.core.dialog.DurationDialogListener
+import com.example.util.simpletimetracker.core.dialog.OnTagValueSelectedListener
 import com.example.util.simpletimetracker.core.extension.setSharedTransitions
 import com.example.util.simpletimetracker.core.extension.toViewData
 import com.example.util.simpletimetracker.core.sharedViewModel.RemoveRecordViewModel
@@ -21,6 +22,7 @@ import com.example.util.simpletimetracker.feature_views.extension.animateColor
 import com.example.util.simpletimetracker.feature_views.extension.setOnClick
 import com.example.util.simpletimetracker.navigation.params.screen.ChangeRecordParams
 import com.example.util.simpletimetracker.navigation.params.screen.ChangeRecordsFromScreen
+import com.example.util.simpletimetracker.navigation.params.screen.RecordTagValueSelectionParams
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import com.example.util.simpletimetracker.feature_change_record.databinding.ChangeRecordFragmentBinding as Binding
@@ -29,7 +31,8 @@ import com.example.util.simpletimetracker.feature_change_record.databinding.Chan
 class ChangeRecordFragment :
     BaseFragment<Binding>(),
     DateTimeDialogListener,
-    DurationDialogListener {
+    DurationDialogListener,
+    OnTagValueSelectedListener {
 
     override val inflater: (LayoutInflater, ViewGroup?, Boolean) -> Binding =
         Binding::inflate
@@ -113,6 +116,10 @@ class ChangeRecordFragment :
 
     override fun onDurationSet(durationSeconds: Long, tag: String?) {
         viewModel.onDurationSet(durationSeconds, tag)
+    }
+
+    override fun onTagValueSelected(params: RecordTagValueSelectionParams, data: Double) {
+        viewModel.onCategoryValueSelected(params, data)
     }
 
     private fun setPreview() = when (extra) {

@@ -140,7 +140,7 @@ class PartialRestoreViewModel @Inject constructor(
             it.value.data.typeId in typesIds
         }.mapValues { (_, item) ->
             val newData = item.data.copy(
-                tagIds = item.data.tagIds.filter { it in tags },
+                tags = item.data.tags.filter { it.tagId in tags },
             )
             item.copy(data = newData)
         }

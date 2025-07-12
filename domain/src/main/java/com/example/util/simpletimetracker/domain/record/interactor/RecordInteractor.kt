@@ -2,6 +2,7 @@ package com.example.util.simpletimetracker.domain.record.interactor
 
 import com.example.util.simpletimetracker.domain.record.model.Range
 import com.example.util.simpletimetracker.domain.record.model.Record
+import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.domain.record.repo.RecordRepo
 import com.example.util.simpletimetracker.domain.record.model.RunningRecord
 import com.example.util.simpletimetracker.domain.recordTag.repo.RecordToRecordTagRepo
@@ -97,7 +98,7 @@ class RecordInteractor @Inject constructor(
             timeStarted = runningRecord.timeStarted,
             timeEnded = timeEnded,
             comment = runningRecord.comment,
-            tagIds = runningRecord.tagIds,
+            tags = runningRecord.tags,
         ).let {
             add(it)
         }
@@ -105,21 +106,21 @@ class RecordInteractor @Inject constructor(
 
     suspend fun add(record: Record) {
         val recordId = recordRepo.add(record)
-        updateTags(recordId, record.tagIds)
+        updateTags(recordId, record.tags)
     }
 
     suspend fun update(
         recordId: Long,
         typeId: Long,
         comment: String,
-        tagIds: List<Long>,
+        tags: List<RecordBase.Tag>,
     ) {
         recordRepo.update(
             recordId = recordId,
             typeId = typeId,
             comment = comment,
         )
-        updateTags(recordId, tagIds)
+        updateTags(recordId, tags)
     }
 
     suspend fun updateTimeEnded(recordId: Long, timeEnded: Long) {
@@ -141,9 +142,9 @@ class RecordInteractor @Inject constructor(
 
     private suspend fun updateTags(
         recordId: Long,
-        tagIds: List<Long>,
+        tags: List<RecordBase.Tag>,
     ) {
         recordToRecordTagRepo.removeAllByRecordId(recordId)
-        recordToRecordTagRepo.addRecordTags(recordId, tagIds)
+        recordToRecordTagRepo.addRecordTags(recordId, tags)
     }
 }

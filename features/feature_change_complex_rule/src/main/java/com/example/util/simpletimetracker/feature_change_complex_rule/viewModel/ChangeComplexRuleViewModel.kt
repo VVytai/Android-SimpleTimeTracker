@@ -114,9 +114,11 @@ class ChangeComplexRuleViewModel @Inject constructor(
                     subtitle = "",
                     type = TypesSelectionDialogParams.Type.Tag.All,
                     selectedTypeIds = newAssignTagIds.toList(),
+                    selectedTagValues = emptyList(),
                     isMultiSelectAvailable = true,
                     idsShouldBeVisible = originalAssignTagIds.toList(),
                     showHints = true,
+                    allowTagValueSelection = false, // TODO TAG value selection?
                 ).let(router::navigate)
             }
         }

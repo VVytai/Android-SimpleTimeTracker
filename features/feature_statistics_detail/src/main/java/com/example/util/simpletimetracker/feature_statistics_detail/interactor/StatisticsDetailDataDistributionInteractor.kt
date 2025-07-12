@@ -26,7 +26,7 @@ import com.example.util.simpletimetracker.feature_base_adapter.statistics.Statis
 import com.example.util.simpletimetracker.feature_statistics_detail.R
 import com.example.util.simpletimetracker.feature_statistics_detail.adapter.StatisticsDetailBarChartViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.adapter.StatisticsDetailBlock
-import com.example.util.simpletimetracker.feature_statistics_detail.adapter.StatisticsDetailButtonsRowViewData
+import com.example.util.simpletimetracker.feature_base_adapter.buttonsRow.ButtonsRowItemViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.adapter.StatisticsDetailHintViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.adapter.StatisticsDetailPieChartViewData
 import com.example.util.simpletimetracker.feature_views.barChart.BarChartView
@@ -367,7 +367,7 @@ class StatisticsDetailDataDistributionInteractor @Inject constructor(
             DataDistributionMode.TAG,
         )
 
-        return StatisticsDetailButtonsRowViewData(
+        return ButtonsRowItemViewData(
             block = StatisticsDetailBlock.DataDistributionMode,
             marginTopDp = 4,
             data = values.map {
@@ -392,7 +392,7 @@ class StatisticsDetailDataDistributionInteractor @Inject constructor(
             DataDistributionGraph.PIE_CHART,
             DataDistributionGraph.BAR_CHART,
         )
-        return StatisticsDetailButtonsRowViewData(
+        return ButtonsRowItemViewData(
             block = StatisticsDetailBlock.DataDistributionGraph,
             marginTopDp = -10,
             data = values.map {

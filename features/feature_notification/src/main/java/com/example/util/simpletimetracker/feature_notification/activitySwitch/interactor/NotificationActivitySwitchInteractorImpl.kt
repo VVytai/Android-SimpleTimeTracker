@@ -146,6 +146,7 @@ class NotificationActivitySwitchInteractorImpl @Inject constructor(
                 val fullName = notificationCommonMapper.getNotificationText(
                     recordType = prevRecordType,
                     recordTags = recordTags.filter { it.id in prevRecord.tagIds },
+                    recordTagsData = prevRecord.tags,
                 )
                 title = buildSpannedString {
                     append(namePrefix)

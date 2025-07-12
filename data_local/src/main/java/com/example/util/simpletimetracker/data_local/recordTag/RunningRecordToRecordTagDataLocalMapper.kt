@@ -1,5 +1,6 @@
 package com.example.util.simpletimetracker.data_local.recordTag
 
+import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.domain.recordTag.model.RunningRecordToRecordTag
 import javax.inject.Inject
 
@@ -9,13 +10,15 @@ class RunningRecordToRecordTagDataLocalMapper @Inject constructor() {
         return RunningRecordToRecordTag(
             runningRecordId = dbo.runningRecordId,
             recordTagId = dbo.recordTagId,
+            recordTagNumericValue = dbo.recordTagNumericValue,
         )
     }
 
-    fun map(recordId: Long, recordTagId: Long): RunningRecordToRecordTagDBO {
+    fun map(recordId: Long, recordTag: RecordBase.Tag): RunningRecordToRecordTagDBO {
         return RunningRecordToRecordTagDBO(
             runningRecordId = recordId,
-            recordTagId = recordTagId,
+            recordTagId = recordTag.tagId,
+            recordTagNumericValue = recordTag.numericValue,
         )
     }
 
@@ -23,6 +26,7 @@ class RunningRecordToRecordTagDataLocalMapper @Inject constructor() {
         return RunningRecordToRecordTagDBO(
             runningRecordId = domain.runningRecordId,
             recordTagId = domain.recordTagId,
+            recordTagNumericValue = domain.recordTagNumericValue,
         )
     }
 }

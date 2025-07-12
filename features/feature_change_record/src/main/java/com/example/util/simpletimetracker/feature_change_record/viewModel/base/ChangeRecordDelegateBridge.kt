@@ -2,6 +2,7 @@ package com.example.util.simpletimetracker.feature_change_record.viewModel.base
 
 import androidx.annotation.StringRes
 import com.example.util.simpletimetracker.domain.record.model.Record
+import com.example.util.simpletimetracker.domain.record.model.RecordBase
 
 class ChangeRecordDelegateBridge(
     private val actionConsumer: ActionConsumer,
@@ -52,7 +53,7 @@ class ChangeRecordDelegateBridge(
             val newTimeStarted: Long,
             val newTimeEnded: Long,
             val newComment: String,
-            val newCategoryIds: List<Long>,
+            val newTags: List<RecordBase.Tag>,
             val isButtonEnabled: Boolean,
         )
 

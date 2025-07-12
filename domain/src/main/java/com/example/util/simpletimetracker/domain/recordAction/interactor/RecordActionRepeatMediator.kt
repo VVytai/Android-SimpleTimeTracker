@@ -3,6 +3,7 @@ package com.example.util.simpletimetracker.domain.recordAction.interactor
 import com.example.util.simpletimetracker.domain.record.interactor.AddRunningRecordMediator
 import com.example.util.simpletimetracker.domain.record.interactor.RemoveRunningRecordMediator
 import com.example.util.simpletimetracker.domain.record.interactor.RunningRecordInteractor
+import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import javax.inject.Inject
 
 // Repeats concrete record.
@@ -15,7 +16,7 @@ class RecordActionRepeatMediator @Inject constructor(
     suspend fun execute(
         typeId: Long,
         comment: String,
-        tagIds: List<Long>,
+        tags: List<RecordBase.Tag>,
     ) {
         val currentTime = System.currentTimeMillis()
         // Stop same type running record if exist (only one of the same type can run at once).
@@ -31,7 +32,7 @@ class RecordActionRepeatMediator @Inject constructor(
         addRunningRecordMediator.startTimer(
             typeId = typeId,
             comment = comment,
-            tagIds = tagIds,
+            tags = tags,
             timeStarted = AddRunningRecordMediator.StartTime.Current(currentTime),
         )
     }

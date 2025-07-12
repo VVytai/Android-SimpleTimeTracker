@@ -254,6 +254,7 @@ class NotificationTypeInteractorImpl @Inject constructor(
             text = notificationCommonMapper.getNotificationText(
                 recordType = recordType,
                 recordTags = recordTags,
+                recordTagsData = runningRecord.tags,
             ),
             timeStarted = timeMapper.formatTime(
                 time = runningRecord.timeStarted,

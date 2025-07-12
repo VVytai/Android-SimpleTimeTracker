@@ -8,7 +8,7 @@ import com.example.util.simpletimetracker.feature_statistics_detail.R
 import com.example.util.simpletimetracker.feature_statistics_detail.adapter.StatisticsDetailBarChartViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.adapter.StatisticsDetailBlock
 import com.example.util.simpletimetracker.feature_statistics_detail.adapter.StatisticsDetailButtonViewData
-import com.example.util.simpletimetracker.feature_statistics_detail.adapter.StatisticsDetailButtonsRowViewData
+import com.example.util.simpletimetracker.feature_base_adapter.buttonsRow.ButtonsRowItemViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.adapter.StatisticsDetailCardDoubleViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.adapter.StatisticsDetailCardViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.adapter.StatisticsDetailHintViewData
@@ -97,7 +97,7 @@ class StatisticsDetailContentInteractor @Inject constructor(
             }
 
             if (viewData.chartGroupingVisible) {
-                result += StatisticsDetailButtonsRowViewData(
+                result += ButtonsRowItemViewData(
                     block = StatisticsDetailBlock.ChartGrouping,
                     marginTopDp = 4,
                     data = viewData.chartGroupingViewData,
@@ -105,7 +105,7 @@ class StatisticsDetailContentInteractor @Inject constructor(
             }
 
             if (viewData.chartLengthVisible) {
-                result += StatisticsDetailButtonsRowViewData(
+                result += ButtonsRowItemViewData(
                     block = StatisticsDetailBlock.ChartLength,
                     marginTopDp = -10,
                     data = viewData.chartLengthViewData,
@@ -114,7 +114,7 @@ class StatisticsDetailContentInteractor @Inject constructor(
 
             if (viewData.chartData.visible) {
                 // Update margin top depending if has buttons before.
-                val hasButtonsBefore = result.lastOrNull() is StatisticsDetailButtonsRowViewData
+                val hasButtonsBefore = result.lastOrNull() is ButtonsRowItemViewData
                 val newMarginTopDp = if (hasButtonsBefore) -10 else 4
                 val additionalChartButtonItems = viewData.additionalChartButtonItems.map {
                     (it as? StatisticsDetailButtonViewData)
@@ -169,7 +169,7 @@ class StatisticsDetailContentInteractor @Inject constructor(
 
         streaksGoalViewData?.let { viewData ->
             if (viewData.isNotEmpty()) {
-                result += StatisticsDetailButtonsRowViewData(
+                result += ButtonsRowItemViewData(
                     block = StatisticsDetailBlock.SeriesGoal,
                     marginTopDp = 0,
                     data = viewData,
@@ -195,7 +195,7 @@ class StatisticsDetailContentInteractor @Inject constructor(
                 )
             }
             if (viewData.showData) {
-                result += StatisticsDetailButtonsRowViewData(
+                result += ButtonsRowItemViewData(
                     block = StatisticsDetailBlock.SeriesType,
                     marginTopDp = 4,
                     data = streaksTypeViewData.orEmpty(),
@@ -255,7 +255,7 @@ class StatisticsDetailContentInteractor @Inject constructor(
 
         splitChartGroupingViewData?.let { viewData ->
             if (viewData.isNotEmpty()) {
-                result += StatisticsDetailButtonsRowViewData(
+                result += ButtonsRowItemViewData(
                     block = StatisticsDetailBlock.SplitChartGrouping,
                     marginTopDp = 4,
                     data = viewData,

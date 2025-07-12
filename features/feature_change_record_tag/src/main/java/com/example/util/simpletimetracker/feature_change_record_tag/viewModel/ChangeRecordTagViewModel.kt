@@ -2,14 +2,12 @@ package com.example.util.simpletimetracker.feature_change_record_tag.viewModel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.util.simpletimetracker.core.base.BaseViewModel
 import com.example.util.simpletimetracker.core.delegates.colorSelection.ColorSelectionViewModelDelegate
 import com.example.util.simpletimetracker.core.delegates.colorSelection.ColorSelectionViewModelDelegateImpl
 import com.example.util.simpletimetracker.core.delegates.iconSelection.viewModelDelegate.IconSelectionViewModelDelegate
 import com.example.util.simpletimetracker.core.delegates.iconSelection.viewModelDelegate.IconSelectionViewModelDelegateImpl
-import com.example.util.simpletimetracker.core.extension.lazySuspend
 import com.example.util.simpletimetracker.core.extension.set
 import com.example.util.simpletimetracker.core.extension.trimIfNotBlank
 import com.example.util.simpletimetracker.core.interactor.SnackBarMessageNavigationInteractor
@@ -17,25 +15,31 @@ import com.example.util.simpletimetracker.core.interactor.StatisticsDetailNaviga
 import com.example.util.simpletimetracker.core.mapper.CategoryViewDataMapper
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.core.view.ViewChooserStateDelegate
+import com.example.util.simpletimetracker.domain.color.model.AppColor
+import com.example.util.simpletimetracker.domain.extension.addOrRemove
 import com.example.util.simpletimetracker.domain.extension.orZero
+import com.example.util.simpletimetracker.domain.notifications.interactor.UpdateExternalViewsInteractor
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.recordTag.interactor.RecordTagInteractor
-import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTypeInteractor
 import com.example.util.simpletimetracker.domain.recordTag.interactor.RecordTypeToDefaultTagInteractor
 import com.example.util.simpletimetracker.domain.recordTag.interactor.RecordTypeToTagInteractor
 import com.example.util.simpletimetracker.domain.recordTag.interactor.RemoveRecordTagMediator
-import com.example.util.simpletimetracker.domain.notifications.interactor.UpdateExternalViewsInteractor
-import com.example.util.simpletimetracker.domain.color.model.AppColor
-import com.example.util.simpletimetracker.domain.extension.addOrRemove
-import com.example.util.simpletimetracker.domain.statistics.model.ChartFilterType
 import com.example.util.simpletimetracker.domain.recordTag.model.RecordTag
+import com.example.util.simpletimetracker.domain.recordTag.model.RecordTagValueType
+import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTypeInteractor
+import com.example.util.simpletimetracker.domain.statistics.model.ChartFilterType
+import com.example.util.simpletimetracker.feature_base_adapter.buttonsRow.ButtonsRowItemViewData
+import com.example.util.simpletimetracker.feature_base_adapter.buttonsRow.view.ButtonsRowViewData
 import com.example.util.simpletimetracker.feature_base_adapter.category.CategoryViewData
 import com.example.util.simpletimetracker.feature_base_adapter.recordType.RecordTypeViewData
 import com.example.util.simpletimetracker.feature_change_record_tag.R
 import com.example.util.simpletimetracker.feature_change_record_tag.interactor.ChangeRecordTagViewDataInteractor
+import com.example.util.simpletimetracker.feature_change_record_tag.viewData.ChangeRecordTagButtonsRowId
 import com.example.util.simpletimetracker.feature_change_record_tag.viewData.ChangeRecordTagChooserState
 import com.example.util.simpletimetracker.feature_change_record_tag.viewData.ChangeRecordTagFieldsState
 import com.example.util.simpletimetracker.feature_change_record_tag.viewData.ChangeRecordTagTypesViewData
+import com.example.util.simpletimetracker.feature_change_record_tag.viewData.ChangeRecordTagValueTypeViewData
+import com.example.util.simpletimetracker.feature_change_record_tag.viewData.ChangeRecordTagValueViewData
 import com.example.util.simpletimetracker.navigation.Router
 import com.example.util.simpletimetracker.navigation.params.screen.ChangeTagData
 import com.example.util.simpletimetracker.navigation.params.screen.StandardDialogParams
@@ -113,6 +117,14 @@ class ChangeRecordTagViewModel @Inject constructor(
             initial
         }
     }
+    val valueState: LiveData<ChangeRecordTagValueViewData> by lazy {
+        return@lazy MutableLiveData<ChangeRecordTagValueViewData>().let { initial ->
+            viewModelScope.launch {
+                initial.value = loadValueState()
+            }
+            initial
+        }
+    }
     val archiveButtonEnabled: LiveData<Boolean> = MutableLiveData(true)
     val deleteButtonEnabled: LiveData<Boolean> = MutableLiveData(true)
     val saveButtonEnabled: LiveData<Boolean> = MutableLiveData(true)
@@ -131,6 +143,8 @@ class ChangeRecordTagViewModel @Inject constructor(
     private var newNote: String = ""
     private var initialTypeIds: Set<Long> = emptySet()
     private var initialDefaultTypeIds: Set<Long> = emptySet()
+    private var newValueType: RecordTagValueType = RecordTagValueType.NONE
+    private var newValueSuffix: String = ""
 
     init {
         colorSelectionViewModelDelegateImpl.attach(getColorSelectionDelegateParent())
@@ -184,6 +198,10 @@ class ChangeRecordTagViewModel @Inject constructor(
         onNewChooserState(ChangeRecordTagChooserState.DefaultType)
     }
 
+    fun onValueTypeChooserClick() {
+        onNewChooserState(ChangeRecordTagChooserState.ValueType)
+    }
+
     fun onTypeClick(item: RecordTypeViewData) {
         viewModelScope.launch {
             newTypeIds = newTypeIds.toMutableSet().apply { addOrRemove(item.id) }
@@ -207,9 +225,11 @@ class ChangeRecordTagViewModel @Inject constructor(
             subtitle = "",
             type = TypesSelectionDialogParams.Type.Activity,
             selectedTypeIds = listOf(newIconColorSource),
+            selectedTagValues = emptyList(),
             isMultiSelectAvailable = false,
             idsShouldBeVisible = listOf(newIconColorSource),
             showHints = true,
+            allowTagValueSelection = false,
         ).let(router::navigate)
     }
 
@@ -225,6 +245,18 @@ class ChangeRecordTagViewModel @Inject constructor(
         colorSelectionViewModelDelegateImpl.update()
         updatePreview()
         updateIconColorSourceSelected()
+    }
+
+    fun onButtonsRowClick(
+        block: ButtonsRowItemViewData.ButtonsRowId,
+        viewData: ButtonsRowViewData,
+    ) {
+        if (block !is ChangeRecordTagButtonsRowId) return
+        newValueType = when (viewData) {
+            is ChangeRecordTagValueTypeViewData -> viewData.valueType
+            else -> return
+        }
+        updateValueState()
     }
 
     fun onArchiveClick() {
@@ -298,6 +330,8 @@ class ChangeRecordTagViewModel @Inject constructor(
                 color = colorSelectionViewModelDelegateImpl.newColor,
                 iconColorSource = newIconColorSource,
                 note = newNote,
+                valueType = newValueType,
+                valueSuffix = newValueSuffix,
             ).let {
                 val addedId = recordTagInteractor.add(it)
                 saveTypes(addedId)
@@ -419,10 +453,13 @@ class ChangeRecordTagViewModel @Inject constructor(
                     colorSelectionViewModelDelegateImpl.newColor = it.color
                     newIconColorSource = it.iconColorSource
                     newNote = it.note
+                    newValueType = it.valueType
+                    newValueSuffix = it.valueSuffix
                     iconSelectionViewModelDelegateImpl.update()
                     colorSelectionViewModelDelegateImpl.update()
                     updateIconColorSourceSelected()
                     updateNoteState()
+                    updateValueState()
                 }
             }
             is ChangeTagData.New -> {
@@ -504,6 +541,8 @@ class ChangeRecordTagViewModel @Inject constructor(
             color = colorSelectionViewModelDelegateImpl.newColor,
             iconColorSource = newIconColorSource,
             note = newNote,
+            valueType = newValueType,
+            valueSuffix = newValueSuffix,
         )
         val isDarkTheme = prefsInteractor.getDarkMode()
         val type = recordTypeInteractor.get(newIconColorSource)
@@ -543,6 +582,18 @@ class ChangeRecordTagViewModel @Inject constructor(
 
     private fun loadNoteState(): String {
         return newNote
+    }
+
+    private fun updateValueState() {
+        val data = loadValueState()
+        valueState.set(data)
+    }
+
+    private fun loadValueState(): ChangeRecordTagValueViewData {
+        return changeRecordTagViewDataInteractor.getTagValueState(
+            valueType = newValueType,
+            valueSuffix = newValueSuffix,
+        )
     }
 
     private fun showMessage(stringResId: Int) {

@@ -10,6 +10,7 @@ import com.example.util.simpletimetracker.domain.recordTag.interactor.RecordType
 import com.example.util.simpletimetracker.domain.record.interactor.RemoveRecordMediator
 import com.example.util.simpletimetracker.domain.notifications.interactor.UpdateExternalViewsInteractor
 import com.example.util.simpletimetracker.domain.record.model.Record
+import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.domain.record.model.RecordsFilter
 import com.example.util.simpletimetracker.feature_base_adapter.category.CategoryViewData
 import com.example.util.simpletimetracker.feature_data_edit.model.DataEditAddTagsState
@@ -47,6 +48,8 @@ class DateEditChangeInteractor @Inject constructor(
             ?.viewData
         val addTags = (addTagState as? DataEditAddTagsState.Enabled)
             ?.viewData?.map(CategoryViewData.Record::id)
+            // TODO TAG add tag value selection?
+            ?.map { RecordBase.Tag(tagId = it, numericValue = null) }
         val removeTags = (removeTagState as? DataEditRemoveTagsState.Enabled)
             ?.viewData?.map(CategoryViewData.Record::id)
         val deleteRecord = deleteRecordsState is DataEditDeleteRecordsState.Enabled
@@ -75,21 +78,22 @@ class DateEditChangeInteractor @Inject constructor(
 
             val finalTypeId = newTypeId ?: record.typeId
             val finalComment = newComment ?: record.comment
-            val finalTagIds: Set<Long> = record.tagIds
+            val finalTags: List<RecordBase.Tag> = record.tags
                 .plus(addTags.orEmpty())
-                .filter { it !in removeTags.orEmpty() }
+                .filter { it.tagId !in removeTags.orEmpty() }
                 .let { tags ->
                     if (finalTypeId != record.typeId) {
-                        filterSelectableTagsInteractor.execute(
-                            tagIds = tags,
+                        val filteredIds = filterSelectableTagsInteractor.execute(
+                            tagIds = tags.map { it.tagId },
                             typesToTags = typesToTags,
                             typeIds = listOf(finalTypeId),
                         )
+                        tags.filter { it.tagId in filteredIds }
                     } else {
                         tags
                     }
                 }
-                .toSet()
+                .distinctBy { it.tagId }
 
             // Save old typeId before change to update data later.
             if (finalTypeId != record.typeId) {
@@ -101,7 +105,7 @@ class DateEditChangeInteractor @Inject constructor(
                 recordId = record.id,
                 typeId = finalTypeId,
                 comment = finalComment,
-                tagIds = finalTagIds.toList(),
+                tags = finalTags,
             )
         }
 

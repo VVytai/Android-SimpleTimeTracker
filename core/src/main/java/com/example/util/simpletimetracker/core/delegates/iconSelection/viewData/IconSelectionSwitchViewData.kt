@@ -1,6 +1,6 @@
 package com.example.util.simpletimetracker.core.delegates.iconSelection.viewData
 
-import com.example.util.simpletimetracker.core.view.buttonsRowView.ButtonsRowViewData
+import com.example.util.simpletimetracker.feature_base_adapter.buttonsRow.view.ButtonsRowViewData
 import com.example.util.simpletimetracker.domain.icon.IconType
 
 data class IconSelectionSwitchViewData(

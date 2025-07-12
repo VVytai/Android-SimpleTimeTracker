@@ -50,6 +50,7 @@ class GetUntrackedRecordsInteractorImpl @Inject constructor(
                 timeStarted = it.timeStarted,
                 timeEnded = it.timeEnded,
                 comment = "",
+                tags = emptyList(),
             )
         }.let {
             processTimeOfDayRange(it)

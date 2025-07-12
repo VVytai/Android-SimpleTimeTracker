@@ -423,12 +423,69 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
+            <androidx.cardview.widget.CardView
+                android:id="@+id/fieldChangeRecordTagValueType"
+                style="@style/InputFieldCard"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/input_field_height_big"
+                android:layout_marginHorizontal="@dimen/edit_screen_field_margin_horizontal"
+                android:layout_marginTop="3dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/inputChangeRecordTagNote"
+                app:layout_goneMarginTop="0dp">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="?appInputFieldBorder">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        style="@style/EditScreenField"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:text="@string/change_record_type_value_type_field"
+                        app:layout_constraintEnd_toStartOf="@id/layoutChangeRecordTagValueTypePreview"
+                        app:layout_constraintStart_toStartOf="parent" />
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/layoutChangeRecordTagValueTypePreview"
+                        style="@style/EditScreenPreview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:visibility="visible"
+                        app:layout_constraintEnd_toStartOf="@id/arrowChangeRecordTagValueType"
+                        tools:cardBackgroundColor="@color/black"
+                        tools:visibility="visible">
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/tvChangeRecordTagValueTypePreview"
+                            style="@style/EditScreenPreviewText"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:paddingHorizontal="4dp"
+                            tools:text="Disabled" />
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <ImageView
+                        android:id="@+id/arrowChangeRecordTagValueType"
+                        style="@style/EditScreenFieldArrow"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:ignore="ContentDescription" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.cardview.widget.CardView>
+
             <View
                 android:id="@+id/dividerChangeRecordTagBottom"
                 style="@style/EditScreenDivider"
                 android:layout_width="match_parent"
                 android:layout_marginTop="@dimen/edit_screen_field_top_margin"
-                app:layout_constraintTop_toBottomOf="@id/inputChangeRecordTagNote" />
+                app:layout_constraintTop_toBottomOf="@id/fieldChangeRecordTagValueType" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -483,7 +540,20 @@
         android:overScrollMode="never"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/dividerChangeRecordTagButton"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/containerChangeRecordTagMain"
+        tools:itemCount="3"
+        tools:listitem="@layout/item_record_type_layout"
+        tools:visibility="gone" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvChangeRecordTagValueType"
+        style="@style/EditScreenContainer"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:overScrollMode="never"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/dividerChangeRecordTagButton"
         app:layout_constraintTop_toBottomOf="@id/containerChangeRecordTagMain"
         tools:itemCount="3"
         tools:listitem="@layout/item_record_type_layout"

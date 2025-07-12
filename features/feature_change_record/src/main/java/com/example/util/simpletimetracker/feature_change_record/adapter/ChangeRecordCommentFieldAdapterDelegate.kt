@@ -50,4 +50,5 @@ data class ChangeRecordCommentFieldViewData(
         other is ViewData
 }
 
+// Avoids setting several watchers and calling onChange several times.
 private var textWatcher: TextWatcher? = null

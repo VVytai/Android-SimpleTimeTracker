@@ -61,7 +61,7 @@ class ChangeRecordActionsSplitDelegate @Inject constructor(
             timeStarted = params.baseParams.newTimeStarted,
             timeEnded = params.splitParams.newTimeSplit,
             comment = params.baseParams.newComment,
-            tagIds = params.baseParams.newCategoryIds,
+            tags = params.baseParams.newTags,
         ).let {
             addRecordMediator.add(it)
         }
@@ -147,6 +147,7 @@ class ChangeRecordActionsSplitDelegate @Inject constructor(
             timeStarted = newTimeStarted,
             timeEnded = newTimeSplit,
             comment = "",
+            tags = emptyList(),
         ).let {
             changeRecordViewDataInteractor.getPreviewViewData(it, dateTimeFieldState)
         }
@@ -155,6 +156,7 @@ class ChangeRecordActionsSplitDelegate @Inject constructor(
             timeStarted = newTimeSplit,
             timeEnded = newTimeEnded,
             comment = "",
+            tags = emptyList(),
         ).let {
             changeRecordViewDataInteractor.getPreviewViewData(it, dateTimeFieldState)
         }

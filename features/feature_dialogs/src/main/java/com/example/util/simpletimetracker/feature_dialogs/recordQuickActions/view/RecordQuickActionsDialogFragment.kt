@@ -17,6 +17,7 @@ import com.example.util.simpletimetracker.core.extension.findListener
 import com.example.util.simpletimetracker.core.extension.setSkipCollapsed
 import com.example.util.simpletimetracker.core.sharedViewModel.RemoveRecordViewModel
 import com.example.util.simpletimetracker.core.utils.fragmentArgumentDelegate
+import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.feature_base_adapter.BaseRecyclerAdapter
 import com.example.util.simpletimetracker.feature_dialogs.recordQuickActions.adapter.RecordQuickActionsWidthHolder
 import com.example.util.simpletimetracker.feature_dialogs.recordQuickActions.adapter.createRecordQuickActionsButtonAdapterDelegate
@@ -96,8 +97,12 @@ class RecordQuickActionsDialogFragment :
         removeRecordViewModel.prepare()
     }
 
-    override fun onDataSelected(dataIds: List<Long>, tag: String?) {
-        viewModel.onTypesSelected(dataIds, tag)
+    override fun onDataSelected(
+        tag: String?,
+        dataIds: List<Long>,
+        tagValues: List<RecordBase.Tag>,
+    ) {
+        viewModel.onTypesSelected(tag, dataIds, tagValues)
     }
 
     override fun onDateTimeSet(timestamp: Long, tag: String?) {

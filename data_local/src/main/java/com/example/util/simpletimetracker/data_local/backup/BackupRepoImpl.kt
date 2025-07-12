@@ -45,6 +45,7 @@ import com.example.util.simpletimetracker.domain.recordTag.repo.RecordTypeToTagR
 import com.example.util.simpletimetracker.domain.backup.repo.BackupRepo
 import com.example.util.simpletimetracker.domain.backup.model.ResultCode
 import com.example.util.simpletimetracker.domain.category.model.Category
+import com.example.util.simpletimetracker.domain.recordTag.model.RecordTagValueType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -428,7 +429,7 @@ class BackupRepoImpl @Inject constructor(
 
     private fun toBackupString(recordTag: RecordTag): String {
         return String.format(
-            "$ROW_RECORD_TAG\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n",
+            "$ROW_RECORD_TAG\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n",
             recordTag.id.toString(),
             "", // type relation is removed from tag dbo
             recordTag.name.clean(),
@@ -438,14 +439,20 @@ class BackupRepoImpl @Inject constructor(
             recordTag.icon,
             recordTag.iconColorSource,
             recordTag.note.cleanTabs().replaceNewline(),
+            when (recordTag.valueType) {
+                RecordTagValueType.NONE -> 0
+                RecordTagValueType.NUMERIC -> 1
+            }.toString(),
+            recordTag.valueSuffix.clean(),
         )
     }
 
     private fun toBackupString(recordToRecordTag: RecordToRecordTag): String {
         return String.format(
-            "$ROW_RECORD_TO_RECORD_TAG\t%s\t%s\n",
+            "$ROW_RECORD_TO_RECORD_TAG\t%s\t%s\t%s\n",
             recordToRecordTag.recordId.toString(),
             recordToRecordTag.recordTagId.toString(),
+            recordToRecordTag.recordTagNumericValue?.toString().orEmpty(),
         )
     }
 
@@ -650,9 +657,11 @@ class BackupRepoImpl @Inject constructor(
             timeEnded = parts.getOrNull(4)?.toLongOrNull().orZero(),
             comment = parts.getOrNull(5)?.restoreNewline().orEmpty(),
             // parts[6] - tag id is removed from record dbo.
+            tags = emptyList(), // Stored separately.
         ) to RecordToRecordTag(
             recordId = recordId,
             recordTagId = tagId,
+            recordTagNumericValue = null, // Not stored here.
         ).takeUnless { tagId == 0L }
     }
 
@@ -691,6 +700,12 @@ class BackupRepoImpl @Inject constructor(
             icon = parts.getOrNull(7).orEmpty(),
             iconColorSource = parts.getOrNull(8)?.toLongOrNull().orZero(),
             note = parts.getOrNull(9)?.restoreNewline().orEmpty(),
+            valueType = when (parts.getOrNull(10)?.toLongOrNull()) {
+                0L -> RecordTagValueType.NONE
+                1L -> RecordTagValueType.NUMERIC
+                else -> RecordTagValueType.NONE
+            },
+            valueSuffix = parts.getOrNull(11).orEmpty(),
         ) to typeId.takeUnless { it == 0L }
     }
 
@@ -698,6 +713,7 @@ class BackupRepoImpl @Inject constructor(
         return RecordToRecordTag(
             recordId = parts.getOrNull(1)?.toLongOrNull().orZero(),
             recordTagId = parts.getOrNull(2)?.toLongOrNull().orZero(),
+            recordTagNumericValue = parts.getOrNull(3)?.toDoubleOrNull(),
         )
     }
 

@@ -4,8 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.util.simpletimetracker.domain.extension.addOrRemove
 import com.example.util.simpletimetracker.core.extension.set
+import com.example.util.simpletimetracker.domain.extension.addOrRemove
+import com.example.util.simpletimetracker.domain.record.model.RecordBase
+import com.example.util.simpletimetracker.domain.recordTag.interactor.NeedTagValueSelectionInteractor
 import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTypeInteractor
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.category.CategoryViewData
@@ -13,7 +15,10 @@ import com.example.util.simpletimetracker.feature_base_adapter.loader.LoaderView
 import com.example.util.simpletimetracker.feature_base_adapter.recordType.RecordTypeViewData
 import com.example.util.simpletimetracker.feature_dialogs.typesSelection.interactor.TypesSelectionViewDataInteractor
 import com.example.util.simpletimetracker.feature_dialogs.typesSelection.model.TypesSelectionCacheHolder
+import com.example.util.simpletimetracker.feature_dialogs.typesSelection.model.TypesSelectionResult
 import com.example.util.simpletimetracker.feature_dialogs.typesSelection.viewData.TypesSelectionDialogViewData
+import com.example.util.simpletimetracker.navigation.Router
+import com.example.util.simpletimetracker.navigation.params.screen.RecordTagValueSelectionParams
 import com.example.util.simpletimetracker.navigation.params.screen.TypesSelectionDialogParams
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -21,8 +26,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TypesSelectionViewModel @Inject constructor(
+    private val router: Router,
     private val recordTypeInteractor: RecordTypeInteractor,
     private val typesSelectionViewDataInteractor: TypesSelectionViewDataInteractor,
+    private val needTagValueSelectionInteractor: NeedTagValueSelectionInteractor,
 ) : ViewModel() {
 
     lateinit var extra: TypesSelectionDialogParams
@@ -39,48 +46,99 @@ class TypesSelectionViewModel @Inject constructor(
     val viewState: LiveData<TypesSelectionDialogViewData> by lazy {
         MutableLiveData(loadViewState())
     }
-    val onDataSelected: LiveData<List<Long>> = MutableLiveData()
+    val onDataSelected: LiveData<TypesSelectionResult> = MutableLiveData()
     val saveButtonEnabled: LiveData<Boolean> = MutableLiveData(true)
 
     private var initialized: Boolean = false
     private var viewDataCache: List<TypesSelectionCacheHolder> = emptyList()
 
-    // TODO switch to LongList from androidx.collections
-    private var dataIdsSelected: MutableList<Long> = mutableListOf()
+    private var dataIdsSelected: List<Long> = emptyList()
+    private var tagValuesSelected: List<RecordBase.Tag> = emptyList()
 
     fun onRecordTypeClick(item: RecordTypeViewData) {
         if (extra.isMultiSelectAvailable) {
-            dataIdsSelected.addOrRemove(item.id)
+            dataIdsSelected = dataIdsSelected.addOrRemove(item.id)
             updateViewData()
         } else {
-            onDataSelected.set(listOf(item.id))
+            val result = TypesSelectionResult(
+                dataIds = listOf(item.id),
+                tagValues = emptyList(),
+            )
+            onDataSelected.set(result)
         }
     }
 
     fun onCategoryClick(item: CategoryViewData) {
-        if (extra.isMultiSelectAvailable) {
-            dataIdsSelected.addOrRemove(item.id)
+        val clickedTag = viewDataCache
+            .firstOrNull { it.id == item.id }
+            as? TypesSelectionCacheHolder.Tag
+        val needValueSelection = needTagValueSelectionInteractor.execute(
+            selectedTagIds = dataIdsSelected,
+            clickedTag = clickedTag?.data,
+        ) && extra.allowTagValueSelection
+
+        if (needValueSelection) {
+            // TODO TAG add to statistics
+            RecordTagValueSelectionParams(
+                tag = CHANGE_RECORD_TAG_VALUE_SELECTION,
+                tagId = item.id,
+            ).let(router::navigate)
+        } else if (extra.isMultiSelectAvailable) {
+            dataIdsSelected = dataIdsSelected.addOrRemove(item.id)
+            tagValuesSelected = tagValuesSelected.filter { it.tagId in dataIdsSelected }
             updateViewData()
         } else {
-            onDataSelected.set(listOf(item.id))
+            val result = TypesSelectionResult(
+                dataIds = listOf(item.id),
+                tagValues = emptyList(),
+            )
+            onDataSelected.set(result)
+        }
+    }
+
+    fun onCategoryValueSelected(
+        params: RecordTagValueSelectionParams,
+        value: Double,
+    ) {
+        if (params.tag != CHANGE_RECORD_TAG_VALUE_SELECTION) return
+        val id = params.tagId
+        val tag = RecordBase.Tag(tagId = id, numericValue = value)
+        viewModelScope.launch {
+            if (extra.isMultiSelectAvailable) {
+                dataIdsSelected = dataIdsSelected
+                    .toMutableList().apply { add(id) }
+                tagValuesSelected = tagValuesSelected
+                    .filter { it.tagId != id }
+                    .toMutableList().apply { add(tag) }
+                updateViewData()
+            } else {
+                val result = TypesSelectionResult(
+                    dataIds = listOf(id),
+                    tagValues = listOf(tag),
+                )
+                onDataSelected.set(result)
+            }
         }
     }
 
     fun onShowAllClick() {
-        dataIdsSelected.clear()
-        dataIdsSelected.addAll(viewDataCache.map(TypesSelectionCacheHolder::id))
+        dataIdsSelected = viewDataCache.map(TypesSelectionCacheHolder::id)
         updateViewData()
     }
 
     fun onHideAllClick() {
-        dataIdsSelected.clear()
+        dataIdsSelected = emptyList()
         updateViewData()
     }
 
     fun onSaveClick() {
         saveButtonEnabled.set(false)
         viewModelScope.launch {
-            onDataSelected.set(dataIdsSelected)
+            val result = TypesSelectionResult(
+                dataIds = dataIdsSelected,
+                tagValues = tagValuesSelected,
+            )
+            onDataSelected.set(result)
         }
     }
 
@@ -110,7 +168,15 @@ class TypesSelectionViewModel @Inject constructor(
                 .selectedTypeIds
                 // Remove non existent ids.
                 .filter { it in viewDataIds }
-                .toMutableList()
+            tagValuesSelected = extra
+                .selectedTagValues
+                .filter { it.tagId in dataIdsSelected }
+                .map {
+                    RecordBase.Tag(
+                        tagId = it.tagId,
+                        numericValue = it.numericValue,
+                    )
+                }
             initialized = true
         }
 
@@ -118,7 +184,12 @@ class TypesSelectionViewModel @Inject constructor(
             extra = extra,
             types = types,
             dataIdsSelected = dataIdsSelected,
+            tagValuesSelected = tagValuesSelected,
             viewDataCache = viewDataCache,
         )
+    }
+
+    companion object {
+        private const val CHANGE_RECORD_TAG_VALUE_SELECTION = "TYPES_SELECTION_TAG_VALUE_SELECTION"
     }
 }

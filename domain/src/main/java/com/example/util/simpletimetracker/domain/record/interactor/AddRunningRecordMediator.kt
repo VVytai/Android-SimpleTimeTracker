@@ -12,6 +12,7 @@ import com.example.util.simpletimetracker.domain.recordType.model.RecordType
 import com.example.util.simpletimetracker.domain.base.ResultContainer
 import com.example.util.simpletimetracker.domain.base.CurrentTimestampProvider
 import com.example.util.simpletimetracker.domain.record.model.Record
+import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.domain.record.model.RecordDataSelectionDialogResult
 import com.example.util.simpletimetracker.domain.record.model.RunningRecord
 import java.util.concurrent.TimeUnit
@@ -56,7 +57,7 @@ class AddRunningRecordMediator @Inject constructor(
         } else {
             startTimer(
                 typeId = typeId,
-                tagIds = emptyList(),
+                tags = emptyList(),
                 comment = "",
                 updateNotificationSwitch = updateNotificationSwitch,
             )
@@ -66,7 +67,7 @@ class AddRunningRecordMediator @Inject constructor(
 
     suspend fun startTimer(
         typeId: Long,
-        tagIds: List<Long>,
+        tags: List<RecordBase.Tag>,
         comment: String,
         timeStarted: StartTime = StartTime.TakeCurrent,
         updateNotificationSwitch: Boolean = true,
@@ -117,18 +118,18 @@ class AddRunningRecordMediator @Inject constructor(
         )
         val actualTags = getAllTags(
             typeId = typeId,
-            tagIds = tagIds,
+            currentTags = tags,
             tagIdsFromRules = rulesResult.tagsIds,
         )
         activityStartedStoppedBroadcastInteractor.onActionActivityStarted(
             typeId = typeId,
-            tagIds = actualTags,
+            tagIds = actualTags.map { it.tagId },
             comment = comment,
         )
         val startParams = StartParams(
             typeId = typeId,
             comment = comment,
-            tagIds = actualTags,
+            tags = actualTags,
             timeStarted = actualTimeStarted,
             updateNotificationSwitch = updateNotificationSwitch,
             isMultitaskingAllowed = isMultitaskingAllowed,
@@ -152,14 +153,14 @@ class AddRunningRecordMediator @Inject constructor(
         typeId: Long,
         timeStarted: Long,
         comment: String,
-        tagIds: List<Long>,
+        tags: List<RecordBase.Tag>,
     ) {
         addInternal(
             params = StartParams(
                 typeId = typeId,
                 timeStarted = timeStarted,
                 comment = comment,
-                tagIds = tagIds,
+                tags = tags,
                 updateNotificationSwitch = true,
                 isMultitaskingAllowed = true,
             ),
@@ -212,7 +213,7 @@ class AddRunningRecordMediator @Inject constructor(
                 id = params.typeId,
                 timeStarted = params.timeStarted,
                 comment = params.comment,
-                tagIds = params.tagIds,
+                tags = params.tags,
             )
 
             runningRecordInteractor.add(data)
@@ -232,7 +233,7 @@ class AddRunningRecordMediator @Inject constructor(
             timeStarted = params.timeStarted,
             timeEnded = params.timeStarted + type.defaultDuration * 1000,
             comment = params.comment,
-            tagIds = params.tagIds,
+            tags = params.tags,
         ).let {
             addRecordMediator.add(
                 record = it,
@@ -254,8 +255,8 @@ class AddRunningRecordMediator @Inject constructor(
                 timeEnded = params.timeStarted,
                 comment = params.comment.takeUnless { it.isEmpty() }
                     ?: prevRecord.comment,
-                tagIds = params.tagIds.takeUnless { it.isEmpty() }
-                    ?: prevRecord.tagIds,
+                tags = params.tags.takeUnless { it.isEmpty() }
+                    ?: prevRecord.tags,
             )
         } else {
             val newTimeStarted = prevRecords.firstOrNull()?.timeEnded
@@ -266,7 +267,7 @@ class AddRunningRecordMediator @Inject constructor(
                 timeStarted = newTimeStarted,
                 timeEnded = params.timeStarted,
                 comment = params.comment,
-                tagIds = params.tagIds,
+                tags = params.tags,
             )
         }
         addRecordMediator.add(
@@ -363,11 +364,15 @@ class AddRunningRecordMediator @Inject constructor(
 
     private suspend fun getAllTags(
         typeId: Long,
-        tagIds: List<Long>,
+        currentTags: List<RecordBase.Tag>,
         tagIdsFromRules: Set<Long>,
-    ): List<Long> {
+    ): List<RecordBase.Tag> {
         val defaultTags = recordTypeToDefaultTagInteractor.getTags(typeId)
-        return (tagIds + defaultTags + tagIdsFromRules).toSet().toList()
+        // TODO TAG add tag value to default tags and rules?
+        val result = currentTags +
+            defaultTags.map { RecordBase.Tag(tagId = it, numericValue = null) } +
+            tagIdsFromRules.map { RecordBase.Tag(tagId = it, numericValue = null) }
+        return result.distinctBy { it.tagId }
     }
 
     private fun getPrevRecordToMergeWith(
@@ -381,7 +386,7 @@ class AddRunningRecordMediator @Inject constructor(
         val typeId: Long,
         val timeStarted: Long,
         val comment: String,
-        val tagIds: List<Long>,
+        val tags: List<RecordBase.Tag>,
         val updateNotificationSwitch: Boolean,
         val isMultitaskingAllowed: Boolean,
     )

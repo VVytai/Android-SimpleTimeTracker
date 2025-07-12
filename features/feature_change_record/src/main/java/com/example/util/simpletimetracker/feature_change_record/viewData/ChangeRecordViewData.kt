@@ -5,6 +5,7 @@ import com.example.util.simpletimetracker.core.viewData.ChangeRecordDateTimeStat
 import com.example.util.simpletimetracker.feature_views.viewData.RecordTypeIcon
 
 data class ChangeRecordViewData(
+    // TODO TAG add recordPreview: RecordViewData? like in running records.
     val name: String,
     val tagName: String,
     val timeStarted: String,

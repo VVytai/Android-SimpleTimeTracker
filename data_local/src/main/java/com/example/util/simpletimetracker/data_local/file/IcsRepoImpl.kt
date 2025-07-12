@@ -1,7 +1,6 @@
 package com.example.util.simpletimetracker.data_local.file
 
 import android.content.ContentResolver
-import android.net.Uri
 import android.os.ParcelFileDescriptor
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.data_local.R

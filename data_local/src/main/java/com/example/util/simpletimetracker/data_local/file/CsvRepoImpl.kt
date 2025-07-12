@@ -1,7 +1,6 @@
 package com.example.util.simpletimetracker.data_local.file
 
 import android.content.ContentResolver
-import android.net.Uri
 import android.os.ParcelFileDescriptor
 import com.example.util.simpletimetracker.core.R
 import com.example.util.simpletimetracker.core.mapper.ColorMapper
@@ -32,6 +31,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.io.BufferedOutputStream
+import androidx.core.net.toUri
 
 class CsvRepoImpl @Inject constructor(
     private val contentResolver: ContentResolver,
@@ -51,7 +51,7 @@ class CsvRepoImpl @Inject constructor(
         var fileOutputStream: BufferedOutputStream? = null
 
         try {
-            val uri = Uri.parse(uriString)
+            val uri = uriString.toUri()
             fileDescriptor = contentResolver.openFileDescriptor(uri, "wt")
             fileOutputStream = fileDescriptor?.fileDescriptor
                 ?.let(::FileOutputStream)?.buffered()
@@ -108,7 +108,7 @@ class CsvRepoImpl @Inject constructor(
         var reader: BufferedReader? = null
 
         try {
-            val uri = Uri.parse(uriString)
+            val uri = uriString.toUri()
             inputStream = contentResolver.openInputStream(uri)
             reader = inputStream?.let(::InputStreamReader)?.let(::BufferedReader)
 
@@ -162,6 +162,7 @@ class CsvRepoImpl @Inject constructor(
                         timeStarted = timeStarted,
                         timeEnded = timeEnded,
                         comment = comment,
+                        tags = emptyList(),
                     )
                     recordRepo.add(record)
                     addedRecords++

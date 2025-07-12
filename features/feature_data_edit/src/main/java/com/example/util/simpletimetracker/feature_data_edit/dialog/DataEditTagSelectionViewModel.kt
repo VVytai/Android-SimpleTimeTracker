@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.util.simpletimetracker.domain.extension.addOrRemove
 import com.example.util.simpletimetracker.core.extension.set
 import com.example.util.simpletimetracker.core.interactor.RecordTagViewDataInteractor
+import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.category.CategoryViewData
 import com.example.util.simpletimetracker.feature_base_adapter.loader.LoaderViewData
@@ -63,7 +64,10 @@ class DataEditTagSelectionViewModel @Inject constructor(
         val result: MutableList<ViewHolderType> = mutableListOf()
 
         recordTagViewDataInteractor.getViewData(
-            selectedTags = selectedIds,
+            selectedTags = selectedIds.map {
+                // TODO TAG add tag value selection?
+                RecordBase.Tag(tagId = it, numericValue = null)
+            },
             typeId = extra.typeId,
             showAllTags = false,
             multipleChoiceAvailable = true,

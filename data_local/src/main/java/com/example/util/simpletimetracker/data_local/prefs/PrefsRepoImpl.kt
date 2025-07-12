@@ -194,11 +194,11 @@ class PrefsRepoImpl @Inject constructor(
     )
 
     override var showCategoriesAsPredefinedFilters: Boolean by prefs.delegate(
-        KEY_SHOW_CATEGORIES_AS_PREDEFINED_FILTERS, false
+        KEY_SHOW_CATEGORIES_AS_PREDEFINED_FILTERS, false,
     )
 
     override var selectedPredefinedFilters: Set<String> by prefs.delegate(
-        KEY_SELECTED_PREDEFINED_FILTERS, emptySet()
+        KEY_SELECTED_PREDEFINED_FILTERS, emptySet(),
     )
 
     override var enableRepeatButton: Boolean by prefs.delegate(

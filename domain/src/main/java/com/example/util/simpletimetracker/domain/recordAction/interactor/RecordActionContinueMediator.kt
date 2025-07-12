@@ -6,6 +6,7 @@ import com.example.util.simpletimetracker.domain.record.interactor.RecordInterac
 import com.example.util.simpletimetracker.domain.record.interactor.RemoveRecordMediator
 import com.example.util.simpletimetracker.domain.record.interactor.RemoveRunningRecordMediator
 import com.example.util.simpletimetracker.domain.record.interactor.RunningRecordInteractor
+import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import javax.inject.Inject
 
 class RecordActionContinueMediator @Inject constructor(
@@ -21,7 +22,7 @@ class RecordActionContinueMediator @Inject constructor(
         typeId: Long,
         timeStarted: Long,
         comment: String,
-        tagIds: List<Long>,
+        tags: List<RecordBase.Tag>,
     ) {
         // Remove current record if exist.
         recordId?.let {
@@ -36,7 +37,7 @@ class RecordActionContinueMediator @Inject constructor(
         addRunningRecordMediator.startTimer(
             typeId = typeId,
             comment = comment,
-            tagIds = tagIds,
+            tags = tags,
             timeStarted = AddRunningRecordMediator.StartTime.Timestamp(timeStarted),
             checkDefaultDuration = false,
         )

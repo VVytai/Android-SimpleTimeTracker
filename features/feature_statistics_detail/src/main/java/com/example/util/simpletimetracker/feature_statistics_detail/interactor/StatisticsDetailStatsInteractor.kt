@@ -25,7 +25,6 @@ class StatisticsDetailStatsInteractor @Inject constructor(
     private val timeMapper: TimeMapper,
     private val rangeMapper: RangeMapper,
     private val resourceRepo: ResourceRepo,
-    private val dataDistributionInteractor: StatisticsDetailDataDistributionInteractor,
 ) {
 
     suspend fun getStatsViewData(

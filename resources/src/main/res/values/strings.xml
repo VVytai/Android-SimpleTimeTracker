@@ -116,6 +116,10 @@ This allows you to see how much time you\'re spending on productive versus unpro
     <string name="change_record_tag_type_typed_hint">Can only be assigned to records of a specific activity</string>
     <string name="change_record_tag_select_activity_hint">Take color and icon from activity</string>
     <string name="change_record_tag_default_types_hint">Tag would be assigned by default when starting a timer with selected activities</string>
+    <string name="change_record_type_value_type_field">Value</string>
+    <string name="change_record_type_value_type_hint">Assign a value to a tag. For example mood, efficiency, pages read, steps walked.</string>
+    <string name="change_record_type_value_suffix">Suffix</string>
+    <string name="change_record_type_value_selection_hint">Enter new value</string>
 
     <!--  Change record  -->
     <string name="change_record_message_choose_type">Select activity</string>

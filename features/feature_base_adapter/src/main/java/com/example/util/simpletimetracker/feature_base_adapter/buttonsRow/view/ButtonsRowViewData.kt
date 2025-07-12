@@ -1,4 +1,4 @@
-package com.example.util.simpletimetracker.core.view.buttonsRowView
+package com.example.util.simpletimetracker.feature_base_adapter.buttonsRow.view
 
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 

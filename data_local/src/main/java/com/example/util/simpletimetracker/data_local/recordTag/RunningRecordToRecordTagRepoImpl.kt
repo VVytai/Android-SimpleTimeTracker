@@ -1,6 +1,7 @@
 package com.example.util.simpletimetracker.data_local.recordTag
 
 import com.example.util.simpletimetracker.data_local.base.logDataAccess
+import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.domain.recordTag.repo.RunningRecordToRecordTagRepo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -13,11 +14,11 @@ class RunningRecordToRecordTagRepoImpl @Inject constructor(
     private val mapper: RunningRecordToRecordTagDataLocalMapper,
 ) : RunningRecordToRecordTagRepo {
 
-    override suspend fun addRunningRecordTags(runningRecordId: Long, tagIds: List<Long>) =
+    override suspend fun addRunningRecordTags(runningRecordId: Long, tags: List<RecordBase.Tag>) =
         withContext(Dispatchers.IO) {
             logDataAccess("add running record tags")
-            tagIds.map {
-                mapper.map(recordId = runningRecordId, recordTagId = it)
+            tags.map {
+                mapper.map(recordId = runningRecordId, recordTag = it)
             }.let {
                 dao.insert(it)
             }

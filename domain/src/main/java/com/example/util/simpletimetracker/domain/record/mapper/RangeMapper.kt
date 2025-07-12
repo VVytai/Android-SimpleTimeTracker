@@ -43,7 +43,7 @@ class RangeMapper @Inject constructor() {
             timeStarted = record.timeStarted,
             timeEnded = record.timeEnded,
             comment = record.comment,
-            tagIds = record.tagIds,
+            tags = record.tags,
         )
     }
 

@@ -1,6 +1,7 @@
 package com.example.util.simpletimetracker.data_local.recordTag
 
 import com.example.util.simpletimetracker.data_local.base.logDataAccess
+import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.domain.recordTag.model.RecordToRecordTag
 import com.example.util.simpletimetracker.domain.recordTag.repo.RecordToRecordTagRepo
 import kotlinx.coroutines.Dispatchers
@@ -36,11 +37,11 @@ class RecordToRecordTagRepoImpl @Inject constructor(
                 }
         }
 
-    override suspend fun addRecordTags(recordId: Long, tagIds: List<Long>) =
+    override suspend fun addRecordTags(recordId: Long, tags: List<RecordBase.Tag>) =
         withContext(Dispatchers.IO) {
             logDataAccess("add record tags")
-            tagIds.map {
-                mapper.map(recordId = recordId, recordTagId = it)
+            tags.map {
+                mapper.map(recordId = recordId, recordTag = it)
             }.let {
                 dao.insert(it)
             }

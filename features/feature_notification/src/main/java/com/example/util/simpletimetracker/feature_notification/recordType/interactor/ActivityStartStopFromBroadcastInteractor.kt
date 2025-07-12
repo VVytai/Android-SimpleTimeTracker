@@ -10,6 +10,7 @@ import com.example.util.simpletimetracker.domain.notifications.interactor.Notifi
 import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTypeInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.RemoveRunningRecordMediator
 import com.example.util.simpletimetracker.domain.record.interactor.RunningRecordInteractor
+import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.feature_notification.activitySwitch.manager.NotificationControlsManager
 import kotlinx.coroutines.delay
 import javax.inject.Inject
@@ -86,7 +87,12 @@ class ActivityStartStopFromBroadcastInteractor @Inject constructor(
         addRunningRecordMediator.startTimer(
             typeId = selectedTypeId,
             comment = "",
-            tagIds = listOfNotNull(tagId.takeUnless { it == 0L }),
+            tags = listOfNotNull(tagId.takeUnless { it == 0L }).map {
+                RecordBase.Tag(
+                    tagId = it,
+                    numericValue = null, // TODO TAG add value selection
+                )
+            },
         )
         if (from !is NotificationControlsManager.From.ActivitySwitch) {
             // Hide tag selection on current notification.
