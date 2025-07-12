@@ -1,4 +1,4 @@
-package com.example.util.simpletimetracker.feature_widget.universal.activity.view
+package com.example.util.simpletimetracker.feature_widget.universal.view
 
 import com.example.util.simpletimetracker.feature_widget.databinding.WidgetUniversalFragmentBinding as Binding
 import android.os.Handler

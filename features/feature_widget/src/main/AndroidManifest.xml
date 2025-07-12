@@ -27,7 +27,7 @@
         </activity>
 
         <activity
-            android:name=".universal.activity.view.WidgetUniversalActivity"
+            android:name=".universal.view.WidgetUniversalActivity"
             android:documentLaunchMode="intoExisting"
             android:excludeFromRecents="true"
             android:noHistory="true" />

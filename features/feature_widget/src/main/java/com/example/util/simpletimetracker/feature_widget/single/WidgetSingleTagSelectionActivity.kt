@@ -2,27 +2,24 @@ package com.example.util.simpletimetracker.feature_widget.single
 
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
 import android.view.LayoutInflater
-import androidx.fragment.app.commit
 import com.example.util.simpletimetracker.core.base.BaseActivity
-import com.example.util.simpletimetracker.core.dialog.OnTagSelectedListener
 import com.example.util.simpletimetracker.core.manager.ThemeManager
 import com.example.util.simpletimetracker.core.provider.ContextProvider
-import com.example.util.simpletimetracker.core.utils.activityArgumentDelegate
-import com.example.util.simpletimetracker.core.utils.applySystemBarInsets
-import com.example.util.simpletimetracker.feature_widget.R
-import com.example.util.simpletimetracker.navigation.ScreenFactory
+import com.example.util.simpletimetracker.navigation.Router
 import com.example.util.simpletimetracker.navigation.params.screen.RecordTagSelectionParams
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
-import com.example.util.simpletimetracker.feature_widget.databinding.WidgetTagSelectionActivityBinding as Binding
+import com.example.util.simpletimetracker.feature_widget.databinding.WidgetSingleTagSelectionActivityBinding as Binding
 
 @AndroidEntryPoint
-class WidgetSingleTagSelectionActivity :
-    BaseActivity<Binding>(),
-    OnTagSelectedListener {
+class WidgetSingleTagSelectionActivity : BaseActivity<Binding>() {
 
     override val inflater: (LayoutInflater) -> Binding = Binding::inflate
+
+    @Inject
+    lateinit var router: Router
 
     @Inject
     override lateinit var themeManager: ThemeManager
@@ -30,29 +27,13 @@ class WidgetSingleTagSelectionActivity :
     @Inject
     override lateinit var contextProvider: ContextProvider
 
-    @Inject
-    lateinit var screenFactory: ScreenFactory
-
-    private val params: RecordTagSelectionParams by activityArgumentDelegate(
-        key = ARGS_PARAMS, default = RecordTagSelectionParams.Empty,
-    )
-
-    override fun initUi() {
-        // TODO check insets on all widget activities.
-        binding.root.applySystemBarInsets()
-        screenFactory.getFragment(params)?.let {
-            supportFragmentManager.commit {
-                replace(R.id.containerWidgetRecordTagSelection, it)
-            }
-        }
-    }
-
-    override fun onTagSelected() {
-        finish()
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        router.bind(this)
     }
 
     companion object {
-        private const val ARGS_PARAMS = "args_params"
+        const val ARGS_PARAMS = "args_params"
 
         fun getStartIntent(
             context: Context,

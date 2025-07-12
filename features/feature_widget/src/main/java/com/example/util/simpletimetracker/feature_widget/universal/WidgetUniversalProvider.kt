@@ -21,7 +21,7 @@ import com.example.util.simpletimetracker.domain.record.model.RunningRecord
 import com.example.util.simpletimetracker.feature_views.extension.getBitmapFromView
 import com.example.util.simpletimetracker.feature_views.extension.measureExactly
 import com.example.util.simpletimetracker.feature_widget.R
-import com.example.util.simpletimetracker.feature_widget.universal.activity.view.WidgetUniversalActivity
+import com.example.util.simpletimetracker.feature_widget.universal.view.WidgetUniversalActivity
 import com.example.util.simpletimetracker.feature_widget.universal.customView.WidgetUniversalView
 import com.example.util.simpletimetracker.feature_widget.universal.customView.WidgetUniversalViewData
 import com.example.util.simpletimetracker.feature_widget.universal.mapper.WidgetUniversalViewDataMapper
