@@ -13,12 +13,16 @@ import android.view.ContextThemeWrapper
 import android.view.View
 import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationCompat.Action
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.app.RemoteInput
 import com.example.util.simpletimetracker.core.extension.allowVmViolations
 import com.example.util.simpletimetracker.core.utils.PendingIntents
+import com.example.util.simpletimetracker.domain.extension.orFalse
 import com.example.util.simpletimetracker.feature_notification.R
 import com.example.util.simpletimetracker.feature_notification.activitySwitch.manager.NotificationControlsManager
 import com.example.util.simpletimetracker.feature_notification.activitySwitch.manager.NotificationControlsManager.Companion.ARGS_TYPE_ID
+import com.example.util.simpletimetracker.feature_notification.activitySwitch.manager.NotificationControlsParams
 import com.example.util.simpletimetracker.feature_notification.recevier.NotificationReceiver
 import com.example.util.simpletimetracker.feature_notification.recordType.customView.NotificationIconView
 import com.example.util.simpletimetracker.feature_views.GoalCheckmarkView
@@ -29,6 +33,7 @@ import com.example.util.simpletimetracker.navigation.Router
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
+
 
 @Singleton
 class NotificationTypeManager @Inject constructor(
@@ -49,11 +54,11 @@ class NotificationTypeManager @Inject constructor(
     fun show(params: NotificationTypeParams) {
         val notification: Notification = buildNotification(params)
         createAndroidNotificationChannel()
-        notificationManager.notify(params.id.toInt(), notification)
+        notificationManager.notify(NOTIFICATION_TAG, params.id.toInt(), notification)
     }
 
     fun hide(id: Int) {
-        notificationManager.cancel(id)
+        notificationManager.cancel(NOTIFICATION_TAG, id)
     }
 
     private fun buildNotification(params: NotificationTypeParams): Notification {
@@ -72,6 +77,12 @@ class NotificationTypeManager @Inject constructor(
             requestCode = params.id.toInt(),
             recordTypeId = params.id,
         )
+        val tagValueInput = controlsManager.getTagValueInputAction(
+            from = NotificationControlsManager.From.ActivityNotification(params.id),
+            controls = params.controls,
+        )
+        val needAutoCancel = (params.controls as? NotificationControlsParams.Enabled)
+            ?.autoCancel.orFalse()
 
         val builder = NotificationCompat.Builder(context, NOTIFICATIONS_CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_notification)
@@ -81,8 +92,10 @@ class NotificationTypeManager @Inject constructor(
             .setCustomContentView(prepareView(params, isBig = false))
             .setCustomBigContentView(prepareView(params, isBig = true))
             .addAction(0, params.stopButton, stopIntent)
+            .addAction(tagValueInput)
             .setStyle(NotificationCompat.DecoratedCustomViewStyle())
             .setPriority(NotificationCompat.PRIORITY_LOW) // no sound
+            .let { if (needAutoCancel) it.setTimeoutAfter(100) else it }
         return builder.build().apply {
             flags = flags or Notification.FLAG_NO_CLEAR
         }
@@ -174,5 +187,7 @@ class NotificationTypeManager @Inject constructor(
 
         private const val NOTIFICATIONS_CHANNEL_ID = "NOTIFICATIONS"
         private const val NOTIFICATIONS_CHANNEL_NAME = "Notifications"
+
+        private const val NOTIFICATION_TAG = "type_tag"
     }
 }

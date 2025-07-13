@@ -38,6 +38,8 @@ class GetNotificationActivitySwitchControlsInteractor @Inject constructor(
         tags: List<RecordTag> = emptyList(),
         tagsShift: Int = 0,
         selectedTypeId: Long? = null,
+        selectedTagId: Long? = null,
+        autoCancel: Boolean = false,
         goals: Map<Long, List<RecordTypeGoal>>,
         allDailyCurrents: Map<Long, GetCurrentRecordsDurationInteractor.Result>,
     ): NotificationControlsParams {
@@ -136,6 +138,8 @@ class GetNotificationActivitySwitchControlsInteractor @Inject constructor(
             controlIconColor = colorMapper.toInactiveColor(isDarkTheme),
             filteredTypeColor = colorMapper.toInactiveColor(isDarkTheme),
             selectedTypeId = selectedTypeId,
+            selectedTagId = selectedTagId,
+            autoCancel = autoCancel,
         )
     }
 

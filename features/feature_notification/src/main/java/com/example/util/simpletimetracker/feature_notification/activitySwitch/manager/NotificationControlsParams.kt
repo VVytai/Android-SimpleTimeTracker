@@ -18,6 +18,8 @@ sealed interface NotificationControlsParams {
         val controlIconColor: Int,
         val filteredTypeColor: Int,
         val selectedTypeId: Long?,
+        val selectedTagId: Long?,
+        val autoCancel: Boolean,
     ) : NotificationControlsParams
 
     sealed interface Type {

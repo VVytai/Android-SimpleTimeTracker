@@ -67,6 +67,28 @@ class NotificationTypeBroadcastController @Inject constructor(
         }
     }
 
+    fun onActionTagValueSelected(
+        from: Int,
+        typeId: Long,
+        selectedTypeId: Long,
+        tagId: Long,
+        tagValue: Double?,
+        typesShift: Int,
+    ) {
+        allowDiskRead { MainScope() }.launch {
+            activityStartStopFromBroadcastInteractor.onActionTagValueSelected(
+                from = notificationControlsMapper.mapExtraToFrom(
+                    extra = from,
+                    recordTypeId = typeId,
+                ) ?: return@launch,
+                selectedTypeId = selectedTypeId,
+                tagId = tagId,
+                tagValue = tagValue,
+                typesShift = typesShift,
+            )
+        }
+    }
+
     fun onRequestUpdate(
         from: Int,
         typeId: Long,

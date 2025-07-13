@@ -56,11 +56,20 @@ class NotificationTypeInteractorImpl @Inject constructor(
         typesShift: Int,
         tagsShift: Int,
         selectedTypeId: Long,
+        selectedTagId: Long,
+        autoCancel: Boolean,
     ) {
-        if (!prefsInteractor.getShowNotifications()) return
+        if (!prefsInteractor.getShowNotifications()) {
+            hide(typeId)
+            return
+        }
 
         val recordType = recordTypeInteractor.get(typeId)
         val runningRecord = runningRecordInteractor.get(typeId)
+        if (runningRecord == null) {
+            hide(typeId)
+            return
+        }
         val recordTags = recordTagInteractor.getAll()
         val isDarkTheme = prefsInteractor.getDarkMode()
         val useMilitaryTime = prefsInteractor.getUseMilitaryTimeFormat()
@@ -122,6 +131,8 @@ class NotificationTypeInteractorImpl @Inject constructor(
                 tags = viewedTags,
                 tagsShift = tagsShift,
                 selectedTypeId = selectedTypeId,
+                selectedTagId = selectedTagId,
+                autoCancel = autoCancel,
                 goals = goals,
                 allDailyCurrents = allDailyCurrents,
             )
@@ -132,7 +143,7 @@ class NotificationTypeInteractorImpl @Inject constructor(
         show(
             recordType = recordType,
             goal = goalTime,
-            runningRecord = runningRecord ?: return,
+            runningRecord = runningRecord,
             recordTags = recordTags.filter { it.id in runningRecord.tagIds },
             dailyCurrent = getCurrentRecordsDurationInteractor.getDailyCurrent(runningRecord),
             isDarkTheme = isDarkTheme,

@@ -11,6 +11,7 @@ import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTyp
 import com.example.util.simpletimetracker.domain.record.interactor.RemoveRunningRecordMediator
 import com.example.util.simpletimetracker.domain.record.interactor.RunningRecordInteractor
 import com.example.util.simpletimetracker.domain.record.model.RecordBase
+import com.example.util.simpletimetracker.domain.recordTag.interactor.NeedTagValueSelectionInteractor
 import com.example.util.simpletimetracker.feature_notification.activitySwitch.manager.NotificationControlsManager
 import kotlinx.coroutines.delay
 import javax.inject.Inject
@@ -24,6 +25,7 @@ class ActivityStartStopFromBroadcastInteractor @Inject constructor(
     private val notificationActivitySwitchInteractor: NotificationActivitySwitchInteractor,
     private val recordRepeatInteractor: RecordRepeatInteractor,
     private val completeTypesStateInteractor: CompleteTypesStateInteractor,
+    private val needTagValueSelectionInteractor: NeedTagValueSelectionInteractor,
 ) {
 
     suspend fun onActionActivityStop(
@@ -54,7 +56,7 @@ class ActivityStartStopFromBroadcastInteractor @Inject constructor(
             // Switch controls are updated separately right from here,
             // so no need to update after record change.
             updateNotificationSwitch = false,
-            commentInputAvailable = false, // TODO open activity?
+            commentInputAvailable = false, // TODO open activity? Or RemoteInput?
         ) {
             // Update to show tag selection.
             update(
@@ -84,21 +86,47 @@ class ActivityStartStopFromBroadcastInteractor @Inject constructor(
         tagId: Long,
         typesShift: Int,
     ) {
-        addRunningRecordMediator.startTimer(
-            typeId = selectedTypeId,
-            comment = "",
-            tags = listOfNotNull(tagId.takeUnless { it == 0L }).map {
-                RecordBase.Tag(
-                    tagId = it,
-                    numericValue = null, // TODO TAG add value selection
-                )
-            },
+        // id = 0 is untagged.
+        val needValueSelection = tagId != 0L && needTagValueSelectionInteractor.execute(
+            selectedTagIds = emptyList(),
+            clickedTagId = tagId,
         )
-        if (from !is NotificationControlsManager.From.ActivitySwitch) {
-            // Hide tag selection on current notification.
-            // Switch would be hidden on start timer.
-            update(from, typesShift)
+        if (needValueSelection) {
+            update(
+                from = from,
+                typesShift = typesShift,
+                selectedTypeId = selectedTypeId,
+                selectedTagId = tagId,
+            )
+        } else {
+            startFromTagSelection(
+                from = from,
+                selectedTypeId = selectedTypeId,
+                tagId = tagId,
+                tagValue = null,
+                typesShift = typesShift,
+                needDelay = false,
+                autoCancel = false,
+            )
         }
+    }
+
+    suspend fun onActionTagValueSelected(
+        from: NotificationControlsManager.From,
+        selectedTypeId: Long,
+        tagId: Long,
+        tagValue: Double?,
+        typesShift: Int,
+    ) {
+        startFromTagSelection(
+            from = from,
+            selectedTypeId = selectedTypeId,
+            tagId = tagId,
+            tagValue = tagValue,
+            typesShift = typesShift,
+            needDelay = true,
+            autoCancel = true,
+        )
     }
 
     suspend fun onRequestUpdate(
@@ -115,11 +143,43 @@ class ActivityStartStopFromBroadcastInteractor @Inject constructor(
         )
     }
 
+    private suspend fun startFromTagSelection(
+        from: NotificationControlsManager.From,
+        selectedTypeId: Long,
+        tagId: Long,
+        tagValue: Double?,
+        typesShift: Int,
+        needDelay: Boolean,
+        autoCancel: Boolean,
+    ) {
+        delay(1000)
+        if (from !is NotificationControlsManager.From.ActivitySwitch) {
+            // Hide tag selection on current notification.
+            // Switch would be hidden on start timer.
+            update(from, typesShift, autoCancel = true)
+        }
+        // Need delay after sending from RemoteInput before cancelling,
+        // otherwise it will not cancel.
+        if (needDelay) delay(1000)
+        addRunningRecordMediator.startTimer(
+            typeId = selectedTypeId,
+            comment = "",
+            tags = listOfNotNull(tagId.takeUnless { it == 0L }).map {
+                RecordBase.Tag(
+                    tagId = it,
+                    numericValue = tagValue,
+                )
+            },
+        )
+    }
+
     private suspend fun update(
         from: NotificationControlsManager.From,
         typesShift: Int,
         tagsShift: Int = 0,
         selectedTypeId: Long = 0,
+        selectedTagId: Long = 0,
+        autoCancel: Boolean = false,
     ) {
         when (from) {
             is NotificationControlsManager.From.ActivityNotification -> {
@@ -130,6 +190,8 @@ class ActivityStartStopFromBroadcastInteractor @Inject constructor(
                     typesShift = typesShift,
                     tagsShift = tagsShift,
                     selectedTypeId = selectedTypeId,
+                    selectedTagId = selectedTagId,
+                    autoCancel = autoCancel,
                 )
             }
             is NotificationControlsManager.From.ActivitySwitch -> {

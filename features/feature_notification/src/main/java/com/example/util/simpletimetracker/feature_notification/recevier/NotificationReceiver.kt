@@ -4,6 +4,7 @@ import android.app.AlarmManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import androidx.core.app.RemoteInput
 import com.example.util.simpletimetracker.core.extension.goAsync
 import com.example.util.simpletimetracker.core.utils.ACTION_EXTERNAL_ADD_RECORD
 import com.example.util.simpletimetracker.core.utils.ACTION_EXTERNAL_CHANGE_RECORD
@@ -27,6 +28,7 @@ import com.example.util.simpletimetracker.feature_notification.activitySwitch.ma
 import com.example.util.simpletimetracker.feature_notification.activitySwitch.manager.NotificationControlsManager.Companion.ACTION_NOTIFICATION_CONTROLS_TAGS_NEXT
 import com.example.util.simpletimetracker.feature_notification.activitySwitch.manager.NotificationControlsManager.Companion.ACTION_NOTIFICATION_CONTROLS_TAGS_PREV
 import com.example.util.simpletimetracker.feature_notification.activitySwitch.manager.NotificationControlsManager.Companion.ACTION_NOTIFICATION_CONTROLS_TAG_CLICK
+import com.example.util.simpletimetracker.feature_notification.activitySwitch.manager.NotificationControlsManager.Companion.ACTION_NOTIFICATION_CONTROLS_TAG_VALUE_INPUT
 import com.example.util.simpletimetracker.feature_notification.activitySwitch.manager.NotificationControlsManager.Companion.ACTION_NOTIFICATION_CONTROLS_TYPES_NEXT
 import com.example.util.simpletimetracker.feature_notification.activitySwitch.manager.NotificationControlsManager.Companion.ACTION_NOTIFICATION_CONTROLS_TYPES_PREV
 import com.example.util.simpletimetracker.feature_notification.activitySwitch.manager.NotificationControlsManager.Companion.ACTION_NOTIFICATION_CONTROLS_TYPE_CLICK
@@ -40,6 +42,7 @@ import com.example.util.simpletimetracker.feature_notification.recordType.contro
 import com.example.util.simpletimetracker.feature_notification.activitySwitch.manager.NotificationControlsManager.Companion.ARGS_SELECTED_TYPE_ID
 import com.example.util.simpletimetracker.feature_notification.activitySwitch.manager.NotificationControlsManager.Companion.ARGS_TAGS_SHIFT
 import com.example.util.simpletimetracker.feature_notification.activitySwitch.manager.NotificationControlsManager.Companion.ARGS_TAG_ID
+import com.example.util.simpletimetracker.feature_notification.activitySwitch.manager.NotificationControlsManager.Companion.ARGS_TAG_VALUE_INPUT
 import com.example.util.simpletimetracker.feature_notification.activitySwitch.manager.NotificationControlsManager.Companion.ARGS_TYPES_SHIFT
 import com.example.util.simpletimetracker.feature_notification.activitySwitch.manager.NotificationControlsManager.Companion.ARGS_TYPE_ID
 import com.example.util.simpletimetracker.feature_notification.external.NotificationExternalBroadcastController
@@ -251,6 +254,24 @@ class NotificationReceiver : BroadcastReceiver() {
                     typeId = typeId,
                     selectedTypeId = selectedTypeId,
                     tagId = tagId,
+                    typesShift = typesShift,
+                )
+            }
+            ACTION_NOTIFICATION_CONTROLS_TAG_VALUE_INPUT -> {
+                val from = intent.getIntExtra(ARGS_CONTROLS_FROM, 0)
+                val typeId = intent.getLongExtra(ARGS_TYPE_ID, 0)
+                val selectedTypeId = intent.getLongExtra(ARGS_SELECTED_TYPE_ID, 0)
+                val tagId = intent.getLongExtra(ARGS_TAG_ID, 0)
+                val tagValue = RemoteInput.getResultsFromIntent(intent)
+                    ?.getCharSequence(ARGS_TAG_VALUE_INPUT)
+                    ?.toString()?.toDoubleOrNull()
+                val typesShift = intent.getIntExtra(ARGS_TYPES_SHIFT, 0)
+                typeController.onActionTagValueSelected(
+                    from = from,
+                    typeId = typeId,
+                    selectedTypeId = selectedTypeId,
+                    tagId = tagId,
+                    tagValue = tagValue,
                     typesShift = typesShift,
                 )
             }

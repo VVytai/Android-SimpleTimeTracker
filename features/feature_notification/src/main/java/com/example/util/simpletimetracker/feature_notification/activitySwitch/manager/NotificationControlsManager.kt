@@ -7,6 +7,8 @@ import android.graphics.Bitmap
 import android.view.ContextThemeWrapper
 import android.view.View
 import android.widget.RemoteViews
+import androidx.core.app.NotificationCompat.Action
+import androidx.core.app.RemoteInput
 import com.example.util.simpletimetracker.core.extension.allowVmViolations
 import com.example.util.simpletimetracker.core.utils.PendingIntents
 import com.example.util.simpletimetracker.domain.extension.ifNull
@@ -62,6 +64,40 @@ class NotificationControlsManager @Inject constructor(
             setViewVisibility(R.id.containerNotificationTagsPrev, tagsControlsVisibility)
             setViewVisibility(R.id.containerNotificationTagsNext, tagsControlsVisibility)
         }
+    }
+
+    // TODO TAG also add to notif switch.
+    fun getTagValueInputAction(
+        from: From,
+        controls: NotificationControlsParams,
+    ): Action? {
+        if (controls !is NotificationControlsParams.Enabled) return null
+        if (controls.selectedTagId.orZero() == 0L) return null
+
+        val replyPendingIntent = getPendingSelfIntent(
+            context = context,
+            action = ACTION_NOTIFICATION_CONTROLS_TAG_VALUE_INPUT,
+            requestCode = getRequestCode(from),
+            from = from,
+            selectedTypeId = controls.selectedTypeId,
+            recordTagId = controls.selectedTagId,
+            recordTypesShift = controls.typesShift,
+        )
+        val remoteInput = RemoteInput
+            .Builder(ARGS_TAG_VALUE_INPUT)
+            // .setChoices(arrayOf("1", "2.3", "3.45")) // TODO TAG this or show instead of tags?
+            .setLabel("Enter new value") // TODO TAG
+            .build()
+
+        // Create the reply action and add the remote input.
+        return Action
+            .Builder(
+                R.drawable.icon_category_emoji_emotions, // TODO TAG
+                "Enter value (steps)", // TODO TAG add suffix
+                replyPendingIntent,
+            )
+            .addRemoteInput(remoteInput)
+            .build()
     }
 
     private fun RemoteViews.addTypeControls(
@@ -357,7 +393,7 @@ class NotificationControlsManager @Inject constructor(
 
     sealed interface From {
         data class ActivityNotification(val recordTypeId: Long) : From
-        object ActivitySwitch : From
+        data object ActivitySwitch : From
     }
 
     private data class RequestCode(
@@ -378,6 +414,8 @@ class NotificationControlsManager @Inject constructor(
             "com.example.util.simpletimetracker.feature_notification.activitySwitch.onTypeClick"
         const val ACTION_NOTIFICATION_CONTROLS_TAG_CLICK =
             "com.example.util.simpletimetracker.feature_notification.activitySwitch.onTagClick"
+        const val ACTION_NOTIFICATION_CONTROLS_TAG_VALUE_INPUT =
+            "com.example.util.simpletimetracker.feature_notification.activitySwitch.tagValueInput"
 
         const val ACTION_NOTIFICATION_CONTROLS_TYPES_PREV =
             "com.example.util.simpletimetracker.feature_notification.activitySwitch.onTypesPrevClick"
@@ -394,6 +432,7 @@ class NotificationControlsManager @Inject constructor(
         const val ARGS_TAG_ID = "tagId"
         const val ARGS_TYPES_SHIFT = "typesShift"
         const val ARGS_TAGS_SHIFT = "tagsShift"
+        const val ARGS_TAG_VALUE_INPUT = "tagValueInput"
 
         const val TYPES_LIST_SIZE = 6
         const val TAGS_LIST_SIZE = 4
