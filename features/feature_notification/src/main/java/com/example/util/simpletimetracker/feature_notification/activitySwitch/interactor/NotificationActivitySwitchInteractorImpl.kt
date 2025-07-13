@@ -8,7 +8,6 @@ import com.example.util.simpletimetracker.core.mapper.IconMapper
 import com.example.util.simpletimetracker.core.mapper.TimeMapper
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.domain.activitySuggestion.interactor.GetCurrentActivitySuggestionsInteractor
-import com.example.util.simpletimetracker.domain.recordTag.interactor.GetSelectableTagsInteractor
 import com.example.util.simpletimetracker.domain.notifications.interactor.NotificationActivitySwitchInteractor
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.RecordInteractor
@@ -21,7 +20,6 @@ import com.example.util.simpletimetracker.domain.recordType.model.RecordType
 import com.example.util.simpletimetracker.feature_notification.R
 import com.example.util.simpletimetracker.feature_notification.activitySwitch.manager.NotificationActivitySwitchManager
 import com.example.util.simpletimetracker.feature_notification.activitySwitch.manager.NotificationActivitySwitchParams
-import com.example.util.simpletimetracker.feature_notification.activitySwitch.manager.NotificationControlsParams
 import com.example.util.simpletimetracker.feature_notification.core.NotificationCommonMapper
 import com.example.util.simpletimetracker.feature_views.viewData.RecordTypeIcon
 import javax.inject.Inject
@@ -39,7 +37,6 @@ class NotificationActivitySwitchInteractorImpl @Inject constructor(
     private val getCurrentRecordsDurationInteractor: GetCurrentRecordsDurationInteractor,
     private val timeMapper: TimeMapper,
     private val filterGoalsByDayOfWeekInteractor: FilterGoalsByDayOfWeekInteractor,
-    private val getSelectableTagsInteractor: GetSelectableTagsInteractor,
     private val getNotificationActivitySwitchControlsInteractor: GetNotificationActivitySwitchControlsInteractor,
     private val recordInteractor: RecordInteractor,
     private val notificationCommonMapper: NotificationCommonMapper,
@@ -50,6 +47,8 @@ class NotificationActivitySwitchInteractorImpl @Inject constructor(
         typesShift: Int,
         tagsShift: Int,
         selectedTypeId: Long,
+        selectedTagId: Long,
+        selectedTagValue: String?,
     ) {
         val shouldShow = prefsInteractor.getShowNotifications() &&
             prefsInteractor.getShowNotificationEvenWithNoTimers() &&
@@ -60,6 +59,8 @@ class NotificationActivitySwitchInteractorImpl @Inject constructor(
                 typesShift = typesShift,
                 tagsShift = tagsShift,
                 selectedTypeId = selectedTypeId,
+                selectedTagId = selectedTagId,
+                selectedTagValue = selectedTagValue,
             )
         } else {
             cancel()
@@ -70,6 +71,8 @@ class NotificationActivitySwitchInteractorImpl @Inject constructor(
         typesShift: Int,
         tagsShift: Int,
         selectedTypeId: Long,
+        selectedTagId: Long,
+        selectedTagValue: String?,
     ) {
         val isDarkTheme = prefsInteractor.getDarkMode()
         val showRepeatButton = prefsInteractor.getEnableRepeatButton()
@@ -82,12 +85,6 @@ class NotificationActivitySwitchInteractorImpl @Inject constructor(
             firstDayOfWeek = firstDayOfWeek,
             startOfDayShift = startOfDayShift,
         )
-        val viewedTags = if (selectedTypeId != 0L) {
-            getSelectableTagsInteractor.execute(selectedTypeId)
-                .filterNot { it.archived }
-        } else {
-            emptyList()
-        }
         val runningRecords = runningRecordInteractor.getAll()
         val recordTypes = recordTypeInteractor.getAll().associateBy(RecordType::id)
         val recordTags = recordTagInteractor.getAll()
@@ -117,19 +114,6 @@ class NotificationActivitySwitchInteractorImpl @Inject constructor(
             // No goals - no need to calculate durations.
             emptyMap()
         }
-        val controls = getNotificationActivitySwitchControlsInteractor.getControls(
-            hint = "", // Replaced later.
-            isDarkTheme = isDarkTheme,
-            types = recordTypes.values.toList(),
-            suggestions = suggestions,
-            showRepeatButton = showRepeatButton,
-            typesShift = typesShift,
-            tags = viewedTags,
-            tagsShift = tagsShift,
-            selectedTypeId = selectedTypeId,
-            goals = goals,
-            allDailyCurrents = allDailyCurrents,
-        )
         val hint: String
         val icon: RecordTypeIcon?
         val color: Int?
@@ -180,6 +164,20 @@ class NotificationActivitySwitchInteractorImpl @Inject constructor(
                 prevRecordDuration = null
             }
         }
+        val controls = getNotificationActivitySwitchControlsInteractor.getControls(
+            hint = hint,
+            isDarkTheme = isDarkTheme,
+            types = recordTypes.values.toList(),
+            suggestions = suggestions,
+            showRepeatButton = showRepeatButton,
+            typesShift = typesShift,
+            tagsShift = tagsShift,
+            selectedTypeId = selectedTypeId,
+            selectedTagId = selectedTagId,
+            selectedTagValue = selectedTagValue,
+            goals = goals,
+            allDailyCurrents = allDailyCurrents,
+        )
 
         NotificationActivitySwitchParams(
             icon = icon,
@@ -188,10 +186,7 @@ class NotificationActivitySwitchInteractorImpl @Inject constructor(
             subtitle = subtitle,
             untrackedStartedTimeStamp = untrackedTimeStarted,
             prevRecordDuration = prevRecordDuration,
-            controls = when (controls) {
-                is NotificationControlsParams.Disabled -> controls
-                is NotificationControlsParams.Enabled -> controls.copy(hint = hint)
-            },
+            controls = controls,
         ).let(manager::show)
     }
 

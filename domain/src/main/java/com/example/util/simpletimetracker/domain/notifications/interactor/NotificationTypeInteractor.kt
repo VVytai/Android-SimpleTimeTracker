@@ -8,7 +8,7 @@ interface NotificationTypeInteractor {
         tagsShift: Int = 0,
         selectedTypeId: Long = 0,
         selectedTagId: Long = 0,
-        autoCancel: Boolean = false,
+        selectedTagValue: String? = null,
     )
 
     suspend fun checkAndHide(typeId: Long)

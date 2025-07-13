@@ -7,20 +7,37 @@ sealed interface NotificationControlsParams {
     data object Disabled : NotificationControlsParams
 
     data class Enabled(
-        val hint: String,
-        val pagesHint: String,
-        val types: List<Type>,
         val typesShift: Int,
-        val tags: List<Tag>,
         val tagsShift: Int,
-        val controlIconPrev: RecordTypeIcon,
-        val controlIconNext: RecordTypeIcon,
         val controlIconColor: Int,
-        val filteredTypeColor: Int,
         val selectedTypeId: Long?,
         val selectedTagId: Long?,
-        val autoCancel: Boolean,
+        val selectedTagValue: String?,
+        val viewState: ViewState,
     ) : NotificationControlsParams
+
+    sealed interface ViewState {
+        val hint: String
+
+        data class TypeSelection(
+            override val hint: String,
+            val types: List<Type>,
+            val tags: List<Tag>,
+            val controlIconPrev: RecordTypeIcon,
+            val controlIconNext: RecordTypeIcon,
+            val filteredTypeColor: Int,
+        ) : ViewState
+
+        data class TagValueSelection(
+            override val hint: String,
+            val numbers: List<TagValueControls>,
+            val controlIconBack: RecordTypeIcon,
+            val controlBackColor: Int,
+            val controlIconSave: RecordTypeIcon,
+            val controlSaveColor: Int,
+            val controlIconRemove: RecordTypeIcon,
+        ) : ViewState
+    }
 
     sealed interface Type {
         data class Present(
@@ -42,5 +59,22 @@ sealed interface NotificationControlsParams {
         ) : Tag
 
         data object Empty : Tag
+    }
+
+    sealed interface TagValueControls {
+        data class Present(
+            val type: Type,
+            val text: String,
+            val color: Int,
+        ) : TagValueControls {
+
+            sealed interface Type {
+                data class Number(val number: Int) : Type
+                data object DoubleZero : Type
+                data object Dot : Type
+            }
+        }
+
+        data object Empty : TagValueControls
     }
 }

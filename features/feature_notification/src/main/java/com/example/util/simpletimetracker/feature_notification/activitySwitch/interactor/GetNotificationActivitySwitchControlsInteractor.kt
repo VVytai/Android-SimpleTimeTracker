@@ -8,6 +8,7 @@ import com.example.util.simpletimetracker.core.mapper.RecordTagViewDataMapper
 import com.example.util.simpletimetracker.core.mapper.RecordTypeViewDataMapper
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.domain.base.REPEAT_BUTTON_ITEM_ID
+import com.example.util.simpletimetracker.domain.recordTag.interactor.GetSelectableTagsInteractor
 import com.example.util.simpletimetracker.domain.recordTag.model.RecordTag
 import com.example.util.simpletimetracker.domain.recordType.model.RecordType
 import com.example.util.simpletimetracker.domain.recordType.model.RecordTypeGoal
@@ -15,6 +16,7 @@ import com.example.util.simpletimetracker.feature_notification.R
 import com.example.util.simpletimetracker.feature_notification.activitySwitch.manager.NotificationControlsManager.Companion.TAGS_LIST_SIZE
 import com.example.util.simpletimetracker.feature_notification.activitySwitch.manager.NotificationControlsManager.Companion.TYPES_LIST_SIZE
 import com.example.util.simpletimetracker.feature_notification.activitySwitch.manager.NotificationControlsParams
+import com.example.util.simpletimetracker.feature_notification.core.TAG_VALUE_DECIMAL_DELIMITER
 import com.example.util.simpletimetracker.feature_views.GoalCheckmarkView
 import com.example.util.simpletimetracker.feature_views.viewData.RecordTypeIcon
 import javax.inject.Inject
@@ -26,34 +28,69 @@ class GetNotificationActivitySwitchControlsInteractor @Inject constructor(
     private val resourceRepo: ResourceRepo,
     private val recordTagViewDataMapper: RecordTagViewDataMapper,
     private val completeTypesStateInteractor: CompleteTypesStateInteractor,
+    private val getSelectableTagsInteractor: GetSelectableTagsInteractor,
 ) {
 
-    fun getControls(
+    suspend fun getControls(
+        hint: String,
+        isDarkTheme: Boolean,
+        types: List<RecordType>,
+        suggestions: List<RecordType>,
+        showRepeatButton: Boolean,
+        typesShift: Int,
+        tagsShift: Int,
+        selectedTypeId: Long?,
+        selectedTagId: Long?,
+        selectedTagValue: String?,
+        goals: Map<Long, List<RecordTypeGoal>>,
+        allDailyCurrents: Map<Long, GetCurrentRecordsDurationInteractor.Result>,
+    ): NotificationControlsParams {
+        val viewState = if (selectedTagId != null && selectedTagId != 0L) {
+            mapTagSelectionViewState(
+                isDarkTheme = isDarkTheme,
+                currentValueString = selectedTagValue,
+            )
+        } else {
+            mapTypesViewState(
+                hint = hint,
+                isDarkTheme = isDarkTheme,
+                types = types,
+                suggestions = suggestions,
+                showRepeatButton = showRepeatButton,
+                typesShift = typesShift,
+                selectedTypeId = selectedTypeId,
+                goals = goals,
+                allDailyCurrents = allDailyCurrents,
+            )
+        }
+
+        return NotificationControlsParams.Enabled(
+            typesShift = typesShift,
+            tagsShift = tagsShift,
+            controlIconColor = colorMapper.toInactiveColor(isDarkTheme),
+            selectedTypeId = selectedTypeId,
+            selectedTagId = selectedTagId,
+            selectedTagValue = selectedTagValue,
+            viewState = viewState,
+        )
+    }
+
+    private suspend fun mapTypesViewState(
         hint: String,
         isDarkTheme: Boolean,
         types: List<RecordType>,
         suggestions: List<RecordType>,
         showRepeatButton: Boolean,
         typesShift: Int = 0,
-        tags: List<RecordTag> = emptyList(),
-        tagsShift: Int = 0,
         selectedTypeId: Long? = null,
-        selectedTagId: Long? = null,
-        autoCancel: Boolean = false,
         goals: Map<Long, List<RecordTypeGoal>>,
         allDailyCurrents: Map<Long, GetCurrentRecordsDurationInteractor.Result>,
-    ): NotificationControlsParams {
-        // Populate container with empty items to preserve prev next controls position.
-        fun <T> populateWithEmpty(
-            data: List<T>,
-            pageSize: Int,
-            emptyValueProducer: () -> T,
-        ): List<T> {
-            if (data.isEmpty()) return data
-            if (data.size % pageSize == 0) return data
-            val emptyCount = pageSize - (data.size % pageSize)
-            val emptyData = List(emptyCount) { emptyValueProducer() }
-            return data + emptyData
+    ): NotificationControlsParams.ViewState {
+        val tags = if (selectedTypeId != null && selectedTypeId != 0L) {
+            getSelectableTagsInteractor.execute(selectedTypeId)
+                .filterNot { it.archived }
+        } else {
+            emptyList()
         }
 
         val typesMap = types.associateBy { it.id }
@@ -121,25 +158,71 @@ class GetNotificationActivitySwitchControlsInteractor @Inject constructor(
         } else {
             ""
         }
-
-        return NotificationControlsParams.Enabled(
-            hint = hint,
-            pagesHint = pagesHint,
+        val fullHint = if (hint.isNotEmpty()) {
+            "$hint $pagesHint"
+        } else {
+            pagesHint
+        }
+        return NotificationControlsParams.ViewState.TypeSelection(
+            hint = fullHint,
             types = allTypesViewData,
-            typesShift = typesShift,
             tags = populateWithEmpty(
                 data = tagsViewData,
                 pageSize = TAGS_LIST_SIZE,
                 emptyValueProducer = { NotificationControlsParams.Tag.Empty },
             ),
-            tagsShift = tagsShift,
             controlIconPrev = RecordTypeIcon.Image(R.drawable.arrow_left),
             controlIconNext = RecordTypeIcon.Image(R.drawable.arrow_right),
-            controlIconColor = colorMapper.toInactiveColor(isDarkTheme),
             filteredTypeColor = colorMapper.toInactiveColor(isDarkTheme),
-            selectedTypeId = selectedTypeId,
-            selectedTagId = selectedTagId,
-            autoCancel = autoCancel,
+        )
+    }
+
+    private fun mapTagSelectionViewState(
+        isDarkTheme: Boolean,
+        currentValueString: String?,
+    ): NotificationControlsParams.ViewState {
+        val hint = if (currentValueString.isNullOrEmpty()) {
+            resourceRepo.getString(R.string.change_record_type_value_selection_hint)
+        } else {
+            currentValueString // TODO TAG add suffix
+        }
+
+        val controlIconColor = colorMapper.toInactiveColor(isDarkTheme)
+
+        val numbers = (0..9).map { number ->
+            NotificationControlsParams.TagValueControls.Present(
+                type = NotificationControlsParams.TagValueControls.Present.Type.Number(number),
+                text = number.toString(),
+                color = controlIconColor,
+            )
+        }.plus(
+            NotificationControlsParams.TagValueControls.Present(
+                type = NotificationControlsParams.TagValueControls.Present.Type.DoubleZero,
+                text = "00",
+                color = controlIconColor,
+            ),
+        ).plus(
+            NotificationControlsParams.TagValueControls.Present(
+                type = NotificationControlsParams.TagValueControls.Present.Type.Dot,
+                text = TAG_VALUE_DECIMAL_DELIMITER.toString(),
+                color = controlIconColor,
+            ),
+        ).let {
+            populateWithEmpty(
+                data = it,
+                pageSize = 12,
+                emptyValueProducer = { NotificationControlsParams.TagValueControls.Empty },
+            )
+        }
+
+        return NotificationControlsParams.ViewState.TagValueSelection(
+            hint = hint,
+            numbers = numbers,
+            controlIconBack = RecordTypeIcon.Image(R.drawable.record_type_check_cross),
+            controlBackColor = resourceRepo.getThemedAttr(R.attr.appNegativeColor, isDarkTheme),
+            controlIconSave = RecordTypeIcon.Image(R.drawable.record_type_check_mark),
+            controlSaveColor = resourceRepo.getThemedAttr(R.attr.appPositiveColor, isDarkTheme),
+            controlIconRemove = RecordTypeIcon.Image(R.drawable.backspace),
         )
     }
 
@@ -201,5 +284,18 @@ class GetNotificationActivitySwitchControlsInteractor @Inject constructor(
             text = R.string.change_record_untagged.let(resourceRepo::getString),
             color = colorMapper.toUntrackedColor(isDarkTheme),
         ).let(::listOf)
+    }
+
+    // Populate container with empty items to preserve prev next controls position.
+    private fun <T> populateWithEmpty(
+        data: List<T>,
+        pageSize: Int,
+        emptyValueProducer: () -> T,
+    ): List<T> {
+        if (data.isEmpty()) return data
+        if (data.size % pageSize == 0) return data
+        val emptyCount = pageSize - (data.size % pageSize)
+        val emptyData = List(emptyCount) { emptyValueProducer() }
+        return data + emptyData
     }
 }

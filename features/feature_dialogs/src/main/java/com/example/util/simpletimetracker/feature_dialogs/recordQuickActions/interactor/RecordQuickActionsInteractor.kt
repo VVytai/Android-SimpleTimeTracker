@@ -70,9 +70,6 @@ class RecordQuickActionsInteractor @Inject constructor(
                 .mapNotNull { recordInteractor.get(it) }
                 .filter {
                     // TODO TAG translate strings
-                    // TODO TAG add to widget single
-                    // TODO TAG add to widget universal
-                    // TODO TAG add to notification
                     // TODO TAG add to wear
                     it.tags.sortedBy(RecordBase.Tag::tagId) !=
                         newTags.sortedBy(RecordBase.Tag::tagId)

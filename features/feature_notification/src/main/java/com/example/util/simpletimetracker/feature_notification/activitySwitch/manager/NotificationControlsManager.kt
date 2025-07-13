@@ -7,14 +7,13 @@ import android.graphics.Bitmap
 import android.view.ContextThemeWrapper
 import android.view.View
 import android.widget.RemoteViews
-import androidx.core.app.NotificationCompat.Action
-import androidx.core.app.RemoteInput
 import com.example.util.simpletimetracker.core.extension.allowVmViolations
 import com.example.util.simpletimetracker.core.utils.PendingIntents
 import com.example.util.simpletimetracker.domain.extension.ifNull
 import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.feature_notification.R
 import com.example.util.simpletimetracker.feature_notification.activitySwitch.mapper.NotificationControlsMapper
+import com.example.util.simpletimetracker.feature_notification.core.TAG_VALUE_DECIMAL_DELIMITER
 import com.example.util.simpletimetracker.feature_notification.recevier.NotificationReceiver
 import com.example.util.simpletimetracker.feature_notification.recordType.customView.NotificationIconView
 import com.example.util.simpletimetracker.feature_views.GoalCheckmarkView
@@ -44,70 +43,64 @@ class NotificationControlsManager @Inject constructor(
         if (controls !is NotificationControlsParams.Enabled) return null
         if (!isBig) return null
 
-        val tagsControlsVisible: Boolean = controls.tags.isNotEmpty()
-
         return RemoteViews(context.packageName, R.layout.notification_switch_controls_layout).apply {
             val hintVisibility = View.VISIBLE
             setViewVisibility(R.id.tvNotificationControlsHint, hintVisibility)
-            val fullHint = if (controls.hint.isNotEmpty()) {
-                controls.hint + " " + controls.pagesHint
-            } else {
-                controls.pagesHint
-            }
+            val fullHint = controls.viewState.hint
             setTextViewText(R.id.tvNotificationControlsHint, fullHint)
 
-            addTypeControls(from, controls)
-            if (tagsControlsVisible) addTagControls(from, controls)
+            disableRootClick()
 
-            val tagsControlsVisibility = if (tagsControlsVisible) View.VISIBLE else View.GONE
-            setViewVisibility(R.id.containerNotificationTags, tagsControlsVisibility)
-            setViewVisibility(R.id.containerNotificationTagsPrev, tagsControlsVisibility)
-            setViewVisibility(R.id.containerNotificationTagsNext, tagsControlsVisibility)
+            when (controls.viewState) {
+                is NotificationControlsParams.ViewState.TypeSelection -> {
+                    val tagsControlsVisible: Boolean = controls.viewState.tags.isNotEmpty()
+
+                    addTypeControls(from, controls, controls.viewState)
+                    if (tagsControlsVisible) addTagControls(from, controls, controls.viewState)
+
+                    setViewVisibility(R.id.containerNotificationTypesPrev, View.VISIBLE)
+                    setViewVisibility(R.id.containerNotificationTypesNext, View.VISIBLE)
+                    val tagsControlsVisibility = if (tagsControlsVisible) View.VISIBLE else View.GONE
+                    setViewVisibility(R.id.containerNotificationTags, tagsControlsVisibility)
+                    setViewVisibility(R.id.containerNotificationTagsPrev, tagsControlsVisibility)
+                    setViewVisibility(R.id.containerNotificationTagsNext, tagsControlsVisibility)
+                }
+                is NotificationControlsParams.ViewState.TagValueSelection -> {
+                    // TODO TAG show suggestions?
+                    addTagValueSelectionControls(from, controls, controls.viewState)
+
+                    setViewVisibility(R.id.containerNotificationTypesPrev, View.VISIBLE)
+                    setViewVisibility(R.id.containerNotificationTypesNext, View.VISIBLE)
+                    setViewVisibility(R.id.containerNotificationTags, View.VISIBLE)
+                    setViewVisibility(R.id.containerNotificationTagsPrev, View.INVISIBLE)
+                    setViewVisibility(R.id.containerNotificationTagsNext, View.VISIBLE)
+                }
+            }
         }
     }
 
-    // TODO TAG also add to notif switch.
-    fun getTagValueInputAction(
-        from: From,
-        controls: NotificationControlsParams,
-    ): Action? {
-        if (controls !is NotificationControlsParams.Enabled) return null
-        if (controls.selectedTagId.orZero() == 0L) return null
-
-        val replyPendingIntent = getPendingSelfIntent(
-            context = context,
-            action = ACTION_NOTIFICATION_CONTROLS_TAG_VALUE_INPUT,
-            requestCode = getRequestCode(from),
-            from = from,
-            selectedTypeId = controls.selectedTypeId,
-            recordTagId = controls.selectedTagId,
-            recordTypesShift = controls.typesShift,
+    private fun RemoteViews.disableRootClick() {
+        // Do nothing on click.
+        setOnClickPendingIntent(
+            R.id.containerNotificationControlsRoot,
+            PendingIntent.getBroadcast(
+                context,
+                0,
+                Intent(context, NotificationReceiver::class.java),
+                PendingIntents.getFlags(),
+            ),
         )
-        val remoteInput = RemoteInput
-            .Builder(ARGS_TAG_VALUE_INPUT)
-            // .setChoices(arrayOf("1", "2.3", "3.45")) // TODO TAG this or show instead of tags?
-            .setLabel("Enter new value") // TODO TAG
-            .build()
-
-        // Create the reply action and add the remote input.
-        return Action
-            .Builder(
-                R.drawable.icon_category_emoji_emotions, // TODO TAG
-                "Enter value (steps)", // TODO TAG add suffix
-                replyPendingIntent,
-            )
-            .addRemoteInput(remoteInput)
-            .build()
     }
 
     private fun RemoteViews.addTypeControls(
         from: From,
         params: NotificationControlsParams.Enabled,
+        viewState: NotificationControlsParams.ViewState.TypeSelection,
     ) {
         // Prev button
         setImageViewBitmap(
             R.id.ivNotificationTypesPrev,
-            getIconBitmap(params.controlIconPrev, params.controlIconColor),
+            getIconBitmap(viewState.controlIconPrev, params.controlIconColor),
         )
         setOnClickPendingIntent(
             R.id.btnNotificationTypesPrev,
@@ -118,13 +111,13 @@ class NotificationControlsManager @Inject constructor(
                 from = from,
                 recordTypesShift = (params.typesShift - TYPES_LIST_SIZE)
                     .takeUnless { it < 0 }
-                    .ifNull { params.types.size - TYPES_LIST_SIZE }
+                    .ifNull { viewState.types.size - TYPES_LIST_SIZE }
                     .coerceAtLeast(0),
             ),
         )
 
         // Types buttons
-        val currentTypes = params.types.drop(params.typesShift).take(TYPES_LIST_SIZE)
+        val currentTypes = viewState.types.drop(params.typesShift).take(TYPES_LIST_SIZE)
 
         fun addPresentType(data: NotificationControlsParams.Type.Present) {
             val recordTypeId = (from as? From.ActivityNotification)?.recordTypeId
@@ -141,7 +134,7 @@ class NotificationControlsManager @Inject constructor(
                 }
             }
             val color = if (recordTypeId == data.id) {
-                params.filteredTypeColor
+                viewState.filteredTypeColor
             } else {
                 data.color
             }
@@ -189,7 +182,7 @@ class NotificationControlsManager @Inject constructor(
         // Next button
         setImageViewBitmap(
             R.id.ivNotificationTypesNext,
-            getIconBitmap(params.controlIconNext, params.controlIconColor),
+            getIconBitmap(viewState.controlIconNext, params.controlIconColor),
         )
         setOnClickPendingIntent(
             R.id.btnNotificationTypesNext,
@@ -199,7 +192,7 @@ class NotificationControlsManager @Inject constructor(
                 requestCode = getRequestCode(from),
                 from = from,
                 recordTypesShift = (params.typesShift + TYPES_LIST_SIZE)
-                    .takeUnless { it >= params.types.size }
+                    .takeUnless { it >= viewState.types.size }
                     .orZero(),
             ),
         )
@@ -208,11 +201,12 @@ class NotificationControlsManager @Inject constructor(
     private fun RemoteViews.addTagControls(
         from: From,
         params: NotificationControlsParams.Enabled,
+        viewState: NotificationControlsParams.ViewState.TypeSelection,
     ) {
         // Prev button
         setImageViewBitmap(
             R.id.ivNotificationTagsPrev,
-            getIconBitmap(params.controlIconPrev, params.controlIconColor),
+            getIconBitmap(viewState.controlIconPrev, params.controlIconColor),
         )
         setOnClickPendingIntent(
             R.id.btnNotificationTagsPrev,
@@ -225,13 +219,13 @@ class NotificationControlsManager @Inject constructor(
                 recordTypesShift = params.typesShift,
                 recordTagsShift = (params.tagsShift - TAGS_LIST_SIZE)
                     .takeUnless { it < 0 }
-                    .ifNull { params.tags.size - TAGS_LIST_SIZE }
+                    .ifNull { viewState.tags.size - TAGS_LIST_SIZE }
                     .coerceAtLeast(0),
             ),
         )
 
         // Tags buttons
-        val currentTags = params.tags.drop(params.tagsShift).take(TAGS_LIST_SIZE)
+        val currentTags = viewState.tags.drop(params.tagsShift).take(TAGS_LIST_SIZE)
 
         fun addPresentType(data: NotificationControlsParams.Tag.Present) {
             getTagControlView(
@@ -244,8 +238,8 @@ class NotificationControlsManager @Inject constructor(
                         from = from,
                         additionalInfo = RequestCode.AdditionalInfo.TypeId(data.id),
                     ),
-                    selectedTypeId = params.selectedTypeId,
                     from = from,
+                    selectedTypeId = params.selectedTypeId,
                     recordTagId = data.id,
                     recordTypesShift = params.typesShift,
                 ),
@@ -275,7 +269,7 @@ class NotificationControlsManager @Inject constructor(
         // Next button
         setImageViewBitmap(
             R.id.ivNotificationTagsNext,
-            getIconBitmap(params.controlIconNext, params.controlIconColor),
+            getIconBitmap(viewState.controlIconNext, params.controlIconColor),
         )
         setOnClickPendingIntent(
             R.id.btnNotificationTagsNext,
@@ -287,8 +281,150 @@ class NotificationControlsManager @Inject constructor(
                 selectedTypeId = params.selectedTypeId,
                 recordTypesShift = params.typesShift,
                 recordTagsShift = (params.tagsShift + TAGS_LIST_SIZE)
-                    .takeUnless { it >= params.tags.size }
+                    .takeUnless { it >= viewState.tags.size }
                     .orZero(),
+            ),
+        )
+    }
+
+    private fun RemoteViews.addTagValueSelectionControls(
+        from: From,
+        params: NotificationControlsParams.Enabled,
+        viewState: NotificationControlsParams.ViewState.TagValueSelection,
+    ) {
+        // Back button
+        setImageViewBitmap(
+            R.id.ivNotificationTypesPrev,
+            getIconBitmap(viewState.controlIconBack, viewState.controlBackColor),
+        )
+        setOnClickPendingIntent(
+            R.id.btnNotificationTypesPrev,
+            getPendingSelfIntent(
+                context = context,
+                action = ACTION_NOTIFICATION_CONTROLS_TAG_VALUE_BACK,
+                requestCode = getRequestCode(from),
+                from = from,
+                selectedTypeId = params.selectedTypeId,
+                recordTypesShift = params.typesShift,
+                recordTagsShift = params.tagsShift,
+            ),
+        )
+
+        // Control buttons
+        fun addPresentType(
+            index: Long,
+            containerId: Int,
+            data: NotificationControlsParams.TagValueControls.Present,
+        ) {
+            val newTagValueOnThisClick = when (data.type) {
+                is NotificationControlsParams.TagValueControls.Present.Type.Number -> {
+                    params.selectedTagValue.orEmpty().plus(data.type.number.toString())
+                }
+                NotificationControlsParams.TagValueControls.Present.Type.DoubleZero -> {
+                    params.selectedTagValue.orEmpty().plus("00")
+                }
+                NotificationControlsParams.TagValueControls.Present.Type.Dot -> {
+                    params.selectedTagValue.orEmpty().plus(TAG_VALUE_DECIMAL_DELIMITER)
+                }
+            }
+            getTagControlView(
+                text = data.text,
+                color = data.color,
+                intent = getPendingSelfIntent(
+                    context = context,
+                    action = ACTION_NOTIFICATION_CONTROLS_TAG_VALUE_UPDATE,
+                    requestCode = getRequestCode(
+                        from = from,
+                        additionalInfo = RequestCode.AdditionalInfo.TagValueControls(index),
+                    ),
+                    from = from,
+                    selectedTypeId = params.selectedTypeId,
+                    recordTagId = params.selectedTagId,
+                    recordTagValue = newTagValueOnThisClick,
+                    recordTypesShift = params.typesShift,
+                    recordTagsShift = params.tagsShift,
+                ),
+            ).let {
+                addView(containerId, it)
+            }
+        }
+
+        // Populate container with empty items to preserve prev next controls position
+        fun addEmptyType(
+            containerId: Int,
+        ) {
+            getTagControlView(
+                text = "",
+                color = null,
+                intent = null,
+            ).let {
+                addView(containerId, it)
+            }
+        }
+
+        viewState.numbers.forEachIndexed { index, number ->
+            if (index < 6) {
+                val data = number as? NotificationControlsParams.TagValueControls.Present
+                    ?: return@forEachIndexed
+                addPresentType(
+                    index = index.toLong(),
+                    containerId = R.id.containerNotificationTypes,
+                    data = data,
+                )
+            } else {
+                val containerId = R.id.containerNotificationTags
+                when (number) {
+                    is NotificationControlsParams.TagValueControls.Present -> {
+                        addPresentType(
+                            index = index.toLong(),
+                            containerId = containerId,
+                            data = number,
+                        )
+                    }
+                    is NotificationControlsParams.TagValueControls.Empty -> {
+                        addEmptyType(containerId)
+                    }
+                }
+            }
+        }
+
+        // Save button
+        setImageViewBitmap(
+            R.id.ivNotificationTypesNext,
+            getIconBitmap(viewState.controlIconSave, viewState.controlSaveColor),
+        )
+        setOnClickPendingIntent(
+            R.id.btnNotificationTypesNext,
+            getPendingSelfIntent(
+                context = context,
+                action = ACTION_NOTIFICATION_CONTROLS_TAG_VALUE_SAVE,
+                requestCode = getRequestCode(from),
+                from = from,
+                selectedTypeId = params.selectedTypeId,
+                recordTagId = params.selectedTagId,
+                recordTagValue = params.selectedTagValue,
+                recordTypesShift = params.typesShift,
+            ),
+        )
+
+        // Remove button
+        setImageViewBitmap(
+            R.id.ivNotificationTagsNext,
+            getIconBitmap(viewState.controlIconRemove, params.controlIconColor),
+        )
+        setOnClickPendingIntent(
+            R.id.btnNotificationTagsNext,
+            getPendingSelfIntent(
+                context = context,
+                action = ACTION_NOTIFICATION_CONTROLS_TAG_VALUE_REMOVE,
+                requestCode = getRequestCode(from),
+                from = from,
+                selectedTypeId = params.selectedTypeId,
+                recordTagId = params.selectedTagId,
+                recordTagValue = params.selectedTagValue?.dropLast(1)
+                    .takeUnless { it.isNullOrEmpty() },
+                recordTypesShift = params.typesShift,
+                recordTagsShift = params.tagsShift,
             ),
         )
     }
@@ -347,6 +483,7 @@ class NotificationControlsManager @Inject constructor(
         from: From,
         selectedTypeId: Long? = null,
         recordTagId: Long? = null,
+        recordTagValue: String? = null,
         recordTypesShift: Int? = null,
         recordTagsShift: Int? = null,
     ): PendingIntent {
@@ -356,6 +493,7 @@ class NotificationControlsManager @Inject constructor(
         (from as? From.ActivityNotification)?.recordTypeId?.let { intent.putExtra(ARGS_TYPE_ID, it) }
         selectedTypeId?.let { intent.putExtra(ARGS_SELECTED_TYPE_ID, it) }
         recordTagId?.let { intent.putExtra(ARGS_TAG_ID, it) }
+        recordTagValue?.let { intent.putExtra(ARGS_TAG_VALUE, it) }
         recordTypesShift.let { intent.putExtra(ARGS_TYPES_SHIFT, it) }
         recordTagsShift?.let { intent.putExtra(ARGS_TAGS_SHIFT, it) }
         return PendingIntent.getBroadcast(
@@ -381,6 +519,7 @@ class NotificationControlsManager @Inject constructor(
         }.getBitmapFromView()
     }
 
+    // additionalInfo is to make code unique.
     private fun getRequestCode(
         from: From,
         additionalInfo: RequestCode.AdditionalInfo = RequestCode.AdditionalInfo.Nothing,
@@ -403,7 +542,8 @@ class NotificationControlsManager @Inject constructor(
 
         sealed interface AdditionalInfo {
             data class TypeId(val id: Long) : AdditionalInfo
-            object Nothing : AdditionalInfo
+            data class TagValueControls(val id: Long) : AdditionalInfo
+            data object Nothing : AdditionalInfo
         }
     }
 
@@ -414,8 +554,6 @@ class NotificationControlsManager @Inject constructor(
             "com.example.util.simpletimetracker.feature_notification.activitySwitch.onTypeClick"
         const val ACTION_NOTIFICATION_CONTROLS_TAG_CLICK =
             "com.example.util.simpletimetracker.feature_notification.activitySwitch.onTagClick"
-        const val ACTION_NOTIFICATION_CONTROLS_TAG_VALUE_INPUT =
-            "com.example.util.simpletimetracker.feature_notification.activitySwitch.tagValueInput"
 
         const val ACTION_NOTIFICATION_CONTROLS_TYPES_PREV =
             "com.example.util.simpletimetracker.feature_notification.activitySwitch.onTypesPrevClick"
@@ -425,14 +563,22 @@ class NotificationControlsManager @Inject constructor(
             "com.example.util.simpletimetracker.feature_notification.activitySwitch.onTagsPrevClick"
         const val ACTION_NOTIFICATION_CONTROLS_TAGS_NEXT =
             "com.example.util.simpletimetracker.feature_notification.activitySwitch.onTagsNextClick"
+        const val ACTION_NOTIFICATION_CONTROLS_TAG_VALUE_BACK =
+            "com.example.util.simpletimetracker.feature_notification.activitySwitch.onTagValueBack"
+        const val ACTION_NOTIFICATION_CONTROLS_TAG_VALUE_SAVE =
+            "com.example.util.simpletimetracker.feature_notification.activitySwitch.onTagValueSave"
+        const val ACTION_NOTIFICATION_CONTROLS_TAG_VALUE_REMOVE =
+            "com.example.util.simpletimetracker.feature_notification.activitySwitch.onTagValueRemove"
+        const val ACTION_NOTIFICATION_CONTROLS_TAG_VALUE_UPDATE =
+            "com.example.util.simpletimetracker.feature_notification.activitySwitch.onTagValueUpdate"
 
         const val ARGS_CONTROLS_FROM = "controlsFrom"
         const val ARGS_TYPE_ID = "typeId"
         const val ARGS_SELECTED_TYPE_ID = "selectedTypeId"
         const val ARGS_TAG_ID = "tagId"
+        const val ARGS_TAG_VALUE = "tagValue"
         const val ARGS_TYPES_SHIFT = "typesShift"
         const val ARGS_TAGS_SHIFT = "tagsShift"
-        const val ARGS_TAG_VALUE_INPUT = "tagValueInput"
 
         const val TYPES_LIST_SIZE = 6
         const val TAGS_LIST_SIZE = 4

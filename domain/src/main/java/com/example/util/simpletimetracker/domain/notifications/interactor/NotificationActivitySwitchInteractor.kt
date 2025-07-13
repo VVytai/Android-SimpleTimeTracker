@@ -6,5 +6,7 @@ interface NotificationActivitySwitchInteractor {
         typesShift: Int = 0,
         tagsShift: Int = 0,
         selectedTypeId: Long = 0,
+        selectedTagId: Long = 0,
+        selectedTagValue: String? = null,
     )
 }

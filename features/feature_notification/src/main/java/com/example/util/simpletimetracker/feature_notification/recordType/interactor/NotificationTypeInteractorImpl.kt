@@ -11,7 +11,6 @@ import com.example.util.simpletimetracker.domain.recordType.extension.getDailyDu
 import com.example.util.simpletimetracker.domain.recordType.extension.getSessionDuration
 import com.example.util.simpletimetracker.domain.recordType.extension.hasDailyDuration
 import com.example.util.simpletimetracker.domain.recordType.extension.value
-import com.example.util.simpletimetracker.domain.recordTag.interactor.GetSelectableTagsInteractor
 import com.example.util.simpletimetracker.domain.notifications.interactor.NotificationTypeInteractor
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.recordTag.interactor.RecordTagInteractor
@@ -44,7 +43,6 @@ class NotificationTypeInteractorImpl @Inject constructor(
     private val timeMapper: TimeMapper,
     private val resourceRepo: ResourceRepo,
     private val filterGoalsByDayOfWeekInteractor: FilterGoalsByDayOfWeekInteractor,
-    private val getSelectableTagsInteractor: GetSelectableTagsInteractor,
     private val getNotificationActivitySwitchControlsInteractor: GetNotificationActivitySwitchControlsInteractor,
     private val notificationCommonMapper: NotificationCommonMapper,
     private val getCurrentActivitySuggestionsInteractor: GetCurrentActivitySuggestionsInteractor,
@@ -57,19 +55,12 @@ class NotificationTypeInteractorImpl @Inject constructor(
         tagsShift: Int,
         selectedTypeId: Long,
         selectedTagId: Long,
-        autoCancel: Boolean,
+        selectedTagValue: String?,
     ) {
-        if (!prefsInteractor.getShowNotifications()) {
-            hide(typeId)
-            return
-        }
+        if (!prefsInteractor.getShowNotifications()) return
 
+        val runningRecord = runningRecordInteractor.get(typeId) ?: return
         val recordType = recordTypeInteractor.get(typeId)
-        val runningRecord = runningRecordInteractor.get(typeId)
-        if (runningRecord == null) {
-            hide(typeId)
-            return
-        }
         val recordTags = recordTagInteractor.getAll()
         val isDarkTheme = prefsInteractor.getDarkMode()
         val useMilitaryTime = prefsInteractor.getUseMilitaryTimeFormat()
@@ -93,12 +84,6 @@ class NotificationTypeInteractorImpl @Inject constructor(
             thisGoals.getDailyDuration()
         } else {
             thisGoals.getSessionDuration()
-        }
-        val viewedTags = if (selectedTypeId != 0L) {
-            getSelectableTagsInteractor.execute(selectedTypeId)
-                .filterNot { it.archived }
-        } else {
-            emptyList()
         }
         val controls = if (showControls) {
             val runningRecords = runningRecordInteractor.getAll()
@@ -128,11 +113,10 @@ class NotificationTypeInteractorImpl @Inject constructor(
                 suggestions = suggestions,
                 showRepeatButton = showRepeatButton,
                 typesShift = typesShift,
-                tags = viewedTags,
                 tagsShift = tagsShift,
                 selectedTypeId = selectedTypeId,
                 selectedTagId = selectedTagId,
-                autoCancel = autoCancel,
+                selectedTagValue = selectedTagValue,
                 goals = goals,
                 allDailyCurrents = allDailyCurrents,
             )
@@ -199,6 +183,11 @@ class NotificationTypeInteractorImpl @Inject constructor(
                 types = recordTypes.values.toList(),
                 suggestions = suggestions,
                 showRepeatButton = showRepeatButton,
+                typesShift = 0,
+                tagsShift = 0,
+                selectedTypeId = null,
+                selectedTagId = null,
+                selectedTagValue = null,
                 goals = goals,
                 allDailyCurrents = allDailyCurrents,
             )

@@ -13,6 +13,7 @@ import com.example.util.simpletimetracker.domain.record.interactor.RunningRecord
 import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.domain.recordTag.interactor.NeedTagValueSelectionInteractor
 import com.example.util.simpletimetracker.feature_notification.activitySwitch.manager.NotificationControlsManager
+import com.example.util.simpletimetracker.feature_notification.core.TAG_VALUE_DECIMAL_DELIMITER
 import kotlinx.coroutines.delay
 import javax.inject.Inject
 
@@ -105,33 +106,35 @@ class ActivityStartStopFromBroadcastInteractor @Inject constructor(
                 tagId = tagId,
                 tagValue = null,
                 typesShift = typesShift,
-                needDelay = false,
-                autoCancel = false,
             )
         }
     }
 
-    suspend fun onActionTagValueSelected(
+    suspend fun onActionTagValueSave(
         from: NotificationControlsManager.From,
         selectedTypeId: Long,
         tagId: Long,
-        tagValue: Double?,
+        tagValue: String?,
         typesShift: Int,
     ) {
+        // toDoubleOrNull need a dot as a separator.
+        val actualTagValue = tagValue
+            ?.replace(TAG_VALUE_DECIMAL_DELIMITER, '.')
+            ?.toDoubleOrNull()
         startFromTagSelection(
             from = from,
             selectedTypeId = selectedTypeId,
             tagId = tagId,
-            tagValue = tagValue,
+            tagValue = actualTagValue,
             typesShift = typesShift,
-            needDelay = true,
-            autoCancel = true,
         )
     }
 
     suspend fun onRequestUpdate(
         from: NotificationControlsManager.From,
         selectedTypeId: Long,
+        selectedTagId: Long,
+        selectedTagValue: String?,
         typesShift: Int,
         tagsShift: Int,
     ) {
@@ -140,6 +143,8 @@ class ActivityStartStopFromBroadcastInteractor @Inject constructor(
             typesShift = typesShift,
             tagsShift = tagsShift,
             selectedTypeId = selectedTypeId,
+            selectedTagId = selectedTagId,
+            selectedTagValue = selectedTagValue,
         )
     }
 
@@ -149,18 +154,12 @@ class ActivityStartStopFromBroadcastInteractor @Inject constructor(
         tagId: Long,
         tagValue: Double?,
         typesShift: Int,
-        needDelay: Boolean,
-        autoCancel: Boolean,
     ) {
-        delay(1000)
         if (from !is NotificationControlsManager.From.ActivitySwitch) {
             // Hide tag selection on current notification.
             // Switch would be hidden on start timer.
-            update(from, typesShift, autoCancel = true)
+            update(from, typesShift)
         }
-        // Need delay after sending from RemoteInput before cancelling,
-        // otherwise it will not cancel.
-        if (needDelay) delay(1000)
         addRunningRecordMediator.startTimer(
             typeId = selectedTypeId,
             comment = "",
@@ -179,7 +178,7 @@ class ActivityStartStopFromBroadcastInteractor @Inject constructor(
         tagsShift: Int = 0,
         selectedTypeId: Long = 0,
         selectedTagId: Long = 0,
-        autoCancel: Boolean = false,
+        selectedTagValue: String? = null,
     ) {
         when (from) {
             is NotificationControlsManager.From.ActivityNotification -> {
@@ -191,7 +190,7 @@ class ActivityStartStopFromBroadcastInteractor @Inject constructor(
                     tagsShift = tagsShift,
                     selectedTypeId = selectedTypeId,
                     selectedTagId = selectedTagId,
-                    autoCancel = autoCancel,
+                    selectedTagValue = selectedTagValue,
                 )
             }
             is NotificationControlsManager.From.ActivitySwitch -> {
@@ -199,6 +198,8 @@ class ActivityStartStopFromBroadcastInteractor @Inject constructor(
                     typesShift = typesShift,
                     tagsShift = tagsShift,
                     selectedTypeId = selectedTypeId,
+                    selectedTagId = selectedTagId,
+                    selectedTagValue = selectedTagValue,
                 )
             }
         }

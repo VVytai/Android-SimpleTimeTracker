@@ -67,16 +67,16 @@ class NotificationTypeBroadcastController @Inject constructor(
         }
     }
 
-    fun onActionTagValueSelected(
+    fun onActionTagValueSave(
         from: Int,
         typeId: Long,
         selectedTypeId: Long,
         tagId: Long,
-        tagValue: Double?,
+        tagValue: String?,
         typesShift: Int,
     ) {
         allowDiskRead { MainScope() }.launch {
-            activityStartStopFromBroadcastInteractor.onActionTagValueSelected(
+            activityStartStopFromBroadcastInteractor.onActionTagValueSave(
                 from = notificationControlsMapper.mapExtraToFrom(
                     extra = from,
                     recordTypeId = typeId,
@@ -93,6 +93,8 @@ class NotificationTypeBroadcastController @Inject constructor(
         from: Int,
         typeId: Long,
         selectedTypeId: Long,
+        selectedTagId: Long,
+        selectedTagValue: String?,
         typesShift: Int,
         tagsShift: Int,
     ) {
@@ -103,6 +105,8 @@ class NotificationTypeBroadcastController @Inject constructor(
                     typeId,
                 ) ?: return@launch,
                 selectedTypeId = selectedTypeId,
+                selectedTagId = selectedTagId,
+                selectedTagValue = selectedTagValue,
                 typesShift = typesShift,
                 tagsShift = tagsShift,
             )
