@@ -40,13 +40,14 @@ class WearActionResolver @Inject constructor(
         requestPermissionLauncher?.launch(permissionId)
     }
 
+    // TODO add comments to wear?
+    @Suppress("unused")
     fun openKeyboard(
         label: String,
         onNewText: (String?) -> Unit,
     ) {
         val inputTextKey = "input_text"
 
-        // TODO TAG number keyboard?
         val remoteInputs = RemoteInput.Builder(inputTextKey)
             .setLabel(label)
             .wearableExtender { setEmojisAllowed(false) }

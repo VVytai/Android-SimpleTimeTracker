@@ -189,7 +189,7 @@ class GetNotificationActivitySwitchControlsInteractor @Inject constructor(
 
         val controlIconColor = colorMapper.toInactiveColor(isDarkTheme)
 
-        val numbers = (0..9).map { number ->
+        val numbers = ((1..9).toList() + 0).map { number ->
             NotificationControlsParams.TagValueControls.Present(
                 type = NotificationControlsParams.TagValueControls.Present.Type.Number(number),
                 text = number.toString(),
@@ -197,14 +197,14 @@ class GetNotificationActivitySwitchControlsInteractor @Inject constructor(
             )
         }.plus(
             NotificationControlsParams.TagValueControls.Present(
-                type = NotificationControlsParams.TagValueControls.Present.Type.DoubleZero,
-                text = "00",
+                type = NotificationControlsParams.TagValueControls.Present.Type.Dot,
+                text = TAG_VALUE_DECIMAL_DELIMITER.toString(),
                 color = controlIconColor,
             ),
         ).plus(
             NotificationControlsParams.TagValueControls.Present(
-                type = NotificationControlsParams.TagValueControls.Present.Type.Dot,
-                text = TAG_VALUE_DECIMAL_DELIMITER.toString(),
+                type = NotificationControlsParams.TagValueControls.Present.Type.PlusMinus,
+                text = "+/−",
                 color = controlIconColor,
             ),
         ).let {

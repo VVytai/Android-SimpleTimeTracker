@@ -18,6 +18,11 @@ interface WearNavigationRoute<T> {
         override val baseRoute: String = "activities/${wrappedKey()}/tags"
     }
 
+    object TagValue : WearNavigationRoute<Long> {
+        override val key: String = "id"
+        override val baseRoute: String = "activities/tag/${wrappedKey()}/value/"
+    }
+
     object Statistics : WearNavigationRoute<Nothing> {
         override val key: String = ""
         override val baseRoute: String = "statistics"

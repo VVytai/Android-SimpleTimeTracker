@@ -7,19 +7,18 @@ package com.example.util.simpletimetracker.features.tagsSelection.viewModel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.util.simpletimetracker.R
 import com.example.util.simpletimetracker.data.WearDataRepo
 import com.example.util.simpletimetracker.data.WearResourceRepo
 import com.example.util.simpletimetracker.domain.extension.orFalse
 import com.example.util.simpletimetracker.domain.extension.removeIf
 import com.example.util.simpletimetracker.domain.mediator.StartActivityMediator
+import com.example.util.simpletimetracker.domain.model.WearRecordTag
 import com.example.util.simpletimetracker.domain.model.WearSettings
 import com.example.util.simpletimetracker.domain.model.WearTag
-import com.example.util.simpletimetracker.domain.model.WearRecordTag
+import com.example.util.simpletimetracker.features.tagValueSelection.interactor.TagValueSelectedInteractor
 import com.example.util.simpletimetracker.features.tagsSelection.mapper.TagsViewDataMapper
 import com.example.util.simpletimetracker.features.tagsSelection.screen.TagListState
 import com.example.util.simpletimetracker.features.tagsSelection.ui.TagsLoadingState
-import com.example.util.simpletimetracker.navigation.WearActionResolver
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -33,11 +32,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TagsViewModel @Inject constructor(
-    private val resourceRepo: WearResourceRepo,
     private val wearDataRepo: WearDataRepo,
-    private val wearActionResolver: WearActionResolver,
     private val startActivityMediator: StartActivityMediator,
     private val tagsViewDataMapper: TagsViewDataMapper,
+    private val tagValueSelectedInteractor: TagValueSelectedInteractor,
 ) : ViewModel() {
 
     val state: StateFlow<TagListState> get() = _state.asStateFlow()
@@ -60,6 +58,7 @@ class TagsViewModel @Inject constructor(
         if (isInitialized) return
         this.activityId = activityId
         loadData()
+        subscribeToUpdates()
         isInitialized = true
     }
 
@@ -137,17 +136,15 @@ class TagsViewModel @Inject constructor(
         }
     }
 
-    private fun openTagValueSelection(tagId: Long) {
-        val label = resourceRepo.getString(R.string.change_record_type_value_selection_hint)
-        wearActionResolver.openKeyboard(label) { newText ->
-            val value = newText
-                ?.replace(',', '.')
-                ?.toDoubleOrNull()
-            onTagValueSelected(tagId = tagId, value = value)
-        }
+    private suspend fun openTagValueSelection(tagId: Long) {
+        _effects.emit(Effect.OnRequestTagValueSelection(tagId))
     }
 
-    private fun onTagValueSelected(tagId: Long, value: Double?) = viewModelScope.launch {
+    private fun onTagValueSelected(
+        result: TagValueSelectedInteractor.Result,
+    ) = viewModelScope.launch {
+        val tagId = result.tagId
+        val value = result.value
         selectedTags = selectedTags + WearRecordTag(tagId = tagId, numericValue = value)
         onTagSelected(tagId)
     }
@@ -185,6 +182,12 @@ class TagsViewModel @Inject constructor(
         )
     }
 
+    private fun subscribeToUpdates() {
+        viewModelScope.launch {
+            tagValueSelectedInteractor.data.collect(::onTagValueSelected)
+        }
+    }
+
     private fun List<WearRecordTag>.addOrRemove(itemId: Long): List<WearRecordTag> {
         val ids = this.map { it.tagId }
         val tag = WearRecordTag(tagId = itemId, numericValue = null)
@@ -197,5 +200,6 @@ class TagsViewModel @Inject constructor(
 
     sealed interface Effect {
         data object OnComplete : Effect
+        data class OnRequestTagValueSelection(val tagId: Long) : Effect
     }
 }

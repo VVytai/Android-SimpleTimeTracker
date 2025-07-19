@@ -14,6 +14,7 @@ import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.domain.recordTag.interactor.NeedTagValueSelectionInteractor
 import com.example.util.simpletimetracker.feature_notification.activitySwitch.manager.NotificationControlsManager
 import com.example.util.simpletimetracker.feature_notification.core.TAG_VALUE_DECIMAL_DELIMITER
+import com.example.util.simpletimetracker.feature_notification.core.TAG_VALUE_MINUS_SIGN
 import kotlinx.coroutines.delay
 import javax.inject.Inject
 
@@ -120,6 +121,7 @@ class ActivityStartStopFromBroadcastInteractor @Inject constructor(
         // toDoubleOrNull need a dot as a separator.
         val actualTagValue = tagValue
             ?.replace(TAG_VALUE_DECIMAL_DELIMITER, '.')
+            ?.replace(TAG_VALUE_MINUS_SIGN, '-')
             ?.toDoubleOrNull()
         startFromTagSelection(
             from = from,

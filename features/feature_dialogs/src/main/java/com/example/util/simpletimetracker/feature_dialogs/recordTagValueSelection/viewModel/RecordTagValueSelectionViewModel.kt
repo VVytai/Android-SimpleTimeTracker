@@ -47,6 +47,7 @@ class RecordTagValueSelectionViewModel @Inject constructor(
         newValue?.let { onDataSelected.set(it) }
     }
 
+    @Suppress("SameParameterValue")
     private fun updateViewData(
         fromCommentChange: Boolean = false,
     ) = viewModelScope.launch {

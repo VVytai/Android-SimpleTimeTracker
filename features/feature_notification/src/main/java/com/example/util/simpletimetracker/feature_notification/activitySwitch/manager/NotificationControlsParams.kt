@@ -70,8 +70,8 @@ sealed interface NotificationControlsParams {
 
             sealed interface Type {
                 data class Number(val number: Int) : Type
-                data object DoubleZero : Type
                 data object Dot : Type
+                data object PlusMinus : Type
             }
         }
 

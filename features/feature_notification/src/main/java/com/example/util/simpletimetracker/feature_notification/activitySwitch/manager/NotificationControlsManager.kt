@@ -14,6 +14,7 @@ import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.feature_notification.R
 import com.example.util.simpletimetracker.feature_notification.activitySwitch.mapper.NotificationControlsMapper
 import com.example.util.simpletimetracker.feature_notification.core.TAG_VALUE_DECIMAL_DELIMITER
+import com.example.util.simpletimetracker.feature_notification.core.TAG_VALUE_MINUS_SIGN
 import com.example.util.simpletimetracker.feature_notification.recevier.NotificationReceiver
 import com.example.util.simpletimetracker.feature_notification.recordType.customView.NotificationIconView
 import com.example.util.simpletimetracker.feature_views.GoalCheckmarkView
@@ -320,8 +321,13 @@ class NotificationControlsManager @Inject constructor(
                 is NotificationControlsParams.TagValueControls.Present.Type.Number -> {
                     params.selectedTagValue.orEmpty().plus(data.type.number.toString())
                 }
-                NotificationControlsParams.TagValueControls.Present.Type.DoubleZero -> {
-                    params.selectedTagValue.orEmpty().plus("00")
+                NotificationControlsParams.TagValueControls.Present.Type.PlusMinus -> {
+                    val current = params.selectedTagValue.orEmpty()
+                    if (current.startsWith(TAG_VALUE_MINUS_SIGN)) {
+                        current.removePrefix(TAG_VALUE_MINUS_SIGN.toString())
+                    } else {
+                        TAG_VALUE_MINUS_SIGN + current
+                    }
                 }
                 NotificationControlsParams.TagValueControls.Present.Type.Dot -> {
                     params.selectedTagValue.orEmpty().plus(TAG_VALUE_DECIMAL_DELIMITER)

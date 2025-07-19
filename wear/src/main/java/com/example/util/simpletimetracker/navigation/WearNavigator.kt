@@ -11,6 +11,7 @@ import androidx.wear.compose.navigation.rememberSwipeDismissableNavController
 import com.example.util.simpletimetracker.features.activities.screen.ActivitiesScreen
 import com.example.util.simpletimetracker.features.settings.screen.SettingsScreen
 import com.example.util.simpletimetracker.features.statistics.screen.StatisticsScreen
+import com.example.util.simpletimetracker.features.tagValueSelection.screen.TagValueSelectionScreen
 import com.example.util.simpletimetracker.features.tagsSelection.screen.TagsScreen
 import com.example.util.simpletimetracker.presentation.datePicker.WearDatePicker
 import com.example.util.simpletimetracker.presentation.dialog.MessageDialog
@@ -46,6 +47,19 @@ fun WearNavigator() {
 
             TagsScreen(
                 activityId = activityId,
+                onRequestTagValueSelection = {
+                    navigation.navigate(WearNavigationRoute.TagValue, it)
+                },
+                onComplete = {
+                    navigation.popBackStack()
+                },
+            )
+        }
+        composable(WearNavigationRoute.TagValue) { route, arguments ->
+            val tagId = route.get(arguments) ?: return@composable
+
+            TagValueSelectionScreen(
+                tagId = tagId,
                 onComplete = {
                     navigation.popBackStack()
                 },
