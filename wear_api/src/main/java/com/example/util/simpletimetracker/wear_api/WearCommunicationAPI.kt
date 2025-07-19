@@ -65,6 +65,15 @@ interface WearCommunicationAPI {
     ): WearShouldShowTagSelectionResponse
 
     /**
+     * [WearRequests.QUERY_SHOULD_SHOW_TAG_VALUE_SELECTION]
+     *
+     * Decides if should show tag value selection on tag click.
+     */
+    suspend fun queryShouldShowTagValueSelection(
+        request: WearShouldShowTagValueSelectionRequest,
+    ): WearShouldShowTagValueSelectionResponse
+
+    /**
      * [WearRequests.QUERY_SETTINGS]
      *
      * Retrieves the settings relevant to time tracking behavior

@@ -72,10 +72,11 @@ class TypesSelectionViewModel @Inject constructor(
         val clickedTag = viewDataCache
             .firstOrNull { it.id == item.id }
             as? TypesSelectionCacheHolder.Tag
-        val needValueSelection = needTagValueSelectionInteractor.execute(
-            selectedTagIds = dataIdsSelected,
-            clickedTag = clickedTag?.data,
-        ) && extra.allowTagValueSelection
+        val needValueSelection = extra.allowTagValueSelection &&
+            needTagValueSelectionInteractor.execute(
+                selectedTagIds = dataIdsSelected,
+                clickedTag = clickedTag?.data,
+            )
 
         if (needValueSelection) {
             // TODO TAG add to statistics

@@ -12,6 +12,7 @@ import com.example.util.simpletimetracker.domain.color.mapper.AppColorMapper
 import com.example.util.simpletimetracker.domain.color.model.AppColor
 import com.example.util.simpletimetracker.domain.daysOfWeek.model.DayOfWeek
 import com.example.util.simpletimetracker.domain.record.model.Record
+import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.domain.record.model.RunningRecord
 import com.example.util.simpletimetracker.domain.recordTag.model.RecordTag
 import com.example.util.simpletimetracker.domain.recordType.model.RecordType
@@ -46,7 +47,7 @@ class WearDataLocalMapper @Inject constructor(
 
     fun map(
         record: RunningRecord,
-        tags: List<WearTagDTO>,
+        tags: List<WearCurrentActivityDTO.TagDTO>,
     ): WearCurrentActivityDTO {
         return WearCurrentActivityDTO(
             id = record.id,
@@ -57,7 +58,7 @@ class WearDataLocalMapper @Inject constructor(
 
     fun map(
         record: Record,
-        tags: List<WearTagDTO>,
+        tags: List<WearCurrentActivityDTO.TagDTO>,
     ): WearLastRecordDTO {
         return WearLastRecordDTO(
             activityId = record.typeId,
@@ -78,6 +79,16 @@ class WearDataLocalMapper @Inject constructor(
                 tag = recordTag,
                 types = types,
             ).let(::mapColor),
+        )
+    }
+
+    fun map(
+        recordTag: RecordTag,
+        recordTagData: RecordBase.Tag?,
+    ): WearCurrentActivityDTO.TagDTO {
+        return WearCurrentActivityDTO.TagDTO(
+            name = recordTag.name,
+            numericValue = recordTagData?.numericValue,
         )
     }
 

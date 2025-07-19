@@ -14,6 +14,8 @@ import com.example.util.simpletimetracker.wear_api.WearSetSettingsRequest
 import com.example.util.simpletimetracker.wear_api.WearSettingsDTO
 import com.example.util.simpletimetracker.wear_api.WearShouldShowTagSelectionRequest
 import com.example.util.simpletimetracker.wear_api.WearShouldShowTagSelectionResponse
+import com.example.util.simpletimetracker.wear_api.WearShouldShowTagValueSelectionRequest
+import com.example.util.simpletimetracker.wear_api.WearShouldShowTagValueSelectionResponse
 import com.example.util.simpletimetracker.wear_api.WearStartActivityRequest
 import com.example.util.simpletimetracker.wear_api.WearStatisticsDTO
 import com.example.util.simpletimetracker.wear_api.WearStatisticsRequest
@@ -85,6 +87,16 @@ class WearRPCClient @Inject constructor(
     ): WearShouldShowTagSelectionResponse {
         val response: WearShouldShowTagSelectionResponse? = messenger
             .send(WearRequests.QUERY_SHOULD_SHOW_TAG_SELECTION, mapToBytes(request))
+            ?.let(::mapFromBytes)
+
+        return response ?: throw WearRPCException
+    }
+
+    override suspend fun queryShouldShowTagValueSelection(
+        request: WearShouldShowTagValueSelectionRequest,
+    ): WearShouldShowTagValueSelectionResponse {
+        val response: WearShouldShowTagValueSelectionResponse? = messenger
+            .send(WearRequests.QUERY_SHOULD_SHOW_TAG_VALUE_SELECTION, mapToBytes(request))
             ?.let(::mapFromBytes)
 
         return response ?: throw WearRPCException

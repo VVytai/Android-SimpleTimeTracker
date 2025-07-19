@@ -51,14 +51,6 @@ operator fun <T> List<T>.plus(elements: List<T>?): List<T> {
     return if (elements != null) this.toMutableList().apply { addAll(elements) } else this
 }
 
-inline fun <T> List<T>.removeIf(crossinline filter: (T) -> Boolean): List<T> {
-    return this.toMutableList().apply { removeAll { filter(it) } }
-}
-
-inline fun <T> Set<T>.removeIf(crossinline filter: (T) -> Boolean): Set<T> {
-    return this.toMutableSet().apply { removeAll { filter(it) } }
-}
-
 inline fun <T> List<T>.replaceWith(new: T, crossinline filter: (T) -> Boolean): List<T> {
     return this.removeIf(filter).toMutableList().apply { add(new) }
 }

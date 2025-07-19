@@ -10,34 +10,37 @@ import com.example.util.simpletimetracker.core.interactor.StatisticsMediator
 import com.example.util.simpletimetracker.core.mapper.TimeMapper
 import com.example.util.simpletimetracker.domain.activitySuggestion.interactor.GetCurrentActivitySuggestionsInteractor
 import com.example.util.simpletimetracker.domain.extension.orZero
-import com.example.util.simpletimetracker.domain.record.interactor.AddRunningRecordMediator
-import com.example.util.simpletimetracker.domain.recordTag.interactor.GetSelectableTagsInteractor
+import com.example.util.simpletimetracker.domain.notifications.interactor.UpdateExternalViewsInteractor
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
+import com.example.util.simpletimetracker.domain.record.interactor.AddRunningRecordMediator
 import com.example.util.simpletimetracker.domain.record.interactor.RecordInteractor
-import com.example.util.simpletimetracker.domain.recordTag.interactor.RecordTagInteractor
-import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTypeInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.RemoveRunningRecordMediator
 import com.example.util.simpletimetracker.domain.record.interactor.RunningRecordInteractor
-import com.example.util.simpletimetracker.domain.statistics.interactor.SettingsDataUpdateInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.ShouldShowRecordDataSelectionInteractor
-import com.example.util.simpletimetracker.domain.notifications.interactor.UpdateExternalViewsInteractor
 import com.example.util.simpletimetracker.domain.record.model.RecordBase
-import com.example.util.simpletimetracker.domain.widget.interactor.WidgetInteractor
 import com.example.util.simpletimetracker.domain.record.model.RecordDataSelectionDialogResult
-import com.example.util.simpletimetracker.domain.recordTag.model.RecordTag
+import com.example.util.simpletimetracker.domain.recordTag.interactor.GetSelectableTagsInteractor
+import com.example.util.simpletimetracker.domain.recordTag.interactor.NeedTagValueSelectionInteractor
+import com.example.util.simpletimetracker.domain.recordTag.interactor.RecordTagInteractor
+import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTypeInteractor
 import com.example.util.simpletimetracker.domain.recordType.model.RecordType
+import com.example.util.simpletimetracker.domain.statistics.interactor.SettingsDataUpdateInteractor
 import com.example.util.simpletimetracker.domain.statistics.model.ChartFilterType
 import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
+import com.example.util.simpletimetracker.domain.widget.interactor.WidgetInteractor
 import com.example.util.simpletimetracker.domain.widget.model.WidgetType
 import com.example.util.simpletimetracker.navigation.Router
 import com.example.util.simpletimetracker.wear_api.WearActivityDTO
 import com.example.util.simpletimetracker.wear_api.WearCommunicationAPI
+import com.example.util.simpletimetracker.wear_api.WearCurrentActivityDTO
 import com.example.util.simpletimetracker.wear_api.WearCurrentStateDTO
 import com.example.util.simpletimetracker.wear_api.WearRecordRepeatResponse
 import com.example.util.simpletimetracker.wear_api.WearSetSettingsRequest
 import com.example.util.simpletimetracker.wear_api.WearSettingsDTO
 import com.example.util.simpletimetracker.wear_api.WearShouldShowTagSelectionRequest
 import com.example.util.simpletimetracker.wear_api.WearShouldShowTagSelectionResponse
+import com.example.util.simpletimetracker.wear_api.WearShouldShowTagValueSelectionRequest
+import com.example.util.simpletimetracker.wear_api.WearShouldShowTagValueSelectionResponse
 import com.example.util.simpletimetracker.wear_api.WearStartActivityRequest
 import com.example.util.simpletimetracker.wear_api.WearStatisticsDTO
 import com.example.util.simpletimetracker.wear_api.WearStatisticsRequest
@@ -54,6 +57,7 @@ class WearDataRepo @Inject constructor(
     private val runningRecordInteractor: RunningRecordInteractor,
     private val recordInteractor: RecordInteractor,
     private val shouldShowRecordDataSelectionInteractor: ShouldShowRecordDataSelectionInteractor,
+    private val needTagValueSelectionInteractor: NeedTagValueSelectionInteractor,
     private val removeRunningRecordMediator: Lazy<RemoveRunningRecordMediator>,
     private val addRunningRecordMediator: Lazy<AddRunningRecordMediator>,
     private val recordRepeatInteractor: Lazy<RecordRepeatInteractor>,
@@ -74,13 +78,15 @@ class WearDataRepo @Inject constructor(
     }
 
     override suspend fun queryCurrentActivities(): WearCurrentStateDTO {
-        val tags = recordTagInteractor.getAll().associateBy(RecordTag::id)
+        val tags = recordTagInteractor.getAll()
 
-        fun mapTags(tagIds: List<Long>): List<WearTagDTO> {
-            return tagIds.mapNotNull { tagId ->
+        fun mapTags(record: RecordBase): List<WearCurrentActivityDTO.TagDTO> {
+            val tagDataMap = record.tags.associateBy { it.tagId }
+            return tags.mapNotNull { tag ->
+                if (tag.id !in tagDataMap.keys) return@mapNotNull null
                 wearDataLocalMapper.map(
-                    recordTag = tags[tagId] ?: return@mapNotNull null,
-                    types = emptyMap(), // Color is not needed.
+                    recordTag = tag,
+                    recordTagData = tagDataMap[tag.id],
                 )
             }
         }
@@ -90,12 +96,12 @@ class WearDataRepo @Inject constructor(
         }
         val runningRecords = runningRecordInteractor.getAll()
         val runningRecordsData = runningRecords.map { record ->
-            wearDataLocalMapper.map(record, mapTags(record.tagIds))
+            wearDataLocalMapper.map(record, mapTags(record))
         }
         val prevRecordsData = recordInteractor
             .getAllPrev(timeStarted = System.currentTimeMillis())
             .map { record ->
-                wearDataLocalMapper.map(record, mapTags(record.tagIds))
+                wearDataLocalMapper.map(record, mapTags(record))
             }
         val suggestionsData = getCurrentActivitySuggestionsInteractor.execute(
             recordTypesMapProvider = recordTypesMapProvider,
@@ -152,10 +158,10 @@ class WearDataRepo @Inject constructor(
     override suspend fun startActivity(request: WearStartActivityRequest) {
         addRunningRecordMediator.get().startTimer(
             typeId = request.id,
-            tags = request.tagIds.map {
+            tags = request.tags.map {
                 RecordBase.Tag(
-                    tagId = it,
-                    numericValue = null, // TODO TAG add value selection to wear
+                    tagId = it.tagId,
+                    numericValue = it.numericValue,
                 )
             },
             comment = "",
@@ -196,6 +202,18 @@ class WearDataRepo @Inject constructor(
         )
         return WearShouldShowTagSelectionResponse(
             shouldShow = RecordDataSelectionDialogResult.Field.Tags in result.fields,
+        )
+    }
+
+    override suspend fun queryShouldShowTagValueSelection(
+        request: WearShouldShowTagValueSelectionRequest,
+    ): WearShouldShowTagValueSelectionResponse {
+        val result = needTagValueSelectionInteractor.execute(
+            selectedTagIds = request.selectedTagIds,
+            clickedTagId = request.clickedTagId,
+        )
+        return WearShouldShowTagValueSelectionResponse(
+            shouldShow = result,
         )
     }
 

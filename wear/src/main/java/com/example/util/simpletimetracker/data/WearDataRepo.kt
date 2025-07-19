@@ -13,12 +13,14 @@ import com.example.util.simpletimetracker.domain.model.WearSetSettings
 import com.example.util.simpletimetracker.domain.model.WearSettings
 import com.example.util.simpletimetracker.domain.model.WearStatistics
 import com.example.util.simpletimetracker.domain.model.WearTag
+import com.example.util.simpletimetracker.domain.model.WearRecordTag
 import com.example.util.simpletimetracker.domain.statistics.model.ChartFilterType
 import com.example.util.simpletimetracker.notification.WearNotificationManager
 import com.example.util.simpletimetracker.wear_api.WearActivityDTO
 import com.example.util.simpletimetracker.wear_api.WearCurrentStateDTO
 import com.example.util.simpletimetracker.wear_api.WearSettingsDTO
 import com.example.util.simpletimetracker.wear_api.WearShouldShowTagSelectionRequest
+import com.example.util.simpletimetracker.wear_api.WearShouldShowTagValueSelectionRequest
 import com.example.util.simpletimetracker.wear_api.WearStartActivityRequest
 import com.example.util.simpletimetracker.wear_api.WearStatisticsDTO
 import com.example.util.simpletimetracker.wear_api.WearStatisticsRequest
@@ -112,9 +114,17 @@ class WearDataRepo @Inject constructor(
         }
     }
 
-    suspend fun startActivity(id: Long, tagIds: List<Long>): Result<Unit> = mutex.withLock {
+    suspend fun startActivity(id: Long, tags: List<WearRecordTag>): Result<Unit> = mutex.withLock {
         return runCatching {
-            val request = WearStartActivityRequest(id, tagIds)
+            val request = WearStartActivityRequest(
+                id = id,
+                tags = tags.map {
+                    WearStartActivityRequest.Tag(
+                        tagId = it.tagId,
+                        numericValue = it.numericValue,
+                    )
+                },
+            )
             wearRPCClient.startActivity(request)
         }
     }
@@ -144,6 +154,16 @@ class WearDataRepo @Inject constructor(
         return runCatching {
             val request = WearShouldShowTagSelectionRequest(activityId)
             wearRPCClient.queryShouldShowTagSelection(request).shouldShow
+        }
+    }
+
+    suspend fun loadShouldShowTagValueSelection(
+        selectedTagIds: List<Long>,
+        clickedTagId: Long,
+    ): Result<Boolean> = mutex.withLock {
+        return runCatching {
+            val request = WearShouldShowTagValueSelectionRequest(selectedTagIds, clickedTagId)
+            wearRPCClient.queryShouldShowTagValueSelection(request).shouldShow
         }
     }
 

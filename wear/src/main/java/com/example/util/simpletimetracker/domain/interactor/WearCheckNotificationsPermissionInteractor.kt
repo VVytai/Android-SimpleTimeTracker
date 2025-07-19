@@ -38,14 +38,9 @@ class WearCheckNotificationsPermissionInteractor @Inject constructor(
         onEnabled: () -> Unit,
         onDisabled: () -> Unit,
     ) {
-        wearActionResolver.setResultListener {
-            val isGranted = it as? Boolean == true
-            if (isGranted) {
-                onEnabled()
-            } else {
-                onDisabled()
-            }
-        }
-        wearActionResolver.requestPermission(Manifest.permission.POST_NOTIFICATIONS)
+        wearActionResolver.requestPermission(
+            permissionId = Manifest.permission.POST_NOTIFICATIONS,
+            onGranted = { isGranted -> if (isGranted) onEnabled() else onDisabled() },
+        )
     }
 }

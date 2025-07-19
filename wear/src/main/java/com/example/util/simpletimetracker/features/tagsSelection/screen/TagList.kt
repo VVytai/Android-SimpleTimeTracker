@@ -168,6 +168,7 @@ private fun WithSomeTags() {
                     tag = TagChipState(
                         id = 123,
                         name = "Sleep",
+                        value = "",
                         color = 0xFF123456,
                         checked = false,
                         mode = TagChipState.TagSelectionMode.SINGLE,
@@ -177,6 +178,7 @@ private fun WithSomeTags() {
                     tag = TagChipState(
                         id = 124,
                         name = "Personal",
+                        value = "",
                         color = 0xFF123456,
                         checked = false,
                         mode = TagChipState.TagSelectionMode.SINGLE,
@@ -197,6 +199,7 @@ private fun MultiSelectMode() {
                     tag = TagChipState(
                         id = 123,
                         name = "Sleep",
+                        value = "123.1",
                         color = 0xFF123456,
                         checked = true,
                         mode = TagChipState.TagSelectionMode.MULTI,
@@ -206,6 +209,7 @@ private fun MultiSelectMode() {
                     tag = TagChipState(
                         id = 124,
                         name = "Personal",
+                        value = "",
                         color = 0xFF123456,
                         checked = false,
                         mode = TagChipState.TagSelectionMode.MULTI,

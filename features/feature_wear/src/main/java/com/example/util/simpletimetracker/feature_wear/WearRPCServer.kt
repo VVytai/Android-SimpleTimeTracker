@@ -10,6 +10,7 @@ import com.example.util.simpletimetracker.wear_api.WearCommunicationAPI
 import com.example.util.simpletimetracker.wear_api.WearRequests
 import com.example.util.simpletimetracker.wear_api.WearSetSettingsRequest
 import com.example.util.simpletimetracker.wear_api.WearShouldShowTagSelectionRequest
+import com.example.util.simpletimetracker.wear_api.WearShouldShowTagValueSelectionRequest
 import com.example.util.simpletimetracker.wear_api.WearStartActivityRequest
 import com.example.util.simpletimetracker.wear_api.WearStatisticsRequest
 import com.example.util.simpletimetracker.wear_api.WearStopActivityRequest
@@ -42,6 +43,7 @@ class WearRPCServer @Inject constructor(
                 WearRequests.REPEAT_ACTIVITY -> onRepeatActivity()
                 WearRequests.QUERY_TAGS_FOR_ACTIVITY -> onQueryTagsForActivity(request)
                 WearRequests.QUERY_SHOULD_SHOW_TAG_SELECTION -> onQueryShouldShowTagSelection(request)
+                WearRequests.QUERY_SHOULD_SHOW_TAG_VALUE_SELECTION -> onQueryShouldShowTagValueSelection(request)
                 WearRequests.QUERY_SETTINGS -> onQuerySettings()
                 WearRequests.SET_SETTINGS -> onSetSettings(request)
                 WearRequests.OPEN_PHONE_APP -> onOpenPhoneApp()
@@ -85,6 +87,11 @@ class WearRPCServer @Inject constructor(
     private suspend fun onQueryShouldShowTagSelection(request: ByteArray): ByteArray? {
         val data: WearShouldShowTagSelectionRequest = mapFromBytes(request) ?: return null
         return mapToBytes(repo.queryShouldShowTagSelection(data))
+    }
+
+    private suspend fun onQueryShouldShowTagValueSelection(request: ByteArray): ByteArray? {
+        val data: WearShouldShowTagValueSelectionRequest = mapFromBytes(request) ?: return null
+        return mapToBytes(repo.queryShouldShowTagValueSelection(data))
     }
 
     private suspend fun onStartActivity(request: ByteArray): ByteArray? {

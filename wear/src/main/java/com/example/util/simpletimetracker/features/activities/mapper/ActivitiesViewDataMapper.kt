@@ -8,6 +8,7 @@ package com.example.util.simpletimetracker.features.activities.mapper
 import androidx.compose.ui.graphics.toArgb
 import com.example.util.simpletimetracker.R
 import com.example.util.simpletimetracker.core.ErrorStateMapper
+import com.example.util.simpletimetracker.core.mapper.RecordTagValueMapper
 import com.example.util.simpletimetracker.data.WearIconMapper
 import com.example.util.simpletimetracker.data.WearResourceRepo
 import com.example.util.simpletimetracker.domain.base.REPEAT_BUTTON_ITEM_ID
@@ -18,7 +19,6 @@ import com.example.util.simpletimetracker.domain.model.WearActivityIcon
 import com.example.util.simpletimetracker.domain.model.WearCurrentActivity
 import com.example.util.simpletimetracker.domain.model.WearLastRecord
 import com.example.util.simpletimetracker.domain.model.WearSettings
-import com.example.util.simpletimetracker.domain.model.WearTag
 import com.example.util.simpletimetracker.features.activities.screen.ActivitiesListState
 import com.example.util.simpletimetracker.features.activities.ui.ActivityChipState
 import com.example.util.simpletimetracker.features.activities.ui.ActivityChipType
@@ -29,6 +29,7 @@ class ActivitiesViewDataMapper @Inject constructor(
     private val wearIconMapper: WearIconMapper,
     private val resourceRepo: WearResourceRepo,
     private val errorStateMapper: ErrorStateMapper,
+    private val recordTagValueMapper: RecordTagValueMapper,
 ) {
 
     fun mapErrorState(): ActivitiesListState.Error {
@@ -202,12 +203,16 @@ class ActivitiesViewDataMapper @Inject constructor(
         }
     }
 
-    private fun mapTagString(tags: List<WearTag>?): String {
-        return tags
-            .orEmpty()
-            .map { it.name }
-            .takeUnless { it.isEmpty() }
-            ?.joinToString(separator = ", ")
-            .orEmpty()
+    private fun mapTagString(
+        tags: List<WearCurrentActivity.Tag>?,
+    ): String {
+        return tags?.joinToString(
+            separator = ", ",
+            transform = { tag ->
+                tag.numericValue?.let { value ->
+                    recordTagValueMapper.getNameWithValue(tag.name, value)
+                } ?: tag.name
+            },
+        ).orEmpty()
     }
 }

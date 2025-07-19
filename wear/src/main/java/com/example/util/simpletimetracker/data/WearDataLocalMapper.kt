@@ -83,6 +83,13 @@ class WearDataLocalMapper @Inject constructor() {
         )
     }
 
+    fun map(dto: WearCurrentActivityDTO.TagDTO): WearCurrentActivity.Tag {
+        return WearCurrentActivity.Tag(
+            name = dto.name,
+            numericValue = dto.numericValue,
+        )
+    }
+
     fun map(dto: WearSettingsDTO): WearSettings {
         return WearSettings(
             allowMultitasking = dto.allowMultitasking,

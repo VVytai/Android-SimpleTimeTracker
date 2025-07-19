@@ -44,8 +44,17 @@ data class WearCurrentActivityDTO(
     @SerializedName("startedAt")
     val startedAt: Long,
     @SerializedName("tags")
-    val tags: List<WearTagDTO>,
-) : Parcelable
+    val tags: List<TagDTO>,
+) : Parcelable {
+
+    @Parcelize
+    data class TagDTO(
+        @SerializedName("name")
+        val name: String,
+        @SerializedName("numericValue")
+        val numericValue: Double?,
+    ) : Parcelable
+}
 
 @Parcelize
 data class WearStatisticsRequest(
@@ -78,7 +87,7 @@ data class WearLastRecordDTO(
     @SerializedName("finishedAt")
     val finishedAt: Long,
     @SerializedName("tags")
-    val tags: List<WearTagDTO>,
+    val tags: List<WearCurrentActivityDTO.TagDTO>,
 ) : Parcelable
 
 @Parcelize
@@ -117,9 +126,18 @@ data class WearSetSettingsRequest(
 data class WearStartActivityRequest(
     @SerializedName("id")
     val id: Long,
-    @SerializedName("tagIds")
-    val tagIds: List<Long>,
-) : Parcelable
+    @SerializedName("tags")
+    val tags: List<Tag>,
+) : Parcelable {
+
+    @Parcelize
+    data class Tag(
+        @SerializedName("tagId")
+        val tagId: Long,
+        @SerializedName("numericValue")
+        val numericValue: Double?,
+    ) : Parcelable
+}
 
 @Parcelize
 data class WearStopActivityRequest(
@@ -135,6 +153,20 @@ data class WearShouldShowTagSelectionRequest(
 
 @Parcelize
 data class WearShouldShowTagSelectionResponse(
+    @SerializedName("shouldShow")
+    val shouldShow: Boolean,
+) : Parcelable
+
+@Parcelize
+data class WearShouldShowTagValueSelectionRequest(
+    @SerializedName("selectedTagIds")
+    val selectedTagIds: List<Long>,
+    @SerializedName("clickedTagId")
+    val clickedTagId: Long,
+) : Parcelable
+
+@Parcelize
+data class WearShouldShowTagValueSelectionResponse(
     @SerializedName("shouldShow")
     val shouldShow: Boolean,
 ) : Parcelable

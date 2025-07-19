@@ -7,14 +7,19 @@ package com.example.util.simpletimetracker.features.tagsSelection.viewModel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.util.simpletimetracker.R
 import com.example.util.simpletimetracker.data.WearDataRepo
+import com.example.util.simpletimetracker.data.WearResourceRepo
 import com.example.util.simpletimetracker.domain.extension.orFalse
+import com.example.util.simpletimetracker.domain.extension.removeIf
 import com.example.util.simpletimetracker.domain.mediator.StartActivityMediator
 import com.example.util.simpletimetracker.domain.model.WearSettings
 import com.example.util.simpletimetracker.domain.model.WearTag
+import com.example.util.simpletimetracker.domain.model.WearRecordTag
 import com.example.util.simpletimetracker.features.tagsSelection.mapper.TagsViewDataMapper
 import com.example.util.simpletimetracker.features.tagsSelection.screen.TagListState
 import com.example.util.simpletimetracker.features.tagsSelection.ui.TagsLoadingState
+import com.example.util.simpletimetracker.navigation.WearActionResolver
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -28,7 +33,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TagsViewModel @Inject constructor(
+    private val resourceRepo: WearResourceRepo,
     private val wearDataRepo: WearDataRepo,
+    private val wearActionResolver: WearActionResolver,
     private val startActivityMediator: StartActivityMediator,
     private val tagsViewDataMapper: TagsViewDataMapper,
 ) : ViewModel() {
@@ -45,7 +52,7 @@ class TagsViewModel @Inject constructor(
     private var isInitialized = false
     private var activityId: Long? = null
     private var tags: List<WearTag> = emptyList()
-    private var selectedTagsIds: List<Long> = emptyList()
+    private var selectedTags: List<WearRecordTag> = emptyList()
     private var settings: WearSettings? = null
 
     // TODO switch to savedStateHandle
@@ -59,7 +66,7 @@ class TagsViewModel @Inject constructor(
     fun onButtonClick(buttonType: TagListState.Item.ButtonType) = viewModelScope.launch {
         when (buttonType) {
             is TagListState.Item.ButtonType.Untagged -> {
-                selectedTagsIds = emptyList()
+                selectedTags = emptyList()
                 if (settings?.recordTagSelectionCloseAfterOne.orFalse()) {
                     val loadingState = TagsLoadingState.LoadingButton(buttonType)
                     startActivity(loadingState)
@@ -75,16 +82,30 @@ class TagsViewModel @Inject constructor(
     }
 
     fun onToggleClick(tagId: Long) = viewModelScope.launch {
-        val currentSelectedTags = selectedTagsIds.toMutableList()
-        selectedTagsIds = currentSelectedTags.apply {
-            if (tagId in this) remove(tagId) else add(tagId)
-        }
+        val currentSelectedTags = selectedTags.toMutableList()
+        val selectedTagIds = selectedTags.map { it.tagId }
+        val isSelected = tagId in selectedTagIds
 
-        if (settings?.recordTagSelectionCloseAfterOne.orFalse()) {
-            val loadingState = TagsLoadingState.LoadingTag(tagId)
-            startActivity(loadingState)
-        } else {
+        if (!isSelected) {
+            _state.value = mapState(TagsLoadingState.LoadingTag(tagId))
+            val needValueSelection = wearDataRepo.loadShouldShowTagValueSelection(
+                selectedTagIds = selectedTagIds,
+                clickedTagId = tagId,
+            )
             _state.value = mapState()
+            if (needValueSelection.isFailure) {
+                showError()
+                return@launch
+            }
+            if (needValueSelection.getOrNull().orFalse()) {
+                openTagValueSelection(tagId)
+            } else {
+                selectedTags = currentSelectedTags.addOrRemove(tagId)
+                onTagSelected(tagId)
+            }
+        } else {
+            selectedTags = currentSelectedTags.addOrRemove(tagId)
+            onTagSelected(tagId)
         }
     }
 
@@ -107,6 +128,30 @@ class TagsViewModel @Inject constructor(
         }
     }
 
+    private suspend fun onTagSelected(tagId: Long) {
+        if (settings?.recordTagSelectionCloseAfterOne.orFalse()) {
+            val loadingState = TagsLoadingState.LoadingTag(tagId)
+            startActivity(loadingState)
+        } else {
+            _state.value = mapState()
+        }
+    }
+
+    private fun openTagValueSelection(tagId: Long) {
+        val label = resourceRepo.getString(R.string.change_record_type_value_selection_hint)
+        wearActionResolver.openKeyboard(label) { newText ->
+            val value = newText
+                ?.replace(',', '.')
+                ?.toDoubleOrNull()
+            onTagValueSelected(tagId = tagId, value = value)
+        }
+    }
+
+    private fun onTagValueSelected(tagId: Long, value: Double?) = viewModelScope.launch {
+        selectedTags = selectedTags + WearRecordTag(tagId = tagId, numericValue = value)
+        onTagSelected(tagId)
+    }
+
     private suspend fun startActivity(
         loadingState: TagsLoadingState,
     ) {
@@ -116,7 +161,7 @@ class TagsViewModel @Inject constructor(
 
         val result = startActivityMediator.start(
             activityId = activityId,
-            tagIds = selectedTagsIds,
+            tags = selectedTags,
         )
         if (result.isFailure) {
             showError()
@@ -134,13 +179,23 @@ class TagsViewModel @Inject constructor(
     ): TagListState {
         return tagsViewDataMapper.mapState(
             tags = tags,
-            selectedTagIds = selectedTagsIds,
+            selectedTags = selectedTags,
             settings = settings,
             loadingState = loadingState,
         )
     }
 
+    private fun List<WearRecordTag>.addOrRemove(itemId: Long): List<WearRecordTag> {
+        val ids = this.map { it.tagId }
+        val tag = WearRecordTag(tagId = itemId, numericValue = null)
+        return if (itemId in ids) {
+            removeIf { it.tagId == itemId }
+        } else {
+            toMutableList().apply { add(tag) }
+        }
+    }
+
     sealed interface Effect {
-        object OnComplete : Effect
+        data object OnComplete : Effect
     }
 }

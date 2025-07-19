@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.wear.compose.material.Checkbox
 import androidx.wear.compose.material.CheckboxDefaults
 import androidx.wear.compose.material.Chip
@@ -32,6 +33,7 @@ import com.example.util.simpletimetracker.utils.getCoercedFontScale
 data class TagChipState(
     val id: Long,
     val name: String,
+    val value: String,
     val color: Long,
     val checked: Boolean,
     val mode: TagSelectionMode,
@@ -93,6 +95,17 @@ private fun SingleSelectTagChip(
                 )
             }
         },
+        secondaryLabel = {
+            if (state.value.isNotEmpty()) {
+                Text(
+                    text = state.value,
+                    color = Color(0x99FFFFFF),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    fontSize = 10.sp,
+                )
+            }
+        },
         colors = ChipDefaults.chipColors(
             backgroundColor = Color(state.color),
         ),
@@ -132,6 +145,17 @@ private fun MultiSelectTagChip(
                 )
             }
         },
+        secondaryLabel = {
+            if (state.value.isNotEmpty()) {
+                Text(
+                    text = state.value,
+                    color = Color(0x99FFFFFF),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    fontSize = 10.sp,
+                )
+            }
+        },
         toggleControl = {
             Checkbox(
                 checked = state.checked,
@@ -161,6 +185,7 @@ private fun Default() {
         state = TagChipState(
             id = 123,
             name = "Sleep",
+            value = "",
             color = 0xFF123456,
             checked = false,
             mode = TagChipState.TagSelectionMode.SINGLE,
@@ -175,6 +200,37 @@ private fun DefaultWithFontScale() {
         state = TagChipState(
             id = 123,
             name = "Sleep",
+            value = "",
+            color = 0xFF123456,
+            checked = false,
+            mode = TagChipState.TagSelectionMode.SINGLE,
+        ),
+    )
+}
+
+@Preview(device = WearDevices.LARGE_ROUND)
+@Composable
+private fun DefaultValue() {
+    TagChip(
+        state = TagChipState(
+            id = 123,
+            name = "Sleep",
+            value = "123.1",
+            color = 0xFF123456,
+            checked = false,
+            mode = TagChipState.TagSelectionMode.SINGLE,
+        ),
+    )
+}
+
+@Preview(device = WearDevices.LARGE_ROUND, fontScale = 2f)
+@Composable
+private fun DefaultValueWithFontScale() {
+    TagChip(
+        state = TagChipState(
+            id = 123,
+            name = "Sleep",
+            value = "123.1",
             color = 0xFF123456,
             checked = false,
             mode = TagChipState.TagSelectionMode.SINGLE,
@@ -189,6 +245,7 @@ private fun Loading() {
         state = TagChipState(
             id = 123,
             name = "Sleep",
+            value = "",
             color = 0xFF123456,
             checked = false,
             mode = TagChipState.TagSelectionMode.SINGLE,
@@ -204,6 +261,7 @@ private fun MultiSelectMode() {
         state = TagChipState(
             id = 123,
             name = "Sleep",
+            value = "",
             color = 0xFF654321,
             checked = false,
             mode = TagChipState.TagSelectionMode.MULTI,
@@ -218,6 +276,37 @@ private fun MultiSelectModeFontScale() {
         state = TagChipState(
             id = 123,
             name = "Sleep",
+            value = "",
+            color = 0xFF654321,
+            checked = false,
+            mode = TagChipState.TagSelectionMode.MULTI,
+        ),
+    )
+}
+
+@Preview(device = WearDevices.LARGE_ROUND)
+@Composable
+private fun MultiSelectModeWithValue() {
+    TagChip(
+        state = TagChipState(
+            id = 123,
+            name = "Sleep",
+            value = "123.1",
+            color = 0xFF654321,
+            checked = false,
+            mode = TagChipState.TagSelectionMode.MULTI,
+        ),
+    )
+}
+
+@Preview(device = WearDevices.LARGE_ROUND, fontScale = 2f)
+@Composable
+private fun MultiSelectModeWithValueFontScale() {
+    TagChip(
+        state = TagChipState(
+            id = 123,
+            name = "Sleep",
+            value = "123.1",
             color = 0xFF654321,
             checked = false,
             mode = TagChipState.TagSelectionMode.MULTI,
@@ -232,6 +321,7 @@ private fun MultiSelectChecked() {
         state = TagChipState(
             id = 123,
             name = "Sleep",
+            value = "",
             color = 0xFF654321,
             checked = true,
             mode = TagChipState.TagSelectionMode.MULTI,
@@ -246,6 +336,7 @@ private fun MultiSelectLoading() {
         state = TagChipState(
             id = 123,
             name = "Sleep",
+            value = "",
             color = 0xFF654321,
             checked = false,
             mode = TagChipState.TagSelectionMode.MULTI,

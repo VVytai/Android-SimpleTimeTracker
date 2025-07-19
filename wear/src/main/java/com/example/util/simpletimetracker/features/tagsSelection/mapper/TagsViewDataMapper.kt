@@ -9,10 +9,12 @@ import androidx.annotation.StringRes
 import androidx.compose.ui.graphics.Color
 import com.example.util.simpletimetracker.R
 import com.example.util.simpletimetracker.core.ErrorStateMapper
+import com.example.util.simpletimetracker.core.mapper.RecordTagValueMapper
 import com.example.util.simpletimetracker.data.WearResourceRepo
 import com.example.util.simpletimetracker.domain.extension.orFalse
 import com.example.util.simpletimetracker.domain.model.WearSettings
 import com.example.util.simpletimetracker.domain.model.WearTag
+import com.example.util.simpletimetracker.domain.model.WearRecordTag
 import com.example.util.simpletimetracker.features.tagsSelection.screen.TagListState
 import com.example.util.simpletimetracker.features.tagsSelection.ui.TagChipState
 import com.example.util.simpletimetracker.features.tagsSelection.ui.TagSelectionButtonState
@@ -24,6 +26,7 @@ import javax.inject.Inject
 class TagsViewDataMapper @Inject constructor(
     private val resourceRepo: WearResourceRepo,
     private val errorStateMapper: ErrorStateMapper,
+    private val recordTagValueMapper: RecordTagValueMapper,
 ) {
 
     fun mapErrorState(): TagListState.Error {
@@ -32,7 +35,7 @@ class TagsViewDataMapper @Inject constructor(
 
     fun mapState(
         tags: List<WearTag>,
-        selectedTagIds: List<Long>,
+        selectedTags: List<WearRecordTag>,
         settings: WearSettings?,
         loadingState: TagsLoadingState,
     ): TagListState {
@@ -41,7 +44,7 @@ class TagsViewDataMapper @Inject constructor(
         } else {
             mapContentState(
                 tags = tags,
-                selectedTagIds = selectedTagIds,
+                selectedTags = selectedTags,
                 settings = settings,
                 loadingState = loadingState,
             )
@@ -56,10 +59,12 @@ class TagsViewDataMapper @Inject constructor(
 
     private fun mapContentState(
         tags: List<WearTag>,
-        selectedTagIds: List<Long>,
+        selectedTags: List<WearRecordTag>,
         settings: WearSettings?,
         loadingState: TagsLoadingState,
     ): TagListState.Content {
+        val selectedTagsMap = selectedTags.associateBy { it.tagId }
+        val selectedTagIds = selectedTagsMap.keys
         val mode = if (settings?.recordTagSelectionCloseAfterOne.orFalse()) {
             TagChipState.TagSelectionMode.SINGLE
         } else {
@@ -74,6 +79,8 @@ class TagsViewDataMapper @Inject constructor(
                 tag = TagChipState(
                     id = it.id,
                     name = it.name,
+                    value = selectedTagsMap[it.id]?.numericValue
+                        ?.let(recordTagValueMapper::map).orEmpty(),
                     color = it.color,
                     checked = it.id in selectedTagIds,
                     mode = mode,

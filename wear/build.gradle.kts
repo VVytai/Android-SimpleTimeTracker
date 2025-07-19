@@ -64,6 +64,7 @@ dependencies {
     implementation(project(":core:common"))
 
     implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.wear.input)
     implementation(libs.google.services)
     implementation(libs.google.gson)
     implementation(libs.google.dagger)

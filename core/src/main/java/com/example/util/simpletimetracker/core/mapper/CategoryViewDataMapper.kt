@@ -26,7 +26,7 @@ class CategoryViewDataMapper @Inject constructor(
     private val iconMapper: IconMapper,
     private val resourceRepo: ResourceRepo,
     private val recordTagViewDataMapper: RecordTagViewDataMapper,
-    private val recordTagFullNameMapper: RecordTagFullNameMapper,
+    private val recordTagValueMapper: RecordTagValueMapper,
 ) {
 
     fun mapCategory(
@@ -117,7 +117,7 @@ class CategoryViewDataMapper @Inject constructor(
         )
         val value = tagData?.numericValue
         return if (value != null) {
-            val newName = recordTagFullNameMapper.getNameWithValue(
+            val newName = recordTagValueMapper.getNameWithValue(
                 name = viewData.name,
                 value = value,
             )

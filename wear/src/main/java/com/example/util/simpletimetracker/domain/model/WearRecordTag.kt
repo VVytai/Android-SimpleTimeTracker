@@ -5,14 +5,7 @@
  */
 package com.example.util.simpletimetracker.domain.model
 
-data class WearCurrentActivity(
-    val id: Long,
-    val startedAt: Long,
-    val tags: List<Tag>,
-) {
-
-    data class Tag(
-        val name: String,
-        val numericValue: Double?,
-    )
-}
+data class WearRecordTag(
+    val tagId: Long,
+    val numericValue: Double?,
+)
