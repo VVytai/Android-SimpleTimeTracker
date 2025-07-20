@@ -42,7 +42,7 @@ class ChangeRunningRecordViewDataInteractor @Inject constructor(
         val recordPreview = if (type != null) {
             getRunningRecordViewDataMediator.execute(
                 type = type,
-                tags = recordTagInteractor.getAll().filter { it.id in record.tagIds },
+                tags = recordTagInteractor.getAll(),
                 goals = goals,
                 record = record,
                 nowIconVisible = fromRecords,

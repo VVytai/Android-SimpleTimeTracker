@@ -1,12 +1,8 @@
 package com.example.util.simpletimetracker.feature_change_record.mapper
 
 import com.example.util.simpletimetracker.core.mapper.ChangeRecordDateTimeMapper
-import com.example.util.simpletimetracker.core.mapper.ColorMapper
-import com.example.util.simpletimetracker.core.mapper.IconMapper
 import com.example.util.simpletimetracker.core.mapper.RecordQuickActionMapper
-import com.example.util.simpletimetracker.core.mapper.RecordTagFullNameMapper
 import com.example.util.simpletimetracker.core.mapper.RecordViewDataMapper
-import com.example.util.simpletimetracker.core.mapper.TimeMapper
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.domain.record.model.Record
 import com.example.util.simpletimetracker.domain.recordAction.model.RecordQuickAction
@@ -22,14 +18,10 @@ import com.example.util.simpletimetracker.feature_change_record.viewData.ChangeR
 import javax.inject.Inject
 
 class ChangeRecordViewDataMapper @Inject constructor(
-    private val iconMapper: IconMapper,
-    private val colorMapper: ColorMapper,
-    private val timeMapper: TimeMapper,
     private val resourceRepo: ResourceRepo,
     private val recordViewDataMapper: RecordViewDataMapper,
     private val changeRecordDateTimeMapper: ChangeRecordDateTimeMapper,
     private val recordQuickActionMapper: RecordQuickActionMapper,
-    private val recordTagFullNameMapper: RecordTagFullNameMapper,
 ) {
 
     fun map(
@@ -42,23 +34,28 @@ class ChangeRecordViewDataMapper @Inject constructor(
         showSeconds: Boolean,
         dateTimeFieldState: ChangeRecordDateTimeFieldsState,
     ): ChangeRecordViewData {
+        val recordPreview = if (recordType != null) {
+            recordViewDataMapper.map(
+                record = record,
+                recordType = recordType,
+                recordTags = recordTags,
+                isDarkTheme = isDarkTheme,
+                useMilitaryTime = useMilitaryTime,
+                useProportionalMinutes = useProportionalMinutes,
+                showSeconds = showSeconds,
+            )
+        } else {
+            recordViewDataMapper.mapToUntracked(
+                timeStarted = record.timeStarted,
+                timeEnded = record.timeEnded,
+                isDarkTheme = isDarkTheme,
+                useMilitaryTime = useMilitaryTime,
+                useProportionalMinutes = useProportionalMinutes,
+                showSeconds = showSeconds,
+            )
+        }
         return ChangeRecordViewData(
-            name = recordType?.name
-                ?: resourceRepo.getString(R.string.untracked_time_name),
-            tagName = recordTagFullNameMapper.getFullName(
-                tags = recordTags,
-                tagData = record.tags,
-            ),
-            timeStarted = timeMapper.formatTime(
-                time = record.timeStarted,
-                useMilitaryTime = useMilitaryTime,
-                showSeconds = showSeconds,
-            ),
-            timeFinished = timeMapper.formatTime(
-                time = record.timeEnded,
-                useMilitaryTime = useMilitaryTime,
-                showSeconds = showSeconds,
-            ),
+            recordPreview = recordPreview,
             dateTimeStarted = changeRecordDateTimeMapper.map(
                 param = when (dateTimeFieldState.start) {
                     is ChangeRecordDateTimeFieldsState.State.DateTime -> {
@@ -85,20 +82,6 @@ class ChangeRecordViewDataMapper @Inject constructor(
                 useMilitaryTimeFormat = useMilitaryTime,
                 showSeconds = showSeconds,
             ),
-            duration = timeMapper.formatInterval(
-                interval = recordViewDataMapper.mapDuration(
-                    record = record,
-                    showSeconds = showSeconds,
-                ),
-                forceSeconds = showSeconds,
-                useProportionalMinutes = useProportionalMinutes,
-            ),
-            iconId = recordType?.icon.orEmpty()
-                .let(iconMapper::mapIcon),
-            color = recordType?.color
-                ?.let { colorMapper.mapToColorInt(it, isDarkTheme) }
-                ?: colorMapper.toUntrackedColor(isDarkTheme),
-            comment = record.comment,
         )
     }
 
@@ -109,18 +92,18 @@ class ChangeRecordViewDataMapper @Inject constructor(
         timeEndedChanged: Boolean,
     ): ChangeRecordSimpleViewData {
         return ChangeRecordSimpleViewData(
-            name = preview.name,
-            timeStarted = preview.timeStarted,
+            name = preview.recordPreview.name,
+            timeStarted = preview.recordPreview.timeStarted,
             timeEnded = if (showTimeEnded) {
-                preview.timeFinished
+                preview.recordPreview.timeFinished
             } else {
                 ""
             },
             timeStartedChanged = timeStartedChanged,
             timeEndedChanged = timeEndedChanged,
-            duration = preview.duration,
-            iconId = preview.iconId,
-            color = preview.color,
+            duration = preview.recordPreview.duration,
+            iconId = preview.recordPreview.iconId,
+            color = preview.recordPreview.color,
         )
     }
 

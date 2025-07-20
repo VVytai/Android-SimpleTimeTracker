@@ -58,7 +58,7 @@ class RecordsAllViewDataInteractor @Inject constructor(
                         recordViewDataMapper.map(
                             record = record,
                             recordType = recordTypes[record.typeId] ?: return@mapNotNull null,
-                            recordTags = recordTags.filter { it.id in record.tagIds },
+                            recordTags = recordTags,
                             isDarkTheme = isDarkTheme,
                             useMilitaryTime = useMilitaryTime,
                             useProportionalMinutes = useProportionalMinutes,
@@ -76,7 +76,7 @@ class RecordsAllViewDataInteractor @Inject constructor(
                     }
                     is RunningRecord -> getRunningRecordViewDataMediator.execute(
                         type = recordTypes[record.id] ?: return@mapNotNull null,
-                        tags = recordTags.filter { it.id in record.tagIds },
+                        tags = recordTags,
                         goals = goals[record.id].orEmpty(),
                         record = record,
                         nowIconVisible = true,

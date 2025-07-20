@@ -16,6 +16,7 @@ import com.example.util.simpletimetracker.core.extension.toViewData
 import com.example.util.simpletimetracker.core.sharedViewModel.RemoveRecordViewModel
 import com.example.util.simpletimetracker.core.utils.InsetConfiguration
 import com.example.util.simpletimetracker.core.utils.fragmentArgumentDelegate
+import com.example.util.simpletimetracker.feature_base_adapter.record.RecordViewData
 import com.example.util.simpletimetracker.feature_change_record.viewData.ChangeRecordViewData
 import com.example.util.simpletimetracker.feature_change_record.viewModel.ChangeRecordViewModel
 import com.example.util.simpletimetracker.feature_views.extension.animateColor
@@ -128,16 +129,21 @@ class ChangeRecordFragment :
         else -> null
     }?.let { preview ->
         ChangeRecordViewData(
-            name = preview.name,
-            tagName = preview.tagName,
-            timeStarted = preview.timeStarted,
-            timeFinished = preview.timeFinished,
+            recordPreview = RecordViewData.Tracked(
+                id = 0, // Doesn't matter for preview.
+                timeStartedTimestamp = 0,
+                timeEndedTimestamp = 0,
+                name = preview.name,
+                tagName = preview.tagName,
+                timeStarted = preview.timeStarted,
+                timeFinished = preview.timeFinished,
+                duration = preview.duration,
+                iconId = preview.iconId.toViewData(),
+                color = preview.color,
+                comment = preview.comment,
+            ),
             dateTimeStarted = preview.timeStartedDateTime.toViewData(),
             dateTimeFinished = preview.timeEndedDateTime.toViewData(),
-            duration = preview.duration,
-            iconId = preview.iconId.toViewData(),
-            color = preview.color,
-            comment = preview.comment,
         ).let { updatePreview(it, animated = false) }
 
         core.onSetPreview(
@@ -152,23 +158,23 @@ class ChangeRecordFragment :
         animated: Boolean = true,
     ) = with(binding.layoutChangeRecordCore) {
         with(binding.previewChangeRecord) {
-            itemName = item.name
-            itemTagName = item.tagName
-            itemIcon = item.iconId
-            itemTimeStarted = item.timeStarted
-            itemTimeEnded = item.timeFinished
-            itemDuration = item.duration
-            itemComment = item.comment
+            itemName = item.recordPreview.name
+            itemTagName = item.recordPreview.tagName
+            itemIcon = item.recordPreview.iconId
+            itemTimeStarted = item.recordPreview.timeStarted
+            itemTimeEnded = item.recordPreview.timeFinished
+            itemDuration = item.recordPreview.duration
+            itemComment = item.recordPreview.comment
 
             if (animated) {
                 typeColorAnimator?.cancel()
                 typeColorAnimator = animateColor(
                     from = itemColor,
-                    to = item.color,
+                    to = item.recordPreview.color,
                     doOnUpdate = { value -> itemColor = value },
                 )
             } else {
-                itemColor = item.color
+                itemColor = item.recordPreview.color
             }
         }
 
@@ -187,8 +193,8 @@ class ChangeRecordFragment :
 
         core.onSetPreview(
             binding = this,
-            color = item.color,
-            iconId = item.iconId,
+            color = item.recordPreview.color,
+            iconId = item.recordPreview.iconId,
         )
     }
 

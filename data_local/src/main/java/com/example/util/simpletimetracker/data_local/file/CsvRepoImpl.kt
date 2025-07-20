@@ -32,6 +32,7 @@ import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.io.BufferedOutputStream
 import androidx.core.net.toUri
+import com.example.util.simpletimetracker.domain.record.model.RecordBase
 
 class CsvRepoImpl @Inject constructor(
     private val contentResolver: ContentResolver,
@@ -75,11 +76,12 @@ class CsvRepoImpl @Inject constructor(
             records
                 .sortedBy { it.timeStarted }
                 .forEach { record ->
+                    val tagIds = record.tags.map(RecordBase.Tag::tagId)
                     toCsvString(
                         record = record,
                         recordType = recordTypes[record.typeId],
                         categories = typeToCategories[record.typeId].orEmpty(),
-                        recordTags = recordTags.filter { it.id in record.tagIds },
+                        recordTags = recordTags.filter { it.id in tagIds },
                     )
                         ?.toByteArray()
                         ?.let { fileOutputStream?.write(it) }

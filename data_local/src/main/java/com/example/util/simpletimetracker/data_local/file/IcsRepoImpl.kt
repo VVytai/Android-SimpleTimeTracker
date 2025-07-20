@@ -27,6 +27,7 @@ import java.util.Locale
 import java.util.TimeZone
 import javax.inject.Inject
 import androidx.core.net.toUri
+import com.example.util.simpletimetracker.domain.record.model.RecordBase
 
 class IcsRepoImpl @Inject constructor(
     private val contentResolver: ContentResolver,
@@ -80,11 +81,12 @@ class IcsRepoImpl @Inject constructor(
             records
                 .sortedBy { it.timeStarted }
                 .forEach { record ->
+                    val tagIds = record.tags.map(RecordBase.Tag::tagId)
                     toIcsString(
                         record = record,
                         recordType = recordTypes[record.typeId],
                         categories = typeToCategories[record.typeId].orEmpty(),
-                        recordTags = recordTags.filter { it.id in record.tagIds },
+                        recordTags = recordTags.filter { it.id in tagIds },
                     )
                         ?.toByteArray()
                         ?.let { fileOutputStream?.write(it) }

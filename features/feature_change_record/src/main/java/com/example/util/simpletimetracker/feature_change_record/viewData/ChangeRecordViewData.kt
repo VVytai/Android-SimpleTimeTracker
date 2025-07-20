@@ -1,19 +1,10 @@
 package com.example.util.simpletimetracker.feature_change_record.viewData
 
-import androidx.annotation.ColorInt
 import com.example.util.simpletimetracker.core.viewData.ChangeRecordDateTimeState
-import com.example.util.simpletimetracker.feature_views.viewData.RecordTypeIcon
+import com.example.util.simpletimetracker.feature_base_adapter.record.RecordViewData
 
 data class ChangeRecordViewData(
-    // TODO TAG add recordPreview: RecordViewData? like in running records.
-    val name: String,
-    val tagName: String,
-    val timeStarted: String,
-    val timeFinished: String,
+    val recordPreview: RecordViewData,
     val dateTimeStarted: ChangeRecordDateTimeState,
     val dateTimeFinished: ChangeRecordDateTimeState,
-    val duration: String,
-    val iconId: RecordTypeIcon,
-    @ColorInt val color: Int,
-    val comment: String,
 )

@@ -36,7 +36,7 @@ class ChangeRecordViewDataInteractor @Inject constructor(
     ): ChangeRecordViewData {
         // TODO pass cached data?
         val type = recordTypeInteractor.get(record.typeId)
-        val tags = recordTagInteractor.getAll().filter { it.id in record.tagIds }
+        val tags = recordTagInteractor.getAll()
         val isDarkTheme = prefsInteractor.getDarkMode()
         val useMilitaryTime = prefsInteractor.getUseMilitaryTimeFormat()
         val useProportionalMinutes = prefsInteractor.getUseProportionalMinutes()

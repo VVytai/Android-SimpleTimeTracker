@@ -32,12 +32,12 @@ class StatisticsTagInteractor @Inject constructor(
 
         allRecords.forEach { record ->
             val isUntracked = record.typeIds.any { it == UNTRACKED_ITEM_ID }
-            record.tagIds.forEach { tagId ->
-                tags.getOrPut(tagId) { mutableListOf() }.add(record)
+            record.tags.forEach { tag ->
+                tags.getOrPut(tag.tagId) { mutableListOf() }.add(record)
             }
             if (isUntracked) {
                 tags.getOrPut(UNTRACKED_ITEM_ID) { mutableListOf() }.add(record)
-            } else if (addUncategorized && record.tagIds.isEmpty()) {
+            } else if (addUncategorized && record.tags.isEmpty()) {
                 tags.getOrPut(UNCATEGORIZED_ITEM_ID) { mutableListOf() }.add(record)
             }
         }

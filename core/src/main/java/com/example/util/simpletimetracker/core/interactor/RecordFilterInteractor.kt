@@ -228,6 +228,7 @@ class RecordFilterInteractor @Inject constructor(
 
         fun RecordBase.selectedByTag(): Boolean {
             if (selectedTagItems.isEmpty()) return true
+            val tagIds = tags.map(RecordBase.Tag::tagId)
             return if (tagIds.isNotEmpty()) {
                 tagIds.any { tagId -> tagId in selectedTaggedIds }
             } else {
@@ -237,6 +238,7 @@ class RecordFilterInteractor @Inject constructor(
 
         fun RecordBase.filteredByTag(): Boolean {
             if (filteredTagItems.isEmpty()) return false
+            val tagIds = tags.map(RecordBase.Tag::tagId)
             return if (tagIds.isNotEmpty()) {
                 tagIds.any { tagId -> tagId in filteredTaggedIds }
             } else {

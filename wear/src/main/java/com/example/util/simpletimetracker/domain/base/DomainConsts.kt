@@ -12,4 +12,3 @@ const val REPEAT_BUTTON_ITEM_ID = -4L
 
 const val TAG_VALUE_DECIMAL_DELIMITER = '.'
 const val TAG_VALUE_MINUS_SIGN = '−'
-

@@ -5,6 +5,7 @@ import com.example.util.simpletimetracker.core.R
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.domain.extension.dropSeconds
 import com.example.util.simpletimetracker.domain.record.model.Record
+import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.domain.recordTag.model.RecordTag
 import com.example.util.simpletimetracker.domain.recordType.model.RecordType
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
@@ -34,13 +35,15 @@ class RecordViewDataMapper @Inject constructor(
         useProportionalMinutes: Boolean,
         showSeconds: Boolean,
     ): RecordViewData.Tracked {
+        val tagIds = record.tags.map(RecordBase.Tag::tagId)
+
         return RecordViewData.Tracked(
             id = record.id,
             timeStartedTimestamp = record.timeStarted,
             timeEndedTimestamp = record.timeEnded,
             name = recordType.name,
             tagName = recordTagFullNameMapper.getFullName(
-                tags = recordTags,
+                tags = recordTags.filter { it.id in tagIds },
                 tagData = record.tags,
             ),
             timeStarted = timeMapper.formatTime(
@@ -82,7 +85,7 @@ class RecordViewDataMapper @Inject constructor(
         return map(
             record = record,
             recordType = recordTypes[record.typeId] ?: return null,
-            recordTags = recordTags.filter { it.id in record.tagIds },
+            recordTags = recordTags,
             isDarkTheme = isDarkTheme,
             useMilitaryTime = useMilitaryTime,
             useProportionalMinutes = useProportionalMinutes,

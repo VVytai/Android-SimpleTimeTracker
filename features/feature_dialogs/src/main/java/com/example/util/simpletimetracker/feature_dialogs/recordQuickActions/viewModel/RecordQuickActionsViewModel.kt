@@ -302,7 +302,7 @@ class RecordQuickActionsViewModel @Inject constructor(
         } else {
             val record = recordQuickActionsViewDataInteractor.getRecord(extra)
             typeIds = listOfNotNull(record?.typeIds?.firstOrNull())
-            selectedTypeIds = record?.tagIds.orEmpty()
+            selectedTypeIds = record?.tags?.map(RecordBase.Tag::tagId).orEmpty()
             selectedTagValues = record?.tags.orEmpty()
         }
 

@@ -51,7 +51,7 @@ class GetDuplicatedRecordsInteractor @Inject constructor() {
             if (duplications.size < 2) return@forEach
             // This record will not be counted as duplication.
             val originalRecord = duplications.firstOrNull {
-                it.tagIds.isNotEmpty() ||
+                it.tags.isNotEmpty() ||
                     it.comment.isNotEmpty()
             } ?: duplications.firstOrNull()
             duplications.forEach { record ->

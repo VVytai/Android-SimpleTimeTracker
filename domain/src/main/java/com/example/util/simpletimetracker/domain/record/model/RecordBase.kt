@@ -8,7 +8,6 @@ sealed interface RecordBase {
     val tags: List<Tag>
 
     val duration: Long get() = timeEnded - timeStarted
-    val tagIds: List<Long> get() = tags.map { it.tagId } // TODO TAG not good, maps every time
 
     data class Tag(
         val tagId: Long,

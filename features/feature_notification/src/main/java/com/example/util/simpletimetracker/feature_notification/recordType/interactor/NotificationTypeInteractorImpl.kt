@@ -17,6 +17,7 @@ import com.example.util.simpletimetracker.domain.recordTag.interactor.RecordTagI
 import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTypeGoalInteractor
 import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTypeInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.RunningRecordInteractor
+import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
 import com.example.util.simpletimetracker.domain.recordTag.model.RecordTag
 import com.example.util.simpletimetracker.domain.recordType.model.RecordType
@@ -128,7 +129,7 @@ class NotificationTypeInteractorImpl @Inject constructor(
             recordType = recordType,
             goal = goalTime,
             runningRecord = runningRecord,
-            recordTags = recordTags.filter { it.id in runningRecord.tagIds },
+            recordTags = recordTags,
             dailyCurrent = getCurrentRecordsDurationInteractor.getDailyCurrent(runningRecord),
             isDarkTheme = isDarkTheme,
             useMilitaryTime = useMilitaryTime,
@@ -207,7 +208,7 @@ class NotificationTypeInteractorImpl @Inject constructor(
                     recordType = recordTypes[runningRecord.id],
                     goal = goalTime,
                     runningRecord = runningRecord,
-                    recordTags = recordTags.filter { it.id in runningRecord.tagIds },
+                    recordTags = recordTags,
                     dailyCurrent = getCurrentRecordsDurationInteractor.getDailyCurrent(runningRecord),
                     isDarkTheme = isDarkTheme,
                     useMilitaryTime = useMilitaryTime,
@@ -236,6 +237,7 @@ class NotificationTypeInteractorImpl @Inject constructor(
     ) {
         if (recordType == null) return
 
+        val tagIds = runningRecord.tags.map(RecordBase.Tag::tagId)
         val goalSubtype = goal?.subtype ?: RecordTypeGoal.Subtype.Goal
         val goalSubtypeString = when (goalSubtype) {
             is RecordTypeGoal.Subtype.Goal -> R.string.change_record_type_goal_time_hint
@@ -253,7 +255,7 @@ class NotificationTypeInteractorImpl @Inject constructor(
             color = colorMapper.mapToColorInt(recordType.color, isDarkTheme),
             text = notificationCommonMapper.getNotificationText(
                 recordType = recordType,
-                recordTags = recordTags,
+                recordTags = recordTags.filter { it.id in tagIds },
                 recordTagsData = runningRecord.tags,
             ),
             timeStarted = timeMapper.formatTime(

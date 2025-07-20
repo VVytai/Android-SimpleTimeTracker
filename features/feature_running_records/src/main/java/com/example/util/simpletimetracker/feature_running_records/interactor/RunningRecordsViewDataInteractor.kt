@@ -98,7 +98,7 @@ class RunningRecordsViewDataInteractor @Inject constructor(
                     .mapNotNull { runningRecord ->
                         getRunningRecordViewDataMediator.execute(
                             type = recordTypesMap[runningRecord.id] ?: return@mapNotNull null,
-                            tags = recordTags.filter { it.id in runningRecord.tagIds },
+                            tags = recordTags,
                             goals = goals[runningRecord.id].orEmpty(),
                             record = runningRecord,
                             nowIconVisible = false,

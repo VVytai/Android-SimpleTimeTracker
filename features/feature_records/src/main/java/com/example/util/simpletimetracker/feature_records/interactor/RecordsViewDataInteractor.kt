@@ -30,6 +30,7 @@ import com.example.util.simpletimetracker.domain.record.model.RunningRecord
 import com.example.util.simpletimetracker.domain.record.interactor.GetUntrackedRecordsInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.RecordsContainerMultiselectInteractor
 import com.example.util.simpletimetracker.domain.record.model.MultiSelectedRecordId
+import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.domain.statistics.model.ChartFilterType
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.record.RecordViewData
@@ -316,7 +317,7 @@ class RecordsViewDataInteractor @Inject constructor(
                 recordsViewDataMapper.map(
                     record = record,
                     recordType = recordTypes[record.typeId] ?: return@mapNotNull null,
-                    recordTags = recordTags.filter { it.id in record.tagIds },
+                    recordTags = recordTags,
                     range = range,
                     isDarkTheme = isDarkTheme,
                     useMilitaryTime = useMilitaryTime,
@@ -328,7 +329,7 @@ class RecordsViewDataInteractor @Inject constructor(
                         data = RecordHolder.Data.RecordData(
                             value = it,
                             typeId = record.typeId,
-                            tagIds = record.tagIds,
+                            tagIds = record.tags.map(RecordBase.Tag::tagId),
                         ),
                     )
                 }
@@ -341,7 +342,7 @@ class RecordsViewDataInteractor @Inject constructor(
             .mapNotNull { runningRecord ->
                 getRunningRecordViewDataMediator.execute(
                     type = recordTypes[runningRecord.id] ?: return@mapNotNull null,
-                    tags = recordTags.filter { it.id in runningRecord.tagIds },
+                    tags = recordTags,
                     goals = goals[runningRecord.id].orEmpty(),
                     record = runningRecord,
                     nowIconVisible = true,
@@ -357,7 +358,7 @@ class RecordsViewDataInteractor @Inject constructor(
                         data = RecordHolder.Data.RunningRecordData(
                             value = it,
                             typeId = runningRecord.id,
-                            tagIds = runningRecord.tagIds,
+                            tagIds = runningRecord.tags.map(RecordBase.Tag::tagId),
                         ),
                     )
                 }

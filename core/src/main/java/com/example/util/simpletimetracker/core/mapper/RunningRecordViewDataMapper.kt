@@ -3,6 +3,7 @@ package com.example.util.simpletimetracker.core.mapper
 import com.example.util.simpletimetracker.core.R
 import com.example.util.simpletimetracker.core.interactor.GetCurrentRecordsDurationInteractor
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
+import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.domain.record.model.RunningRecord
 import com.example.util.simpletimetracker.domain.recordTag.model.RecordTag
 import com.example.util.simpletimetracker.domain.recordType.extension.getDaily
@@ -37,12 +38,13 @@ class RunningRecordViewDataMapper @Inject constructor(
         totalDurationVisible: Boolean,
     ): RunningRecordViewData {
         val currentDuration = System.currentTimeMillis() - runningRecord.timeStarted
+        val tagIds = runningRecord.tags.map(RecordBase.Tag::tagId)
 
         return RunningRecordViewData(
             id = runningRecord.id,
             name = recordType.name,
             tagName = recordTagFullNameMapper.getFullName(
-                tags = recordTags,
+                tags = recordTags.filter { it.id in tagIds },
                 tagData = runningRecord.tags,
             ),
             timeStarted = timeMapper.formatTime(

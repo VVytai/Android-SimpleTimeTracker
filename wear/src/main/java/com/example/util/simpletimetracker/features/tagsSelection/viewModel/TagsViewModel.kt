@@ -8,7 +8,6 @@ package com.example.util.simpletimetracker.features.tagsSelection.viewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.util.simpletimetracker.data.WearDataRepo
-import com.example.util.simpletimetracker.data.WearResourceRepo
 import com.example.util.simpletimetracker.domain.extension.orFalse
 import com.example.util.simpletimetracker.domain.extension.removeIf
 import com.example.util.simpletimetracker.domain.mediator.StartActivityMediator

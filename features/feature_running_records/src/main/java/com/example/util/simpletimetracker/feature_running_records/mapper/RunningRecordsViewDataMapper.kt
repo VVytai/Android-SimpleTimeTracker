@@ -107,7 +107,7 @@ class RunningRecordsViewDataMapper @Inject constructor(
                 val data = recordViewDataMapper.map(
                     record = record,
                     recordType = prevRecordType,
-                    recordTags = recordTags.filter { it.id in record.tagIds },
+                    recordTags = recordTags,
                     isDarkTheme = isDarkTheme,
                     useMilitaryTime = useMilitaryTime,
                     useProportionalMinutes = useProportionalMinutes,

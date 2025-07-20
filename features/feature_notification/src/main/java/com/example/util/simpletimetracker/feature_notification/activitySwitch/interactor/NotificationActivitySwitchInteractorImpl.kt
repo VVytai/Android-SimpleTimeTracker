@@ -15,6 +15,7 @@ import com.example.util.simpletimetracker.domain.recordTag.interactor.RecordTagI
 import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTypeGoalInteractor
 import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTypeInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.RunningRecordInteractor
+import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
 import com.example.util.simpletimetracker.domain.recordType.model.RecordType
 import com.example.util.simpletimetracker.feature_notification.R
@@ -126,10 +127,11 @@ class NotificationActivitySwitchInteractorImpl @Inject constructor(
                 hint = resourceRepo.getString(R.string.retroactive_tracking_mode_hint)
                 icon = prevRecordType.icon.let(iconMapper::mapIcon)
                 color = colorMapper.mapToColorInt(prevRecordType.color, isDarkTheme)
+                val tagIds = prevRecord.tags.map(RecordBase.Tag::tagId)
                 val namePrefix = resourceRepo.getString(R.string.statistics_detail_last_record)
                 val fullName = notificationCommonMapper.getNotificationText(
                     recordType = prevRecordType,
-                    recordTags = recordTags.filter { it.id in prevRecord.tagIds },
+                    recordTags = recordTags.filter { it.id in tagIds },
                     recordTagsData = prevRecord.tags,
                 )
                 title = buildSpannedString {

@@ -240,7 +240,7 @@ class RecordsFilterViewDataInteractor @Inject constructor(
                     }
                     is RunningRecord -> getRunningRecordViewDataMediator.execute(
                         type = recordTypes[record.id] ?: return@mapNotNull null,
-                        tags = recordTags.filter { it.id in record.tagIds },
+                        tags = recordTags,
                         goals = goals[record.id].orEmpty(),
                         record = record,
                         nowIconVisible = true,
@@ -772,7 +772,7 @@ class RecordsFilterViewDataInteractor @Inject constructor(
                             ?: return@mapNotNull null
                         val mapped = getRunningRecordViewDataMediator.execute(
                             type = recordTypes[record.id] ?: return@mapNotNull null,
-                            tags = recordTags.filter { it.id in record.tagIds },
+                            tags = recordTags,
                             goals = goals[record.id].orEmpty(),
                             record = record,
                             nowIconVisible = true,

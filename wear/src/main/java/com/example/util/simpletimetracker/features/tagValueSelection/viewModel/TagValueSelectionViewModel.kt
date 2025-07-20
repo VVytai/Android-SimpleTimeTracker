@@ -13,7 +13,6 @@ import com.example.util.simpletimetracker.features.tagValueSelection.interactor.
 import com.example.util.simpletimetracker.features.tagValueSelection.mapper.TagValueSelectionViewDataMapper
 import com.example.util.simpletimetracker.features.tagValueSelection.screen.TagValueSelectionButton
 import com.example.util.simpletimetracker.features.tagValueSelection.screen.TagValueSelectionState
-import com.example.util.simpletimetracker.features.tagsSelection.screen.TagListState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -80,7 +79,7 @@ class TagValueSelectionViewModel @Inject constructor(
             .toDoubleOrNull()
         val result = TagValueSelectedInteractor.Result(
             tagId = tagId ?: return@launch,
-            value = actualTagValue
+            value = actualTagValue,
         )
         tagValueSelectedInteractor.send(result)
         _effects.emit(Effect.OnComplete)

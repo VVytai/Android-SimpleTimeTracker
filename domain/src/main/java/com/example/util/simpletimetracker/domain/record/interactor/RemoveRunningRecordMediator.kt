@@ -4,6 +4,7 @@ import com.example.util.simpletimetracker.domain.notifications.interactor.Activi
 import com.example.util.simpletimetracker.domain.pomodoro.interactor.PomodoroStopInteractor
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.notifications.interactor.UpdateExternalViewsInteractor
+import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.domain.record.model.RunningRecord
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -39,7 +40,7 @@ class RemoveRunningRecordMediator @Inject constructor(
         }
         activityStartedStoppedBroadcastInteractor.onActivityStopped(
             typeId = runningRecord.id,
-            tagIds = runningRecord.tagIds,
+            tagIds = runningRecord.tags.map(RecordBase.Tag::tagId),
             comment = runningRecord.comment,
         )
         remove(

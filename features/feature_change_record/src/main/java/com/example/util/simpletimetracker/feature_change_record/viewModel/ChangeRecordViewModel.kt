@@ -126,9 +126,9 @@ class ChangeRecordViewModel @Inject constructor(
             shift = 0,
             sharedElements = emptyMap(),
             itemId = itemId,
-            itemName = preview.name,
-            itemIcon = preview.iconId,
-            itemColor = preview.color,
+            itemName = preview.recordPreview.name,
+            itemIcon = preview.recordPreview.iconId,
+            itemColor = preview.recordPreview.color,
         )
     }
 
