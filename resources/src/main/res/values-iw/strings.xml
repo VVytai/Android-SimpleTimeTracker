@@ -116,6 +116,10 @@
     <string name="change_record_tag_type_typed_hint">ניתן רק להקצות לרשומות של פעילות ספציפית</string>
     <string name="change_record_tag_select_activity_hint">קח צבע וסמל מפעילות</string>
     <string name="change_record_tag_default_types_hint">תגית תוקצה כברירת מחדל בעת הפעלת טיימר עם פעילויות נבחרות</string>
+    <string name="change_record_type_value_type_field">ערך</string>
+    <string name="change_record_type_value_type_hint">הקצה ערך בעת תיוג רשומה עם תג זה. שימושי למעקב אחרי מצב רוח, פרודוקטיביות, דפים שנקראו, צעדים שנעשו וכו.</string>
+    <string name="change_record_type_value_suffix">סיומת</string>
+    <string name="change_record_type_value_selection_hint">הזן ערך חדש</string>
 
     <!--  Change record  -->
     <string name="change_record_message_choose_type">בחר פעילות</string>
@@ -512,6 +516,7 @@
     <string name="statistics_detail_goals_hint">עודף או גירעון יעד</string>
     <string name="statistics_detail_goals_excess">עוֹדֶף</string>
     <string name="statistics_detail_goals_deficit">גֵרָעוֹן</string>
+    <string name="statistics_detail_tag_values_hint">ערכי תג</string>
 
     <plurals name="statistics_detail_times_tracked">
         <!--        <item quantity="zero">רשומות</item>-->

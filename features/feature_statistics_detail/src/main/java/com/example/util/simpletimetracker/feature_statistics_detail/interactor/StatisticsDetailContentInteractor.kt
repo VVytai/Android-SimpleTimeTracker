@@ -24,6 +24,7 @@ import com.example.util.simpletimetracker.feature_statistics_detail.viewData.Sta
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailPreviewViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailStatsViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailStreaksViewData
+import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailTagValuesCompositeViewData
 import javax.inject.Inject
 
 class StatisticsDetailContentInteractor @Inject constructor(
@@ -46,6 +47,7 @@ class StatisticsDetailContentInteractor @Inject constructor(
         nextActivitiesViewData: List<ViewHolderType>?,
         goalsViewData: StatisticsDetailGoalsCompositeViewData?,
         dataDistributionViewData: StatisticsDetailDataDistributionViewData?,
+        tagValueViewData: StatisticsDetailTagValuesCompositeViewData?,
     ): List<ViewHolderType> {
         val result = mutableListOf<ViewHolderType>()
 
@@ -299,6 +301,14 @@ class StatisticsDetailContentInteractor @Inject constructor(
         }
 
         result += goalsViewData?.viewData.orEmpty()
+
+        result += tagValueViewData?.viewData.orEmpty().map {
+            if (it is StatisticsDetailBarChartViewData) {
+                it.copy(singleColor = getPreviewColor())
+            } else {
+                it
+            }
+        }
 
         result += dataDistributionViewData?.splitData.orEmpty()
 

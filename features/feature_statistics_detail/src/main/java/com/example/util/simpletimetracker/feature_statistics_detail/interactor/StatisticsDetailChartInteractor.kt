@@ -20,6 +20,7 @@ import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTyp
 import com.example.util.simpletimetracker.domain.recordType.model.RecordType
 import com.example.util.simpletimetracker.domain.recordType.model.RecordTypeGoal
 import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
+import com.example.util.simpletimetracker.feature_statistics_detail.conts.TAG_VALUE_PRECISION
 import com.example.util.simpletimetracker.feature_statistics_detail.mapper.StatisticsDetailViewDataMapper
 import com.example.util.simpletimetracker.feature_statistics_detail.model.ChartBarDataDuration
 import com.example.util.simpletimetracker.feature_statistics_detail.model.ChartBarDataRange
@@ -33,6 +34,7 @@ import kotlinx.coroutines.withContext
 import java.util.Calendar
 import javax.inject.Inject
 import kotlin.math.abs
+import kotlin.math.roundToLong
 
 class StatisticsDetailChartInteractor @Inject constructor(
     private val timeMapper: TimeMapper,
@@ -196,10 +198,17 @@ class StatisticsDetailChartInteractor @Inject constructor(
             }
         }
 
-        fun mapRangesToValue(list: List<Range>): Long {
+        fun mapRangesToValue(list: List<RecordBase>, range: Range): Long {
             return when (chartMode) {
-                ChartMode.DURATIONS -> rangeMapper.mapToDuration(list)
+                ChartMode.DURATIONS -> list
+                    .map { record -> rangeMapper.clampToRange(record, range) }
+                    .let(rangeMapper::mapToDuration)
                 ChartMode.COUNTS -> list.size.toLong()
+                ChartMode.TAG_VALUE -> list
+                    .sumOf { record ->
+                        record.tags.sumOf { it.numericValue.orZero() * TAG_VALUE_PRECISION }
+                    }
+                    .roundToLong()
             }
         }
 
@@ -219,17 +228,15 @@ class StatisticsDetailChartInteractor @Inject constructor(
             .map { data ->
                 val range = Range(data.rangeStart, data.rangeEnd)
                 val durations = if (!splitByActivity) {
-                    rangeMapper.getRecordsFromRange(records, range)
-                        .map { record -> rangeMapper.clampToRange(record, range) }
-                        .let(::mapRangesToValue)
-                        .let { listOf(it to 0) }
+                    val clampedRecords = rangeMapper.getRecordsFromRange(records, range)
+                    val value = mapRangesToValue(clampedRecords, range)
+                    listOf(value to 0)
                 } else {
                     rangeMapper.getRecordsFromRange(records, range)
                         .groupBy { it.typeIds.firstOrNull().orZero() }
                         .toList()
                         .map { (id, records) ->
-                            val value = records.map { record -> rangeMapper.clampToRange(record, range) }
-                                .let(::mapRangesToValue)
+                            val value = mapRangesToValue(records, range)
                             value to id
                         }
                         .run {

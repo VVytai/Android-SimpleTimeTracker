@@ -67,7 +67,6 @@ class ChangeRecordTagViewDataInteractor @Inject constructor(
         val result = mutableListOf<ViewHolderType>()
 
         result += HintViewData(
-            // TODO TAG change hint
             text = resourceRepo.getString(R.string.change_record_type_value_type_hint),
         )
         result += ButtonsRowItemViewData(

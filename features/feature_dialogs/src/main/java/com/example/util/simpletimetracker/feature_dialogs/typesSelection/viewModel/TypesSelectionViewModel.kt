@@ -79,7 +79,6 @@ class TypesSelectionViewModel @Inject constructor(
             )
 
         if (needValueSelection) {
-            // TODO TAG add to statistics
             RecordTagValueSelectionParams(
                 tag = CHANGE_RECORD_TAG_VALUE_SELECTION,
                 tagId = item.id,

@@ -1,5 +1,6 @@
 package com.example.util.simpletimetracker.feature_statistics_detail.mapper
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import com.example.util.simpletimetracker.core.mapper.CategoryViewDataMapper
 import com.example.util.simpletimetracker.core.mapper.ColorMapper
@@ -29,6 +30,7 @@ import com.example.util.simpletimetracker.feature_statistics_detail.adapter.Stat
 import com.example.util.simpletimetracker.feature_base_adapter.buttonsRow.ButtonsRowItemViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.adapter.StatisticsDetailCardViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.adapter.StatisticsDetailHintViewData
+import com.example.util.simpletimetracker.feature_statistics_detail.conts.TAG_VALUE_PRECISION
 import com.example.util.simpletimetracker.feature_views.barChart.BarChartView
 import com.example.util.simpletimetracker.feature_statistics_detail.model.ChartBarDataDuration
 import com.example.util.simpletimetracker.feature_statistics_detail.model.ChartBarDataRange
@@ -463,6 +465,7 @@ class StatisticsDetailViewDataMapper @Inject constructor(
         )
     }
 
+    @SuppressLint("DefaultLocale")
     fun processPercentageString(value: Float): String {
         val text = when {
             value >= 10 -> value.toLong()
@@ -487,9 +490,10 @@ class StatisticsDetailViewDataMapper @Inject constructor(
         // No reason to show average of one value.
         if (data.size < 2 && compareData.size < 2) return "" to emptyList()
 
+        // TODO TAG show decimal values?
         fun getAverage(data: List<ChartBarDataDuration>): Long {
             if (data.isEmpty()) return 0L
-            return data.sumOf { it.durations.map { it.first }.sum() } / data.size
+            return data.sumOf { it.durations.sumOf { it.first } } / data.size
         }
 
         fun formatInterval(
@@ -502,6 +506,7 @@ class StatisticsDetailViewDataMapper @Inject constructor(
                     useProportionalMinutes = useProportionalMinutes,
                 )
                 ChartMode.COUNTS -> interval.toString()
+                ChartMode.TAG_VALUE -> (interval / TAG_VALUE_PRECISION).toString()
             }
         }
 
@@ -603,6 +608,7 @@ class StatisticsDetailViewDataMapper @Inject constructor(
             else -> 0f
         }
 
+        @SuppressLint("DefaultLocale")
         fun formatChange(value: Float): String {
             val abs = abs(value)
             val text = when {
@@ -637,12 +643,14 @@ class StatisticsDetailViewDataMapper @Inject constructor(
         val (legendSuffix, isMinutes) = when (chartMode) {
             ChartMode.DURATIONS -> mapLegendSuffix(data)
             ChartMode.COUNTS -> "" to false
+            ChartMode.TAG_VALUE -> "" to false // TODO TAG suffix?
         }
 
         fun formatInterval(interval: Long): Float {
             return when (chartMode) {
                 ChartMode.DURATIONS -> formatInterval(interval, isMinutes)
                 ChartMode.COUNTS -> interval.toFloat()
+                ChartMode.TAG_VALUE -> (interval / TAG_VALUE_PRECISION).toFloat()
             }
         }
 
@@ -908,6 +916,111 @@ class StatisticsDetailViewDataMapper @Inject constructor(
         return items
     }
 
+    // TODO TAG move to separate mapper
+    fun mapTagValueChartViewData(
+        data: List<ChartBarDataDuration>,
+        prevData: List<ChartBarDataDuration>,
+        rangeLength: RangeLength,
+        availableChartGroupings: List<ChartGrouping>,
+        appliedChartGrouping: ChartGrouping,
+        availableChartLengths: List<ChartLength>,
+        appliedChartLength: ChartLength,
+        chartMode: ChartMode,
+        useProportionalMinutes: Boolean,
+        showSeconds: Boolean,
+        isDarkTheme: Boolean,
+    ): List<ViewHolderType> {
+        val items = mutableListOf<ViewHolderType>()
+
+        val chartData = mapChartData(
+            data = data,
+            goal = 0, // Don't show goal.
+            rangeLength = rangeLength,
+            chartMode = chartMode,
+            showSelectedBarOnStart = true,
+            useSingleColor = true,
+            drawRoundCaps = true,
+        )
+        val (title, rangeAverages) = getRangeAverages(
+            data = data,
+            prevData = prevData,
+            compareData = emptyList(),
+            showComparison = false,
+            rangeLength = rangeLength,
+            chartGrouping = appliedChartGrouping,
+            chartMode = chartMode,
+            useProportionalMinutes = useProportionalMinutes,
+            showSeconds = showSeconds,
+            isDarkTheme = isDarkTheme,
+        )
+        val chartGroupingViewData = mapToChartGroupingViewData(
+            availableChartGroupings = availableChartGroupings,
+            appliedChartGrouping = appliedChartGrouping,
+        )
+        val chartLengthViewData = mapToChartLengthViewData(
+            availableChartLengths = availableChartLengths,
+            appliedChartLength = appliedChartLength,
+        )
+        val totals = mapTagValuesTotals(
+            goalData = data,
+        )
+
+        if (chartData.visible) {
+            items += StatisticsDetailHintViewData(
+                block = StatisticsDetailBlock.TagValuesHint,
+                text = resourceRepo.getString(R.string.statistics_detail_tag_values_hint),
+            )
+        }
+
+        if (chartData.visible) {
+            items += StatisticsDetailBarChartViewData(
+                block = StatisticsDetailBlock.TagValuesChartData,
+                singleColor = null,
+                marginTopDp = 0,
+                data = chartData,
+            )
+        }
+
+        if (chartGroupingViewData.size > 1) {
+            items += ButtonsRowItemViewData(
+                block = StatisticsDetailBlock.TagValuesChartGrouping,
+                marginTopDp = 4,
+                data = chartGroupingViewData,
+            )
+        }
+
+        if (chartLengthViewData.isNotEmpty()) {
+            // Update margin top depending if has buttons before.
+            val hasButtonsBefore = items.lastOrNull() is ButtonsRowItemViewData
+            val marginTopDp = if (hasButtonsBefore) -10 else 4
+            items += ButtonsRowItemViewData(
+                block = StatisticsDetailBlock.TagValuesChartLength,
+                marginTopDp = marginTopDp,
+                data = chartLengthViewData,
+            )
+        }
+
+        if (rangeAverages.isNotEmpty()) {
+            items += StatisticsDetailCardViewData(
+                block = StatisticsDetailBlock.TagValuesRangeAverages,
+                title = title,
+                marginTopDp = 0,
+                data = rangeAverages,
+            )
+        }
+
+        if (chartData.visible) {
+            items += StatisticsDetailCardViewData(
+                block = StatisticsDetailBlock.TagValuesTotals,
+                title = "",
+                marginTopDp = 0,
+                data = totals,
+            )
+        }
+
+        return items
+    }
+
     fun mapLegendSuffix(
         data: List<ChartBarDataDuration>,
     ): Pair<String, Boolean> {
@@ -1016,7 +1129,7 @@ class StatisticsDetailViewDataMapper @Inject constructor(
                     forceSeconds = showSeconds,
                     useProportionalMinutes = useProportionalMinutes,
                 )
-                ChartMode.COUNTS -> interval.toString()
+                ChartMode.COUNTS, ChartMode.TAG_VALUE -> interval.toString()
             }
         }
 
@@ -1048,6 +1161,44 @@ class StatisticsDetailViewDataMapper @Inject constructor(
         )
     }
 
+    private fun mapTagValuesTotals(
+        goalData: List<ChartBarDataDuration>,
+    ): List<StatisticsDetailCardInternalViewData> {
+        val emptyValue by lazy { resourceRepo.getString(R.string.statistics_detail_empty) }
+
+        val barValues = goalData.map { bar -> bar.totalDuration }
+        val minValue = barValues.minOrNull()?.div(TAG_VALUE_PRECISION)
+        val maxValue = barValues.maxOrNull()?.div(TAG_VALUE_PRECISION)
+        val total = barValues.sum() / TAG_VALUE_PRECISION
+
+        return listOf(
+            StatisticsDetailCardInternalViewData(
+                value = minValue?.toString() ?: emptyValue,
+                valueChange = StatisticsDetailCardInternalViewData.ValueChange.None,
+                secondValue = "",
+                description = resourceRepo.getString(R.string.records_filter_duration_min),
+                titleTextSizeSp = 14,
+                subtitleTextSizeSp = 12,
+            ),
+            StatisticsDetailCardInternalViewData(
+                value = total.toString(),
+                valueChange = StatisticsDetailCardInternalViewData.ValueChange.None,
+                secondValue = "",
+                description = resourceRepo.getString(R.string.statistics_detail_total_duration),
+                titleTextSizeSp = 14,
+                subtitleTextSizeSp = 12,
+            ),
+            StatisticsDetailCardInternalViewData(
+                value = maxValue?.toString() ?: emptyValue,
+                valueChange = StatisticsDetailCardInternalViewData.ValueChange.None,
+                secondValue = "",
+                description = resourceRepo.getString(R.string.records_filter_duration_max),
+                titleTextSizeSp = 14,
+                subtitleTextSizeSp = 12,
+            ),
+        )
+    }
+
     private fun mapGoalStats(
         records: List<RecordBase>,
         goalValue: Long,
@@ -1069,7 +1220,7 @@ class StatisticsDetailViewDataMapper @Inject constructor(
                     forceSeconds = showSeconds,
                     useProportionalMinutes = useProportionalMinutes,
                 )
-                ChartMode.COUNTS -> interval.toString()
+                ChartMode.COUNTS, ChartMode.TAG_VALUE -> interval.toString()
             }
         }
 
@@ -1087,7 +1238,7 @@ class StatisticsDetailViewDataMapper @Inject constructor(
         }
         val currentValue = when (chartMode) {
             ChartMode.DURATIONS -> recordsFromRange.sumOf(RecordBase::duration)
-            ChartMode.COUNTS -> recordsFromRange.size.toLong()
+            ChartMode.COUNTS, ChartMode.TAG_VALUE -> recordsFromRange.size.toLong()
         }
         val percentage = if (goalValue != 0L) {
             currentValue * 100f / goalValue

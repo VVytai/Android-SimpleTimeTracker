@@ -69,7 +69,6 @@ class RecordQuickActionsInteractor @Inject constructor(
             val records = recordIds
                 .mapNotNull { recordInteractor.get(it) }
                 .filter {
-                    // TODO TAG translate strings
                     it.tags.sortedBy(RecordBase.Tag::tagId) !=
                         newTags.sortedBy(RecordBase.Tag::tagId)
                 }

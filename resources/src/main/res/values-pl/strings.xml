@@ -116,6 +116,10 @@ Pozwala to zobaczyć, ile czasu spędzasz na produktywnych i nieproduktywnych ak
     <string name="change_record_tag_type_typed_hint">Można je przypisać wyłącznie do zapisów określonej aktywności</string>
     <string name="change_record_tag_select_activity_hint">Przypisz kolor i ikonę z aktywności</string>
     <string name="change_record_tag_default_types_hint">Tag zostanie przypisany domyślnie po uruchomieniu stopera z wybranymi czynnościami</string>
+    <string name="change_record_type_value_type_field">Wartość</string>
+    <string name="change_record_type_value_type_hint">Przypisz wartość podczas tagowania rekordu tym tagiem. Przydatne do śledzenia nastroju, produktywności, przeczytanych stron, kroków itp.</string>
+    <string name="change_record_type_value_suffix">Przyrostek</string>
+    <string name="change_record_type_value_selection_hint">Wprowadź nową wartość</string>
 
     <!--  Change record  -->
     <string name="change_record_message_choose_type">Wybierz aktywność</string>
@@ -512,6 +516,7 @@ Przykład:<br/>
     <string name="statistics_detail_goals_hint">Nadmiar lub niedobór celu</string>
     <string name="statistics_detail_goals_excess">Nadmiar</string>
     <string name="statistics_detail_goals_deficit">Deficyt</string>
+    <string name="statistics_detail_tag_values_hint">Wartości tagu</string>
 
     <plurals name="statistics_detail_times_tracked">
         <!--        <item quantity="zero">rekordów</item>-->

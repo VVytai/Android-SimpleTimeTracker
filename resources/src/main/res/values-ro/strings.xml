@@ -116,6 +116,10 @@ Acest lucru îți permite să vezi cât timp petreci în activități productive
     <string name="change_record_tag_type_typed_hint">Poate fi atribuit înregistrărilor unei activități specifice</string>
     <string name="change_record_tag_select_activity_hint">Luați culoarea și pictograma din activitate</string>
     <string name="change_record_tag_default_types_hint">Eticheta va fi atribuită în mod implicit la pornirea unui cronometru cu activitățile selectate</string>
+    <string name="change_record_type_value_type_field">Valoare</string>
+    <string name="change_record_type_value_type_hint">Atribuie o valoare când etichetezi o înregistrare cu acest tag. Util pentru urmărirea stării de spirit, productivității, paginilor citite, pașilor parcurși etc.</string>
+    <string name="change_record_type_value_suffix">Sufix</string>
+    <string name="change_record_type_value_selection_hint">Introduceți o valoare nouă</string>
 
     <!--  Change record  -->
     <string name="change_record_message_choose_type">Alege activitatea</string>
@@ -512,6 +516,7 @@ Examplu:<br/>
     <string name="statistics_detail_goals_hint">Exces sau deficit de obiectiv</string>
     <string name="statistics_detail_goals_excess">Exces</string>
     <string name="statistics_detail_goals_deficit">Deficit</string>
+    <string name="statistics_detail_tag_values_hint">Valori etichetă</string>
 
     <plurals name="statistics_detail_times_tracked">
         <!--        <item quantity="zero">Înregistrări</item>-->

@@ -116,6 +116,10 @@ Detta gör att du kan se hur mycket tid du spenderar på produktiva kontra icke-
     <string name="change_record_tag_type_typed_hint">Kan endast tilldelas händelse av särskild aktivitet</string>
     <string name="change_record_tag_select_activity_hint">Ta färg och ikon från aktivitet</string>
     <string name="change_record_tag_default_types_hint">Tagg tilldelas som standard när du startar en timer med valda aktiviteter</string>
+    <string name="change_record_type_value_type_field">Värde</string>
+    <string name="change_record_type_value_type_hint">Tilldela ett värde när du taggar en post med denna tagg. Användbart för att spåra humör, produktivitet, lästa sidor, steg som gåtts, etc.</string>
+    <string name="change_record_type_value_suffix">Suffix</string>
+    <string name="change_record_type_value_selection_hint">Ange nytt värde</string>
 
     <!--  Change record  -->
     <string name="change_record_message_choose_type">Välj aktivitet</string>
@@ -512,6 +516,7 @@ Exempel:<br/>
     <string name="statistics_detail_goals_hint">Målöverskott eller underskott</string>
     <string name="statistics_detail_goals_excess">Överskott</string>
     <string name="statistics_detail_goals_deficit">Underskott</string>
+    <string name="statistics_detail_tag_values_hint">Taggvärden</string>
 
     <plurals name="statistics_detail_times_tracked">
         <!--        <item quantity="zero">händelser</item>-->

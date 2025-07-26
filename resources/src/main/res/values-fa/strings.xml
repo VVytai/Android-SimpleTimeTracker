@@ -116,6 +116,10 @@
     <string name="change_record_tag_type_typed_hint">می تواند به تاریخچه های یک فعالیت خاص اصافه شود</string>
     <string name="change_record_tag_select_activity_hint">رنگ و نماد را از فعالیت بگیرید</string>
     <string name="change_record_tag_default_types_hint">هنگام شروع یک تایمر با فعالیت های انتخاب شده، برچسب به طور پیش فرض اختصاص داده می شود</string>
+    <string name="change_record_type_value_type_field">مقدار</string>
+    <string name="change_record_type_value_type_hint">هنگام برچسب‌گذاری یک رکورد با این برچسب، یک مقدار اختصاص دهید. مفید برای پیگیری خلق‌وخو، بهره‌وری، صفحات خوانده شده، گام‌های پیموده‌شده و غیره.</string>
+    <string name="change_record_type_value_suffix">پسوند</string>
+    <string name="change_record_type_value_selection_hint">مقدار جدید را وارد کنید</string>
 
     <!--  Change record  -->
     <string name="change_record_message_choose_type">انتخاب فعالیت</string>
@@ -512,6 +516,7 @@
     <string name="statistics_detail_goals_hint">بیش از حد یا کسری هدف</string>
     <string name="statistics_detail_goals_excess">مازاد</string>
     <string name="statistics_detail_goals_deficit">کسری</string>
+    <string name="statistics_detail_tag_values_hint">مقادیر برچسب</string>
 
     <plurals name="statistics_detail_times_tracked">
         <!--        <item quantity="zero">بدون تاریخچه</item>-->

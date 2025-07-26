@@ -116,6 +116,10 @@
     <string name="change_record_tag_type_typed_hint">只可分配给特定活动的标签</string>
     <string name="change_record_tag_select_activity_hint">从活动中获取颜色和图标</string>
     <string name="change_record_tag_default_types_hint">当启动选定活动的计时器时，默认会分配标签</string>
+    <string name="change_record_type_value_type_field">数值</string>
+    <string name="change_record_type_value_type_hint">为带有此标签的记录分配一个数值。可用于跟踪情绪、生产力、阅读页数、步数等。</string>
+    <string name="change_record_type_value_suffix">后缀</string>
+    <string name="change_record_type_value_selection_hint">输入新值</string>
 
     <!--  Change record  -->
     <string name="change_record_message_choose_type">选择活动</string>
@@ -512,6 +516,7 @@ csv 文件必须包含以逗号分隔的这些列：<br/>
     <string name="statistics_detail_goals_hint">目标超出或不足</string>
     <string name="statistics_detail_goals_excess">超出</string>
     <string name="statistics_detail_goals_deficit">不足</string>
+    <string name="statistics_detail_tag_values_hint">标签值</string>
 
     <plurals name="statistics_detail_times_tracked">
         <!--        <item quantity="zero">Records</item>-->

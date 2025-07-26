@@ -116,6 +116,10 @@
     <string name="change_record_tag_type_typed_hint">केवल एक विशिष्ट गतिविधि के रिकॉर्ड को सौंपा जा सकता है</string>
     <string name="change_record_tag_select_activity_hint">गतिविधि से रंग और आइकन लें</string>
     <string name="change_record_tag_default_types_hint">चयनित गतिविधियों के साथ टाइमर शुरू करते समय टैग डिफ़ॉल्ट रूप से असाइन किया जाएगा</string>
+    <string name="change_record_type_value_type_field">मान</string>
+    <string name="change_record_type_value_type_hint">इस टैग के साथ किसी रिकॉर्ड को टैग करते समय एक मान असाइन करें। मूड, उत्पादकता, पढ़ी गई पृष्ठों की संख्या, चले गए कदम आदि को ट्रैक करने के लिए उपयोगी।</string>
+    <string name="change_record_type_value_suffix">प्रत्यय</string>
+    <string name="change_record_type_value_selection_hint">नया मान दर्ज करें</string>
 
     <!--  Change record  -->
     <string name="change_record_message_choose_type">गतिविधि का चयन करें</string>
@@ -512,6 +516,7 @@ csv फ़ाइल में कॉमा से अलग किए गए य
     <string name="statistics_detail_goals_hint">लक्ष्य की अधिकता या कमी</string>
     <string name="statistics_detail_goals_excess">अधिकता</string>
     <string name="statistics_detail_goals_deficit">घाटा</string>
+    <string name="statistics_detail_tag_values_hint">टैग मान</string>
 
     <plurals name="statistics_detail_times_tracked">
         <!--        <item quantity="zero">अभिलेख</item>-->

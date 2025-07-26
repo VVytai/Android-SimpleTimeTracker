@@ -116,6 +116,10 @@ Això et permet veure quant de temps dediques a activitats productives versus no
     <string name="change_record_tag_type_typed_hint">Només pot ser assignat a enregistraments d\'una activitat específica</string>
     <string name="change_record_tag_select_activity_hint">Preneu color i icona de l\'activitat</string>
     <string name="change_record_tag_default_types_hint">L\'etiqueta s\'assignaria per defecte quan s\'inicia un temporitzador amb activitats seleccionades</string>
+    <string name="change_record_type_value_type_field">Valor</string>
+    <string name="change_record_type_value_type_hint">Assigna un valor en etiquetar un registre amb aquesta etiqueta. Útil per fer un seguiment de l\'estat d\'ànim, la productivitat, les pàgines llegides, els passos caminats, etc.</string>
+    <string name="change_record_type_value_suffix">Sufix</string>
+    <string name="change_record_type_value_selection_hint">Introdueix un valor nou</string>
 
     <!--  Change record  -->
     <string name="change_record_message_choose_type">Seleccioneu una activitat</string>
@@ -512,6 +516,7 @@ Exemple:<br/>
     <string name="statistics_detail_goals_hint">Excés o dèficit d\'objectius</string>
     <string name="statistics_detail_goals_excess">Excés</string>
     <string name="statistics_detail_goals_deficit">Dèficit</string>
+    <string name="statistics_detail_tag_values_hint">Valors de l\'etiqueta</string>
 
     <plurals name="statistics_detail_times_tracked">
         <!--        <item quantity="zero">Enregistraments</item>-->

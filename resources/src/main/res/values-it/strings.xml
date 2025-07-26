@@ -116,6 +116,10 @@ I <b>tag</b> ti permettono di aggiungere maggiori dettagli a un\'attività speci
     <string name="change_record_tag_type_typed_hint">Può essere assegnato solo a registrazioni di una specifica attività</string>
     <string name="change_record_tag_select_activity_hint">Prendi il colore e l\'icona dall\'attività</string>
     <string name="change_record_tag_default_types_hint">Il tag verrà assegnato per impostazione predefinita all\'avvio di un timer con le attività selezionate</string>
+    <string name="change_record_type_value_type_field">Valore</string>
+    <string name="change_record_type_value_type_hint">Assegna un valore quando etichetti un record con questo tag. Utile per monitorare umore, produttività, pagine lette, passi percorsi, ecc.</string>
+    <string name="change_record_type_value_suffix">Suffisso</string>
+    <string name="change_record_type_value_selection_hint">Inserisci un nuovo valore</string>
 
     <!--  Change record  -->
     <string name="change_record_message_choose_type">Seleziona attività</string>
@@ -512,6 +516,7 @@ Esempio:<br/>
     <string name="statistics_detail_goals_hint">Eccesso o deficit di obiettivo</string>
     <string name="statistics_detail_goals_excess">Eccesso</string>
     <string name="statistics_detail_goals_deficit">Deficit</string>
+    <string name="statistics_detail_tag_values_hint">Valori del tag</string>
 
     <plurals name="statistics_detail_times_tracked">
         <!--        <item quantity="zero">Registrazioni</item>-->

@@ -116,6 +116,10 @@ Dit stelt je in staat om te zien hoeveel tijd je in totaal besteedt aan producti
     <string name="change_record_tag_type_typed_hint">Kan alleen aan records van een specifieke activiteit worden toegewezen</string>
     <string name="change_record_tag_select_activity_hint">Neem kleur en icoon uit activiteit</string>
     <string name="change_record_tag_default_types_hint">Tag zou standaard worden toegewezen bij het starten van een timer met geselecteerde activiteiten</string>
+    <string name="change_record_type_value_type_field">Waarde</string>
+    <string name="change_record_type_value_type_hint">Wijs een waarde toe wanneer je een record met deze tag labelt. Handig voor het bijhouden van stemming, productiviteit, gelezen pagina’s, gezette stappen, enz.</string>
+    <string name="change_record_type_value_suffix">Achtervoegsel</string>
+    <string name="change_record_type_value_selection_hint">Voer nieuwe waarde in</string>
 
     <!--  Change record  -->
     <string name="change_record_message_choose_type">Selecteer activiteit</string>
@@ -512,6 +516,7 @@ Voorbeeld:<br/>
     <string name="statistics_detail_goals_hint">Doeloverschot of -tekort</string>
     <string name="statistics_detail_goals_excess">Overmaat</string>
     <string name="statistics_detail_goals_deficit">Tekort</string>
+    <string name="statistics_detail_tag_values_hint">Tagwaarden</string>
 
     <plurals name="statistics_detail_times_tracked">
         <!--        <item quantity="zero">Gegevens</item>-->

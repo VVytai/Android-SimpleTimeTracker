@@ -116,6 +116,10 @@
     <string name="change_record_tag_type_typed_hint">Может быть назначен только записям определенной активности</string>
     <string name="change_record_tag_select_activity_hint">Взять цвет и иконку из активности</string>
     <string name="change_record_tag_default_types_hint">Тег будет назначен по умолчанию при запуске таймера с выбранными активностями</string>
+    <string name="change_record_type_value_type_field">Значение</string>
+    <string name="change_record_type_value_type_hint">Назначьте значение при добавлении этого тега к записи. Полезно для отслеживания настроения, продуктивности, прочитанных страниц, пройденных шагов и т.д.</string>
+    <string name="change_record_type_value_suffix">Суффикс</string>
+    <string name="change_record_type_value_selection_hint">Введите новое значение</string>
 
     <!--  Change record  -->
     <string name="change_record_message_choose_type">Выберите активность</string>
@@ -512,6 +516,7 @@ CSV-файл должен содержать следующие столбцы, 
     <string name="statistics_detail_goals_hint">Превышение или дефицит цели</string>
     <string name="statistics_detail_goals_excess">Превышение</string>
     <string name="statistics_detail_goals_deficit">Дефицит</string>
+    <string name="statistics_detail_tag_values_hint">Значения тегов</string>
 
     <plurals name="statistics_detail_times_tracked">
         <!--        <item quantity="zero">Записей</item>-->

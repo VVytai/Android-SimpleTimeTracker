@@ -116,6 +116,10 @@ Ini memungkinkan Anda melihat berapa banyak waktu yang dihabiskan untuk aktivita
     <string name="change_record_tag_type_typed_hint">Hanya dapat ditetapkan ke catatan aktivitas tertentu</string>
     <string name="change_record_tag_select_activity_hint">Ambil warna dan ikon dari aktivitas</string>
     <string name="change_record_tag_default_types_hint">Tag akan ditetapkan secara default saat memulai pengatur waktu dengan aktivitas yang dipilih</string>
+    <string name="change_record_type_value_type_field">Nilai</string>
+    <string name="change_record_type_value_type_hint">Tetapkan nilai saat menandai catatan dengan tag ini. Berguna untuk melacak suasana hati, produktivitas, halaman yang dibaca, langkah kaki, dan lainnya.</string>
+    <string name="change_record_type_value_suffix">Akhiran</string>
+    <string name="change_record_type_value_selection_hint">Masukkan nilai baru</string>
 
     <!--  Change record  -->
     <string name="change_record_message_choose_type">Pilih kegiatan</string>
@@ -512,6 +516,7 @@ Contoh:<br/>
     <string name="statistics_detail_goals_hint">Kelebihan atau kekurangan gol</string>
     <string name="statistics_detail_goals_excess">Kelebihan</string>
     <string name="statistics_detail_goals_deficit">Defisit</string>
+    <string name="statistics_detail_tag_values_hint">Nilai tag</string>
 
     <plurals name="statistics_detail_times_tracked">
         <!--        <item quantity="zero">Rekor</item>-->

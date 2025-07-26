@@ -116,6 +116,10 @@ Esto te permite ver cuánto tiempo estás dedicando a actividades productivas fr
     <string name="change_record_tag_type_typed_hint">Sólo puede ser asignado al registro de una actividad específica</string>
     <string name="change_record_tag_select_activity_hint">Tomar color e icono de la actividad</string>
     <string name="change_record_tag_default_types_hint">La etiqueta se asignará de forma predeterminada al iniciar un temporizador con actividades seleccionadas</string>
+    <string name="change_record_type_value_type_field">Valor</string>
+    <string name="change_record_type_value_type_hint">Asigna un valor al etiquetar un registro con esta etiqueta. Útil para hacer un seguimiento del estado de ánimo, la productividad, las páginas leídas, los pasos caminados, etc.</string>
+    <string name="change_record_type_value_suffix">Sufijo</string>
+    <string name="change_record_type_value_selection_hint">Introducir nuevo valor</string>
 
     <!--  Change record  -->
     <string name="change_record_message_choose_type">Seleccione una actividad</string>
@@ -512,6 +516,7 @@ Ejemplo:<br/>
     <string name="statistics_detail_goals_hint">Exceso o déficit de goles</string>
     <string name="statistics_detail_goals_excess">Exceso</string>
     <string name="statistics_detail_goals_deficit">Déficit</string>
+    <string name="statistics_detail_tag_values_hint">Valores de etiqueta</string>
 
     <plurals name="statistics_detail_times_tracked">
         <!--        <item quantity="zero">Registros</item>-->

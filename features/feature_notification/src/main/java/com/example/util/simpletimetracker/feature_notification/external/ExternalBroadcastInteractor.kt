@@ -232,7 +232,7 @@ class ExternalBroadcastInteractor @Inject constructor(
         return ids.map {
             RecordBase.Tag(
                 tagId = it,
-                numericValue = null, // TODO TAG value selection?
+                numericValue = null, // TODO value selection?
             )
         }
     }

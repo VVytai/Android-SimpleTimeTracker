@@ -116,6 +116,10 @@ Cela vous permet de voir combien de temps vous passez globalement sur des activi
     <string name="change_record_tag_type_typed_hint">Ne peut être attribuée qu\'aux enregistrements d\'une activité spécifique</string>
     <string name="change_record_tag_select_activity_hint">Prendre la couleur et l\'icône de l\'activité</string>
     <string name="change_record_tag_default_types_hint">La balise serait attribuée par défaut lors du démarrage d\'un minuteur avec des activités sélectionnées</string>
+    <string name="change_record_type_value_type_field">Valeur</string>
+    <string name="change_record_type_value_type_hint">Attribuez une valeur lors de l\'étiquetage d\'un enregistrement avec ce tag. Utile pour suivre l\'humeur, la productivité, les pages lues, les pas effectués, etc.</string>
+    <string name="change_record_type_value_suffix">Suffixe</string>
+    <string name="change_record_type_value_selection_hint">Saisir une nouvelle valeur</string>
 
     <!--  Change record  -->
     <string name="change_record_message_choose_type">Sélectionnez une activité</string>
@@ -512,6 +516,7 @@ Exemple:<br/>
     <string name="statistics_detail_goals_hint">Excès ou déficit d\'objectif</string>
     <string name="statistics_detail_goals_excess">Excès</string>
     <string name="statistics_detail_goals_deficit">Déficit</string>
+    <string name="statistics_detail_tag_values_hint">Valeurs de l\'étiquette</string>
 
     <plurals name="statistics_detail_times_tracked">
         <!--         <item quantity="zero">Enregistrement</item> -->

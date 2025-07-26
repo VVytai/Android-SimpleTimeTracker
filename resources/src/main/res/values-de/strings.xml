@@ -116,6 +116,10 @@ Dies ermöglicht es dir, zu sehen, wie viel Zeit du insgesamt für produktive ve
     <string name="change_record_tag_type_typed_hint">Kann nur Datensätzen einer bestimmten Aktivität zugeordnet werden</string>
     <string name="change_record_tag_select_activity_hint">Übernehmen Sie Farbe und Symbol aus der Aktivität</string>
     <string name="change_record_tag_default_types_hint">Das Tag wird standardmäßig zugewiesen, wenn ein Timer mit ausgewählten Aktivitäten gestartet wird</string>
+    <string name="change_record_type_value_type_field">Wert</string>
+    <string name="change_record_type_value_type_hint">Weise beim Taggen eines Eintrags mit diesem Tag einen Wert zu. Nützlich zur Verfolgung von Stimmung, Produktivität, gelesenen Seiten, gegangenen Schritten usw.</string>
+    <string name="change_record_type_value_suffix">Suffix</string>
+    <string name="change_record_type_value_selection_hint">Neuen Wert eingeben</string>
 
     <!--  Change record  -->
     <string name="change_record_message_choose_type">Aktivität auswählen</string>
@@ -512,6 +516,7 @@ Beispiel:<br/>
     <string name="statistics_detail_goals_hint">Zielüberschreitung oder -defizit</string>
     <string name="statistics_detail_goals_excess">Überschuss</string>
     <string name="statistics_detail_goals_deficit">Defizit</string>
+    <string name="statistics_detail_tag_values_hint">Tag-Werte</string>
 
     <plurals name="statistics_detail_times_tracked">
         <!--        <item quantity="zero">keine Einträge</item>-->

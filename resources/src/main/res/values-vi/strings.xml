@@ -116,6 +116,10 @@
     <string name="change_record_tag_type_typed_hint">Chỉ có thể được gán cho các bản ghi của một hoạt động cụ thể</string>
     <string name="change_record_tag_select_activity_hint">Lấy màu sắc và biểu tượng từ hoạt động</string>
     <string name="change_record_tag_default_types_hint">Thẻ sẽ được gán theo mặc định khi bắt đầu hẹn giờ với các hoạt động đã chọn</string>
+    <string name="change_record_type_value_type_field">Giá trị</string>
+    <string name="change_record_type_value_type_hint">Gán một giá trị khi gắn thẻ một bản ghi bằng thẻ này. Hữu ích để theo dõi tâm trạng, năng suất, số trang đã đọc, bước đi, v.v.</string>
+    <string name="change_record_type_value_suffix">Hậu tố</string>
+    <string name="change_record_type_value_selection_hint">Nhập giá trị mới</string>
 
     <!--  Change record  -->
     <string name="change_record_message_choose_type">Chọn hoạt động</string>
@@ -512,6 +516,7 @@ Ví dụ:<br/>
     <string name="statistics_detail_goals_hint">Mục tiêu vượt quá hoặc thâm hụt</string>
     <string name="statistics_detail_goals_excess">Thặng dư</string>
     <string name="statistics_detail_goals_deficit">Thâm hụt</string>
+    <string name="statistics_detail_tag_values_hint">Giá trị thẻ</string>
 
     <plurals name="statistics_detail_times_tracked">
         <!--        <item quantity="zero">Bản ghi</item>-->

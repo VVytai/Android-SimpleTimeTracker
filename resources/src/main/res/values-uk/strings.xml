@@ -116,6 +116,10 @@
     <string name="change_record_tag_type_typed_hint">Можна призначити лише записам певної активності</string>
     <string name="change_record_tag_select_activity_hint">Взяти колір та іконку з активності</string>
     <string name="change_record_tag_default_types_hint">Тег буде призначено за замовчуванням під час запуску таймера з вибраними діями</string>
+    <string name="change_record_type_value_type_field">Значення</string>
+    <string name="change_record_type_value_type_hint">Призначте значення при додаванні цього тега до запису. Корисно для відстеження настрою, продуктивності, прочитаних сторінок, пройдених кроків тощо.</string>
+    <string name="change_record_type_value_suffix">Суфікс</string>
+    <string name="change_record_type_value_selection_hint">Введіть нове значення</string>
 
     <!--  Change record  -->
     <string name="change_record_message_choose_type">Обрати активність</string>
@@ -512,6 +516,7 @@
     <string name="statistics_detail_goals_hint">Перевищення або дефіцит цілі</string>
     <string name="statistics_detail_goals_excess">Перевищення</string>
     <string name="statistics_detail_goals_deficit">Дефіцит</string>
+    <string name="statistics_detail_tag_values_hint">Значення тегів</string>
 
     <plurals name="statistics_detail_times_tracked">
         <!--        <item quantity="zero">Записів</item>-->

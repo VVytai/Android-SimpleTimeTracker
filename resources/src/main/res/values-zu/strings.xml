@@ -116,6 +116,10 @@ Lokhu kukuvumela ukuthi ubone isikhathi osichitha emisebenzini esebenzayo nezing
     <string name="change_record_tag_type_typed_hint">Inganikwa kumarekhodi womsebenzi othile kuphela</string>
     <string name="change_record_tag_select_activity_hint">Thatha umbala nesithonjana kumsebenzi</string>
     <string name="change_record_tag_default_types_hint">Ithegi izofakwa ngokuzenzakalelayo uma kuqalwa isikhathi nomsebenzi okhethiwe</string>
+    <string name="change_record_type_value_type_field">Inani</string>
+    <string name="change_record_type_value_type_hint">Nika inani lapho uphawula irekhodi ngaleli thegi. Kuyasiza ukulandelela imizwa, ukukhiqiza, amakhasi afundiwe, izinyathelo ezihambiweyo, njll.</string>
+    <string name="change_record_type_value_suffix">Isijobelelo</string>
+    <string name="change_record_type_value_selection_hint">Faka inani elisha</string>
 
     <!--  Change record  -->
     <string name="change_record_message_choose_type">Khetha umsebenzi</string>
@@ -512,6 +516,7 @@ Isibonelo:<br/>
     <string name="statistics_detail_goals_hint">Ukweqa noma ukusilela kwezinhloso</string>
     <string name="statistics_detail_goals_excess">Okweqile</string>
     <string name="statistics_detail_goals_deficit">Ukusilela</string>
+    <string name="statistics_detail_tag_values_hint">Amanani ethegi</string>
 
     <plurals name="statistics_detail_times_tracked">
         <!--        <item quantity="zero">Amarekhodi</item>-->

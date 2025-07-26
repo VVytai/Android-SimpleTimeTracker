@@ -15,6 +15,8 @@ fun Int?.orZero(): Int = this ?: 0
 
 fun Float?.orZero(): Float = this ?: 0f
 
+fun Double?.orZero(): Double = this ?: 0.0
+
 fun <T> List<T>?.orEmpty(): List<T> = this ?: emptyList()
 
 fun <T> List<T>.rotateLeft(n: Int): List<T> = drop(n) + take(n)

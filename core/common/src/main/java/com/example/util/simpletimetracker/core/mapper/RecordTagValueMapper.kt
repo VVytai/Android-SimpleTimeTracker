@@ -9,7 +9,7 @@ class RecordTagValueMapper @Inject constructor(
 ) {
 
     fun map(value: Double): String {
-        // TODO TAG do better?
+        // TODO do better?
         return value.toBigDecimal().stripTrailingZeros().toPlainString()
     }
 

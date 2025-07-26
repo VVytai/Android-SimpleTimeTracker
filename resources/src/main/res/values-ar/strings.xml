@@ -116,6 +116,10 @@
     <string name="change_record_tag_type_typed_hint">لا يمكن تعيينه إلا لمتتبعات نشاط معين</string>
     <string name="change_record_tag_select_activity_hint">خذ اللون والرمز من النشاط</string>
     <string name="change_record_tag_default_types_hint">سيتم تعيين العلامة بشكل افتراضي عند بدء مؤقت بالأنشطة المحددة</string>
+    <string name="change_record_type_value_type_field">قيمة</string>
+    <string name="change_record_type_value_type_hint">قم بتعيين قيمة عند تمييز سجل بهذا الوسم. مفيد لتتبع الحالة المزاجية والإنتاجية وعدد الصفحات المقروءة والخطوات المقطوعة، وغيرها.</string>
+    <string name="change_record_type_value_suffix">لاحقة</string>
+    <string name="change_record_type_value_selection_hint">أدخل قيمة جديدة</string>
 
     <!--  Change record  -->
     <string name="change_record_message_choose_type">اختيار النشاط</string>
@@ -512,6 +516,7 @@
     <string name="statistics_detail_goals_hint">هدف فائض أو عجز</string>
     <string name="statistics_detail_goals_excess">إفراط</string>
     <string name="statistics_detail_goals_deficit">العجز</string>
+    <string name="statistics_detail_tag_values_hint">قيم الوسوم</string>
 
     <plurals name="statistics_detail_times_tracked">
         <item quantity="zero">تتبع</item>

@@ -117,7 +117,7 @@ This allows you to see how much time you\'re spending on productive versus unpro
     <string name="change_record_tag_select_activity_hint">Take color and icon from activity</string>
     <string name="change_record_tag_default_types_hint">Tag would be assigned by default when starting a timer with selected activities</string>
     <string name="change_record_type_value_type_field">Value</string>
-    <string name="change_record_type_value_type_hint">Assign a value to a tag. For example mood, efficiency, pages read, steps walked.</string>
+    <string name="change_record_type_value_type_hint">Assign a value when tagging a record with this tag. Useful for tracking mood, productivity, pages read, steps walked, etc.</string>
     <string name="change_record_type_value_suffix">Suffix</string>
     <string name="change_record_type_value_selection_hint">Enter new value</string>
 
@@ -516,6 +516,7 @@ Example:<br/>
     <string name="statistics_detail_goals_hint">Goal excess or deficit</string>
     <string name="statistics_detail_goals_excess">Excess</string>
     <string name="statistics_detail_goals_deficit">Deficit</string>
+    <string name="statistics_detail_tag_values_hint">Tag values</string>
 
     <plurals name="statistics_detail_times_tracked">
         <item quantity="zero">Records</item>
