@@ -16,6 +16,7 @@ import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.domain.extension.toDuration
 import com.example.util.simpletimetracker.feature_dialogs.R
 import kotlin.math.round
+import androidx.core.content.withStyledAttributes
 
 class DurationView @JvmOverloads constructor(
     context: Context,
@@ -122,11 +123,10 @@ class DurationView @JvmOverloads constructor(
         defStyleAttr: Int = 0,
     ) {
         context
-            .obtainStyledAttributes(
+            .withStyledAttributes(
                 attrs,
                 R.styleable.DurationView, defStyleAttr, 0,
-            )
-            .run {
+            ) {
                 textColor = getColor(
                     R.styleable.DurationView_durationTextColor, Color.BLACK,
                 )
@@ -139,8 +139,6 @@ class DurationView @JvmOverloads constructor(
                 legendPadding = getDimensionPixelSize(
                     R.styleable.DurationView_durationLegendPadding, 0,
                 ).toFloat()
-
-                recycle()
             }
     }
 
@@ -365,18 +363,24 @@ class DurationView @JvmOverloads constructor(
         startSwipe(
             event = event,
             offset = offset,
+            isOtherSwipingInProgress = fieldStateMinutes.isSwiping ||
+                fieldStateSeconds.isSwiping,
             getState = { fieldStateHours },
             setState = { fieldStateHours = it },
         )
         startSwipe(
             event = event,
             offset = offset,
+            isOtherSwipingInProgress = fieldStateHours.isSwiping ||
+                fieldStateSeconds.isSwiping,
             getState = { fieldStateMinutes },
             setState = { fieldStateMinutes = it },
         )
         startSwipe(
             event = event,
             offset = offset,
+            isOtherSwipingInProgress = fieldStateHours.isSwiping ||
+                fieldStateMinutes.isSwiping,
             getState = { fieldStateSeconds },
             setState = { fieldStateSeconds = it },
         )
@@ -408,10 +412,15 @@ class DurationView @JvmOverloads constructor(
     private fun startSwipe(
         event: MotionEvent,
         offset: Float,
+        isOtherSwipingInProgress: Boolean,
         getState: () -> FieldState,
         setState: (FieldState) -> Unit,
     ) {
-        if (event.x in getState().leftPx..getState().rightPx) {
+        val coordinatesInRange = event.x in getState().leftPx..getState().rightPx
+        if (
+            (!isOtherSwipingInProgress && coordinatesInRange) ||
+            getState().isSwiping
+        ) {
             // Cancel current animation on new swipe.
             if (getState().isSettling) {
                 getState().animator?.cancel()

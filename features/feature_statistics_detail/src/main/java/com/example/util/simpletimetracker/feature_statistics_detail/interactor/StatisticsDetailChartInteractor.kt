@@ -200,15 +200,19 @@ class StatisticsDetailChartInteractor @Inject constructor(
 
         fun mapRangesToValue(list: List<RecordBase>, range: Range): Long {
             return when (chartMode) {
-                ChartMode.DURATIONS -> list
-                    .map { record -> rangeMapper.clampToRange(record, range) }
-                    .let(rangeMapper::mapToDuration)
-                ChartMode.COUNTS -> list.size.toLong()
-                ChartMode.TAG_VALUE -> list
-                    .sumOf { record ->
+                ChartMode.DURATIONS -> {
+                    list.map { record ->
+                        rangeMapper.clampToRange(record, range)
+                    }.let(rangeMapper::mapToDuration)
+                }
+                ChartMode.COUNTS -> {
+                    list.size.toLong()
+                }
+                ChartMode.TAG_VALUE -> {
+                    list.sumOf { record ->
                         record.tags.sumOf { it.numericValue.orZero() * TAG_VALUE_PRECISION }
-                    }
-                    .roundToLong()
+                    }.roundToLong()
+                }
             }
         }
 
