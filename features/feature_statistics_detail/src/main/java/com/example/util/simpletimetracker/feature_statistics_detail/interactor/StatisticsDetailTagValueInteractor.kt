@@ -11,7 +11,7 @@ import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTyp
 import com.example.util.simpletimetracker.domain.recordType.model.RecordType
 import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
 import com.example.util.simpletimetracker.feature_statistics_detail.interactor.StatisticsDetailPreviewInteractor.PreviewType
-import com.example.util.simpletimetracker.feature_statistics_detail.mapper.StatisticsDetailViewDataMapper
+import com.example.util.simpletimetracker.feature_statistics_detail.mapper.StatisticsDetailTagValuesViewDataMapper
 import com.example.util.simpletimetracker.feature_statistics_detail.model.ChartGrouping
 import com.example.util.simpletimetracker.feature_statistics_detail.model.ChartLength
 import com.example.util.simpletimetracker.feature_statistics_detail.model.ChartMode
@@ -25,7 +25,7 @@ class StatisticsDetailTagValueInteractor @Inject constructor(
     private val prefsInteractor: PrefsInteractor,
     private val chartInteractor: StatisticsDetailChartInteractor,
     private val statisticsDetailPreviewInteractor: StatisticsDetailPreviewInteractor,
-    private val statisticsDetailViewDataMapper: StatisticsDetailViewDataMapper,
+    private val statisticsDetailTagValuesViewDataMapper: StatisticsDetailTagValuesViewDataMapper,
     private val recordTypeInteractor: RecordTypeInteractor,
     private val recordTagInteractor: RecordTagInteractor,
 ) {
@@ -100,7 +100,7 @@ class StatisticsDetailTagValueInteractor @Inject constructor(
             splitSortMode = ChartSplitSortMode.ACTIVITY_ORDER,
         )
 
-        val chartViewData = statisticsDetailViewDataMapper.mapTagValueChartViewData(
+        val chartViewData = statisticsDetailTagValuesViewDataMapper.mapTagValueChartViewData(
             data = data,
             prevData = prevData,
             rangeLength = rangeLength,

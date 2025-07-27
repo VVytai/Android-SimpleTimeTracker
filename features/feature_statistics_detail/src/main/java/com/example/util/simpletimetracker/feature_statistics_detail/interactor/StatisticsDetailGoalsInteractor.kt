@@ -13,6 +13,7 @@ import com.example.util.simpletimetracker.domain.recordType.model.RecordType
 import com.example.util.simpletimetracker.domain.recordType.model.RecordTypeGoal
 import com.example.util.simpletimetracker.domain.record.model.RecordsFilter
 import com.example.util.simpletimetracker.feature_statistics_detail.interactor.StatisticsDetailChartInteractor.CompositeChartData
+import com.example.util.simpletimetracker.feature_statistics_detail.mapper.StatisticsDetailGoalsViewDataMapper
 import com.example.util.simpletimetracker.feature_statistics_detail.mapper.StatisticsDetailViewDataMapper
 import com.example.util.simpletimetracker.feature_statistics_detail.model.ChartGrouping
 import com.example.util.simpletimetracker.feature_statistics_detail.model.ChartLength
@@ -25,6 +26,7 @@ import javax.inject.Inject
 class StatisticsDetailGoalsInteractor @Inject constructor(
     private val chartInteractor: StatisticsDetailChartInteractor,
     private val statisticsDetailViewDataMapper: StatisticsDetailViewDataMapper,
+    private val statisticsDetailGoalsViewDataMapper: StatisticsDetailGoalsViewDataMapper,
     private val prefsInteractor: PrefsInteractor,
     private val statisticsDetailGetGoalFromFilterInteractor: StatisticsDetailGetGoalFromFilterInteractor,
     private val recordTypeInteractor: RecordTypeInteractor,
@@ -95,7 +97,7 @@ class StatisticsDetailGoalsInteractor @Inject constructor(
             splitSortMode = ChartSplitSortMode.ACTIVITY_ORDER,
         )
 
-        val statsViewData = statisticsDetailViewDataMapper.mapGoalStatsViewData(
+        val statsViewData = statisticsDetailGoalsViewDataMapper.mapGoalStatsViewData(
             records = records,
             currentRangeGoal = getGoal(
                 goals = goals,
@@ -108,7 +110,7 @@ class StatisticsDetailGoalsInteractor @Inject constructor(
             firstDayOfWeek = firstDayOfWeek,
             startOfDayShift = startOfDayShift,
         )
-        val chartViewData = statisticsDetailViewDataMapper.mapGoalChartViewData(
+        val chartViewData = statisticsDetailGoalsViewDataMapper.mapGoalChartViewData(
             data = data,
             prevData = prevData,
             chartGoal = chartGoal,
