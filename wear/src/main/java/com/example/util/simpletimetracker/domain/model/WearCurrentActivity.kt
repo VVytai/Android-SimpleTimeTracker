@@ -14,5 +14,6 @@ data class WearCurrentActivity(
     data class Tag(
         val name: String,
         val numericValue: Double?,
+        val valueSuffix: String?,
     )
 }

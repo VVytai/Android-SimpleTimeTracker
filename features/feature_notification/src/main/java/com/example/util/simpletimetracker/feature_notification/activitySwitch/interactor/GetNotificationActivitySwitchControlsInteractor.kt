@@ -9,6 +9,7 @@ import com.example.util.simpletimetracker.core.mapper.RecordTypeViewDataMapper
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.domain.base.REPEAT_BUTTON_ITEM_ID
 import com.example.util.simpletimetracker.domain.recordTag.interactor.GetSelectableTagsInteractor
+import com.example.util.simpletimetracker.domain.recordTag.interactor.RecordTagInteractor
 import com.example.util.simpletimetracker.domain.recordTag.model.RecordTag
 import com.example.util.simpletimetracker.domain.recordType.model.RecordType
 import com.example.util.simpletimetracker.domain.recordType.model.RecordTypeGoal
@@ -29,6 +30,7 @@ class GetNotificationActivitySwitchControlsInteractor @Inject constructor(
     private val recordTagViewDataMapper: RecordTagViewDataMapper,
     private val completeTypesStateInteractor: CompleteTypesStateInteractor,
     private val getSelectableTagsInteractor: GetSelectableTagsInteractor,
+    private val recordTagInteractor: RecordTagInteractor,
 ) {
 
     suspend fun getControls(
@@ -49,6 +51,8 @@ class GetNotificationActivitySwitchControlsInteractor @Inject constructor(
             mapTagSelectionViewState(
                 isDarkTheme = isDarkTheme,
                 currentValueString = selectedTagValue,
+                valueSuffix = recordTagInteractor.get(selectedTagId)
+                    ?.valueSuffix.orEmpty(),
             )
         } else {
             mapTypesViewState(
@@ -180,11 +184,18 @@ class GetNotificationActivitySwitchControlsInteractor @Inject constructor(
     private fun mapTagSelectionViewState(
         isDarkTheme: Boolean,
         currentValueString: String?,
+        valueSuffix: String,
     ): NotificationControlsParams.ViewState {
-        val hint = if (currentValueString.isNullOrEmpty()) {
-            resourceRepo.getString(R.string.change_record_type_value_selection_hint)
-        } else {
-            currentValueString // TODO TAG add suffix
+        val hint = when {
+            currentValueString.isNullOrEmpty() -> {
+                resourceRepo.getString(R.string.change_record_type_value_selection_hint)
+            }
+            valueSuffix.isEmpty() -> {
+                currentValueString
+            }
+            else -> {
+                "$currentValueString $valueSuffix"
+            }
         }
 
         val controlIconColor = colorMapper.toInactiveColor(isDarkTheme)

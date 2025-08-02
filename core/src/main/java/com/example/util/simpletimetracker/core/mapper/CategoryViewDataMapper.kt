@@ -120,6 +120,7 @@ class CategoryViewDataMapper @Inject constructor(
             val newName = recordTagValueMapper.getNameWithValue(
                 name = viewData.name,
                 value = value,
+                valueSuffix = tag.valueSuffix,
             )
             return viewData.copy(name = newName)
         } else {

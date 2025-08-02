@@ -31,6 +31,7 @@ class StatisticsDetailTagValuesViewDataMapper @Inject constructor(
         availableChartLengths: List<ChartLength>,
         appliedChartLength: ChartLength,
         chartMode: ChartMode,
+        valueSuffix: String,
         useProportionalMinutes: Boolean,
         showSeconds: Boolean,
         isDarkTheme: Boolean,
@@ -71,9 +72,15 @@ class StatisticsDetailTagValuesViewDataMapper @Inject constructor(
         )
 
         if (chartData.visible) {
+            val mainHint = resourceRepo.getString(R.string.statistics_detail_tag_values_hint)
+            val hint = if (valueSuffix.isEmpty()) {
+                mainHint
+            } else {
+                "$mainHint ($valueSuffix)"
+            }
             items += StatisticsDetailHintViewData(
                 block = StatisticsDetailBlock.TagValuesHint,
-                text = resourceRepo.getString(R.string.statistics_detail_tag_values_hint),
+                text = hint,
             )
         }
 

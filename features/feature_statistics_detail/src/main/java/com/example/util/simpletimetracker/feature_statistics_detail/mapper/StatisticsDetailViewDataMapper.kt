@@ -634,7 +634,7 @@ class StatisticsDetailViewDataMapper @Inject constructor(
         val (legendSuffix, isMinutes) = when (chartMode) {
             ChartMode.DURATIONS -> mapLegendSuffix(data)
             ChartMode.COUNTS -> "" to false
-            ChartMode.TAG_VALUE -> "" to false // TODO TAG suffix?
+            ChartMode.TAG_VALUE -> "" to false
         }
 
         fun formatInterval(interval: Long): Float {

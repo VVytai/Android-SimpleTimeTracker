@@ -17,7 +17,11 @@ class RecordTagFullNameMapper @Inject constructor(
             separator = ", ",
             transform = { tag ->
                 tagDataMap[tag.id]?.numericValue?.let { value ->
-                    recordTagValueMapper.getNameWithValue(tag.name, value)
+                    recordTagValueMapper.getNameWithValue(
+                        name = tag.name,
+                        value = value,
+                        valueSuffix = tag.valueSuffix,
+                    )
                 } ?: tag.name
             },
         )

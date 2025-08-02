@@ -8,6 +8,7 @@ import com.example.util.simpletimetracker.domain.recordTag.model.RecordTagValueT
 import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTypeInteractor
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.buttonsRow.ButtonsRowItemViewData
+import com.example.util.simpletimetracker.feature_base_adapter.commentField.CommentFieldViewData
 import com.example.util.simpletimetracker.feature_base_adapter.divider.DividerViewData
 import com.example.util.simpletimetracker.feature_base_adapter.hint.HintViewData
 import com.example.util.simpletimetracker.feature_change_record_tag.R
@@ -56,6 +57,7 @@ class ChangeRecordTagViewDataInteractor @Inject constructor(
     fun getTagValueState(
         valueType: RecordTagValueType,
         valueSuffix: String,
+        fromValueChange: Boolean,
     ): ChangeRecordTagValueViewData {
         fun mapValueTypeName(type: RecordTagValueType): String {
             return when (type) {
@@ -84,7 +86,13 @@ class ChangeRecordTagViewDataInteractor @Inject constructor(
             },
         )
         if (valueType == RecordTagValueType.NUMERIC) {
-            // TODO TAG add input field for suffix
+            result += CommentFieldViewData(
+                id = "change_record_tag_value_suffix".hashCode().toLong(),
+                text = if (fromValueChange) null else valueSuffix,
+                marginTopDp = 0,
+                marginHorizontal = resourceRepo.getDimenInDp(R.dimen.edit_screen_margin_horizontal),
+                hint = resourceRepo.getString(R.string.change_record_type_value_suffix),
+            )
         }
 
         return ChangeRecordTagValueViewData(

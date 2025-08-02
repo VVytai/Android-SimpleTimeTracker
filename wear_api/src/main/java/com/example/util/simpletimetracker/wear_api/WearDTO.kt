@@ -53,6 +53,8 @@ data class WearCurrentActivityDTO(
         val name: String,
         @SerializedName("numericValue")
         val numericValue: Double?,
+        @SerializedName("valueSuffix")
+        val valueSuffix: String?,
     ) : Parcelable
 }
 

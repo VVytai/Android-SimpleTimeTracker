@@ -89,6 +89,7 @@ class WearDataLocalMapper @Inject constructor(
         return WearCurrentActivityDTO.TagDTO(
             name = recordTag.name,
             numericValue = recordTagData?.numericValue,
+            valueSuffix = recordTag.valueSuffix,
         )
     }
 

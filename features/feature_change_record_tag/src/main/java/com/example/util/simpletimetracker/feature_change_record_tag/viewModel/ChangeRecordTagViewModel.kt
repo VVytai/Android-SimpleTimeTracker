@@ -120,7 +120,7 @@ class ChangeRecordTagViewModel @Inject constructor(
     val valueState: LiveData<ChangeRecordTagValueViewData> by lazy {
         return@lazy MutableLiveData<ChangeRecordTagValueViewData>().let { initial ->
             viewModelScope.launch {
-                initial.value = loadValueState()
+                initial.value = loadValueState(fromValueChange = false)
             }
             initial
         }
@@ -257,6 +257,13 @@ class ChangeRecordTagViewModel @Inject constructor(
             else -> return
         }
         updateValueState()
+    }
+
+    fun onValueChange(valueText: String) {
+        if (valueText != newValueSuffix) {
+            newValueSuffix = valueText
+            updateValueState(fromValueChange = true)
+        }
     }
 
     fun onArchiveClick() {
@@ -584,15 +591,20 @@ class ChangeRecordTagViewModel @Inject constructor(
         return newNote
     }
 
-    private fun updateValueState() {
-        val data = loadValueState()
+    private fun updateValueState(
+        fromValueChange: Boolean = false,
+    ) {
+        val data = loadValueState(fromValueChange)
         valueState.set(data)
     }
 
-    private fun loadValueState(): ChangeRecordTagValueViewData {
+    private fun loadValueState(
+        fromValueChange: Boolean,
+    ): ChangeRecordTagValueViewData {
         return changeRecordTagViewDataInteractor.getTagValueState(
             valueType = newValueType,
             valueSuffix = newValueSuffix,
+            fromValueChange = fromValueChange,
         )
     }
 

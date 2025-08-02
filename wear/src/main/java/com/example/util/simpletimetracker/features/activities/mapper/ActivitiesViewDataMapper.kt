@@ -210,7 +210,11 @@ class ActivitiesViewDataMapper @Inject constructor(
             separator = ", ",
             transform = { tag ->
                 tag.numericValue?.let { value ->
-                    recordTagValueMapper.getNameWithValue(tag.name, value)
+                    recordTagValueMapper.getNameWithValue(
+                        name = tag.name,
+                        value = value,
+                        valueSuffix = tag.valueSuffix.orEmpty(),
+                    )
                 } ?: tag.name
             },
         ).orEmpty()

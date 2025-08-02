@@ -40,15 +40,12 @@ class StatisticsDetailTagValueInteractor @Inject constructor(
         rangePosition: Int,
     ): StatisticsDetailTagValuesCompositeViewData = withContext(Dispatchers.Default) {
         val tags = recordTagInteractor.getAll()
-        val needToShowTagValue = needToShowTagValue(filter, tags)
-
-        if (!needToShowTagValue) {
-            return@withContext StatisticsDetailTagValuesCompositeViewData(
+        val valuedTag = getSingleSelectedTagWithValue(filter, tags)
+            ?: return@withContext StatisticsDetailTagValuesCompositeViewData(
                 viewData = emptyList(),
                 appliedChartGrouping = currentChartGrouping,
                 appliedChartLength = currentChartLength,
             )
-        }
 
         val firstDayOfWeek = prefsInteractor.getFirstDayOfWeek()
         val startOfDayShift = prefsInteractor.getStartOfDayShift()
@@ -109,6 +106,7 @@ class StatisticsDetailTagValueInteractor @Inject constructor(
             availableChartLengths = compositeData.availableChartLengths,
             appliedChartLength = compositeData.appliedChartLength,
             chartMode = chartMode,
+            valueSuffix = valuedTag.valueSuffix,
             useProportionalMinutes = useProportionalMinutes,
             showSeconds = showSeconds,
             isDarkTheme = isDarkTheme,
@@ -121,17 +119,20 @@ class StatisticsDetailTagValueInteractor @Inject constructor(
         )
     }
 
-    private fun needToShowTagValue(
+    private fun getSingleSelectedTagWithValue(
         filter: List<RecordsFilter>,
         tags: List<RecordTag>,
-    ): Boolean {
+    ): RecordTag? {
         val previewType = statisticsDetailPreviewInteractor.getPreviewType(filter)
         val selectedTags = filter.getSelectedTags().filterIsInstance<RecordsFilter.TagItem.Tagged>()
-        val selectedTag = selectedTags.firstOrNull()
-        val tagType = tags.firstOrNull { it.id == selectedTag?.tagId }?.valueType
+        val selectedTagId = selectedTags.firstOrNull()?.tagId
+        val selectedTag = tags.firstOrNull { it.id == selectedTagId }
+        val tagType = selectedTag?.valueType
 
-        return previewType is PreviewType.SelectedTags &&
+        val needToShowTagValue = previewType is PreviewType.SelectedTags &&
             selectedTags.size == 1 &&
             tagType == RecordTagValueType.NUMERIC
+
+        return if (needToShowTagValue) selectedTag else null
     }
 }

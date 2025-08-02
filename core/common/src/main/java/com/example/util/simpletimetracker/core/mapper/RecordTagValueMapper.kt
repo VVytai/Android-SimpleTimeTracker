@@ -13,12 +13,17 @@ class RecordTagValueMapper @Inject constructor(
         return value.toBigDecimal().stripTrailingZeros().toPlainString()
     }
 
-    fun getNameWithValue(name: String, value: Double): String {
+    fun getNameWithValue(
+        name: String,
+        value: Double,
+        valueSuffix: String,
+    ): String {
         val actualValue = map(value)
-        return resourceRepo.getString(
-            R.string.separator_template,
-            name,
-            "($actualValue)",
-        )
+        val tagValue = if (valueSuffix.isEmpty()) {
+            actualValue
+        } else {
+            resourceRepo.getString(R.string.separator_template, actualValue, valueSuffix)
+        }
+        return resourceRepo.getString(R.string.separator_template, name, "($tagValue)")
     }
 }

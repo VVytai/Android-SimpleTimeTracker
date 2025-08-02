@@ -43,6 +43,7 @@ import com.example.util.simpletimetracker.feature_base_adapter.category.Category
 import com.example.util.simpletimetracker.feature_base_adapter.color.createColorAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.color.createColorFavouriteAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.color.createColorPaletteAdapterDelegate
+import com.example.util.simpletimetracker.feature_base_adapter.commentField.createCommentFieldAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.divider.createDividerAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.emoji.createEmojiAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.empty.createEmptyAdapterDelegate
@@ -144,6 +145,7 @@ class ChangeRecordTagFragment :
             createHintAdapterDelegate(),
             createDividerAdapterDelegate(),
             createButtonsRowAdapterDelegate(viewModel::onButtonsRowClick),
+            createCommentFieldAdapterDelegate(viewModel::onValueChange),
         )
     }
     private var iconsLayoutManager: GridLayoutManager? = null
