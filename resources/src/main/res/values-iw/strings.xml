@@ -311,7 +311,6 @@
     <string name="settings_untracked_range">טווח ללא מעקב</string>
     <string name="settings_untracked_range_hint">התעלם מזמן ללא מעקב מחוץ לטווח שצוין.</string>
     <string name="settings_show_records_calendar">הצג רשומות בתצוגת לוח שנה</string>
-    <string name="settings_show_calendar_button_on_records_tab">הצג כפתור על הלשונית</string>
     <string name="settings_reverse_order_in_calendar">סדר הפוך של רשומות</string>
     <string name="settings_days_in_calendar">ימים בלוח שנה</string>
     <string name="settings_widget_transparency">שקיפות רקע יישומון</string>

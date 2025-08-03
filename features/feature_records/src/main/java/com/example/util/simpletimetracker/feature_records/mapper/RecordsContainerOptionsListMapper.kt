@@ -20,20 +20,16 @@ class RecordsContainerOptionsListMapper @Inject constructor(
         val isCalendar = prefsInteractor.getShowRecordsCalendar()
         val filterType = prefsInteractor.getListFilterType()
 
-        result += if (prefsInteractor.getShowCalendarButtonOnRecordsTab()) {
-            OptionsListParams.Item(
-                id = RecordsContainerOptionsListItem.CalendarView,
-                text = if (isCalendar) {
-                    R.string.records_switch_to_list
-                } else {
-                    R.string.records_switch_to_calendar
-                }.let(resourceRepo::getString),
-                icon = if (isCalendar) R.drawable.list else R.drawable.calendar,
-                isIconCheckVisible = false,
-            )
-        } else {
-            null
-        }
+        result += OptionsListParams.Item(
+            id = RecordsContainerOptionsListItem.CalendarView,
+            text = if (isCalendar) {
+                R.string.records_switch_to_list
+            } else {
+                R.string.records_switch_to_calendar
+            }.let(resourceRepo::getString),
+            icon = if (isCalendar) R.drawable.list else R.drawable.calendar,
+            isIconCheckVisible = false,
+        )
 
         result += OptionsListParams.Item(
             id = RecordsContainerOptionsListItem.Share,

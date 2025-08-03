@@ -311,7 +311,6 @@ Lokhu kukuvumela ukuthi ubone isikhathi osichitha emisebenzini esebenzayo nezing
     <string name="settings_untracked_range">Ibanga elingalandelwanga</string>
     <string name="settings_untracked_range_hint">Yeka isikhathi esingalandelwanga esingaphandle kwebanga elibekiwe.</string>
     <string name="settings_show_records_calendar">Bonisa amarekhodi kubuka wekhalenda</string>
-    <string name="settings_show_calendar_button_on_records_tab">Bonisa inkinobho kuthebhu</string>
     <string name="settings_reverse_order_in_calendar">Phendula ukuhleleka kwamarekhodi</string>
     <string name="settings_days_in_calendar">Izinsuku ezikukhalenda</string>
     <string name="settings_widget_transparency">Ukusobala kwangemuva kwewidget</string>

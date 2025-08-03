@@ -62,7 +62,6 @@ class SettingsDisplayViewModelDelegate @Inject constructor(
             SettingsBlock.DisplayUntrackedInStatistics -> onShowUntrackedInStatisticsClicked()
             SettingsBlock.DisplayUntrackedRangeCheckbox -> onUntrackedRangeClicked()
             SettingsBlock.DisplayCalendarView -> onShowRecordsCalendarClicked()
-            SettingsBlock.DisplayCalendarButtonOnRecordsTab -> onShowCalendarButtonOnRecordsTabClicked()
             SettingsBlock.DisplayReverseOrder -> onReverseOrderInCalendarClicked()
             SettingsBlock.DisplayShowActivityFilters -> onShowActivityFiltersClicked()
             SettingsBlock.DisplayEnablePomodoroMode -> onEnablePomodoroModeClicked()
@@ -253,14 +252,6 @@ class SettingsDisplayViewModelDelegate @Inject constructor(
             prefsInteractor.setShowRecordsCalendar(newValue)
             parent?.updateContent()
             recordsContainerUpdateInteractor.sendShowCalendarUpdated()
-        }
-    }
-
-    private fun onShowCalendarButtonOnRecordsTabClicked() {
-        delegateScope.launch {
-            val newValue = !prefsInteractor.getShowCalendarButtonOnRecordsTab()
-            prefsInteractor.setShowCalendarButtonOnRecordsTab(newValue)
-            parent?.updateContent()
         }
     }
 

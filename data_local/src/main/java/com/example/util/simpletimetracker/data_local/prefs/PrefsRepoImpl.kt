@@ -169,10 +169,6 @@ class PrefsRepoImpl @Inject constructor(
         KEY_SHOW_RECORDS_CALENDAR, false,
     )
 
-    override var showCalendarButtonOnRecordsTab: Boolean by prefs.delegate(
-        KEY_SHOW_CALENDAR_BUTTON_ON_RECORDS_TAB, false,
-    )
-
     override var reverseOrderInCalendar: Boolean by prefs.delegate(
         KEY_REVERSE_ORDER_IN_CALENDAR, false,
     )
@@ -646,7 +642,6 @@ class PrefsRepoImpl @Inject constructor(
         const val KEY_SHOW_UNTRACKED_IN_RECORDS = "showUntrackedInRecords"
         const val KEY_SHOW_UNTRACKED_IN_STATISTICS = "showUntrackedInStatistics"
         const val KEY_SHOW_RECORDS_CALENDAR = "showRecordsCalendar"
-        const val KEY_SHOW_CALENDAR_BUTTON_ON_RECORDS_TAB = "showCalendarButtonOnRecordsTab"
         const val KEY_REVERSE_ORDER_IN_CALENDAR = "reverseOrderInCalendar"
         const val KEY_DAYS_IN_CALENDAR = "daysInCalendar"
         const val KEY_SHOW_ACTIVITY_FILTERS = "showActivityFilters"
@@ -731,5 +726,6 @@ class PrefsRepoImpl @Inject constructor(
         private const val KEY_RECORD_TAG_SELECTION_EVEN_FOR_GENERAL_TAGS = "recordTagSelectionEvenForGeneralTags"
         private const val KEY_SHOW_NOTIFICATION_WITH_SWITCH = "showNotificationWithSwitch" // Boolean
         private const val KEY_SHOW_NOTIFICATION_WITH_SWITCH_HIDE = "showNotificationWithSwitchHide" // Boolean
+        private const val KEY_SHOW_CALENDAR_BUTTON_ON_RECORDS_TAB = "showCalendarButtonOnRecordsTab" // Boolean
     }
 }

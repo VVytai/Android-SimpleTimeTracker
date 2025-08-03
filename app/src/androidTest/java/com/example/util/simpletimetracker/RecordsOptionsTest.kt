@@ -16,7 +16,6 @@ import com.example.util.simpletimetracker.utils.clickOnViewWithId
 import com.example.util.simpletimetracker.utils.clickOnViewWithText
 import com.example.util.simpletimetracker.utils.tryAction
 import dagger.hilt.android.testing.HiltAndroidTest
-import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.allOf
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -326,7 +325,6 @@ class RecordsOptionsTest : BaseUiTest() {
         val name = "Test"
 
         // Add data
-        runBlocking { prefsInteractor.setShowCalendarButtonOnRecordsTab(true) }
         testUtils.addActivity(name = name)
         testUtils.addRecord(name)
 

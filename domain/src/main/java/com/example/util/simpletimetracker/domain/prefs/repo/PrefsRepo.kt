@@ -58,8 +58,6 @@ interface PrefsRepo {
 
     var showRecordsCalendar: Boolean
 
-    var showCalendarButtonOnRecordsTab: Boolean
-
     var reverseOrderInCalendar: Boolean
 
     var daysInCalendar: Int

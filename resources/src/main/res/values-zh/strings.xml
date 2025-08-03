@@ -311,7 +311,6 @@
     <string name="settings_untracked_range">未追踪范围</string>
     <string name="settings_untracked_range_hint">忽略指定范围之外的未追踪时间</string>
     <string name="settings_show_records_calendar">记录以日历视图显示</string>
-    <string name="settings_show_calendar_button_on_records_tab">在选项卡上显示按钮</string>
     <string name="settings_reverse_order_in_calendar">倒序记录</string>
     <string name="settings_days_in_calendar">日历视图显示的天数</string>
     <string name="settings_widget_transparency">小部件背景透明度</string>

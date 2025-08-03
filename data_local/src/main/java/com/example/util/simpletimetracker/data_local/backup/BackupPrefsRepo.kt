@@ -57,7 +57,6 @@ import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Compani
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_REVERSE_ORDER_IN_CALENDAR
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_SELECTED_PREDEFINED_FILTERS
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_SHOW_ACTIVITY_FILTERS
-import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_SHOW_CALENDAR_BUTTON_ON_RECORDS_TAB
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_SHOW_CATEGORIES_AS_PREDEFINED_FILTERS
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_SHOW_COMMENT_INPUT
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_SHOW_COMMENT_INPUT_EXCLUDE_ACTIVITIES
@@ -180,7 +179,6 @@ class BackupPrefsRepo @Inject constructor(
             PrefsProcessor(KEY_SHOW_UNTRACKED_IN_RECORDS, ::showUntrackedInRecords),
             PrefsProcessor(KEY_SHOW_UNTRACKED_IN_STATISTICS, ::showUntrackedInStatistics),
             PrefsProcessor(KEY_SHOW_RECORDS_CALENDAR, ::showRecordsCalendar),
-            PrefsProcessor(KEY_SHOW_CALENDAR_BUTTON_ON_RECORDS_TAB, ::showCalendarButtonOnRecordsTab),
             PrefsProcessor(KEY_REVERSE_ORDER_IN_CALENDAR, ::reverseOrderInCalendar),
             PrefsProcessor(KEY_DAYS_IN_CALENDAR, ::daysInCalendar),
             PrefsProcessor(KEY_SHOW_ACTIVITY_FILTERS, ::showActivityFilters),
