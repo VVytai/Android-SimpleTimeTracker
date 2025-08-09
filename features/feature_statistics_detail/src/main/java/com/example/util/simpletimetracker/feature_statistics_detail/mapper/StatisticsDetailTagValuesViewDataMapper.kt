@@ -1,5 +1,6 @@
 package com.example.util.simpletimetracker.feature_statistics_detail.mapper
 
+import com.example.util.simpletimetracker.core.extension.removeTrailingZeroes
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
@@ -139,13 +140,13 @@ class StatisticsDetailTagValuesViewDataMapper @Inject constructor(
         val emptyValue by lazy { resourceRepo.getString(R.string.statistics_detail_empty) }
 
         val barValues = goalData.map { bar -> bar.totalDuration }
-        val minValue = barValues.minOrNull()?.div(TAG_VALUE_PRECISION)
-        val maxValue = barValues.maxOrNull()?.div(TAG_VALUE_PRECISION)
-        val total = barValues.sum() / TAG_VALUE_PRECISION
+        val minValue = barValues.minOrNull()?.toFloat()?.div(TAG_VALUE_PRECISION)
+        val maxValue = barValues.maxOrNull()?.toFloat()?.div(TAG_VALUE_PRECISION)
+        val total = barValues.sum().toFloat() / TAG_VALUE_PRECISION
 
         return listOf(
             StatisticsDetailCardInternalViewData(
-                value = minValue?.toString() ?: emptyValue,
+                value = minValue?.toString()?.removeTrailingZeroes() ?: emptyValue,
                 valueChange = StatisticsDetailCardInternalViewData.ValueChange.None,
                 secondValue = "",
                 description = resourceRepo.getString(R.string.records_filter_duration_min),
@@ -153,7 +154,7 @@ class StatisticsDetailTagValuesViewDataMapper @Inject constructor(
                 subtitleTextSizeSp = 12,
             ),
             StatisticsDetailCardInternalViewData(
-                value = total.toString(),
+                value = total.toString().removeTrailingZeroes(),
                 valueChange = StatisticsDetailCardInternalViewData.ValueChange.None,
                 secondValue = "",
                 description = resourceRepo.getString(R.string.statistics_detail_total_duration),
@@ -161,7 +162,7 @@ class StatisticsDetailTagValuesViewDataMapper @Inject constructor(
                 subtitleTextSizeSp = 12,
             ),
             StatisticsDetailCardInternalViewData(
-                value = maxValue?.toString() ?: emptyValue,
+                value = maxValue?.toString()?.removeTrailingZeroes() ?: emptyValue,
                 valueChange = StatisticsDetailCardInternalViewData.ValueChange.None,
                 secondValue = "",
                 description = resourceRepo.getString(R.string.records_filter_duration_max),

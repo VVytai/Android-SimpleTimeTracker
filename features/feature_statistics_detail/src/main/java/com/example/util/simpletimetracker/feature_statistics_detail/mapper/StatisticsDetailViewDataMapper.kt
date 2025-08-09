@@ -2,6 +2,7 @@ package com.example.util.simpletimetracker.feature_statistics_detail.mapper
 
 import android.annotation.SuppressLint
 import android.graphics.Color
+import com.example.util.simpletimetracker.core.extension.removeTrailingZeroes
 import com.example.util.simpletimetracker.core.mapper.CategoryViewDataMapper
 import com.example.util.simpletimetracker.core.mapper.ColorMapper
 import com.example.util.simpletimetracker.core.mapper.IconMapper
@@ -481,23 +482,33 @@ class StatisticsDetailViewDataMapper @Inject constructor(
         // No reason to show average of one value.
         if (data.size < 2 && compareData.size < 2) return "" to emptyList()
 
-        // TODO TAG show decimal values?
-        fun getAverage(data: List<ChartBarDataDuration>): Long {
-            if (data.isEmpty()) return 0L
-            return data.sumOf { it.durations.sumOf { it.first } } / data.size
+        // TODO TAG show decimal on selected bar
+        fun getAverage(data: List<ChartBarDataDuration>): Float {
+            if (data.isEmpty()) return 0f
+            val sum = data.sumOf { point -> point.durations.sumOf { it.first } }.toFloat()
+            return sum / data.size
         }
 
-        fun formatInterval(
-            interval: Long,
-        ): String {
+        @SuppressLint("DefaultLocale")
+        fun formatDecimalValue(value: Float): String {
+            val abs = abs(value)
+            return when {
+                abs >= 1000f -> value.toLong().toString()
+                abs >= 100f -> String.format("%.1f", abs)
+                abs >= 10f -> String.format("%.2f", abs)
+                else -> String.format("%.3f", abs)
+            }.toString().removeTrailingZeroes()
+        }
+
+        fun formatInterval(interval: Float): String {
             return when (chartMode) {
                 ChartMode.DURATIONS -> timeMapper.formatInterval(
-                    interval = interval,
+                    interval = interval.toLong(),
                     forceSeconds = showSeconds,
                     useProportionalMinutes = useProportionalMinutes,
                 )
-                ChartMode.COUNTS -> interval.toString()
-                ChartMode.TAG_VALUE -> (interval / TAG_VALUE_PRECISION).toString()
+                ChartMode.COUNTS -> formatDecimalValue(interval)
+                ChartMode.TAG_VALUE -> formatDecimalValue(interval / TAG_VALUE_PRECISION)
             }
         }
 
@@ -580,8 +591,8 @@ class StatisticsDetailViewDataMapper @Inject constructor(
     }
 
     private fun mapValueChange(
-        average: Long,
-        prevAverage: Long,
+        average: Float,
+        prevAverage: Float,
         rangeLength: RangeLength,
         isDarkTheme: Boolean,
     ): StatisticsDetailCardInternalViewData.ValueChange {
@@ -590,15 +601,14 @@ class StatisticsDetailViewDataMapper @Inject constructor(
         }
 
         val change: Float = when {
-            prevAverage.orZero() == 0L && average.orZero() == 0L -> 0f
-            prevAverage.orZero() == 0L && average.orZero() > 0L -> 100f
-            prevAverage.orZero() == 0L && average.orZero() < 0L -> -100f
-            prevAverage != 0L -> {
-                (average.orZero() - prevAverage) * 100f / abs(prevAverage)
-            }
+            prevAverage.orZero() == 0f && average.orZero() == 0f -> 0f
+            prevAverage.orZero() == 0f && average.orZero() > 0f -> 100f
+            prevAverage.orZero() == 0f && average.orZero() < 0f -> -100f
+            prevAverage != 0f -> (average.orZero() - prevAverage) * 100f / abs(prevAverage)
             else -> 0f
         }
 
+        // Lowest precision is one decimal.
         @SuppressLint("DefaultLocale")
         fun formatChange(value: Float): String {
             val abs = abs(value)
@@ -641,7 +651,7 @@ class StatisticsDetailViewDataMapper @Inject constructor(
             return when (chartMode) {
                 ChartMode.DURATIONS -> formatInterval(interval, isMinutes)
                 ChartMode.COUNTS -> interval.toFloat()
-                ChartMode.TAG_VALUE -> (interval / TAG_VALUE_PRECISION).toFloat()
+                ChartMode.TAG_VALUE -> interval.toFloat() / TAG_VALUE_PRECISION
             }
         }
 
