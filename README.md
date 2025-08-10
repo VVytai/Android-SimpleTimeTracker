@@ -1,18 +1,49 @@
-# Simple Time Tracker
+<h1 align="center">
+    <img src="metadata/en-US/images/launcher.webp" alt="icon" />
+    <br>
+    <b>Simple Time Tracker</b>
+</h1>
 
-Simple app that helps track how much time you spend on all the useless activities in the world.
+<div align="center">
+    Simple app that helps track how much time you spend on all the useless activities in the world.
+</div>
 
-[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
-     alt="Get it on F-Droid"
-     height="75">](https://f-droid.org/packages/com.razeeman.util.simpletimetracker/)
-[<img src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png"
-     alt="Get it on Google Play"
-     height="75">](https://play.google.com/store/apps/details?id=com.razeeman.util.simpletimetracker)
-[<img src="https://github.com/machiav3lli/oandbackupx/blob/034b226cea5c1b30eb4f6a6f313e4dadcbb0ece4/badge_github.png"
-     alt="Get it on GitHub"
-     height="75">](https://github.com/Razeeman/Android-SimpleTimeTracker/releases/latest)
+<br>
+<br>
 
-<img src="dev_files/preview.gif" width="300"/>
+<div align="center">
+<a href="https://github.com/Razeeman/Android-SimpleTimeTracker/releases/latest">
+     <img alt="GitHub Releases"
+        src="https://img.shields.io/github/downloads/razeeman/Android-SimpleTimeTracker/total?style=for-the-badge"/></a>
+<a href="https://x.com/SimpleTimeTrack">
+     <img alt="Twitter"
+        src="https://img.shields.io/badge/tweet-black?style=for-the-badge&logo=X"/></a>
+<a href="https://buymeacoffee.com/freeraz">
+     <img alt="Buy Me a Coffee"
+        src="https://img.shields.io/badge/buy_me_a_coffee-FFDD00?style=for-the-badge&logo=buymeacoffee&logoColor=black"/></a>
+</div>
+
+<div align="center">
+<a href="https://f-droid.org/packages/com.razeeman.util.simpletimetracker">
+     <img alt="Get it on F-Droid"
+        src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
+        height="75"/></a>
+<a href="https://play.google.com/store/apps/details?id=com.razeeman.util.simpletimetracker">
+     <img alt="Get it on F-Droid"
+        src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png"
+        height="75"/></a>
+<a href="https://github.com/Razeeman/Android-SimpleTimeTracker/releases/latest">
+     <img alt="Get it on F-Droid"
+        src="https://github.com/machiav3lli/oandbackupx/blob/034b226cea5c1b30eb4f6a6f313e4dadcbb0ece4/badge_github.png"
+        height="75"/></a>
+</div>
+
+<br>
+<br>
+
+<div align="center">
+    <img src="dev_files/preview.gif" width="300"/>
+</div>
 
 <br>
 
