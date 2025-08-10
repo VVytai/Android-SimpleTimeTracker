@@ -71,6 +71,8 @@ class ArchiveTest : BaseUiTest() {
         NavUtils.openStatisticsScreen()
         longClickOnViewWithIdOnPager(statisticsR.id.btnStatisticsContainerOptions)
         tryAction { checkTypeVisible(name1) }
+        checkTypeNotVisible(name2)
+        clickOnViewWithText(R.string.settings_archive)
         checkTypeVisible(name2)
         pressBack()
 
@@ -78,6 +80,8 @@ class ArchiveTest : BaseUiTest() {
         clickOnView(allOf(withText(name1), isCompletelyDisplayed()))
         longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
         tryAction { checkTypeVisible(name1) }
+        checkTypeNotVisible(name2)
+        clickOnViewWithText(R.string.settings_archive)
         checkTypeVisible(name2)
         pressBack()
         pressBack()
@@ -192,7 +196,12 @@ class ArchiveTest : BaseUiTest() {
         NavUtils.openStatisticsScreen()
         clickOnView(allOf(withText(name1), isCompletelyDisplayed()))
         longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
-        clickOnViewWithText(coreR.string.records_filter_select_tags)
+        clickOnViewWithText(coreR.string.record_tag_hint)
+        checkTagVisible(tag1)
+        checkTagNotVisible(tag2)
+        checkTagVisible(tag3)
+        checkTagNotVisible(tag4)
+        clickOnViewWithText(R.string.settings_archive)
         checkTagVisible(tag1)
         checkTagVisible(tag2)
         checkTagVisible(tag3)

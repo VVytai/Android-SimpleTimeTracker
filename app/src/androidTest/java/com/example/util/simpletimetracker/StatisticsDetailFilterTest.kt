@@ -140,18 +140,21 @@ class StatisticsDetailFilterTest : BaseUiTest() {
         checkRecordsCard(1)
 
         longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        clickOnInnerCategoryFilter()
         clickOnView(allOf(isDescendantOfA(withId(baseR.id.viewCategoryItem)), withText(categoryName1)))
         clickOnView(allOf(isDescendantOfA(withId(baseR.id.viewCategoryItem)), withText(categoryName2)))
         pressBack()
         checkRecordsCard(2)
 
         longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        clickOnInnerCategoryFilter()
         clickOnView(allOf(isDescendantOfA(withId(baseR.id.viewCategoryItem)), withText(categoryName2)))
         pressBack()
         checkRecordsCard(0)
 
         longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
         clickOnView(withSubstring(getString(coreR.string.activity_hint)))
+        clickOnInnerCategoryFilter()
         clickOnView(
             allOf(isDescendantOfA(withId(baseR.id.viewCategoryItem)), withText(coreR.string.uncategorized_time_name)),
         )
@@ -159,6 +162,7 @@ class StatisticsDetailFilterTest : BaseUiTest() {
         checkRecordsCard(3)
 
         longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        clickOnInnerCategoryFilter()
         clickOnView(allOf(isDescendantOfA(withId(baseR.id.viewCategoryItem)), withText(categoryName1)))
         clickOnView(allOf(isDescendantOfA(withId(baseR.id.viewCategoryItem)), withText(categoryName2)))
         pressBack()
@@ -214,6 +218,7 @@ class StatisticsDetailFilterTest : BaseUiTest() {
             allOf(
                 hasSibling(withSubstring(getString(coreR.string.activity_hint))),
                 withId(baseR.id.ivFilterItemRemove),
+                isCompletelyDisplayed()
             ),
         )
         clickOnView(withSubstring(getString(coreR.string.change_record_comment_field)))
@@ -273,6 +278,7 @@ class StatisticsDetailFilterTest : BaseUiTest() {
         checkRecordsCard(7)
 
         longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        clickOnView(withSubstring(getString(R.string.record_tag_hint)))
         clickOnView(withSubstring(getString(coreR.string.records_filter_exclude)))
         clickOnView(
             allOf(isDescendantOfA(withId(baseR.id.viewCategoryItem)), withText(coreR.string.change_record_untagged)),
@@ -281,18 +287,21 @@ class StatisticsDetailFilterTest : BaseUiTest() {
         checkRecordsCard(6)
 
         longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        clickOnView(withSubstring(getString(R.string.record_tag_hint)))
         clickOnView(withSubstring(getString(coreR.string.records_filter_exclude)))
         clickOnView(allOf(isDescendantOfA(withId(baseR.id.viewCategoryItem)), withText(tag1)))
         pressBack()
         checkRecordsCard(2)
 
         longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        clickOnView(withSubstring(getString(R.string.record_tag_hint)))
         clickOnView(withSubstring(getString(coreR.string.records_filter_exclude)))
         clickOnView(allOf(isDescendantOfA(withId(baseR.id.viewCategoryItem)), withText(tag2)))
         pressBack()
         checkRecordsCard(1)
 
         longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        clickOnView(withSubstring(getString(R.string.record_tag_hint)))
         clickOnView(withSubstring(getString(coreR.string.records_filter_exclude)))
         clickOnView(allOf(isDescendantOfA(withId(baseR.id.viewCategoryItem)), withText(tag3)))
         pressBack()
@@ -301,16 +310,18 @@ class StatisticsDetailFilterTest : BaseUiTest() {
         longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
         clickOnView(
             allOf(
-                hasSibling(withSubstring(getString(coreR.string.records_filter_exclude))),
+                hasSibling(withSubstring(getString(R.string.record_tag_hint))),
                 withId(baseR.id.ivFilterItemRemove),
             ),
         )
+        clickOnView(withSubstring(getString(R.string.record_tag_hint)))
         clickOnView(withSubstring(getString(coreR.string.records_filter_exclude)))
         clickOnView(allOf(isDescendantOfA(withId(baseR.id.viewCategoryItem)), withText(tag3)))
         pressBack()
         checkRecordsCard(4)
 
         longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        clickOnView(withSubstring(getString(R.string.record_tag_hint)))
         clickOnView(withSubstring(getString(coreR.string.records_filter_exclude)))
         clickOnView(allOf(isDescendantOfA(withId(baseR.id.viewCategoryItem)), withText(tag1)))
         pressBack()
@@ -348,7 +359,8 @@ class StatisticsDetailFilterTest : BaseUiTest() {
         checkRecordsCard(7)
 
         longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
-        clickOnView(withSubstring(getString(coreR.string.records_filter_select_tags)))
+        clickOnView(withSubstring(getString(R.string.record_tag_hint)))
+        clickOnInnerSelectTagFilter()
         clickOnView(
             allOf(isDescendantOfA(withId(baseR.id.viewCategoryItem)), withText(coreR.string.change_record_untagged)),
         )
@@ -356,19 +368,22 @@ class StatisticsDetailFilterTest : BaseUiTest() {
         checkRecordsCard(1)
 
         longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
-        clickOnView(withSubstring(getString(coreR.string.records_filter_select_tags)))
+        clickOnView(withSubstring(getString(R.string.record_tag_hint)))
+        clickOnInnerSelectTagFilter()
         clickOnView(allOf(isDescendantOfA(withId(baseR.id.viewCategoryItem)), withText(tag1)))
         pressBack()
         checkRecordsCard(5)
 
         longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
-        clickOnView(withSubstring(getString(coreR.string.records_filter_select_tags)))
+        clickOnView(withSubstring(getString(R.string.record_tag_hint)))
+        clickOnInnerSelectTagFilter()
         clickOnView(allOf(isDescendantOfA(withId(baseR.id.viewCategoryItem)), withText(tag2)))
         pressBack()
         checkRecordsCard(6)
 
         longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
-        clickOnView(withSubstring(getString(coreR.string.records_filter_select_tags)))
+        clickOnView(withSubstring(getString(R.string.record_tag_hint)))
+        clickOnInnerSelectTagFilter()
         clickOnView(allOf(isDescendantOfA(withId(baseR.id.viewCategoryItem)), withText(tag3)))
         pressBack()
         checkRecordsCard(7)
@@ -376,17 +391,19 @@ class StatisticsDetailFilterTest : BaseUiTest() {
         longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
         clickOnView(
             allOf(
-                hasSibling(withSubstring(getString(coreR.string.records_filter_select_tags))),
+                hasSibling(withSubstring(getString(R.string.record_tag_hint))),
                 withId(baseR.id.ivFilterItemRemove),
             ),
         )
-        clickOnView(withSubstring(getString(coreR.string.records_filter_select_tags)))
+        clickOnView(withSubstring(getString(R.string.record_tag_hint)))
+        clickOnInnerSelectTagFilter()
         clickOnView(allOf(isDescendantOfA(withId(baseR.id.viewCategoryItem)), withText(tag3)))
         pressBack()
         checkRecordsCard(3)
 
         longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
-        clickOnView(withSubstring(getString(coreR.string.records_filter_select_tags)))
+        clickOnView(withSubstring(getString(R.string.record_tag_hint)))
+        clickOnInnerSelectTagFilter()
         clickOnView(allOf(isDescendantOfA(withId(baseR.id.viewCategoryItem)), withText(tag1)))
         pressBack()
         checkRecordsCard(5)
@@ -396,9 +413,11 @@ class StatisticsDetailFilterTest : BaseUiTest() {
             allOf(
                 hasSibling(withSubstring(getString(coreR.string.activity_hint))),
                 withId(baseR.id.ivFilterItemRemove),
+                isCompletelyDisplayed()
             ),
         )
-        clickOnView(withSubstring(getString(coreR.string.records_filter_select_tags)))
+        clickOnView(withSubstring(getString(R.string.record_tag_hint)))
+        clickOnInnerSelectTagFilter()
         selectAll(
             type = RecordsFilterSelectionButtonType.Type.Tags,
             subtype = RecordsFilterSelectionButtonType.Subtype.SelectNone,
@@ -407,7 +426,8 @@ class StatisticsDetailFilterTest : BaseUiTest() {
         checkRecordsCard(0)
 
         longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
-        clickOnView(withSubstring(getString(coreR.string.records_filter_select_tags)))
+        clickOnView(withSubstring(getString(R.string.record_tag_hint)))
+        clickOnInnerSelectTagFilter()
         selectAll(
             type = RecordsFilterSelectionButtonType.Type.Tags,
             subtype = RecordsFilterSelectionButtonType.Subtype.SelectAll,
@@ -447,7 +467,8 @@ class StatisticsDetailFilterTest : BaseUiTest() {
         checkRecordsCard(7)
 
         longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
-        clickOnView(withSubstring(getString(coreR.string.records_filter_select_tags)))
+        clickOnView(withSubstring(getString(coreR.string.record_tag_hint)))
+        clickOnInnerSelectTagFilter()
         clickOnView(
             allOf(isDescendantOfA(withId(baseR.id.viewCategoryItem)), withText(tag1)),
         )
@@ -486,7 +507,7 @@ class StatisticsDetailFilterTest : BaseUiTest() {
         longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
         clickOnView(
             allOf(
-                isDescendantOfA(withId(baseR.id.viewFilterItem)),
+                isDescendantOfA(withId(recordsFilterR.id.rvRecordsFilterFilters)),
                 withSubstring(getString(coreR.string.activity_hint)),
             ),
         )
@@ -897,7 +918,8 @@ class StatisticsDetailFilterTest : BaseUiTest() {
         checkRecordsCard(4)
 
         longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
-        clickOnView(withSubstring(getString(coreR.string.records_filter_select_tags)))
+        clickOnView(withSubstring(getString(coreR.string.record_tag_hint)))
+        clickOnInnerSelectTagFilter()
         clickOnView(
             allOf(isDescendantOfA(withId(baseR.id.viewCategoryItem)), withText(tag1)),
         )
@@ -905,6 +927,7 @@ class StatisticsDetailFilterTest : BaseUiTest() {
         checkRecordsCard(2)
 
         longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        clickOnView(withSubstring(getString(coreR.string.record_tag_hint)))
         clickOnView(withSubstring(getString(coreR.string.records_filter_exclude)))
         clickOnView(
             allOf(isDescendantOfA(withId(baseR.id.viewCategoryItem)), withText(tag2)),
@@ -915,7 +938,7 @@ class StatisticsDetailFilterTest : BaseUiTest() {
         longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
         clickOnView(
             allOf(
-                isDescendantOfA(withId(baseR.id.viewFilterItem)),
+                isDescendantOfA(withId(recordsFilterR.id.rvRecordsFilterFilters)),
                 withSubstring(getString(coreR.string.activity_hint)),
             ),
         )
@@ -938,6 +961,9 @@ class StatisticsDetailFilterTest : BaseUiTest() {
         type: RecordsFilterSelectionButtonType.Type,
         subtype: RecordsFilterSelectionButtonType.Subtype,
     ) {
+        if (type is RecordsFilterSelectionButtonType.Type.Categories) {
+            clickOnInnerCategoryFilter()
+        }
         clickOnView(
             withTag(
                 RecordsFilterSelectionButtonType(
@@ -945,6 +971,24 @@ class StatisticsDetailFilterTest : BaseUiTest() {
                     subtype = subtype,
                 ),
             ),
+        )
+    }
+
+    private fun clickOnInnerCategoryFilter() {
+        clickOnView(
+            allOf(
+                isDescendantOfA(withId(recordsFilterR.id.rvRecordsFilterSelection)),
+                withSubstring(getString(R.string.category_hint))
+            )
+        )
+    }
+
+    private fun clickOnInnerSelectTagFilter() {
+        clickOnView(
+            allOf(
+                withId(baseR.id.viewFilterItem),
+                hasDescendant(withSubstring(getString(coreR.string.records_filter_select)))
+            )
         )
     }
 }

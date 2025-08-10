@@ -1518,12 +1518,14 @@ class StatisticsDetailTest : BaseUiTest() {
     private fun checkTagItem(color: Int, name: String, duration: String, percentage: String) {
         // If scroll is not possible - view is not displayed.
         scrollStatDetailRecycler(
-            allOf(
-                withId(baseR.id.viewStatisticsItem),
-                withCardColor(color),
-                hasDescendant(withText(name)),
-                hasDescendant(withText(duration)),
-                hasDescendant(withText(percentage)),
+            hasDescendant(
+                allOf(
+                    withId(baseR.id.viewStatisticsItem),
+                    withCardColor(color),
+                    hasDescendant(withText(name)),
+                    hasDescendant(withText(duration)),
+                    hasDescendant(withText(percentage)),
+                ),
             ),
         )
     }

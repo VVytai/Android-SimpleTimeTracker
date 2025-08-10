@@ -4,6 +4,7 @@ import com.example.util.simpletimetracker.core.mapper.ChangeRecordDateTimeMapper
 import com.example.util.simpletimetracker.core.mapper.RecordQuickActionMapper
 import com.example.util.simpletimetracker.core.mapper.RecordViewDataMapper
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
+import com.example.util.simpletimetracker.domain.color.model.AppColor
 import com.example.util.simpletimetracker.domain.record.model.Record
 import com.example.util.simpletimetracker.domain.recordAction.model.RecordQuickAction
 import com.example.util.simpletimetracker.domain.recordTag.model.RecordTag
@@ -34,26 +35,44 @@ class ChangeRecordViewDataMapper @Inject constructor(
         showSeconds: Boolean,
         dateTimeFieldState: ChangeRecordDateTimeFieldsState,
     ): ChangeRecordViewData {
-        val recordPreview = if (recordType != null) {
-            recordViewDataMapper.map(
-                record = record,
-                recordType = recordType,
-                recordTags = recordTags,
-                isDarkTheme = isDarkTheme,
-                useMilitaryTime = useMilitaryTime,
-                useProportionalMinutes = useProportionalMinutes,
-                showSeconds = showSeconds,
-            )
-        } else {
-            recordViewDataMapper.mapToUntracked(
-                timeStarted = record.timeStarted,
-                timeEnded = record.timeEnded,
-                isDarkTheme = isDarkTheme,
-                useMilitaryTime = useMilitaryTime,
-                useProportionalMinutes = useProportionalMinutes,
-                showSeconds = showSeconds,
-            )
+        // Type data for untracked will be placed later.
+        val emptyTypeForUntracked = RecordType(
+            id = 0,
+            name = "",
+            icon = "",
+            color = AppColor(colorId = 0, colorInt = ""),
+            defaultDuration = 0,
+            note = "",
+        )
+        val recordPreview = recordViewDataMapper.map(
+            record = record,
+            recordType = recordType ?: emptyTypeForUntracked,
+            recordTags = recordTags,
+            isDarkTheme = isDarkTheme,
+            useMilitaryTime = useMilitaryTime,
+            useProportionalMinutes = useProportionalMinutes,
+            showSeconds = showSeconds,
+        ).let {
+            // TODO do better
+            if (recordType == null) {
+                val untrackedPreview = recordViewDataMapper.mapToUntracked(
+                    timeStarted = record.timeStarted,
+                    timeEnded = record.timeEnded,
+                    isDarkTheme = isDarkTheme,
+                    useMilitaryTime = useMilitaryTime,
+                    useProportionalMinutes = useProportionalMinutes,
+                    showSeconds = showSeconds,
+                )
+                it.copy(
+                    name = untrackedPreview.name,
+                    color = untrackedPreview.color,
+                    iconId = untrackedPreview.iconId,
+                )
+            } else {
+                it
+            }
         }
+
         return ChangeRecordViewData(
             recordPreview = recordPreview,
             dateTimeStarted = changeRecordDateTimeMapper.map(

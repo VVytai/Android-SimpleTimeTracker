@@ -242,8 +242,8 @@ class SettingsBackupTest : BaseUiTest() {
                 withCardColorInt(0xff345678.toInt()),
             ),
         )
-        onView(withText(R.string.activity_hint)).perform(nestedScrollTo())
-        clickOnViewWithText(R.string.activity_hint)
+        onView(withText(R.string.category_hint)).perform(nestedScrollTo())
+        clickOnViewWithText(R.string.category_hint)
         onView(withText("category1")).check(isCompletelyAbove(withId(R.id.viewDividerItem)))
         onView(withText("category2")).check(isCompletelyAbove(withId(R.id.viewDividerItem)))
         onView(withText("category3")).check(isCompletelyBelow(withId(R.id.viewDividerItem)))

@@ -657,7 +657,7 @@ class DataEditTest : BaseUiTest() {
         checkViewIsDisplayed(allOf(withId(R.id.viewRecordTypeItem), hasDescendant(withText(name1))))
         checkViewIsDisplayed(allOf(withId(R.id.viewRecordTypeItem), hasDescendant(withText(name2))))
         NavUtils.openRecordsScreen()
-        checkViewIsDisplayed(withText(R.string.no_records_exist))
+        checkViewIsDisplayed(withSubstring(getString(R.string.no_records_exist)))
     }
 
     @Test
@@ -702,7 +702,7 @@ class DataEditTest : BaseUiTest() {
             ),
         )
         NavUtils.openRecordsScreen()
-        checkViewIsDisplayed(withText(R.string.no_records_exist))
+        checkViewIsDisplayed(withSubstring(getString(R.string.no_records_exist)))
     }
 
     @Test

@@ -49,7 +49,7 @@ class DeleteRecordTest : BaseUiTest() {
         // Check message
         checkViewIsDisplayed(
             allOf(
-                withText(getString(coreR.string.record_removed, name)),
+                withText(getString(coreR.string.record_removed, "($name)")),
                 withId(com.google.android.material.R.id.snackbar_text),
             ),
         )
@@ -93,7 +93,7 @@ class DeleteRecordTest : BaseUiTest() {
         // Check message
         checkViewIsDisplayed(
             allOf(
-                withText(getString(coreR.string.record_removed, name)),
+                withText(getString(coreR.string.record_removed, "($name)")),
                 withId(com.google.android.material.R.id.snackbar_text),
             ),
         )

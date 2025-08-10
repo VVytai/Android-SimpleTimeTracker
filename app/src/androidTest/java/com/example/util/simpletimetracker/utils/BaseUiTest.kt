@@ -125,8 +125,13 @@ open class BaseUiTest {
     open fun setUp() {
         if (!this::testUtils.isInitialized) hiltRule.inject()
         clearData()
-        runBlocking { prefsInteractor.setShowUntrackedInRecords(true) }
-        runBlocking { prefsInteractor.setShowUntrackedInStatistics(true) }
+        runBlocking {
+            prefsInteractor.setShowUntrackedInRecords(true)
+            prefsInteractor.setShowUntrackedInStatistics(true)
+            prefsInteractor.setTypeAdditionalFieldsShown(true)
+            prefsInteractor.setCategoryAdditionalFieldsShown(true)
+            prefsInteractor.setTagAdditionalFieldsShown(true)
+        }
         disableAnimations()
         registerIdlingResource()
     }

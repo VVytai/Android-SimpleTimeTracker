@@ -376,10 +376,6 @@ class RunningRecordsViewModel @Inject constructor(
     private fun startUpdate() {
         timerJob = viewModelScope.launch {
             timerJob?.cancelAndJoin()
-            // Delay update a bit, otherwise screen navigation back and forth
-            // while updating view (timer) is not visible, would case a lag on return.
-            // Only if no shared transitions for some reason (Add and back or Pomodoro and back).
-            delay(500)
             while (isActive) {
                 updateRunningRecords()
                 delay(TIMER_UPDATE_MS)

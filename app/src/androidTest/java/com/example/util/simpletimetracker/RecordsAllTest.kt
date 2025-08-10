@@ -187,11 +187,9 @@ class RecordsAllTest : BaseUiTest() {
         clickOnViewWithId(changeRecordR.id.btnChangeRecordDelete)
 
         // Check message
-        val message = InstrumentationRegistry.getInstrumentation().targetContext
-            .resources.getString(coreR.string.record_removed, name)
         checkViewIsDisplayed(
             allOf(
-                withText(message),
+                withText(getString(coreR.string.record_removed, "($name)")),
                 withId(com.google.android.material.R.id.snackbar_text),
             ),
         )

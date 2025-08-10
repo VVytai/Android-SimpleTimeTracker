@@ -58,6 +58,7 @@ class ActivityFilterTest : BaseUiTest() {
         testUtils.addActivity(typeName2)
         testUtils.addCategory(categoryName1)
         testUtils.addCategory(categoryName2)
+        Thread.sleep(1000)
 
         tryAction { clickOnViewWithText(coreR.string.running_records_add_filter) }
         closeSoftKeyboard()
@@ -269,7 +270,7 @@ class ActivityFilterTest : BaseUiTest() {
         checkViewIsDisplayed(withText(newName))
         checkViewIsDisplayed(withCardColor(lastColor))
         longClickOnView(withText(newName))
-        clickOnViewWithText(coreR.string.activity_hint)
+        clickOnViewWithText(coreR.string.category_hint)
         onView(withText(categoryName1)).check(isCompletelyBelow(withId(changeActivityFilterR.id.viewDividerItem)))
         onView(withText(categoryName2)).check(isCompletelyAbove(withId(changeActivityFilterR.id.viewDividerItem)))
     }
