@@ -136,12 +136,12 @@ class RecordActionsDuplicateTest : BaseUiTest() {
         }
         tryAction {
             checkRecord(
-                listOf(0, 1),
-                fullName,
-                timeStartedPreview,
-                timeEndedPreview,
-                timeRangePreview,
-                comment,
+                indexes = listOf(0, 1),
+                name = fullName,
+                timeStartedPreview = timeStartedPreview,
+                timeEndedPreview = timeEndedPreview,
+                timeRangePreview = timeRangePreview,
+                comment = comment,
             )
         }
     }
@@ -215,12 +215,12 @@ class RecordActionsDuplicateTest : BaseUiTest() {
         }
         tryAction {
             checkRecord(
-                listOf(0, 1),
-                name,
-                timeStartedPreview,
-                timeEndedPreview,
-                timeRangePreview,
-                comment,
+                indexes = listOf(0, 1),
+                name = name,
+                timeStartedPreview = timeStartedPreview,
+                timeEndedPreview = timeEndedPreview,
+                timeRangePreview = timeRangePreview,
+                comment = comment,
             )
         }
     }
@@ -282,12 +282,12 @@ class RecordActionsDuplicateTest : BaseUiTest() {
         }
         tryAction {
             checkRecord(
-                listOf(0, 1),
-                name,
-                timeStartedPreview,
-                timeEndedPreview,
-                timeRangePreview,
-                comment,
+                indexes = listOf(0, 1),
+                name = name,
+                timeStartedPreview = timeStartedPreview,
+                timeEndedPreview = timeEndedPreview,
+                timeRangePreview = timeRangePreview,
+                comment = comment,
             )
         }
     }
@@ -304,13 +304,7 @@ class RecordActionsDuplicateTest : BaseUiTest() {
         NavUtils.openRecordsScreen()
         onView(allOf(withId(recordsR.id.rvRecordsList), isCompletelyDisplayed()))
             .check(recyclerItemCount(2))
-        checkViewIsDisplayed(
-            allOf(
-                withId(baseR.id.viewRecordItem),
-                hasDescendant(withText(name)),
-                isCompletelyDisplayed(),
-            ),
-        )
+        checkRecord(name)
 
         // Duplicate
         longClickOnView(allOf(withText(name), isCompletelyDisplayed()))
@@ -320,6 +314,49 @@ class RecordActionsDuplicateTest : BaseUiTest() {
             onView(allOf(withId(recordsR.id.rvRecordsList), isCompletelyDisplayed()))
                 .check(recyclerItemCount(3))
         }
+    }
+
+    @Test
+    fun duplicateMultiselectFromQuickActions() {
+        val name1 = "Name1"
+        val name2 = "Name2"
+
+        // Setup
+        testUtils.addActivity(name1)
+        testUtils.addActivity(name2)
+        testUtils.addRecord(name1)
+        testUtils.addRecord(name2)
+
+        // Check record
+        NavUtils.openRecordsScreen()
+        onView(allOf(withId(recordsR.id.rvRecordsList), isCompletelyDisplayed()))
+            .check(recyclerItemCount(3))
+        checkRecord(name1)
+        checkRecord(name2)
+
+        // Duplicate
+        longClickOnView(allOf(withText(name1), isCompletelyDisplayed()))
+        clickOnViewWithText(R.string.change_record_multiselect)
+        longClickOnView(allOf(withText(name2), isCompletelyDisplayed()))
+        longClickOnView(allOf(withText(name2), isCompletelyDisplayed()))
+        clickOnViewWithText(coreR.string.change_record_duplicate)
+
+        tryAction {
+            onView(allOf(withId(recordsR.id.rvRecordsList), isCompletelyDisplayed()))
+                .check(recyclerItemCount(5))
+        }
+    }
+
+    private fun checkRecord(
+        name: String,
+    ) {
+        checkViewIsDisplayed(
+            allOf(
+                withId(baseR.id.viewRecordItem),
+                hasDescendant(withText(name)),
+                isCompletelyDisplayed(),
+            ),
+        )
     }
 
     @Suppress("SameParameterValue")

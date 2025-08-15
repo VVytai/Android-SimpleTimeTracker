@@ -200,6 +200,70 @@ class RecordActionsChangeTagTest : BaseUiTest() {
         }
     }
 
+    @Test
+    fun changeMultiselect() {
+        val nameTracked = "NameTracked"
+        val nameRunning = "NameRunning"
+        val tag1 = "Tag1"
+        val tag2 = "Tag2"
+        val tagGeneral = "TagGeneral"
+        val fullNameTracked = "$nameTracked - $tag1"
+        val fullNameRunning = "$nameRunning - $tag2"
+
+        testUtils.addActivity(nameTracked)
+        testUtils.addActivity(nameRunning)
+        testUtils.addRecordTag(tag1, typeName = nameTracked)
+        testUtils.addRecordTag(tag2, typeName = nameRunning)
+        testUtils.addRecordTag(tagGeneral)
+        testUtils.addRecord(nameTracked, tagNames = listOf(tag1))
+        testUtils.addRunningRecord(nameRunning, tagNames = listOf(tag2))
+
+        // Check record
+        NavUtils.openRecordsScreen()
+        checkViewIsDisplayed(
+            allOf(
+                withId(baseR.id.viewRecordItem),
+                hasDescendant(withText(fullNameTracked)),
+                isCompletelyDisplayed(),
+            ),
+        )
+        checkViewIsDisplayed(
+            allOf(
+                withId(baseR.id.viewRunningRecordItem),
+                hasDescendant(withText(fullNameRunning)),
+                isCompletelyDisplayed(),
+            ),
+        )
+
+        // Change
+        longClickOnView(allOf(withText(fullNameTracked), isCompletelyDisplayed()))
+        clickOnViewWithText(R.string.change_record_multiselect)
+        longClickOnView(allOf(withText(fullNameRunning), isCompletelyDisplayed()))
+        longClickOnView(allOf(withText(fullNameRunning), isCompletelyDisplayed()))
+        clickOnViewWithText(R.string.data_edit_change_tag)
+        checkViewDoesNotExist(withText(tag1))
+        checkViewDoesNotExist(withText(tag2))
+        clickOnViewWithText(tagGeneral)
+        clickOnViewWithText(R.string.change_record_save)
+
+        tryAction {
+            checkViewIsDisplayed(
+                allOf(
+                    withId(baseR.id.viewRecordItem),
+                    hasDescendant(withText("$nameTracked - $tagGeneral")),
+                    isCompletelyDisplayed(),
+                ),
+            )
+            checkViewIsDisplayed(
+                allOf(
+                    withId(baseR.id.viewRunningRecordItem),
+                    hasDescendant(withText("$nameRunning - $tagGeneral")),
+                    isCompletelyDisplayed(),
+                ),
+            )
+        }
+    }
+
     @Suppress("SameParameterValue")
     private fun checkRecord(
         name: String,

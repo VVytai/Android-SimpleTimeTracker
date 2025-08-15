@@ -192,14 +192,6 @@ class RecordActionsMoveTest : BaseUiTest() {
 
     @Test
     fun moveFromQuickActions() {
-        fun getRecordMatcher(type: String): Matcher<View> {
-            return allOf(
-                withId(baseR.id.viewRecordItem),
-                hasDescendant(withText(type)),
-                isCompletelyDisplayed(),
-            )
-        }
-
         val name = "Name"
 
         // Setup
@@ -226,6 +218,52 @@ class RecordActionsMoveTest : BaseUiTest() {
         tryAction { checkViewDoesNotExist(getRecordMatcher(name)) }
         clickOnViewWithId(recordsR.id.btnRecordsContainerPrevious)
         tryAction { checkViewIsDisplayed(getRecordMatcher(name)) }
+    }
+
+    @Test
+    fun moveMultiselectFromQuickActions() {
+        val name1 = "Name1"
+        val name2 = "Name2"
+
+        // Setup
+        testUtils.addActivity(name1)
+        testUtils.addActivity(name2)
+        testUtils.addRecord(name1)
+        testUtils.addRecord(name2)
+
+        // Check record
+        NavUtils.openRecordsScreen()
+        checkViewIsDisplayed(getRecordMatcher(name1))
+        checkViewIsDisplayed(getRecordMatcher(name2))
+
+        // Move
+        longClickOnView(allOf(withText(name1), isCompletelyDisplayed()))
+        clickOnViewWithText(R.string.change_record_multiselect)
+        longClickOnView(allOf(withText(name2), isCompletelyDisplayed()))
+        longClickOnView(allOf(withText(name2), isCompletelyDisplayed()))
+        clickOnViewWithText(coreR.string.change_record_move)
+        val calendar = Calendar.getInstance()
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val day = calendar.get(Calendar.DAY_OF_MONTH) - 1
+        onView(withClassName(equalTo(CustomDatePicker::class.java.name)))
+            .perform(PickerActions.setDate(year, month + 1, day))
+        clickOnViewWithId(R.id.btnDateTimeDialogPositive)
+
+        // Check
+        tryAction { checkViewDoesNotExist(getRecordMatcher(name1)) }
+        tryAction { checkViewDoesNotExist(getRecordMatcher(name2)) }
+        clickOnViewWithId(recordsR.id.btnRecordsContainerPrevious)
+        tryAction { checkViewIsDisplayed(getRecordMatcher(name1)) }
+        tryAction { checkViewIsDisplayed(getRecordMatcher(name2)) }
+    }
+
+    private fun getRecordMatcher(type: String): Matcher<View> {
+        return allOf(
+            withId(baseR.id.viewRecordItem),
+            hasDescendant(withText(type)),
+            isCompletelyDisplayed(),
+        )
     }
 
     @Suppress("SameParameterValue")

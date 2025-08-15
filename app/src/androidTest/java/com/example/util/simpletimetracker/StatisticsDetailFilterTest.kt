@@ -218,7 +218,7 @@ class StatisticsDetailFilterTest : BaseUiTest() {
             allOf(
                 hasSibling(withSubstring(getString(coreR.string.activity_hint))),
                 withId(baseR.id.ivFilterItemRemove),
-                isCompletelyDisplayed()
+                isCompletelyDisplayed(),
             ),
         )
         clickOnView(withSubstring(getString(coreR.string.change_record_comment_field)))
@@ -413,7 +413,7 @@ class StatisticsDetailFilterTest : BaseUiTest() {
             allOf(
                 hasSibling(withSubstring(getString(coreR.string.activity_hint))),
                 withId(baseR.id.ivFilterItemRemove),
-                isCompletelyDisplayed()
+                isCompletelyDisplayed(),
             ),
         )
         clickOnView(withSubstring(getString(R.string.record_tag_hint)))
@@ -978,8 +978,8 @@ class StatisticsDetailFilterTest : BaseUiTest() {
         clickOnView(
             allOf(
                 isDescendantOfA(withId(recordsFilterR.id.rvRecordsFilterSelection)),
-                withSubstring(getString(R.string.category_hint))
-            )
+                withSubstring(getString(R.string.category_hint)),
+            ),
         )
     }
 
@@ -987,8 +987,8 @@ class StatisticsDetailFilterTest : BaseUiTest() {
         clickOnView(
             allOf(
                 withId(baseR.id.viewFilterItem),
-                hasDescendant(withSubstring(getString(coreR.string.records_filter_select)))
-            )
+                hasDescendant(withSubstring(getString(coreR.string.records_filter_select))),
+            ),
         )
     }
 }

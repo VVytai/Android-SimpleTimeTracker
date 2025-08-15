@@ -12,6 +12,7 @@ import com.example.util.simpletimetracker.utils.NavUtils
 import com.example.util.simpletimetracker.utils.checkViewIsDisplayed
 import com.example.util.simpletimetracker.utils.clickOnViewWithText
 import com.example.util.simpletimetracker.utils.longClickOnView
+import com.example.util.simpletimetracker.utils.nthChildOf
 import com.example.util.simpletimetracker.utils.tryAction
 import com.example.util.simpletimetracker.utils.withCardColor
 import com.example.util.simpletimetracker.utils.withTag
@@ -231,6 +232,89 @@ class RecordActionsChangeActivityTest : BaseUiTest() {
                 icon = icon2,
                 timeStartedPreview = timeStartedPreview,
                 comment = comment,
+            )
+        }
+    }
+
+    @Test
+    fun changeMultiselect() {
+        val name1 = "Name1"
+        val name2 = "Name2"
+        val name3 = "Name3"
+        val calendar = Calendar.getInstance()
+
+        // Setup
+        testUtils.addActivity(name1)
+        testUtils.addActivity(name2)
+        testUtils.addActivity(name3)
+
+        testUtils.addRunningRecord(name1)
+        testUtils.addRecord(
+            typeName = name2,
+            timeStarted = calendar.timeInMillis - TimeUnit.MINUTES.toMillis(3),
+            timeEnded = calendar.timeInMillis - TimeUnit.MINUTES.toMillis(2),
+        )
+
+        // Check
+        NavUtils.openRecordsScreen()
+        checkViewIsDisplayed(
+            allOf(
+                withId(baseR.id.viewRunningRecordItem),
+                hasDescendant(withText(name1)),
+                nthChildOf(withId(R.id.rvRecordsList), 0),
+                isCompletelyDisplayed(),
+            ),
+        )
+        checkViewIsDisplayed(
+            allOf(
+                withId(baseR.id.viewRecordItem),
+                hasDescendant(withText(R.string.untracked_time_name)),
+                nthChildOf(withId(R.id.rvRecordsList), 1),
+                isCompletelyDisplayed(),
+            ),
+        )
+        checkViewIsDisplayed(
+            allOf(
+                withId(baseR.id.viewRecordItem),
+                hasDescendant(withText(name2)),
+                nthChildOf(withId(R.id.rvRecordsList), 2),
+                isCompletelyDisplayed(),
+            ),
+        )
+
+        // Change
+        longClickOnView(allOf(withText(name1), isCompletelyDisplayed()))
+        clickOnViewWithText(R.string.change_record_multiselect)
+        longClickOnView(allOf(withText(name2), isCompletelyDisplayed()))
+        longClickOnView(allOf(withText(R.string.untracked_time_name), isCompletelyDisplayed()))
+        longClickOnView(allOf(withText(R.string.untracked_time_name), isCompletelyDisplayed()))
+        clickOnViewWithText(R.string.data_edit_change_activity)
+        clickOnViewWithText(name3)
+
+        tryAction {
+            checkViewIsDisplayed(
+                allOf(
+                    withId(baseR.id.viewRunningRecordItem),
+                    hasDescendant(withText(name3)),
+                    nthChildOf(withId(R.id.rvRecordsList), 0),
+                    isCompletelyDisplayed(),
+                ),
+            )
+            checkViewIsDisplayed(
+                allOf(
+                    withId(baseR.id.viewRecordItem),
+                    hasDescendant(withText(name3)),
+                    nthChildOf(withId(R.id.rvRecordsList), 1),
+                    isCompletelyDisplayed(),
+                ),
+            )
+            checkViewIsDisplayed(
+                allOf(
+                    withId(baseR.id.viewRecordItem),
+                    hasDescendant(withText(name3)),
+                    nthChildOf(withId(R.id.rvRecordsList), 2),
+                    isCompletelyDisplayed(),
+                ),
             )
         }
     }
