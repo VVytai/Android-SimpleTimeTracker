@@ -485,16 +485,19 @@ class StatisticsDetailFilterTest : BaseUiTest() {
         val name1 = "TypeName1"
         val tag1 = "Tag1"
         val tag2 = "Tag2"
+        val tag3 = "Tag3"
 
         // Add data
         testUtils.addActivity(name1)
         testUtils.addRecordTag(tag1)
         testUtils.addRecordTag(tag2)
+        testUtils.addRecordTag(tag3)
 
         // Add records
         testUtils.addRecord(name1)
         testUtils.addRecord(name1, tagNames = listOf(tag1))
         testUtils.addRecord(name1, tagNames = listOf(tag2))
+        testUtils.addRunningRecord(name1, tagNames = listOf(tag3))
 
         // Check
         NavUtils.openStatisticsScreen()
@@ -502,7 +505,7 @@ class StatisticsDetailFilterTest : BaseUiTest() {
         checkViewIsDisplayed(
             allOf(withId(statisticsDetailR.id.viewStatisticsDetailItem), hasDescendant(withText(name1))),
         )
-        checkRecordsCard(3)
+        checkRecordsCard(4)
 
         longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
         clickOnView(
@@ -513,14 +516,16 @@ class StatisticsDetailFilterTest : BaseUiTest() {
         )
         clickOnView(withText("$name1 - $tag1"))
         clickOnView(withText("$name1 - $tag2"))
+        clickOnView(withText("$name1 - $tag3"))
         pressBack()
         checkRecordsCard(1)
 
         longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
         clickOnView(withSubstring(getString(coreR.string.records_filter_manually_filtered)))
         clickOnView(withText("$name1 - $tag1"))
+        clickOnView(withText("$name1 - $tag2"))
         pressBack()
-        checkRecordsCard(2)
+        checkRecordsCard(3)
 
         // Invert selection
         longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)

@@ -96,7 +96,7 @@ private fun SingleSelectTagChip(
             }
         },
         secondaryLabel = {
-            if (state.value.isNotEmpty()) {
+            if (state.value.isNotEmpty() && !state.isLoading) {
                 Text(
                     text = state.value,
                     color = Color(0x99FFFFFF),
@@ -146,7 +146,7 @@ private fun MultiSelectTagChip(
             }
         },
         secondaryLabel = {
-            if (state.value.isNotEmpty()) {
+            if (state.value.isNotEmpty() && !state.isLoading) {
                 Text(
                     text = state.value,
                     color = Color(0x99FFFFFF),
@@ -245,7 +245,7 @@ private fun Loading() {
         state = TagChipState(
             id = 123,
             name = "Sleep",
-            value = "",
+            value = "123.1",
             color = 0xFF123456,
             checked = false,
             mode = TagChipState.TagSelectionMode.SINGLE,
@@ -336,7 +336,7 @@ private fun MultiSelectLoading() {
         state = TagChipState(
             id = 123,
             name = "Sleep",
-            value = "",
+            value = "123.1",
             color = 0xFF654321,
             checked = false,
             mode = TagChipState.TagSelectionMode.MULTI,

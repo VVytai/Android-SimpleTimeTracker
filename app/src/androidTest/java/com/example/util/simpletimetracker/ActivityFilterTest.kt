@@ -641,6 +641,66 @@ class ActivityFilterTest : BaseUiTest() {
         checkViewIsDisplayed(withText(filter2))
     }
 
+    @Test
+    fun categoriesAsFilters() {
+        showActivityFilters()
+
+        val filter = "Filter"
+        val category1 = "Category1"
+        val category2 = "Category2"
+        val type1 = "Type1"
+        val type2 = "Type2"
+
+        val availableTypes = listOf(type1, type2)
+
+        // Add data
+        testUtils.addCategory(category1, color = firstColor)
+        testUtils.addCategory(category2, color = lastColor)
+        testUtils.addActivity(type1, categories = listOf(category1))
+        testUtils.addActivity(type2, categories = listOf(category2))
+        testUtils.addActivityFilter(filter)
+        Thread.sleep(1000)
+
+        // Check
+        tryAction { checkViewIsDisplayed(withText(filter)) }
+        checkViewDoesNotExist(withText(category1))
+        checkViewDoesNotExist(withText(category2))
+        checkTypes(displayed = listOf(type1, type2), available = availableTypes)
+
+        // Change setting
+        NavUtils.openSettingsScreen()
+        NavUtils.openSettingsDisplay()
+        scrollSettingsRecyclerToText(R.string.settings_show_categories_as_predefined_filters)
+        clickOnSettingsCheckboxBesideText(R.string.settings_show_categories_as_predefined_filters)
+
+        // Check again
+        NavUtils.openRunningRecordsScreen()
+        checkViewIsDisplayed(withText(filter))
+        checkViewIsDisplayed(withText(category1))
+        checkViewIsDisplayed(withText(category2))
+        checkViewIsDisplayed(withText(filter))
+        checkFilter(category1, viewsR.color.colorFiltered)
+        checkFilter(category2, viewsR.color.colorFiltered)
+        checkTypes(displayed = listOf(type1, type2), available = availableTypes)
+
+        // Check filtering
+        clickOnViewWithText(category1)
+        checkFilter(category1, firstColor)
+        checkFilter(category2, viewsR.color.colorFiltered)
+        checkTypes(displayed = listOf(type1), available = availableTypes)
+
+        clickOnViewWithText(category1)
+        clickOnViewWithText(category2)
+        checkFilter(category1, viewsR.color.colorFiltered)
+        checkFilter(category2, lastColor)
+        checkTypes(displayed = listOf(type2), available = availableTypes)
+
+        clickOnViewWithText(category1)
+        checkFilter(category1, firstColor)
+        checkFilter(category2, lastColor)
+        checkTypes(displayed = listOf(type1, type2), available = availableTypes)
+    }
+
     private fun checkFilter(
         name: String,
         color: Int,

@@ -2408,34 +2408,44 @@ class SettingsTest : BaseUiTest() {
 
         // Filters not shown
         tryAction {
-            checkViewIsDisplayed(withText(coreR.string.running_records_add_type))
-            checkViewDoesNotExist(withText(coreR.string.running_records_add_filter))
+            checkViewIsDisplayed(withText(R.string.running_records_add_type))
+            checkViewDoesNotExist(withText(R.string.running_records_add_filter))
             checkViewDoesNotExist(withText(name))
         }
 
         // Check settings
         NavUtils.openSettingsScreen()
         NavUtils.openSettingsDisplay()
-        scrollSettingsRecyclerToText(coreR.string.settings_show_activity_filters)
-        checkCheckboxIsNotChecked(settingsCheckboxBesideText(coreR.string.settings_show_activity_filters))
-        checkViewDoesNotExist(withText(coreR.string.settings_allow_multiple_activity_filters))
+        scrollSettingsRecyclerToText(R.string.settings_show_activity_filters)
+        checkCheckboxIsNotChecked(settingsCheckboxBesideText(R.string.settings_show_activity_filters))
+        checkViewDoesNotExist(withText(R.string.settings_allow_multiple_activity_filters))
+        checkViewDoesNotExist(withText(R.string.settings_show_categories_as_predefined_filters))
 
         // Change setting
-        clickOnSettingsCheckboxBesideText(coreR.string.settings_show_activity_filters)
-        checkCheckboxIsChecked(settingsCheckboxBesideText(coreR.string.settings_show_activity_filters))
-        scrollSettingsRecyclerToText(coreR.string.settings_allow_multiple_activity_filters)
-        checkViewIsDisplayed(withText(coreR.string.settings_allow_multiple_activity_filters))
-        checkCheckboxIsChecked(settingsCheckboxBesideText(coreR.string.settings_allow_multiple_activity_filters))
+        clickOnSettingsCheckboxBesideText(R.string.settings_show_activity_filters)
+        checkCheckboxIsChecked(settingsCheckboxBesideText(R.string.settings_show_activity_filters))
+        scrollSettingsRecyclerToText(R.string.settings_allow_multiple_activity_filters)
+        checkViewIsDisplayed(withText(R.string.settings_allow_multiple_activity_filters))
+        checkCheckboxIsChecked(settingsCheckboxBesideText(R.string.settings_allow_multiple_activity_filters))
+        scrollSettingsRecyclerToText(R.string.settings_show_categories_as_predefined_filters)
+        checkViewIsDisplayed(withText(R.string.settings_show_categories_as_predefined_filters))
+        checkCheckboxIsNotChecked(settingsCheckboxBesideText(R.string.settings_show_categories_as_predefined_filters))
 
         // Check allow multiple
-        clickOnSettingsCheckboxBesideText(coreR.string.settings_allow_multiple_activity_filters)
-        checkCheckboxIsNotChecked(settingsCheckboxBesideText(coreR.string.settings_allow_multiple_activity_filters))
-        clickOnSettingsCheckboxBesideText(coreR.string.settings_allow_multiple_activity_filters)
-        checkCheckboxIsChecked(settingsCheckboxBesideText(coreR.string.settings_allow_multiple_activity_filters))
+        clickOnSettingsCheckboxBesideText(R.string.settings_allow_multiple_activity_filters)
+        checkCheckboxIsNotChecked(settingsCheckboxBesideText(R.string.settings_allow_multiple_activity_filters))
+        clickOnSettingsCheckboxBesideText(R.string.settings_allow_multiple_activity_filters)
+        checkCheckboxIsChecked(settingsCheckboxBesideText(R.string.settings_allow_multiple_activity_filters))
+
+        // Check categories as filters
+        clickOnSettingsCheckboxBesideText(R.string.settings_show_categories_as_predefined_filters)
+        checkCheckboxIsChecked(settingsCheckboxBesideText(R.string.settings_show_categories_as_predefined_filters))
+        clickOnSettingsCheckboxBesideText(R.string.settings_show_categories_as_predefined_filters)
+        checkCheckboxIsNotChecked(settingsCheckboxBesideText(R.string.settings_show_categories_as_predefined_filters))
 
         // Filters shown
         NavUtils.openRunningRecordsScreen()
-        checkViewIsDisplayed(withText(coreR.string.running_records_add_filter))
+        checkViewIsDisplayed(withText(R.string.running_records_add_filter))
         checkViewIsDisplayed(withText(name))
     }
 

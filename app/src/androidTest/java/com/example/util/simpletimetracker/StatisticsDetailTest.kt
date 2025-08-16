@@ -1313,6 +1313,8 @@ class StatisticsDetailTest : BaseUiTest() {
         val tag2 = "tag2"
         val category1 = "category1"
         val category2 = "category2"
+        val uncategorized = getString(coreR.string.uncategorized_time_name)
+        val untagged = getString(coreR.string.change_record_untagged)
 
         // Add data
         testUtils.addCategory(category1, color = color1)
@@ -1348,24 +1350,14 @@ class StatisticsDetailTest : BaseUiTest() {
         clickOnView(withText(R.string.category_hint))
         checkTagItem(color1, category1, "3$hourString 0$minuteString", "50%")
         checkTagItem(color1, category2, "2$hourString 0$minuteString", "33%")
-        checkTagItem(
-            viewsR.color.colorUntracked,
-            getString(coreR.string.uncategorized_time_name),
-            "1$hourString 0$minuteString",
-            "17%",
-        )
+        checkTagItem(viewsR.color.colorUntracked, uncategorized, "1$hourString 0$minuteString", "17%")
 
         // Tag split
         scrollStatDetailRecyclerToTag(StatisticsDetailBlock.DataDistributionMode)
         clickOnView(withText(R.string.record_tag_hint_short))
         checkTagItem(color2, tag1, "3$hourString 0$minuteString", "50%")
         checkTagItem(color2, tag2, "2$hourString 0$minuteString", "33%")
-        checkTagItem(
-            viewsR.color.colorUntracked,
-            getString(coreR.string.change_record_untagged),
-            "1$hourString 0$minuteString",
-            "17%",
-        )
+        checkTagItem(viewsR.color.colorUntracked, untagged, "1$hourString 0$minuteString", "17%")
 
         // Check graphs
         scrollStatDetailRecyclerToTag(StatisticsDetailBlock.DataDistributionGraph)
