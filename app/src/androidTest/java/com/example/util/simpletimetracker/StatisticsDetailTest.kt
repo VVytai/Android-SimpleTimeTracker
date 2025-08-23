@@ -1403,16 +1403,6 @@ class StatisticsDetailTest : BaseUiTest() {
         )
     }
 
-    private fun checkCard(cardTitleId: Int, text: String) {
-        checkViewIsDisplayed(
-            allOf(
-                withText(cardTitleId),
-                hasSibling(withText(text)),
-                isCompletelyDisplayed(),
-            ),
-        )
-    }
-
     private fun checkRecordsCard(count: Int) {
         checkViewIsDisplayed(
             allOf(
@@ -1440,37 +1430,18 @@ class StatisticsDetailTest : BaseUiTest() {
         checkViewIsDisplayed(withText(coreR.string.statistics_detail_last_record))
     }
 
-    private fun checkRangeAverages(
+    private fun BaseUiTest.checkRangeAverages(
         rangeId: Int,
         average: String = "",
         checkAverage: Boolean = true,
         averageNonEmpty: String,
     ) {
-        val range = getString(rangeId)
-        val title = getString(coreR.string.statistics_detail_range_averages_title, range)
-
-        checkViewIsDisplayed(
-            allOf(
-                withTag(StatisticsDetailBlock.RangeAverages),
-                hasDescendant(withText(title)),
-                if (checkAverage) {
-                    hasDescendant(
-                        allOf(
-                            withText(coreR.string.statistics_detail_range_averages),
-                            hasSibling(withText(average)),
-                        ),
-                    )
-                } else {
-                    hasDescendant(withText(title))
-                },
-                hasDescendant(
-                    allOf(
-                        withText(coreR.string.statistics_detail_range_averages_non_empty),
-                        hasSibling(withText(averageNonEmpty)),
-                    ),
-                ),
-                isCompletelyDisplayed(),
-            ),
+        checkRangeAverages(
+            block = StatisticsDetailBlock.RangeAverages,
+            rangeId = rangeId,
+            average = average,
+            checkAverage = checkAverage,
+            averageNonEmpty = averageNonEmpty,
         )
     }
 

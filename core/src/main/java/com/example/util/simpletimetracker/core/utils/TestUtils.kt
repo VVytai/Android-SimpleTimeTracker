@@ -26,6 +26,7 @@ import com.example.util.simpletimetracker.domain.category.model.Category
 import com.example.util.simpletimetracker.domain.color.model.AppColor
 import com.example.util.simpletimetracker.domain.complexRule.model.ComplexRule
 import com.example.util.simpletimetracker.domain.daysOfWeek.model.DayOfWeek
+import com.example.util.simpletimetracker.domain.extension.ifNull
 import com.example.util.simpletimetracker.domain.favourite.model.FavouriteColor
 import com.example.util.simpletimetracker.domain.favourite.model.FavouriteComment
 import com.example.util.simpletimetracker.domain.favourite.model.FavouriteIcon
@@ -130,12 +131,22 @@ class TestUtils @Inject constructor(
         timeStarted: Long? = null,
         timeEnded: Long? = null,
         tagNames: List<String> = emptyList(),
+        tagNamesWithValues: List<Pair<String, Double>> = emptyList(),
         comment: String = "",
     ) = runBlocking {
         val type = recordTypeInteractor.getAll().firstOrNull { it.name == typeName }
             ?: return@runBlocking
-        val tagIds = recordTagInteractor.getAll().filter { it.name in tagNames }
-            .map { it.id }
+        val tags = recordTagInteractor.getAll().associateBy { it.name }
+        val tagsData = tagNames
+            .takeUnless { it.isEmpty() }
+            ?.map { it to null }
+            .ifNull { tagNamesWithValues }
+            .mapNotNull { (name, value) ->
+                RecordBase.Tag(
+                    tagId = tags[name]?.id ?: return@mapNotNull null,
+                    numericValue = value,
+                )
+            }
 
         val data = Record(
             typeId = type.id,
@@ -144,12 +155,7 @@ class TestUtils @Inject constructor(
             timeEnded = timeEnded
                 ?: System.currentTimeMillis(),
             comment = comment,
-            tags = tagIds.map {
-                RecordBase.Tag(
-                    tagId = it,
-                    numericValue = null,
-                )
-            },
+            tags = tagsData,
         )
 
         recordInteractor.add(data)
@@ -212,6 +218,8 @@ class TestUtils @Inject constructor(
         icon: Int? = null,
         note: String = "",
         defaultTypes: List<String> = emptyList(),
+        hasTagValue: Boolean = false,
+        tagValueSuffix: String = "",
     ) = runBlocking {
         val type = recordTypeInteractor.getAll().firstOrNull { it.name == typeName }
 
@@ -231,8 +239,8 @@ class TestUtils @Inject constructor(
             iconColorSource = type?.id.orZero(),
             note = note,
             archived = archived,
-            valueType = RecordTagValueType.NONE, // TODO TAG
-            valueSuffix = "", // TODO TAG
+            valueType = if (hasTagValue) RecordTagValueType.NUMERIC else RecordTagValueType.NONE,
+            valueSuffix = tagValueSuffix,
         )
 
         val tagId = recordTagInteractor.add(data)
@@ -348,6 +356,10 @@ class TestUtils @Inject constructor(
         )
 
         activitySuggestionInteractor.add(listOf(data))
+    }
+
+    suspend fun getRunningRecords(): List<RunningRecord> {
+        return runningRecordInteractor.getAll()
     }
 
     private fun getTypeIds(

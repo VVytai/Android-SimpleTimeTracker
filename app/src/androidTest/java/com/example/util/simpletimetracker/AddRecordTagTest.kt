@@ -460,6 +460,58 @@ class AddRecordTagTest : BaseUiTest() {
     }
 
     @Test
+    fun tagValue() {
+        val tagName = "tagName"
+        val tagSuffix = "tagSuffix"
+
+        // Add data
+        testUtils.addRecordTag(tagName)
+
+        // Check
+        NavUtils.openSettingsScreen()
+        NavUtils.openCategoriesScreen()
+        longClickOnView(withText(tagName))
+        closeSoftKeyboard()
+        onView(withId(changeRecordTagR.id.fieldChangeRecordTagValueType)).perform(nestedScrollTo())
+        clickOnViewWithText(R.string.change_record_type_value_type_field)
+
+        // Check disabled
+        checkViewIsDisplayed(
+            allOf(
+                withId(R.id.tvChangeRecordTagValueTypePreview),
+                withText(R.string.change_record_type_goal_time_disabled),
+            ),
+        )
+        checkViewDoesNotExist(withId(R.id.etCommentItemField))
+
+        // Change
+        clickOnViewWithText(R.string.settings_dark_mode_enabled)
+        checkViewIsDisplayed(
+            allOf(
+                withId(R.id.tvChangeRecordTagValueTypePreview),
+                withText(R.string.settings_dark_mode_enabled),
+            ),
+        )
+        typeTextIntoView(R.id.etCommentItemField, tagSuffix)
+
+        // Save
+        clickOnViewWithText(coreR.string.change_record_type_save)
+
+        // Check saved
+        longClickOnView(withText(tagName))
+        closeSoftKeyboard()
+        onView(withId(changeRecordTagR.id.fieldChangeRecordTagValueType)).perform(nestedScrollTo())
+        clickOnViewWithText(R.string.change_record_type_value_type_field)
+        checkViewIsDisplayed(
+            allOf(
+                withId(R.id.tvChangeRecordTagValueTypePreview),
+                withText(R.string.settings_dark_mode_enabled),
+            ),
+        )
+        checkViewIsDisplayed(withText(tagSuffix))
+    }
+
+    @Test
     fun addRecordTagFromChangeRecord() {
         val tagName1 = "Tag1"
         val tagName2 = "Tag2"

@@ -13,6 +13,7 @@ import com.example.util.simpletimetracker.utils.checkViewIsDisplayed
 import com.example.util.simpletimetracker.utils.clickOnViewWithText
 import com.example.util.simpletimetracker.utils.longClickOnView
 import com.example.util.simpletimetracker.utils.tryAction
+import com.example.util.simpletimetracker.utils.typeTextIntoView
 import com.example.util.simpletimetracker.utils.withCardColor
 import com.example.util.simpletimetracker.utils.withTag
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -198,6 +199,65 @@ class RecordActionsChangeTagTest : BaseUiTest() {
                 comment = comment,
             )
         }
+    }
+
+    @Test
+    fun withTagValue() {
+        val name1 = "Name1"
+        val name2 = "Name2"
+        val tag1 = "Tag1"
+        val tag2 = "Tag2"
+        val value1 = "1"
+        val value2 = "2"
+
+        fun checkRecord(name: String) {
+            checkViewIsDisplayed(
+                allOf(
+                    withId(baseR.id.viewRecordItem),
+                    hasDescendant(withText(name)),
+                    isCompletelyDisplayed(),
+                ),
+            )
+        }
+
+        fun checkRunningRecord(name: String) {
+            checkViewIsDisplayed(
+                allOf(
+                    withId(baseR.id.viewRunningRecordItem),
+                    hasDescendant(withText(name)),
+                    isCompletelyDisplayed(),
+                ),
+            )
+        }
+
+        // Setup
+        testUtils.addActivity(name1)
+        testUtils.addActivity(name2)
+        testUtils.addRecordTag(tag1, name1, hasTagValue = true)
+        testUtils.addRecordTag(tag2, name2, hasTagValue = true)
+        testUtils.addRecord(name1)
+        testUtils.addRunningRecord(name2)
+
+        // Change record
+        NavUtils.openRecordsScreen()
+        checkRecord(name1)
+        longClickOnView(allOf(withText(name1), isCompletelyDisplayed()))
+        clickOnViewWithText(R.string.data_edit_change_tag)
+        clickOnViewWithText(tag1)
+        typeTextIntoView(R.id.etCommentItemField, value1)
+        clickOnViewWithText(R.string.duration_dialog_save)
+        clickOnViewWithText(R.string.duration_dialog_save)
+        tryAction { checkRecord("$name1 - $tag1 ($value1)") }
+
+        // Running record
+        checkRunningRecord(name2)
+        longClickOnView(allOf(withText(name2), isCompletelyDisplayed()))
+        clickOnViewWithText(R.string.data_edit_change_tag)
+        clickOnViewWithText(tag2)
+        typeTextIntoView(R.id.etCommentItemField, value2)
+        clickOnViewWithText(R.string.duration_dialog_save)
+        clickOnViewWithText(R.string.duration_dialog_save)
+        tryAction { checkRunningRecord("$name2 - $tag2 ($value2)") }
     }
 
     @Test

@@ -1,11 +1,13 @@
 package com.example.util.simpletimetracker
 
 import androidx.test.core.app.ActivityScenario
+import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.util.simpletimetracker.domain.activityFilter.model.ActivityFilter
+import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.feature_widget.universal.view.WidgetUniversalActivity
 import com.example.util.simpletimetracker.utils.BaseUiTest
 import com.example.util.simpletimetracker.utils.Widget
@@ -13,10 +15,12 @@ import com.example.util.simpletimetracker.utils.checkViewDoesNotExist
 import com.example.util.simpletimetracker.utils.checkViewIsDisplayed
 import com.example.util.simpletimetracker.utils.clickOnViewWithText
 import com.example.util.simpletimetracker.utils.tryAction
+import com.example.util.simpletimetracker.utils.typeTextIntoView
 import com.example.util.simpletimetracker.utils.withCardColor
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.Matchers.allOf
+import org.hamcrest.Matchers.`is`
 import org.junit.Test
 import org.junit.runner.RunWith
 import com.example.util.simpletimetracker.core.R as coreR
@@ -138,6 +142,36 @@ class WidgetUniversal : BaseUiTest() {
         clickOnViewWithText(tag1)
         clickOnViewWithText(coreR.string.duration_dialog_save)
         checkType(viewsR.color.colorFiltered, name1)
+    }
+
+    @Test
+    fun tagValueSelection() {
+        val typeName = "typeName"
+        val tagName = "tagName"
+        val tagValue = "12.3"
+
+        // Add data
+        testUtils.addActivity(typeName)
+        testUtils.addRecordTag(
+            tagName = tagName,
+            typeName = typeName,
+            hasTagValue = true,
+        )
+        runBlocking { prefsInteractor.setShowRecordTagSelection(true) }
+        scenarioRule = ActivityScenario.launch(WidgetUniversalActivity::class.java)
+
+        // Start timer
+        clickOnViewWithText(typeName)
+        checkViewIsDisplayed(withText(tagName))
+        clickOnViewWithText(tagName)
+        checkViewIsDisplayed(withText(R.string.change_record_type_value_type_field))
+        typeTextIntoView(R.id.etCommentItemField, tagValue)
+        clickOnViewWithText(R.string.duration_dialog_save)
+        checkViewIsDisplayed(withText("$tagName ($tagValue)"))
+        clickOnViewWithText(coreR.string.duration_dialog_save)
+        val record = runBlocking { testUtils.getRunningRecords().first() }
+        assertThat(record.tags.first().numericValue.orZero(), `is`(12.3))
+        checkType(viewsR.color.colorFiltered, typeName)
     }
 
     @Test

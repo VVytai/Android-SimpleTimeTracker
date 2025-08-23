@@ -482,7 +482,6 @@ class StatisticsDetailViewDataMapper @Inject constructor(
         // No reason to show average of one value.
         if (data.size < 2 && compareData.size < 2) return "" to emptyList()
 
-        // TODO TAG show decimal on selected bar
         fun getAverage(data: List<ChartBarDataDuration>): Float {
             if (data.isEmpty()) return 0f
             val sum = data.sumOf { point -> point.durations.sumOf { it.first } }.toFloat()
