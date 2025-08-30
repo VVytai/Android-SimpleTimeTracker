@@ -25,7 +25,7 @@ interface WearCommunicationAPI {
      *
      * Retrieves a list of statistics
      */
-    suspend fun queryStatistics(request: WearStatisticsRequest): List<WearStatisticsDTO>
+    suspend fun queryStatistics(request: WearStatisticsRequest): List<WearStatisticsDTO>?
 
     /**
      * [WearRequests.START_ACTIVITY]
@@ -62,7 +62,7 @@ interface WearCommunicationAPI {
      */
     suspend fun queryShouldShowTagSelection(
         request: WearShouldShowTagSelectionRequest,
-    ): WearShouldShowTagSelectionResponse
+    ): WearShouldShowTagSelectionResponse?
 
     /**
      * [WearRequests.QUERY_SHOULD_SHOW_TAG_VALUE_SELECTION]
@@ -71,7 +71,7 @@ interface WearCommunicationAPI {
      */
     suspend fun queryShouldShowTagValueSelection(
         request: WearShouldShowTagValueSelectionRequest,
-    ): WearShouldShowTagValueSelectionResponse
+    ): WearShouldShowTagValueSelectionResponse?
 
     /**
      * [WearRequests.QUERY_SETTINGS]

@@ -115,9 +115,9 @@ class WearDataRepo @Inject constructor(
         )
     }
 
-    override suspend fun queryStatistics(request: WearStatisticsRequest): List<WearStatisticsDTO> {
-        val filterType = wearDataLocalMapper.map(request.filterType)
-        val shift = request.shift
+    override suspend fun queryStatistics(request: WearStatisticsRequest): List<WearStatisticsDTO>? {
+        val filterType = wearDataLocalMapper.map(request.filterType ?: return null)
+        val shift = request.shift ?: return null
         val rangeLength = RangeLength.Day
         val firstDayOfWeek = prefsInteractor.getFirstDayOfWeek()
         val startOfDayShift = prefsInteractor.getStartOfDayShift()
@@ -156,23 +156,25 @@ class WearDataRepo @Inject constructor(
     }
 
     override suspend fun startActivity(request: WearStartActivityRequest) {
+        val typeId = request.id ?: return
         addRunningRecordMediator.get().startTimer(
-            typeId = request.id,
-            tags = request.tags.map {
+            typeId = typeId,
+            tags = request.tags.orEmpty().mapNotNull {
                 RecordBase.Tag(
-                    tagId = it.tagId,
+                    tagId = it?.tagId ?: return@mapNotNull null,
                     numericValue = it.numericValue,
                 )
             },
             comment = "",
         )
-        if (recordTypeInteractor.get(request.id)?.defaultDuration.orZero() > 0) {
+        if (recordTypeInteractor.get(typeId)?.defaultDuration.orZero() > 0) {
             updateExternalViewsInteractor.get().onInstantRecordAdd()
         }
     }
 
     override suspend fun stopActivity(request: WearStopActivityRequest) {
-        val current = runningRecordInteractor.get(request.id) ?: return
+        val typeId = request.id ?: return
+        val current = runningRecordInteractor.get(typeId) ?: return
         removeRunningRecordMediator.get().removeWithRecordAdd(current)
     }
 
@@ -195,9 +197,9 @@ class WearDataRepo @Inject constructor(
 
     override suspend fun queryShouldShowTagSelection(
         request: WearShouldShowTagSelectionRequest,
-    ): WearShouldShowTagSelectionResponse {
+    ): WearShouldShowTagSelectionResponse? {
         val result = shouldShowRecordDataSelectionInteractor.execute(
-            typeId = request.id,
+            typeId = request.id ?: return null,
             commentInputAvailable = false,
         )
         return WearShouldShowTagSelectionResponse(
@@ -207,10 +209,10 @@ class WearDataRepo @Inject constructor(
 
     override suspend fun queryShouldShowTagValueSelection(
         request: WearShouldShowTagValueSelectionRequest,
-    ): WearShouldShowTagValueSelectionResponse {
+    ): WearShouldShowTagValueSelectionResponse? {
         val result = needTagValueSelectionInteractor.execute(
-            selectedTagIds = request.selectedTagIds,
-            clickedTagId = request.clickedTagId,
+            selectedTagIds = request.selectedTagIds ?: return null,
+            clickedTagId = request.clickedTagId ?: return null,
         )
         return WearShouldShowTagValueSelectionResponse(
             shouldShow = result,
@@ -229,7 +231,7 @@ class WearDataRepo @Inject constructor(
     }
 
     override suspend fun setSettings(settings: WearSetSettingsRequest) {
-        prefsInteractor.setAllowMultitasking(settings.allowMultitasking)
+        prefsInteractor.setAllowMultitasking(settings.allowMultitasking ?: return)
         widgetInteractor.updateWidgets(WidgetType.QUICK_SETTINGS)
         settingsDataUpdateInteractor.send()
     }
