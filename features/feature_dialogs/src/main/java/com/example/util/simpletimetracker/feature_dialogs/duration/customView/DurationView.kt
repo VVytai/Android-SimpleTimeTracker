@@ -5,8 +5,10 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.LinearGradient
 import android.graphics.Paint
 import android.graphics.Rect
+import android.graphics.Shader
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
@@ -17,6 +19,7 @@ import com.example.util.simpletimetracker.domain.extension.toDuration
 import com.example.util.simpletimetracker.feature_dialogs.R
 import kotlin.math.round
 import androidx.core.content.withStyledAttributes
+import com.example.util.simpletimetracker.feature_views.ColorUtils
 
 class DurationView @JvmOverloads constructor(
     context: Context,
@@ -31,6 +34,7 @@ class DurationView @JvmOverloads constructor(
 
     // Attrs
     private var textColor: Int = 0
+    private var backgroundColor: Int = 0
     private var legendTextColor: Int = 0
     private var legendTextSize: Float = 0f
     private var legendPadding: Float = 0f
@@ -38,12 +42,15 @@ class DurationView @JvmOverloads constructor(
 
     private var data: ViewData = ViewData.Empty
     private val textPaint: Paint = Paint()
+    private val backgroundPaintTop: Paint = Paint()
+    private val backgroundPaintBottom: Paint = Paint()
     private val legendTextPaint: Paint = Paint()
     private var textHeight: Float = 0f
     private var textStartHorizontal: Float = 0f
     private var textStartVertical: Float = 0f
     private val swipeSpeedCoefficient: Float = 2f
     private val pageAlpha: Float = 0.3f
+    private val pageBackgroundAlpha: Float = 0.5f
     private val settlingAnimationDurationMs: Long = 300
     private val bounds: Rect = Rect()
     private val minPageValue = 0
@@ -80,7 +87,7 @@ class DurationView @JvmOverloads constructor(
         val h = height.toFloat()
 
         calculateDimensions(w, h)
-        drawText(canvas, h)
+        drawText(canvas, w, h)
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -130,6 +137,9 @@ class DurationView @JvmOverloads constructor(
                 textColor = getColor(
                     R.styleable.DurationView_durationTextColor, Color.BLACK,
                 )
+                backgroundColor = getColor(
+                    R.styleable.DurationView_durationBackgroundColor, Color.WHITE,
+                )
                 legendTextColor = getColor(
                     R.styleable.DurationView_durationLegendTextColor, Color.BLACK,
                 )
@@ -178,9 +188,29 @@ class DurationView @JvmOverloads constructor(
         textPaint.getTextBounds("0", 0, 1, bounds)
         textHeight = bounds.height().toFloat()
         textStartVertical = textHeight + (h - textHeight) / 2f
+
+        val backgroundColorWithAlpha = ColorUtils.changeAlpha(backgroundColor, pageBackgroundAlpha)
+        backgroundPaintTop.shader = LinearGradient(
+            0f,
+            0f,
+            0f,
+            textStartVertical - textHeight,
+            backgroundColorWithAlpha,
+            Color.TRANSPARENT,
+            Shader.TileMode.CLAMP,
+        )
+        backgroundPaintBottom.shader = LinearGradient(
+            0f,
+            textStartVertical,
+            0f,
+            h,
+            Color.TRANSPARENT,
+            backgroundColorWithAlpha,
+            Shader.TileMode.CLAMP,
+        )
     }
 
-    private fun drawText(canvas: Canvas, h: Float) {
+    private fun drawText(canvas: Canvas, w: Float, h: Float) {
         // Center text
         var currentTextStartHorizontal = textStartHorizontal
 
@@ -206,6 +236,7 @@ class DurationView @JvmOverloads constructor(
         )
         drawPages(
             canvas = canvas,
+            w = w,
             h = h,
             data = data.hours,
             currentTextStartHorizontal = currentTextStartHorizontal,
@@ -232,6 +263,7 @@ class DurationView @JvmOverloads constructor(
         )
         drawPages(
             canvas = canvas,
+            w = w,
             h = h,
             data = data.minutes,
             currentTextStartHorizontal = currentTextStartHorizontal,
@@ -257,6 +289,7 @@ class DurationView @JvmOverloads constructor(
             )
             drawPages(
                 canvas = canvas,
+                w = w,
                 h = h,
                 data = data.seconds,
                 currentTextStartHorizontal = currentTextStartHorizontal,
@@ -270,6 +303,7 @@ class DurationView @JvmOverloads constructor(
 
     private fun drawPages(
         canvas: Canvas,
+        w: Float,
         h: Float,
         data: Long,
         currentTextStartHorizontal: Float,
@@ -317,6 +351,22 @@ class DurationView @JvmOverloads constructor(
             pageNumber += 1
         }
         textPaint.alpha = defaultAlpha
+
+        // Draw alpha gradient
+        canvas.drawRect(
+            0f,
+            0f,
+            w,
+            textStartVertical - textHeight,
+            backgroundPaintTop,
+        )
+        canvas.drawRect(
+            0f,
+            textStartVertical,
+            w,
+            h,
+            backgroundPaintBottom,
+        )
     }
 
     private fun getPageStartHorizontal(

@@ -23,6 +23,7 @@
         android:layout_marginHorizontal="8dp"
         android:layout_marginTop="8dp"
         android:visibility="visible"
+        app:durationBackgroundColor="?appBackgroundDialogColor"
         app:durationLegendPadding="4dp"
         app:durationLegendTextColor="?appTextHintColor"
         app:durationLegendTextSize="32sp"
