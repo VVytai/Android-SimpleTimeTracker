@@ -16,10 +16,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
+        android:textSize="16sp"
         android:includeFontPadding="false"
         android:maxLines="1"
         android:paddingHorizontal="16dp"
-        android:paddingVertical="8dp"
+        android:paddingVertical="12dp"
         android:textColor="?appLightTextColor"
         tools:text="1h 1m 1s" />
 
