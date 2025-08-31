@@ -85,6 +85,10 @@
     <string name="statistics_daily_calendar_hint">Günlük takvim</string>
     <string name="no_statistics_exist">İstatistikler burada gösterilecek</string>
 
+    <!--  Goals  -->
+    <string name="no_goals_exist">Hedefler burada gösterilecektir</string>
+    <string name="goal_add_hint">Hedef atamak için etkinliği veya kategoriyi düzenleyin</string>
+
     <!--  Categories  -->
     <string name="categories_title">Kategoriler ve etiketler</string>
     <string name="categories_edit_hint">Düzenlemek için karta tıklayın</string>

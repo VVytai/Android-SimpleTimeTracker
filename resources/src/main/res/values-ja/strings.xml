@@ -85,6 +85,10 @@
     <string name="statistics_daily_calendar_hint">日めくりカレンダー</string>
     <string name="no_statistics_exist">ここに統計が表示されます</string>
 
+    <!--  Goals  -->
+    <string name="no_goals_exist">ここに目標が表示されます</string>
+    <string name="goal_add_hint">アクティビティまたはカテゴリを編集して目標を割り当てます</string>
+
     <!--  Categories  -->
     <string name="categories_title">カテゴリとタグ</string>
     <string name="categories_edit_hint">カードをクリックして編集します</string>

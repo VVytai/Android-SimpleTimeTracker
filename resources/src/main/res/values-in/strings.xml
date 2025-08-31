@@ -85,6 +85,10 @@
     <string name="statistics_daily_calendar_hint">Kalender harian</string>
     <string name="no_statistics_exist">Statistik akan ditampilkan di sini</string>
 
+    <!--  Goals  -->
+    <string name="no_goals_exist">Tujuan akan ditampilkan di sini</string>
+    <string name="goal_add_hint">Edit aktivitas atau kategori untuk menetapkan tujuan</string>
+
     <!--  Categories  -->
     <string name="categories_title">Kategori dan tag</string>
     <string name="categories_edit_hint">Klik pada kartu untuk mengedit</string>

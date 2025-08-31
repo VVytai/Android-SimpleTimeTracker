@@ -1,5 +1,6 @@
 package com.example.util.simpletimetracker.feature_goals.interactor
 
+import android.text.SpannableStringBuilder
 import com.example.util.simpletimetracker.core.interactor.FilterGoalsByDayOfWeekInteractor
 import com.example.util.simpletimetracker.core.interactor.StatisticsMediator
 import com.example.util.simpletimetracker.core.mapper.GoalViewDataMapper
@@ -15,9 +16,11 @@ import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
 import com.example.util.simpletimetracker.domain.recordType.model.RecordType
 import com.example.util.simpletimetracker.domain.recordType.model.RecordTypeGoal
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
-import com.example.util.simpletimetracker.feature_base_adapter.empty.EmptyViewData
 import com.example.util.simpletimetracker.feature_base_adapter.hint.HintViewData
+import com.example.util.simpletimetracker.feature_base_adapter.hintBig.HintBigViewData
 import com.example.util.simpletimetracker.feature_goals.R
+import com.example.util.simpletimetracker.feature_views.extension.setForegroundSpan
+import com.example.util.simpletimetracker.feature_views.extension.toSpannableString
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -168,8 +171,20 @@ class GoalsViewDataInteractor @Inject constructor(
     }
 
     private fun mapToEmpty(): List<ViewHolderType> {
-        return EmptyViewData(
-            message = R.string.no_data.let(resourceRepo::getString),
+        val emptyHint = resourceRepo.getString(R.string.no_goals_exist)
+        val addHint = resourceRepo.getString(R.string.goal_add_hint)
+            .toSpannableString()
+            .apply {
+                setForegroundSpan(color = resourceRepo.getColor(R.color.textHintCommon))
+            }
+
+        return HintBigViewData(
+            text = SpannableStringBuilder()
+                .append(emptyHint)
+                .append("\n")
+                .append(addHint),
+            infoIconVisible = true,
+            closeIconVisible = false,
         ).let(::listOf)
     }
 }

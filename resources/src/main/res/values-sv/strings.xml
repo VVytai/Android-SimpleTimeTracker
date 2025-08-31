@@ -85,6 +85,10 @@
     <string name="statistics_daily_calendar_hint">Daglig kalender</string>
     <string name="no_statistics_exist">Statistik kommer att visas här</string>
 
+    <!--  Goals  -->
+    <string name="no_goals_exist">Målen kommer att visas här</string>
+    <string name="goal_add_hint">Redigera aktivitet eller kategori för att tilldela mål</string>
+
     <!--  Categories  -->
     <string name="categories_title">Kategorier och taggar</string>
     <string name="categories_edit_hint">Tryck på en händelse för att redigera den</string>

@@ -85,6 +85,10 @@
     <string name="statistics_daily_calendar_hint">Calendario giornaliero</string>
     <string name="no_statistics_exist">Le statistiche verranno mostrate qui</string>
 
+    <!--  Goals  -->
+    <string name="no_goals_exist">Gli obiettivi verranno mostrati qui</string>
+    <string name="goal_add_hint">Modifica l\'attività o la categoria per assegnarle un obiettivo</string>
+
     <!--  Categories  -->
     <string name="categories_title">Categorie e tag</string>
     <string name="categories_edit_hint">Clicca sulla scheda per modificare</string>

@@ -85,6 +85,10 @@
     <string name="statistics_daily_calendar_hint">Ежедневный календарь</string>
     <string name="no_statistics_exist">Здесь будет отображаться статистика</string>
 
+    <!--  Goals  -->
+    <string name="no_goals_exist">Цели будут отображаться здесь</string>
+    <string name="goal_add_hint">Отредактируйте активность или категорию, чтобы назначить цель</string>
+
     <!--  Categories  -->
     <string name="categories_title">Категории и теги</string>
     <string name="categories_edit_hint">Нажмите на карточку для редактирования</string>

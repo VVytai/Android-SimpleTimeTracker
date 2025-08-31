@@ -85,6 +85,10 @@
     <string name="statistics_daily_calendar_hint">לוח שנה יומי</string>
     <string name="no_statistics_exist">סטטיסטיקה תוצג כאן</string>
 
+    <!--  Goals  -->
+    <string name="no_goals_exist">המטרות יוצגו כאן</string>
+    <string name="goal_add_hint">ערוך פעילות או קטגוריה כדי להקצות לה מטרה</string>
+
     <!--  Categories  -->
     <string name="categories_title">קטגוריות ותגיות</string>
     <string name="categories_edit_hint">לחץ על כרטיס כדי לערוך</string>

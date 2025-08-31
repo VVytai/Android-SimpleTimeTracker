@@ -85,6 +85,10 @@
     <string name="statistics_daily_calendar_hint">दैनिक कैलेंडर</string>
     <string name="no_statistics_exist">आंकड़े यहां दिखाए जाएंगे</string>
 
+    <!--  Goals  -->
+    <string name="no_goals_exist">लक्ष्य यहाँ दिखाए जाएंगे</string>
+    <string name="goal_add_hint">लक्ष्य सौंपने के लिए गतिविधि या श्रेणी संपादित करें</string>
+
     <!--  Categories  -->
     <string name="categories_title">श्रेणियां और टैग</string>
     <string name="categories_edit_hint">संपादित करने के लिए कार्ड पर क्लिक करें</string>

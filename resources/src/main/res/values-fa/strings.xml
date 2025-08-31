@@ -85,6 +85,10 @@
     <string name="statistics_daily_calendar_hint">تقویم روزانه</string>
     <string name="no_statistics_exist">آمار در اینجا نشان داده خواهد شد</string>
 
+    <!--  Goals  -->
+    <string name="no_goals_exist">اهداف در اینجا نمایش داده می‌شوند</string>
+    <string name="goal_add_hint">فعالیت یا دسته‌بندی را ویرایش کنید تا هدفی به آن اختصاص دهید</string>
+
     <!--  Categories  -->
     <string name="categories_title">دسته بندی ها و برچسب ها</string>
     <string name="categories_edit_hint">برای ویرایش کارت را لمس کنید</string>

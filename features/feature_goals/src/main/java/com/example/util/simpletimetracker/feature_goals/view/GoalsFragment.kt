@@ -10,8 +10,8 @@ import com.example.util.simpletimetracker.core.di.BaseViewModelFactory
 import com.example.util.simpletimetracker.core.sharedViewModel.MainTabsViewModel
 import com.example.util.simpletimetracker.core.utils.InsetConfiguration
 import com.example.util.simpletimetracker.feature_base_adapter.BaseRecyclerAdapter
-import com.example.util.simpletimetracker.feature_base_adapter.empty.createEmptyAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.hint.createHintAdapterDelegate
+import com.example.util.simpletimetracker.feature_base_adapter.hintBig.createHintBigAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.loader.createLoaderAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.statisticsGoal.createStatisticsGoalAdapterDelegate
 import com.example.util.simpletimetracker.feature_goals.viewModel.GoalsViewModel
@@ -40,7 +40,7 @@ class GoalsFragment : BaseFragment<Binding>() {
         BaseRecyclerAdapter(
             createLoaderAdapterDelegate(),
             createHintAdapterDelegate(),
-            createEmptyAdapterDelegate(),
+            createHintBigAdapterDelegate(),
             createStatisticsGoalAdapterDelegate(viewModel::onGoalClick),
         )
     }

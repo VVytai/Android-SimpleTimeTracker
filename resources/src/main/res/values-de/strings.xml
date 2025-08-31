@@ -85,6 +85,10 @@
     <string name="statistics_daily_calendar_hint">Tageskalender</string>
     <string name="no_statistics_exist">Statistiken werden hier angezeigt</string>
 
+    <!--  Goals  -->
+    <string name="no_goals_exist">Ziele werden hier angezeigt</string>
+    <string name="goal_add_hint">Bearbeiten Sie die Aktivität oder Kategorie, um ihr ein Ziel zuzuweisen</string>
+
     <!--  Categories  -->
     <string name="categories_title">Kategorien und Tags</string>
     <string name="categories_edit_hint">Klicken Sie zum Bearbeiten auf die Karte</string>

@@ -85,6 +85,10 @@
     <string name="statistics_daily_calendar_hint">Ikhalenda yansuku zonke</string>
     <string name="no_statistics_exist">Izibalo zizovezwa lapha</string>
 
+    <!--  Goals  -->
+    <string name="no_goals_exist">Izinhloso zizoboniswa lapha</string>
+    <string name="goal_add_hint">Hlela umsebenzi noma isigaba ukuze unikeze inhloso</string>
+
     <!--  Categories  -->
     <string name="categories_title">Izigaba</string>
     <string name="categories_edit_hint">Chofoza ikhadi ukuze uhlele</string>

@@ -85,6 +85,10 @@
     <string name="statistics_daily_calendar_hint">Calendar zilnic</string>
     <string name="no_statistics_exist">Statisticile vor fi afișate aici</string>
 
+    <!--  Goals  -->
+    <string name="no_goals_exist">Obiectivele vor fi afișate aici</string>
+    <string name="goal_add_hint">Editează activitatea sau categoria pentru a-i atribui un obiectiv</string>
+
     <!--  Categories  -->
     <string name="categories_title">Categorii și etichete</string>
     <string name="categories_edit_hint">Click pe o carte pentru a o edita</string>

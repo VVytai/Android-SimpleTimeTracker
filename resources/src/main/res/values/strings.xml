@@ -85,6 +85,10 @@
     <string name="statistics_daily_calendar_hint">Daily calendar</string>
     <string name="no_statistics_exist">Statistics will be shown here</string>
 
+    <!--  Goals  -->
+    <string name="no_goals_exist">Goals will be shown here</string>
+    <string name="goal_add_hint">Edit activity or category to assign goal to it</string>
+
     <!--  Categories  -->
     <string name="categories_title">Categories and tags</string>
     <string name="categories_edit_hint">Click on card to edit</string>
