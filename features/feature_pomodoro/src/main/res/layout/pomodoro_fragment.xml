@@ -190,23 +190,11 @@
         android:id="@+id/flowPomodoroMainButtons"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="btnPomodoroRestart, btnPomodoroStart, btnPomodoroPause"
-        app:flow_horizontalGap="20dp"
-        app:flow_horizontalStyle="packed"
-        app:flow_verticalGap="8dp"
-        app:flow_wrapMode="chain"
-        app:layout_constraintBottom_toTopOf="@id/flowPomodoroAdditionalButtons" />
-
-    <androidx.constraintlayout.helper.widget.Flow
-        android:id="@+id/flowPomodoroAdditionalButtons"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:layout_marginBottom="64dp"
-        app:constraint_referenced_ids="btnPomodoroPrev, btnPomodoroNext"
         app:flow_horizontalGap="20dp"
+        app:constraint_referenced_ids="btnPomodoroPrev, btnPomodoroStart, btnPomodoroNext, btnPomodoroRestart, btnPomodoroPause"
         app:flow_horizontalStyle="packed"
         app:flow_maxElementsWrap="3"
-        app:flow_verticalGap="8dp"
         app:flow_wrapMode="chain"
         app:layout_constraintBottom_toBottomOf="parent" />
 

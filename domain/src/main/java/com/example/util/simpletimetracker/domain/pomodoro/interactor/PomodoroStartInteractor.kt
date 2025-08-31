@@ -5,6 +5,7 @@ import javax.inject.Inject
 
 class PomodoroStartInteractor @Inject constructor(
     private val prefsInteractor: PrefsInteractor,
+    private val getPomodoroStateInteractor: GetPomodoroStateInteractor,
     private val pomodoroCycleNotificationInteractor: PomodoroCycleNotificationInteractor,
 ) {
 
@@ -16,8 +17,9 @@ class PomodoroStartInteractor @Inject constructor(
 
     suspend fun checkAndStart(typeId: Long) {
         if (!prefsInteractor.getEnablePomodoroMode()) return
+        val state = getPomodoroStateInteractor.execute()
 
-        if (prefsInteractor.getPomodoroModeStartedTimestampMs() == 0L &&
+        if (state is GetPomodoroStateInteractor.State.Stopped &&
             typeId in prefsInteractor.getAutostartPomodoroActivities()
         ) {
             start()

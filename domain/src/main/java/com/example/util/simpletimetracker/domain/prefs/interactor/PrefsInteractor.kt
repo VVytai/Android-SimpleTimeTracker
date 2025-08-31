@@ -390,6 +390,14 @@ class PrefsInteractor @Inject constructor(
         prefsRepo.pomodoroModeStartedTimestamp = timestampMs
     }
 
+    suspend fun getPomodoroModePausedTimestampMs(): Long = withContext(Dispatchers.IO) {
+        prefsRepo.pomodoroModePausedTimestamp
+    }
+
+    suspend fun setPomodoroModePausedTimestampMs(timestampMs: Long) = withContext(Dispatchers.IO) {
+        prefsRepo.pomodoroModePausedTimestamp = timestampMs
+    }
+
     suspend fun getPomodoroFocusTime(): Long = withContext(Dispatchers.IO) {
         prefsRepo.pomodoroFocusTime
     }

@@ -209,6 +209,10 @@ class PrefsRepoImpl @Inject constructor(
         KEY_POMODORO_MODE_STARTED_TIMESTAMP, 0,
     )
 
+    override var pomodoroModePausedTimestamp: Long by prefs.delegate(
+        KEY_POMODORO_MODE_PAUSED_TIMESTAMP, 0,
+    )
+
     override var pomodoroFocusTime: Long by prefs.delegate(
         KEY_POMODORO_FOCUS_TIME, POMODORO_DEFAULT_FOCUS_TIME_SEC,
     )
@@ -710,6 +714,7 @@ class PrefsRepoImpl @Inject constructor(
         private const val KEY_AUTOMATIC_EXPORT_ERROR = "automaticExportError"
         private const val KEY_AUTOMATIC_EXPORT_LAST_SAVE_TIME = "automaticExportLastSaveTime"
         private const val KEY_POMODORO_MODE_STARTED_TIMESTAMP = "pomodoroModeStartedTimestamp"
+        private const val KEY_POMODORO_MODE_PAUSED_TIMESTAMP = "pomodoroModePausedTimestamp"
         private const val KEY_WIDGET = "widget_"
         private const val KEY_STATISTICS_WIDGET_FILTERED_TYPES = "statistics_widget_filtered_types_"
         private const val KEY_STATISTICS_WIDGET_FILTERED_CATEGORIES = "statistics_widget_filtered_categories_"

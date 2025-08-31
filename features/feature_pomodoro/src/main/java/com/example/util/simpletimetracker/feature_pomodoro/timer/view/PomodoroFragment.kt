@@ -57,8 +57,8 @@ class PomodoroFragment : BaseFragment<Binding>() {
 
     private fun setButtonState(state: PomodoroButtonState) = with(binding) {
         ivPomodoroButton.setImageResource(state.iconResId)
-        btnPomodoroRestart.visible = state.additionalButtonsVisible
-        btnPomodoroPause.visible = state.additionalButtonsVisible
+        btnPomodoroRestart.isInvisible = !state.additionalButtonsVisible
+        btnPomodoroPause.isInvisible = !state.additionalButtonsVisible
         btnPomodoroPrev.isInvisible = !state.additionalButtonsVisible
         btnPomodoroNext.isInvisible = !state.additionalButtonsVisible
     }

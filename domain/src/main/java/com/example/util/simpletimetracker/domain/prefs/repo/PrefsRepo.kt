@@ -78,6 +78,8 @@ interface PrefsRepo {
 
     var pomodoroModeStartedTimestamp: Long // in milliseconds, 0 - disabled
 
+    var pomodoroModePausedTimestamp: Long // in milliseconds, 0 - disabled
+
     var pomodoroFocusTime: Long // in seconds, 0 - disabled
 
     var pomodoroBreakTime: Long // in seconds, 0 - disabled

@@ -3,6 +3,7 @@ package com.example.util.simpletimetracker.feature_pomodoro.timer.mapper
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.domain.extension.dropMillis
 import com.example.util.simpletimetracker.domain.extension.toDuration
+import com.example.util.simpletimetracker.domain.pomodoro.interactor.GetPomodoroStateInteractor
 import com.example.util.simpletimetracker.domain.pomodoro.mapper.PomodoroCycleDurationsMapper
 import com.example.util.simpletimetracker.domain.pomodoro.model.PomodoroCycleSettings
 import com.example.util.simpletimetracker.domain.pomodoro.model.PomodoroCycleType
@@ -18,8 +19,9 @@ class PomodoroViewDataMapper @Inject constructor(
 ) {
 
     fun mapButtonState(
-        isStarted: Boolean,
+        state: GetPomodoroStateInteractor.State,
     ): PomodoroButtonState {
+        val isStarted = state is GetPomodoroStateInteractor.State.Running
         val iconResId = if (isStarted) {
             R.drawable.button_stop
         } else {
@@ -33,17 +35,25 @@ class PomodoroViewDataMapper @Inject constructor(
     }
 
     fun mapTimerState(
-        isStarted: Boolean,
+        state: GetPomodoroStateInteractor.State,
         timeStartedMs: Long,
+        timePausedMs: Long,
         timerUpdateMs: Long,
         settings: PomodoroCycleSettings,
     ): PomodoroTimerState {
         // Min increment of one pixel.
         val maxProgress = 1024 * Math.PI
+        val isStarted = state !is GetPomodoroStateInteractor.State.Stopped
+        val isPaused = state is GetPomodoroStateInteractor.State.Paused
 
         return if (isStarted) {
+            val timerUpdate = if (isPaused) 0 else timerUpdateMs
             val result = pomodoroCycleDurationsMapper.map(
-                timeStartedMs = timeStartedMs.dropMillis(),
+                timeStartedMs = if (isPaused) {
+                    timeStartedMs + System.currentTimeMillis() - timePausedMs
+                } else {
+                    timeStartedMs
+                },
                 settings = settings,
             )
             val currentCycle = result.cycleType
@@ -54,14 +64,14 @@ class PomodoroViewDataMapper @Inject constructor(
             val currentCycleDuration = result.currentCycleDurationMs
 
             val timeLeft = cycleDuration - currentCycleDuration
-            val progression = (currentCycleDuration + timerUpdateMs) *
+            val progression = (currentCycleDuration + timerUpdate) *
                 maxProgress / cycleDuration
             val times = formatInterval(timeLeft)
 
             PomodoroTimerState(
                 maxProgress = maxProgress.toInt(),
                 progress = progression.toInt(),
-                timerUpdateMs = timerUpdateMs,
+                timerUpdateMs = timerUpdate,
                 durationState = mapToDurationState(times),
                 currentCycleHint = mapCurrentStateHint(currentCycle),
             )

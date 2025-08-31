@@ -9,15 +9,17 @@ class PomodoroNextCycleInteractor @Inject constructor(
     private val prefsInteractor: PrefsInteractor,
     private val currentTimestampProvider: CurrentTimestampProvider,
     private val pomodoroCycleDurationsMapper: PomodoroCycleDurationsMapper,
+    private val getPomodoroStateInteractor: GetPomodoroStateInteractor,
     private val getPomodoroSettingsInteractor: GetPomodoroSettingsInteractor,
     private val pomodoroCycleNotificationInteractor: PomodoroCycleNotificationInteractor,
 ) {
 
     suspend fun executePrev() {
         if (!prefsInteractor.getEnablePomodoroMode()) return
-        val timeStartedMs = prefsInteractor.getPomodoroModeStartedTimestampMs()
-        if (timeStartedMs == 0L) return
+        val state = getPomodoroStateInteractor.execute()
+        if (state !is GetPomodoroStateInteractor.State.Running) return
 
+        val timeStartedMs = prefsInteractor.getPomodoroModeStartedTimestampMs()
         val settings = getPomodoroSettingsInteractor.execute()
         val result = pomodoroCycleDurationsMapper.map(
             timeStartedMs = timeStartedMs,
@@ -43,9 +45,10 @@ class PomodoroNextCycleInteractor @Inject constructor(
 
     suspend fun executeNext() {
         if (!prefsInteractor.getEnablePomodoroMode()) return
-        val timeStartedMs = prefsInteractor.getPomodoroModeStartedTimestampMs()
-        if (timeStartedMs == 0L) return
+        val state = getPomodoroStateInteractor.execute()
+        if (state !is GetPomodoroStateInteractor.State.Running) return
 
+        val timeStartedMs = prefsInteractor.getPomodoroModeStartedTimestampMs()
         val settings = getPomodoroSettingsInteractor.execute()
         val result = pomodoroCycleDurationsMapper.map(
             timeStartedMs = timeStartedMs,

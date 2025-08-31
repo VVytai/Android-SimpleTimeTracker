@@ -12,6 +12,7 @@ class PomodoroStopInteractor @Inject constructor(
 
     suspend fun stop() {
         prefsInteractor.setPomodoroModeStartedTimestampMs(0)
+        prefsInteractor.setPomodoroModePausedTimestampMs(0)
         pomodoroCycleNotificationInteractor.cancel()
     }
 
