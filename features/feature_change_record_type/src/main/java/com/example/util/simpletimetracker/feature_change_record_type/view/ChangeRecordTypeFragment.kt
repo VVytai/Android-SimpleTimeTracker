@@ -54,7 +54,6 @@ import com.example.util.simpletimetracker.feature_change_goals.views.GoalsViewDe
 import com.example.util.simpletimetracker.feature_change_record_type.R
 import com.example.util.simpletimetracker.feature_change_record_type.viewData.ChangeRecordTypeAdditionalState
 import com.example.util.simpletimetracker.feature_change_record_type.viewData.ChangeRecordTypeCategoriesViewData
-import com.example.util.simpletimetracker.feature_change_record_type.viewData.ChangeRecordTypeChooserState.Additional
 import com.example.util.simpletimetracker.feature_change_record_type.viewData.ChangeRecordTypeChooserState.Category
 import com.example.util.simpletimetracker.feature_change_record_type.viewData.ChangeRecordTypeChooserState.Closed
 import com.example.util.simpletimetracker.feature_change_record_type.viewData.ChangeRecordTypeChooserState.Color
@@ -207,14 +206,11 @@ class ChangeRecordTypeFragment :
         fieldChangeRecordTypeIcon.setOnClick(viewModel::onIconChooserClick)
         fieldChangeRecordTypeCategory.setOnClick(viewModel::onCategoryChooserClick)
         fieldChangeRecordTypeGoalTime.setOnClick(viewModel::onGoalTimeChooserClick)
-        fieldChangeRecordTypeAdditional.setOnClick(viewModel::onAdditionalChooserClick)
         btnChangeRecordTypeSave.setOnClick(viewModel::onSaveClick)
         btnChangeRecordTypeArchive.setOnClick(viewModel::onArchiveClick)
         btnChangeRecordTypeDelete.setOnClick(throttle(viewModel::onDeleteClick))
         btnChangeRecordTypeStatistics.setOnClick(viewModel::onStatisticsClick)
         tvChangeRecordTypeMoreFields.setOnClick(viewModel::onMoreFieldsClick)
-        layoutChangeRecordTypeAdditional.btnChangeRecordTypeAdditionalDuplicate
-            .setOnClick(viewModel::onDuplicateClick)
         layoutChangeRecordTypeAdditional.groupChangeRecordTypeAdditionalDefaultDurationSelector
             .setOnClick(viewModel::onDefaultDurationClick)
         IconSelectionViewDelegate.initUx(
@@ -246,9 +242,6 @@ class ChangeRecordTypeFragment :
             nameErrorMessage.observe(::updateNameErrorMessage)
             additionalState.observe(::updateAdditionalState)
             noteState.observe(::updateNoteState)
-            duplicateButtonEnabled.observe(
-                layoutChangeRecordTypeAdditional.btnChangeRecordTypeAdditionalDuplicate::setEnabled,
-            )
             notificationsHintVisible.observe(
                 layoutChangeRecordTypeGoals.containerChangeRecordTypeGoalNotificationsHint::visible::set,
             )
@@ -402,12 +395,6 @@ class ChangeRecordTypeFragment :
             chooserView = fieldChangeRecordTypeGoalTime,
             chooserArrow = arrowChangeRecordTypeGoalTime,
         )
-        ViewChooserStateDelegate.updateChooser<Additional>(
-            state = state,
-            chooserData = containerChangeRecordTypeAdditional,
-            chooserView = fieldChangeRecordTypeAdditional,
-            chooserArrow = arrowChangeRecordTypeAdditional,
-        )
 
         val isClosed = state.current is Closed
         spaceChangeRecordTypeFieldsTop.isVisible = !isClosed
@@ -428,7 +415,7 @@ class ChangeRecordTypeFragment :
         containerChangeRecordTypeMoreFields.isVisible = isClosed
         fieldChangeRecordTypeCategory.isVisible = (isAdditionalVisible && isClosed) || state.current is Category
         fieldChangeRecordTypeGoalTime.isVisible = (isAdditionalVisible && isClosed) || state.current is GoalTime
-        fieldChangeRecordTypeAdditional.isVisible = (isAdditionalVisible && isClosed) || state.current is Additional
+        layoutChangeRecordTypeAdditional.root.isVisible = isAdditionalVisible && isClosed
         inputChangeRecordTypeNote.isVisible = isAdditionalVisible && isClosed
         dividerChangeRecordTypeBottom.isInvisible = isClosed
 
@@ -474,10 +461,6 @@ class ChangeRecordTypeFragment :
     private fun updateAdditionalState(
         data: ChangeRecordTypeAdditionalState,
     ) = with(binding.layoutChangeRecordTypeAdditional) {
-        tvChangeRecordTypeAdditionalDuplicateHint.isVisible = data.isDuplicateVisible
-        btnChangeRecordTypeAdditionalDuplicate.isVisible = data.isDuplicateVisible
-        viewChangeRecordTypeAdditionalDuplicateDivider.isVisible = data.isDuplicateVisible
-
         tvChangeRecordTypeAdditionalDefaultDurationSelectorValue.text = data.defaultDuration
     }
 

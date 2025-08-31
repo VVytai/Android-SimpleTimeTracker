@@ -25,6 +25,7 @@ import com.example.util.simpletimetracker.feature_data_edit.model.DataEditRecord
 import com.example.util.simpletimetracker.feature_data_edit.model.DataEditRemoveTagsState
 import com.example.util.simpletimetracker.navigation.Router
 import com.example.util.simpletimetracker.navigation.params.notification.SnackBarParams
+import com.example.util.simpletimetracker.navigation.params.screen.DataEditDuplicateTypeDialogParams
 import com.example.util.simpletimetracker.navigation.params.screen.DataEditTagSelectionDialogParams
 import com.example.util.simpletimetracker.navigation.params.screen.DataEditTypeSelectionDialogParams
 import com.example.util.simpletimetracker.navigation.params.screen.RecordsFilterParams
@@ -216,6 +217,10 @@ class DataEditViewModel @Inject constructor(
 
     fun onChangeClick() {
         showAlert(tag = CHANGE_ALERT_DIALOG_TAG)
+    }
+
+    fun onDuplicateClick() {
+        router.navigate(DataEditDuplicateTypeDialogParams)
     }
 
     fun onDeleteAllRecordsClick() {

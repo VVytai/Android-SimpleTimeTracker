@@ -84,6 +84,7 @@ class DataEditFragment :
         checkboxDataEditDeleteRecords.setOnClick(viewModel::onDeleteRecordsClick)
         etDataEditChangeComment.doAfterTextChanged { viewModel.onCommentChange(it.toString()) }
         btnDataEditChange.setOnClick(throttle(viewModel::onChangeClick))
+        btnDataEditDuplicateType.setOnClick(throttle(viewModel::onDuplicateClick))
         btnDataEditDeleteRecords.setOnClick(throttle(viewModel::onDeleteAllRecordsClick))
         btnDataEditDeleteData.setOnClick(throttle(viewModel::onDeleteDataClick))
     }

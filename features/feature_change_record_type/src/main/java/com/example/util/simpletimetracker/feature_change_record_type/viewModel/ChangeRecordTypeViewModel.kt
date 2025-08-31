@@ -17,7 +17,6 @@ import com.example.util.simpletimetracker.core.mapper.RecordTypeViewDataMapper
 import com.example.util.simpletimetracker.core.mapper.TimeMapper
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.core.view.ViewChooserStateDelegate
-import com.example.util.simpletimetracker.domain.activityFilter.interactor.ActivityFilterInteractor
 import com.example.util.simpletimetracker.domain.category.interactor.RecordTypeCategoryInteractor
 import com.example.util.simpletimetracker.domain.color.model.AppColor
 import com.example.util.simpletimetracker.domain.extension.addOrRemove
@@ -61,7 +60,6 @@ class ChangeRecordTypeViewModel @Inject constructor(
     private val runningRecordInteractor: RunningRecordInteractor,
     private val viewDataInteractor: ChangeRecordTypeViewDataInteractor,
     private val recordTypeCategoryInteractor: RecordTypeCategoryInteractor,
-    private val activityFilterInteractor: ActivityFilterInteractor,
     private val externalViewsInteractor: UpdateExternalViewsInteractor,
     private val prefsInteractor: PrefsInteractor,
     private val recordTypeViewDataMapper: RecordTypeViewDataMapper,
@@ -126,7 +124,6 @@ class ChangeRecordTypeViewModel @Inject constructor(
     val archiveButtonEnabled: LiveData<Boolean> = MutableLiveData(true)
     val deleteButtonEnabled: LiveData<Boolean> = MutableLiveData(true)
     val saveButtonEnabled: LiveData<Boolean> = MutableLiveData(true)
-    val duplicateButtonEnabled: LiveData<Boolean> = MutableLiveData(true)
     val nameErrorMessage: LiveData<String> = MutableLiveData("")
     val archiveIconVisibility: LiveData<Boolean> by lazy { MutableLiveData(recordTypeId != 0L) }
     val deleteIconVisibility: LiveData<Boolean> by lazy { MutableLiveData(recordTypeId != 0L) }
@@ -199,10 +196,6 @@ class ChangeRecordTypeViewModel @Inject constructor(
 
     fun onGoalTimeChooserClick() {
         onNewChooserState(ChangeRecordTypeChooserState.GoalTime)
-    }
-
-    fun onAdditionalChooserClick() {
-        onNewChooserState(ChangeRecordTypeChooserState.Additional)
     }
 
     fun onCategoryClick(item: CategoryViewData) {
@@ -318,23 +311,6 @@ class ChangeRecordTypeViewModel @Inject constructor(
         }
     }
 
-    fun onDuplicateClick() {
-        if (isNameEmpty()) return
-        duplicateButtonEnabled.set(false)
-        viewModelScope.launch {
-            val addedId = duplicateRecordType()
-            recordTypeCategoryInteractor.addCategories(addedId, newCategories)
-            goalsViewModelDelegate.saveGoals(RecordTypeGoal.IdData.Type(addedId))
-            activityFilterInteractor.getByTypeId(recordTypeId).forEach { filter ->
-                val newFilter = filter.copy(
-                    selectedIds = (filter.selectedIds + addedId).toSet(),
-                )
-                activityFilterInteractor.add(newFilter)
-            }
-            onSaveClick()
-        }
-    }
-
     fun onDefaultDurationClick() = viewModelScope.launch {
         DurationDialogParams(
             tag = DEFAULT_DURATION_DIALOG_TAG,
@@ -413,33 +389,6 @@ class ChangeRecordTypeViewModel @Inject constructor(
         val recordType = RecordType(
             id = recordTypeId,
             name = newName.trimIfNotBlank(),
-            icon = iconSelectionViewModelDelegateImpl.newIcon,
-            color = colorSelectionViewModelDelegateImpl.newColor,
-            defaultDuration = newDefaultDuration,
-            note = newNote,
-        )
-
-        return recordTypeInteractor.add(recordType)
-    }
-
-    private suspend fun duplicateRecordType(): Long {
-        // Copy will have a name like "type (2)",
-        // if already exist - "type (3)" etc.
-        val typeNames = recordTypeInteractor.getAll().map { it.name }
-        var index = 2
-        var name: String
-
-        while (true) {
-            name = "$newName ($index)"
-            if (name in typeNames && index < 100) {
-                index += 1
-            } else {
-                break
-            }
-        }
-
-        val recordType = RecordType(
-            name = name,
             icon = iconSelectionViewModelDelegateImpl.newIcon,
             color = colorSelectionViewModelDelegateImpl.newColor,
             defaultDuration = newDefaultDuration,
@@ -554,7 +503,6 @@ class ChangeRecordTypeViewModel @Inject constructor(
 
     private fun loadAdditionalState(): ChangeRecordTypeAdditionalState {
         return ChangeRecordTypeAdditionalState(
-            isDuplicateVisible = extra is ChangeRecordTypeParams.Change,
             defaultDuration = if (newDefaultDuration > 0) {
                 timeMapper.formatDuration(newDefaultDuration)
             } else {

@@ -31,6 +31,7 @@ import com.example.util.simpletimetracker.navigation.params.screen.CardSizeDialo
 import com.example.util.simpletimetracker.navigation.params.screen.ChartFilterDialogParams
 import com.example.util.simpletimetracker.navigation.params.screen.ColorSelectionDialogParams
 import com.example.util.simpletimetracker.navigation.params.screen.CustomRangeSelectionParams
+import com.example.util.simpletimetracker.navigation.params.screen.DataEditDuplicateTypeDialogParams
 import com.example.util.simpletimetracker.navigation.params.screen.DataEditTagSelectionDialogParams
 import com.example.util.simpletimetracker.navigation.params.screen.DataEditTypeSelectionDialogParams
 import com.example.util.simpletimetracker.navigation.params.screen.DataExportSettingDialogParams
@@ -236,6 +237,16 @@ class NavigationDialogMapModule {
         return NavigationData(
             R.id.helpDialogFragment,
             bundleCreatorDelegate(HelpDialogFragment::createBundle),
+        )
+    }
+
+    @IntoMap
+    @Provides
+    @ScreenKey(DataEditDuplicateTypeDialogParams::class)
+    fun dataEditDuplicateTypeDialog(): NavigationData {
+        return NavigationData(
+            R.id.dataEditDuplicateTypeDialogFragment,
+            BundleCreator.empty(),
         )
     }
 

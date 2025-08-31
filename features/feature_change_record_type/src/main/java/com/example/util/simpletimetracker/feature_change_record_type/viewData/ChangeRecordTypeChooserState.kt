@@ -8,6 +8,5 @@ sealed interface ChangeRecordTypeChooserState : ViewChooserStateDelegate.State {
     object Icon : ChangeRecordTypeChooserState
     object Category : ChangeRecordTypeChooserState
     object GoalTime : ChangeRecordTypeChooserState
-    object Additional : ChangeRecordTypeChooserState
     object Type : ChangeRecordTypeChooserState
 }

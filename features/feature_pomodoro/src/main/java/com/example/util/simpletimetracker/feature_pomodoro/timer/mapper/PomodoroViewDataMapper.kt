@@ -1,7 +1,6 @@
 package com.example.util.simpletimetracker.feature_pomodoro.timer.mapper
 
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
-import com.example.util.simpletimetracker.domain.extension.dropMillis
 import com.example.util.simpletimetracker.domain.extension.toDuration
 import com.example.util.simpletimetracker.domain.pomodoro.interactor.GetPomodoroStateInteractor
 import com.example.util.simpletimetracker.domain.pomodoro.mapper.PomodoroCycleDurationsMapper

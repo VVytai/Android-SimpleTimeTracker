@@ -107,7 +107,7 @@ class PomodoroCycleDurationsMapper @Inject constructor(
     }
 
     fun mapFullPeriodDuration(
-        settings: PomodoroCycleSettings
+        settings: PomodoroCycleSettings,
     ): Long {
         return if (settings.periodsUntilLongBreak > 0) {
             settings.focusTimeMs * settings.periodsUntilLongBreak +

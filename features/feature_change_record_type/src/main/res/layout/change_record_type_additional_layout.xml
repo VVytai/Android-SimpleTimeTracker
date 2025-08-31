@@ -6,32 +6,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/tvChangeRecordTypeAdditionalDuplicateHint"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:paddingHorizontal="12dp"
-        android:paddingVertical="8dp"
-        android:text="@string/change_record_type_duplicate_hint"
-        android:textColor="?appTextHintColor" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnChangeRecordTypeAdditionalDuplicate"
-        style="@style/AppButtonActive"
-        android:layout_width="match_parent"
-        android:layout_marginHorizontal="@dimen/edit_screen_margin_horizontal"
-        android:text="@string/change_record_duplicate"
-        app:iconGravity="textStart"
-        app:iconSize="18dp"
-        app:iconTint="?appLightTextColor"
-        tools:icon="@drawable/action_copy" />
-
-    <com.example.util.simpletimetracker.feature_views.DividerView
-        android:id="@+id/viewChangeRecordTypeAdditionalDuplicateDivider"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -84,7 +58,7 @@
                 android:id="@+id/arrowChangeRecordTypeAdditionalDefaultDurationSelector"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginEnd="6dp"
                 android:background="?selectableItemBackgroundBorderless"
                 android:src="?appArrow"
                 tools:ignore="ContentDescription" />

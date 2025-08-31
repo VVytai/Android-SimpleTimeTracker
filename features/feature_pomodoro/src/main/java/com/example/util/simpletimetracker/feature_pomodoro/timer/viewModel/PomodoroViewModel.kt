@@ -119,7 +119,7 @@ class PomodoroViewModel @Inject constructor(
 
     private suspend fun loadButtonState(): PomodoroButtonState {
         return pomodoroViewDataMapper.mapButtonState(
-            state = getPomodoroStateInteractor.execute()
+            state = getPomodoroStateInteractor.execute(),
         )
     }
 

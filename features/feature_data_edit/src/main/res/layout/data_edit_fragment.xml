@@ -338,6 +338,19 @@
                 android:layout_height="wrap_content" />
 
             <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnDataEditDuplicateType"
+                style="@style/AppButtonActive"
+                android:layout_width="match_parent"
+                android:layout_marginHorizontal="8dp"
+                android:foreground="?selectableItemBackground"
+                android:text="@string/change_record_duplicate"
+                tools:ignore="UnusedAttribute" />
+
+            <com.example.util.simpletimetracker.feature_views.DividerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnDataEditDeleteRecords"
                 style="@style/AppButtonActive"
                 android:layout_width="match_parent"
