@@ -4,6 +4,7 @@ import android.animation.ValueAnimator
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.animation.LinearInterpolator
+import androidx.core.view.isInvisible
 import androidx.fragment.app.viewModels
 import com.example.util.simpletimetracker.core.base.BaseFragment
 import com.example.util.simpletimetracker.core.utils.InsetConfiguration
@@ -32,6 +33,8 @@ class PomodoroFragment : BaseFragment<Binding>() {
         btnPomodoroSettings.setOnClick(viewModel::onSettingsClicked)
         btnPomodoroStart.setOnClick(viewModel::onStartStopClicked)
         btnPomodoroRestart.setOnClick(viewModel::onRestartClicked)
+        btnPomodoroPause.setOnClick(viewModel::onPauseClicked)
+        btnPomodoroPrev.setOnClick(viewModel::onPrevClicked)
         btnPomodoroNext.setOnClick(viewModel::onNextClicked)
     }
 
@@ -55,7 +58,9 @@ class PomodoroFragment : BaseFragment<Binding>() {
     private fun setButtonState(state: PomodoroButtonState) = with(binding) {
         ivPomodoroButton.setImageResource(state.iconResId)
         btnPomodoroRestart.visible = state.additionalButtonsVisible
-        btnPomodoroNext.visible = state.additionalButtonsVisible
+        btnPomodoroPause.visible = state.additionalButtonsVisible
+        btnPomodoroPrev.isInvisible = !state.additionalButtonsVisible
+        btnPomodoroNext.isInvisible = !state.additionalButtonsVisible
     }
 
     private fun setTimerState(state: PomodoroTimerState) = with(binding) {

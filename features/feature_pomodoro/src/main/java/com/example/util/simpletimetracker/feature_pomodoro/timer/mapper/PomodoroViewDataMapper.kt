@@ -47,7 +47,10 @@ class PomodoroViewDataMapper @Inject constructor(
                 settings = settings,
             )
             val currentCycle = result.cycleType
-            val cycleDuration = result.cycleDurationMs
+            val cycleDuration = pomodoroCycleDurationsMapper.mapToCycleTime(
+                cycleType = result.cycleType,
+                settings = settings,
+            )
             val currentCycleDuration = result.currentCycleDurationMs
 
             val timeLeft = cycleDuration - currentCycleDuration

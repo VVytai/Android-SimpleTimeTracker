@@ -186,19 +186,41 @@
         tools:max="100"
         tools:progress="75" />
 
+    <androidx.constraintlayout.helper.widget.Flow
+        android:id="@+id/flowPomodoroMainButtons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="btnPomodoroRestart, btnPomodoroStart, btnPomodoroPause"
+        app:flow_horizontalGap="20dp"
+        app:flow_horizontalStyle="packed"
+        app:flow_verticalGap="8dp"
+        app:flow_wrapMode="chain"
+        app:layout_constraintBottom_toTopOf="@id/flowPomodoroAdditionalButtons" />
+
+    <androidx.constraintlayout.helper.widget.Flow
+        android:id="@+id/flowPomodoroAdditionalButtons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="64dp"
+        app:constraint_referenced_ids="btnPomodoroPrev, btnPomodoroNext"
+        app:flow_horizontalGap="20dp"
+        app:flow_horizontalStyle="packed"
+        app:flow_maxElementsWrap="3"
+        app:flow_verticalGap="8dp"
+        app:flow_wrapMode="chain"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
     <androidx.cardview.widget.CardView
         android:id="@+id/btnPomodoroRestart"
         style="@style/SettingsCard"
-        android:layout_width="54dp"
-        android:layout_height="54dp"
-        android:layout_marginHorizontal="20dp"
+        android:layout_width="@dimen/additional_button_size"
+        android:layout_height="@dimen/additional_button_size"
         android:foreground="?selectableItemBackground"
-        app:cardCornerRadius="27dp"
-        app:layout_constraintBottom_toBottomOf="@id/btnPomodoroStart"
-        app:layout_constraintEnd_toStartOf="@id/btnPomodoroStart"
-        app:layout_constraintHorizontal_bias="1"
+        app:cardCornerRadius="@dimen/additional_button_corner_radius"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/btnPomodoroStart">
+        app:layout_constraintTop_toTopOf="parent">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:layout_width="match_parent"
@@ -212,14 +234,14 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/btnPomodoroStart"
         style="@style/SettingsCard"
-        android:layout_width="80dp"
-        android:layout_height="64dp"
-        android:layout_marginBottom="64dp"
+        android:layout_width="@dimen/main_button_width"
+        android:layout_height="@dimen/main_button_height"
         android:foreground="?selectableItemBackground"
-        app:cardCornerRadius="32dp"
+        app:cardCornerRadius="@dimen/main_button_corner_radius"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/ivPomodoroButton"
@@ -227,23 +249,64 @@
             android:layout_height="match_parent"
             android:scaleType="center"
             android:tint="?appContrastColor"
-            app:srcCompat="@drawable/button_play" />
+            tools:srcCompat="@drawable/button_stop" />
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/btnPomodoroPause"
+        style="@style/SettingsCard"
+        android:layout_width="@dimen/additional_button_size"
+        android:layout_height="@dimen/additional_button_size"
+        android:foreground="?selectableItemBackground"
+        app:cardCornerRadius="@dimen/additional_button_corner_radius"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="center"
+            android:tint="?appContrastColor"
+            app:srcCompat="@drawable/button_pause" />
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/btnPomodoroPrev"
+        style="@style/SettingsCard"
+        android:layout_width="@dimen/additional_button_size"
+        android:layout_height="@dimen/additional_button_size"
+        android:foreground="?selectableItemBackground"
+        app:cardCornerRadius="@dimen/additional_button_corner_radius"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:rotation="180"
+            android:scaleType="center"
+            android:tint="?appContrastColor"
+            app:srcCompat="@drawable/button_next" />
 
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/btnPomodoroNext"
         style="@style/SettingsCard"
-        android:layout_width="54dp"
-        android:layout_height="54dp"
-        android:layout_marginHorizontal="20dp"
+        android:layout_width="@dimen/additional_button_size"
+        android:layout_height="@dimen/additional_button_size"
         android:foreground="?selectableItemBackground"
-        app:cardCornerRadius="27dp"
-        app:layout_constraintBottom_toBottomOf="@id/btnPomodoroStart"
+        app:cardCornerRadius="@dimen/additional_button_corner_radius"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0"
-        app:layout_constraintStart_toEndOf="@id/btnPomodoroStart"
-        app:layout_constraintTop_toTopOf="@id/btnPomodoroStart">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:layout_width="match_parent"

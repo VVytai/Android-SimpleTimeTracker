@@ -22,12 +22,16 @@ class PomodoroCycleNotificationInteractorImpl @Inject constructor(
         val timeStartedMs = prefsInteractor.getPomodoroModeStartedTimestampMs()
         if (timeStartedMs == 0L) return
 
+        val settings = getPomodoroSettingsInteractor.execute()
         val result = pomodoroCycleDurationsMapper.map(
             timeStartedMs = timeStartedMs,
-            settings = getPomodoroSettingsInteractor.execute(),
+            settings = settings,
         )
-
-        val timeLeft = result.cycleDurationMs - result.currentCycleDurationMs
+        val cycleDurationMs = pomodoroCycleDurationsMapper.mapToCycleTime(
+            cycleType = result.cycleType,
+            settings = settings,
+        )
+        val timeLeft = cycleDurationMs - result.currentCycleDurationMs
         scheduler.schedule(
             timestamp = System.currentTimeMillis() + timeLeft,
             cycleType = result.nextCycleType,

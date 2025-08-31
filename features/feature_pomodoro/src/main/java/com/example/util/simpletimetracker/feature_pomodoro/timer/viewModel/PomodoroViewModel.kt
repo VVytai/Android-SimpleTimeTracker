@@ -7,6 +7,7 @@ import com.example.util.simpletimetracker.core.base.BaseViewModel
 import com.example.util.simpletimetracker.core.extension.set
 import com.example.util.simpletimetracker.domain.pomodoro.interactor.GetPomodoroSettingsInteractor
 import com.example.util.simpletimetracker.domain.pomodoro.interactor.PomodoroNextCycleInteractor
+import com.example.util.simpletimetracker.domain.pomodoro.interactor.PomodoroPauseCycleInteractor
 import com.example.util.simpletimetracker.domain.pomodoro.interactor.PomodoroRestartCycleInteractor
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.pomodoro.interactor.PomodoroStartInteractor
@@ -33,6 +34,7 @@ class PomodoroViewModel @Inject constructor(
     private val pomodoroStopInteractor: PomodoroStopInteractor,
     private val pomodoroNextCycleInteractor: PomodoroNextCycleInteractor,
     private val pomodoroRestartCycleInteractor: PomodoroRestartCycleInteractor,
+    private val pomodoroPauseCycleInteractor: PomodoroPauseCycleInteractor,
     private val getPomodoroSettingsInteractor: GetPomodoroSettingsInteractor,
 ) : BaseViewModel() {
 
@@ -66,16 +68,29 @@ class PomodoroViewModel @Inject constructor(
 
     fun onRestartClicked() = viewModelScope.launch {
         pomodoroRestartCycleInteractor.execute()
-        // Reset animation.
-        timerState.value?.copy(progress = 0)?.let(timerState::set)
+        resetAnimation()
+        updateTimerState()
+    }
+
+    fun onPauseClicked() = viewModelScope.launch {
+        pomodoroPauseCycleInteractor.execute()
+        updateTimerState()
+    }
+
+    fun onPrevClicked() = viewModelScope.launch {
+        pomodoroNextCycleInteractor.executePrev()
+        resetAnimation()
         updateTimerState()
     }
 
     fun onNextClicked() = viewModelScope.launch {
-        pomodoroNextCycleInteractor.execute()
-        // Reset animation.
-        timerState.value?.copy(progress = 0)?.let(timerState::set)
+        pomodoroNextCycleInteractor.executeNext()
+        resetAnimation()
         updateTimerState()
+    }
+
+    private fun resetAnimation() {
+        timerState.value?.copy(progress = 0)?.let(timerState::set)
     }
 
     private suspend fun isStarted(): Boolean {

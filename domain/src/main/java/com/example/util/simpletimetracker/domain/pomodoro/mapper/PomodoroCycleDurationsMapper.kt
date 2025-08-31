@@ -9,6 +9,10 @@ class PomodoroCycleDurationsMapper @Inject constructor(
     private val currentTimestampProvider: CurrentTimestampProvider,
 ) {
 
+    /**
+     * Period is for example focus-break-focus-break-focus-longBreak.
+     * Cycle is focus/break/longBreak.
+     */
     fun map(
         timeStartedMs: Long,
         settings: PomodoroCycleSettings,
@@ -19,20 +23,15 @@ class PomodoroCycleDurationsMapper @Inject constructor(
         val periodsUntilLongBreak = settings.periodsUntilLongBreak
 
         val currentTime = currentTimestampProvider.get()
+        // Time since pomodoro was started.
         val currentDuration = currentTime - timeStartedMs
-        val periodDuration = if (periodsUntilLongBreak > 0) {
-            focusTime * periodsUntilLongBreak +
-                breakTime * (periodsUntilLongBreak - 1) +
-                longBreakTime
-        } else {
-            focusTime + breakTime
-        }
+        val periodDuration = mapFullPeriodDuration(settings)
         if (periodDuration == 0L) {
             // Avoid divide by zero just in case.
             return Result(
                 cycleType = PomodoroCycleType.Focus,
+                prevCycleType = PomodoroCycleType.Focus,
                 nextCycleType = PomodoroCycleType.Focus,
-                cycleDurationMs = 0L,
                 currentCycleDurationMs = 0L,
             )
         }
@@ -41,60 +40,88 @@ class PomodoroCycleDurationsMapper @Inject constructor(
 
         return if (periodsUntilLongBreak > 0) {
             when {
+                // This is long break.
                 currentPeriodDuration >= periodDuration - longBreakTime -> Result(
                     cycleType = PomodoroCycleType.LongBreak,
+                    prevCycleType = PomodoroCycleType.Focus,
                     nextCycleType = PomodoroCycleType.Focus,
-                    cycleDurationMs = longBreakTime,
                     currentCycleDurationMs = currentPeriodDuration - (periodDuration - longBreakTime),
                 )
+                // Focus.
                 currentShortPeriodDuration < focusTime -> Result(
                     cycleType = PomodoroCycleType.Focus,
+                    prevCycleType = if (currentPeriodDuration <= focusTime) {
+                        PomodoroCycleType.LongBreak.takeIf { longBreakTime > 0L }
+                    } else {
+                        PomodoroCycleType.Break.takeIf { breakTime > 0L }
+                    } ?: PomodoroCycleType.Focus,
                     nextCycleType = if (currentPeriodDuration >=
                         periodDuration - longBreakTime - focusTime
                     ) {
-                        PomodoroCycleType.LongBreak
-                            .takeIf { longBreakTime > 0L }
-                            ?: PomodoroCycleType.Focus
+                        PomodoroCycleType.LongBreak.takeIf { longBreakTime > 0L }
                     } else {
-                        PomodoroCycleType.Break
-                            .takeIf { breakTime > 0L }
-                            ?: PomodoroCycleType.Focus
-                    },
-                    cycleDurationMs = focusTime,
+                        PomodoroCycleType.Break.takeIf { breakTime > 0L }
+                    } ?: PomodoroCycleType.Focus,
                     currentCycleDurationMs = currentShortPeriodDuration,
                 )
+                // Break.
                 else -> Result(
                     cycleType = PomodoroCycleType.Break,
+                    prevCycleType = PomodoroCycleType.Focus,
                     nextCycleType = PomodoroCycleType.Focus,
-                    cycleDurationMs = breakTime,
                     currentCycleDurationMs = currentShortPeriodDuration - focusTime,
                 )
             }
         } else {
             if (currentPeriodDuration < focusTime) {
+                // Long breaks are disabled, so prev or next is break if it is enabled.
+                val prevOrNextCycle = PomodoroCycleType.Break
+                    .takeIf { breakTime > 0L }
+                    ?: PomodoroCycleType.Focus
                 Result(
                     cycleType = PomodoroCycleType.Focus,
-                    nextCycleType = PomodoroCycleType.Break
-                        .takeIf { breakTime > 0L }
-                        ?: PomodoroCycleType.Focus,
-                    cycleDurationMs = focusTime,
+                    prevCycleType = prevOrNextCycle,
+                    nextCycleType = prevOrNextCycle,
                     currentCycleDurationMs = currentPeriodDuration,
                 )
             } else {
                 Result(
                     cycleType = PomodoroCycleType.Break,
+                    prevCycleType = PomodoroCycleType.Focus,
                     nextCycleType = PomodoroCycleType.Focus,
-                    cycleDurationMs = breakTime,
                     currentCycleDurationMs = currentPeriodDuration - focusTime,
                 )
             }
         }
     }
 
+    fun mapToCycleTime(
+        cycleType: PomodoroCycleType,
+        settings: PomodoroCycleSettings,
+    ): Long {
+        return when (cycleType) {
+            PomodoroCycleType.Focus -> settings.focusTimeMs
+            PomodoroCycleType.Break -> settings.breakTimeMs
+            PomodoroCycleType.LongBreak -> settings.longBreakTimeMs
+        }
+    }
+
+    fun mapFullPeriodDuration(
+        settings: PomodoroCycleSettings
+    ): Long {
+        return if (settings.periodsUntilLongBreak > 0) {
+            settings.focusTimeMs * settings.periodsUntilLongBreak +
+                settings.breakTimeMs * (settings.periodsUntilLongBreak - 1) +
+                settings.longBreakTimeMs
+        } else {
+            settings.focusTimeMs + settings.breakTimeMs
+        }
+    }
+
     data class Result(
         val cycleType: PomodoroCycleType,
+        val prevCycleType: PomodoroCycleType,
         val nextCycleType: PomodoroCycleType,
-        val cycleDurationMs: Long,
-        val currentCycleDurationMs: Long,
+        val currentCycleDurationMs: Long, // Time spent in current cycle.
     )
 }
