@@ -62,8 +62,6 @@ class DefaultTypesSelectionDialogFragment :
     }
 
     override fun initUx(): Unit = with(binding) {
-        btnDefaultTypesSelectionShowAll.setOnClick(viewModel::onShowAllClick)
-        btnDefaultTypesSelectionHideAll.setOnClick(viewModel::onHideAllClick)
         btnDefaultTypesSelectionSave.setOnClick(viewModel::onSaveClick)
         btnDefaultTypesSelectionHide.setOnClick(viewModel::onHideClick)
     }

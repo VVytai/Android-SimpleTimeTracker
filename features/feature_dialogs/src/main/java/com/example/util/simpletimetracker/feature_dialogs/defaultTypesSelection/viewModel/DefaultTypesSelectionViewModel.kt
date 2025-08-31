@@ -60,18 +60,6 @@ class DefaultTypesSelectionViewModel @Inject constructor(
         updateRecordTypesViewData()
     }
 
-    fun onShowAllClick() {
-        typeIdsSelected.addAll(recordTypes.map { it.id })
-        updateSaveButtonEnabled()
-        updateRecordTypesViewData()
-    }
-
-    fun onHideAllClick() {
-        typeIdsSelected.clear()
-        updateSaveButtonEnabled()
-        updateRecordTypesViewData()
-    }
-
     fun onSaveClick() {
         if (typeIdsSelected.size == 0) return
 
