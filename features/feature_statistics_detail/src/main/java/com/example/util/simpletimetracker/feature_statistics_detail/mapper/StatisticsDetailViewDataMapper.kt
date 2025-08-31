@@ -493,9 +493,9 @@ class StatisticsDetailViewDataMapper @Inject constructor(
             val abs = abs(value)
             return when {
                 abs >= 1000f -> value.toLong().toString()
-                abs >= 100f -> String.format("%.1f", abs)
-                abs >= 10f -> String.format("%.2f", abs)
-                else -> String.format("%.3f", abs)
+                abs >= 100f -> String.format("%.1f", value)
+                abs >= 10f -> String.format("%.2f", value)
+                else -> String.format("%.3f", value)
             }.toString().removeTrailingZeroes()
         }
 
