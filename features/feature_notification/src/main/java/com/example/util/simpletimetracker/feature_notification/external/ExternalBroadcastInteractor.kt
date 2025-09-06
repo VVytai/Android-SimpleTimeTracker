@@ -1,5 +1,7 @@
 package com.example.util.simpletimetracker.feature_notification.external
 
+import com.example.util.simpletimetracker.core.mapper.IconImageMapper
+import com.example.util.simpletimetracker.domain.color.model.AppColor
 import com.example.util.simpletimetracker.domain.extension.orEmpty
 import com.example.util.simpletimetracker.domain.record.interactor.AddRecordMediator
 import com.example.util.simpletimetracker.domain.record.interactor.AddRunningRecordMediator
@@ -13,6 +15,9 @@ import com.example.util.simpletimetracker.domain.notifications.model.ExternalAct
 import com.example.util.simpletimetracker.domain.notifications.model.ExternalActionFindRecordMode
 import com.example.util.simpletimetracker.domain.record.model.Record
 import com.example.util.simpletimetracker.domain.record.model.RecordBase
+import com.example.util.simpletimetracker.domain.recordTag.interactor.RecordTagInteractor
+import com.example.util.simpletimetracker.domain.recordTag.model.RecordTag
+import com.example.util.simpletimetracker.domain.recordTag.model.RecordTagValueType
 import java.text.SimpleDateFormat
 import java.util.Locale
 import javax.inject.Inject
@@ -26,6 +31,8 @@ class ExternalBroadcastInteractor @Inject constructor(
     private val recordInteractor: RecordInteractor,
     private val getSelectableTagsInteractor: GetSelectableTagsInteractor,
     private val recordsUpdateInteractor: RecordsUpdateInteractor,
+    private val recordTagInteractor: RecordTagInteractor,
+    private val iconImageMapper: IconImageMapper,
 ) {
 
     suspend fun onActionActivityStart(
@@ -192,6 +199,35 @@ class ExternalBroadcastInteractor @Inject constructor(
             }
             ExternalActionFindRecordMode.CURRENT -> changeCurrent()
             ExternalActionFindRecordMode.LAST -> changeLast()
+        }
+    }
+
+    suspend fun onRecordTagAdd(
+        name: String?,
+        icon: String?,
+    ) {
+        if (name == null) return
+
+        val tagExists = recordTagInteractor.get(name).isEmpty().not()
+
+        if (tagExists) return
+
+        val icons = iconImageMapper
+            .getAvailableImages(loadSearchHints = false).values
+            .flatten().associateBy { it.iconName }.mapValues { it.value.iconName }
+
+        val iconId = icons.filterValues { it == icon }.keys.firstOrNull()
+
+        RecordTag(
+            name = name,
+            icon = icon.orEmpty(),
+            color = AppColor(0, ""),
+            iconColorSource = 0,
+            note = "",
+            valueType = RecordTagValueType.NONE,
+            valueSuffix = "",
+        ).let {
+            val tagId = recordTagInteractor.add(it)
         }
     }
 

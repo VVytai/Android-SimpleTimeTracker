@@ -110,4 +110,16 @@ class NotificationExternalBroadcastController @Inject constructor(
             )
         }
     }
+
+    fun onActionExternalRecordTagAdd(
+        name: String?,
+        icon: String?,
+    ) = allowDiskRead { MainScope() }.launch {
+        mutex.withLock {
+            externalBroadcastInteractor.onRecordTagAdd(
+                name = name,
+                icon = icon,
+            )
+        }
+    }
 }
