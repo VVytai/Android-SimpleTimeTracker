@@ -13,6 +13,7 @@ import com.example.util.simpletimetracker.core.provider.ApplicationDataProvider
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.core.utils.ACTION_EXTERNAL_ADD_RECORD
 import com.example.util.simpletimetracker.core.utils.ACTION_EXTERNAL_CHANGE_RECORD
+import com.example.util.simpletimetracker.core.utils.ACTION_EXTERNAL_CREATE_RECORD_TAG
 import com.example.util.simpletimetracker.core.utils.ACTION_EXTERNAL_RESTART_ACTIVITY
 import com.example.util.simpletimetracker.core.utils.ACTION_EXTERNAL_START_ACTIVITY
 import com.example.util.simpletimetracker.core.utils.ACTION_EXTERNAL_STOP_ACTIVITY
@@ -138,6 +139,15 @@ class SettingsAutomatedTrackingMapper @Inject constructor(
                         EXTRA_FIND_RECORD_WITH_ACTIVITY_NAME,
                     ),
                 ),
+                AvailableAction(
+                    action = ACTION_EXTERNAL_CREATE_RECORD_TAG,
+                    extras = listOf(
+                        EXTRA_RECORD_TAG_NAME,
+                    ),
+                    optional = listOf(
+                        EXTRA_RECORD_TYPE_ICON,
+                    ),
+                )
             ),
             isDarkTheme = isDarkTheme,
         )

@@ -7,6 +7,7 @@ import android.content.Intent
 import com.example.util.simpletimetracker.core.extension.goAsync
 import com.example.util.simpletimetracker.core.utils.ACTION_EXTERNAL_ADD_RECORD
 import com.example.util.simpletimetracker.core.utils.ACTION_EXTERNAL_CHANGE_RECORD
+import com.example.util.simpletimetracker.core.utils.ACTION_EXTERNAL_CREATE_RECORD_TAG
 import com.example.util.simpletimetracker.core.utils.ACTION_EXTERNAL_RESTART_ACTIVITY
 import com.example.util.simpletimetracker.core.utils.ACTION_EXTERNAL_START_ACTIVITY
 import com.example.util.simpletimetracker.core.utils.ACTION_EXTERNAL_STOP_ACTIVITY
@@ -21,6 +22,7 @@ import com.example.util.simpletimetracker.core.utils.EXTRA_RECORD_COMMENT_MODE
 import com.example.util.simpletimetracker.core.utils.EXTRA_RECORD_TAG_NAME
 import com.example.util.simpletimetracker.core.utils.EXTRA_RECORD_TIME_ENDED
 import com.example.util.simpletimetracker.core.utils.EXTRA_RECORD_TIME_STARTED
+import com.example.util.simpletimetracker.core.utils.EXTRA_RECORD_TYPE_ICON
 import com.example.util.simpletimetracker.domain.recordType.model.RecordTypeGoal
 import com.example.util.simpletimetracker.feature_notification.activity.controller.NotificationActivityBroadcastController
 import com.example.util.simpletimetracker.feature_notification.activitySwitch.manager.NotificationControlsManager.Companion.ACTION_NOTIFICATION_CONTROLS_STOP
@@ -205,6 +207,14 @@ class NotificationReceiver : BroadcastReceiver() {
                     name = name,
                     comment = comment,
                     commentMode = commentMode,
+                )
+            }
+            ACTION_EXTERNAL_CREATE_RECORD_TAG -> {
+                val name = intent.getStringExtra(EXTRA_RECORD_TAG_NAME)
+                val icon = intent.getStringExtra(EXTRA_RECORD_TYPE_ICON)
+                externalController.onActionExternalRecordTagAdd(
+                    name = name,
+                    icon = icon,
                 )
             }
             ACTION_NOTIFICATION_TYPE_STOP -> {
