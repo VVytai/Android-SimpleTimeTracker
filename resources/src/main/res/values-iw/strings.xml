@@ -520,6 +520,7 @@
     <string name="statistics_detail_goals_excess">עוֹדֶף</string>
     <string name="statistics_detail_goals_deficit">גֵרָעוֹן</string>
     <string name="statistics_detail_tag_values_hint">ערכי תג</string>
+    <string name="statistics_detail_tag_values_multiply_duration">הכפל במשך הזמן</string>
 
     <plurals name="statistics_detail_times_tracked">
         <!--        <item quantity="zero">רשומות</item>-->

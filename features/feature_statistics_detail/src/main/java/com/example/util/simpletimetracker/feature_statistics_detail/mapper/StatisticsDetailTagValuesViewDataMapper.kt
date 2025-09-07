@@ -8,6 +8,7 @@ import com.example.util.simpletimetracker.feature_base_adapter.buttonsRow.Button
 import com.example.util.simpletimetracker.feature_statistics_detail.R
 import com.example.util.simpletimetracker.feature_statistics_detail.adapter.StatisticsDetailBarChartViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.adapter.StatisticsDetailBlock
+import com.example.util.simpletimetracker.feature_statistics_detail.adapter.StatisticsDetailButtonViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.adapter.StatisticsDetailCardViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.adapter.StatisticsDetailHintViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.conts.TAG_VALUE_PRECISION
@@ -32,7 +33,7 @@ class StatisticsDetailTagValuesViewDataMapper @Inject constructor(
         appliedChartGrouping: ChartGrouping,
         availableChartLengths: List<ChartLength>,
         appliedChartLength: ChartLength,
-        chartMode: ChartMode,
+        chartMode: ChartMode.TAG_VALUE,
         chartValueMode: ChartValueMode,
         valueSuffix: String,
         useProportionalMinutes: Boolean,
@@ -128,6 +129,12 @@ class StatisticsDetailTagValuesViewDataMapper @Inject constructor(
             )
         }
 
+        items += mapMultiplyDurationItems(
+            multiplyDuration = chartMode.multiplyDuration,
+            marginTopDp = getTopMargin(items),
+            isDarkTheme = isDarkTheme,
+        )
+
         if (rangeAverages.isNotEmpty()) {
             items += StatisticsDetailCardViewData(
                 block = StatisticsDetailBlock.TagValuesRangeAverages,
@@ -190,6 +197,26 @@ class StatisticsDetailTagValuesViewDataMapper @Inject constructor(
         )
     }
 
+    // TODO STATS translate strings
+    private fun mapMultiplyDurationItems(
+        multiplyDuration: Boolean,
+        marginTopDp: Int,
+        isDarkTheme: Boolean,
+    ): List<ViewHolderType> {
+        return StatisticsDetailButtonViewData(
+            marginTopDp = marginTopDp,
+            data = StatisticsDetailButtonViewData.Button(
+                block = StatisticsDetailBlock.TagValuesMultiplyDuration,
+                text = resourceRepo.getString(R.string.statistics_detail_tag_values_multiply_duration),
+                color = if (multiplyDuration) {
+                    R.attr.appActiveColor
+                } else {
+                    R.attr.appInactiveColor
+                }.let { resourceRepo.getThemedAttr(it, isDarkTheme) },
+            ),
+            dataSecond = null,
+        ).let(::listOf)
+    }
 
     private fun getTopMargin(currentItems: List<ViewHolderType>): Int {
         // Update margin top depending if has buttons before.

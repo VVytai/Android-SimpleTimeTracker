@@ -520,6 +520,7 @@
     <string name="statistics_detail_goals_excess">إفراط</string>
     <string name="statistics_detail_goals_deficit">العجز</string>
     <string name="statistics_detail_tag_values_hint">قيم الوسوم</string>
+    <string name="statistics_detail_tag_values_multiply_duration">اضرب بالمدة</string>
 
     <plurals name="statistics_detail_times_tracked">
         <item quantity="zero">تتبع</item>

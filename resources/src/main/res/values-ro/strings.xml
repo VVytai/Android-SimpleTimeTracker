@@ -520,6 +520,7 @@ Examplu:<br/>
     <string name="statistics_detail_goals_excess">Exces</string>
     <string name="statistics_detail_goals_deficit">Deficit</string>
     <string name="statistics_detail_tag_values_hint">Valori etichetă</string>
+    <string name="statistics_detail_tag_values_multiply_duration">Înmulțește cu durata</string>
 
     <plurals name="statistics_detail_times_tracked">
         <!--        <item quantity="zero">Înregistrări</item>-->

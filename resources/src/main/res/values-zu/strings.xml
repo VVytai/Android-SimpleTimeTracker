@@ -520,6 +520,7 @@ Isibonelo:<br/>
     <string name="statistics_detail_goals_excess">Okweqile</string>
     <string name="statistics_detail_goals_deficit">Ukusilela</string>
     <string name="statistics_detail_tag_values_hint">Amanani ethegi</string>
+    <string name="statistics_detail_tag_values_multiply_duration">Phindaphinda isikhathi</string>
 
     <plurals name="statistics_detail_times_tracked">
         <!--        <item quantity="zero">Amarekhodi</item>-->

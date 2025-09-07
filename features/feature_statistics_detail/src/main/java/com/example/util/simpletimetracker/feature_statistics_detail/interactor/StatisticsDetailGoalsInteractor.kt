@@ -82,6 +82,7 @@ class StatisticsDetailGoalsInteractor @Inject constructor(
             isDarkTheme = isDarkTheme,
             chartMode = chartMode,
             chartValueMode = chartValueMode,
+            multiplyDuration = false,
             splitByActivity = false,
             splitSortMode = ChartSplitSortMode.ACTIVITY_ORDER,
         )
@@ -98,6 +99,7 @@ class StatisticsDetailGoalsInteractor @Inject constructor(
             isDarkTheme = isDarkTheme,
             chartMode = chartMode,
             chartValueMode = chartValueMode,
+            multiplyDuration = false,
             splitSortMode = ChartSplitSortMode.ACTIVITY_ORDER,
         )
 

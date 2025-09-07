@@ -171,6 +171,8 @@ class StatisticsDetailViewModel @Inject constructor(
                 chartDelegate.onSplitByActivityClick()
             StatisticsDetailBlock.ChartSplitByActivitySort ->
                 chartDelegate.onSplitByActivitySortClick()
+            StatisticsDetailBlock.TagValuesMultiplyDuration ->
+                tagValueDelegate.onMultiplyDurationClick()
             else -> {
                 // Do nothing
             }

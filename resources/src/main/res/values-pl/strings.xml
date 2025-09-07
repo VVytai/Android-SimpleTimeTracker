@@ -520,6 +520,7 @@ Przykład:<br/>
     <string name="statistics_detail_goals_excess">Nadmiar</string>
     <string name="statistics_detail_goals_deficit">Deficyt</string>
     <string name="statistics_detail_tag_values_hint">Wartości tagu</string>
+    <string name="statistics_detail_tag_values_multiply_duration">Pomnóż przez czas trwania</string>
 
     <plurals name="statistics_detail_times_tracked">
         <!--        <item quantity="zero">rekordów</item>-->

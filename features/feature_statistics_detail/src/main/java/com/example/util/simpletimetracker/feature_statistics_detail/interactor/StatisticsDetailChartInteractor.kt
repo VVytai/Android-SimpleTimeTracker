@@ -33,6 +33,7 @@ import com.example.util.simpletimetracker.feature_statistics_detail.viewData.Sta
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.Calendar
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.math.abs
 import kotlin.math.roundToLong
@@ -124,6 +125,7 @@ class StatisticsDetailChartInteractor @Inject constructor(
             isDarkTheme = isDarkTheme,
             chartMode = chartMode,
             chartValueMode = chartValueMode,
+            multiplyDuration = false,
             splitByActivity = splitByActivity && canSplitByActivity,
             splitSortMode = splitSortMode,
         )
@@ -140,6 +142,7 @@ class StatisticsDetailChartInteractor @Inject constructor(
             isDarkTheme = isDarkTheme,
             chartMode = chartMode,
             chartValueMode = chartValueMode,
+            multiplyDuration = false,
             splitSortMode = splitSortMode,
         )
         val compareData = getChartData(
@@ -150,6 +153,7 @@ class StatisticsDetailChartInteractor @Inject constructor(
             isDarkTheme = isDarkTheme,
             chartMode = chartMode,
             chartValueMode = chartValueMode,
+            multiplyDuration = false,
             splitByActivity = splitByActivity && canComparisonSplitByActivity,
             splitSortMode = splitSortMode,
         )
@@ -191,6 +195,7 @@ class StatisticsDetailChartInteractor @Inject constructor(
         isDarkTheme: Boolean,
         chartMode: ChartMode,
         chartValueMode: ChartValueMode,
+        multiplyDuration: Boolean,
         splitByActivity: Boolean,
         splitSortMode: ChartSplitSortMode,
     ): List<ChartBarDataDuration> {
@@ -201,6 +206,15 @@ class StatisticsDetailChartInteractor @Inject constructor(
                     legend = it.legend,
                     durations = emptyList(),
                 )
+            }
+        }
+
+        fun multiplyDuration(tagValue: Double, record: RecordBase): Double {
+            return if (multiplyDuration) {
+                val hours: Double = record.duration.toDouble() / TimeUnit.HOURS.toMillis(1)
+                tagValue.times(hours)
+            } else {
+                tagValue
             }
         }
 
@@ -221,6 +235,7 @@ class StatisticsDetailChartInteractor @Inject constructor(
                             .firstOrNull { it.tagId == chartMode.tagId }
                             ?.numericValue
                             ?.times(TAG_VALUE_PRECISION)
+                            ?.let { multiplyDuration(it, record) }
                     }.takeUnless { it.isEmpty() }
                     when (chartValueMode) {
                         ChartValueMode.TOTAL -> tagsValues?.sum()?.roundToLong()
@@ -409,6 +424,7 @@ class StatisticsDetailChartInteractor @Inject constructor(
         isDarkTheme: Boolean,
         chartMode: ChartMode,
         chartValueMode: ChartValueMode,
+        multiplyDuration: Boolean,
         splitSortMode: ChartSplitSortMode,
     ): List<ChartBarDataDuration> {
         return if (rangeLength != RangeLength.All) {
@@ -429,6 +445,7 @@ class StatisticsDetailChartInteractor @Inject constructor(
                 splitByActivity = false,
                 chartMode = chartMode,
                 chartValueMode = chartValueMode,
+                multiplyDuration = multiplyDuration,
                 splitSortMode = splitSortMode,
             )
         } else {

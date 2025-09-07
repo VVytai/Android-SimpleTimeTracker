@@ -7,5 +7,8 @@ sealed interface ChartMode {
     data object COUNTS : ChartMode
 
     @Suppress("ClassName")
-    data class TAG_VALUE(val tagId: Long) : ChartMode
+    data class TAG_VALUE(
+        val tagId: Long,
+        val multiplyDuration: Boolean,
+    ) : ChartMode
 }

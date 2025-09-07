@@ -38,6 +38,7 @@ class StatisticsDetailTagValueInteractor @Inject constructor(
         currentChartGrouping: ChartGrouping,
         currentChartLength: ChartLength,
         currentChartValueMode: ChartValueMode,
+        multiplyDuration: Boolean,
         rangeLength: RangeLength,
         rangePosition: Int,
     ): StatisticsDetailTagValuesCompositeViewData = withContext(Dispatchers.Default) {
@@ -58,7 +59,10 @@ class StatisticsDetailTagValueInteractor @Inject constructor(
         val types = recordTypeInteractor.getAll()
         val typesMap = types.associateBy(RecordType::id)
         val typesOrder = types.map(RecordType::id)
-        val chartMode = ChartMode.TAG_VALUE(valuedTag.id)
+        val chartMode = ChartMode.TAG_VALUE(
+            tagId = valuedTag.id,
+            multiplyDuration = multiplyDuration,
+        )
 
         val compositeData = chartInteractor.getChartRangeSelectionData(
             currentChartGrouping = currentChartGrouping,
@@ -82,6 +86,7 @@ class StatisticsDetailTagValueInteractor @Inject constructor(
             isDarkTheme = isDarkTheme,
             chartMode = chartMode,
             chartValueMode = currentChartValueMode,
+            multiplyDuration = multiplyDuration,
             splitByActivity = false,
             splitSortMode = ChartSplitSortMode.ACTIVITY_ORDER,
         )
@@ -98,6 +103,7 @@ class StatisticsDetailTagValueInteractor @Inject constructor(
             isDarkTheme = isDarkTheme,
             chartMode = chartMode,
             chartValueMode = currentChartValueMode,
+            multiplyDuration = multiplyDuration,
             splitSortMode = ChartSplitSortMode.ACTIVITY_ORDER,
         )
 

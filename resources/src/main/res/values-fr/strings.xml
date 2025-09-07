@@ -520,6 +520,7 @@ Exemple:<br/>
     <string name="statistics_detail_goals_excess">Excès</string>
     <string name="statistics_detail_goals_deficit">Déficit</string>
     <string name="statistics_detail_tag_values_hint">Valeurs de l\'étiquette</string>
+    <string name="statistics_detail_tag_values_multiply_duration">Multiplier par la durée</string>
 
     <plurals name="statistics_detail_times_tracked">
         <!--         <item quantity="zero">Enregistrement</item> -->

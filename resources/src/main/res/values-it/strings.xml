@@ -520,6 +520,7 @@ Esempio:<br/>
     <string name="statistics_detail_goals_excess">Eccesso</string>
     <string name="statistics_detail_goals_deficit">Deficit</string>
     <string name="statistics_detail_tag_values_hint">Valori del tag</string>
+    <string name="statistics_detail_tag_values_multiply_duration">Moltiplica per la durata</string>
 
     <plurals name="statistics_detail_times_tracked">
         <!--        <item quantity="zero">Registrazioni</item>-->

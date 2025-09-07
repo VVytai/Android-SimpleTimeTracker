@@ -520,6 +520,7 @@
     <string name="statistics_detail_goals_excess">مازاد</string>
     <string name="statistics_detail_goals_deficit">کسری</string>
     <string name="statistics_detail_tag_values_hint">مقادیر برچسب</string>
+    <string name="statistics_detail_tag_values_multiply_duration">ضرب در مدت‌زمان</string>
 
     <plurals name="statistics_detail_times_tracked">
         <!--        <item quantity="zero">بدون تاریخچه</item>-->

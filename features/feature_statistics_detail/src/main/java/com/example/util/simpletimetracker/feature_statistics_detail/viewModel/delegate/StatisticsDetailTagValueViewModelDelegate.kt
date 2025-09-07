@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.util.simpletimetracker.core.base.ViewModelDelegate
 import com.example.util.simpletimetracker.core.extension.set
+import com.example.util.simpletimetracker.domain.extension.flip
 import com.example.util.simpletimetracker.feature_base_adapter.buttonsRow.view.ButtonsRowViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.interactor.StatisticsDetailTagValueInteractor
 import com.example.util.simpletimetracker.feature_statistics_detail.model.ChartGrouping
@@ -28,6 +29,7 @@ class StatisticsDetailTagValueViewModelDelegate @Inject constructor(
     private var chartGrouping: ChartGrouping = ChartGrouping.DAILY
     private var chartLength: ChartLength = ChartLength.TEN
     private var chartValueMode: ChartValueMode = ChartValueMode.TOTAL
+    private var multiplyDuration: Boolean = false
 
     override fun attach(parent: StatisticsDetailViewModelDelegate.Parent) {
         this.parent = parent
@@ -51,6 +53,11 @@ class StatisticsDetailTagValueViewModelDelegate @Inject constructor(
         updateViewData()
     }
 
+    fun onMultiplyDurationClick() {
+        multiplyDuration = multiplyDuration.flip()
+        updateViewData()
+    }
+
     fun updateViewData() = delegateScope.launch {
         val data = loadViewData() ?: return@launch
         viewData.set(data)
@@ -67,6 +74,7 @@ class StatisticsDetailTagValueViewModelDelegate @Inject constructor(
             currentChartGrouping = chartGrouping,
             currentChartLength = chartLength,
             currentChartValueMode = chartValueMode,
+            multiplyDuration = multiplyDuration,
             rangeLength = parent.rangeLength,
             rangePosition = parent.rangePosition,
         )
