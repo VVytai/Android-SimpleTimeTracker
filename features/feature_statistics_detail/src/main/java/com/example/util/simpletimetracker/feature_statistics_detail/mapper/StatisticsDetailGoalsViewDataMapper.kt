@@ -3,6 +3,7 @@ package com.example.util.simpletimetracker.feature_statistics_detail.mapper
 import com.example.util.simpletimetracker.core.mapper.TimeMapper
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.domain.daysOfWeek.model.DayOfWeek
+import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.domain.record.mapper.RangeMapper
 import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.domain.recordType.extension.value
@@ -214,7 +215,7 @@ class StatisticsDetailGoalsViewDataMapper @Inject constructor(
         useProportionalMinutes: Boolean,
         showSeconds: Boolean,
     ): List<StatisticsDetailCardInternalViewData> {
-        val barValues = goalData.map { bar -> bar.totalDuration }
+        val barValues = goalData.map { bar -> bar.totalDuration.orZero() }
         val negativeValue = barValues.filter { it < 0L }.sum()
         val positiveValue = barValues.filter { it > 0L }.sum()
         val total = negativeValue + positiveValue
@@ -285,7 +286,7 @@ class StatisticsDetailGoalsViewDataMapper @Inject constructor(
         val current = System.currentTimeMillis()
 
         return data.map { dataPart ->
-            val totalDuration = dataPart.totalDuration
+            val totalDuration = dataPart.totalDuration.orZero()
             val goalDuration = if (dataPart.rangeStart > current) {
                 0
             } else if (shouldAccountForDays) {

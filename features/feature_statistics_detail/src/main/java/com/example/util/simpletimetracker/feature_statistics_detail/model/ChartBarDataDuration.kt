@@ -6,5 +6,5 @@ data class ChartBarDataDuration(
     val durations: List<Pair<Long, Int>>,
 ) {
 
-    val totalDuration = durations.sumOf { it.first }
+    val totalDuration: Long? = durations.takeUnless { it.isEmpty() }?.sumOf { it.first }
 }

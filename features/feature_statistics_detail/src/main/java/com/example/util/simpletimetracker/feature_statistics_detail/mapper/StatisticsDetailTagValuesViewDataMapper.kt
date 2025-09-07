@@ -139,10 +139,10 @@ class StatisticsDetailTagValuesViewDataMapper @Inject constructor(
     ): List<StatisticsDetailCardInternalViewData> {
         val emptyValue by lazy { resourceRepo.getString(R.string.statistics_detail_empty) }
 
-        val barValues = goalData.map { bar -> bar.totalDuration }
+        val barValues = goalData.mapNotNull { bar -> bar.totalDuration }
         val minValue = barValues.minOrNull()?.toFloat()?.div(TAG_VALUE_PRECISION)
         val maxValue = barValues.maxOrNull()?.toFloat()?.div(TAG_VALUE_PRECISION)
-        val total = barValues.sum().toFloat() / TAG_VALUE_PRECISION
+        val total = barValues.takeUnless { it.isEmpty() }?.sum()?.toFloat()?.div(TAG_VALUE_PRECISION)
 
         return listOf(
             StatisticsDetailCardInternalViewData(
@@ -154,7 +154,7 @@ class StatisticsDetailTagValuesViewDataMapper @Inject constructor(
                 subtitleTextSizeSp = 12,
             ),
             StatisticsDetailCardInternalViewData(
-                value = total.toString().removeTrailingZeroes(),
+                value = total?.toString()?.removeTrailingZeroes() ?: emptyValue,
                 valueChange = StatisticsDetailCardInternalViewData.ValueChange.None,
                 secondValue = "",
                 description = resourceRepo.getString(R.string.statistics_detail_total_duration),

@@ -193,12 +193,12 @@ class StatisticsDetailChartInteractor @Inject constructor(
                 ChartBarDataDuration(
                     rangeStart = it.rangeStart,
                     legend = it.legend,
-                    durations = listOf(0L to 0),
+                    durations = emptyList(),
                 )
             }
         }
 
-        fun mapRangesToValue(list: List<RecordBase>, range: Range): Long {
+        fun mapRangesToValue(list: List<RecordBase>, range: Range): Long? {
             return when (chartMode) {
                 ChartMode.DURATIONS -> {
                     list.map { record ->
@@ -209,9 +209,12 @@ class StatisticsDetailChartInteractor @Inject constructor(
                     list.size.toLong()
                 }
                 ChartMode.TAG_VALUE -> {
-                    list.sumOf { record ->
-                        record.tags.sumOf { it.numericValue.orZero() * TAG_VALUE_PRECISION }
-                    }.roundToLong()
+                    list.mapNotNull { record ->
+                        record.tags
+                            .mapNotNull { it.numericValue }
+                            .takeUnless { it.isEmpty() }
+                            ?.sumOf { it * TAG_VALUE_PRECISION }
+                    }.takeUnless { it.isEmpty() }?.sum()?.roundToLong()
                 }
             }
         }
@@ -234,13 +237,13 @@ class StatisticsDetailChartInteractor @Inject constructor(
                 val durations = if (!splitByActivity) {
                     val clampedRecords = rangeMapper.getRecordsFromRange(records, range)
                     val value = mapRangesToValue(clampedRecords, range)
-                    listOf(value to 0)
+                    if (value == null) emptyList() else listOf(value to 0)
                 } else {
                     rangeMapper.getRecordsFromRange(records, range)
                         .groupBy { it.typeIds.firstOrNull().orZero() }
                         .toList()
-                        .map { (id, records) ->
-                            val value = mapRangesToValue(records, range)
+                        .mapNotNull { (id, records) ->
+                            val value = mapRangesToValue(records, range) ?: return@mapNotNull null
                             value to id
                         }
                         .run {

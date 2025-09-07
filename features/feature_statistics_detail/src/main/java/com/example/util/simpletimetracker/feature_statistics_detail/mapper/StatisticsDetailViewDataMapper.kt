@@ -511,16 +511,28 @@ class StatisticsDetailViewDataMapper @Inject constructor(
             }
         }
 
+        fun filterNonEmptyData(
+            data: List<ChartBarDataDuration>,
+        ): List<ChartBarDataDuration> {
+            return when (chartMode) {
+                ChartMode.DURATIONS,
+                ChartMode.COUNTS,
+                -> data.filter { it.totalDuration.orZero() != 0L }
+                ChartMode.TAG_VALUE,
+                -> data.filter { it.durations.isNotEmpty() }
+            }
+        }
+
         val average = getAverage(data)
-        val nonEmptyData = data.filter { it.totalDuration != 0L }
+        val nonEmptyData = filterNonEmptyData(data)
         val averageByNonEmpty = getAverage(nonEmptyData)
 
         val comparisonAverage = getAverage(compareData)
-        val comparisonNonEmptyData = compareData.filter { it.totalDuration != 0L }
+        val comparisonNonEmptyData = filterNonEmptyData(compareData)
         val comparisonAverageByNonEmpty = getAverage(comparisonNonEmptyData)
 
         val prevAverage = getAverage(prevData)
-        val prevNonEmptyData = prevData.filter { it.totalDuration != 0L }
+        val prevNonEmptyData = filterNonEmptyData(prevData)
         val prevAverageByNonEmpty = getAverage(prevNonEmptyData)
 
         val title = resourceRepo.getString(
@@ -691,7 +703,7 @@ class StatisticsDetailViewDataMapper @Inject constructor(
         data: List<ChartBarDataDuration>,
     ): Pair<String, Boolean> {
         val isMinutes = data
-            .maxOfOrNull { barPart -> abs(barPart.totalDuration) }
+            .maxOfOrNull { barPart -> abs(barPart.totalDuration.orZero()) }
             .orZero()
             .let(TimeUnit.MILLISECONDS::toHours) == 0L
 
