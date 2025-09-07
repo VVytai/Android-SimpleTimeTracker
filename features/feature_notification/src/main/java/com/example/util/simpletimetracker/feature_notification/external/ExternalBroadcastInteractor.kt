@@ -208,15 +208,9 @@ class ExternalBroadcastInteractor @Inject constructor(
     ) {
         if (name == null) return
 
-        val tagExists = recordTagInteractor.get(name).isEmpty().not()
+        val tagExists = recordTagInteractor.get(name).isNotEmpty()
 
         if (tagExists) return
-
-        val icons = iconImageMapper
-            .getAvailableImages(loadSearchHints = false).values
-            .flatten().associateBy { it.iconName }.mapValues { it.value.iconName }
-
-        val iconId = icons.filterValues { it == icon }.keys.firstOrNull()
 
         RecordTag(
             name = name,
@@ -227,7 +221,7 @@ class ExternalBroadcastInteractor @Inject constructor(
             valueType = RecordTagValueType.NONE,
             valueSuffix = "",
         ).let {
-            val tagId = recordTagInteractor.add(it)
+            recordTagInteractor.add(it)
         }
     }
 
