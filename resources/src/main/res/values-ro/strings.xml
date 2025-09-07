@@ -643,6 +643,7 @@ Examplu:<br/>
     <!--  Wear  -->
     <string name="wear_loading_error">Verifică conexiunea și încearcă din nou</string>
     <string name="wear_open_on_phone">Deschide pe telefon</string>
+    <string name="wear_update_required">Actualizați aplicațiile pentru telefon și ceas la cea mai recentă versiune</string>
     <string name="wear_settings_title">Setări</string>
     <string name="wear_settings_title_show_compact_list">Afișează lista compactă</string>
 

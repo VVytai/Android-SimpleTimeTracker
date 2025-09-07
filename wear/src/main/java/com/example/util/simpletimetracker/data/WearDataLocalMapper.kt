@@ -93,6 +93,7 @@ class WearDataLocalMapper @Inject constructor() {
 
     fun map(dto: WearSettingsDTO): WearSettings {
         return WearSettings(
+            apiVersion = dto.apiVersion,
             allowMultitasking = dto.allowMultitasking,
             recordTagSelectionCloseAfterOne = dto.recordTagSelectionCloseAfterOne,
             enableRepeatButton = dto.enableRepeatButton,

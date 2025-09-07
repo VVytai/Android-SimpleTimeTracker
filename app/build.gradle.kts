@@ -20,6 +20,8 @@ android {
         versionName = Base.versionName
 
         testInstrumentationRunner = "com.example.util.simpletimetracker.utils.CustomTestRunner"
+
+        buildConfigField("String", "WEAR_API_VERSION", "\"${Base.wearApiVersion}\"")
     }
 
     buildTypes {

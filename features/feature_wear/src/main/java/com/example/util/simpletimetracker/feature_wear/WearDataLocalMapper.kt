@@ -107,6 +107,7 @@ class WearDataLocalMapper @Inject constructor(
     }
 
     fun map(
+        apiVersion: String,
         allowMultitasking: Boolean,
         recordTagSelectionCloseAfterOne: Boolean,
         enableRepeatButton: Boolean,
@@ -115,6 +116,7 @@ class WearDataLocalMapper @Inject constructor(
         firstDayOfWeek: DayOfWeek,
     ): WearSettingsDTO {
         return WearSettingsDTO(
+            apiVersion = apiVersion,
             allowMultitasking = allowMultitasking,
             recordTagSelectionCloseAfterOne = recordTagSelectionCloseAfterOne,
             enableRepeatButton = enableRepeatButton,

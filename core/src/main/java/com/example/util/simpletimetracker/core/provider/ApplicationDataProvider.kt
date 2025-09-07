@@ -5,4 +5,5 @@ interface ApplicationDataProvider {
     fun getPackageName(): String
     fun getAppName(): String
     fun getAppVersion(): String
+    fun getWearApiVersion(): String
 }

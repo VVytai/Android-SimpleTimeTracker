@@ -643,6 +643,7 @@ Przykład:<br/>
     <!--  Wear  -->
     <string name="wear_loading_error">Sprawdź połączenie i spróbuj ponownie</string>
     <string name="wear_open_on_phone">Otwórz na telefonie</string>
+    <string name="wear_update_required">Zaktualizuj aplikacje na telefonie i zegarku do najnowszej wersji</string>
     <string name="wear_settings_title">Ustawienia</string>
     <string name="wear_settings_title_show_compact_list">Pokaż listę kompaktową</string>
 

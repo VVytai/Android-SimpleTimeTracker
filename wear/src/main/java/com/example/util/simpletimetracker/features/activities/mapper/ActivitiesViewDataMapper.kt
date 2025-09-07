@@ -23,6 +23,7 @@ import com.example.util.simpletimetracker.features.activities.screen.ActivitiesL
 import com.example.util.simpletimetracker.features.activities.ui.ActivityChipState
 import com.example.util.simpletimetracker.features.activities.ui.ActivityChipType
 import com.example.util.simpletimetracker.presentation.theme.ColorInactive
+import com.example.util.simpletimetracker.presentation.ui.ErrorState
 import javax.inject.Inject
 
 class ActivitiesViewDataMapper @Inject constructor(
@@ -34,6 +35,11 @@ class ActivitiesViewDataMapper @Inject constructor(
 
     fun mapErrorState(): ActivitiesListState.Error {
         return ActivitiesListState.Error(errorStateMapper.map())
+    }
+
+    fun mapUpdateRequiredState(): ActivitiesListState.Error {
+        val error = ErrorState(R.string.wear_update_required)
+        return ActivitiesListState.Error(error)
     }
 
     fun mapEmptyState(): ActivitiesListState.Empty {

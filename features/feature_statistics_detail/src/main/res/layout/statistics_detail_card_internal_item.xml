@@ -85,7 +85,7 @@
             android:id="@+id/ivStatisticsDetailCardIcon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:src="@drawable/ic_list_24px"
+            tools:src="@drawable/arrow_right"
             tools:tint="?appInactiveColor" />
 
     </androidx.cardview.widget.CardView>

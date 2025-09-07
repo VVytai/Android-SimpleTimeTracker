@@ -8,6 +8,7 @@ package com.example.util.simpletimetracker.features.activities.viewModel
 import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.util.simpletimetracker.BuildConfig
 import com.example.util.simpletimetracker.R
 import com.example.util.simpletimetracker.complication.WearComplicationManager
 import com.example.util.simpletimetracker.data.WearDataRepo
@@ -15,11 +16,12 @@ import com.example.util.simpletimetracker.domain.interactor.WearCheckNotificatio
 import com.example.util.simpletimetracker.domain.interactor.WearPrefsInteractor
 import com.example.util.simpletimetracker.domain.mediator.StartActivityMediator
 import com.example.util.simpletimetracker.domain.model.WearRecordRepeatResult
+import com.example.util.simpletimetracker.domain.model.WearSettings
 import com.example.util.simpletimetracker.features.activities.mapper.ActivitiesViewDataMapper
-import com.example.util.simpletimetracker.notification.WearNotificationManager
 import com.example.util.simpletimetracker.features.activities.screen.ActivitiesListState
 import com.example.util.simpletimetracker.features.activities.ui.ActivityChipState
 import com.example.util.simpletimetracker.features.activities.ui.ActivityChipType
+import com.example.util.simpletimetracker.notification.WearNotificationManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -111,6 +113,10 @@ class ActivitiesViewModel @Inject constructor(
         }
     }
 
+    fun onStart() {
+        onRefresh()
+    }
+
     fun onRefresh() = viewModelScope.launch {
         loadData(forceReload = true)
         wearComplicationManager.updateComplications()
@@ -160,6 +166,9 @@ class ActivitiesViewModel @Inject constructor(
             settings.isFailure
 
         when {
+            isUpdateRequired(settings) -> {
+                showUpdateRequired()
+            }
             loadError -> {
                 showError()
             }
@@ -179,8 +188,21 @@ class ActivitiesViewModel @Inject constructor(
         }
     }
 
+    private fun isUpdateRequired(
+        settings: Result<WearSettings>,
+    ): Boolean {
+        val wearApiVersion = BuildConfig.WEAR_API_VERSION
+        val phoneApiVersion = settings.getOrNull()?.apiVersion
+
+        return wearApiVersion != phoneApiVersion
+    }
+
     private fun showError() {
         _state.value = activitiesViewDataMapper.mapErrorState()
+    }
+
+    private fun showUpdateRequired() {
+        _state.value = activitiesViewDataMapper.mapUpdateRequiredState()
     }
 
     private suspend fun showMessage(@StringRes textResId: Int) {

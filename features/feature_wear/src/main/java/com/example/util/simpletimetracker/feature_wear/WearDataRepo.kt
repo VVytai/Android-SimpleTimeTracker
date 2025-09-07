@@ -8,6 +8,7 @@ package com.example.util.simpletimetracker.feature_wear
 import com.example.util.simpletimetracker.core.interactor.RecordRepeatInteractor
 import com.example.util.simpletimetracker.core.interactor.StatisticsMediator
 import com.example.util.simpletimetracker.core.mapper.TimeMapper
+import com.example.util.simpletimetracker.core.provider.ApplicationDataProvider
 import com.example.util.simpletimetracker.domain.activitySuggestion.interactor.GetCurrentActivitySuggestionsInteractor
 import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.domain.notifications.interactor.UpdateExternalViewsInteractor
@@ -69,6 +70,7 @@ class WearDataRepo @Inject constructor(
     private val wearDataLocalMapper: WearDataLocalMapper,
     private val getCurrentActivitySuggestionsInteractor: GetCurrentActivitySuggestionsInteractor,
     private val statisticsMediator: StatisticsMediator,
+    private val applicationDataProvider: ApplicationDataProvider,
 ) : WearCommunicationAPI {
 
     override suspend fun queryActivities(): List<WearActivityDTO> {
@@ -221,6 +223,7 @@ class WearDataRepo @Inject constructor(
 
     override suspend fun querySettings(): WearSettingsDTO {
         return wearDataLocalMapper.map(
+            apiVersion = applicationDataProvider.getWearApiVersion(),
             allowMultitasking = prefsInteractor.getAllowMultitasking(),
             recordTagSelectionCloseAfterOne = prefsInteractor.getRecordTagSelectionCloseAfterOne(),
             enableRepeatButton = prefsInteractor.getEnableRepeatButton(),

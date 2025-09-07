@@ -22,6 +22,8 @@ android {
         applicationId = Base.applicationId
         versionCode = Base.versionCodeWear
         versionName = Base.versionNameWear
+
+        buildConfigField("String", "WEAR_API_VERSION", "\"${Base.wearApiVersion}\"")
     }
 
     buildTypes {

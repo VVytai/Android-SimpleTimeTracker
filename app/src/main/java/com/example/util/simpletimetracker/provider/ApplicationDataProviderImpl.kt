@@ -26,4 +26,8 @@ class ApplicationDataProviderImpl @Inject constructor(
             appVersion
         }
     }
+
+    override fun getWearApiVersion(): String {
+        return BuildConfig.WEAR_API_VERSION
+    }
 }

@@ -104,6 +104,8 @@ data class WearTagDTO(
 
 @Parcelize
 data class WearSettingsDTO(
+    @SerializedName("apiVersion")
+    val apiVersion: String,
     @SerializedName("allowMultitasking")
     val allowMultitasking: Boolean,
     @SerializedName("recordTagSelectionCloseAfterOne")

@@ -32,7 +32,7 @@ fun ActivitiesScreen(
         }
     }
 
-    OnLifecycle(onStart = viewModel::onRefresh)
+    OnLifecycle(onStart = viewModel::onStart)
 
     ActivitiesList(
         state = state,
