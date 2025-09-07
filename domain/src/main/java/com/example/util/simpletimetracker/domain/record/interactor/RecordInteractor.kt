@@ -45,8 +45,11 @@ class RecordInteractor @Inject constructor(
         return recordRepo.get(id)
     }
 
-    suspend fun getPrev(timeStarted: Long): Record? {
-        return recordRepo.getPrev(timeStarted)
+    suspend fun getPrev(
+        timeStarted: Long,
+        ignoreTypeIds: List<Long> = emptyList(),
+    ): Record? {
+        return recordRepo.getPrev(timeStarted, ignoreTypeIds)
     }
 
     // Can return several records ended at the same time.

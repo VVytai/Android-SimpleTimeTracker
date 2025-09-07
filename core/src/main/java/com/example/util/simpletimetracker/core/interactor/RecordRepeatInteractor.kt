@@ -7,6 +7,8 @@ import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteracto
 import com.example.util.simpletimetracker.domain.record.interactor.RecordInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.RunningRecordInteractor
 import com.example.util.simpletimetracker.domain.record.model.RepeatButtonType
+import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTypeInteractor
+import com.example.util.simpletimetracker.domain.recordType.model.RecordType
 import com.example.util.simpletimetracker.navigation.Router
 import com.example.util.simpletimetracker.navigation.params.notification.SnackBarParams
 import com.example.util.simpletimetracker.navigation.params.notification.ToastParams
@@ -15,6 +17,7 @@ import javax.inject.Inject
 // Repeats previous record, if any.
 class RecordRepeatInteractor @Inject constructor(
     private val recordInteractor: RecordInteractor,
+    private val recordTypeInteractor: RecordTypeInteractor,
     private val runningRecordInteractor: RunningRecordInteractor,
     private val addRunningRecordMediator: AddRunningRecordMediator,
     private val prefsInteractor: PrefsInteractor,
@@ -48,15 +51,22 @@ class RecordRepeatInteractor @Inject constructor(
         messageShower: (messageResId: Int) -> Unit,
     ): ActionResult {
         val type = prefsInteractor.getRepeatButtonType()
+        val defaultTypeIds = recordTypeInteractor.getAll()
+            .filter { it.defaultDuration != 0L }
+            .map(RecordType::id)
 
         // TODO repeat several records?
         val prevRecord = recordInteractor.getPrev(
             timeStarted = System.currentTimeMillis(),
+            ignoreTypeIds = defaultTypeIds,
         ).let {
             when (type) {
                 is RepeatButtonType.RepeatLast -> it
                 is RepeatButtonType.RepeatBeforeLast -> if (it != null) {
-                    recordInteractor.getPrev(timeStarted = it.timeEnded - 1)
+                    recordInteractor.getPrev(
+                        timeStarted = it.timeEnded - 1,
+                        ignoreTypeIds = defaultTypeIds,
+                    )
                 } else {
                     null
                 }

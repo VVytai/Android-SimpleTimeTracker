@@ -106,9 +106,12 @@ class RecordRepoImpl @Inject constructor(
         )
     }
 
-    override suspend fun getPrev(timeStarted: Long): Record? = withContext(Dispatchers.IO) {
+    override suspend fun getPrev(
+        timeStarted: Long,
+        ignoreTypeIds: List<Long>,
+    ): Record? = withContext(Dispatchers.IO) {
         logDataAccess("getPrev")
-        recordDao.getPrev(timeStarted)?.let(::mapItem)
+        recordDao.getPrev(timeStarted, ignoreTypeIds)?.let(::mapItem)
     }
 
     override suspend fun getNext(timeEnded: Long): Record? = withContext(Dispatchers.IO) {
