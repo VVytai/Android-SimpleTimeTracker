@@ -15,6 +15,7 @@ import com.example.util.simpletimetracker.feature_statistics_detail.model.ChartB
 import com.example.util.simpletimetracker.feature_statistics_detail.model.ChartGrouping
 import com.example.util.simpletimetracker.feature_statistics_detail.model.ChartLength
 import com.example.util.simpletimetracker.feature_statistics_detail.model.ChartMode
+import com.example.util.simpletimetracker.feature_statistics_detail.model.ChartValueMode
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailCardInternalViewData
 import javax.inject.Inject
 
@@ -32,6 +33,7 @@ class StatisticsDetailTagValuesViewDataMapper @Inject constructor(
         availableChartLengths: List<ChartLength>,
         appliedChartLength: ChartLength,
         chartMode: ChartMode,
+        chartValueMode: ChartValueMode,
         valueSuffix: String,
         useProportionalMinutes: Boolean,
         showSeconds: Boolean,
@@ -68,8 +70,16 @@ class StatisticsDetailTagValuesViewDataMapper @Inject constructor(
             availableChartLengths = availableChartLengths,
             appliedChartLength = appliedChartLength,
         )
+        val chartValueModeViewData = statisticsDetailViewDataMapper.mapToChartValueModeViewData(
+            availableChartValueModes = listOf(
+                ChartValueMode.TOTAL,
+                ChartValueMode.AVERAGE,
+            ),
+            chartValueMode = chartValueMode,
+        )
         val totals = mapTagValuesTotals(
             goalData = data,
+            chartValueMode = chartValueMode,
         )
 
         if (chartData.visible) {
@@ -103,13 +113,18 @@ class StatisticsDetailTagValuesViewDataMapper @Inject constructor(
         }
 
         if (chartLengthViewData.isNotEmpty()) {
-            // Update margin top depending if has buttons before.
-            val hasButtonsBefore = items.lastOrNull() is ButtonsRowItemViewData
-            val marginTopDp = if (hasButtonsBefore) -10 else 4
             items += ButtonsRowItemViewData(
                 block = StatisticsDetailBlock.TagValuesChartLength,
-                marginTopDp = marginTopDp,
+                marginTopDp = getTopMargin(items),
                 data = chartLengthViewData,
+            )
+        }
+
+        if (chartValueModeViewData.isNotEmpty()) {
+            items += ButtonsRowItemViewData(
+                block = StatisticsDetailBlock.TagValuesChartMode,
+                marginTopDp = getTopMargin(items),
+                data = chartValueModeViewData,
             )
         }
 
@@ -136,6 +151,7 @@ class StatisticsDetailTagValuesViewDataMapper @Inject constructor(
 
     private fun mapTagValuesTotals(
         goalData: List<ChartBarDataDuration>,
+        chartValueMode: ChartValueMode,
     ): List<StatisticsDetailCardInternalViewData> {
         val emptyValue by lazy { resourceRepo.getString(R.string.statistics_detail_empty) }
 
@@ -144,7 +160,7 @@ class StatisticsDetailTagValuesViewDataMapper @Inject constructor(
         val maxValue = barValues.maxOrNull()?.toFloat()?.div(TAG_VALUE_PRECISION)
         val total = barValues.takeUnless { it.isEmpty() }?.sum()?.toFloat()?.div(TAG_VALUE_PRECISION)
 
-        return listOf(
+        return listOfNotNull(
             StatisticsDetailCardInternalViewData(
                 value = minValue?.toString()?.removeTrailingZeroes() ?: emptyValue,
                 valueChange = StatisticsDetailCardInternalViewData.ValueChange.None,
@@ -160,7 +176,9 @@ class StatisticsDetailTagValuesViewDataMapper @Inject constructor(
                 description = resourceRepo.getString(R.string.statistics_detail_total_duration),
                 titleTextSizeSp = 14,
                 subtitleTextSizeSp = 12,
-            ),
+            ).takeUnless {
+                chartValueMode == ChartValueMode.AVERAGE
+            },
             StatisticsDetailCardInternalViewData(
                 value = maxValue?.toString()?.removeTrailingZeroes() ?: emptyValue,
                 valueChange = StatisticsDetailCardInternalViewData.ValueChange.None,
@@ -170,5 +188,12 @@ class StatisticsDetailTagValuesViewDataMapper @Inject constructor(
                 subtitleTextSizeSp = 12,
             ),
         )
+    }
+
+
+    private fun getTopMargin(currentItems: List<ViewHolderType>): Int {
+        // Update margin top depending if has buttons before.
+        val hasButtonsBefore = currentItems.lastOrNull() is ButtonsRowItemViewData
+        return if (hasButtonsBefore) -10 else 4
     }
 }

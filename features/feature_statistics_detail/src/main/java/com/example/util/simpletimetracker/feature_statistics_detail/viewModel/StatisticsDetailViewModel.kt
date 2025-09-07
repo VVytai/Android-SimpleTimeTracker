@@ -147,6 +147,8 @@ class StatisticsDetailViewModel @Inject constructor(
                 tagValueDelegate.onChartGroupingClick(viewData)
             StatisticsDetailBlock.TagValuesChartLength ->
                 tagValueDelegate.onChartLengthClick(viewData)
+            StatisticsDetailBlock.TagValuesChartMode ->
+                tagValueDelegate.onChartTagValueModeClick(viewData)
             StatisticsDetailBlock.SeriesGoal ->
                 streaksDelegate.onStreaksGoalClick(viewData)
             StatisticsDetailBlock.SeriesType ->

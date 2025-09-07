@@ -1,7 +1,11 @@
 package com.example.util.simpletimetracker.feature_statistics_detail.model
 
-enum class ChartMode {
-    DURATIONS,
-    COUNTS,
-    TAG_VALUE,
+sealed interface ChartMode {
+
+    data object DURATIONS : ChartMode
+
+    data object COUNTS : ChartMode
+
+    @Suppress("ClassName")
+    data class TAG_VALUE(val tagId: Long) : ChartMode
 }

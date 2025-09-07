@@ -42,6 +42,7 @@ enum class StatisticsDetailBlock : ButtonsRowItemViewData.ButtonsRowId {
     TagValuesChartData,
     TagValuesChartGrouping,
     TagValuesChartLength,
+    TagValuesChartMode,
     TagValuesRangeAverages,
     TagValuesTotals,
     DataDistributionHint,

@@ -19,6 +19,7 @@ import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxItemDecoration
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
+import androidx.core.content.withStyledAttributes
 
 class StatisticsDetailCardView @JvmOverloads constructor(
     context: Context,
@@ -46,7 +47,7 @@ class StatisticsDetailCardView @JvmOverloads constructor(
     private val binding = StatisticsDetailCardViewBinding
         .inflate(layoutInflater, this, true)
 
-    private var itemsCount: Int
+    private var itemsCount: Int = 0
     private val typesAdapter: BaseRecyclerAdapter by lazy {
         BaseRecyclerAdapter(
             createStatisticsDetailCardInternalAdapterDelegate(
@@ -70,19 +71,18 @@ class StatisticsDetailCardView @JvmOverloads constructor(
             setDrawable(dividerDrawable)
         }
 
-        context.obtainStyledAttributes(
+        context.withStyledAttributes(
             attrs,
             R.styleable.StatisticsDetailCardView,
             defStyleAttr,
             0,
-        ).run {
+        ) {
             itemsCount = getInt(
                 R.styleable.StatisticsDetailCardView_itemCount, DEFAULT_ITEM_COUNT,
             )
             itemsDescription = getString(
                 R.styleable.StatisticsDetailCardView_itemDescription,
             ).orEmpty()
-            recycle()
         }
 
         binding.rvStatisticsDetailCard.apply {
@@ -93,6 +93,7 @@ class StatisticsDetailCardView @JvmOverloads constructor(
                 addItemDecoration(itemDecoration)
             }
             adapter = typesAdapter
+            itemAnimator = null // Cards are flashing on scroll and rebind.
         }
 
         if (isInEditMode) {

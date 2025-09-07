@@ -8,7 +8,9 @@ import com.example.util.simpletimetracker.feature_base_adapter.buttonsRow.view.B
 import com.example.util.simpletimetracker.feature_statistics_detail.interactor.StatisticsDetailTagValueInteractor
 import com.example.util.simpletimetracker.feature_statistics_detail.model.ChartGrouping
 import com.example.util.simpletimetracker.feature_statistics_detail.model.ChartLength
+import com.example.util.simpletimetracker.feature_statistics_detail.model.ChartValueMode
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailChartLengthViewData
+import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailChartValueModeViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailGroupingViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailTagValuesCompositeViewData
 import kotlinx.coroutines.launch
@@ -25,6 +27,7 @@ class StatisticsDetailTagValueViewModelDelegate @Inject constructor(
     private var parent: StatisticsDetailViewModelDelegate.Parent? = null
     private var chartGrouping: ChartGrouping = ChartGrouping.DAILY
     private var chartLength: ChartLength = ChartLength.TEN
+    private var chartValueMode: ChartValueMode = ChartValueMode.TOTAL
 
     override fun attach(parent: StatisticsDetailViewModelDelegate.Parent) {
         this.parent = parent
@@ -39,6 +42,12 @@ class StatisticsDetailTagValueViewModelDelegate @Inject constructor(
     fun onChartLengthClick(viewData: ButtonsRowViewData) {
         if (viewData !is StatisticsDetailChartLengthViewData) return
         this.chartLength = viewData.chartLength
+        updateViewData()
+    }
+
+    fun onChartTagValueModeClick(viewData: ButtonsRowViewData) {
+        if (viewData !is StatisticsDetailChartValueModeViewData) return
+        this.chartValueMode = viewData.chartValueMode
         updateViewData()
     }
 
@@ -57,6 +66,7 @@ class StatisticsDetailTagValueViewModelDelegate @Inject constructor(
             filter = parent.filter,
             currentChartGrouping = chartGrouping,
             currentChartLength = chartLength,
+            currentChartValueMode = chartValueMode,
             rangeLength = parent.rangeLength,
             rangePosition = parent.rangePosition,
         )

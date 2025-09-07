@@ -28,6 +28,7 @@ import com.example.util.simpletimetracker.feature_statistics_detail.model.ChartG
 import com.example.util.simpletimetracker.feature_statistics_detail.model.ChartLength
 import com.example.util.simpletimetracker.feature_statistics_detail.model.ChartMode
 import com.example.util.simpletimetracker.feature_statistics_detail.model.ChartSplitSortMode
+import com.example.util.simpletimetracker.feature_statistics_detail.model.ChartValueMode
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailChartCompositeViewData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -99,6 +100,7 @@ class StatisticsDetailChartInteractor @Inject constructor(
         val canSplitByActivity = canSplitByActivity(filter)
         val canComparisonSplitByActivity = canSplitByActivity(compare)
         val chartMode = ChartMode.DURATIONS
+        val chartValueMode = ChartValueMode.TOTAL
 
         val compositeData = getChartRangeSelectionData(
             currentChartGrouping = currentChartGrouping,
@@ -121,6 +123,7 @@ class StatisticsDetailChartInteractor @Inject constructor(
             typesMap = typesMap,
             isDarkTheme = isDarkTheme,
             chartMode = chartMode,
+            chartValueMode = chartValueMode,
             splitByActivity = splitByActivity && canSplitByActivity,
             splitSortMode = splitSortMode,
         )
@@ -136,6 +139,7 @@ class StatisticsDetailChartInteractor @Inject constructor(
             typesMap = typesMap,
             isDarkTheme = isDarkTheme,
             chartMode = chartMode,
+            chartValueMode = chartValueMode,
             splitSortMode = splitSortMode,
         )
         val compareData = getChartData(
@@ -145,6 +149,7 @@ class StatisticsDetailChartInteractor @Inject constructor(
             typesMap = typesMap,
             isDarkTheme = isDarkTheme,
             chartMode = chartMode,
+            chartValueMode = chartValueMode,
             splitByActivity = splitByActivity && canComparisonSplitByActivity,
             splitSortMode = splitSortMode,
         )
@@ -185,6 +190,7 @@ class StatisticsDetailChartInteractor @Inject constructor(
         typesMap: Map<Long, RecordType>,
         isDarkTheme: Boolean,
         chartMode: ChartMode,
+        chartValueMode: ChartValueMode,
         splitByActivity: Boolean,
         splitSortMode: ChartSplitSortMode,
     ): List<ChartBarDataDuration> {
@@ -200,21 +206,26 @@ class StatisticsDetailChartInteractor @Inject constructor(
 
         fun mapRangesToValue(list: List<RecordBase>, range: Range): Long? {
             return when (chartMode) {
-                ChartMode.DURATIONS -> {
+                is ChartMode.DURATIONS -> {
                     list.map { record ->
                         rangeMapper.clampToRange(record, range)
                     }.let(rangeMapper::mapToDuration)
                 }
-                ChartMode.COUNTS -> {
+                is ChartMode.COUNTS -> {
                     list.size.toLong()
                 }
-                ChartMode.TAG_VALUE -> {
-                    list.mapNotNull { record ->
+                is ChartMode.TAG_VALUE -> {
+                    val tagsValues = list.mapNotNull { record ->
+                        // Only one valued tag should be available.
                         record.tags
-                            .mapNotNull { it.numericValue }
-                            .takeUnless { it.isEmpty() }
-                            ?.sumOf { it * TAG_VALUE_PRECISION }
-                    }.takeUnless { it.isEmpty() }?.sum()?.roundToLong()
+                            .firstOrNull { it.tagId == chartMode.tagId }
+                            ?.numericValue
+                            ?.times(TAG_VALUE_PRECISION)
+                    }.takeUnless { it.isEmpty() }
+                    when (chartValueMode) {
+                        ChartValueMode.TOTAL -> tagsValues?.sum()?.roundToLong()
+                        ChartValueMode.AVERAGE -> tagsValues?.sum()?.div(tagsValues.size)?.roundToLong()
+                    }
                 }
             }
         }
@@ -397,6 +408,7 @@ class StatisticsDetailChartInteractor @Inject constructor(
         typesMap: Map<Long, RecordType>,
         isDarkTheme: Boolean,
         chartMode: ChartMode,
+        chartValueMode: ChartValueMode,
         splitSortMode: ChartSplitSortMode,
     ): List<ChartBarDataDuration> {
         return if (rangeLength != RangeLength.All) {
@@ -416,6 +428,7 @@ class StatisticsDetailChartInteractor @Inject constructor(
                 isDarkTheme = isDarkTheme,
                 splitByActivity = false,
                 chartMode = chartMode,
+                chartValueMode = chartValueMode,
                 splitSortMode = splitSortMode,
             )
         } else {

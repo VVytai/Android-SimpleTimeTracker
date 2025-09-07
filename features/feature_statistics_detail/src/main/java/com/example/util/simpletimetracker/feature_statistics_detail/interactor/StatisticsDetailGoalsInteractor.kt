@@ -18,6 +18,7 @@ import com.example.util.simpletimetracker.feature_statistics_detail.mapper.Stati
 import com.example.util.simpletimetracker.feature_statistics_detail.model.ChartGrouping
 import com.example.util.simpletimetracker.feature_statistics_detail.model.ChartLength
 import com.example.util.simpletimetracker.feature_statistics_detail.model.ChartSplitSortMode
+import com.example.util.simpletimetracker.feature_statistics_detail.model.ChartValueMode
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailGoalsCompositeViewData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -64,6 +65,7 @@ class StatisticsDetailGoalsInteractor @Inject constructor(
             rangeLength = mapToRange(compositeData.appliedChartGrouping),
         )
         val chartMode = statisticsDetailViewDataMapper.mapToChartMode(chartGoal)
+        val chartValueMode = ChartValueMode.TOTAL
         val ranges = chartInteractor.getRanges(
             compositeData = compositeData,
             rangeLength = rangeLength,
@@ -79,6 +81,7 @@ class StatisticsDetailGoalsInteractor @Inject constructor(
             typesMap = typesMap,
             isDarkTheme = isDarkTheme,
             chartMode = chartMode,
+            chartValueMode = chartValueMode,
             splitByActivity = false,
             splitSortMode = ChartSplitSortMode.ACTIVITY_ORDER,
         )
@@ -94,6 +97,7 @@ class StatisticsDetailGoalsInteractor @Inject constructor(
             typesMap = typesMap,
             isDarkTheme = isDarkTheme,
             chartMode = chartMode,
+            chartValueMode = chartValueMode,
             splitSortMode = ChartSplitSortMode.ACTIVITY_ORDER,
         )
 

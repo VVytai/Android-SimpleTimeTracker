@@ -224,12 +224,12 @@ class StatisticsDetailGoalsViewDataMapper @Inject constructor(
             interval: Long,
         ): String {
             return when (chartMode) {
-                ChartMode.DURATIONS -> timeMapper.formatInterval(
+                is ChartMode.DURATIONS -> timeMapper.formatInterval(
                     interval = interval,
                     forceSeconds = showSeconds,
                     useProportionalMinutes = useProportionalMinutes,
                 )
-                ChartMode.COUNTS, ChartMode.TAG_VALUE -> interval.toString()
+                is ChartMode.COUNTS, is ChartMode.TAG_VALUE -> interval.toString()
             }
         }
 
@@ -328,12 +328,12 @@ class StatisticsDetailGoalsViewDataMapper @Inject constructor(
             interval: Long,
         ): String {
             return when (chartMode) {
-                ChartMode.DURATIONS -> timeMapper.formatInterval(
+                is ChartMode.DURATIONS -> timeMapper.formatInterval(
                     interval = interval,
                     forceSeconds = showSeconds,
                     useProportionalMinutes = useProportionalMinutes,
                 )
-                ChartMode.COUNTS, ChartMode.TAG_VALUE -> interval.toString()
+                is ChartMode.COUNTS, is ChartMode.TAG_VALUE -> interval.toString()
             }
         }
 
@@ -350,8 +350,8 @@ class StatisticsDetailGoalsViewDataMapper @Inject constructor(
                 .map { rangeMapper.clampRecordToRange(it, range) }
         }
         val currentValue = when (chartMode) {
-            ChartMode.DURATIONS -> recordsFromRange.sumOf(RecordBase::duration)
-            ChartMode.COUNTS, ChartMode.TAG_VALUE -> recordsFromRange.size.toLong()
+            is ChartMode.DURATIONS -> recordsFromRange.sumOf(RecordBase::duration)
+            is ChartMode.COUNTS, is ChartMode.TAG_VALUE -> recordsFromRange.size.toLong()
         }
         val percentage = if (goalValue != 0L) {
             currentValue * 100f / goalValue

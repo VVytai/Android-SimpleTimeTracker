@@ -16,6 +16,7 @@ import com.example.util.simpletimetracker.feature_statistics_detail.model.ChartG
 import com.example.util.simpletimetracker.feature_statistics_detail.model.ChartLength
 import com.example.util.simpletimetracker.feature_statistics_detail.model.ChartMode
 import com.example.util.simpletimetracker.feature_statistics_detail.model.ChartSplitSortMode
+import com.example.util.simpletimetracker.feature_statistics_detail.model.ChartValueMode
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailTagValuesCompositeViewData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -36,6 +37,7 @@ class StatisticsDetailTagValueInteractor @Inject constructor(
         filter: List<RecordsFilter>,
         currentChartGrouping: ChartGrouping,
         currentChartLength: ChartLength,
+        currentChartValueMode: ChartValueMode,
         rangeLength: RangeLength,
         rangePosition: Int,
     ): StatisticsDetailTagValuesCompositeViewData = withContext(Dispatchers.Default) {
@@ -56,7 +58,7 @@ class StatisticsDetailTagValueInteractor @Inject constructor(
         val types = recordTypeInteractor.getAll()
         val typesMap = types.associateBy(RecordType::id)
         val typesOrder = types.map(RecordType::id)
-        val chartMode = ChartMode.TAG_VALUE
+        val chartMode = ChartMode.TAG_VALUE(valuedTag.id)
 
         val compositeData = chartInteractor.getChartRangeSelectionData(
             currentChartGrouping = currentChartGrouping,
@@ -79,6 +81,7 @@ class StatisticsDetailTagValueInteractor @Inject constructor(
             typesMap = typesMap,
             isDarkTheme = isDarkTheme,
             chartMode = chartMode,
+            chartValueMode = currentChartValueMode,
             splitByActivity = false,
             splitSortMode = ChartSplitSortMode.ACTIVITY_ORDER,
         )
@@ -94,6 +97,7 @@ class StatisticsDetailTagValueInteractor @Inject constructor(
             typesMap = typesMap,
             isDarkTheme = isDarkTheme,
             chartMode = chartMode,
+            chartValueMode = currentChartValueMode,
             splitSortMode = ChartSplitSortMode.ACTIVITY_ORDER,
         )
 
@@ -106,6 +110,7 @@ class StatisticsDetailTagValueInteractor @Inject constructor(
             availableChartLengths = compositeData.availableChartLengths,
             appliedChartLength = compositeData.appliedChartLength,
             chartMode = chartMode,
+            chartValueMode = currentChartValueMode,
             valueSuffix = valuedTag.valueSuffix,
             useProportionalMinutes = useProportionalMinutes,
             showSeconds = showSeconds,

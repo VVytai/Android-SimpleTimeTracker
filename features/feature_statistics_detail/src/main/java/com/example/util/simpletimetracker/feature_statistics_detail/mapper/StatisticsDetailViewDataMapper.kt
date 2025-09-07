@@ -31,10 +31,12 @@ import com.example.util.simpletimetracker.feature_statistics_detail.model.ChartG
 import com.example.util.simpletimetracker.feature_statistics_detail.model.ChartLength
 import com.example.util.simpletimetracker.feature_statistics_detail.model.ChartMode
 import com.example.util.simpletimetracker.feature_statistics_detail.model.ChartSplitSortMode
+import com.example.util.simpletimetracker.feature_statistics_detail.model.ChartValueMode
 import com.example.util.simpletimetracker.feature_statistics_detail.model.SplitChartGrouping
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailCardInternalViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailChartCompositeViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailChartLengthViewData
+import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailChartValueModeViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailChartViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailGroupingViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailPreviewViewData
@@ -501,13 +503,13 @@ class StatisticsDetailViewDataMapper @Inject constructor(
 
         fun formatInterval(interval: Float): String {
             return when (chartMode) {
-                ChartMode.DURATIONS -> timeMapper.formatInterval(
+                is ChartMode.DURATIONS -> timeMapper.formatInterval(
                     interval = interval.toLong(),
                     forceSeconds = showSeconds,
                     useProportionalMinutes = useProportionalMinutes,
                 )
-                ChartMode.COUNTS -> formatDecimalValue(interval)
-                ChartMode.TAG_VALUE -> formatDecimalValue(interval / TAG_VALUE_PRECISION)
+                is ChartMode.COUNTS -> formatDecimalValue(interval)
+                is ChartMode.TAG_VALUE -> formatDecimalValue(interval / TAG_VALUE_PRECISION)
             }
         }
 
@@ -515,10 +517,10 @@ class StatisticsDetailViewDataMapper @Inject constructor(
             data: List<ChartBarDataDuration>,
         ): List<ChartBarDataDuration> {
             return when (chartMode) {
-                ChartMode.DURATIONS,
-                ChartMode.COUNTS,
+                is ChartMode.DURATIONS,
+                is ChartMode.COUNTS,
                 -> data.filter { it.totalDuration.orZero() != 0L }
-                ChartMode.TAG_VALUE,
+                is ChartMode.TAG_VALUE,
                 -> data.filter { it.durations.isNotEmpty() }
             }
         }
@@ -653,16 +655,16 @@ class StatisticsDetailViewDataMapper @Inject constructor(
         drawRoundCaps: Boolean,
     ): StatisticsDetailChartViewData {
         val (legendSuffix, isMinutes) = when (chartMode) {
-            ChartMode.DURATIONS -> mapLegendSuffix(data)
-            ChartMode.COUNTS -> "" to false
-            ChartMode.TAG_VALUE -> "" to false
+            is ChartMode.DURATIONS -> mapLegendSuffix(data)
+            is ChartMode.COUNTS -> "" to false
+            is ChartMode.TAG_VALUE -> "" to false
         }
 
         fun formatInterval(interval: Long): Float {
             return when (chartMode) {
-                ChartMode.DURATIONS -> formatInterval(interval, isMinutes)
-                ChartMode.COUNTS -> interval.toFloat()
-                ChartMode.TAG_VALUE -> interval.toFloat() / TAG_VALUE_PRECISION
+                is ChartMode.DURATIONS -> formatInterval(interval, isMinutes)
+                is ChartMode.COUNTS -> interval.toFloat()
+                is ChartMode.TAG_VALUE -> interval.toFloat() / TAG_VALUE_PRECISION
             }
         }
 
@@ -804,6 +806,19 @@ class StatisticsDetailViewDataMapper @Inject constructor(
         }
     }
 
+    fun mapToChartValueModeViewData(
+        availableChartValueModes: List<ChartValueMode>,
+        chartValueMode: ChartValueMode,
+    ): List<ViewHolderType> {
+        return availableChartValueModes.map {
+            StatisticsDetailChartValueModeViewData(
+                chartValueMode = it,
+                name = mapToChartValueModeGroupingName(it),
+                isSelected = it == chartValueMode,
+            )
+        }
+    }
+
     private fun mapToGroupingName(chartGrouping: ChartGrouping): String {
         return when (chartGrouping) {
             ChartGrouping.DAILY -> R.string.statistics_detail_chart_daily
@@ -825,6 +840,15 @@ class StatisticsDetailViewDataMapper @Inject constructor(
             ChartLength.TEN -> R.string.statistics_detail_length_ten
             ChartLength.FIFTY -> R.string.statistics_detail_length_fifty
             ChartLength.HUNDRED -> R.string.statistics_detail_length_hundred
+        }.let(resourceRepo::getString)
+    }
+
+    private fun mapToChartValueModeGroupingName(
+        chartValueMode: ChartValueMode,
+    ): String {
+        return when (chartValueMode) {
+            ChartValueMode.TOTAL -> R.string.statistics_detail_total_duration
+            ChartValueMode.AVERAGE -> R.string.statistics_detail_average_record
         }.let(resourceRepo::getString)
     }
 
