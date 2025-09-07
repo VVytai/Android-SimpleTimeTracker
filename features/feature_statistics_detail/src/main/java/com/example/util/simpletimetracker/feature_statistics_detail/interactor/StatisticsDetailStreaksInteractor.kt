@@ -244,6 +244,7 @@ class StatisticsDetailStreaksInteractor @Inject constructor(
             streaksGoal = streaksGoal,
             goal = goal,
             rangeLength = rangeLength,
+            calculateCalendar = true,
         )
 
         // If range is not all data - calculate current streak on all data.
@@ -259,6 +260,7 @@ class StatisticsDetailStreaksInteractor @Inject constructor(
                 streaksGoal = streaksGoal,
                 goal = goal,
                 rangeLength = rangeLength,
+                calculateCalendar = false,
             ).currentStreak
             stats.copy(currentStreak = currentStreak)
         }
@@ -285,6 +287,7 @@ class StatisticsDetailStreaksInteractor @Inject constructor(
         streaksGoal: StreaksGoal,
         goal: RecordTypeGoal?,
         rangeLength: RangeLength,
+        calculateCalendar: Boolean,
     ): IntermediateData {
         // If doesn't have a goal - count any duration.
         val defaultGoalType = RecordTypeGoal.Type.Duration(1)
@@ -379,19 +382,29 @@ class StatisticsDetailStreaksInteractor @Inject constructor(
                 streakEnd = 0
             }
         }
-        when (streaksType) {
-            StatisticsStreaksType.LONGEST -> data.sortByDescending { it.value }
-            StatisticsStreaksType.LATEST -> data.sortByDescending { it.streakEnd }
+
+        val rangeCurrentData = if (calculateCalendar) {
+            when (streaksType) {
+                StatisticsStreaksType.LONGEST -> data.sortByDescending { it.value }
+                StatisticsStreaksType.LATEST -> data.sortByDescending { it.streakEnd }
+            }
+            data.take(MAX_STREAKS_IN_CHART)
+        } else {
+            emptyList()
         }
-        val rangeCurrentData = data.take(MAX_STREAKS_IN_CHART)
-        val calendarData = mapDurationsToCalendarData(
-            data = durations,
-            firstDayOfWeek = firstDayOfWeek,
-            startOfDayShift = startOfDayShift,
-            goalValue = goalValue,
-            goalSubtype = goalSubtype,
-            rangeLength = rangeLength,
-        )
+
+        val calendarData = if (calculateCalendar) {
+            mapDurationsToCalendarData(
+                data = durations,
+                firstDayOfWeek = firstDayOfWeek,
+                startOfDayShift = startOfDayShift,
+                goalValue = goalValue,
+                goalSubtype = goalSubtype,
+                rangeLength = rangeLength,
+            )
+        } else {
+            emptyList()
+        }
 
         return IntermediateData(
             longestStreak = longestStreak.takeIf { it > 1 }.orZero(), // Series of one day makes no sense.
@@ -517,6 +530,15 @@ class StatisticsDetailStreaksInteractor @Inject constructor(
             0
         }
         val dummyDays = List(daysToAdd) { SeriesCalendarView.ViewData.Dummy }
+        var minDataValue: Long? = null
+        var maxDataValue: Long? = null
+        data.forEach { (_, value) ->
+            if (value > 0 && minDataValue == null) minDataValue = value
+            if (value > 0 && value > maxDataValue.orZero()) maxDataValue = value
+            if (value > 0 && value < minDataValue.orZero()) minDataValue = value
+        }
+        val dataValueRange = maxDataValue.orZero() - minDataValue.orZero()
+        val dataValueRangeStep = dataValueRange / SeriesCalendarView.ViewData.ColorLevel.entries.size
 
         return dummyDays + data
             .map {
@@ -532,9 +554,21 @@ class StatisticsDetailStreaksInteractor @Inject constructor(
                     ""
                 }
                 if (isReached) {
-                    SeriesCalendarView.ViewData.Present(rangeStart, monthLegend)
+                    val colorLevel = mapColorLevel(
+                        dataValueRangeStep = dataValueRangeStep,
+                        value = it.second,
+                        minDataValue = minDataValue,
+                    )
+                    SeriesCalendarView.ViewData.Present(
+                        rangeStart = rangeStart,
+                        monthLegend = monthLegend,
+                        colorLevel = colorLevel,
+                    )
                 } else {
-                    SeriesCalendarView.ViewData.NotPresent(rangeStart, monthLegend)
+                    SeriesCalendarView.ViewData.NotPresent(
+                        rangeStart = rangeStart,
+                        monthLegend = monthLegend,
+                    )
                 }
             }
             .reversed()
@@ -689,6 +723,22 @@ class StatisticsDetailStreaksInteractor @Inject constructor(
             is RangeLength.Last,
             is RangeLength.Custom,
             -> dataSize <= RANGE_ALL_STREAKS_CALENDAR_CUTOFF
+        }
+    }
+
+    private fun mapColorLevel(
+        dataValueRangeStep: Long,
+        value: Long,
+        minDataValue: Long?,
+    ): SeriesCalendarView.ViewData.ColorLevel {
+        return if (dataValueRangeStep == 0L) {
+            SeriesCalendarView.ViewData.ColorLevel.entries.last()
+        } else {
+            ((value - minDataValue.orZero()) / dataValueRangeStep).let {
+                SeriesCalendarView.ViewData.ColorLevel.entries
+                    .firstOrNull { level -> level.value == it.toInt() }
+                    ?: SeriesCalendarView.ViewData.ColorLevel.entries.last()
+            }
         }
     }
 

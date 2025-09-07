@@ -50,9 +50,11 @@ interface RecordDao {
     suspend fun getFromRangeByType(typesIds: List<Long>, start: Long, end: Long): List<RecordWithRecordTagsDBO>
 
     @Transaction
-    @Query("SELECT * FROM records " +
-        "WHERE time_ended <= :timeStarted AND type_id NOT IN (:ignoreTypeIds) " +
-        "ORDER BY time_ended DESC LIMIT 1")
+    @Query(
+        "SELECT * FROM records " +
+            "WHERE time_ended <= :timeStarted AND type_id NOT IN (:ignoreTypeIds) " +
+            "ORDER BY time_ended DESC LIMIT 1",
+    )
     suspend fun getPrev(timeStarted: Long, ignoreTypeIds: List<Long>): RecordWithRecordTagsDBO?
 
     @Transaction

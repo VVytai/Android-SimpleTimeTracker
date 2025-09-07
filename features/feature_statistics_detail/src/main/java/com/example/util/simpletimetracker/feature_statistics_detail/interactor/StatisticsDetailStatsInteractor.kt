@@ -118,7 +118,7 @@ class StatisticsDetailStatsInteractor @Inject constructor(
         }
         val recordsAllIcon = StatisticsDetailCardInternalViewData.Icon(
             iconDrawable = R.drawable.arrow_right,
-            iconColor = resourceRepo.getThemedAttr(R.attr.appInactiveColor, isDarkTheme)
+            iconColor = resourceRepo.getThemedAttr(R.attr.appInactiveColor, isDarkTheme),
         )
 
         fun formatInterval(value: Long?): String {

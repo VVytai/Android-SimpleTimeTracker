@@ -21,6 +21,7 @@ import com.example.util.simpletimetracker.feature_views.extension.dpToPx
 import kotlin.math.ceil
 import kotlin.math.roundToInt
 import kotlinx.parcelize.Parcelize
+import androidx.core.content.withStyledAttributes
 
 class SeriesCalendarView @JvmOverloads constructor(
     context: Context,
@@ -48,6 +49,8 @@ class SeriesCalendarView @JvmOverloads constructor(
     private var panFactor: Float = 0f
     private var lastPanFactor: Float = 0f
     private var chartFullWidth: Float = 0f
+    private var cellNotPresentColorAlpha = 0.2f
+    private var cellPresentColorAlphaBase = 0.6f
     private var listener: (ViewData, Coordinates) -> Unit = { _, _ -> }
 
     private val cellPresentPaint: Paint = Paint()
@@ -63,6 +66,9 @@ class SeriesCalendarView @JvmOverloads constructor(
         onSlide = ::onSwipe,
         onSlideStop = ::onSwipeStop,
     )
+
+    private val colorLevelAlphaMap: Map<ViewData.ColorLevel, Int> =
+        ViewData.ColorLevel.entries.associateWith { getPresentCellFinalAlpha(it) }
 
     init {
         initArgs(context, attrs, defStyleAttr)
@@ -146,16 +152,14 @@ class SeriesCalendarView @JvmOverloads constructor(
         defStyleAttr: Int = 0,
     ) {
         context
-            .obtainStyledAttributes(
+            .withStyledAttributes(
                 attrs,
                 R.styleable.SeriesCalendarView, defStyleAttr, 0,
-            )
-            .run {
+            ) {
                 legendTextSize =
                     getDimensionPixelSize(R.styleable.SeriesCalendarView_seriesLegendTextSize, 14).toFloat()
                 legendTextColor =
                     getColor(R.styleable.SeriesCalendarView_seriesLegendTextColor, Color.BLACK)
-                recycle()
             }
     }
 
@@ -169,7 +173,7 @@ class SeriesCalendarView @JvmOverloads constructor(
             isAntiAlias = true
             color = cellColor
             style = Paint.Style.FILL
-            alpha = (255 * 0.3f).toInt()
+            alpha = (255 * cellNotPresentColorAlpha).toInt()
         }
         legendTextPaint.apply {
             isAntiAlias = true
@@ -181,7 +185,7 @@ class SeriesCalendarView @JvmOverloads constructor(
     private fun initEditMode() {
         if (isInEditMode) {
             (30 downTo 1).toList()
-                .map { ViewData.Present(0, "") }
+                .map { ViewData.Present(0, "", ViewData.ColorLevel.THREE) }
                 .let { setData(it, rowsCount) }
         }
     }
@@ -244,12 +248,24 @@ class SeriesCalendarView @JvmOverloads constructor(
                 cellRadius,
                 cellRadius,
                 if (point.cell is ViewData.Present) {
+                    cellPresentPaint.alpha = colorLevelAlphaMap[point.cell.colorLevel].orZero()
                     cellPresentPaint
                 } else {
                     cellNotPresentPaint
                 },
             )
         }
+    }
+
+    private fun getPresentCellFinalAlpha(colorLevel: ViewData.ColorLevel): Int {
+        val maxLevel = ViewData.ColorLevel.entries.size
+        val alphaCoefficient = if (maxLevel > 1) {
+            colorLevel.value.toFloat() / (maxLevel - 1)
+        } else {
+            1f
+        }
+        val baseAlpha = cellPresentColorAlphaBase + (1 - cellPresentColorAlphaBase) * alphaCoefficient
+        return (255 * baseAlpha).toInt()
     }
 
     @Suppress("UNUSED_PARAMETER")
@@ -310,6 +326,7 @@ class SeriesCalendarView @JvmOverloads constructor(
         data class Present(
             override val rangeStart: Long,
             override val monthLegend: String,
+            val colorLevel: ColorLevel,
         ) : ViewData
 
         data class NotPresent(
@@ -317,10 +334,17 @@ class SeriesCalendarView @JvmOverloads constructor(
             override val monthLegend: String,
         ) : ViewData
 
-        object Dummy : ViewData {
+        data object Dummy : ViewData {
             // Not needed for dummy view.
             override val rangeStart: Long = 0L
             override val monthLegend: String = ""
+        }
+
+        enum class ColorLevel(val value: Int) {
+            ONE(0),
+            TWO(1),
+            THREE(2),
+            FOUR(3),
         }
     }
 
