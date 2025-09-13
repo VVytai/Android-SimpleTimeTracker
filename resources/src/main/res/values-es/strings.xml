@@ -156,6 +156,8 @@ Esto te permite ver cuánto tiempo estás dedicando a actividades productivas fr
     <string name="change_record_multiselect">Selección múltiple</string>
     <string name="change_record_multiselect_hint">Selecciona varios registros y vuelve a abrir el menú de acciones</string>
     <string name="change_record_adjust">Cambio</string>
+    <string name="change_record_shortcut">Acceso directo</string>
+    <string name="change_record_shortcut_hint">Se creará un acceso directo en la pestaña principal con etiquetas y comentario preseleccionados para un acceso más rápido</string>
     <string name="change_record_change_prev_record">También cambia el tiempo del registro anterior</string>
     <string name="change_record_change_adjacent_records">También cambia la hora de los registros adyacentes</string>
     <string name="change_record_change_prev">Previo</string>

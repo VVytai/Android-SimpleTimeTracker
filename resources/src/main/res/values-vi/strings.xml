@@ -156,6 +156,8 @@
     <string name="change_record_multiselect">Chọn nhiều</string>
     <string name="change_record_multiselect_hint">Chọn nhiều bản ghi và mở lại menu Hành động</string>
     <string name="change_record_adjust">Thay đổi</string>
+    <string name="change_record_shortcut">Lối tắt</string>
+    <string name="change_record_shortcut_hint">Một lối tắt sẽ được tạo trên tab chính với thẻ và ghi chú đã chọn sẵn để truy cập nhanh hơn</string>
     <string name="change_record_change_prev_record">Đồng thời thay đổi thời gian của bản ghi trước đó</string>
     <string name="change_record_change_adjacent_records">Đồng thời thay đổi thời gian của các bản ghi liền kề</string>
     <string name="change_record_change_prev">Trước</string>

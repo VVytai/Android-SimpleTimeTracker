@@ -348,10 +348,10 @@ class AppDatabaseMigrations {
         private val migration_27_28 = object : Migration(27, 28) {
             override fun migrate(database: SupportSQLiteDatabase) {
                 database.execSQL(
-                    "CREATE TABLE IF NOT EXISTS `recordShortcuts` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `type_id` INTEGER NOT NULL, `comment` TEXT NOT NULL)"
+                    "CREATE TABLE IF NOT EXISTS `recordShortcuts` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `type_id` INTEGER NOT NULL, `comment` TEXT NOT NULL)",
                 )
                 database.execSQL(
-                    "CREATE TABLE IF NOT EXISTS `recordShortcutToRecordTag` (`shortcut_id` INTEGER NOT NULL, `record_tag_id` INTEGER NOT NULL, `record_tag_numeric_value` REAL, PRIMARY KEY(`shortcut_id`, `record_tag_id`))"
+                    "CREATE TABLE IF NOT EXISTS `recordShortcutToRecordTag` (`shortcut_id` INTEGER NOT NULL, `record_tag_id` INTEGER NOT NULL, `record_tag_numeric_value` REAL, PRIMARY KEY(`shortcut_id`, `record_tag_id`))",
                 )
             }
         }

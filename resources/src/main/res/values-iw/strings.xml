@@ -156,6 +156,8 @@
     <string name="change_record_multiselect">בחירה מרובה</string>
     <string name="change_record_multiselect_hint">בחר מספר רשומות ופתח שוב את תפריט הפעולות</string>
     <string name="change_record_adjust">שנה</string>
+    <string name="change_record_shortcut">קיצור דרך</string>
+    <string name="change_record_shortcut_hint">ייווצר קיצור דרך בלשונית הראשית עם תגיות ותגובה שנבחרו מראש לגישה מהירה יותר</string>
     <string name="change_record_change_prev_record">שנה גם זמן של רשומה קודמת</string>
     <string name="change_record_change_adjacent_records">שנה גם זמן של רשומות סמוכות</string>
     <string name="change_record_change_prev">הקודם</string>

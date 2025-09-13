@@ -146,7 +146,6 @@ class RecordView @JvmOverloads constructor(
                 if (hasValue(R.styleable.RecordView_itemComment)) {
                     itemComment = getString(R.styleable.RecordView_itemComment).orEmpty()
                 }
-
             }
     }
 

@@ -2,7 +2,6 @@ package com.example.util.simpletimetracker.domain.recordTag.repo
 
 import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.domain.recordTag.model.RecordShortcutToRecordTag
-import com.example.util.simpletimetracker.domain.recordTag.model.RecordToRecordTag
 
 interface RecordShortcutToRecordTagRepo {
 

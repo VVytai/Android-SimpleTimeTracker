@@ -3,9 +3,7 @@ package com.example.util.simpletimetracker.data_local.recordTag
 import com.example.util.simpletimetracker.data_local.base.logDataAccess
 import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.domain.recordTag.model.RecordShortcutToRecordTag
-import com.example.util.simpletimetracker.domain.recordTag.model.RecordToRecordTag
 import com.example.util.simpletimetracker.domain.recordTag.repo.RecordShortcutToRecordTagRepo
-import com.example.util.simpletimetracker.domain.recordTag.repo.RecordToRecordTagRepo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject

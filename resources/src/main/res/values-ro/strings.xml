@@ -156,6 +156,8 @@ Acest lucru îți permite să vezi cât timp petreci în activități productive
     <string name="change_record_multiselect">Selecție multiplă</string>
     <string name="change_record_multiselect_hint">Selectează mai multe înregistrări și deschide din nou meniul de acțiuni</string>
     <string name="change_record_adjust">Modifică</string>
+    <string name="change_record_shortcut">Scurtătură</string>
+    <string name="change_record_shortcut_hint">Se va crea o scurtătură în fila principală cu etichete și comentariu preselectate pentru acces mai rapid</string>
     <string name="change_record_change_prev_record">Modifică de asemenea timpul înregistrării precedente</string>
     <string name="change_record_change_adjacent_records">Modifică de asemenea timpul înregistrărilor adiacente</string>
     <string name="change_record_change_prev">Anterior</string>

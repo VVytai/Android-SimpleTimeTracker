@@ -156,6 +156,8 @@
     <string name="change_record_multiselect">多重選取</string>
     <string name="change_record_multiselect_hint">選取多筆記錄後再次開啟操作選單</string>
     <string name="change_record_adjust">改變</string>
+    <string name="change_record_shortcut">捷徑</string>
+    <string name="change_record_shortcut_hint">將在主頁籤建立一個包含預先選擇的標籤和註解的捷徑，以便更快存取</string>
     <string name="change_record_change_prev_record">也會改變前筆紀錄的時間</string>
     <string name="change_record_change_adjacent_records">也會改變鄰近紀錄的時間</string>
     <string name="change_record_change_prev">以前的</string>

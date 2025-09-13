@@ -1,11 +1,11 @@
 package com.example.util.simpletimetracker.feature_base_adapter.recordShortcut
 
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
-import com.example.util.simpletimetracker.feature_base_adapter.record.RecordViewData
+import com.example.util.simpletimetracker.feature_base_adapter.category.CategoryViewData
 
 data class RecordShortcutViewData(
     val id: Long,
-    val record: RecordViewData,
+    val data: CategoryViewData.Record,
 ) : ViewHolderType {
 
     override fun getUniqueId(): Long = id

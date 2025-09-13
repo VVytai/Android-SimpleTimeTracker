@@ -156,6 +156,8 @@ Detta gör att du kan se hur mycket tid du spenderar på produktiva kontra icke-
     <string name="change_record_multiselect">Flerval</string>
     <string name="change_record_multiselect_hint">Välj flera poster och öppna åtgärdsmenyn igen</string>
     <string name="change_record_adjust">Förändra</string>
+    <string name="change_record_shortcut">Genväg</string>
+    <string name="change_record_shortcut_hint">En genväg kommer att skapas på huvudfliken med förvalda taggar och kommentar för snabbare åtkomst</string>
     <string name="change_record_change_prev_record">Ändra även tid för tidigare händelse</string>
     <string name="change_record_change_adjacent_records">Ändra också tiden för de intilliggande händelserna</string>
     <string name="change_record_change_prev">Tidigare</string>

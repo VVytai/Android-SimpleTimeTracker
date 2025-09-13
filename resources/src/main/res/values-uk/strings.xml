@@ -156,6 +156,8 @@
     <string name="change_record_multiselect">Мультивибір</string>
     <string name="change_record_multiselect_hint">Виберіть кілька записів і знову відкрийте меню дій</string>
     <string name="change_record_adjust">Змінити</string>
+    <string name="change_record_shortcut">Ярлик</string>
+    <string name="change_record_shortcut_hint">Для швидшого доступу буде створено ярлик на головній вкладці з попередньо вибраними тегами та коментарем</string>
     <string name="change_record_change_prev_record">Також змінити час попереднього запису</string>
     <string name="change_record_change_adjacent_records">Також змінити час суміжних записів</string>
     <string name="change_record_change_prev">Попередній</string>

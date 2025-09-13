@@ -15,7 +15,7 @@ class RecordActionShortcutMediator @Inject constructor(
         tagIds: List<RecordBase.Tag>,
     ) {
         RecordShortcut(
-            id = 0L,  // Creates new record.
+            id = 0L, // Creates new record.
             typeId = typeId,
             comment = comment,
             tags = tagIds,

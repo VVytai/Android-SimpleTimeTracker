@@ -1,7 +1,6 @@
 package com.example.util.simpletimetracker.feature_base_adapter.recordShortcut
 
 import com.example.util.simpletimetracker.feature_base_adapter.createRecyclerBindingAdapterDelegate
-import com.example.util.simpletimetracker.feature_base_adapter.record.bindState
 import com.example.util.simpletimetracker.feature_views.extension.setOnClick
 import com.example.util.simpletimetracker.feature_views.extension.setOnLongClick
 import com.example.util.simpletimetracker.feature_base_adapter.databinding.ItemRecordShortcutLayoutBinding as Binding
@@ -14,10 +13,16 @@ fun createRecordShortcutAdapterDelegate(
     Binding::inflate,
 ) { binding, item, _ ->
 
-    with(binding.viewRecordItem) {
+    with(binding.viewRecordShortcutItem) {
         item as ViewData
 
-        bindState(item.record)
+        itemColor = item.data.color
+        itemName = item.data.name
+        itemIconColor = item.data.iconColor
+        itemIconAlpha = item.data.iconAlpha
+        itemIconVisible = item.data.icon != null
+        item.data.icon?.let(this::itemIcon::set)
+
         setOnClick { onItemClick(item) }
         setOnLongClick { onItemLongClick(item) }
     }

@@ -156,6 +156,8 @@ Cela vous permet de voir combien de temps vous passez globalement sur des activi
     <string name="change_record_multiselect">Sélection multiple</string>
     <string name="change_record_multiselect_hint">Sélectionnez plusieurs enregistrements, puis rouvrez le menu Actions</string>
     <string name="change_record_adjust">Changement</string>
+    <string name="change_record_shortcut">Raccourci</string>
+    <string name="change_record_shortcut_hint">Un raccourci sera créé dans l\'onglet principal avec des tags et un commentaire présélectionnés pour un accès plus rapide</string>
     <string name="change_record_change_prev_record">Modifier également l\'heure de l\'enregistrement précédent</string>
     <string name="change_record_change_adjacent_records">Modifier également l\'heure des enregistrements adjacents</string>
     <string name="change_record_change_prev">Précédent</string>

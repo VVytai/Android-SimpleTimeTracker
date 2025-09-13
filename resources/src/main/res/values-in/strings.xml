@@ -156,6 +156,8 @@ Ini memungkinkan Anda melihat berapa banyak waktu yang dihabiskan untuk aktivita
     <string name="change_record_multiselect">Pilih ganda</string>
     <string name="change_record_multiselect_hint">Pilih beberapa data lalu buka kembali menu Tindakan</string>
     <string name="change_record_adjust">Mengubah</string>
+    <string name="change_record_shortcut">Pintasan</string>
+    <string name="change_record_shortcut_hint">Akan membuat pintasan di tab utama dengan tag dan komentar yang dipilih sebelumnya untuk akses lebih cepat</string>
     <string name="change_record_change_prev_record">Juga ubah waktu rekaman sebelumnya</string>
     <string name="change_record_change_adjacent_records">Juga ubah waktu catatan yang berdekatan</string>
     <string name="change_record_change_prev">Sebelumnya</string>

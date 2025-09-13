@@ -13,7 +13,6 @@ import com.example.util.simpletimetracker.domain.record.interactor.RecordInterac
 import com.example.util.simpletimetracker.domain.record.interactor.RunningRecordInteractor
 import com.example.util.simpletimetracker.domain.record.model.RunningRecord
 import com.example.util.simpletimetracker.domain.recordShortcut.interactor.RecordShortcutInteractor
-import com.example.util.simpletimetracker.domain.recordShortcut.model.RecordShortcut
 import com.example.util.simpletimetracker.domain.recordTag.interactor.RecordTagInteractor
 import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTypeGoalInteractor
 import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTypeInteractor
@@ -76,6 +75,9 @@ class RunningRecordsViewDataInteractor @Inject constructor(
         } else {
             // No goals - no need to calculate durations.
             emptyMap()
+        }
+        val runningRecordsProcessed = runningRecords.map { runningRecord ->
+            runningRecord.copy(tags = runningRecord.tags.sortedBy { it.tagId })
         }
 
         val runningRecordsViewData = when {
@@ -198,11 +200,17 @@ class RunningRecordsViewDataInteractor @Inject constructor(
             }
 
         val shortcutsViewData = shortcuts.mapNotNull { shortcut ->
+            val isRunning = runningRecordsProcessed.any { runningRecord ->
+                runningRecord.id == shortcut.typeId &&
+                    runningRecord.comment == shortcut.comment &&
+                    runningRecord.tags == shortcut.tags.sortedBy { it.tagId }
+            }
             recordShortcutViewDataMapper.map(
                 shortcut = shortcut,
                 recordType = recordTypesMap[shortcut.typeId] ?: return@mapNotNull null,
                 recordTags = recordTags,
                 isDarkTheme = isDarkTheme,
+                isFiltered = isRunning,
             )
         }.takeIf {
             it.isNotEmpty()

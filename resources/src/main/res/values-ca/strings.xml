@@ -156,6 +156,8 @@ Això et permet veure quant de temps dediques a activitats productives versus no
     <string name="change_record_multiselect">Selecció múltiple</string>
     <string name="change_record_multiselect_hint">Selecciona diversos registres i obre de nou el menú d\'accions</string>
     <string name="change_record_adjust">Canvi</string>
+    <string name="change_record_shortcut">Drecera</string>
+    <string name="change_record_shortcut_hint">Es crearà una drecera a la pestanya principal amb etiquetes i comentari preseleccionats per a un accés més ràpid</string>
     <string name="change_record_change_prev_record">També canvia el temps de l\'enregistrament anterior</string>
     <string name="change_record_change_adjacent_records">També canvia el temps dels enregistraments adjacents</string>
     <string name="change_record_change_prev">Anterior</string>

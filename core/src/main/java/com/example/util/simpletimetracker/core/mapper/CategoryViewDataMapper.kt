@@ -248,6 +248,7 @@ class CategoryViewDataMapper @Inject constructor(
         )
     }
 
+    // TODO move to color mapper
     fun getTextColor(
         isDarkTheme: Boolean,
         isFiltered: Boolean,
@@ -259,6 +260,7 @@ class CategoryViewDataMapper @Inject constructor(
         }
     }
 
+    // TODO move to color mapper
     private fun getColor(
         color: AppColor,
         isDarkTheme: Boolean,
@@ -267,7 +269,7 @@ class CategoryViewDataMapper @Inject constructor(
         return if (isFiltered) {
             colorMapper.toFilteredColor(isDarkTheme)
         } else {
-            color.let { colorMapper.mapToColorInt(it, isDarkTheme) }
+            colorMapper.mapToColorInt(color, isDarkTheme)
         }
     }
 

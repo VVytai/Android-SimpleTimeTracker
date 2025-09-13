@@ -1,9 +1,6 @@
 package com.example.util.simpletimetracker.data_local.recordShortcut
 
 import com.example.util.simpletimetracker.data_local.recordTag.RecordShortcutToRecordTagDBO
-import com.example.util.simpletimetracker.data_local.recordTag.RecordToRecordTagDBO
-import com.example.util.simpletimetracker.domain.extension.dropMillis
-import com.example.util.simpletimetracker.domain.record.model.Record
 import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.domain.recordShortcut.model.RecordShortcut
 import javax.inject.Inject

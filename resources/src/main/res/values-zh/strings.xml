@@ -156,6 +156,8 @@
     <string name="change_record_multiselect">多选</string>
     <string name="change_record_multiselect_hint">选择多个记录后再次打开操作菜单</string>
     <string name="change_record_adjust">更改</string>
+    <string name="change_record_shortcut">快捷方式</string>
+    <string name="change_record_shortcut_hint">将在主标签页创建一个包含预选标签和备注的快捷方式，以便更快访问</string>
     <string name="change_record_change_prev_record">同时更改前笔记录的时间</string>
     <string name="change_record_change_adjacent_records">同时更改临近记录的时间</string>
     <string name="change_record_change_prev">上一个</string>

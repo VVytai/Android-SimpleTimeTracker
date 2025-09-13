@@ -156,6 +156,8 @@ Dit stelt je in staat om te zien hoeveel tijd je in totaal besteedt aan producti
     <string name="change_record_multiselect">Meervoudige selectie</string>
     <string name="change_record_multiselect_hint">Selecteer meerdere records en open opnieuw het actiemenu</string>
     <string name="change_record_adjust">Verandering</string>
+    <string name="change_record_shortcut">Snelkoppeling</string>
+    <string name="change_record_shortcut_hint">Er wordt een snelkoppeling gemaakt op het hoofdtabblad met vooraf geselecteerde tags en een opmerking voor snellere toegang</string>
     <string name="change_record_change_prev_record">Wijzig ook de tijd van het vorige record</string>
     <string name="change_record_change_adjacent_records">Wijzig ook de tijd van aangrenzende records</string>
     <string name="change_record_change_prev">Vorig</string>

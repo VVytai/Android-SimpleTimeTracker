@@ -156,6 +156,8 @@
     <string name="change_record_multiselect">تحديد متعدد</string>
     <string name="change_record_multiselect_hint">حدد سجلات متعددة ثم افتح قائمة الإجراءات مرة أخرى</string>
     <string name="change_record_adjust">تغيير</string>
+    <string name="change_record_shortcut">اختصار</string>
+    <string name="change_record_shortcut_hint">سيتم إنشاء اختصار في علامة التبويب الرئيسية مع علامات وتعليق محددين مسبقًا للوصول بشكل أسرع</string>
     <string name="change_record_change_prev_record">تغيير وقت التتبع السابق أيضا</string>
     <string name="change_record_change_adjacent_records">تغيير وقت التتبع المحاذي أيضا</string>
     <string name="change_record_change_prev">سابق</string>

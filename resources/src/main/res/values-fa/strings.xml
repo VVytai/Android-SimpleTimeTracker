@@ -156,6 +156,8 @@
     <string name="change_record_multiselect">چندانتخابی</string>
     <string name="change_record_multiselect_hint">چند رکورد را انتخاب کرده و دوباره منوی عملیات را باز کنید</string>
     <string name="change_record_adjust">تغییر</string>
+    <string name="change_record_shortcut">میانبر</string>
+    <string name="change_record_shortcut_hint">یک میانبر در تب اصلی با برچسب‌ها و یادداشت از پیش انتخاب‌شده ایجاد خواهد شد تا دسترسی سریع‌تر باشد</string>
     <string name="change_record_change_prev_record">همچنین زمان تاریخچه قبلی را تغییر دهید</string>
     <string name="change_record_change_adjacent_records">همچنین زمان تاریخچه های مجاور را تغییر دهید</string>
     <string name="change_record_change_prev">قبلی</string>

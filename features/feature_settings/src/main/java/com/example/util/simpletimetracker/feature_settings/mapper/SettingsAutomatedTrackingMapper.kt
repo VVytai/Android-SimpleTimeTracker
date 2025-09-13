@@ -147,7 +147,7 @@ class SettingsAutomatedTrackingMapper @Inject constructor(
                     optional = listOf(
                         EXTRA_RECORD_TYPE_ICON,
                     ),
-                )
+                ),
             ),
             isDarkTheme = isDarkTheme,
         )

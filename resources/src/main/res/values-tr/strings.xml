@@ -156,6 +156,8 @@ Bu, genel olarak verimli ve verimsiz aktivitelere ne kadar zaman harcadığını
     <string name="change_record_multiselect">Çoklu seçim</string>
     <string name="change_record_multiselect_hint">Birden fazla kayıt seçin ve işlem menüsünü tekrar açın</string>
     <string name="change_record_adjust">Değiştirmek</string>
+    <string name="change_record_shortcut">Kısayol</string>
+    <string name="change_record_shortcut_hint">Daha hızlı erişim için önceden seçilmiş etiketler ve yorum ile ana sekmede bir kısayol oluşturulacaktır</string>
     <string name="change_record_change_prev_record">Ayrıca önceki kaydın zamanını değiştir</string>
     <string name="change_record_change_adjacent_records">Bitişik kayıtların zamanını da değiştir</string>
     <string name="change_record_change_prev">Öncesi</string>

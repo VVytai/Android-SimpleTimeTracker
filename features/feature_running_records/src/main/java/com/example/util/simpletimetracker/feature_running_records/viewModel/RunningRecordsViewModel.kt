@@ -290,6 +290,7 @@ class RunningRecordsViewModel @Inject constructor(
             comment = shortcut.comment,
             tags = shortcut.tags,
         )
+        updateRunningRecords()
     }
 
     fun onShortcutLongClick(item: RecordShortcutViewData) {

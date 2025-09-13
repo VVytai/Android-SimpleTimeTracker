@@ -156,6 +156,8 @@
     <string name="change_record_multiselect">मल्टिसलेक्ट</string>
     <string name="change_record_multiselect_hint">कई रिकॉर्ड चुनें और फिर से क्रियाएँ मेनू खोलें</string>
     <string name="change_record_adjust">बदलना</string>
+    <string name="change_record_shortcut">शॉर्टकट</string>
+    <string name="change_record_shortcut_hint">तेज़ी से पहुँच के लिए मुख्य टैब पर पूर्वनिर्धारित टैग और टिप्पणी के साथ एक शॉर्टकट बनाया जाएगा</string>
     <string name="change_record_change_prev_record">पिछले रिकॉर्ड का समय भी बदलें</string>
     <string name="change_record_change_adjacent_records">पास के रिकॉर्ड का समय भी बदलें</string>
     <string name="change_record_change_prev">पहले का</string>

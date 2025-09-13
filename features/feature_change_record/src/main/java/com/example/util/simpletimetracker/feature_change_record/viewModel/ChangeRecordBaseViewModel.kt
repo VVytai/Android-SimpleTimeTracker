@@ -867,7 +867,7 @@ abstract class ChangeRecordBaseViewModel(
                     ),
                     shortcutParams = ViewDataParams.ShortcutParams(
                         isAvailable = true,
-                    )
+                    ),
                 )
             }
         }

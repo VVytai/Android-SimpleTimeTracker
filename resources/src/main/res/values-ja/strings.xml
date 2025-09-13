@@ -156,6 +156,8 @@
     <string name="change_record_multiselect">マルチ選択</string>
     <string name="change_record_multiselect_hint">複数のレコードを選択して、もう一度アクションメニューを開いてください</string>
     <string name="change_record_adjust">変更する</string>
+    <string name="change_record_shortcut">ショートカット</string>
+    <string name="change_record_shortcut_hint">メインタブに、事前に選択されたタグとコメント付きのショートカットが作成され、より素早くアクセスできます</string>
     <string name="change_record_change_prev_record">前のレコードの時刻も変更</string>
     <string name="change_record_change_adjacent_records">隣接レコードの時刻も変更</string>
     <string name="change_record_change_prev">前の</string>

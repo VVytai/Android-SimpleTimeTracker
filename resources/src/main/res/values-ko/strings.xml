@@ -156,6 +156,8 @@
     <string name="change_record_multiselect">다중 선택</string>
     <string name="change_record_multiselect_hint">여러 레코드를 선택하고 다시 작업 메뉴를 여세요</string>
     <string name="change_record_adjust">변경</string>
+    <string name="change_record_shortcut">바로가기</string>
+    <string name="change_record_shortcut_hint">더 빠른 접근을 위해 미리 선택된 태그와 댓글로 메인 탭에 바로가기를 생성합니다</string>
     <string name="change_record_change_prev_record">이전 기록도 함께 변경</string>
     <string name="change_record_change_adjacent_records">관련 기록의 시간도 함께 변경</string>
     <string name="change_record_change_prev">이전의</string>

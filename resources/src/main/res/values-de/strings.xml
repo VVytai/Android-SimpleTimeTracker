@@ -156,6 +156,8 @@ Dies ermöglicht es dir, zu sehen, wie viel Zeit du insgesamt für produktive ve
     <string name="change_record_multiselect">Mehrfachauswahl</string>
     <string name="change_record_multiselect_hint">Wählen Sie mehrere Einträge aus und öffnen Sie das Aktionsmenü erneut</string>
     <string name="change_record_adjust">Ändern</string>
+    <string name="change_record_shortcut">Verknüpfung</string>
+    <string name="change_record_shortcut_hint">Erstellt eine Verknüpfung im Haupttab mit vorausgewählten Tags und Kommentar für schnelleren Zugriff</string>
     <string name="change_record_change_prev_record">Ändern Sie auch die Zeit des vorherigen Datensatzes</string>
     <string name="change_record_change_adjacent_records">Ändern Sie auch die Zeit benachbarter Datensätze</string>
     <string name="change_record_change_prev">Vorherige</string>

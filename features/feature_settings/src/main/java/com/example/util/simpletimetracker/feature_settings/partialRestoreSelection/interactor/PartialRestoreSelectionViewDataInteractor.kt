@@ -158,13 +158,8 @@ class PartialRestoreSelectionViewDataInteractor @Inject constructor(
                         recordType = typesMap[it.typeId] ?: return@mapNotNull null,
                         recordTags = tags,
                         isDarkTheme = isDarkTheme,
-                    ).let { mapped ->
-                        recordShortcutViewDataMapper.mapFiltered(
-                            viewData = mapped,
-                            isDarkTheme = isDarkTheme,
-                            isFiltered = mapped.id in dataIdsFiltered,
-                        )
-                    }
+                        isFiltered = it.id in dataIdsFiltered,
+                    )
                 }
             }
             is PartialRestoreFilterType.ActivityFilters -> {

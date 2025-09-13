@@ -156,6 +156,8 @@ Pozwala to zobaczyć, ile czasu spędzasz na produktywnych i nieproduktywnych ak
     <string name="change_record_multiselect">Wielokrotny wybór</string>
     <string name="change_record_multiselect_hint">Wybierz wiele rekordów i ponownie otwórz menu działań</string>
     <string name="change_record_adjust">Zmień</string>
+    <string name="change_record_shortcut">Skrót</string>
+    <string name="change_record_shortcut_hint">Na karcie głównej zostanie utworzony skrót z wybranymi wcześniej tagami i komentarzem, aby ułatwić dostęp</string>
     <string name="change_record_change_prev_record">Zmień także czas poprzedniego rekordu</string>
     <string name="change_record_change_adjacent_records">Zmień także czas sąsiadujących rekordów</string>
     <string name="change_record_change_prev">Poprzedni</string>
