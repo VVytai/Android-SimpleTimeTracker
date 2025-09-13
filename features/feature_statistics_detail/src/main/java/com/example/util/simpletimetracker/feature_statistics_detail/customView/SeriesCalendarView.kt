@@ -1,5 +1,7 @@
 package com.example.util.simpletimetracker.feature_statistics_detail.customView
 
+import android.animation.Animator
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
@@ -36,6 +38,7 @@ class SeriesCalendarView @JvmOverloads constructor(
     // Attrs
     private var legendTextSize: Float = 0f
     private var legendTextColor: Int = 0
+    private var selectedCellColor: Int = 0
     // Attrs
 
     private val columnsCount: Int = 26
@@ -51,11 +54,18 @@ class SeriesCalendarView @JvmOverloads constructor(
     private var chartFullWidth: Float = 0f
     private var cellNotPresentColorAlpha = 0.2f
     private var cellPresentColorAlphaBase = 0.6f
+    private var selectedCell: Data? = null
+    private var selectedCellAlpha: Int = 0
+    private var selectedCellAnimator: Animator? = null
+    private val selectedCellWidthRatio: Float = 0.3f
+    private val selectedCellAnimationDurationMs: Long = 3_000
+    private val selectedCellStartAlpha: Float = 0.4f
     private var listener: (ViewData, Coordinates) -> Unit = { _, _ -> }
 
     private val cellPresentPaint: Paint = Paint()
     private val cellNotPresentPaint: Paint = Paint()
     private val legendTextPaint: Paint = Paint()
+    private val selectedCellPaint: Paint = Paint()
 
     private val singleTapDetector = SingleTapDetector(
         context = context,
@@ -108,6 +118,7 @@ class SeriesCalendarView @JvmOverloads constructor(
 
         calculateDimensions()
         drawCells(canvas, w, h)
+        drawSelectedCell(canvas)
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -160,6 +171,8 @@ class SeriesCalendarView @JvmOverloads constructor(
                     getDimensionPixelSize(R.styleable.SeriesCalendarView_seriesLegendTextSize, 14).toFloat()
                 legendTextColor =
                     getColor(R.styleable.SeriesCalendarView_seriesLegendTextColor, Color.BLACK)
+                selectedCellColor =
+                    getColor(R.styleable.SeriesCalendarView_seriesSelectedCellColor, Color.BLACK)
             }
     }
 
@@ -180,10 +193,15 @@ class SeriesCalendarView @JvmOverloads constructor(
             color = legendTextColor
             textSize = legendTextSize
         }
+        selectedCellPaint.apply {
+            isAntiAlias = true
+            style = Paint.Style.FILL
+        }
     }
 
     private fun initEditMode() {
         if (isInEditMode) {
+            setCellColor(Color.RED)
             (30 downTo 1).toList()
                 .map { ViewData.Present(0, "", ViewData.ColorLevel.THREE) }
                 .let { setData(it, rowsCount) }
@@ -257,6 +275,27 @@ class SeriesCalendarView @JvmOverloads constructor(
         }
     }
 
+    private fun drawSelectedCell(canvas: Canvas) {
+        val selectedCell = selectedCell ?: return
+
+        selectedCellPaint.color = if (selectedCell.cell is ViewData.Present) {
+            Color.WHITE
+        } else {
+            selectedCellColor
+        }
+        selectedCellPaint.alpha = selectedCellAlpha
+
+        val boxWidth = selectedCell.boxRight - selectedCell.boxLeft
+        val boxHeight = selectedCell.boxBottom - selectedCell.boxTop
+
+        canvas.drawCircle(
+            selectedCell.boxLeft + boxWidth / 2f,
+            selectedCell.boxTop + boxHeight / 2f,
+            boxWidth * selectedCellWidthRatio / 2f,
+            selectedCellPaint,
+        )
+    }
+
     private fun getPresentCellFinalAlpha(colorLevel: ViewData.ColorLevel): Int {
         val maxLevel = ViewData.ColorLevel.entries.size
         val alphaCoefficient = if (maxLevel > 1) {
@@ -268,12 +307,32 @@ class SeriesCalendarView @JvmOverloads constructor(
         return (255 * baseAlpha).toInt()
     }
 
+    private fun animateSelectedCell() {
+        val from = 255 * selectedCellStartAlpha
+        val animator = ValueAnimator.ofInt(from.toInt(), 0)
+            .also { selectedCellAnimator = it }
+
+        animator.duration = selectedCellAnimationDurationMs
+        animator.addUpdateListener {
+            selectedCellAlpha = it.animatedValue as? Int
+                ?: return@addUpdateListener
+            invalidate()
+        }
+        animator.start()
+    }
+
+    private fun cancelSelectedCellAnimation() {
+        selectedCellAnimator?.cancel()
+        selectedCell = null
+    }
+
     @Suppress("UNUSED_PARAMETER")
     private fun onSwipe(offset: Float, direction: SwipeDetector.Direction, event: MotionEvent) {
         if (direction.isHorizontal()) {
             parent.requestDisallowInterceptTouchEvent(true)
             panFactor = lastPanFactor + offset
             coercePan()
+            cancelSelectedCellAnimation()
             invalidate()
         }
     }
@@ -287,6 +346,7 @@ class SeriesCalendarView @JvmOverloads constructor(
         }?.let {
             val globalRect = Rect()
             getGlobalVisibleRect(globalRect)
+            selectedCell = it
             listener(
                 it.cell,
                 // Calculate from the bottom, because when view is half scrolled on the top,
@@ -299,6 +359,7 @@ class SeriesCalendarView @JvmOverloads constructor(
                     bottom = globalRect.bottom - height + it.boxBottom.toInt(),
                 ),
             )
+            animateSelectedCell()
         }
     }
 

@@ -24,5 +24,6 @@
     <declare-styleable name="SeriesCalendarView">
         <attr name="seriesLegendTextSize" />
         <attr name="seriesLegendTextColor" />
+        <attr name="seriesSelectedCellColor" format="color" />
     </declare-styleable>
 </resources>
