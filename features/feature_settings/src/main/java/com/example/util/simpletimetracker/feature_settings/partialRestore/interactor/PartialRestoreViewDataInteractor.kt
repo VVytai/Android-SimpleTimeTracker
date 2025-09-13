@@ -70,6 +70,7 @@ class PartialRestoreViewDataInteractor @Inject constructor(
             PartialRestoreFilterType.Categories,
             PartialRestoreFilterType.Tags,
             PartialRestoreFilterType.Records,
+            PartialRestoreFilterType.RecordShortcuts,
             PartialRestoreFilterType.ActivityFilters,
             PartialRestoreFilterType.FavouriteComments,
             PartialRestoreFilterType.FavouriteColors,

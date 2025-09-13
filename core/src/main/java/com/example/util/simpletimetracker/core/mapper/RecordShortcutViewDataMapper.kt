@@ -12,6 +12,7 @@ class RecordShortcutViewDataMapper @Inject constructor(
     private val iconMapper: IconMapper,
     private val colorMapper: ColorMapper,
     private val recordTagFullNameMapper: RecordTagFullNameMapper,
+    private val recordViewDataMapper: RecordViewDataMapper,
 ) {
 
     fun map(
@@ -45,11 +46,31 @@ class RecordShortcutViewDataMapper @Inject constructor(
             // TODO SHORT move to one line after "name - tag"?
             // TODO SHORT remove "Shortcut" label and add hint?
             // TODO SHORT width wrapContent?
+            // TODO SHORT show filtered if already started?
+            // TODO SHORT translate strings
+            // TODO SHORT add message after adding
         )
 
         return RecordShortcutViewData(
             id = shortcut.id,
             record = data,
         )
+    }
+
+    fun mapFiltered(
+        viewData: RecordShortcutViewData,
+        isDarkTheme: Boolean,
+        isFiltered: Boolean,
+    ): RecordShortcutViewData {
+        return if (isFiltered) {
+            val newRecordData = recordViewDataMapper.mapFiltered(
+                viewData = viewData.record,
+                isDarkTheme = isDarkTheme,
+                isFiltered = true
+            )
+            viewData.copy(record = newRecordData)
+        } else {
+            viewData
+        }
     }
 }

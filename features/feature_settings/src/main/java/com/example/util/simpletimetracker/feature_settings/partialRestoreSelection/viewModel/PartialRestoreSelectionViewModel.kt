@@ -18,6 +18,7 @@ import com.example.util.simpletimetracker.feature_base_adapter.complexRule.Compl
 import com.example.util.simpletimetracker.feature_base_adapter.emoji.EmojiViewData
 import com.example.util.simpletimetracker.feature_base_adapter.loader.LoaderViewData
 import com.example.util.simpletimetracker.feature_base_adapter.record.RecordViewData
+import com.example.util.simpletimetracker.feature_base_adapter.recordShortcut.RecordShortcutViewData
 import com.example.util.simpletimetracker.feature_base_adapter.recordType.RecordTypeViewData
 import com.example.util.simpletimetracker.feature_settings.partialRestore.utils.getIds
 import com.example.util.simpletimetracker.feature_settings.partialRestoreSelection.interactor.PartialRestoreSelectionViewDataInteractor
@@ -93,6 +94,10 @@ class PartialRestoreSelectionViewModel @Inject constructor(
     fun onRecordClick(item: RecordViewData, sharedElements: Pair<Any, String>? = null) {
         val itemId = (item as? RecordViewData.Tracked)?.id ?: return
         addOrRemoveId(itemId)
+    }
+
+    fun onRecordShortcutClick(item: RecordShortcutViewData) {
+        addOrRemoveId(item.id)
     }
 
     fun onShowAllClick() {

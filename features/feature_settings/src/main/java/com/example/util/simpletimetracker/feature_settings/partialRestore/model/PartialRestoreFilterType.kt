@@ -18,6 +18,9 @@ sealed interface PartialRestoreFilterType : FilterViewData.Type, Parcelable {
     object Records : PartialRestoreFilterType
 
     @Parcelize
+    object RecordShortcuts : PartialRestoreFilterType
+
+    @Parcelize
     object ActivityFilters : PartialRestoreFilterType
 
     @Parcelize

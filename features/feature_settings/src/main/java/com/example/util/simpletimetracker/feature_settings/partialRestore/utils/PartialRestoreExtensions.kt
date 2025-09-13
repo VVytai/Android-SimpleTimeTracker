@@ -12,6 +12,7 @@ fun PartialBackupRestoreData.getIds(
         is PartialRestoreFilterType.Categories -> categories
         is PartialRestoreFilterType.Tags -> tags
         is PartialRestoreFilterType.Records -> records
+        is PartialRestoreFilterType.RecordShortcuts -> recordShortcuts
         is PartialRestoreFilterType.ActivityFilters -> activityFilters
         is PartialRestoreFilterType.FavouriteComments -> favouriteComments
         is PartialRestoreFilterType.FavouriteColors -> favouriteColors

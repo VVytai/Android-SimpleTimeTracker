@@ -1,7 +1,6 @@
 package com.example.util.simpletimetracker.data_local.backup
 
 import android.content.ContentResolver
-import android.net.Uri
 import android.os.ParcelFileDescriptor
 import androidx.annotation.StringRes
 import com.example.util.simpletimetracker.core.R
@@ -45,7 +44,11 @@ import com.example.util.simpletimetracker.domain.recordTag.repo.RecordTypeToTagR
 import com.example.util.simpletimetracker.domain.backup.repo.BackupRepo
 import com.example.util.simpletimetracker.domain.backup.model.ResultCode
 import com.example.util.simpletimetracker.domain.category.model.Category
+import com.example.util.simpletimetracker.domain.recordShortcut.model.RecordShortcut
+import com.example.util.simpletimetracker.domain.recordShortcut.repo.RecordShortcutRepo
+import com.example.util.simpletimetracker.domain.recordTag.model.RecordShortcutToRecordTag
 import com.example.util.simpletimetracker.domain.recordTag.model.RecordTagValueType
+import com.example.util.simpletimetracker.domain.recordTag.repo.RecordShortcutToRecordTagRepo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -57,6 +60,7 @@ import java.io.InputStream
 import java.io.InputStreamReader
 import javax.inject.Inject
 import javax.inject.Singleton
+import androidx.core.net.toUri
 
 /**
  * Do not change backup parts order, always add new to the end.
@@ -72,6 +76,7 @@ class BackupRepoImpl @Inject constructor(
     private val recordTypeToTagRepo: RecordTypeToTagRepo,
     private val recordTypeToDefaultTagRepo: RecordTypeToDefaultTagRepo,
     private val recordToRecordTagRepo: RecordToRecordTagRepo,
+    private val recordShortcutToRecordTagRepo: RecordShortcutToRecordTagRepo,
     private val recordTagRepo: RecordTagRepo,
     private val activityFilterRepo: ActivityFilterRepo,
     private val activitySuggestionRepo: ActivitySuggestionRepo,
@@ -80,6 +85,7 @@ class BackupRepoImpl @Inject constructor(
     private val favouriteIconRepo: FavouriteIconRepo,
     private val recordTypeGoalRepo: RecordTypeGoalRepo,
     private val complexRuleRepo: ComplexRuleRepo,
+    private val recordShortcutRepo: RecordShortcutRepo,
     private val clearDataInteractor: ClearDataInteractor,
     private val resourceRepo: ResourceRepo,
     private val daysOfWeekDataLocalMapper: DaysOfWeekDataLocalMapper,
@@ -94,7 +100,7 @@ class BackupRepoImpl @Inject constructor(
         var fileOutputStream: BufferedOutputStream? = null
 
         try {
-            val uri = Uri.parse(uriString)
+            val uri = uriString.toUri()
             fileDescriptor = contentResolver.openFileDescriptor(uri, "wt")
             fileOutputStream = fileDescriptor?.fileDescriptor
                 ?.let(::FileOutputStream)?.buffered()
@@ -118,7 +124,9 @@ class BackupRepoImpl @Inject constructor(
                     fileOutputStream?.write(it.let(::toBackupString).toByteArray())
                 }
             }
-            // TODO SHORT
+            recordShortcutRepo.getAll().forEach {
+                fileOutputStream?.write(it.let(::toBackupString).toByteArray())
+            }
             categoryRepo.getAll().forEach {
                 fileOutputStream?.write(it.let(::toBackupString).toByteArray())
             }
@@ -133,7 +141,9 @@ class BackupRepoImpl @Inject constructor(
                     fileOutputStream?.write(it.let(::toBackupString).toByteArray())
                 }
             }
-            // TODO SHORT
+            recordShortcutToRecordTagRepo.getAll().forEach {
+                fileOutputStream?.write(it.let(::toBackupString).toByteArray())
+            }
             recordTypeToTagRepo.getAll().forEach {
                 fileOutputStream?.write(it.let(::toBackupString).toByteArray())
             }
@@ -206,11 +216,13 @@ class BackupRepoImpl @Inject constructor(
             },
             dataHandler = DataHandler(
                 types = recordTypeRepo::add,
-                records = recordRepo::add, // TODO SHORT
+                records = recordRepo::add,
+                recordShortcuts = recordShortcutRepo::add,
                 categories = categoryRepo::add,
                 typeToCategory = recordTypeCategoryRepo::add,
                 tags = recordTagRepo::add,
-                recordToTag = recordToRecordTagRepo::add, // TODO SHORT
+                recordToTag = recordToRecordTagRepo::add,
+                recordShortcutToTag = recordShortcutToRecordTagRepo::add,
                 typeToTag = recordTypeToTagRepo::add,
                 typeToDefaultTag = recordTypeToDefaultTagRepo::add,
                 activityFilters = activityFilterRepo::add,
@@ -238,7 +250,7 @@ class BackupRepoImpl @Inject constructor(
         val errorCode = ResultCode.Error(resourceRepo.getString(errorCodeMessage))
 
         try {
-            val uri = Uri.parse(uriString)
+            val uri = uriString.toUri()
             inputStream = contentResolver.openInputStream(uri)
             reader = inputStream?.let(::InputStreamReader)?.let(::BufferedReader)
 
@@ -274,6 +286,12 @@ class BackupRepoImpl @Inject constructor(
                         }
                     }
 
+                    ROW_RECORD_SHORTCUT -> {
+                        recordShortcutFromBackupString(parts).let {
+                            dataHandler.recordShortcuts.invoke(it)
+                        }
+                    }
+
                     ROW_CATEGORY -> {
                         categoryFromBackupString(parts).let {
                             dataHandler.categories.invoke(it)
@@ -303,6 +321,12 @@ class BackupRepoImpl @Inject constructor(
                     ROW_RECORD_TO_RECORD_TAG -> {
                         recordToRecordTagFromBackupString(parts).let {
                             dataHandler.recordToTag.invoke(it)
+                        }
+                    }
+
+                    ROW_RECORD_SHORTCUT_TO_RECORD_TAG -> {
+                        recordShortcutToRecordTagFromBackupString(parts).let {
+                            dataHandler.recordShortcutToTag.invoke(it)
                         }
                     }
 
@@ -410,6 +434,15 @@ class BackupRepoImpl @Inject constructor(
         )
     }
 
+    private fun toBackupString(recordShortcut: RecordShortcut): String {
+        return String.format(
+            "$ROW_RECORD_SHORTCUT\t%s\t%s\t%s\n",
+            recordShortcut.id.toString(),
+            recordShortcut.typeId.toString(),
+            recordShortcut.comment.cleanTabs().replaceNewline(),
+        )
+    }
+
     private fun toBackupString(category: Category): String {
         return String.format(
             "$ROW_CATEGORY\t%s\t%s\t%s\t%s\t%s\n",
@@ -455,6 +488,15 @@ class BackupRepoImpl @Inject constructor(
             recordToRecordTag.recordId.toString(),
             recordToRecordTag.recordTagId.toString(),
             recordToRecordTag.recordTagNumericValue?.toString().orEmpty(),
+        )
+    }
+
+    private fun toBackupString(recordShortcutToRecordTag: RecordShortcutToRecordTag): String {
+        return String.format(
+            "$ROW_RECORD_SHORTCUT_TO_RECORD_TAG\t%s\t%s\t%s\n",
+            recordShortcutToRecordTag.shortcutId.toString(),
+            recordShortcutToRecordTag.recordTagId.toString(),
+            recordShortcutToRecordTag.recordTagNumericValue?.toString().orEmpty(),
         )
     }
 
@@ -667,6 +709,15 @@ class BackupRepoImpl @Inject constructor(
         ).takeUnless { tagId == 0L }
     }
 
+    private fun recordShortcutFromBackupString(parts: List<String>): RecordShortcut {
+        return RecordShortcut(
+            id = parts.getOrNull(1)?.toLongOrNull().orZero(),
+            typeId = parts.getOrNull(2)?.toLongOrNull() ?: 1L,
+            comment = parts.getOrNull(3)?.restoreNewline().orEmpty(),
+            tags = emptyList(), // Stored separately.
+        )
+    }
+
     private fun categoryFromBackupString(parts: List<String>): Category {
         return Category(
             id = parts.getOrNull(1)?.toLongOrNull().orZero(),
@@ -714,6 +765,14 @@ class BackupRepoImpl @Inject constructor(
     private fun recordToRecordTagFromBackupString(parts: List<String>): RecordToRecordTag {
         return RecordToRecordTag(
             recordId = parts.getOrNull(1)?.toLongOrNull().orZero(),
+            recordTagId = parts.getOrNull(2)?.toLongOrNull().orZero(),
+            recordTagNumericValue = parts.getOrNull(3)?.toDoubleOrNull(),
+        )
+    }
+
+    private fun recordShortcutToRecordTagFromBackupString(parts: List<String>): RecordShortcutToRecordTag {
+        return RecordShortcutToRecordTag(
+            shortcutId = parts.getOrNull(1)?.toLongOrNull().orZero(),
             recordTagId = parts.getOrNull(2)?.toLongOrNull().orZero(),
             recordTagNumericValue = parts.getOrNull(3)?.toDoubleOrNull(),
         )
@@ -882,10 +941,12 @@ class BackupRepoImpl @Inject constructor(
     data class DataHandler(
         val types: suspend (RecordType) -> Unit,
         val records: suspend (Record) -> Unit,
+        val recordShortcuts: suspend (RecordShortcut) -> Unit,
         val categories: suspend (Category) -> Unit,
         val typeToCategory: suspend (RecordTypeCategory) -> Unit,
         val tags: suspend (RecordTag) -> Unit,
         val recordToTag: suspend (RecordToRecordTag) -> Unit,
+        val recordShortcutToTag: suspend (RecordShortcutToRecordTag) -> Unit,
         val typeToTag: suspend (RecordTypeToTag) -> Unit,
         val typeToDefaultTag: suspend (RecordTypeToDefaultTag) -> Unit,
         val activityFilters: suspend (ActivityFilter) -> Unit,
@@ -902,10 +963,12 @@ class BackupRepoImpl @Inject constructor(
         private const val BACKUP_IDENTIFICATION = "app simple time tracker"
         private const val ROW_RECORD_TYPE = "recordType"
         private const val ROW_RECORD = "record"
+        private const val ROW_RECORD_SHORTCUT = "recordShortcut"
         private const val ROW_CATEGORY = "category"
         private const val ROW_TYPE_CATEGORY = "typeCategory"
         private const val ROW_RECORD_TAG = "recordTag"
         private const val ROW_RECORD_TO_RECORD_TAG = "recordToRecordTag"
+        private const val ROW_RECORD_SHORTCUT_TO_RECORD_TAG = "recordShortcutToRecordTag"
         private const val ROW_TYPE_TO_RECORD_TAG = "typeToRecordTag"
         private const val ROW_TYPE_TO_DEFAULT_TAG = "typeToDefaultTag"
         private const val ROW_ACTIVITY_FILTER = "activityFilter"

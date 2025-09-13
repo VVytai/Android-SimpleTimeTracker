@@ -19,6 +19,7 @@ class PartialRestoreViewDataMapper @Inject constructor(
             PartialRestoreFilterType.Categories -> R.string.category_hint
             PartialRestoreFilterType.Tags -> R.string.record_tag_hint_short
             PartialRestoreFilterType.Records -> R.string.shortcut_navigation_records
+            PartialRestoreFilterType.RecordShortcuts -> R.string.change_record_shortcut
             PartialRestoreFilterType.ActivityFilters -> R.string.change_activity_filters_hint
             PartialRestoreFilterType.FavouriteComments -> R.string.change_record_favourite_comments_hint_long
             PartialRestoreFilterType.FavouriteColors -> R.string.change_record_favourite_colors_hint
@@ -43,12 +44,15 @@ class PartialRestoreViewDataMapper @Inject constructor(
                 .filter { it.key !in filters[PartialRestoreFilterType.Activities].orEmpty() },
             records = data.records
                 .filter { it.key !in filters[PartialRestoreFilterType.Records].orEmpty() },
+            recordShortcuts = data.recordShortcuts
+                .filter { it.key !in filters[PartialRestoreFilterType.RecordShortcuts].orEmpty() },
             categories = data.categories
                 .filter { it.key !in filters[PartialRestoreFilterType.Categories].orEmpty() },
             typeToCategory = data.typeToCategory,
             tags = data.tags
                 .filter { it.key !in filters[PartialRestoreFilterType.Tags].orEmpty() },
             recordToTag = data.recordToTag,
+            recordShortcutToTag = data.recordShortcutToTag,
             typeToTag = data.typeToTag,
             typeToDefaultTag = data.typeToDefaultTag,
             activityFilters = data.activityFilters

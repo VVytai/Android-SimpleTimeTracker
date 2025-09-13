@@ -5,7 +5,7 @@ import com.example.util.simpletimetracker.feature_base_adapter.record.RecordView
 
 data class RecordShortcutViewData(
     val id: Long,
-    val record: RecordViewData.Tracked,
+    val record: RecordViewData,
 ) : ViewHolderType {
 
     override fun getUniqueId(): Long = id

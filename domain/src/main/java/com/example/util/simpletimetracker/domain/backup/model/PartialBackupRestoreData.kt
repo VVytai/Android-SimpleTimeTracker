@@ -9,6 +9,8 @@ import com.example.util.simpletimetracker.domain.favourite.model.FavouriteColor
 import com.example.util.simpletimetracker.domain.favourite.model.FavouriteComment
 import com.example.util.simpletimetracker.domain.favourite.model.FavouriteIcon
 import com.example.util.simpletimetracker.domain.record.model.Record
+import com.example.util.simpletimetracker.domain.recordShortcut.model.RecordShortcut
+import com.example.util.simpletimetracker.domain.recordTag.model.RecordShortcutToRecordTag
 import com.example.util.simpletimetracker.domain.recordTag.model.RecordTag
 import com.example.util.simpletimetracker.domain.recordTag.model.RecordToRecordTag
 import com.example.util.simpletimetracker.domain.recordTag.model.RecordTypeToDefaultTag
@@ -20,10 +22,12 @@ import com.example.util.simpletimetracker.domain.recordType.model.RecordTypeGoal
 data class PartialBackupRestoreData(
     val types: Map<Long, Holder<RecordType>>,
     val records: Map<Long, Holder<Record>>,
+    val recordShortcuts: Map<Long, Holder<RecordShortcut>>,
     val categories: Map<Long, Holder<Category>>,
     val typeToCategory: List<Holder<RecordTypeCategory>>,
     val tags: Map<Long, Holder<RecordTag>>,
     val recordToTag: List<Holder<RecordToRecordTag>>,
+    val recordShortcutToTag: List<Holder<RecordShortcutToRecordTag>>,
     val typeToTag: List<Holder<RecordTypeToTag>>,
     val typeToDefaultTag: List<Holder<RecordTypeToDefaultTag>>,
     val activityFilters: Map<Long, Holder<ActivityFilter>>,

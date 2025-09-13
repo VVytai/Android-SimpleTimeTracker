@@ -146,9 +146,25 @@ class PartialRestoreViewModel @Inject constructor(
         }
         val recordsIds = records.keys
 
+        // Check record shortcuts
+        val recordShortcuts = data.recordShortcuts.filter {
+            it.value.data.typeId in typesIds
+        }.mapValues { (_, item) ->
+            val newData = item.data.copy(
+                tags = item.data.tags.filter { it.tagId in tags },
+            )
+            item.copy(data = newData)
+        }
+        val recordShortcutsIds = records.keys
+
         // Check record to tag relation
         val recordToTag = data.recordToTag.filter {
             it.data.recordId in recordsIds && it.data.recordTagId in tags
+        }
+
+        // Check shortcut to tag relation
+        val recordShortcutToTag = data.recordShortcutToTag.filter {
+            it.data.shortcutId in recordShortcutsIds && it.data.recordTagId in tags
         }
 
         // Check type to category relation
@@ -207,10 +223,12 @@ class PartialRestoreViewModel @Inject constructor(
         return@withContext PartialBackupRestoreData(
             types = types,
             records = records,
+            recordShortcuts = recordShortcuts,
             categories = categories,
             typeToCategory = typeToCategory,
             tags = tags,
             recordToTag = recordToTag,
+            recordShortcutToTag = recordShortcutToTag,
             typeToTag = typeToTag,
             typeToDefaultTag = typeToDefaultTag,
             activityFilters = activityFilters,

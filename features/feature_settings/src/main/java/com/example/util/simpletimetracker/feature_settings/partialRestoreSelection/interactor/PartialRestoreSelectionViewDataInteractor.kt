@@ -7,6 +7,7 @@ import com.example.util.simpletimetracker.core.mapper.CategoryViewDataMapper
 import com.example.util.simpletimetracker.core.mapper.ColorMapper
 import com.example.util.simpletimetracker.core.mapper.ComplexRuleViewDataMapper
 import com.example.util.simpletimetracker.core.mapper.DateDividerViewDataMapper
+import com.example.util.simpletimetracker.core.mapper.RecordShortcutViewDataMapper
 import com.example.util.simpletimetracker.core.mapper.RecordTypeViewDataMapper
 import com.example.util.simpletimetracker.core.mapper.RecordViewDataMapper
 import com.example.util.simpletimetracker.domain.activityFilter.interactor.ActivityFilterInteractor
@@ -33,6 +34,7 @@ import javax.inject.Inject
 class PartialRestoreSelectionViewDataInteractor @Inject constructor(
     private val prefsInteractor: PrefsInteractor,
     private val recordViewDataMapper: RecordViewDataMapper,
+    private val recordShortcutViewDataMapper: RecordShortcutViewDataMapper,
     private val recordTypeViewDataMapper: RecordTypeViewDataMapper,
     private val categoryViewDataMapper: CategoryViewDataMapper,
     private val activityFilterViewDataMapper: ActivityFilterViewDataMapper,
@@ -146,6 +148,24 @@ class PartialRestoreSelectionViewDataInteractor @Inject constructor(
                 }.sortedByDescending { (timeStarted, _) ->
                     timeStarted
                 }.let(dateDividerViewDataMapper::addDateViewData)
+            }
+            is PartialRestoreFilterType.RecordShortcuts -> {
+                val typesMap = data.types.mapValues { it.value.data }
+                val tags = data.tags.values.map { it.data }
+                data.recordShortcuts.values.getNotExistingValues().mapNotNull {
+                    recordShortcutViewDataMapper.map(
+                        shortcut = it,
+                        recordType = typesMap[it.typeId] ?: return@mapNotNull null,
+                        recordTags = tags,
+                        isDarkTheme = isDarkTheme,
+                    ).let { mapped ->
+                        recordShortcutViewDataMapper.mapFiltered(
+                            viewData = mapped,
+                            isDarkTheme = isDarkTheme,
+                            isFiltered = mapped.id in dataIdsFiltered,
+                        )
+                    }
+                }
             }
             is PartialRestoreFilterType.ActivityFilters -> {
                 data.activityFilters.values.getNotExistingValues().let {
