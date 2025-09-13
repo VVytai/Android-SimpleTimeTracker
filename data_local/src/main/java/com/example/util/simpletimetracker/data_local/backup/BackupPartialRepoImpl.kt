@@ -97,6 +97,7 @@ class BackupPartialRepoImpl @Inject constructor(
             ).let { recordRepo.add(it) }
             originalRecordIdToAddedId[originalId] = addedId
         }
+        // TODO SHORT
         params.data.categories.values.getNotExistingValues().forEach { category ->
             val originalId = category.id
             val addedId = category.copy(
@@ -133,6 +134,7 @@ class BackupPartialRepoImpl @Inject constructor(
                 recordTagId = newTagId,
             ).let { recordToRecordTagRepo.add(it) }
         }
+        // TODO SHORT
         params.data.typeToTag.getNotExistingValues().forEach { typeToTag ->
             val newTypeId = originalTypeIdToAddedId[typeToTag.recordTypeId]
                 ?: return@forEach
@@ -242,6 +244,7 @@ class BackupPartialRepoImpl @Inject constructor(
         val typesCurrent: List<RecordType> = recordTypeRepo.getAll()
         val records: MutableList<Record> = mutableListOf()
         val recordsCurrent: List<Record> = recordRepo.getAll().map { it.copy(tags = emptyList()) }
+        // TODO SHORT
         val categories: MutableList<Category> = mutableListOf()
         val categoriesCurrent: List<Category> = categoryRepo.getAll()
         val typeToCategory: MutableList<RecordTypeCategory> = mutableListOf()
@@ -250,6 +253,7 @@ class BackupPartialRepoImpl @Inject constructor(
         val tagsCurrent: List<RecordTag> = recordTagRepo.getAll()
         val recordToTag: MutableList<RecordToRecordTag> = mutableListOf()
         val recordToTagCurrent: List<RecordToRecordTag> = recordToRecordTagRepo.getAll()
+        // TODO SHORT
         val typeToTag: MutableList<RecordTypeToTag> = mutableListOf()
         val typeToTagCurrent: List<RecordTypeToTag> = recordTypeToTagRepo.getAll()
         val typeToDefaultTag: MutableList<RecordTypeToDefaultTag> = mutableListOf()

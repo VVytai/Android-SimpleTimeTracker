@@ -83,6 +83,7 @@ class ChangeRecordActionsDelegateImpl @Inject constructor(
             ChangeRecordActionsBlock.DuplicateButton -> onDuplicateClick()
             ChangeRecordActionsBlock.MoveButton -> onMoveClick()
             ChangeRecordActionsBlock.MergeButton -> onMergeClick()
+            ChangeRecordActionsBlock.ShortcutButton -> onShortcutClick()
             else -> {
                 // Do nothing.
             }
@@ -128,11 +129,15 @@ class ChangeRecordActionsDelegateImpl @Inject constructor(
         )
     }
 
+    private suspend fun onShortcutClick() {
+        onRecordChangeButtonClick(
+            onProceed = delegateHolder.shortcutDelegate::onShortcutClickDelegate,
+        )
+    }
+
     private suspend fun onSplitClick() {
         onRecordChangeButtonClick(
-            onProceed = {
-                delegateHolder.splitDelegate.onSplitClickDelegate()
-            },
+            onProceed = delegateHolder.splitDelegate::onSplitClickDelegate,
         )
     }
 

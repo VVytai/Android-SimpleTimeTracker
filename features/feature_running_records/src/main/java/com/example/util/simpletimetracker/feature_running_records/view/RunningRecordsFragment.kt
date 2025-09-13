@@ -25,6 +25,7 @@ import com.example.util.simpletimetracker.feature_base_adapter.emptySpace.create
 import com.example.util.simpletimetracker.feature_base_adapter.hint.createHintAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.hintBig.createHintBigAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.loader.createLoaderAdapterDelegate
+import com.example.util.simpletimetracker.feature_base_adapter.recordShortcut.createRecordShortcutAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.recordType.createRecordTypeAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.recordTypeSpecial.createRunningRecordTypeSpecialAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.recordTypeSuggestion.createRecordTypeSuggestionAdapterDelegate
@@ -85,13 +86,23 @@ class RunningRecordsFragment :
                 onItemClick = viewModel::onRecordTypeClick,
                 onItemLongClick = viewModel::onRecordTypeLongClick,
             ),
-            createRecordWithHintAdapterDelegate(throttle(viewModel::onRecordLongClick)),
-            createRunningRecordTypeSpecialAdapterDelegate(throttle(viewModel::onSpecialRecordTypeClick)),
+            createRecordWithHintAdapterDelegate(
+                onItemLongClick = throttle(viewModel::onRecordLongClick),
+            ),
+            createRecordShortcutAdapterDelegate(
+                onItemClick = viewModel::onShortcutClick,
+                onItemLongClick = viewModel::onShortcutLongClick,
+            ),
+            createRunningRecordTypeSpecialAdapterDelegate(
+                onItemClick = throttle(viewModel::onSpecialRecordTypeClick),
+            ),
             createActivityFilterAdapterDelegate(
                 onClick = viewModel::onActivityFilterClick,
                 onLongClick = viewModel::onActivityFilterLongClick,
             ),
-            createActivityFilterAddAdapterDelegate(throttle(viewModel::onActivityFilterSpecialClick)),
+            createActivityFilterAddAdapterDelegate(
+                onItemClick = throttle(viewModel::onActivityFilterSpecialClick),
+            ),
         )
     }
 
@@ -157,7 +168,7 @@ class RunningRecordsFragment :
     }
 
     override fun onPositiveClick(tag: String?, data: Any?) {
-        viewModel.onPositiveClick(tag)
+        viewModel.onPositiveClick(tag, data)
     }
 
     private fun resetScreen() = with(binding) {

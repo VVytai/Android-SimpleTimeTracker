@@ -9,6 +9,7 @@ import com.example.util.simpletimetracker.feature_change_record.viewModel.delega
 import com.example.util.simpletimetracker.feature_change_record.viewModel.delegates.ChangeRecordActionsMergeDelegate
 import com.example.util.simpletimetracker.feature_change_record.viewModel.delegates.ChangeRecordActionsMoveDelegate
 import com.example.util.simpletimetracker.feature_change_record.viewModel.delegates.ChangeRecordActionsRepeatDelegate
+import com.example.util.simpletimetracker.feature_change_record.viewModel.delegates.ChangeRecordActionsShortcutDelegate
 import com.example.util.simpletimetracker.feature_change_record.viewModel.delegates.ChangeRecordActionsSplitDelegate
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -22,6 +23,7 @@ class ChangeRecordActionsDelegateHolder @Inject constructor(
     val repeatDelegate: ChangeRecordActionsRepeatDelegate,
     val duplicateDelegate: ChangeRecordActionsDuplicateDelegate,
     val moveDelegate: ChangeRecordActionsMoveDelegate,
+    val shortcutDelegate: ChangeRecordActionsShortcutDelegate,
 ) {
 
     private val delegatesList = listOf(
@@ -32,6 +34,7 @@ class ChangeRecordActionsDelegateHolder @Inject constructor(
         duplicateDelegate,
         moveDelegate,
         mergeDelegate,
+        shortcutDelegate,
     )
 
     fun attach(

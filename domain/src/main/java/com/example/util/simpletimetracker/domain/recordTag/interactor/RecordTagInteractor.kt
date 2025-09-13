@@ -6,6 +6,7 @@ import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteracto
 import com.example.util.simpletimetracker.domain.recordTag.model.CardTagOrder
 import com.example.util.simpletimetracker.domain.recordTag.model.RecordTag
 import com.example.util.simpletimetracker.domain.recordTag.model.RecordTypeToTag
+import com.example.util.simpletimetracker.domain.recordTag.repo.RecordShortcutToRecordTagRepo
 import com.example.util.simpletimetracker.domain.recordTag.repo.RecordTagRepo
 import com.example.util.simpletimetracker.domain.recordTag.repo.RecordToRecordTagRepo
 import com.example.util.simpletimetracker.domain.recordTag.repo.RecordTypeToDefaultTagRepo
@@ -20,6 +21,7 @@ class RecordTagInteractor @Inject constructor(
     private val repo: RecordTagRepo,
     private val recordToRecordTagRepo: RecordToRecordTagRepo,
     private val runningRecordToRecordTagRepo: RunningRecordToRecordTagRepo,
+    private val recordShortcutToRecordTagRepo: RecordShortcutToRecordTagRepo,
     private val recordTypeToTagRepo: RecordTypeToTagRepo,
     private val recordTypeToDefaultTagRepo: RecordTypeToDefaultTagRepo,
     private val complexRuleInteractor: ComplexRuleInteractor,
@@ -87,6 +89,7 @@ class RecordTagInteractor @Inject constructor(
         repo.remove(id)
         recordToRecordTagRepo.removeAllByTagId(id)
         runningRecordToRecordTagRepo.removeAllByTagId(id)
+        recordShortcutToRecordTagRepo.removeAllByTagId(id)
         recordTypeToTagRepo.removeAll(id)
         recordTypeToDefaultTagRepo.removeAll(id)
         complexRuleInteractor.removeTagId(id)

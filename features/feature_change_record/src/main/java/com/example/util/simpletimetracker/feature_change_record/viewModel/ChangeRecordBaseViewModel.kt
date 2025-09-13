@@ -865,6 +865,9 @@ abstract class ChangeRecordBaseViewModel(
                         mergeAvailable = mergeAvailable,
                         prevRecord = prevRecord,
                     ),
+                    shortcutParams = ViewDataParams.ShortcutParams(
+                        isAvailable = true,
+                    )
                 )
             }
         }

@@ -5,11 +5,15 @@ import com.example.util.simpletimetracker.core.interactor.ActivitySuggestionView
 import com.example.util.simpletimetracker.core.interactor.FilterGoalsByDayOfWeekInteractor
 import com.example.util.simpletimetracker.core.interactor.GetCurrentRecordsDurationInteractor
 import com.example.util.simpletimetracker.core.interactor.GetRunningRecordViewDataMediator
+import com.example.util.simpletimetracker.core.mapper.RecordShortcutViewDataMapper
 import com.example.util.simpletimetracker.core.mapper.RecordTypeViewDataMapper
+import com.example.util.simpletimetracker.domain.extension.plus
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.RecordInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.RunningRecordInteractor
 import com.example.util.simpletimetracker.domain.record.model.RunningRecord
+import com.example.util.simpletimetracker.domain.recordShortcut.interactor.RecordShortcutInteractor
+import com.example.util.simpletimetracker.domain.recordShortcut.model.RecordShortcut
 import com.example.util.simpletimetracker.domain.recordTag.interactor.RecordTagInteractor
 import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTypeGoalInteractor
 import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTypeInteractor
@@ -28,8 +32,10 @@ class RunningRecordsViewDataInteractor @Inject constructor(
     private val runningRecordInteractor: RunningRecordInteractor,
     private val recordInteractor: RecordInteractor,
     private val activityFilterViewDataInteractor: ActivityFilterViewDataInteractor,
+    private val recordShortcutInteractor: RecordShortcutInteractor,
     private val mapper: RunningRecordsViewDataMapper,
     private val recordTypeViewDataMapper: RecordTypeViewDataMapper,
+    private val recordShortcutViewDataMapper: RecordShortcutViewDataMapper,
     private val getRunningRecordViewDataMediator: GetRunningRecordViewDataMediator,
     private val getCurrentRecordsDurationInteractor: GetCurrentRecordsDurationInteractor,
     private val filterGoalsByDayOfWeekInteractor: FilterGoalsByDayOfWeekInteractor,
@@ -45,6 +51,7 @@ class RunningRecordsViewDataInteractor @Inject constructor(
         val recordTags = recordTagInteractor.getAll()
         val runningRecords = runningRecordInteractor.getAll()
         val recordTypesRunning = runningRecords.map(RunningRecord::id)
+        val shortcuts = recordShortcutInteractor.getAll()
         val numberOfCards = prefsInteractor.getNumberOfCards()
         val isDarkTheme = prefsInteractor.getDarkMode()
         val useMilitaryTime = prefsInteractor.getUseMilitaryTimeFormat()
@@ -115,7 +122,7 @@ class RunningRecordsViewDataInteractor @Inject constructor(
                     )
             }
         }.let {
-            it + DividerViewData(1)
+            it + DividerViewData("running_records_divider".hashCode().toLong())
         }
 
         val filter = activityFilterViewDataInteractor.getFilter()
@@ -125,7 +132,7 @@ class RunningRecordsViewDataInteractor @Inject constructor(
             isFiltersCollapsed = isFiltersCollapsed,
             appendAddButton = true,
         ).let {
-            if (it.isNotEmpty()) it + DividerViewData(2) else it
+            if (it.isNotEmpty()) it + DividerViewData("filter_divider".hashCode().toLong()) else it
         }
 
         val suggestionsViewData = activitySuggestionViewDataInteractor.getSuggestionsViewData(
@@ -137,7 +144,7 @@ class RunningRecordsViewDataInteractor @Inject constructor(
             numberOfCards = numberOfCards,
             isDarkTheme = isDarkTheme,
         ).let {
-            if (it.isNotEmpty()) it + DividerViewData(3) else it
+            if (it.isNotEmpty()) it + DividerViewData("suggestions_divider".hashCode().toLong()) else it
         }
 
         val recordTypesViewData = recordTypes
@@ -190,6 +197,19 @@ class RunningRecordsViewDataInteractor @Inject constructor(
                 }
             }
 
+        val shortcutsViewData = shortcuts.mapNotNull { shortcut ->
+            recordShortcutViewDataMapper.map(
+                shortcut = shortcut,
+                recordType = recordTypesMap[shortcut.typeId] ?: return@mapNotNull null,
+                recordTags = recordTags,
+                isDarkTheme = isDarkTheme,
+            )
+        }.takeIf {
+            it.isNotEmpty()
+        }?.let {
+            listOf(DividerViewData("shortcuts_divider".hashCode().toLong())) + it
+        }
+
         // Flexbox layout doesn't fully support clipToPadding = false.
         // Because of that bottom padding with nav bar insets are not applied to main recycler.
         // Instead an empty space added.
@@ -207,6 +227,7 @@ class RunningRecordsViewDataInteractor @Inject constructor(
             filtersViewData +
             suggestionsViewData +
             recordTypesViewData +
+            shortcutsViewData +
             bottomSpaceForNavBar
     }
 }

@@ -10,6 +10,7 @@ enum class ChangeRecordActionsBlock {
     AdjustTimeAdjustment,
     AdjustButton,
 
+    ShortcutButton,
     ContinueButton,
     RepeatButton,
     DuplicateButton,

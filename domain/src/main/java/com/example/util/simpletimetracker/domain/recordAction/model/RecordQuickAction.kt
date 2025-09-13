@@ -8,6 +8,7 @@ enum class RecordQuickAction {
     MERGE,
     SPLIT,
     ADJUST,
+    SHORTCUT,
     STOP,
     MULTISELECT,
     CHANGE_ACTIVITY,

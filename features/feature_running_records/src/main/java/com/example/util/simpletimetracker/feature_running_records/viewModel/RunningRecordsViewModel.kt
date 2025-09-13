@@ -1,5 +1,6 @@
 package com.example.util.simpletimetracker.feature_running_records.viewModel
 
+import android.os.Parcelable
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -23,11 +24,14 @@ import com.example.util.simpletimetracker.domain.record.interactor.RemoveRunning
 import com.example.util.simpletimetracker.domain.record.interactor.RunningRecordInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.UpdateRunningRecordFromChangeScreenInteractor
 import com.example.util.simpletimetracker.domain.record.model.RecordDataSelectionDialogResult
+import com.example.util.simpletimetracker.domain.recordAction.interactor.RecordActionRepeatMediator
+import com.example.util.simpletimetracker.domain.recordShortcut.interactor.RecordShortcutInteractor
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.activityFilter.ActivityFilterAddViewData
 import com.example.util.simpletimetracker.feature_base_adapter.activityFilter.ActivityFilterViewData
 import com.example.util.simpletimetracker.feature_base_adapter.loader.LoaderViewData
 import com.example.util.simpletimetracker.feature_base_adapter.record.RecordViewData
+import com.example.util.simpletimetracker.feature_base_adapter.recordShortcut.RecordShortcutViewData
 import com.example.util.simpletimetracker.feature_base_adapter.recordType.RecordTypeViewData
 import com.example.util.simpletimetracker.feature_base_adapter.recordTypeSpecial.RunningRecordTypeSpecialViewData
 import com.example.util.simpletimetracker.feature_base_adapter.recordWithHint.RecordWithHintViewData
@@ -51,6 +55,7 @@ import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.parcelize.Parcelize
 import javax.inject.Inject
 
 @HiltViewModel
@@ -61,6 +66,7 @@ class RunningRecordsViewModel @Inject constructor(
     private val removeRunningRecordMediator: RemoveRunningRecordMediator,
     private val runningRecordInteractor: RunningRecordInteractor,
     private val recordRepeatInteractor: RecordRepeatInteractor,
+    private val recordShortcutInteractor: RecordShortcutInteractor,
     private val runningRecordsViewDataInteractor: RunningRecordsViewDataInteractor,
     private val changeSelectedActivityFilterMediator: ChangeSelectedActivityFilterMediator,
     private val prefsInteractor: PrefsInteractor,
@@ -68,6 +74,7 @@ class RunningRecordsViewModel @Inject constructor(
     private val recordTypeInteractor: RecordTypeInteractor,
     private val getChangeRecordNavigationParamsInteractor: GetChangeRecordNavigationParamsInteractor,
     private val themeChangedInteractor: ThemeChangedInteractor,
+    private val recordActionRepeatMediator: RecordActionRepeatMediator,
 ) : ViewModel() {
 
     val runningRecords: LiveData<List<ViewHolderType>> by lazy {
@@ -276,6 +283,28 @@ class RunningRecordsViewModel @Inject constructor(
         }
     }
 
+    fun onShortcutClick(item: RecordShortcutViewData) = viewModelScope.launch {
+        val shortcut = recordShortcutInteractor.get(item.id) ?: return@launch
+        recordActionRepeatMediator.execute(
+            typeId = shortcut.typeId,
+            comment = shortcut.comment,
+            tags = shortcut.tags,
+        )
+    }
+
+    fun onShortcutLongClick(item: RecordShortcutViewData) {
+        router.navigate(
+            StandardDialogParams(
+                tag = DELETE_SHORTCUT_ALERT_DIALOG_TAG,
+                data = DeleteShortcutAlertDialogData(item.id),
+                title = resourceRepo.getString(R.string.change_record_type_delete_alert),
+                message = resourceRepo.getString(R.string.archive_deletion_alert),
+                btnPositive = resourceRepo.getString(R.string.ok),
+                btnNegative = resourceRepo.getString(R.string.cancel),
+            ),
+        )
+    }
+
     fun onVisible() {
         startUpdate()
         checkForRetroActiveMultitaskHint()
@@ -302,10 +331,14 @@ class RunningRecordsViewModel @Inject constructor(
         }
     }
 
-    fun onPositiveClick(tag: String?) = viewModelScope.launch {
+    fun onPositiveClick(tag: String?, data: Any?) = viewModelScope.launch {
         when (tag) {
             RETRO_MULTITASKING_HINT_TAG -> {
                 prefsInteractor.setRetroactiveMultitaskingHintWasHidden(true)
+            }
+            DELETE_SHORTCUT_ALERT_DIALOG_TAG -> {
+                val shortcutId = (data as? DeleteShortcutAlertDialogData)?.shortcutId ?: return@launch
+                deleteShortcut(shortcutId)
             }
         }
     }
@@ -344,6 +377,11 @@ class RunningRecordsViewModel @Inject constructor(
                 ),
             )
         }
+    }
+
+    private suspend fun deleteShortcut(shortcutId: Long) {
+        recordShortcutInteractor.remove(shortcutId)
+        updateRunningRecords()
     }
 
     private fun subscribeToUpdates() {
@@ -389,9 +427,15 @@ class RunningRecordsViewModel @Inject constructor(
         }
     }
 
+    @Parcelize
+    private data class DeleteShortcutAlertDialogData(
+        val shortcutId: Long,
+    ) : Parcelable
+
     companion object {
         private const val TIMER_UPDATE_MS = 1000L
         private const val COMPLETE_TYPE_ANIMATION_MS = 1000L
         private const val RETRO_MULTITASKING_HINT_TAG = "RETRO_MULTITASKING_HINT_TAG"
+        private const val DELETE_SHORTCUT_ALERT_DIALOG_TAG = "DELETE_SHORTCUT_ALERT_DIALOG_TAG"
     }
 }

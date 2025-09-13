@@ -24,6 +24,10 @@ import com.example.util.simpletimetracker.data_local.record.RecordDBO
 import com.example.util.simpletimetracker.data_local.record.RecordDao
 import com.example.util.simpletimetracker.data_local.record.RunningRecordDBO
 import com.example.util.simpletimetracker.data_local.record.RunningRecordDao
+import com.example.util.simpletimetracker.data_local.recordShortcut.RecordShortcutDBO
+import com.example.util.simpletimetracker.data_local.recordShortcut.RecordShortcutDao
+import com.example.util.simpletimetracker.data_local.recordTag.RecordShortcutToRecordTagDBO
+import com.example.util.simpletimetracker.data_local.recordTag.RecordShortcutToRecordTagDao
 import com.example.util.simpletimetracker.data_local.recordTag.RecordTagDBO
 import com.example.util.simpletimetracker.data_local.recordTag.RecordTagDao
 import com.example.util.simpletimetracker.data_local.recordTag.RecordToRecordTagDBO
@@ -49,6 +53,7 @@ import com.example.util.simpletimetracker.data_local.recordType.RecordTypeGoalDa
         RecordTagDBO::class,
         RecordToRecordTagDBO::class,
         RunningRecordToRecordTagDBO::class,
+        RecordShortcutToRecordTagDBO::class,
         RecordTypeToTagDBO::class,
         RecordTypeToDefaultTagDBO::class,
         ActivityFilterDBO::class,
@@ -59,8 +64,9 @@ import com.example.util.simpletimetracker.data_local.recordType.RecordTypeGoalDa
         FavouriteColorDBO::class,
         ActivitySuggestionDBO::class,
         DurationSuggestionDBO::class,
+        RecordShortcutDBO::class,
     ],
-    version = 27,
+    version = 28,
     exportSchema = true,
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -81,6 +87,8 @@ abstract class AppDatabase : RoomDatabase() {
 
     abstract fun runningRecordToRecordTagDao(): RunningRecordToRecordTagDao
 
+    abstract fun recordShortcutToRecordTagDao(): RecordShortcutToRecordTagDao
+
     abstract fun recordTypeToTagDao(): RecordTypeToTagDao
 
     abstract fun recordTypeToDefaultTagDao(): RecordTypeToDefaultTagDao
@@ -100,6 +108,8 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun favouriteColorDao(): FavouriteColorDao
 
     abstract fun durationSuggestionDao(): DurationSuggestionDao
+
+    abstract fun recordShortcutDao(): RecordShortcutDao
 
     companion object {
         const val DATABASE_NAME = "simpleTimeTrackerDB"

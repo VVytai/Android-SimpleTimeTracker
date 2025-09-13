@@ -156,6 +156,8 @@ This allows you to see how much time you\'re spending on productive versus unpro
     <string name="change_record_multiselect">Multiselect</string>
     <string name="change_record_multiselect_hint">Select multiple records and open Actions menu again</string>
     <string name="change_record_adjust">Change</string>
+    <string name="change_record_shortcut">Shortcut</string>
+    <string name="change_record_shortcut_hint">Will create a shortcut on the main tab with preselected tags and comment for quicker access</string>
     <string name="change_record_change_prev_record">Also change time of previous record</string>
     <string name="change_record_change_adjacent_records">Also change time of adjacent records</string>
     <string name="change_record_change_prev">Previous</string>

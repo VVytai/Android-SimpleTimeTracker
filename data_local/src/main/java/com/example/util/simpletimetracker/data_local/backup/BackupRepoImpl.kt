@@ -118,6 +118,7 @@ class BackupRepoImpl @Inject constructor(
                     fileOutputStream?.write(it.let(::toBackupString).toByteArray())
                 }
             }
+            // TODO SHORT
             categoryRepo.getAll().forEach {
                 fileOutputStream?.write(it.let(::toBackupString).toByteArray())
             }
@@ -132,6 +133,7 @@ class BackupRepoImpl @Inject constructor(
                     fileOutputStream?.write(it.let(::toBackupString).toByteArray())
                 }
             }
+            // TODO SHORT
             recordTypeToTagRepo.getAll().forEach {
                 fileOutputStream?.write(it.let(::toBackupString).toByteArray())
             }
@@ -204,11 +206,11 @@ class BackupRepoImpl @Inject constructor(
             },
             dataHandler = DataHandler(
                 types = recordTypeRepo::add,
-                records = recordRepo::add,
+                records = recordRepo::add, // TODO SHORT
                 categories = categoryRepo::add,
                 typeToCategory = recordTypeCategoryRepo::add,
                 tags = recordTagRepo::add,
-                recordToTag = recordToRecordTagRepo::add,
+                recordToTag = recordToRecordTagRepo::add, // TODO SHORT
                 typeToTag = recordTypeToTagRepo::add,
                 typeToDefaultTag = recordTypeToDefaultTagRepo::add,
                 activityFilters = activityFilterRepo::add,

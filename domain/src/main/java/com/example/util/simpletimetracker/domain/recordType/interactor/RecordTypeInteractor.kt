@@ -12,6 +12,8 @@ import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteracto
 import com.example.util.simpletimetracker.domain.recordTag.repo.RecordTypeToDefaultTagRepo
 import com.example.util.simpletimetracker.domain.recordTag.repo.RecordTypeToTagRepo
 import com.example.util.simpletimetracker.domain.record.repo.RunningRecordRepo
+import com.example.util.simpletimetracker.domain.recordShortcut.repo.RecordShortcutRepo
+import com.example.util.simpletimetracker.domain.recordTag.repo.RecordShortcutToRecordTagRepo
 import com.example.util.simpletimetracker.domain.recordType.model.RecordType
 import com.example.util.simpletimetracker.domain.recordType.repo.RecordTypeGoalRepo
 import com.example.util.simpletimetracker.domain.recordType.repo.RecordTypeRepo
@@ -20,9 +22,11 @@ import javax.inject.Inject
 class RecordTypeInteractor @Inject constructor(
     private val recordTypeRepo: RecordTypeRepo,
     private val recordRepo: RecordRepo,
+    private val recordShortcutRepo: RecordShortcutRepo,
     private val runningRecordRepo: RunningRecordRepo,
     private val recordTagRepo: RecordTagRepo,
     private val recordToRecordTagRepo: RecordToRecordTagRepo,
+    private val recordShortcutToRecordTagRepo: RecordShortcutToRecordTagRepo,
     private val recordTypeCategoryRepo: RecordTypeCategoryRepo,
     private val recordTypeToTagRepo: RecordTypeToTagRepo,
     private val recordTypeToDefaultTagRepo: RecordTypeToDefaultTagRepo,
@@ -67,6 +71,10 @@ class RecordTypeInteractor @Inject constructor(
         recordsToRemove.forEach { recordId ->
             recordToRecordTagRepo.removeAllByRecordId(recordId) // TODO do better?
         }
+        val shortcutsToRemove = recordShortcutRepo.getByType(listOf(id)).map { it.id }
+        shortcutsToRemove.forEach { shortcutId ->
+            recordShortcutToRecordTagRepo.removeAllByShortcutId(shortcutId) // TODO do better?
+        }
         val tagsToChange = recordTagRepo.getByType(id)
         if (tagsToChange.isNotEmpty()) {
             val type = recordTypeRepo.get(id)
@@ -94,6 +102,7 @@ class RecordTypeInteractor @Inject constructor(
             .apply { remove(id) }
             .let { prefsInteractor.setFilteredTypesOnList(it) }
         recordRepo.removeByType(id)
+        recordShortcutRepo.removeByType(id)
         runningRecordRepo.remove(id)
         recordTypeCategoryRepo.removeAllByType(id)
         recordTypeToTagRepo.removeAllByType(id)

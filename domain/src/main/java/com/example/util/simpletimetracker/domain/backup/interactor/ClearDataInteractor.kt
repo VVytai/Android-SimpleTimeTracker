@@ -11,6 +11,7 @@ import com.example.util.simpletimetracker.domain.favourite.repo.FavouriteComment
 import com.example.util.simpletimetracker.domain.favourite.repo.FavouriteIconRepo
 import com.example.util.simpletimetracker.domain.record.repo.RecordRepo
 import com.example.util.simpletimetracker.domain.record.repo.RunningRecordRepo
+import com.example.util.simpletimetracker.domain.recordShortcut.repo.RecordShortcutRepo
 import com.example.util.simpletimetracker.domain.recordTag.repo.RecordTagRepo
 import com.example.util.simpletimetracker.domain.recordTag.repo.RecordToRecordTagRepo
 import com.example.util.simpletimetracker.domain.recordTag.repo.RecordTypeToDefaultTagRepo
@@ -23,6 +24,7 @@ import javax.inject.Inject
 class ClearDataInteractor @Inject constructor(
     private val recordTypeRepo: RecordTypeRepo,
     private val recordRepo: RecordRepo,
+    private val recordShortcutRepo: RecordShortcutRepo,
     private val categoryRepo: CategoryRepo,
     private val recordTypeCategoryRepo: RecordTypeCategoryRepo,
     private val recordToRecordTagRepo: RecordToRecordTagRepo,
@@ -44,6 +46,7 @@ class ClearDataInteractor @Inject constructor(
     suspend fun execute() {
         recordTypeRepo.clear()
         recordRepo.clear()
+        recordShortcutRepo.clear()
         categoryRepo.clear()
         recordTypeCategoryRepo.clear()
         recordTagRepo.clear()

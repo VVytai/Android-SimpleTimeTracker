@@ -158,6 +158,7 @@ class ChangeRecordViewDataMapper @Inject constructor(
             RecordQuickAction.MERGE -> ChangeRecordActionsBlock.MergeButton
             RecordQuickAction.SPLIT -> ChangeRecordActionsBlock.SplitButton
             RecordQuickAction.ADJUST -> ChangeRecordActionsBlock.AdjustButton
+            RecordQuickAction.SHORTCUT -> ChangeRecordActionsBlock.ShortcutButton
             RecordQuickAction.STOP -> null
             RecordQuickAction.MULTISELECT -> null
             RecordQuickAction.CHANGE_ACTIVITY -> null

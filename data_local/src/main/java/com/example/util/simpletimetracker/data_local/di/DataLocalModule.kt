@@ -23,6 +23,8 @@ import com.example.util.simpletimetracker.data_local.recordType.RecordTypeGoalDa
 import com.example.util.simpletimetracker.data_local.recordTag.RecordTypeToDefaultTagDao
 import com.example.util.simpletimetracker.data_local.recordTag.RecordTypeToTagDao
 import com.example.util.simpletimetracker.data_local.record.RunningRecordDao
+import com.example.util.simpletimetracker.data_local.recordShortcut.RecordShortcutDao
+import com.example.util.simpletimetracker.data_local.recordTag.RecordShortcutToRecordTagDao
 import com.example.util.simpletimetracker.data_local.recordTag.RunningRecordToRecordTagDao
 import dagger.Module
 import dagger.Provides
@@ -111,6 +113,12 @@ class DataLocalModule {
 
     @Provides
     @Singleton
+    fun getRecordShortcutToRecordTagDao(database: AppDatabase): RecordShortcutToRecordTagDao {
+        return database.recordShortcutToRecordTagDao()
+    }
+
+    @Provides
+    @Singleton
     fun getRecordTypeToTagDao(database: AppDatabase): RecordTypeToTagDao {
         return database.recordTypeToTagDao()
     }
@@ -167,5 +175,11 @@ class DataLocalModule {
     @Singleton
     fun getDurationSuggestionDao(database: AppDatabase): DurationSuggestionDao {
         return database.durationSuggestionDao()
+    }
+
+    @Provides
+    @Singleton
+    fun getRecordShortcutDao(database: AppDatabase): RecordShortcutDao {
+        return database.recordShortcutDao()
     }
 }

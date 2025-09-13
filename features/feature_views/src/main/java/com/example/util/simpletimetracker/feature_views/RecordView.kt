@@ -11,6 +11,7 @@ import com.example.util.simpletimetracker.feature_views.extension.setForegroundS
 import com.example.util.simpletimetracker.feature_views.extension.toSpannableString
 import com.example.util.simpletimetracker.feature_views.extension.visible
 import com.example.util.simpletimetracker.feature_views.viewData.RecordTypeIcon
+import androidx.core.content.withStyledAttributes
 
 class RecordView @JvmOverloads constructor(
     context: Context,
@@ -102,8 +103,8 @@ class RecordView @JvmOverloads constructor(
         attrs: AttributeSet?,
         defStyleAttr: Int,
     ) {
-        context.obtainStyledAttributes(attrs, R.styleable.RecordView, defStyleAttr, 0)
-            .run {
+        context
+            .withStyledAttributes(attrs, R.styleable.RecordView, defStyleAttr, 0) {
                 if (hasValue(R.styleable.RecordView_itemName)) {
                     itemName = getString(R.styleable.RecordView_itemName).orEmpty()
                 }
@@ -146,7 +147,6 @@ class RecordView @JvmOverloads constructor(
                     itemComment = getString(R.styleable.RecordView_itemComment).orEmpty()
                 }
 
-                recycle()
             }
     }
 

@@ -46,6 +46,7 @@ class ChangeRecordDelegateBridge(
         val repeatParams: RepeatParams,
         val adjustParams: AdjustParams,
         val mergeParams: MergeParams,
+        val shortcutParams: ShortcutParams,
     ) {
 
         data class BaseParams(
@@ -94,6 +95,10 @@ class ChangeRecordDelegateBridge(
         data class MergeParams(
             val mergeAvailable: Boolean,
             val prevRecord: Record?,
+        )
+
+        data class ShortcutParams(
+            val isAvailable: Boolean,
         )
     }
 }
