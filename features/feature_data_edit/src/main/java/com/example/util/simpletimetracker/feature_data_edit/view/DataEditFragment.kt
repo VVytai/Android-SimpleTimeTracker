@@ -85,11 +85,14 @@ class DataEditFragment :
         etDataEditChangeComment.doAfterTextChanged { viewModel.onCommentChange(it.toString()) }
         btnDataEditChange.setOnClick(throttle(viewModel::onChangeClick))
         btnDataEditDuplicateType.setOnClick(throttle(viewModel::onDuplicateClick))
+        btnDataEditDeleteTodayRecords.setOnClick(throttle(viewModel::onDeleteTodayRecordsClick))
+        btnDataEditDeleteTodayRecordsView.setOnClick(throttle(viewModel::onViewTodayRecordsClick))
         btnDataEditDeleteRecords.setOnClick(throttle(viewModel::onDeleteAllRecordsClick))
         btnDataEditDeleteData.setOnClick(throttle(viewModel::onDeleteDataClick))
     }
 
     override fun initViewModel(): Unit = with(viewModel) {
+        initialize()
         with(binding) {
             selectedRecordsCountViewData.observe(::setRecordsCountState)
             changeActivityState.observe(::setChangeActivityState)
@@ -99,6 +102,7 @@ class DataEditFragment :
             deleteRecordsState.observe(::setDeleteRecordsState)
             changeButtonState.observe(::setChangeButtonState)
             disableButtons.observe { disableButtons() }
+            deleteTodayRecordsButtonText.observe(btnDataEditDeleteTodayRecords::setText)
             keyboardVisibility.observe { visible ->
                 if (visible) {
                     showKeyboard(etDataEditChangeComment)
@@ -256,6 +260,7 @@ class DataEditFragment :
 
     private fun disableButtons() = with(binding) {
         btnDataEditChange.isEnabled = false
+        btnDataEditDeleteTodayRecords.isEnabled = false
         btnDataEditDeleteRecords.isEnabled = false
         btnDataEditDeleteData.isEnabled = false
     }

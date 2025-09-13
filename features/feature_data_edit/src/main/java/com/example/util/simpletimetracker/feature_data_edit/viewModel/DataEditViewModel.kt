@@ -7,12 +7,15 @@ import androidx.lifecycle.viewModelScope
 import com.example.util.simpletimetracker.core.base.SingleLiveEvent
 import com.example.util.simpletimetracker.core.extension.set
 import com.example.util.simpletimetracker.core.extension.toParams
+import com.example.util.simpletimetracker.core.interactor.RecordFilterInteractor
 import com.example.util.simpletimetracker.core.repo.DataEditRepo
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.domain.record.extension.getTypeIds
+import com.example.util.simpletimetracker.domain.record.model.Record
 import com.example.util.simpletimetracker.domain.record.model.RecordsFilter
 import com.example.util.simpletimetracker.domain.recordTag.interactor.RecordTypeToTagInteractor
+import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
 import com.example.util.simpletimetracker.feature_data_edit.R
 import com.example.util.simpletimetracker.feature_data_edit.interactor.DateEditChangeInteractor
 import com.example.util.simpletimetracker.feature_data_edit.interactor.DateEditViewDataInteractor
@@ -44,6 +47,7 @@ class DataEditViewModel @Inject constructor(
     private val dataEditViewDataInteractor: DateEditViewDataInteractor,
     private val dataEditChangeInteractor: DateEditChangeInteractor,
     private val recordTypeToTagInteractor: RecordTypeToTagInteractor,
+    private val recordFilterInteractor: RecordFilterInteractor,
 ) : ViewModel() {
 
     val selectedRecordsCountViewData: LiveData<DataEditRecordsCountState> by lazy {
@@ -73,10 +77,13 @@ class DataEditViewModel @Inject constructor(
             initial
         }
     }
+    val deleteTodayRecordsButtonText: LiveData<String> = MutableLiveData()
     val disableButtons: LiveData<Unit> = SingleLiveEvent<Unit>()
     val keyboardVisibility: LiveData<Boolean> = MutableLiveData(false)
 
     private var filters: List<RecordsFilter> = emptyList()
+    private var todayFilters: List<RecordsFilter> = emptyList()
+    private var todayFiltersInitial: List<RecordsFilter> = emptyList()
     private var typeState: DataEditChangeActivityState = DataEditChangeActivityState.Disabled
     private var commentState: DataEditChangeCommentState = DataEditChangeCommentState.Disabled
     private var addTagState: DataEditAddTagsState = DataEditAddTagsState.Disabled
@@ -92,20 +99,17 @@ class DataEditViewModel @Inject constructor(
                 deleteState is DataEditDeleteRecordsState.Enabled
             )
 
+    fun initialize() = viewModelScope.launch {
+        initializeTodayFilters()
+        updateDeleteTodayRecordsButtonText()
+    }
+
     fun onSelectRecordsClick() {
-        RecordsFilterParams(
-            tag = FILTER_TAG,
-            title = resourceRepo.getString(R.string.chart_filter_hint),
-            flags = RecordsFilterParams.Flags(
-                dateSelectionAvailable = true,
-                untrackedSelectionAvailable = false,
-                multitaskSelectionAvailable = false,
-                duplicationsSelectionAvailable = true,
-                addRunningRecords = false,
-            ),
-            filters = filters.map(RecordsFilter::toParams),
-            defaultLastDaysNumber = 7,
-        ).let(router::navigate)
+        onSelectRecordsClick(FILTER_TAG, filters)
+    }
+
+    fun onViewTodayRecordsClick() {
+        onSelectRecordsClick(TODAY_FILTER_TAG, todayFilters)
     }
 
     fun onChangeActivityClick() {
@@ -223,6 +227,10 @@ class DataEditViewModel @Inject constructor(
         router.navigate(DataEditDuplicateTypeDialogParams)
     }
 
+    fun onDeleteTodayRecordsClick() {
+        showAlert(tag = DELETE_TODAY_RECORDS_ALERT_DIALOG_TAG)
+    }
+
     fun onDeleteAllRecordsClick() {
         showAlert(tag = DELETE_RECORDS_ALERT_DIALOG_TAG)
     }
@@ -234,21 +242,49 @@ class DataEditViewModel @Inject constructor(
     fun onPositiveDialogClick(tag: String?) {
         when (tag) {
             CHANGE_ALERT_DIALOG_TAG -> onChangeConfirmed()
+            DELETE_TODAY_RECORDS_ALERT_DIALOG_TAG -> onDeleteTodayRecordsConfirmed()
             DELETE_RECORDS_ALERT_DIALOG_TAG -> onDeleteRecordsConfirmed()
             DELETE_DATA_ALERT_DIALOG_TAG -> onDeleteDataConfirmed()
         }
     }
 
     fun onFilterSelected(result: RecordsFilterResultParams) {
-        if (result.tag != FILTER_TAG) return
-        filters = result.filters
+        when (result.tag) {
+            FILTER_TAG -> filters = result.filters
+            TODAY_FILTER_TAG -> todayFilters = result.filters
+        }
         // Update is on dismiss.
     }
 
     fun onFilterDismissed(tag: String) {
-        if (tag != FILTER_TAG) return
-        checkTagStateConsistency()
-        updateSelectedRecordsCountViewData()
+        when (tag) {
+            FILTER_TAG -> {
+                checkTagStateConsistency()
+                updateSelectedRecordsCountViewData()
+            }
+            TODAY_FILTER_TAG -> {
+                updateDeleteTodayRecordsButtonText()
+            }
+        }
+    }
+
+    private fun onSelectRecordsClick(
+        tag: String,
+        filters: List<RecordsFilter>,
+    ) {
+        RecordsFilterParams(
+            tag = tag,
+            title = resourceRepo.getString(R.string.chart_filter_hint),
+            flags = RecordsFilterParams.Flags(
+                dateSelectionAvailable = true,
+                untrackedSelectionAvailable = false,
+                multitaskSelectionAvailable = false,
+                duplicationsSelectionAvailable = true,
+                addRunningRecords = false,
+            ),
+            filters = filters.map(RecordsFilter::toParams),
+            defaultLastDaysNumber = 7,
+        ).let(router::navigate)
     }
 
     private fun showAlert(tag: String) {
@@ -272,6 +308,13 @@ class DataEditViewModel @Inject constructor(
                 deleteRecordsState = deleteState,
                 filters = filters,
             )
+        }
+    }
+
+    private fun onDeleteTodayRecordsConfirmed() {
+        doDataEditWork {
+            val ids = getTodayRecords().map { it.id }
+            dataEditChangeInteractor.deleteTodayRecords(ids)
         }
     }
 
@@ -361,6 +404,46 @@ class DataEditViewModel @Inject constructor(
                 ?.firstOrNull()
     }
 
+    private suspend fun getTodayRecords(): List<Record> {
+        return recordFilterInteractor
+            .getByFilter(todayFilters)
+            .filterIsInstance<Record>()
+    }
+
+    private suspend fun initializeTodayFilters() {
+        val filter = RecordsFilter.Date(range = RangeLength.Day, position = 0)
+        val todayRange = recordFilterInteractor.getRange(filter)
+        val todayFilter = RecordsFilter.Date(
+            range = RangeLength.Custom(todayRange),
+            position = 0,
+        )
+        todayFilters = listOf(todayFilter)
+        todayFiltersInitial = todayFilters
+    }
+
+    private fun updateDeleteTodayRecordsButtonText() = viewModelScope.launch {
+        deleteTodayRecordsButtonText.set(loadDeleteTodayRecordsButtonText())
+    }
+
+    private suspend fun loadDeleteTodayRecordsButtonText(): String {
+        val recordsCounts = getTodayRecords().size
+        val recordsHint = resourceRepo.getQuantityString(
+            R.plurals.statistics_detail_times_tracked,
+            recordsCounts,
+        )
+        val todayHint = if (todayFilters == todayFiltersInitial) {
+            resourceRepo.getString(R.string.title_today)
+        } else {
+            null
+        }
+
+        return listOfNotNull(
+            resourceRepo.getString(R.string.archive_dialog_delete),
+            todayHint,
+            "$recordsCounts $recordsHint",
+        ).joinToString(separator = " - ")
+    }
+
     private fun updateSelectedRecordsCountViewData() = viewModelScope.launch {
         val data = loadSelectedRecordsCountViewData()
         selectedRecordsCountViewData.set(data)
@@ -402,9 +485,11 @@ class DataEditViewModel @Inject constructor(
 
     companion object {
         private const val FILTER_TAG = "DATA_EDIT_FILTER_TAG"
+        private const val TODAY_FILTER_TAG = "DATA_EDIT_TODAY_FILTER_TAG"
         private const val ADD_TAGS_TAG = "DATA_EDIT_ADD_TAGS_TAG"
         private const val REMOVE_TAGS_TAG = "DATA_EDIT_REMOVE_TAGS_TAG"
         private const val CHANGE_ALERT_DIALOG_TAG = "DATA_EDIT_CHANGE_ALERT_DIALOG_TAG"
+        private const val DELETE_TODAY_RECORDS_ALERT_DIALOG_TAG = "DELETE_TODAY_RECORDS_ALERT_DIALOG_TAG"
         private const val DELETE_RECORDS_ALERT_DIALOG_TAG = "DATA_EDIT_DELETE_RECORDS_ALERT_DIALOG_TAG"
         private const val DELETE_DATA_ALERT_DIALOG_TAG = "DATA_EDIT_DELETE_DATA_ALERT_DIALOG_TAG"
     }

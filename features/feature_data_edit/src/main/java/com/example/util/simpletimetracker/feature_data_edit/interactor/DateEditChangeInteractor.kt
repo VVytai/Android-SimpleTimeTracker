@@ -119,6 +119,11 @@ class DateEditChangeInteractor @Inject constructor(
         }
     }
 
+    suspend fun deleteTodayRecords(ids: List<Long>) {
+        ids.forEach { recordInteractor.remove(it) }
+        backupInteractor.doAfterRestore()
+    }
+
     suspend fun deleteAllRecords() {
         recordInteractor.removeAll()
         backupInteractor.doAfterRestore()
