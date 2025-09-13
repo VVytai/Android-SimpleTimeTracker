@@ -12,15 +12,21 @@ import com.example.util.simpletimetracker.core.interactor.ActivitySuggestionView
 import com.example.util.simpletimetracker.core.interactor.FilterGoalsByDayOfWeekInteractor
 import com.example.util.simpletimetracker.core.interactor.GetCurrentRecordsDurationInteractor
 import com.example.util.simpletimetracker.core.interactor.RecordRepeatInteractor
+import com.example.util.simpletimetracker.core.interactor.RecordsShortcutsViewDataInteractor
 import com.example.util.simpletimetracker.core.mapper.RecordTypeViewDataMapper
 import com.example.util.simpletimetracker.domain.activityFilter.interactor.ChangeSelectedActivityFilterMediator
+import com.example.util.simpletimetracker.domain.extension.addBetweenEach
 import com.example.util.simpletimetracker.domain.extension.orZero
+import com.example.util.simpletimetracker.domain.extension.plus
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.AddRunningRecordMediator
 import com.example.util.simpletimetracker.domain.record.interactor.RemoveRunningRecordMediator
 import com.example.util.simpletimetracker.domain.record.interactor.RunningRecordInteractor
 import com.example.util.simpletimetracker.domain.record.model.RecordDataSelectionDialogResult
 import com.example.util.simpletimetracker.domain.record.model.RunningRecord
+import com.example.util.simpletimetracker.domain.recordAction.interactor.RecordActionRepeatMediator
+import com.example.util.simpletimetracker.domain.recordShortcut.interactor.RecordShortcutInteractor
+import com.example.util.simpletimetracker.domain.recordTag.interactor.RecordTagInteractor
 import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTypeGoalInteractor
 import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTypeInteractor
 import com.example.util.simpletimetracker.domain.recordType.model.RecordType
@@ -31,6 +37,7 @@ import com.example.util.simpletimetracker.feature_base_adapter.button.ButtonView
 import com.example.util.simpletimetracker.feature_base_adapter.divider.DividerViewData
 import com.example.util.simpletimetracker.feature_base_adapter.emptySpace.EmptySpaceViewData
 import com.example.util.simpletimetracker.feature_base_adapter.loader.LoaderViewData
+import com.example.util.simpletimetracker.feature_base_adapter.recordShortcut.RecordShortcutViewData
 import com.example.util.simpletimetracker.feature_base_adapter.recordType.RecordTypeViewData
 import com.example.util.simpletimetracker.feature_base_adapter.recordTypeSpecial.RunningRecordTypeSpecialViewData
 import com.example.util.simpletimetracker.feature_widget.universal.mapper.WidgetUniversalViewDataMapper
@@ -49,10 +56,12 @@ class WidgetUniversalViewModel @Inject constructor(
     private val addRunningRecordMediator: AddRunningRecordMediator,
     private val removeRunningRecordMediator: RemoveRunningRecordMediator,
     private val recordTypeInteractor: RecordTypeInteractor,
+    private val recordTagInteractor: RecordTagInteractor,
     private val runningRecordInteractor: RunningRecordInteractor,
     private val prefsInteractor: PrefsInteractor,
     private val changeSelectedActivityFilterMediator: ChangeSelectedActivityFilterMediator,
     private val activityFilterViewDataInteractor: ActivityFilterViewDataInteractor,
+    private val recordShortcutInteractor: RecordShortcutInteractor,
     private val widgetUniversalViewDataMapper: WidgetUniversalViewDataMapper,
     private val recordTypeViewDataMapper: RecordTypeViewDataMapper,
     private val recordRepeatInteractor: RecordRepeatInteractor,
@@ -60,6 +69,8 @@ class WidgetUniversalViewModel @Inject constructor(
     private val getCurrentRecordsDurationInteractor: GetCurrentRecordsDurationInteractor,
     private val filterGoalsByDayOfWeekInteractor: FilterGoalsByDayOfWeekInteractor,
     private val activitySuggestionViewDataInteractor: ActivitySuggestionViewDataInteractor,
+    private val recordsShortcutsViewDataInteractor: RecordsShortcutsViewDataInteractor,
+    private val recordActionRepeatMediator: RecordActionRepeatMediator,
 ) : ViewModel() {
 
     val recordTypes: LiveData<List<ViewHolderType>> by lazy {
@@ -150,6 +161,17 @@ class WidgetUniversalViewModel @Inject constructor(
         }
     }
 
+    fun onShortcutClick(item: RecordShortcutViewData) = viewModelScope.launch {
+        val shortcut = recordShortcutInteractor.get(item.id) ?: return@launch
+        recordActionRepeatMediator.execute(
+            typeId = shortcut.typeId,
+            comment = shortcut.comment,
+            tags = shortcut.tags,
+        )
+        updateRecordTypesViewData()
+        exit.set(Unit)
+    }
+
     fun onButtonClick(data: ButtonViewData) {
         if (data.id !is WidgetUniversalButtonViewData) return
         router.startApp()
@@ -182,13 +204,14 @@ class WidgetUniversalViewModel @Inject constructor(
 
     private fun updateRecordTypesViewData() = viewModelScope.launch {
         val data = loadRecordTypesViewData()
-        (recordTypes as MutableLiveData).value = data
+        recordTypes.set(data)
     }
 
     private suspend fun loadRecordTypesViewData(): List<ViewHolderType> {
         val runningRecords = runningRecordInteractor.getAll()
         val recordTypes = recordTypeInteractor.getAll()
         val recordTypesMap = recordTypes.associateBy(RecordType::id)
+        val recordTags = recordTagInteractor.getAll()
         val recordTypesRunning = runningRecords.map(RunningRecord::id)
         val numberOfCards = prefsInteractor.getNumberOfCards()
         val isDarkTheme = prefsInteractor.getDarkMode()
@@ -213,11 +236,10 @@ class WidgetUniversalViewModel @Inject constructor(
             isDarkTheme = isDarkTheme,
             isFiltersCollapsed = isFiltersCollapsed,
             appendAddButton = false,
-        ).let {
-            if (it.isNotEmpty()) it + DividerViewData(1) else it
-        }
+        )
 
         val suggestionsViewData = activitySuggestionViewDataInteractor.getSuggestionsViewData(
+            filter = filter,
             recordTypesMap = recordTypesMap,
             goals = goals,
             runningRecords = runningRecords,
@@ -225,9 +247,7 @@ class WidgetUniversalViewModel @Inject constructor(
             completeTypeIds = completeTypeIds,
             numberOfCards = numberOfCards,
             isDarkTheme = isDarkTheme,
-        ).let {
-            if (it.isNotEmpty()) it + DividerViewData(2) else it
-        }
+        )
 
         val recordTypesViewData = recordTypes
             .filterNot { it.hidden }
@@ -247,33 +267,51 @@ class WidgetUniversalViewModel @Inject constructor(
                     ),
                     isComplete = it.id in completeTypeIds,
                 )
+            }.let {
+                if (it.isEmpty()) {
+                    recordTypeViewDataMapper.mapToEmpty()
+                } else {
+                    val repeatViewData = recordTypeViewDataMapper.mapToRepeatItem(
+                        numberOfCards = numberOfCards,
+                        isDarkTheme = isDarkTheme,
+                    )
+                    val hintViewData = widgetUniversalViewDataMapper.mapToHint(
+                        retroactiveTrackingMode = retroactiveTrackingMode,
+                    )
+                    it + repeatViewData + hintViewData
+                }
             }
-        val repeatViewData = recordTypeViewDataMapper.mapToRepeatItem(
-            numberOfCards = numberOfCards,
+
+        val shortcutsViewData = recordsShortcutsViewDataInteractor.getShortcutsViewData(
+            filter = filter,
+            recordTypesMap = recordTypesMap,
+            recordTags = recordTags,
+            runningRecords = runningRecords,
             isDarkTheme = isDarkTheme,
         )
+
         val openInAppButtonViewData = widgetUniversalViewDataMapper.mapOpenInAppButton(
             isDarkTheme = isDarkTheme,
         )
+
         val bottomSpace = EmptySpaceViewData(
             id = "widgets_universal_nav_bar_space".hashCode().toLong(),
             height = EmptySpaceViewData.ViewDimension.ExactSizeDp(navBarHeightDp),
             wrapBefore = true,
         )
 
-        val result = mutableListOf<ViewHolderType>()
-        result += filtersViewData
-        result += suggestionsViewData
-        if (recordTypesViewData.isEmpty()) {
-            result += recordTypeViewDataMapper.mapToEmpty()
-        } else {
-            result += recordTypesViewData
-            result += repeatViewData
-            result += widgetUniversalViewDataMapper.mapToHint(retroactiveTrackingMode)
-        }
-        result += openInAppButtonViewData
-        result += bottomSpace
-        return result
+        return listOf(
+            filtersViewData,
+            suggestionsViewData,
+            recordTypesViewData,
+            shortcutsViewData,
+        ).filter {
+            it.isNotEmpty()
+        }.addBetweenEach { index ->
+            listOf(DividerViewData(index.toLong()))
+        }.flatten()
+            .plus(openInAppButtonViewData)
+            .plus(bottomSpace)
     }
 
     companion object {

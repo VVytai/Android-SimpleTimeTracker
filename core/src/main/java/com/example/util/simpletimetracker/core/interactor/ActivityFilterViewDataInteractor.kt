@@ -7,6 +7,7 @@ import com.example.util.simpletimetracker.domain.activityFilter.model.ActivityFi
 import com.example.util.simpletimetracker.domain.activityFilter.model.PredefinedFilter
 import com.example.util.simpletimetracker.domain.category.interactor.RecordTypeCategoryInteractor
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
+import com.example.util.simpletimetracker.domain.recordShortcut.model.RecordShortcut
 import com.example.util.simpletimetracker.domain.recordType.model.RecordType
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import javax.inject.Inject
@@ -82,6 +83,29 @@ class ActivityFilterViewDataInteractor @Inject constructor(
         list: List<RecordType>,
         filter: Filter,
     ): List<RecordType> {
+        return applyFilter(
+            list = list,
+            filter = filter,
+            predicate = { data, typeIds -> data.id in typeIds },
+        )
+    }
+
+    suspend fun applyFilterToShortcuts(
+        list: List<RecordShortcut>,
+        filter: Filter,
+    ): List<RecordShortcut> {
+        return applyFilter(
+            list = list,
+            filter = filter,
+            predicate = { data, typeIds -> data.typeId in typeIds },
+        )
+    }
+
+    private suspend fun <T> applyFilter(
+        list: List<T>,
+        filter: Filter,
+        predicate: (data: T, typeIds: List<Long>) -> Boolean,
+    ): List<T> {
         if (filter !is Filter.ApplyFilter) return list
 
         val hasAnySelectedFilters = filter.userFilters.any { it.selected } ||
@@ -89,7 +113,7 @@ class ActivityFilterViewDataInteractor @Inject constructor(
 
         return if (hasAnySelectedFilters) {
             val selectedTypes = getSelectedTypeIds(filter)
-            list.filter { it.id in selectedTypes }
+            list.filter { predicate(it, selectedTypes) }
         } else {
             list
         }

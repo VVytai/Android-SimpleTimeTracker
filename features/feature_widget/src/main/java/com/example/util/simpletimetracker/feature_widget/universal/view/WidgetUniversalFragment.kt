@@ -21,6 +21,7 @@ import com.example.util.simpletimetracker.feature_base_adapter.empty.createEmpty
 import com.example.util.simpletimetracker.feature_base_adapter.emptySpace.createEmptySpaceAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.hint.createHintAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.loader.createLoaderAdapterDelegate
+import com.example.util.simpletimetracker.feature_base_adapter.recordShortcut.createRecordShortcutAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.recordType.createRecordTypeAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.recordTypeSpecial.createRunningRecordTypeSpecialAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.recordTypeSuggestion.createRecordTypeSuggestionAdapterDelegate
@@ -52,6 +53,7 @@ class WidgetUniversalFragment :
             createRecordTypeAdapterDelegate(viewModel::onRecordTypeClick),
             createRecordTypeSuggestionAdapterDelegate(RecordTypeSuggestionType, viewModel::onRecordTypeClick),
             createRunningRecordTypeSpecialAdapterDelegate(viewModel::onSpecialRecordTypeClick),
+            createRecordShortcutAdapterDelegate(viewModel::onShortcutClick),
             createButtonAdapterDelegate(viewModel::onButtonClick),
             createEmptySpaceAdapterDelegate(),
             createDividerAdapterDelegate(),

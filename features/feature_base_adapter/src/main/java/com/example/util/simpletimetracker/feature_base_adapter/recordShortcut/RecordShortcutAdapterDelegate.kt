@@ -7,8 +7,8 @@ import com.example.util.simpletimetracker.feature_base_adapter.databinding.ItemR
 import com.example.util.simpletimetracker.feature_base_adapter.recordShortcut.RecordShortcutViewData as ViewData
 
 fun createRecordShortcutAdapterDelegate(
-    onItemClick: ((ViewData) -> Unit) = { _ -> },
-    onItemLongClick: ((ViewData) -> Unit) = { _ -> },
+    onItemClick: (ViewData) -> Unit,
+    onItemLongClick: ((ViewData) -> Unit)? = null,
 ) = createRecyclerBindingAdapterDelegate<ViewData, Binding>(
     Binding::inflate,
 ) { binding, item, _ ->
@@ -24,6 +24,6 @@ fun createRecordShortcutAdapterDelegate(
         item.data.icon?.let(this::itemIcon::set)
 
         setOnClick { onItemClick(item) }
-        setOnLongClick { onItemLongClick(item) }
+        onItemLongClick?.let { setOnLongClick { it(item) } }
     }
 }

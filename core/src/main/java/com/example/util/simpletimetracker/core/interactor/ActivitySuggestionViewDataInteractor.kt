@@ -6,16 +6,17 @@ import com.example.util.simpletimetracker.domain.activitySuggestion.interactor.G
 import com.example.util.simpletimetracker.domain.record.model.RunningRecord
 import com.example.util.simpletimetracker.domain.recordType.model.RecordType
 import com.example.util.simpletimetracker.domain.recordType.model.RecordTypeGoal
-import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.recordTypeSuggestion.RecordTypeSuggestionViewData
 import javax.inject.Inject
 
 class ActivitySuggestionViewDataInteractor @Inject constructor(
     private val getCurrentActivitySuggestionsInteractor: GetCurrentActivitySuggestionsInteractor,
     private val recordTypeViewDataMapper: RecordTypeViewDataMapper,
+    private val activityFilterViewDataInteractor: ActivityFilterViewDataInteractor,
 ) {
 
     suspend fun getSuggestionsViewData(
+        filter: ActivityFilterViewDataInteractor.Filter,
         recordTypesMap: Map<Long, RecordType>,
         goals: Map<Long, List<RecordTypeGoal>>,
         runningRecords: List<RunningRecord>,
@@ -23,11 +24,13 @@ class ActivitySuggestionViewDataInteractor @Inject constructor(
         completeTypeIds: Set<Long>,
         numberOfCards: Int,
         isDarkTheme: Boolean,
-    ): List<ViewHolderType> {
+    ): List<RecordTypeSuggestionViewData> {
         val suggestionTypes = getCurrentActivitySuggestionsInteractor.execute(
             recordTypesMap = recordTypesMap,
             runningRecords = runningRecords,
-        )
+        ).let {
+            activityFilterViewDataInteractor.applyFilter(it, filter)
+        }
 
         return suggestionTypes.map { recordType ->
             recordTypeViewDataMapper.map(

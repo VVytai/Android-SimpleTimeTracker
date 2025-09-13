@@ -54,3 +54,16 @@ operator fun <T> List<T>.plus(elements: List<T>?): List<T> {
 inline fun <T> List<T>.replaceWith(new: T, crossinline filter: (T) -> Boolean): List<T> {
     return this.removeIf(filter).toMutableList().apply { add(new) }
 }
+
+fun <T> List<T>.addBetweenEach(
+    spacingProducer: (index: Int) -> T,
+): List<T> {
+    val result = mutableListOf<T>()
+    this.forEachIndexed { index, item ->
+        result += item
+        if (index != this.lastIndex) {
+            result += spacingProducer(index)
+        }
+    }
+    return result
+}
