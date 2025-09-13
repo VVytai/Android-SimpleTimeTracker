@@ -14,7 +14,6 @@ class ChartFilterViewDataMapper @Inject constructor(
     private val colorMapper: ColorMapper,
     private val resourceRepo: ResourceRepo,
     private val recordTypeCardSizeMapper: RecordTypeCardSizeMapper,
-    private val categoryViewDataMapper: CategoryViewDataMapper,
 ) {
 
     fun mapToUntrackedItem(
@@ -27,15 +26,14 @@ class ChartFilterViewDataMapper @Inject constructor(
             name = R.string.untracked_time_name
                 .let(resourceRepo::getString),
             iconId = RecordTypeIcon.Image(R.drawable.unknown),
-            iconColor = categoryViewDataMapper.getTextColor(
+            iconColor = colorMapper.toIconColor(
                 isDarkTheme = isDarkTheme,
                 isFiltered = UNTRACKED_ITEM_ID in typeIdsFiltered,
             ),
-            color = if (UNTRACKED_ITEM_ID in typeIdsFiltered) {
-                colorMapper.toFilteredColor(isDarkTheme)
-            } else {
-                colorMapper.toUntrackedColor(isDarkTheme)
-            },
+            color = colorMapper.toFilteredUntrackedColor(
+                isDarkTheme = isDarkTheme,
+                isFiltered = UNTRACKED_ITEM_ID in typeIdsFiltered,
+            ),
             width = recordTypeCardSizeMapper.toCardWidth(numberOfCards),
             height = recordTypeCardSizeMapper.toCardHeight(numberOfCards),
             asRow = recordTypeCardSizeMapper.toCardAsRow(numberOfCards),

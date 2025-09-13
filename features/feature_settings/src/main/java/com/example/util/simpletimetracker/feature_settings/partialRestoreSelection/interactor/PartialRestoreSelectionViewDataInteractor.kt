@@ -181,7 +181,7 @@ class PartialRestoreSelectionViewDataInteractor @Inject constructor(
                     CategoryViewData.Category(
                         id = it.id,
                         name = it.comment,
-                        iconColor = categoryViewDataMapper.getTextColor(
+                        iconColor = colorMapper.toIconColor(
                             isDarkTheme = isDarkTheme,
                             isFiltered = filtered,
                         ),

@@ -23,10 +23,6 @@ class ActivityFilterViewDataMapper @Inject constructor(
         return ActivityFilterViewData(
             id = filter.id,
             name = filter.name,
-            iconColor = mapFilterIconColor(
-                selected = selected,
-                isDarkTheme = isDarkTheme,
-            ),
             color = mapFilterColor(
                 selected = selected,
                 color = filter.color,
@@ -45,10 +41,6 @@ class ActivityFilterViewDataMapper @Inject constructor(
         return ActivityFilterViewData(
             id = filter.categoryId,
             name = filter.name,
-            iconColor = mapFilterIconColor(
-                selected = selected,
-                isDarkTheme = isDarkTheme,
-            ),
             color = mapFilterColor(
                 selected = selected,
                 color = filter.color,
@@ -85,26 +77,15 @@ class ActivityFilterViewDataMapper @Inject constructor(
         )
     }
 
-    private fun mapFilterIconColor(
-        selected: Boolean,
-        isDarkTheme: Boolean,
-    ): Int {
-        return if (selected) {
-            colorMapper.toIconColor(isDarkTheme)
-        } else {
-            colorMapper.toFilteredIconColor(isDarkTheme)
-        }
-    }
-
     private fun mapFilterColor(
         selected: Boolean,
         color: AppColor,
         isDarkTheme: Boolean,
     ): Int {
-        return if (selected) {
-            colorMapper.mapToColorInt(color, isDarkTheme)
-        } else {
-            colorMapper.toFilteredColor(isDarkTheme)
-        }
+        return colorMapper.toFilteredColor(
+            color = color,
+            isDarkTheme = isDarkTheme,
+            isFiltered = !selected,
+        )
     }
 }

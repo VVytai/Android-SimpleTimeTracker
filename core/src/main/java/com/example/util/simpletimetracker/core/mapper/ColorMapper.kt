@@ -37,6 +37,17 @@ class ColorMapper @Inject constructor(
         }.let(resourceRepo::getColor)
     }
 
+    fun toIconColor(
+        isDarkTheme: Boolean,
+        isFiltered: Boolean,
+    ): Int {
+        return if (isFiltered) {
+            toFilteredIconColor(isDarkTheme)
+        } else {
+            toIconColor(isDarkTheme)
+        }
+    }
+
     fun toIconAlpha(icon: RecordTypeIcon?, isFiltered: Boolean): Float {
         return if (icon is RecordTypeIcon.Text && isFiltered) {
             FILTERED_ICON_TEXT_ALPHA
@@ -51,6 +62,29 @@ class ColorMapper @Inject constructor(
         } else {
             R.color.colorFiltered
         }.let(resourceRepo::getColor)
+    }
+
+    fun toFilteredColor(
+        color: AppColor,
+        isDarkTheme: Boolean,
+        isFiltered: Boolean,
+    ): Int {
+        return if (isFiltered) {
+            toFilteredColor(isDarkTheme)
+        } else {
+            mapToColorInt(color, isDarkTheme)
+        }
+    }
+
+    fun toFilteredUntrackedColor(
+        isDarkTheme: Boolean,
+        isFiltered: Boolean,
+    ): Int {
+        return if (isFiltered) {
+            toFilteredColor(isDarkTheme)
+        } else {
+            toUntrackedColor(isDarkTheme)
+        }
     }
 
     fun toFilteredIconColor(isDarkTheme: Boolean): Int {

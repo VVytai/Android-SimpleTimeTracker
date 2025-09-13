@@ -40,16 +40,15 @@ class RecordShortcutViewDataMapper @Inject constructor(
         val data = CategoryViewData.Record.Tagged(
             id = 0,
             name = name,
-            iconColor = if (isFiltered) {
-                colorMapper.toFilteredIconColor(isDarkTheme)
-            } else {
-                colorMapper.toIconColor(isDarkTheme)
-            },
-            color = if (isFiltered) {
-                colorMapper.toFilteredColor(isDarkTheme)
-            } else {
-                colorMapper.mapToColorInt(recordType.color, isDarkTheme)
-            },
+            iconColor = colorMapper.toIconColor(
+                isDarkTheme = isDarkTheme,
+                isFiltered = isFiltered,
+            ),
+            color = colorMapper.toFilteredColor(
+                color = recordType.color,
+                isDarkTheme = isDarkTheme,
+                isFiltered = isFiltered,
+            ),
             icon = icon,
             iconAlpha = colorMapper.toIconAlpha(icon, isFiltered),
             // TODO show tag with alpha color like in record

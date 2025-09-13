@@ -6,7 +6,6 @@ import com.example.util.simpletimetracker.domain.base.ARCHIVED_BUTTON_ITEM_ID
 import com.example.util.simpletimetracker.domain.base.UNCATEGORIZED_ITEM_ID
 import com.example.util.simpletimetracker.domain.base.UNTRACKED_ITEM_ID
 import com.example.util.simpletimetracker.domain.category.model.Category
-import com.example.util.simpletimetracker.domain.color.model.AppColor
 import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.domain.recordTag.model.RecordTag
 import com.example.util.simpletimetracker.domain.recordType.model.RecordType
@@ -37,8 +36,15 @@ class CategoryViewDataMapper @Inject constructor(
         return CategoryViewData.Category(
             id = category.id,
             name = category.name,
-            iconColor = getTextColor(isDarkTheme, isFiltered),
-            color = getColor(category.color, isDarkTheme, isFiltered),
+            iconColor = colorMapper.toIconColor(
+                isDarkTheme = isDarkTheme,
+                isFiltered = isFiltered,
+            ),
+            color = colorMapper.toFilteredColor(
+                color = category.color,
+                isDarkTheme = isDarkTheme,
+                isFiltered = isFiltered,
+            ),
         )
     }
 
@@ -50,15 +56,14 @@ class CategoryViewDataMapper @Inject constructor(
             id = UNCATEGORIZED_ITEM_ID,
             name = R.string.uncategorized_time_name
                 .let(resourceRepo::getString),
-            iconColor = getTextColor(
+            iconColor = colorMapper.toIconColor(
                 isDarkTheme = isDarkTheme,
                 isFiltered = isFiltered,
             ),
-            color = if (isFiltered) {
-                colorMapper.toFilteredColor(isDarkTheme)
-            } else {
-                colorMapper.toUntrackedColor(isDarkTheme)
-            },
+            color = colorMapper.toFilteredUntrackedColor(
+                isDarkTheme = isDarkTheme,
+                isFiltered = isFiltered,
+            ),
         )
     }
 
@@ -70,15 +75,14 @@ class CategoryViewDataMapper @Inject constructor(
             id = UNTRACKED_ITEM_ID,
             name = R.string.untracked_time_name
                 .let(resourceRepo::getString),
-            iconColor = getTextColor(
+            iconColor = colorMapper.toIconColor(
                 isDarkTheme = isDarkTheme,
                 isFiltered = isFiltered,
             ),
-            color = if (isFiltered) {
-                colorMapper.toFilteredColor(isDarkTheme)
-            } else {
-                colorMapper.toUntrackedColor(isDarkTheme)
-            },
+            color = colorMapper.toFilteredUntrackedColor(
+                isDarkTheme = isDarkTheme,
+                isFiltered = isFiltered,
+            ),
         )
     }
 
@@ -95,9 +99,16 @@ class CategoryViewDataMapper @Inject constructor(
         return CategoryViewData.Record.Tagged(
             id = tag.id,
             name = tag.name,
-            iconColor = getTextColor(isDarkTheme, isFiltered),
+            iconColor = colorMapper.toIconColor(
+                isDarkTheme = isDarkTheme,
+                isFiltered = isFiltered,
+            ),
             iconAlpha = colorMapper.toIconAlpha(icon, isFiltered),
-            color = getColor(color, isDarkTheme, isFiltered),
+            color = colorMapper.toFilteredColor(
+                color = color,
+                isDarkTheme = isDarkTheme,
+                isFiltered = isFiltered,
+            ),
             icon = icon,
         )
     }
@@ -143,12 +154,14 @@ class CategoryViewDataMapper @Inject constructor(
             id = UNCATEGORIZED_ITEM_ID,
             name = R.string.change_record_untagged
                 .let(resourceRepo::getString),
-            iconColor = getTextColor(isDarkTheme, isFiltered),
-            color = if (isFiltered) {
-                colorMapper.toFilteredColor(isDarkTheme)
-            } else {
-                colorMapper.toUntrackedColor(isDarkTheme)
-            },
+            iconColor = colorMapper.toIconColor(
+                isDarkTheme = isDarkTheme,
+                isFiltered = isFiltered,
+            ),
+            color = colorMapper.toFilteredUntrackedColor(
+                isDarkTheme = isDarkTheme,
+                isFiltered = isFiltered,
+            ),
             icon = RecordTypeIcon.Image(R.drawable.untagged),
         )
     }
@@ -162,15 +175,14 @@ class CategoryViewDataMapper @Inject constructor(
             name = R.string.untracked_time_name
                 .let(resourceRepo::getString),
             icon = RecordTypeIcon.Image(R.drawable.unknown),
-            iconColor = getTextColor(
+            iconColor = colorMapper.toIconColor(
                 isDarkTheme = isDarkTheme,
                 isFiltered = isFiltered,
             ),
-            color = if (isFiltered) {
-                colorMapper.toFilteredColor(isDarkTheme)
-            } else {
-                colorMapper.toUntrackedColor(isDarkTheme)
-            },
+            color = colorMapper.toFilteredUntrackedColor(
+                isDarkTheme = isDarkTheme,
+                isFiltered = isFiltered,
+            ),
         )
     }
 
@@ -183,7 +195,7 @@ class CategoryViewDataMapper @Inject constructor(
             name = R.string.settings_archive
                 .let(resourceRepo::getString),
             icon = RecordTypeIcon.Image(R.drawable.archive),
-            iconColor = getTextColor(
+            iconColor = colorMapper.toIconColor(
                 isDarkTheme = isDarkTheme,
                 isFiltered = false,
             ),
@@ -246,31 +258,6 @@ class CategoryViewDataMapper @Inject constructor(
             infoIconVisible = true,
             closeIconVisible = false,
         )
-    }
-
-    // TODO move to color mapper
-    fun getTextColor(
-        isDarkTheme: Boolean,
-        isFiltered: Boolean,
-    ): Int {
-        return if (isFiltered) {
-            colorMapper.toFilteredIconColor(isDarkTheme)
-        } else {
-            colorMapper.toIconColor(isDarkTheme)
-        }
-    }
-
-    // TODO move to color mapper
-    private fun getColor(
-        color: AppColor,
-        isDarkTheme: Boolean,
-        isFiltered: Boolean,
-    ): Int {
-        return if (isFiltered) {
-            colorMapper.toFilteredColor(isDarkTheme)
-        } else {
-            colorMapper.mapToColorInt(color, isDarkTheme)
-        }
     }
 
     private fun map(type: TagType, isDarkTheme: Boolean): CategoryAddViewData {
