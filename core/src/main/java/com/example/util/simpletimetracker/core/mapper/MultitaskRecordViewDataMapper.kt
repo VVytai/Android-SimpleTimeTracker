@@ -1,5 +1,6 @@
 package com.example.util.simpletimetracker.core.mapper
 
+import com.example.util.simpletimetracker.domain.base.DurationFormat
 import com.example.util.simpletimetracker.domain.record.model.MultitaskRecord
 import com.example.util.simpletimetracker.domain.record.model.Record
 import com.example.util.simpletimetracker.domain.recordTag.model.RecordTag
@@ -19,7 +20,7 @@ class MultitaskRecordViewDataMapper @Inject constructor(
         recordTags: List<RecordTag>,
         isDarkTheme: Boolean,
         useMilitaryTime: Boolean,
-        useProportionalMinutes: Boolean,
+        durationFormat: DurationFormat,
         showSeconds: Boolean,
     ): MultitaskRecordViewData {
         val ids = multitaskRecord.records.map(Record::id)
@@ -30,7 +31,7 @@ class MultitaskRecordViewDataMapper @Inject constructor(
                 recordTags = recordTags,
                 isDarkTheme = isDarkTheme,
                 useMilitaryTime = useMilitaryTime,
-                useProportionalMinutes = useProportionalMinutes,
+                durationFormat = durationFormat,
                 showSeconds = showSeconds,
             )
         }

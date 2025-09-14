@@ -55,9 +55,14 @@
     <string name="ok">Tamam</string>
     <string name="cancel">İptal</string>
 
+    <string name="time_day">g</string>
     <string name="time_hour">sa</string>
     <string name="time_minute">dk</string>
     <string name="time_second">sn</string>
+
+    <string name="days">Gün</string>
+    <string name="hours">Saat</string>
+    <string name="minutes">Dakika</string>
 
     <string name="untracked_time_name">Takipsiz</string>
     <string name="uncategorized_time_name">Kategorize edilmemiş</string>
@@ -360,7 +365,8 @@ Bu, genel olarak verimli ve verimsiz aktivitelere ne kadar zaman harcadığını
     <string name="settings_language">Dil</string>
     <string name="settings_use_military_time">24-saat formatını kullan</string>
     <string name="settings_use_monthday_time">Ay/Gün tarih biçimini kullan</string>
-    <string name="settings_use_proportional_minutes">Oransal dakika formatını kullan</string>
+    <string name="settings_duration_format">Süre biçimi</string>
+    <string name="settings_duration_format_proportional">Orantılı</string>
     <string name="settings_show_seconds">Saniye göster</string>
     <string name="settings_keep_screen_on">Ekranı açık tut</string>
     <string name="settings_change_card_size">Aktivite kartı boyutunu değiştir</string>

@@ -7,6 +7,7 @@ import com.example.util.simpletimetracker.core.extension.shift
 import com.example.util.simpletimetracker.core.provider.LocaleProvider
 import com.example.util.simpletimetracker.core.repo.BaseResourceRepo
 import com.example.util.simpletimetracker.domain.base.CurrentTimestampProvider
+import com.example.util.simpletimetracker.domain.base.DurationFormat
 import com.example.util.simpletimetracker.domain.daysOfWeek.model.DayOfWeek
 import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.domain.extension.padDuration
@@ -323,6 +324,8 @@ class TimeMapper @Inject constructor(
 
     /**
      * @param interval in seconds.
+     *
+     * ex. 1h, 1h 1m, 1h 1m 1s, 1h 1s, 1m 1s, 1s.
      */
     fun formatDuration(interval: Long): String {
         val hourString = resourceRepo.getString(R.string.time_hour)
@@ -471,101 +474,84 @@ class TimeMapper @Inject constructor(
 
     /**
      * @param forceSeconds - true 1h 7m 21s, false 1h 7m
-     * @param useProportionalMinutes - true 1.25h
+     * @param durationFormat - PROPORTIONAL_MINUTES 1.25h
+     *
+     * ex. 1d 0h 0m, 1h 0m, 1s.
      */
     fun formatInterval(
         interval: Long,
         forceSeconds: Boolean,
-        useProportionalMinutes: Boolean,
+        durationFormat: DurationFormat,
     ): String {
+        val dayString = resourceRepo.getString(R.string.time_day)
         val hourString = resourceRepo.getString(R.string.time_hour)
         val minuteString = resourceRepo.getString(R.string.time_minute)
         val secondString = resourceRepo.getString(R.string.time_second)
 
-        val hr: Long = TimeUnit.MILLISECONDS.toHours(
-            abs(interval),
-        )
-        val min: Long = TimeUnit.MILLISECONDS.toMinutes(
-            abs(interval) - TimeUnit.HOURS.toMillis(hr),
-        )
-        val sec: Long = TimeUnit.MILLISECONDS.toSeconds(
-            abs(interval) - TimeUnit.HOURS.toMillis(hr) - TimeUnit.MINUTES.toMillis(min),
-        )
-
-        if (useProportionalMinutes) {
-            return formatIntervalProportional(interval, hr, min)
-        }
-
-        val willShowHours: Boolean
-        val willShowMinutes: Boolean
-        val willShowSeconds: Boolean
-
-        if (forceSeconds) {
-            willShowHours = hr != 0L
-            willShowMinutes = willShowHours || min != 0L
-            willShowSeconds = true
+        var intervalLeft = abs(interval)
+        val days: Long = if (durationFormat == DurationFormat.DAYS) {
+            TimeUnit.MILLISECONDS.toDays(intervalLeft)
         } else {
-            willShowHours = hr != 0L
-            willShowMinutes = true
-            willShowSeconds = false
+            0
         }
-
-        var res = ""
-        if (willShowHours) res += "$hr$hourString "
-        if (willShowMinutes) res += "$min$minuteString"
-        if (willShowMinutes && willShowSeconds) res += " "
-        if (willShowSeconds) res += "$sec$secondString"
-
-        res = if (interval < 0) "-$res" else res
-
-        return res
-    }
-
-    @Suppress("unused")
-    fun formatIntervalAdjusted(
-        timeStarted: Long,
-        timeEnded: Long,
-        showSeconds: Boolean,
-        useProportionalMinutes: Boolean,
-    ): String {
-        val duration = timeEnded - timeStarted
-        val interval = formatInterval(
-            interval = duration,
-            forceSeconds = showSeconds,
-            useProportionalMinutes = useProportionalMinutes,
-        )
-
-        return if (
-            showSeconds ||
-            useProportionalMinutes ||
-            duration < MINUTES_IN_MILLIS
-        ) {
-            interval
+        intervalLeft -= TimeUnit.DAYS.toMillis(days)
+        val hr: Long = if (durationFormat != DurationFormat.MINUTES) {
+            TimeUnit.MILLISECONDS.toHours(intervalLeft)
         } else {
-            val adjustedTimeStarted = timeStarted / MINUTES_IN_MILLIS * MINUTES_IN_MILLIS
-            val adjustedTimeEnded = timeEnded / MINUTES_IN_MILLIS * MINUTES_IN_MILLIS
-            val adjustedInterval = formatInterval(
-                interval = adjustedTimeEnded - adjustedTimeStarted,
-                forceSeconds = false,
-                useProportionalMinutes = false,
-            )
-            if (adjustedInterval != interval) {
-                "~$adjustedInterval"
-            } else {
-                interval
+            0
+        }
+        intervalLeft -= TimeUnit.HOURS.toMillis(hr)
+        val min: Long = TimeUnit.MILLISECONDS.toMinutes(intervalLeft)
+        intervalLeft -= TimeUnit.MINUTES.toMillis(min)
+        val sec: Long = TimeUnit.MILLISECONDS.toSeconds(intervalLeft)
+
+        val result = when (durationFormat) {
+            DurationFormat.PROPORTIONAL_MINUTES -> {
+                formatIntervalProportional(hr, min)
+            }
+            else -> {
+                val willShowDays = durationFormat == DurationFormat.DAYS && days != 0L
+                val willShowHours = willShowDays || hr != 0L
+
+                val willShowMinutes: Boolean
+                val willShowSeconds: Boolean
+
+                if (forceSeconds) {
+                    willShowMinutes = willShowHours || min != 0L
+                    willShowSeconds = true
+                } else {
+                    willShowMinutes = true
+                    willShowSeconds = false
+                }
+
+                var res = ""
+                if (willShowDays) res += "$days$dayString"
+                if (willShowHours) {
+                    if (res.isNotEmpty()) res += " "
+                    res += "$hr$hourString"
+                }
+                if (willShowMinutes) {
+                    if (res.isNotEmpty()) res += " "
+                    res += "$min$minuteString"
+                }
+                if (willShowSeconds) {
+                    if (res.isNotEmpty()) res += " "
+                    res += "$sec$secondString"
+                }
+                res
             }
         }
+
+        return if (interval < 0) "-$result" else result
     }
 
-    private fun formatIntervalProportional(interval: Long, hr: Long, min: Long): String {
+    private fun formatIntervalProportional(hr: Long, min: Long): String {
         val hourString = resourceRepo.getString(R.string.time_hour)
         val minutesProportion = min / 60f
         val proportional = hr + minutesProportion
         val proportionalString = "%.2f".format(proportional)
 
-        val res = "$proportionalString$hourString"
-
-        return if (interval < 0) "-$res" else res
+        return "$proportionalString$hourString"
     }
 
     fun toDayDateTitle(

@@ -4,6 +4,7 @@ import com.example.util.simpletimetracker.core.mapper.ChangeRecordDateTimeMapper
 import com.example.util.simpletimetracker.core.mapper.RecordQuickActionMapper
 import com.example.util.simpletimetracker.core.mapper.RecordViewDataMapper
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
+import com.example.util.simpletimetracker.domain.base.DurationFormat
 import com.example.util.simpletimetracker.domain.color.model.AppColor
 import com.example.util.simpletimetracker.domain.record.model.Record
 import com.example.util.simpletimetracker.domain.recordAction.model.RecordQuickAction
@@ -31,7 +32,7 @@ class ChangeRecordViewDataMapper @Inject constructor(
         recordTags: List<RecordTag>,
         isDarkTheme: Boolean,
         useMilitaryTime: Boolean,
-        useProportionalMinutes: Boolean,
+        durationFormat: DurationFormat,
         showSeconds: Boolean,
         dateTimeFieldState: ChangeRecordDateTimeFieldsState,
     ): ChangeRecordViewData {
@@ -50,7 +51,7 @@ class ChangeRecordViewDataMapper @Inject constructor(
             recordTags = recordTags,
             isDarkTheme = isDarkTheme,
             useMilitaryTime = useMilitaryTime,
-            useProportionalMinutes = useProportionalMinutes,
+            durationFormat = durationFormat,
             showSeconds = showSeconds,
         ).let {
             // TODO do better
@@ -60,7 +61,7 @@ class ChangeRecordViewDataMapper @Inject constructor(
                     timeEnded = record.timeEnded,
                     isDarkTheme = isDarkTheme,
                     useMilitaryTime = useMilitaryTime,
-                    useProportionalMinutes = useProportionalMinutes,
+                    durationFormat = durationFormat,
                     showSeconds = showSeconds,
                 )
                 it.copy(
@@ -87,6 +88,7 @@ class ChangeRecordViewDataMapper @Inject constructor(
                 field = ChangeRecordDateTimeMapper.Field.Start,
                 useMilitaryTimeFormat = useMilitaryTime,
                 showSeconds = showSeconds,
+                durationFormat = durationFormat,
             ),
             dateTimeFinished = changeRecordDateTimeMapper.map(
                 param = when (dateTimeFieldState.end) {
@@ -100,6 +102,7 @@ class ChangeRecordViewDataMapper @Inject constructor(
                 field = ChangeRecordDateTimeMapper.Field.End,
                 useMilitaryTimeFormat = useMilitaryTime,
                 showSeconds = showSeconds,
+                durationFormat = durationFormat,
             ),
         )
     }

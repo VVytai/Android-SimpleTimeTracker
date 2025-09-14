@@ -55,9 +55,14 @@
     <string name="ok">OK</string>
     <string name="cancel">Скасувати</string>
 
+    <string name="time_day">д</string>
     <string name="time_hour">г</string>
     <string name="time_minute">хв</string>
     <string name="time_second">с</string>
+
+    <string name="days">Дні</string>
+    <string name="hours">Години</string>
+    <string name="minutes">Хвилини</string>
 
     <string name="untracked_time_name">Без відстеження</string>
     <string name="uncategorized_time_name">Без категорії</string>
@@ -360,7 +365,8 @@
     <string name="settings_language">Мова</string>
     <string name="settings_use_military_time">Використовувати 24-годинний формат</string>
     <string name="settings_use_monthday_time">Використовувати формат дати місяць/день</string>
-    <string name="settings_use_proportional_minutes">Використовувати пропорційний хвилинний формат</string>
+    <string name="settings_duration_format">Формат тривалості</string>
+    <string name="settings_duration_format_proportional">Пропорційний</string>
     <string name="settings_show_seconds">Показувати секунди</string>
     <string name="settings_keep_screen_on">Тримати екран увімкненим</string>
     <string name="settings_change_card_size">Змінити розмір картки активності</string>

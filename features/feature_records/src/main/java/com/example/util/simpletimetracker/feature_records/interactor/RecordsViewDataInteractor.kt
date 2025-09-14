@@ -4,6 +4,7 @@ import com.example.util.simpletimetracker.core.interactor.GetRunningRecordViewDa
 import com.example.util.simpletimetracker.core.mapper.CalendarToListShiftMapper
 import com.example.util.simpletimetracker.core.mapper.RecordViewDataMapper
 import com.example.util.simpletimetracker.core.mapper.TimeMapper
+import com.example.util.simpletimetracker.domain.base.DurationFormat
 import com.example.util.simpletimetracker.domain.base.UNCATEGORIZED_ITEM_ID
 import com.example.util.simpletimetracker.domain.base.UNTRACKED_ITEM_ID
 import com.example.util.simpletimetracker.domain.category.interactor.RecordTypeCategoryInteractor
@@ -75,7 +76,7 @@ class RecordsViewDataInteractor @Inject constructor(
         val calendar = Calendar.getInstance()
         val isDarkTheme = prefsInteractor.getDarkMode()
         val useMilitaryTime = prefsInteractor.getUseMilitaryTimeFormat()
-        val useProportionalMinutes = prefsInteractor.getUseProportionalMinutes()
+        val durationFormat = prefsInteractor.getDurationFormat()
         val showSeconds = prefsInteractor.getShowSeconds()
         val isMilitary = prefsInteractor.getUseMilitaryTimeFormat()
         val startOfDayShift = prefsInteractor.getStartOfDayShift()
@@ -126,7 +127,7 @@ class RecordsViewDataInteractor @Inject constructor(
                 range = range,
                 isDarkTheme = isDarkTheme,
                 useMilitaryTime = useMilitaryTime,
-                useProportionalMinutes = useProportionalMinutes,
+                durationFormat = durationFormat,
                 showUntrackedInRecords = showUntrackedInRecords,
                 showSeconds = showSeconds,
             )
@@ -308,7 +309,7 @@ class RecordsViewDataInteractor @Inject constructor(
         range: Range,
         isDarkTheme: Boolean,
         useMilitaryTime: Boolean,
-        useProportionalMinutes: Boolean,
+        durationFormat: DurationFormat,
         showUntrackedInRecords: Boolean,
         showSeconds: Boolean,
     ): List<RecordHolder> {
@@ -321,7 +322,7 @@ class RecordsViewDataInteractor @Inject constructor(
                     range = range,
                     isDarkTheme = isDarkTheme,
                     useMilitaryTime = useMilitaryTime,
-                    useProportionalMinutes = useProportionalMinutes,
+                    durationFormat = durationFormat,
                     showSeconds = showSeconds,
                 ).let {
                     RecordHolder(
@@ -350,7 +351,7 @@ class RecordsViewDataInteractor @Inject constructor(
                     totalDurationVisible = false,
                     isDarkTheme = isDarkTheme,
                     useMilitaryTime = useMilitaryTime,
-                    useProportionalMinutes = useProportionalMinutes,
+                    durationFormat = durationFormat,
                     showSeconds = showSeconds,
                 ).let {
                     RecordHolder(
@@ -379,7 +380,7 @@ class RecordsViewDataInteractor @Inject constructor(
                     range = range,
                     isDarkTheme = isDarkTheme,
                     useMilitaryTime = useMilitaryTime,
-                    useProportionalMinutes = useProportionalMinutes,
+                    durationFormat = durationFormat,
                     showSeconds = showSeconds,
                 ).let {
                     RecordHolder(

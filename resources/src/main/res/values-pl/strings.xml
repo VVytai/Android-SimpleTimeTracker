@@ -55,9 +55,14 @@
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
 
+    <string name="time_day">d</string>
     <string name="time_hour">g</string>
     <string name="time_minute">m</string>
     <string name="time_second">s</string>
+
+    <string name="days">Dni</string>
+    <string name="hours">Godziny</string>
+    <string name="minutes">Minuty</string>
 
     <string name="untracked_time_name">Nieśledzony</string>
     <string name="uncategorized_time_name">Bez kategorii</string>
@@ -360,7 +365,8 @@ Pozwala to zobaczyć, ile czasu spędzasz na produktywnych i nieproduktywnych ak
     <string name="settings_language">Język</string>
     <string name="settings_use_military_time">Użyj formatu 24-godzinnego</string>
     <string name="settings_use_monthday_time">Użyj formatu daty miesiąc/dzień</string>
-    <string name="settings_use_proportional_minutes">Użyj proporcjonalnego formatu minut</string>
+    <string name="settings_duration_format">Format czasu trwania</string>
+    <string name="settings_duration_format_proportional">Proporcjonalny</string>
     <string name="settings_show_seconds">Pokaż sekundy</string>
     <string name="settings_keep_screen_on">Pozostaw ekran włączony</string>
     <string name="settings_change_card_size">Zmień rozmiar karty aktywności</string>

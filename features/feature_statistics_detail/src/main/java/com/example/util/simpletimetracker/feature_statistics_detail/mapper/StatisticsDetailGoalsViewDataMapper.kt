@@ -2,6 +2,7 @@ package com.example.util.simpletimetracker.feature_statistics_detail.mapper
 
 import com.example.util.simpletimetracker.core.mapper.TimeMapper
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
+import com.example.util.simpletimetracker.domain.base.DurationFormat
 import com.example.util.simpletimetracker.domain.daysOfWeek.model.DayOfWeek
 import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.domain.record.mapper.RangeMapper
@@ -36,7 +37,7 @@ class StatisticsDetailGoalsViewDataMapper @Inject constructor(
         currentRangeGoal: RecordTypeGoal?,
         rangeLength: RangeLength,
         rangePosition: Int,
-        useProportionalMinutes: Boolean,
+        durationFormat: DurationFormat,
         showSeconds: Boolean,
         firstDayOfWeek: DayOfWeek,
         startOfDayShift: Long,
@@ -55,7 +56,7 @@ class StatisticsDetailGoalsViewDataMapper @Inject constructor(
             rangeLength = rangeLength,
             rangePosition = rangePosition,
             chartMode = chartMode,
-            useProportionalMinutes = useProportionalMinutes,
+            durationFormat = durationFormat,
             showSeconds = showSeconds,
             firstDayOfWeek = firstDayOfWeek,
             startOfDayShift = startOfDayShift,
@@ -87,7 +88,7 @@ class StatisticsDetailGoalsViewDataMapper @Inject constructor(
         availableChartLengths: List<ChartLength>,
         appliedChartLength: ChartLength,
         chartMode: ChartMode,
-        useProportionalMinutes: Boolean,
+        durationFormat: DurationFormat,
         showSeconds: Boolean,
         isDarkTheme: Boolean,
         startOfDayShift: Long,
@@ -134,7 +135,7 @@ class StatisticsDetailGoalsViewDataMapper @Inject constructor(
             rangeLength = rangeLength,
             chartGrouping = appliedChartGrouping,
             chartMode = chartMode,
-            useProportionalMinutes = useProportionalMinutes,
+            durationFormat = durationFormat,
             showSeconds = showSeconds,
             isDarkTheme = isDarkTheme,
         )
@@ -149,7 +150,7 @@ class StatisticsDetailGoalsViewDataMapper @Inject constructor(
         val goalTotals = mapGoalExcessDeficitTotals(
             goalData = goalData,
             chartMode = chartMode,
-            useProportionalMinutes = useProportionalMinutes,
+            durationFormat = durationFormat,
             showSeconds = showSeconds,
         )
 
@@ -212,7 +213,7 @@ class StatisticsDetailGoalsViewDataMapper @Inject constructor(
     private fun mapGoalExcessDeficitTotals(
         goalData: List<ChartBarDataDuration>,
         chartMode: ChartMode,
-        useProportionalMinutes: Boolean,
+        durationFormat: DurationFormat,
         showSeconds: Boolean,
     ): List<StatisticsDetailCardInternalViewData> {
         val barValues = goalData.map { bar -> bar.totalDuration.orZero() }
@@ -227,7 +228,7 @@ class StatisticsDetailGoalsViewDataMapper @Inject constructor(
                 is ChartMode.DURATIONS -> timeMapper.formatInterval(
                     interval = interval,
                     forceSeconds = showSeconds,
-                    useProportionalMinutes = useProportionalMinutes,
+                    durationFormat = durationFormat,
                 )
                 is ChartMode.COUNTS, is ChartMode.TAG_VALUE -> interval.toString()
             }
@@ -319,7 +320,7 @@ class StatisticsDetailGoalsViewDataMapper @Inject constructor(
         rangeLength: RangeLength,
         rangePosition: Int,
         chartMode: ChartMode,
-        useProportionalMinutes: Boolean,
+        durationFormat: DurationFormat,
         showSeconds: Boolean,
         firstDayOfWeek: DayOfWeek,
         startOfDayShift: Long,
@@ -331,7 +332,7 @@ class StatisticsDetailGoalsViewDataMapper @Inject constructor(
                 is ChartMode.DURATIONS -> timeMapper.formatInterval(
                     interval = interval,
                     forceSeconds = showSeconds,
-                    useProportionalMinutes = useProportionalMinutes,
+                    durationFormat = durationFormat,
                 )
                 is ChartMode.COUNTS, is ChartMode.TAG_VALUE -> interval.toString()
             }

@@ -283,7 +283,7 @@ class UpdateExternalViewsInteractor @Inject constructor(
         )
     }
 
-    suspend fun onUseProportionalMinutesChange() {
+    suspend fun onDurationFormatChange() {
         runUpdates(
             Update.NotificationTypes,
             Update.WidgetStatistics,

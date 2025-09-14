@@ -55,9 +55,14 @@
     <string name="ok">확인</string>
     <string name="cancel">취소</string>
 
+    <string name="time_day">일</string>
     <string name="time_hour">시</string>
     <string name="time_minute">분</string>
     <string name="time_second">초</string>
+
+    <string name="days">일</string>
+    <string name="hours">시간</string>
+    <string name="minutes">분</string>
 
     <string name="untracked_time_name">미기록</string>
     <string name="uncategorized_time_name">미분류됨</string>
@@ -360,7 +365,8 @@
     <string name="settings_language">언어</string>
     <string name="settings_use_military_time">24시간 포맷 사용</string>
     <string name="settings_use_monthday_time">월/일 포맷 사용</string>
-    <string name="settings_use_proportional_minutes">시간 비율 포맷 사용</string>
+    <string name="settings_duration_format">시간 형식</string>
+    <string name="settings_duration_format_proportional">비례</string>
     <string name="settings_show_seconds">초 표시</string>
     <string name="settings_keep_screen_on">화면 켠채로 유지</string>
     <string name="settings_change_card_size">활동 카드 크기 변경</string>

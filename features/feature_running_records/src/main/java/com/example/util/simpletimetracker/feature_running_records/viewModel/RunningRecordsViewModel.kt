@@ -179,6 +179,7 @@ class RunningRecordsViewModel @Inject constructor(
     ) = viewModelScope.launch {
         val useMilitaryTimeFormat = prefsInteractor.getUseMilitaryTimeFormat()
         val showSeconds = prefsInteractor.getShowSeconds()
+        val durationFormat = prefsInteractor.getDurationFormat()
 
         val params = getChangeRecordNavigationParamsInteractor.execute(
             item = item.record,
@@ -186,6 +187,7 @@ class RunningRecordsViewModel @Inject constructor(
             shift = 0,
             useMilitaryTimeFormat = useMilitaryTimeFormat,
             showSeconds = showSeconds,
+            durationFormat = durationFormat,
             // Doesn't have transitions because untracked edit also doesn't have them.
             sharedElements = null,
         )
@@ -201,6 +203,7 @@ class RunningRecordsViewModel @Inject constructor(
     ) = viewModelScope.launch {
         val useMilitaryTimeFormat = prefsInteractor.getUseMilitaryTimeFormat()
         val showSeconds = prefsInteractor.getShowSeconds()
+        val durationFormat = prefsInteractor.getDurationFormat()
 
         if (item.id == UNTRACKED_ITEM_ID) {
             // Currently possible in retroactive mode.
@@ -222,6 +225,7 @@ class RunningRecordsViewModel @Inject constructor(
                 shift = 0,
                 useMilitaryTimeFormat = useMilitaryTimeFormat,
                 showSeconds = showSeconds,
+                durationFormat = durationFormat,
                 sharedElements = null,
             )
             router.navigate(
@@ -233,6 +237,7 @@ class RunningRecordsViewModel @Inject constructor(
                 from = ChangeRunningRecordParams.From.RunningRecords,
                 useMilitaryTimeFormat = useMilitaryTimeFormat,
                 showSeconds = showSeconds,
+                durationFormat = durationFormat,
                 sharedElements = sharedElements,
             )
             router.navigate(

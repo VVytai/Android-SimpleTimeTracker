@@ -2,6 +2,7 @@ package com.example.util.simpletimetracker.feature_statistics_detail.mapper
 
 import com.example.util.simpletimetracker.core.extension.removeTrailingZeroes
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
+import com.example.util.simpletimetracker.domain.base.DurationFormat
 import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.buttonsRow.ButtonsRowItemViewData
@@ -36,7 +37,7 @@ class StatisticsDetailTagValuesViewDataMapper @Inject constructor(
         chartMode: ChartMode.TAG_VALUE,
         chartValueMode: ChartValueMode,
         valueSuffix: String,
-        useProportionalMinutes: Boolean,
+        durationFormat: DurationFormat,
         showSeconds: Boolean,
         isDarkTheme: Boolean,
     ): List<ViewHolderType> {
@@ -59,7 +60,7 @@ class StatisticsDetailTagValuesViewDataMapper @Inject constructor(
             rangeLength = rangeLength,
             chartGrouping = appliedChartGrouping,
             chartMode = chartMode,
-            useProportionalMinutes = useProportionalMinutes,
+            durationFormat = durationFormat,
             showSeconds = showSeconds,
             isDarkTheme = isDarkTheme,
         )

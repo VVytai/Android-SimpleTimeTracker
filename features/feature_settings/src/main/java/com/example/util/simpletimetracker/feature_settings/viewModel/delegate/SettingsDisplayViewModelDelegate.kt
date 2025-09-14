@@ -73,7 +73,6 @@ class SettingsDisplayViewModelDelegate @Inject constructor(
             SettingsBlock.DisplayNavBarAtTheBottom -> onShowNavBarAtTheBottomClicked()
             SettingsBlock.DisplayMilitaryFormat -> onUseMilitaryTimeClicked()
             SettingsBlock.DisplayMonthDayFormat -> onUseMonthDayTimeClicked()
-            SettingsBlock.DisplayProportionalFormat -> onUseProportionalMinutesClicked()
             SettingsBlock.DisplayShowSeconds -> onShowSecondsClicked()
             else -> {
                 // Do nothing
@@ -85,6 +84,7 @@ class SettingsDisplayViewModelDelegate @Inject constructor(
         when (block) {
             SettingsBlock.DisplayDaysInCalendar -> onDaysInCalendarSelected(position)
             SettingsBlock.DisplayWidgetBackground -> onWidgetTransparencySelected(position)
+            SettingsBlock.DisplayDurationFormat -> onDurationFormatSelected(position)
             SettingsBlock.DisplaySortActivities -> onRecordTypeOrderSelected(position)
             SettingsBlock.DisplaySortCategories -> onCategoryOrderSelected(position)
             SettingsBlock.DisplaySortTags -> onTagOrderSelected(position)
@@ -367,11 +367,13 @@ class SettingsDisplayViewModelDelegate @Inject constructor(
         }
     }
 
-    private fun onUseProportionalMinutesClicked() {
+    private fun onDurationFormatSelected(position: Int) {
         delegateScope.launch {
-            val newValue = !prefsInteractor.getUseProportionalMinutes()
-            prefsInteractor.setUseProportionalMinutes(newValue)
-            externalViewsInteractor.onUseProportionalMinutesChange()
+            val currentValue = prefsInteractor.getDurationFormat()
+            val newValue = settingsMapper.toDurationFormat(position)
+            if (newValue == currentValue) return@launch
+            prefsInteractor.setDurationFormat(newValue)
+            externalViewsInteractor.onDurationFormatChange()
             parent?.updateContent()
         }
     }

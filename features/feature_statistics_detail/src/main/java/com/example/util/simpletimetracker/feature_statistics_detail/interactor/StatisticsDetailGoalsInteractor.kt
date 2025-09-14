@@ -44,7 +44,7 @@ class StatisticsDetailGoalsInteractor @Inject constructor(
     ): StatisticsDetailGoalsCompositeViewData = withContext(Dispatchers.Default) {
         val firstDayOfWeek = prefsInteractor.getFirstDayOfWeek()
         val startOfDayShift = prefsInteractor.getStartOfDayShift()
-        val useProportionalMinutes = prefsInteractor.getUseProportionalMinutes()
+        val durationFormat = prefsInteractor.getDurationFormat()
         val useMonthDayTimeFormat = prefsInteractor.getUseMonthDayTimeFormat()
         val showSeconds = prefsInteractor.getShowSeconds()
         val isDarkTheme = prefsInteractor.getDarkMode()
@@ -111,7 +111,7 @@ class StatisticsDetailGoalsInteractor @Inject constructor(
             ),
             rangeLength = rangeLength,
             rangePosition = rangePosition,
-            useProportionalMinutes = useProportionalMinutes,
+            durationFormat = durationFormat,
             showSeconds = showSeconds,
             firstDayOfWeek = firstDayOfWeek,
             startOfDayShift = startOfDayShift,
@@ -126,7 +126,7 @@ class StatisticsDetailGoalsInteractor @Inject constructor(
             availableChartLengths = compositeData.availableChartLengths,
             appliedChartLength = compositeData.appliedChartLength,
             chartMode = chartMode,
-            useProportionalMinutes = useProportionalMinutes,
+            durationFormat = durationFormat,
             showSeconds = showSeconds,
             isDarkTheme = isDarkTheme,
             startOfDayShift = startOfDayShift,

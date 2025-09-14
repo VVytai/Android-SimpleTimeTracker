@@ -55,9 +55,14 @@
     <string name="ok">OK</string>
     <string name="cancel">Anulează</string>
 
+    <string name="time_day">z</string>
     <string name="time_hour">h</string>
     <string name="time_minute">m</string>
     <string name="time_second">s</string>
+
+    <string name="days">Zile</string>
+    <string name="hours">Ore</string>
+    <string name="minutes">Minute</string>
 
     <string name="untracked_time_name">Neurmărit</string>
     <string name="uncategorized_time_name">Necategorizat</string>
@@ -360,7 +365,8 @@ Acest lucru îți permite să vezi cât timp petreci în activități productive
     <string name="settings_language">Limbă</string>
     <string name="settings_use_military_time">Folosește format 24-ore</string>
     <string name="settings_use_monthday_time">Folosește format lună/zi pentru dată</string>
-    <string name="settings_use_proportional_minutes">Folosește formatul de minut proporțional</string>
+    <string name="settings_duration_format">Format durată</string>
+    <string name="settings_duration_format_proportional">Proporțional</string>
     <string name="settings_show_seconds">Arată secunde</string>
     <string name="settings_keep_screen_on">Păstrează ecranul activ</string>
     <string name="settings_change_card_size">Modifică dimensiunea carților de activitate</string>

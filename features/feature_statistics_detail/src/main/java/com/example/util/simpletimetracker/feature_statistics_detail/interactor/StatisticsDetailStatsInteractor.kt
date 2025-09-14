@@ -2,6 +2,7 @@ package com.example.util.simpletimetracker.feature_statistics_detail.interactor
 
 import com.example.util.simpletimetracker.core.mapper.TimeMapper
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
+import com.example.util.simpletimetracker.domain.base.DurationFormat
 import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.record.mapper.RangeMapper
@@ -38,7 +39,7 @@ class StatisticsDetailStatsInteractor @Inject constructor(
         val firstDayOfWeek = prefsInteractor.getFirstDayOfWeek()
         val startOfDayShift = prefsInteractor.getStartOfDayShift()
         val useMilitaryTime = prefsInteractor.getUseMilitaryTimeFormat()
-        val useProportionalMinutes = prefsInteractor.getUseProportionalMinutes()
+        val durationFormat = prefsInteractor.getDurationFormat()
         val showSeconds = prefsInteractor.getShowSeconds()
         val types = recordTypeInteractor.getAll()
 
@@ -66,7 +67,7 @@ class StatisticsDetailStatsInteractor @Inject constructor(
             types = types,
             isDarkTheme = isDarkTheme,
             useMilitaryTime = useMilitaryTime,
-            useProportionalMinutes = useProportionalMinutes,
+            durationFormat = durationFormat,
             showSeconds = showSeconds,
         )
     }
@@ -100,7 +101,7 @@ class StatisticsDetailStatsInteractor @Inject constructor(
         types: List<RecordType>,
         isDarkTheme: Boolean,
         useMilitaryTime: Boolean,
-        useProportionalMinutes: Boolean,
+        durationFormat: DurationFormat,
         showSeconds: Boolean,
     ): StatisticsDetailStatsViewData {
         val typesMap = types.associateBy { it.id }
@@ -126,7 +127,7 @@ class StatisticsDetailStatsInteractor @Inject constructor(
             return timeMapper.formatInterval(
                 interval = value,
                 forceSeconds = showSeconds,
-                useProportionalMinutes = useProportionalMinutes,
+                durationFormat = durationFormat,
             )
         }
 

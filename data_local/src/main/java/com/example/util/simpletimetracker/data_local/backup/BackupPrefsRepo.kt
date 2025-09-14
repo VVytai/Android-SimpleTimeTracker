@@ -85,13 +85,13 @@ import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Compani
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_TAG_ADDITIONAL_FIELDS_SHOWN
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_TAG_ORDER
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_TAG_ORDER_MANUAL
+import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_DURATION_PRESENTATION_FORMAT
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_TYPE_ADDITIONAL_FIELDS_SHOWN
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_UNTRACKED_RANGE_ENABLED
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_UNTRACKED_RANGE_END
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_UNTRACKED_RANGE_START
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_USE_MILITARY_TIME_FORMAT
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_USE_MONTH_DAY_TIME_FORMAT
-import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_USE_PROPORTIONAL_MINUTES
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_WIDGET_TRANSPARENCY_PERCENT
 import javax.inject.Inject
 import kotlin.reflect.KMutableProperty0
@@ -214,7 +214,7 @@ class BackupPrefsRepo @Inject constructor(
             PrefsProcessor(KEY_NUMBER_OF_CARDS, ::numberOfCards),
             PrefsProcessor(KEY_USE_MILITARY_TIME_FORMAT, ::useMilitaryTimeFormat),
             PrefsProcessor(KEY_USE_MONTH_DAY_TIME_FORMAT, ::useMonthDayTimeFormat),
-            PrefsProcessor(KEY_USE_PROPORTIONAL_MINUTES, ::useProportionalMinutes),
+            PrefsProcessor(KEY_DURATION_PRESENTATION_FORMAT, ::durationFormat),
             PrefsProcessor(KEY_SHOW_SECONDS, ::showSeconds),
             PrefsProcessor(KEY_KEEP_SCREEN_ON, ::keepScreenOn),
             PrefsProcessor(KEY_SHOW_RECORD_TAG_SELECTION, ::showRecordTagSelection),

@@ -3,6 +3,7 @@ package com.example.util.simpletimetracker.core.mapper
 import android.text.SpannableStringBuilder
 import com.example.util.simpletimetracker.core.R
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
+import com.example.util.simpletimetracker.domain.base.DurationFormat
 import com.example.util.simpletimetracker.domain.extension.dropSeconds
 import com.example.util.simpletimetracker.domain.record.model.Record
 import com.example.util.simpletimetracker.domain.record.model.RecordBase
@@ -32,7 +33,7 @@ class RecordViewDataMapper @Inject constructor(
         recordTags: List<RecordTag>,
         isDarkTheme: Boolean,
         useMilitaryTime: Boolean,
-        useProportionalMinutes: Boolean,
+        durationFormat: DurationFormat,
         showSeconds: Boolean,
     ): RecordViewData.Tracked {
         val tagIds = record.tags.map(RecordBase.Tag::tagId)
@@ -62,7 +63,7 @@ class RecordViewDataMapper @Inject constructor(
                     showSeconds = showSeconds,
                 ),
                 forceSeconds = showSeconds,
-                useProportionalMinutes = useProportionalMinutes,
+                durationFormat = durationFormat,
             ),
             iconId = iconMapper.mapIcon(recordType.icon),
             color = colorMapper.mapToColorInt(
@@ -79,7 +80,7 @@ class RecordViewDataMapper @Inject constructor(
         recordTags: List<RecordTag>,
         isDarkTheme: Boolean,
         useMilitaryTime: Boolean,
-        useProportionalMinutes: Boolean,
+        durationFormat: DurationFormat,
         showSeconds: Boolean,
     ): RecordViewData.Tracked? {
         return map(
@@ -88,7 +89,7 @@ class RecordViewDataMapper @Inject constructor(
             recordTags = recordTags,
             isDarkTheme = isDarkTheme,
             useMilitaryTime = useMilitaryTime,
-            useProportionalMinutes = useProportionalMinutes,
+            durationFormat = durationFormat,
             showSeconds = showSeconds,
         )
     }
@@ -98,7 +99,7 @@ class RecordViewDataMapper @Inject constructor(
         timeEnded: Long,
         isDarkTheme: Boolean,
         useMilitaryTime: Boolean,
-        useProportionalMinutes: Boolean,
+        durationFormat: DurationFormat,
         showSeconds: Boolean,
     ): RecordViewData.Untracked {
         return RecordViewData.Untracked(
@@ -122,7 +123,7 @@ class RecordViewDataMapper @Inject constructor(
                     showSeconds = showSeconds,
                 ),
                 forceSeconds = showSeconds,
-                useProportionalMinutes = useProportionalMinutes,
+                durationFormat = durationFormat,
             ),
             iconId = RecordTypeIcon.Image(R.drawable.unknown),
             color = colorMapper.toUntrackedColor(isDarkTheme),

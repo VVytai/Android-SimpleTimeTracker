@@ -55,9 +55,14 @@
     <string name="ok">確定</string>
     <string name="cancel">取消</string>
 
+    <string name="time_day">天</string>
     <string name="time_hour">時</string>
     <string name="time_minute">分</string>
     <string name="time_second">秒</string>
+
+    <string name="days">天</string>
+    <string name="hours">小時</string>
+    <string name="minutes">分鐘</string>
 
     <string name="untracked_time_name">不追蹤</string>
     <string name="uncategorized_time_name">未分類</string>
@@ -360,7 +365,8 @@
     <string name="settings_language">語言</string>
     <string name="settings_use_military_time">使用 24 小時格式</string>
     <string name="settings_use_monthday_time">使用月/日日期格式</string>
-    <string name="settings_use_proportional_minutes">使用比例分鐘格式</string>
+    <string name="settings_duration_format">時長格式</string>
+    <string name="settings_duration_format_proportional">比例</string>
     <string name="settings_show_seconds">顯示秒數</string>
     <string name="settings_keep_screen_on">保持螢幕長開</string>
     <string name="settings_change_card_size">改變活動卡片尺寸</string>

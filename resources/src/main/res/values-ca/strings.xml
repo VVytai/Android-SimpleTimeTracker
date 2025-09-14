@@ -55,9 +55,14 @@
     <string name="ok">D\'acord</string>
     <string name="cancel">Cancel·la</string>
 
+    <string name="time_day">d</string>
     <string name="time_hour">h</string>
     <string name="time_minute">m</string>
     <string name="time_second">s</string>
+
+    <string name="days">Dies</string>
+    <string name="hours">Hores</string>
+    <string name="minutes">Minuts</string>
 
     <string name="untracked_time_name">Sense enregistrar</string>
     <string name="uncategorized_time_name">Sense categoria</string>
@@ -360,7 +365,8 @@ Això et permet veure quant de temps dediques a activitats productives versus no
     <string name="settings_language">Llenguatge</string>
     <string name="settings_use_military_time">Utilitza el format 24-hores</string>
     <string name="settings_use_monthday_time">Utilitzeu el format de data de mes/dia</string>
-    <string name="settings_use_proportional_minutes">Utilitza formar de minut proporcional</string>
+    <string name="settings_duration_format">Format de durada</string>
+    <string name="settings_duration_format_proportional">Proporcional</string>
     <string name="settings_show_seconds">Mostra segons</string>
     <string name="settings_keep_screen_on">Mantingues la pantalla encesa</string>
     <string name="settings_change_card_size">Canvia la mida de la targeta d\'activitat</string>

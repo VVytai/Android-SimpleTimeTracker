@@ -34,7 +34,7 @@ class ChangeRunningRecordViewDataInteractor @Inject constructor(
         val isDarkTheme = prefsInteractor.getDarkMode()
         val useMilitaryTime = prefsInteractor.getUseMilitaryTimeFormat()
         val showSeconds = prefsInteractor.getShowSeconds()
-        val useProportionalMinutes = prefsInteractor.getUseProportionalMinutes()
+        val durationFormat = prefsInteractor.getDurationFormat()
         val fromRecords = params.from is ChangeRunningRecordParams.From.Records
         val goals = filterGoalsByDayOfWeekInteractor
             .execute(recordTypeGoalInteractor.getByType(type?.id.orZero()))
@@ -50,7 +50,7 @@ class ChangeRunningRecordViewDataInteractor @Inject constructor(
                 totalDurationVisible = !fromRecords,
                 isDarkTheme = isDarkTheme,
                 useMilitaryTime = useMilitaryTime,
-                useProportionalMinutes = useProportionalMinutes,
+                durationFormat = durationFormat,
                 showSeconds = showSeconds,
             )
         } else {
@@ -76,6 +76,7 @@ class ChangeRunningRecordViewDataInteractor @Inject constructor(
                     is ChangeRecordDateTimeFieldsState.State.DateTime -> showSeconds
                     is ChangeRecordDateTimeFieldsState.State.Duration -> true
                 },
+                durationFormat = durationFormat,
             ),
         )
     }

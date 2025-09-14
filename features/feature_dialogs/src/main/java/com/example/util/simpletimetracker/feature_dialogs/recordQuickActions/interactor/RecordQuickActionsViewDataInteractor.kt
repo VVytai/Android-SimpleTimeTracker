@@ -7,6 +7,7 @@ import com.example.util.simpletimetracker.core.mapper.RecordQuickActionMapper
 import com.example.util.simpletimetracker.core.mapper.RecordViewDataMapper
 import com.example.util.simpletimetracker.core.mapper.TimeMapper
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
+import com.example.util.simpletimetracker.domain.base.DurationFormat
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.RecordInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.RecordsContainerMultiselectInteractor
@@ -86,7 +87,7 @@ class RecordQuickActionsViewDataInteractor @Inject constructor(
         val isDarkTheme = prefsInteractor.getDarkMode()
         val useMilitaryTime = prefsInteractor.getUseMilitaryTimeFormat()
         val showSeconds = prefsInteractor.getShowSeconds()
-        val useProportionalMinutes = prefsInteractor.getUseProportionalMinutes()
+        val durationFormat = prefsInteractor.getDurationFormat()
         val retroactiveTrackingModeEnabled = prefsInteractor.getRetroactiveTrackingMode()
         val multiSelectEnabled = recordsContainerMultiselectInteractor.isEnabled
         val canContinue = !retroactiveTrackingModeEnabled
@@ -122,7 +123,7 @@ class RecordQuickActionsViewDataInteractor @Inject constructor(
             record = getRecord(extra),
             useMilitaryTime = useMilitaryTime,
             showSeconds = showSeconds,
-            useProportionalMinutes = useProportionalMinutes,
+            durationFormat = durationFormat,
         )
 
         return RecordQuickActionsState(
@@ -323,7 +324,7 @@ class RecordQuickActionsViewDataInteractor @Inject constructor(
         record: RecordBase?,
         useMilitaryTime: Boolean,
         showSeconds: Boolean,
-        useProportionalMinutes: Boolean,
+        durationFormat: DurationFormat,
     ): RecordQuickActionsState.Hint? {
         return if (recordsContainerMultiselectInteractor.isEnabled) {
             mapMultiSelectHint()
@@ -333,7 +334,7 @@ class RecordQuickActionsViewDataInteractor @Inject constructor(
                 record = record,
                 useMilitaryTime = useMilitaryTime,
                 showSeconds = showSeconds,
-                useProportionalMinutes = useProportionalMinutes,
+                durationFormat = durationFormat,
             )
         }
     }
@@ -343,7 +344,7 @@ class RecordQuickActionsViewDataInteractor @Inject constructor(
         record: RecordBase?,
         useMilitaryTime: Boolean,
         showSeconds: Boolean,
-        useProportionalMinutes: Boolean,
+        durationFormat: DurationFormat,
     ): RecordQuickActionsState.Hint.Record? {
         fun formatRecordDuration(timeStarted: Long, timeEnded: Long): String {
             return timeMapper.formatInterval(
@@ -353,7 +354,7 @@ class RecordQuickActionsViewDataInteractor @Inject constructor(
                     showSeconds = showSeconds,
                 ),
                 forceSeconds = showSeconds,
-                useProportionalMinutes = useProportionalMinutes,
+                durationFormat = durationFormat,
             )
         }
 
@@ -361,7 +362,7 @@ class RecordQuickActionsViewDataInteractor @Inject constructor(
             return timeMapper.formatInterval(
                 interval = System.currentTimeMillis() - timeStarted,
                 forceSeconds = true,
-                useProportionalMinutes = false,
+                durationFormat = durationFormat,
             )
         }
 

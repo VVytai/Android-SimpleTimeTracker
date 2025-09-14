@@ -55,9 +55,14 @@
     <string name="ok">Oke</string>
     <string name="cancel">Batal</string>
 
+    <string name="time_day">h</string>
     <string name="time_hour">j</string>
     <string name="time_minute">m</string>
     <string name="time_second">d</string>
+
+    <string name="days">Hari</string>
+    <string name="hours">Jam</string>
+    <string name="minutes">Menit</string>
 
     <string name="untracked_time_name">Tidak dilacak</string>
     <string name="uncategorized_time_name">Tidak dikategorikan</string>
@@ -360,7 +365,8 @@ Ini memungkinkan Anda melihat berapa banyak waktu yang dihabiskan untuk aktivita
     <string name="settings_language">Bahasa</string>
     <string name="settings_use_military_time">Pakai format 24-jam</string>
     <string name="settings_use_monthday_time">Gunakan format tanggal Bulan/Hari</string>
-    <string name="settings_use_proportional_minutes">Gunakan format minit berkadar</string>
+    <string name="settings_duration_format">Format durasi</string>
+    <string name="settings_duration_format_proportional">Proporsional</string>
     <string name="settings_show_seconds">Tampilkan detik</string>
     <string name="settings_keep_screen_on">Biarkan layarnya menyala</string>
     <string name="settings_change_card_size">Ubah ukuran kartu kegiatan</string>

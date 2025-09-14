@@ -132,7 +132,7 @@ interface PrefsRepo {
 
     var useMonthDayTimeFormat: Boolean
 
-    var useProportionalMinutes: Boolean
+    var durationFormat: Int
 
     var showSeconds: Boolean
 

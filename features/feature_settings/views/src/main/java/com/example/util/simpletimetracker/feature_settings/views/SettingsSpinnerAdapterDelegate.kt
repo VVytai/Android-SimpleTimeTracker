@@ -4,6 +4,7 @@ import androidx.appcompat.widget.AppCompatTextView
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.createRecyclerBindingAdapterDelegate
 import com.example.util.simpletimetracker.feature_settings.api.SettingsBlock
+import com.example.util.simpletimetracker.feature_views.extension.visible
 import com.example.util.simpletimetracker.feature_views.spinner.CustomSpinner
 import com.example.util.simpletimetracker.feature_settings.views.SettingsSpinnerViewData as ViewData
 import com.example.util.simpletimetracker.feature_settings.views.databinding.ItemSettingsSpinnerBinding as Binding
@@ -24,6 +25,9 @@ fun createSettingsSpinnerAdapterDelegate(
             spinner = spinnerItemSettings,
             onPositionSelected = onPositionSelected,
         )
+        spaceItemSettingsTop.visible = item.topSpaceIsVisible
+        spaceItemSettingsBottom.visible = item.bottomSpaceIsVisible
+        viewItemSettingsDivider.visible = item.dividerIsVisible
     }
 }
 
@@ -48,6 +52,9 @@ data class SettingsSpinnerViewData(
     val items: List<CustomSpinner.CustomSpinnerItem>,
     val selectedPosition: Int,
     val processSameItemSelected: Boolean,
+    val topSpaceIsVisible: Boolean = true,
+    val dividerIsVisible: Boolean = true,
+    val bottomSpaceIsVisible: Boolean = true,
 ) : ViewHolderType {
 
     override fun getUniqueId(): Long = block.ordinal.toLong()

@@ -64,11 +64,13 @@ class RecordsAllViewModel @Inject constructor(
     ) = viewModelScope.launch {
         val useMilitaryTimeFormat = prefsInteractor.getUseMilitaryTimeFormat()
         val showSeconds = prefsInteractor.getShowSeconds()
+        val durationFormat = prefsInteractor.getDurationFormat()
         val params = getChangeRecordNavigationParamsInteractor.execute(
             item = item,
             from = ChangeRunningRecordParams.From.Records,
             useMilitaryTimeFormat = useMilitaryTimeFormat,
             showSeconds = showSeconds,
+            durationFormat = durationFormat,
             sharedElements = sharedElements,
         )
         router.navigate(
@@ -83,12 +85,14 @@ class RecordsAllViewModel @Inject constructor(
     ) = viewModelScope.launch {
         val useMilitaryTimeFormat = prefsInteractor.getUseMilitaryTimeFormat()
         val showSeconds = prefsInteractor.getShowSeconds()
+        val durationFormat = prefsInteractor.getDurationFormat()
         val params = getChangeRecordNavigationParamsInteractor.execute(
             item = item,
             from = ChangeRecordParams.From.RecordsAll,
             shift = 0,
             useMilitaryTimeFormat = useMilitaryTimeFormat,
             showSeconds = showSeconds,
+            durationFormat = durationFormat,
             sharedElements = sharedElements,
         )
         router.navigate(

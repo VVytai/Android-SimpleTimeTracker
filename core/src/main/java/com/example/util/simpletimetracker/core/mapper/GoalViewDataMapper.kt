@@ -4,6 +4,7 @@ import com.example.util.simpletimetracker.core.R
 import com.example.util.simpletimetracker.core.interactor.GetCurrentRecordsDurationInteractor
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.core.viewData.StatisticsDataHolder
+import com.example.util.simpletimetracker.domain.base.DurationFormat
 import com.example.util.simpletimetracker.domain.extension.orFalse
 import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.domain.recordType.extension.value
@@ -30,6 +31,7 @@ class GoalViewDataMapper @Inject constructor(
         currentDuration: Long,
         dailyCurrent: GetCurrentRecordsDurationInteractor.Result?,
         goalsVisible: Boolean,
+        durationFormat: DurationFormat,
     ): GoalTimeViewData {
         val noGoal = GoalTimeViewData(
             text = "",
@@ -69,7 +71,7 @@ class GoalViewDataMapper @Inject constructor(
                 is RecordTypeGoal.Type.Duration -> mapDuration(
                     goalValue = valueLeft,
                     showSeconds = true,
-                    useProportionalMinutes = false,
+                    durationFormat = durationFormat,
                 )
                 is RecordTypeGoal.Type.Count -> mapCount(
                     goalValue = valueLeft,
@@ -100,7 +102,7 @@ class GoalViewDataMapper @Inject constructor(
         statistics: List<Statistics>,
         data: Map<Long, StatisticsDataHolder>,
         isDarkTheme: Boolean,
-        useProportionalMinutes: Boolean,
+        durationFormat: DurationFormat,
         showSeconds: Boolean,
     ): List<StatisticsGoalViewData> {
         val currentGoals: List<RecordTypeGoal> = when (filterType) {
@@ -137,7 +139,7 @@ class GoalViewDataMapper @Inject constructor(
                     statistics = statistics.firstOrNull { it.id == id },
                     dataHolder = data[id] ?: return@mapNotNull null,
                     isDarkTheme = isDarkTheme,
-                    useProportionalMinutes = useProportionalMinutes,
+                    durationFormat = durationFormat,
                     showSeconds = showSeconds,
                 )
             }
@@ -149,7 +151,7 @@ class GoalViewDataMapper @Inject constructor(
         statistics: Statistics?,
         dataHolder: StatisticsDataHolder,
         isDarkTheme: Boolean,
-        useProportionalMinutes: Boolean,
+        durationFormat: DurationFormat,
         showSeconds: Boolean,
     ): StatisticsGoalViewData {
         return StatisticsGoalViewData(
@@ -162,7 +164,7 @@ class GoalViewDataMapper @Inject constructor(
             goal = mapGoal(
                 goal = goal,
                 statistics = statistics,
-                useProportionalMinutes = useProportionalMinutes,
+                durationFormat = durationFormat,
                 showSeconds = showSeconds,
             ),
         )
@@ -171,14 +173,14 @@ class GoalViewDataMapper @Inject constructor(
     private fun mapGoal(
         goal: RecordTypeGoal,
         statistics: Statistics?,
-        useProportionalMinutes: Boolean,
+        durationFormat: DurationFormat,
         showSeconds: Boolean,
     ): StatisticsGoalViewData.Goal {
         fun mapDuration(goalValue: Long): String {
             return mapDuration(
                 goalValue = goalValue,
                 showSeconds = showSeconds,
-                useProportionalMinutes = useProportionalMinutes,
+                durationFormat = durationFormat,
             )
         }
 
@@ -234,12 +236,12 @@ class GoalViewDataMapper @Inject constructor(
     private fun mapDuration(
         goalValue: Long,
         showSeconds: Boolean,
-        useProportionalMinutes: Boolean,
+        durationFormat: DurationFormat,
     ): String {
         return timeMapper.formatInterval(
             interval = goalValue,
             forceSeconds = showSeconds,
-            useProportionalMinutes = useProportionalMinutes,
+            durationFormat = durationFormat,
         )
     }
 

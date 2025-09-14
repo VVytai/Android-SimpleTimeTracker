@@ -3,6 +3,7 @@ package com.example.util.simpletimetracker.core.mapper
 import com.example.util.simpletimetracker.core.R
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.core.viewData.StatisticsDataHolder
+import com.example.util.simpletimetracker.domain.base.DurationFormat
 import com.example.util.simpletimetracker.domain.base.UNCATEGORIZED_ITEM_ID
 import com.example.util.simpletimetracker.domain.base.UNTRACKED_ITEM_ID
 import com.example.util.simpletimetracker.domain.statistics.model.ChartFilterType
@@ -28,7 +29,7 @@ class StatisticsViewDataMapper @Inject constructor(
         filteredIds: List<Long>,
         showDuration: Boolean,
         isDarkTheme: Boolean,
-        useProportionalMinutes: Boolean,
+        durationFormat: DurationFormat,
         showSeconds: Boolean,
         hasTransitions: Boolean,
     ): List<StatisticsViewData> {
@@ -47,7 +48,7 @@ class StatisticsViewDataMapper @Inject constructor(
                     showDuration = showDuration,
                     isDarkTheme = isDarkTheme,
                     statisticsSize = statisticsSize,
-                    useProportionalMinutes = useProportionalMinutes,
+                    durationFormat = durationFormat,
                     showSeconds = showSeconds,
                     hasTransitions = hasTransitions,
                 ) ?: return@mapNotNull null
@@ -67,7 +68,7 @@ class StatisticsViewDataMapper @Inject constructor(
         showDuration: Boolean,
         isDarkTheme: Boolean,
         statisticsSize: Int,
-        useProportionalMinutes: Boolean,
+        durationFormat: DurationFormat,
         showSeconds: Boolean,
         hasTransitions: Boolean,
     ): StatisticsViewData? {
@@ -85,7 +86,7 @@ class StatisticsViewDataMapper @Inject constructor(
             statistics = statistics,
             showDuration = showDuration,
             showSeconds = showSeconds,
-            useProportionalMinutes = useProportionalMinutes,
+            durationFormat = durationFormat,
         )
 
         return when {
@@ -137,13 +138,13 @@ class StatisticsViewDataMapper @Inject constructor(
         statistics: Statistics,
         showDuration: Boolean,
         showSeconds: Boolean,
-        useProportionalMinutes: Boolean,
+        durationFormat: DurationFormat,
     ): String {
         return if (showDuration) {
             timeMapper.formatInterval(
                 interval = statistics.data.duration,
                 forceSeconds = showSeconds,
-                useProportionalMinutes = useProportionalMinutes,
+                durationFormat = durationFormat,
             )
         } else {
             ""

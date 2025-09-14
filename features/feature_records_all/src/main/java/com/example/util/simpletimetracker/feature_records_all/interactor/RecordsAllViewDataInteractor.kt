@@ -39,7 +39,7 @@ class RecordsAllViewDataInteractor @Inject constructor(
     ): List<ViewHolderType> = withContext(Dispatchers.Default) {
         val isDarkTheme = prefsInteractor.getDarkMode()
         val useMilitaryTime = prefsInteractor.getUseMilitaryTimeFormat()
-        val useProportionalMinutes = prefsInteractor.getUseProportionalMinutes()
+        val durationFormat = prefsInteractor.getDurationFormat()
         val showSeconds = prefsInteractor.getShowSeconds()
         val recordTypes = recordTypeInteractor.getAll().associateBy(RecordType::id)
         val recordTags = recordTagInteractor.getAll()
@@ -61,7 +61,7 @@ class RecordsAllViewDataInteractor @Inject constructor(
                             recordTags = recordTags,
                             isDarkTheme = isDarkTheme,
                             useMilitaryTime = useMilitaryTime,
-                            useProportionalMinutes = useProportionalMinutes,
+                            durationFormat = durationFormat,
                             showSeconds = showSeconds,
                         )
                     } else {
@@ -70,7 +70,7 @@ class RecordsAllViewDataInteractor @Inject constructor(
                             timeEnded = record.timeEnded,
                             isDarkTheme = isDarkTheme,
                             useMilitaryTime = useMilitaryTime,
-                            useProportionalMinutes = useProportionalMinutes,
+                            durationFormat = durationFormat,
                             showSeconds = showSeconds,
                         )
                     }
@@ -84,7 +84,7 @@ class RecordsAllViewDataInteractor @Inject constructor(
                         totalDurationVisible = false,
                         isDarkTheme = isDarkTheme,
                         useMilitaryTime = useMilitaryTime,
-                        useProportionalMinutes = useProportionalMinutes,
+                        durationFormat = durationFormat,
                         showSeconds = showSeconds,
                     )
                     is MultitaskRecord -> multitaskRecordViewDataMapper.map(
@@ -93,7 +93,7 @@ class RecordsAllViewDataInteractor @Inject constructor(
                         recordTags = recordTags,
                         isDarkTheme = isDarkTheme,
                         useMilitaryTime = useMilitaryTime,
-                        useProportionalMinutes = useProportionalMinutes,
+                        durationFormat = durationFormat,
                         showSeconds = showSeconds,
                     )
                 }

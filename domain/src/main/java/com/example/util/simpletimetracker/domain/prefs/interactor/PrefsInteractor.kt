@@ -1,5 +1,6 @@
 package com.example.util.simpletimetracker.domain.prefs.interactor
 
+import com.example.util.simpletimetracker.domain.base.DurationFormat
 import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.domain.darkMode.model.DarkMode
 import com.example.util.simpletimetracker.domain.recordTag.model.CardTagOrder
@@ -649,12 +650,23 @@ class PrefsInteractor @Inject constructor(
         prefsRepo.useMonthDayTimeFormat = isUsed
     }
 
-    suspend fun getUseProportionalMinutes(): Boolean = withContext(Dispatchers.IO) {
-        prefsRepo.useProportionalMinutes
+    suspend fun getDurationFormat(): DurationFormat = withContext(Dispatchers.IO) {
+        when (prefsRepo.durationFormat) {
+            0 -> DurationFormat.HOURS
+            1 -> DurationFormat.PROPORTIONAL_MINUTES
+            2 -> DurationFormat.MINUTES
+            3 -> DurationFormat.DAYS
+            else -> DurationFormat.HOURS
+        }
     }
 
-    suspend fun setUseProportionalMinutes(isUsed: Boolean) = withContext(Dispatchers.IO) {
-        prefsRepo.useProportionalMinutes = isUsed
+    suspend fun setDurationFormat(format: DurationFormat) = withContext(Dispatchers.IO) {
+        prefsRepo.durationFormat = when (format) {
+            DurationFormat.HOURS -> 0
+            DurationFormat.PROPORTIONAL_MINUTES -> 1
+            DurationFormat.MINUTES -> 2
+            DurationFormat.DAYS -> 3
+        }
     }
 
     suspend fun getShowSeconds(): Boolean = withContext(Dispatchers.IO) {

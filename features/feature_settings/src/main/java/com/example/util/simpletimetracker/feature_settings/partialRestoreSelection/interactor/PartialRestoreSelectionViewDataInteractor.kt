@@ -60,7 +60,7 @@ class PartialRestoreSelectionViewDataInteractor @Inject constructor(
         val numberOfCards = prefsInteractor.getNumberOfCards()
         val isDarkTheme = prefsInteractor.getDarkMode()
         val useMilitaryTime = prefsInteractor.getUseMilitaryTimeFormat()
-        val useProportionalMinutes = prefsInteractor.getUseProportionalMinutes()
+        val durationFormat = prefsInteractor.getDurationFormat()
         val showSeconds = prefsInteractor.getShowSeconds()
 
         return when (extra.type) {
@@ -135,7 +135,7 @@ class PartialRestoreSelectionViewDataInteractor @Inject constructor(
                         recordTags = tags,
                         isDarkTheme = isDarkTheme,
                         useMilitaryTime = useMilitaryTime,
-                        useProportionalMinutes = useProportionalMinutes,
+                        durationFormat = durationFormat,
                         showSeconds = showSeconds,
                     )?.let { mapped ->
                         recordViewDataMapper.mapFiltered(

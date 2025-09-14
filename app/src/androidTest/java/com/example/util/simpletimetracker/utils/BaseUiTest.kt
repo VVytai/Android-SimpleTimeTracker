@@ -20,6 +20,7 @@ import com.example.util.simpletimetracker.core.mapper.TimeMapper
 import com.example.util.simpletimetracker.core.utils.CountingIdlingResourceProvider
 import com.example.util.simpletimetracker.core.utils.TestUtils
 import com.example.util.simpletimetracker.domain.backup.repo.BackupRepo
+import com.example.util.simpletimetracker.domain.base.DurationFormat
 import com.example.util.simpletimetracker.domain.complexRule.repo.ComplexRuleRepo
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.recordType.repo.RecordTypeRepo
@@ -180,7 +181,7 @@ open class BaseUiTest {
     }
 
     internal fun Long.formatInterval(): String {
-        return timeMapper.formatInterval(interval = this, forceSeconds = false, useProportionalMinutes = false)
+        return timeMapper.formatInterval(interval = this, forceSeconds = false, durationFormat = DurationFormat.HOURS)
     }
 
     private fun clearData() {

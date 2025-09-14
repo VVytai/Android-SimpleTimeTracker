@@ -55,9 +55,14 @@
     <string name="ok">OK</string>
     <string name="cancel">Hủy</string>
 
+    <string name="time_day">n</string>
     <string name="time_hour">h</string>
     <string name="time_minute">m</string>
     <string name="time_second">s</string>
+
+    <string name="days">Ngày</string>
+    <string name="hours">Giờ</string>
+    <string name="minutes">Phút</string>
 
     <string name="untracked_time_name">Chưa theo dõi</string>
     <string name="uncategorized_time_name">Chưa phân loại</string>
@@ -360,7 +365,8 @@
     <string name="settings_language">Ngôn ngữ</string>
     <string name="settings_use_military_time">Sử dụng định dạng 24 giờ</string>
     <string name="settings_use_monthday_time">Sử dụng định dạng ngày Tháng/Ngày</string>
-    <string name="settings_use_proportional_minutes">Sử dụng định dạng phút tỷ lệ thuận</string>
+    <string name="settings_duration_format">Định dạng thời lượng</string>
+    <string name="settings_duration_format_proportional">Tỷ lệ</string>
     <string name="settings_show_seconds">Hiện giây</string>
     <string name="settings_keep_screen_on">Giữ màn hình luôn bật</string>
     <string name="settings_change_card_size">Thay đổi kích thước thẻ hoạt động</string>

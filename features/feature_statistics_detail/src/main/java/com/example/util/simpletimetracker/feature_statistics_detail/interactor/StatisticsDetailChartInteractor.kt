@@ -91,7 +91,7 @@ class StatisticsDetailChartInteractor @Inject constructor(
     ): StatisticsDetailChartCompositeViewData = withContext(Dispatchers.Default) {
         val firstDayOfWeek = prefsInteractor.getFirstDayOfWeek()
         val startOfDayShift = prefsInteractor.getStartOfDayShift()
-        val useProportionalMinutes = prefsInteractor.getUseProportionalMinutes()
+        val durationFormat = prefsInteractor.getDurationFormat()
         val useMonthDayTimeFormat = prefsInteractor.getUseMonthDayTimeFormat()
         val showSeconds = prefsInteractor.getShowSeconds()
         val isDarkTheme = prefsInteractor.getDarkMode()
@@ -181,7 +181,7 @@ class StatisticsDetailChartInteractor @Inject constructor(
             availableChartLengths = compositeData.availableChartLengths,
             appliedChartLength = compositeData.appliedChartLength,
             chartMode = chartMode,
-            useProportionalMinutes = useProportionalMinutes,
+            durationFormat = durationFormat,
             showSeconds = showSeconds,
             isDarkTheme = isDarkTheme,
         )

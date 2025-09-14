@@ -165,7 +165,7 @@ class RecordsFilterViewDataInteractor @Inject constructor(
     ): RecordsFilterSelectedRecordsViewData = withContext(Dispatchers.Default) {
         val isDarkTheme = prefsInteractor.getDarkMode()
         val useMilitaryTime = prefsInteractor.getUseMilitaryTimeFormat()
-        val useProportionalMinutes = prefsInteractor.getUseProportionalMinutes()
+        val durationFormat = prefsInteractor.getDurationFormat()
         val showSeconds = prefsInteractor.getShowSeconds()
         val manuallyFilteredItems = filters.getManuallyFilteredItems()
             .keys.toList()
@@ -203,7 +203,7 @@ class RecordsFilterViewDataInteractor @Inject constructor(
                             recordTags = recordTags,
                             isDarkTheme = isDarkTheme,
                             useMilitaryTime = useMilitaryTime,
-                            useProportionalMinutes = useProportionalMinutes,
+                            durationFormat = durationFormat,
                             showSeconds = showSeconds,
                         )?.let {
                             if (isManuallyFiltered) {
@@ -223,7 +223,7 @@ class RecordsFilterViewDataInteractor @Inject constructor(
                             timeEnded = record.timeEnded,
                             isDarkTheme = isDarkTheme,
                             useMilitaryTime = useMilitaryTime,
-                            useProportionalMinutes = useProportionalMinutes,
+                            durationFormat = durationFormat,
                             showSeconds = showSeconds,
                         ).let {
                             if (isManuallyFiltered) {
@@ -248,7 +248,7 @@ class RecordsFilterViewDataInteractor @Inject constructor(
                         totalDurationVisible = false,
                         isDarkTheme = isDarkTheme,
                         useMilitaryTime = useMilitaryTime,
-                        useProportionalMinutes = useProportionalMinutes,
+                        durationFormat = durationFormat,
                         showSeconds = showSeconds,
                     ).let {
                         if (isManuallyFiltered) {
@@ -268,7 +268,7 @@ class RecordsFilterViewDataInteractor @Inject constructor(
                         recordTags = recordTags,
                         isDarkTheme = isDarkTheme,
                         useMilitaryTime = useMilitaryTime,
-                        useProportionalMinutes = useProportionalMinutes,
+                        durationFormat = durationFormat,
                         showSeconds = showSeconds,
                     ).let {
                         if (isManuallyFiltered) {
@@ -699,7 +699,7 @@ class RecordsFilterViewDataInteractor @Inject constructor(
     ): List<ViewHolderType> = withContext(Dispatchers.Default) {
         val isDarkTheme = prefsInteractor.getDarkMode()
         val useMilitaryTime = prefsInteractor.getUseMilitaryTimeFormat()
-        val useProportionalMinutes = prefsInteractor.getUseProportionalMinutes()
+        val durationFormat = prefsInteractor.getDurationFormat()
         val showSeconds = prefsInteractor.getShowSeconds()
         val manuallyFilteredItems = filters.getManuallyFilteredItems()
             .keys.toList()
@@ -745,7 +745,7 @@ class RecordsFilterViewDataInteractor @Inject constructor(
                             recordTags = recordTags,
                             isDarkTheme = isDarkTheme,
                             useMilitaryTime = useMilitaryTime,
-                            useProportionalMinutes = useProportionalMinutes,
+                            durationFormat = durationFormat,
                             showSeconds = showSeconds,
                         )?.let {
                             recordViewDataMapper.mapFiltered(
@@ -762,7 +762,7 @@ class RecordsFilterViewDataInteractor @Inject constructor(
                             timeEnded = item.timeEndedTimestamp,
                             isDarkTheme = isDarkTheme,
                             useMilitaryTime = useMilitaryTime,
-                            useProportionalMinutes = useProportionalMinutes,
+                            durationFormat = durationFormat,
                             showSeconds = showSeconds,
                         )
                         item.timeStartedTimestamp to mapped
@@ -780,7 +780,7 @@ class RecordsFilterViewDataInteractor @Inject constructor(
                             totalDurationVisible = false,
                             isDarkTheme = isDarkTheme,
                             useMilitaryTime = useMilitaryTime,
-                            useProportionalMinutes = useProportionalMinutes,
+                            durationFormat = durationFormat,
                             showSeconds = showSeconds,
                         )
                         record.timeStarted to mapped
@@ -797,7 +797,7 @@ class RecordsFilterViewDataInteractor @Inject constructor(
                             recordTags = recordTags,
                             isDarkTheme = isDarkTheme,
                             useMilitaryTime = useMilitaryTime,
-                            useProportionalMinutes = useProportionalMinutes,
+                            durationFormat = durationFormat,
                             showSeconds = showSeconds,
                         )
                         record.timeStarted to mapped

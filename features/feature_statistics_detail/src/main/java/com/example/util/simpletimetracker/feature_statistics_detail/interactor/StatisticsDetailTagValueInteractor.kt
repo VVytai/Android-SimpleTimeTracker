@@ -52,7 +52,7 @@ class StatisticsDetailTagValueInteractor @Inject constructor(
 
         val firstDayOfWeek = prefsInteractor.getFirstDayOfWeek()
         val startOfDayShift = prefsInteractor.getStartOfDayShift()
-        val useProportionalMinutes = prefsInteractor.getUseProportionalMinutes()
+        val durationFormat = prefsInteractor.getDurationFormat()
         val useMonthDayTimeFormat = prefsInteractor.getUseMonthDayTimeFormat()
         val showSeconds = prefsInteractor.getShowSeconds()
         val isDarkTheme = prefsInteractor.getDarkMode()
@@ -118,7 +118,7 @@ class StatisticsDetailTagValueInteractor @Inject constructor(
             chartMode = chartMode,
             chartValueMode = currentChartValueMode,
             valueSuffix = valuedTag.valueSuffix,
-            useProportionalMinutes = useProportionalMinutes,
+            durationFormat = durationFormat,
             showSeconds = showSeconds,
             isDarkTheme = isDarkTheme,
         )

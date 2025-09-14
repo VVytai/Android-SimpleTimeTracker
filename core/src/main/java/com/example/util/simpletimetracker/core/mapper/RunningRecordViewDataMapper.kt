@@ -3,6 +3,7 @@ package com.example.util.simpletimetracker.core.mapper
 import com.example.util.simpletimetracker.core.R
 import com.example.util.simpletimetracker.core.interactor.GetCurrentRecordsDurationInteractor
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
+import com.example.util.simpletimetracker.domain.base.DurationFormat
 import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.domain.record.model.RunningRecord
 import com.example.util.simpletimetracker.domain.recordTag.model.RecordTag
@@ -32,7 +33,7 @@ class RunningRecordViewDataMapper @Inject constructor(
         isDarkTheme: Boolean,
         useMilitaryTime: Boolean,
         showSeconds: Boolean,
-        useProportionalMinutes: Boolean,
+        durationFormat: DurationFormat,
         nowIconVisible: Boolean,
         goalsVisible: Boolean,
         totalDurationVisible: Boolean,
@@ -56,19 +57,20 @@ class RunningRecordViewDataMapper @Inject constructor(
             timer = timeMapper.formatInterval(
                 interval = currentDuration,
                 forceSeconds = true,
-                useProportionalMinutes = false,
+                durationFormat = durationFormat,
             ),
             timerTotal = mapTotalDuration(
                 dailyCurrent = dailyCurrent,
                 totalDurationVisible = totalDurationVisible,
                 showSeconds = showSeconds,
-                useProportionalMinutes = useProportionalMinutes,
+                durationFormat = durationFormat,
             ),
             goalTime = mapGoalTime(
                 currentDuration = currentDuration,
                 goals = goals,
                 dailyCurrent = dailyCurrent,
                 goalsVisible = goalsVisible,
+                durationFormat = durationFormat,
             ),
             iconId = recordType.icon
                 .let(iconMapper::mapIcon),
@@ -95,7 +97,7 @@ class RunningRecordViewDataMapper @Inject constructor(
         dailyCurrent: GetCurrentRecordsDurationInteractor.Result?,
         totalDurationVisible: Boolean,
         showSeconds: Boolean,
-        useProportionalMinutes: Boolean,
+        durationFormat: DurationFormat,
     ): String {
         if (!totalDurationVisible) return ""
         if (dailyCurrent == null) return ""
@@ -105,7 +107,7 @@ class RunningRecordViewDataMapper @Inject constructor(
         val duration = timeMapper.formatInterval(
             interval = dailyCurrent.duration,
             forceSeconds = showSeconds,
-            useProportionalMinutes = useProportionalMinutes,
+            durationFormat = durationFormat,
         )
 
         return "$hint $duration"
@@ -116,12 +118,14 @@ class RunningRecordViewDataMapper @Inject constructor(
         goals: List<RecordTypeGoal>,
         dailyCurrent: GetCurrentRecordsDurationInteractor.Result?,
         goalsVisible: Boolean,
+        durationFormat: DurationFormat,
     ): GoalTimeViewData {
         fun getSessionGoal() = goalViewDataMapper.mapForTimer(
             goal = goals.getSession(),
             currentDuration = currentDuration,
             dailyCurrent = dailyCurrent,
             goalsVisible = goalsVisible,
+            durationFormat = durationFormat,
         )
 
         fun getDailyGoal() = goalViewDataMapper.mapForTimer(
@@ -129,6 +133,7 @@ class RunningRecordViewDataMapper @Inject constructor(
             currentDuration = currentDuration,
             dailyCurrent = dailyCurrent,
             goalsVisible = goalsVisible,
+            durationFormat = durationFormat,
         )
 
         return when {

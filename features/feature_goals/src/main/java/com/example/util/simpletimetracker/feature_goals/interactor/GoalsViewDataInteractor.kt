@@ -7,6 +7,7 @@ import com.example.util.simpletimetracker.core.mapper.GoalViewDataMapper
 import com.example.util.simpletimetracker.core.mapper.TimeMapper
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.core.viewData.StatisticsDataHolder
+import com.example.util.simpletimetracker.domain.base.DurationFormat
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTypeGoalInteractor
 import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTypeInteractor
@@ -38,7 +39,7 @@ class GoalsViewDataInteractor @Inject constructor(
 
     suspend fun getViewData(): List<ViewHolderType> = withContext(Dispatchers.Default) {
         val isDarkTheme = prefsInteractor.getDarkMode()
-        val useProportionalMinutes = prefsInteractor.getUseProportionalMinutes()
+        val durationFormat = prefsInteractor.getDurationFormat()
         val showSeconds = prefsInteractor.getShowSeconds()
         val firstDayOfWeek = prefsInteractor.getFirstDayOfWeek()
         val startOfDayShift = prefsInteractor.getStartOfDayShift()
@@ -94,7 +95,7 @@ class GoalsViewDataInteractor @Inject constructor(
                     typeDataHolders = typeDataHolders,
                     categoryDataHolders = categoryDataHolders,
                     isDarkTheme = isDarkTheme,
-                    useProportionalMinutes = useProportionalMinutes,
+                    durationFormat = durationFormat,
                     showSeconds = showSeconds,
                 )
             }
@@ -114,7 +115,7 @@ class GoalsViewDataInteractor @Inject constructor(
         typeDataHolders: Map<Long, StatisticsDataHolder>,
         categoryDataHolders: Map<Long, StatisticsDataHolder>,
         isDarkTheme: Boolean,
-        useProportionalMinutes: Boolean,
+        durationFormat: DurationFormat,
         showSeconds: Boolean,
     ): List<ViewHolderType> {
         val result = mutableListOf<ViewHolderType>()
@@ -132,7 +133,7 @@ class GoalsViewDataInteractor @Inject constructor(
             statistics = typeStatistics,
             data = typeDataHolders,
             isDarkTheme = isDarkTheme,
-            useProportionalMinutes = useProportionalMinutes,
+            durationFormat = durationFormat,
             showSeconds = showSeconds,
         )
         val categoryStatistics = statisticsMediator.getStatistics(
@@ -149,7 +150,7 @@ class GoalsViewDataInteractor @Inject constructor(
             statistics = categoryStatistics,
             data = categoryDataHolders,
             isDarkTheme = isDarkTheme,
-            useProportionalMinutes = useProportionalMinutes,
+            durationFormat = durationFormat,
             showSeconds = showSeconds,
         )
         val items = (typeItems + categoryItems)

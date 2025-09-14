@@ -55,9 +55,14 @@
     <string name="ok">OK</string>
     <string name="cancel">Cancelar</string>
 
+    <string name="time_day">d</string>
     <string name="time_hour">h</string>
     <string name="time_minute">m</string>
     <string name="time_second">s</string>
+
+    <string name="days">Dias</string>
+    <string name="hours">Horas</string>
+    <string name="minutes">Minutos</string>
 
     <string name="untracked_time_name">Não registado</string>
     <string name="uncategorized_time_name">Sem categoria</string>
@@ -360,7 +365,8 @@ Isto permite-lhe ver quanto tempo está a gastar em atividades produtivas versus
     <string name="settings_language">Idioma</string>
     <string name="settings_use_military_time">Usar formato de 24 horas</string>
     <string name="settings_use_monthday_time">Use o formato de data Mês/Dia</string>
-    <string name="settings_use_proportional_minutes">Usar o formato de minuto proporcional</string>
+    <string name="settings_duration_format">Formato de duração</string>
+    <string name="settings_duration_format_proportional">Proporcional</string>
     <string name="settings_show_seconds">Mostrar segundos</string>
     <string name="settings_keep_screen_on">Manter o ecrã ligado</string>
     <string name="settings_change_card_size">Alterar o tamanho do cartão de atividade</string>

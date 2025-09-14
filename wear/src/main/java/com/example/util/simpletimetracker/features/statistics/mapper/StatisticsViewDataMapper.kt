@@ -13,6 +13,7 @@ import com.example.util.simpletimetracker.core.mapper.StatisticsMapper
 import com.example.util.simpletimetracker.core.mapper.TimeMapper
 import com.example.util.simpletimetracker.data.WearIconMapper
 import com.example.util.simpletimetracker.data.WearResourceRepo
+import com.example.util.simpletimetracker.domain.base.DurationFormat
 import com.example.util.simpletimetracker.domain.base.UNCATEGORIZED_ITEM_ID
 import com.example.util.simpletimetracker.domain.base.UNTRACKED_ITEM_ID
 import com.example.util.simpletimetracker.domain.daysOfWeek.model.DayOfWeek
@@ -129,7 +130,7 @@ class StatisticsViewDataMapper @Inject constructor(
         val duration = timeMapper.formatInterval(
             interval = statistics.duration,
             forceSeconds = true,
-            useProportionalMinutes = false,
+            durationFormat = DurationFormat.HOURS,
         )
 
         return when {
@@ -196,7 +197,7 @@ class StatisticsViewDataMapper @Inject constructor(
         return timeMapper.formatInterval(
             interval = total,
             forceSeconds = true,
-            useProportionalMinutes = false,
+            durationFormat = DurationFormat.HOURS,
         )
     }
 

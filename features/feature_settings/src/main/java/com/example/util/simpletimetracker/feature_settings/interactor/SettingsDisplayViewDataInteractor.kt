@@ -10,6 +10,7 @@ import com.example.util.simpletimetracker.feature_settings.views.SettingsCheckbo
 import com.example.util.simpletimetracker.feature_settings.views.SettingsSpinnerEvenViewData
 import com.example.util.simpletimetracker.feature_settings.mapper.SettingsMapper
 import com.example.util.simpletimetracker.feature_settings.viewData.DaysInCalendarViewData
+import com.example.util.simpletimetracker.feature_settings.viewData.DurationFormatViewData
 import com.example.util.simpletimetracker.feature_settings.viewData.RepeatButtonViewData
 import com.example.util.simpletimetracker.feature_settings.viewData.WidgetTransparencyViewData
 import com.example.util.simpletimetracker.feature_settings.views.SettingsBottomViewData
@@ -220,11 +221,22 @@ class SettingsDisplayViewDataInteractor @Inject constructor(
                 subtitle = loadUseMonthDayTimeViewData(),
                 isChecked = prefsInteractor.getUseMonthDayTimeFormat(),
             )
-            result += SettingsCheckboxViewData(
-                block = SettingsBlock.DisplayProportionalFormat,
-                title = resourceRepo.getString(R.string.settings_use_proportional_minutes),
-                subtitle = loadUseProportionalMinutesViewData(),
-                isChecked = prefsInteractor.getUseProportionalMinutes(),
+            val durationFormatViewData = loadDurationFormatViewData()
+            result += SettingsSpinnerViewData(
+                block = SettingsBlock.DisplayDurationFormat,
+                title = resourceRepo.getString(R.string.settings_duration_format),
+                value = durationFormatViewData.items
+                    .getOrNull(durationFormatViewData.selectedPosition)?.text.orEmpty(),
+                items = durationFormatViewData.items,
+                selectedPosition = durationFormatViewData.selectedPosition,
+                processSameItemSelected = false,
+                dividerIsVisible = false,
+                bottomSpaceIsVisible = false,
+            )
+            result += SettingsHintViewData(
+                block = SettingsBlock.DisplayDurationFormatHint,
+                text = loadDurationFormatHintViewData(),
+                topSpaceIsVisible = false,
             )
             result += SettingsCheckboxViewData(
                 block = SettingsBlock.DisplayShowSeconds,
@@ -340,9 +352,14 @@ class SettingsDisplayViewDataInteractor @Inject constructor(
             .let(settingsMapper::toUseMonthDayTimeHint)
     }
 
-    private suspend fun loadUseProportionalMinutesViewData(): String {
-        return prefsInteractor.getUseProportionalMinutes()
-            .let(settingsMapper::toUseProportionalMinutesHint)
+    private suspend fun loadDurationFormatViewData(): DurationFormatViewData {
+        return prefsInteractor.getDurationFormat()
+            .let(settingsMapper::toDurationFormatViewData)
+    }
+
+    private suspend fun loadDurationFormatHintViewData(): String {
+        return prefsInteractor.getDurationFormat()
+            .let(settingsMapper::toDurationFormatHint)
     }
 
     private suspend fun loadRepeatButtonViewData(): RepeatButtonViewData {

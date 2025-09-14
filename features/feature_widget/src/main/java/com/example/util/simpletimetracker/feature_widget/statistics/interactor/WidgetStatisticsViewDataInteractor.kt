@@ -30,7 +30,7 @@ class WidgetStatisticsViewDataInteractor @Inject constructor(
         appWidgetId: Int,
     ): Result = withContext(Dispatchers.IO) {
         val isDarkTheme = prefsInteractor.getDarkMode()
-        val useProportionalMinutes = prefsInteractor.getUseProportionalMinutes()
+        val durationFormat = prefsInteractor.getDurationFormat()
         val showSeconds = prefsInteractor.getShowSeconds()
         val firstDayOfWeek = prefsInteractor.getFirstDayOfWeek()
         val startOfDayShift = prefsInteractor.getStartOfDayShift()
@@ -72,7 +72,7 @@ class WidgetStatisticsViewDataInteractor @Inject constructor(
         val total: String = statisticsMediator.getStatisticsTotalTracked(
             statistics = statistics,
             filteredIds = filteredIds,
-            useProportionalMinutes = useProportionalMinutes,
+            durationFormat = durationFormat,
             showSeconds = showSeconds,
         )
 

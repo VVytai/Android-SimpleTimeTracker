@@ -3,6 +3,7 @@ package com.example.util.simpletimetracker.core.interactor
 import com.example.util.simpletimetracker.core.mapper.RecordTagViewDataMapper
 import com.example.util.simpletimetracker.core.mapper.TimeMapper
 import com.example.util.simpletimetracker.core.viewData.StatisticsDataHolder
+import com.example.util.simpletimetracker.domain.base.DurationFormat
 import com.example.util.simpletimetracker.domain.base.UNCATEGORIZED_ITEM_ID
 import com.example.util.simpletimetracker.domain.base.UNTRACKED_ITEM_ID
 import com.example.util.simpletimetracker.domain.category.interactor.CategoryInteractor
@@ -85,7 +86,7 @@ class StatisticsMediator @Inject constructor(
     fun getStatisticsTotalTracked(
         statistics: List<Statistics>,
         filteredIds: List<Long>,
-        useProportionalMinutes: Boolean,
+        durationFormat: DurationFormat,
         showSeconds: Boolean,
     ): String {
         val statisticsFiltered = statistics
@@ -94,7 +95,7 @@ class StatisticsMediator @Inject constructor(
         return timeMapper.formatInterval(
             interval = total,
             forceSeconds = showSeconds,
-            useProportionalMinutes = useProportionalMinutes,
+            durationFormat = durationFormat,
         )
     }
 

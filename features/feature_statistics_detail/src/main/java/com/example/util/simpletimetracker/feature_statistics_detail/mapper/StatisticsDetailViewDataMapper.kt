@@ -9,6 +9,7 @@ import com.example.util.simpletimetracker.core.mapper.IconMapper
 import com.example.util.simpletimetracker.core.mapper.RecordTagViewDataMapper
 import com.example.util.simpletimetracker.core.mapper.TimeMapper
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
+import com.example.util.simpletimetracker.domain.base.DurationFormat
 import com.example.util.simpletimetracker.domain.base.MULTITASK_ITEM_ID
 import com.example.util.simpletimetracker.domain.base.OneShotValue
 import com.example.util.simpletimetracker.domain.base.UNTRACKED_ITEM_ID
@@ -226,7 +227,7 @@ class StatisticsDetailViewDataMapper @Inject constructor(
         availableChartLengths: List<ChartLength>,
         appliedChartLength: ChartLength,
         chartMode: ChartMode,
-        useProportionalMinutes: Boolean,
+        durationFormat: DurationFormat,
         showSeconds: Boolean,
         isDarkTheme: Boolean,
     ): StatisticsDetailChartCompositeViewData {
@@ -259,7 +260,7 @@ class StatisticsDetailViewDataMapper @Inject constructor(
             rangeLength = rangeLength,
             chartGrouping = appliedChartGrouping,
             chartMode = chartMode,
-            useProportionalMinutes = useProportionalMinutes,
+            durationFormat = durationFormat,
             showSeconds = showSeconds,
             isDarkTheme = isDarkTheme,
         )
@@ -477,7 +478,7 @@ class StatisticsDetailViewDataMapper @Inject constructor(
         rangeLength: RangeLength,
         chartGrouping: ChartGrouping,
         chartMode: ChartMode,
-        useProportionalMinutes: Boolean,
+        durationFormat: DurationFormat,
         showSeconds: Boolean,
         isDarkTheme: Boolean,
     ): Pair<String, List<StatisticsDetailCardInternalViewData>> {
@@ -506,7 +507,7 @@ class StatisticsDetailViewDataMapper @Inject constructor(
                 is ChartMode.DURATIONS -> timeMapper.formatInterval(
                     interval = interval.toLong(),
                     forceSeconds = showSeconds,
-                    useProportionalMinutes = useProportionalMinutes,
+                    durationFormat = durationFormat,
                 )
                 is ChartMode.COUNTS -> formatDecimalValue(interval)
                 is ChartMode.TAG_VALUE -> formatDecimalValue(interval / TAG_VALUE_PRECISION)

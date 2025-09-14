@@ -7,6 +7,7 @@ import com.example.util.simpletimetracker.core.mapper.StatisticsViewDataMapper
 import com.example.util.simpletimetracker.core.mapper.TimeMapper
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.core.viewData.StatisticsDataHolder
+import com.example.util.simpletimetracker.domain.base.DurationFormat
 import com.example.util.simpletimetracker.domain.base.OneShotValue
 import com.example.util.simpletimetracker.domain.base.UNCATEGORIZED_ITEM_ID
 import com.example.util.simpletimetracker.domain.base.UNTRACKED_ITEM_ID
@@ -70,7 +71,7 @@ class StatisticsDetailDataDistributionInteractor @Inject constructor(
         val isDarkTheme = prefsInteractor.getDarkMode()
         val firstDayOfWeek = prefsInteractor.getFirstDayOfWeek()
         val startOfDayShift = prefsInteractor.getStartOfDayShift()
-        val useProportionalMinutes = prefsInteractor.getUseProportionalMinutes()
+        val durationFormat = prefsInteractor.getDurationFormat()
         val showSeconds = prefsInteractor.getShowSeconds()
         val types = recordTypeInteractor.getAll()
 
@@ -93,7 +94,7 @@ class StatisticsDetailDataDistributionInteractor @Inject constructor(
             },
             typesMap = typesMap,
             isDarkTheme = isDarkTheme,
-            useProportionalMinutes = useProportionalMinutes,
+            durationFormat = durationFormat,
             showSeconds = showSeconds,
             animate = animate,
         )
@@ -110,7 +111,7 @@ class StatisticsDetailDataDistributionInteractor @Inject constructor(
         records: List<RecordBase>,
         typesMap: Map<Long, RecordType>,
         isDarkTheme: Boolean,
-        useProportionalMinutes: Boolean,
+        durationFormat: DurationFormat,
         showSeconds: Boolean,
         animate: Boolean,
     ): List<ViewHolderType> {
@@ -144,7 +145,7 @@ class StatisticsDetailDataDistributionInteractor @Inject constructor(
             filterType = filterType,
             selectedItemId = selectedItemId,
             isDarkTheme = isDarkTheme,
-            useProportionalMinutes = useProportionalMinutes,
+            durationFormat = durationFormat,
             showSeconds = showSeconds,
         )
 
@@ -189,7 +190,7 @@ class StatisticsDetailDataDistributionInteractor @Inject constructor(
         filterType: ChartFilterType,
         selectedItemId: Long?,
         isDarkTheme: Boolean,
-        useProportionalMinutes: Boolean,
+        durationFormat: DurationFormat,
         showSeconds: Boolean,
     ): List<ViewHolderType> {
         return statisticsViewDataMapper.mapItemsList(
@@ -200,7 +201,7 @@ class StatisticsDetailDataDistributionInteractor @Inject constructor(
             filteredIds = emptyList(),
             showDuration = true,
             isDarkTheme = isDarkTheme,
-            useProportionalMinutes = useProportionalMinutes,
+            durationFormat = durationFormat,
             showSeconds = showSeconds,
             hasTransitions = false,
         ).map {

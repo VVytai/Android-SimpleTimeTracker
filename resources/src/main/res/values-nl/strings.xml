@@ -55,9 +55,14 @@
     <string name="ok">OK</string>
     <string name="cancel">Annuleren</string>
 
+    <string name="time_day">d</string>
     <string name="time_hour">u</string>
     <string name="time_minute">m</string>
     <string name="time_second">s</string>
+
+    <string name="days">Dagen</string>
+    <string name="hours">Uren</string>
+    <string name="minutes">Minuten</string>
 
     <string name="untracked_time_name">Niet bijgehouden</string>
     <string name="uncategorized_time_name">Niet gecategoriseerd</string>
@@ -360,7 +365,8 @@ Dit stelt je in staat om te zien hoeveel tijd je in totaal besteedt aan producti
     <string name="settings_language">Taal</string>
     <string name="settings_use_military_time">Gebruik 24-uurs formaat</string>
     <string name="settings_use_monthday_time">Gebruik de datumnotatie Maand/Dag</string>
-    <string name="settings_use_proportional_minutes">Gebruik proportioneel minutenformaat</string>
+    <string name="settings_duration_format">Duurformaat</string>
+    <string name="settings_duration_format_proportional">Proportioneel</string>
     <string name="settings_show_seconds">Toon seconden</string>
     <string name="settings_keep_screen_on">Scherm aan houden</string>
     <string name="settings_change_card_size">Grootte activiteitskaart wijzigen</string>

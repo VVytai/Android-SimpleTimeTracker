@@ -3,6 +3,7 @@ package com.example.util.simpletimetracker.core.mapper
 import com.example.util.simpletimetracker.core.R
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.core.viewData.ChangeRecordDateTimeState
+import com.example.util.simpletimetracker.domain.base.DurationFormat
 import javax.inject.Inject
 
 class ChangeRecordDateTimeMapper @Inject constructor(
@@ -15,6 +16,7 @@ class ChangeRecordDateTimeMapper @Inject constructor(
         field: Field,
         useMilitaryTimeFormat: Boolean,
         showSeconds: Boolean,
+        durationFormat: DurationFormat,
     ): ChangeRecordDateTimeState {
         return ChangeRecordDateTimeState(
             hint = when (param) {
@@ -39,7 +41,7 @@ class ChangeRecordDateTimeMapper @Inject constructor(
                         timeMapper.formatInterval(
                             interval = param.duration,
                             forceSeconds = showSeconds,
-                            useProportionalMinutes = false,
+                            durationFormat = durationFormat,
                         ),
                     )
                 }

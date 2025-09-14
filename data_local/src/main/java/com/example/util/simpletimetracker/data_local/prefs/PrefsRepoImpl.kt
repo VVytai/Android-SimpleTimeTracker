@@ -317,8 +317,8 @@ class PrefsRepoImpl @Inject constructor(
         KEY_USE_MONTH_DAY_TIME_FORMAT, false,
     )
 
-    override var useProportionalMinutes: Boolean by prefs.delegate(
-        KEY_USE_PROPORTIONAL_MINUTES, false,
+    override var durationFormat: Int by prefs.delegate(
+        KEY_DURATION_PRESENTATION_FORMAT, 0,
     )
 
     override var showSeconds: Boolean by prefs.delegate(
@@ -681,7 +681,7 @@ class PrefsRepoImpl @Inject constructor(
         const val KEY_NUMBER_OF_CARDS = "numberOfCards" // 0 - default width
         const val KEY_USE_MILITARY_TIME_FORMAT = "useMilitaryTimeFormat"
         const val KEY_USE_MONTH_DAY_TIME_FORMAT = "useMonthDayTimeFormat"
-        const val KEY_USE_PROPORTIONAL_MINUTES = "useProportionalMinutes"
+        const val KEY_DURATION_PRESENTATION_FORMAT = "durationPresentationFormat"
         const val KEY_SHOW_SECONDS = "showSeconds"
         const val KEY_KEEP_SCREEN_ON = "keepScreenOn"
         const val KEY_SHOW_RECORD_TAG_SELECTION = "showRecordTagSelection"
@@ -732,5 +732,6 @@ class PrefsRepoImpl @Inject constructor(
         private const val KEY_SHOW_NOTIFICATION_WITH_SWITCH = "showNotificationWithSwitch" // Boolean
         private const val KEY_SHOW_NOTIFICATION_WITH_SWITCH_HIDE = "showNotificationWithSwitchHide" // Boolean
         private const val KEY_SHOW_CALENDAR_BUTTON_ON_RECORDS_TAB = "showCalendarButtonOnRecordsTab" // Boolean
+        private const val KEY_USE_PROPORTIONAL_MINUTES = "useProportionalMinutes" // Boolean
     }
 }

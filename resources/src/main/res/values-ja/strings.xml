@@ -55,9 +55,14 @@
     <string name="ok">OK</string>
     <string name="cancel">キャンセル</string>
 
+    <string name="time_day">日</string>
     <string name="time_hour">時</string>
     <string name="time_minute">分</string>
     <string name="time_second">秒</string>
+
+    <string name="days">日</string>
+    <string name="hours">時間</string>
+    <string name="minutes">分</string>
 
     <string name="untracked_time_name">未計測</string>
     <string name="uncategorized_time_name">未分類</string>
@@ -360,7 +365,8 @@
     <string name="settings_language">言語</string>
     <string name="settings_use_military_time">24時間制で表示</string>
     <string name="settings_use_monthday_time">月/日の日付形式を使用する</string>
-    <string name="settings_use_proportional_minutes">時間表示の変更</string>
+    <string name="settings_duration_format">時間形式</string>
+    <string name="settings_duration_format_proportional">比例</string>
     <string name="settings_show_seconds">秒を表示</string>
     <string name="settings_keep_screen_on">画面表示の維持</string>
     <string name="settings_change_card_size">アクティビティカードのサイズを変更する</string>

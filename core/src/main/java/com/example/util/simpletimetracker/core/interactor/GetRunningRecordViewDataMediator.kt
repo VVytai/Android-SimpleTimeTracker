@@ -1,6 +1,7 @@
 package com.example.util.simpletimetracker.core.interactor
 
 import com.example.util.simpletimetracker.core.mapper.RunningRecordViewDataMapper
+import com.example.util.simpletimetracker.domain.base.DurationFormat
 import com.example.util.simpletimetracker.domain.recordType.extension.getDaily
 import com.example.util.simpletimetracker.domain.recordTag.model.RecordTag
 import com.example.util.simpletimetracker.domain.recordType.model.RecordType
@@ -24,7 +25,7 @@ class GetRunningRecordViewDataMediator @Inject constructor(
         totalDurationVisible: Boolean,
         isDarkTheme: Boolean,
         useMilitaryTime: Boolean,
-        useProportionalMinutes: Boolean,
+        durationFormat: DurationFormat,
         showSeconds: Boolean,
     ): RunningRecordViewData {
         val dailyCurrent = if ((goals.getDaily() != null && goalsVisible) || totalDurationVisible) {
@@ -42,7 +43,7 @@ class GetRunningRecordViewDataMediator @Inject constructor(
             isDarkTheme = isDarkTheme,
             useMilitaryTime = useMilitaryTime,
             showSeconds = showSeconds,
-            useProportionalMinutes = useProportionalMinutes,
+            durationFormat = durationFormat,
             nowIconVisible = nowIconVisible,
             goalsVisible = goalsVisible,
             totalDurationVisible = totalDurationVisible,

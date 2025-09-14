@@ -53,7 +53,7 @@ class RunningRecordsViewDataInteractor @Inject constructor(
         val isDarkTheme = prefsInteractor.getDarkMode()
         val useMilitaryTime = prefsInteractor.getUseMilitaryTimeFormat()
         val showSeconds = prefsInteractor.getShowSeconds()
-        val useProportionalMinutes = prefsInteractor.getUseProportionalMinutes()
+        val durationFormat = prefsInteractor.getDurationFormat()
         val showFirstEnterHint = recordTypes.filterNot(RecordType::hidden).isEmpty()
         val showDefaultTypesButton = !prefsInteractor.getDefaultTypesHidden()
         val showPomodoroButton = prefsInteractor.getEnablePomodoroMode()
@@ -88,7 +88,7 @@ class RunningRecordsViewDataInteractor @Inject constructor(
                     recordTags = recordTags,
                     prevRecords = prevRecord,
                     isDarkTheme = isDarkTheme,
-                    useProportionalMinutes = useProportionalMinutes,
+                    durationFormat = durationFormat,
                     useMilitaryTime = useMilitaryTime,
                     showSeconds = showSeconds,
                 )
@@ -110,7 +110,7 @@ class RunningRecordsViewDataInteractor @Inject constructor(
                             totalDurationVisible = true,
                             isDarkTheme = isDarkTheme,
                             useMilitaryTime = useMilitaryTime,
-                            useProportionalMinutes = useProportionalMinutes,
+                            durationFormat = durationFormat,
                             showSeconds = showSeconds,
                         )
                     }

@@ -4,6 +4,7 @@ import com.example.util.simpletimetracker.core.mapper.CalendarToListShiftMapper
 import com.example.util.simpletimetracker.core.mapper.RecordViewDataMapper
 import com.example.util.simpletimetracker.core.mapper.TimeMapper
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
+import com.example.util.simpletimetracker.domain.base.DurationFormat
 import com.example.util.simpletimetracker.domain.daysOfWeek.mapper.DaysInCalendarMapper
 import com.example.util.simpletimetracker.domain.daysOfWeek.model.DayOfWeek
 import com.example.util.simpletimetracker.domain.daysOfWeek.model.DaysInCalendar
@@ -34,7 +35,7 @@ class RecordsViewDataMapper @Inject constructor(
         range: Range,
         isDarkTheme: Boolean,
         useMilitaryTime: Boolean,
-        useProportionalMinutes: Boolean,
+        durationFormat: DurationFormat,
         showSeconds: Boolean,
     ): RecordViewData.Tracked {
         val (timeStarted, timeEnded) = clampToRange(record, range)
@@ -48,7 +49,7 @@ class RecordsViewDataMapper @Inject constructor(
             recordTags = recordTags,
             isDarkTheme = isDarkTheme,
             useMilitaryTime = useMilitaryTime,
-            useProportionalMinutes = useProportionalMinutes,
+            durationFormat = durationFormat,
             showSeconds = showSeconds,
         )
     }
@@ -58,7 +59,7 @@ class RecordsViewDataMapper @Inject constructor(
         range: Range,
         isDarkTheme: Boolean,
         useMilitaryTime: Boolean,
-        useProportionalMinutes: Boolean,
+        durationFormat: DurationFormat,
         showSeconds: Boolean,
     ): RecordViewData.Untracked {
         val (timeStarted, timeEnded) = clampToRange(record, range)
@@ -68,7 +69,7 @@ class RecordsViewDataMapper @Inject constructor(
             timeEnded = timeEnded,
             isDarkTheme = isDarkTheme,
             useMilitaryTime = useMilitaryTime,
-            useProportionalMinutes = useProportionalMinutes,
+            durationFormat = durationFormat,
             showSeconds = showSeconds,
         )
     }

@@ -51,7 +51,7 @@ class StatisticsViewDataInteractor @Inject constructor(
         val rangeLength = prefsInteractor.getStatisticsRange()
         val filterType = prefsInteractor.getChartFilterType()
         val isDarkTheme = prefsInteractor.getDarkMode()
-        val useProportionalMinutes = prefsInteractor.getUseProportionalMinutes()
+        val durationFormat = prefsInteractor.getDurationFormat()
         val showSeconds = prefsInteractor.getShowSeconds()
         val firstDayOfWeek = prefsInteractor.getFirstDayOfWeek()
         val startOfDayShift = prefsInteractor.getStartOfDayShift()
@@ -111,7 +111,7 @@ class StatisticsViewDataInteractor @Inject constructor(
             filteredIds = filteredIds,
             showDuration = showDuration,
             isDarkTheme = isDarkTheme,
-            useProportionalMinutes = useProportionalMinutes,
+            durationFormat = durationFormat,
             showSeconds = showSeconds,
             hasTransitions = true,
         )
@@ -136,14 +136,14 @@ class StatisticsViewDataInteractor @Inject constructor(
                 statistics = statistics.filterNot { it.id in filteredIds },
                 data = dataHolders,
                 isDarkTheme = isDarkTheme,
-                useProportionalMinutes = useProportionalMinutes,
+                durationFormat = durationFormat,
                 showSeconds = showSeconds,
             )
         }
         val totalTracked: ViewHolderType = statisticsMediator.getStatisticsTotalTracked(
             statistics = statistics,
             filteredIds = filteredIds,
-            useProportionalMinutes = useProportionalMinutes,
+            durationFormat = durationFormat,
             showSeconds = showSeconds,
         ).let(statisticsViewDataMapper::mapStatisticsTotalTracked)
         val showFirstEnterHint = when {

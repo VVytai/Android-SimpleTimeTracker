@@ -105,11 +105,13 @@ class RecordsViewModel @Inject constructor(
         }
         val useMilitaryTimeFormat = prefsInteractor.getUseMilitaryTimeFormat()
         val showSeconds = prefsInteractor.getShowSeconds()
+        val durationFormat = prefsInteractor.getDurationFormat()
         val params = getChangeRecordNavigationParamsInteractor.execute(
             item = item,
             from = ChangeRunningRecordParams.From.Records,
             useMilitaryTimeFormat = useMilitaryTimeFormat,
             showSeconds = showSeconds,
+            durationFormat = durationFormat,
             sharedElements = sharedElements,
         )
         throttle {
@@ -130,12 +132,14 @@ class RecordsViewModel @Inject constructor(
         }
         val useMilitaryTimeFormat = prefsInteractor.getUseMilitaryTimeFormat()
         val showSeconds = prefsInteractor.getShowSeconds()
+        val durationFormat = prefsInteractor.getDurationFormat()
         val params = getChangeRecordNavigationParamsInteractor.execute(
             item = item,
             from = ChangeRecordParams.From.Records,
             shift = shift,
             useMilitaryTimeFormat = useMilitaryTimeFormat,
             showSeconds = showSeconds,
+            durationFormat = durationFormat,
             sharedElements = sharedElements,
         )
         throttle {

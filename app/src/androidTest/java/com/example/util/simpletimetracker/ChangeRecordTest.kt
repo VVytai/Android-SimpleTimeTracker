@@ -10,6 +10,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withClassName
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.example.util.simpletimetracker.domain.base.DurationFormat
 import com.example.util.simpletimetracker.feature_dialogs.dateTime.CustomDatePicker
 import com.example.util.simpletimetracker.feature_dialogs.dateTime.CustomTimePicker
 import com.example.util.simpletimetracker.utils.BaseUiTest
@@ -80,7 +81,9 @@ class ChangeRecordTest : BaseUiTest() {
         var timeEndedPreview = timeEndedTimestamp
             .let { timeMapper.formatTime(time = it, useMilitaryTime = true, showSeconds = false) }
         var timeRangePreview = (timeEndedTimestamp - timeStartedTimestamp)
-            .let { timeMapper.formatInterval(interval = it, forceSeconds = false, useProportionalMinutes = false) }
+            .let {
+                timeMapper.formatInterval(interval = it, forceSeconds = false, durationFormat = DurationFormat.HOURS)
+            }
 
         clickOnViewWithText(coreR.string.change_record_comment_field)
         typeTextIntoView(changeRecordR.id.etChangeRecordCommentField, comment)
@@ -173,7 +176,9 @@ class ChangeRecordTest : BaseUiTest() {
         timeEndedPreview = timeEndedTimestamp
             .let { timeMapper.formatTime(time = it, useMilitaryTime = true, showSeconds = false) }
         timeRangePreview = (timeEndedTimestamp - timeStartedTimestamp)
-            .let { timeMapper.formatInterval(interval = it, forceSeconds = false, useProportionalMinutes = false) }
+            .let {
+                timeMapper.formatInterval(interval = it, forceSeconds = false, durationFormat = DurationFormat.HOURS)
+            }
 
         checkViewIsDisplayed(allOf(withId(changeRecordR.id.tvChangeRecordTimeStartedDate), withText(timeStarted.date)))
         checkViewIsDisplayed(allOf(withId(changeRecordR.id.tvChangeRecordTimeStartedTime), withText(timeStarted.time)))

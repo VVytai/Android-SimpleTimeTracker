@@ -4,6 +4,7 @@ import com.example.util.simpletimetracker.core.extension.shiftTimeStamp
 import com.example.util.simpletimetracker.core.interactor.LanguageInteractor
 import com.example.util.simpletimetracker.core.mapper.TimeMapper
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
+import com.example.util.simpletimetracker.domain.base.DurationFormat
 import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.domain.darkMode.model.DarkMode
 import com.example.util.simpletimetracker.domain.daysOfWeek.mapper.DaysInCalendarMapper
@@ -17,6 +18,7 @@ import com.example.util.simpletimetracker.feature_settings.R
 import com.example.util.simpletimetracker.feature_settings.viewData.CardOrderViewData
 import com.example.util.simpletimetracker.feature_settings.viewData.DarkModeViewData
 import com.example.util.simpletimetracker.feature_settings.viewData.DaysInCalendarViewData
+import com.example.util.simpletimetracker.feature_settings.viewData.DurationFormatViewData
 import com.example.util.simpletimetracker.feature_settings.viewData.FirstDayOfWeekViewData
 import com.example.util.simpletimetracker.feature_settings.viewData.LanguageViewData
 import com.example.util.simpletimetracker.feature_settings.viewData.RepeatButtonViewData
@@ -46,6 +48,13 @@ class SettingsMapper @Inject constructor(
         CardTagOrder.COLOR,
         CardTagOrder.ACTIVITY,
         CardTagOrder.MANUAL,
+    )
+
+    private val durationFormatList: List<DurationFormat> = listOf(
+        DurationFormat.MINUTES,
+        DurationFormat.HOURS,
+        DurationFormat.DAYS,
+        DurationFormat.PROPORTIONAL_MINUTES,
     )
 
     private val daysInCalendarList: List<DaysInCalendar> = listOf(
@@ -112,6 +121,19 @@ class SettingsMapper @Inject constructor(
 
     fun toCardTagOrder(position: Int): CardTagOrder {
         return cardTagOrderList.getOrElse(position) { cardTagOrderList.first() }
+    }
+
+    fun toDurationFormatViewData(currentValue: DurationFormat): DurationFormatViewData {
+        return DurationFormatViewData(
+            items = durationFormatList
+                .map(::toDurationFormatName)
+                .map(CustomSpinner::CustomSpinnerTextItem),
+            selectedPosition = toPosition(currentValue),
+        )
+    }
+
+    fun toDurationFormat(position: Int): DurationFormat {
+        return durationFormatList.getOrElse(position) { durationFormatList.first() }
     }
 
     fun toDaysInCalendarViewData(currentValue: DaysInCalendar): DaysInCalendarViewData {
@@ -300,12 +322,22 @@ class SettingsMapper @Inject constructor(
         )
     }
 
-    fun toUseProportionalMinutesHint(useProportionalMinutes: Boolean): String {
-        return timeMapper.formatInterval(
-            interval = 4500000,
-            forceSeconds = false,
-            useProportionalMinutes = useProportionalMinutes,
-        )
+    fun toDurationFormatHint(durationFormat: DurationFormat): String {
+        return when (durationFormat) {
+            DurationFormat.DAYS -> timeMapper.formatInterval(
+                interval = TimeUnit.DAYS.toMillis(1) +
+                    TimeUnit.HOURS.toMillis(1) +
+                    TimeUnit.MINUTES.toMillis(15),
+                forceSeconds = false,
+                durationFormat = durationFormat,
+            )
+            else -> timeMapper.formatInterval(
+                interval = TimeUnit.HOURS.toMillis(1) +
+                    TimeUnit.MINUTES.toMillis(15),
+                forceSeconds = false,
+                durationFormat = durationFormat,
+            )
+        }
     }
 
     private fun toPosition(cardOrder: CardOrder): Int {
@@ -330,6 +362,19 @@ class SettingsMapper @Inject constructor(
             CardTagOrder.COLOR -> R.string.settings_sort_by_color
             CardTagOrder.MANUAL -> R.string.settings_sort_manually
             CardTagOrder.ACTIVITY -> R.string.settings_sort_activity
+        }.let(resourceRepo::getString)
+    }
+
+    private fun toPosition(durationFormat: DurationFormat): Int {
+        return durationFormatList.indexOf(durationFormat).takeUnless { it == -1 }.orZero()
+    }
+
+    private fun toDurationFormatName(durationFormat: DurationFormat): String {
+        return when (durationFormat) {
+            DurationFormat.MINUTES -> R.string.minutes
+            DurationFormat.HOURS -> R.string.hours
+            DurationFormat.DAYS -> R.string.days
+            DurationFormat.PROPORTIONAL_MINUTES -> R.string.settings_duration_format_proportional
         }.let(resourceRepo::getString)
     }
 

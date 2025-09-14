@@ -4,6 +4,7 @@ import com.example.util.simpletimetracker.core.mapper.ColorMapper
 import com.example.util.simpletimetracker.core.mapper.RecordViewDataMapper
 import com.example.util.simpletimetracker.core.mapper.RunningRecordViewDataMapper
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
+import com.example.util.simpletimetracker.domain.base.DurationFormat
 import com.example.util.simpletimetracker.domain.base.UNTRACKED_ITEM_ID
 import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.domain.color.model.AppColor
@@ -59,7 +60,7 @@ class RunningRecordsViewDataMapper @Inject constructor(
         recordTags: List<RecordTag>,
         prevRecords: List<Record>,
         isDarkTheme: Boolean,
-        useProportionalMinutes: Boolean,
+        durationFormat: DurationFormat,
         useMilitaryTime: Boolean,
         showSeconds: Boolean,
     ): List<ViewHolderType> {
@@ -96,7 +97,7 @@ class RunningRecordsViewDataMapper @Inject constructor(
                 isDarkTheme = isDarkTheme,
                 useMilitaryTime = useMilitaryTime,
                 showSeconds = showSeconds,
-                useProportionalMinutes = useProportionalMinutes,
+                durationFormat = durationFormat,
                 nowIconVisible = false,
                 goalsVisible = false,
                 totalDurationVisible = false,
@@ -110,7 +111,7 @@ class RunningRecordsViewDataMapper @Inject constructor(
                     recordTags = recordTags,
                     isDarkTheme = isDarkTheme,
                     useMilitaryTime = useMilitaryTime,
-                    useProportionalMinutes = useProportionalMinutes,
+                    durationFormat = durationFormat,
                     showSeconds = showSeconds,
                 )
                 RecordWithHintViewData(data)

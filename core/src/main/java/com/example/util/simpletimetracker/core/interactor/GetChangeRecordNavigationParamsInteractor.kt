@@ -3,6 +3,7 @@ package com.example.util.simpletimetracker.core.interactor
 import com.example.util.simpletimetracker.core.extension.toParams
 import com.example.util.simpletimetracker.core.extension.toRecordParams
 import com.example.util.simpletimetracker.core.mapper.ChangeRecordDateTimeMapper
+import com.example.util.simpletimetracker.domain.base.DurationFormat
 import com.example.util.simpletimetracker.feature_base_adapter.record.RecordViewData
 import com.example.util.simpletimetracker.feature_base_adapter.runningRecord.RunningRecordViewData
 import com.example.util.simpletimetracker.navigation.params.screen.ChangeRecordParams
@@ -19,6 +20,7 @@ class GetChangeRecordNavigationParamsInteractor @Inject constructor(
         shift: Int,
         useMilitaryTimeFormat: Boolean,
         showSeconds: Boolean,
+        durationFormat: DurationFormat,
         sharedElements: Pair<Any, String>?,
     ): ChangeRecordParams {
         val preview = ChangeRecordParams.Preview(
@@ -31,12 +33,14 @@ class GetChangeRecordNavigationParamsInteractor @Inject constructor(
                 field = ChangeRecordDateTimeMapper.Field.Start,
                 useMilitaryTimeFormat = useMilitaryTimeFormat,
                 showSeconds = showSeconds,
+                durationFormat = durationFormat,
             ).toRecordParams(),
             timeEndedDateTime = changeRecordDateTimeMapper.map(
                 param = ChangeRecordDateTimeMapper.Param.DateTime(item.timeEndedTimestamp),
                 field = ChangeRecordDateTimeMapper.Field.End,
                 useMilitaryTimeFormat = useMilitaryTimeFormat,
                 showSeconds = showSeconds,
+                durationFormat = durationFormat,
             ).toRecordParams(),
             duration = item.duration,
             iconId = item.iconId.toParams(),
@@ -67,6 +71,7 @@ class GetChangeRecordNavigationParamsInteractor @Inject constructor(
         from: ChangeRunningRecordParams.From,
         useMilitaryTimeFormat: Boolean,
         showSeconds: Boolean,
+        durationFormat: DurationFormat,
         sharedElements: Pair<Any, String>?,
     ): ChangeRunningRecordParams {
         val preview = ChangeRunningRecordParams.Preview(
@@ -78,6 +83,7 @@ class GetChangeRecordNavigationParamsInteractor @Inject constructor(
                 field = ChangeRecordDateTimeMapper.Field.Start,
                 useMilitaryTimeFormat = useMilitaryTimeFormat,
                 showSeconds = showSeconds,
+                durationFormat = durationFormat,
             ).toRecordParams(),
             duration = item.timer,
             durationTotal = item.timerTotal,
