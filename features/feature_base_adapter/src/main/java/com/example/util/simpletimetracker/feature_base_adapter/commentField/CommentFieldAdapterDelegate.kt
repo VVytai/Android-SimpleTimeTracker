@@ -2,6 +2,7 @@ package com.example.util.simpletimetracker.feature_base_adapter.commentField
 
 import android.text.InputType
 import android.text.TextWatcher
+import android.view.inputmethod.EditorInfo
 import androidx.core.widget.doAfterTextChanged
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.createRecyclerBindingAdapterDelegate
@@ -11,6 +12,7 @@ import com.example.util.simpletimetracker.feature_base_adapter.databinding.ItemC
 
 fun createCommentFieldAdapterDelegate(
     afterTextChange: (String) -> Unit,
+    onKeyboardButtonClick: (() -> Unit)? = null,
 ) = createRecyclerBindingAdapterDelegate<ViewData, Binding>(
     Binding::inflate,
 ) { binding, item, _ ->
@@ -18,6 +20,12 @@ fun createCommentFieldAdapterDelegate(
     with(binding) {
         item as ViewData
 
+        etCommentItemField.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                onKeyboardButtonClick?.invoke()
+            }
+            false
+        }
         etCommentItemField.inputType = when (item.valueType) {
             is ViewData.ValueType.TextMultiLine -> {
                 InputType.TYPE_TEXT_FLAG_MULTI_LINE

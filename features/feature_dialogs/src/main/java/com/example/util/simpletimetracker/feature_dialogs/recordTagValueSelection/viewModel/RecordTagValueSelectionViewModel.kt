@@ -23,10 +23,12 @@ class RecordTagValueSelectionViewModel @Inject constructor(
         return@lazy MutableLiveData<List<ViewHolderType>>().let { initial ->
             viewModelScope.launch {
                 initial.value = loadViewData(fromCommentChange = false)
+                keyboardVisibility.set(true)
             }
             initial
         }
     }
+    val keyboardVisibility: LiveData<Boolean> = MutableLiveData()
     val onDataSelected: LiveData<Double> = MutableLiveData()
 
     private var newValue: Double? = null
@@ -37,6 +39,10 @@ class RecordTagValueSelectionViewModel @Inject constructor(
             newValue = value
             updateViewData(fromCommentChange = true)
         }
+    }
+
+    fun onKeyboardButtonClick() {
+        sendResult()
     }
 
     fun onSaveClick() {

@@ -16,8 +16,6 @@ class RecordTagValueSelectionViewDataInteractor @Inject constructor(
     ): List<ViewHolderType> {
         val result: MutableList<ViewHolderType> = mutableListOf()
 
-        // TODO TAG close on IME DONE on keyboard.
-        // TODO TAG show keyboard on first open.
         result += CommentFieldViewData(
             id = 1L, // Only one at the time.
             text = if (fromCommentChange) null else value?.toString().orEmpty(),
