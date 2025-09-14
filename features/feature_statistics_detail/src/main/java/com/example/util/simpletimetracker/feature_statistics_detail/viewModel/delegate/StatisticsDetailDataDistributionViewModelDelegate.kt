@@ -59,9 +59,17 @@ class StatisticsDetailDataDistributionViewModelDelegate @Inject constructor(
         updateViewData(animate = false)
     }
 
-    fun onStatisticsItemSwiped(item: ViewHolderType) {
+    fun onStatisticsItemSwipedStart(item: ViewHolderType) {
         val id = (item as? StatisticsSelectableViewData)?.data?.id ?: return
         parent?.onStatisticsHidden(
+            id = id,
+            mode = dataDistributionMode,
+        )
+    }
+
+    fun onStatisticsItemSwipedEnd(item: ViewHolderType) {
+        val id = (item as? StatisticsSelectableViewData)?.data?.id ?: return
+        parent?.onStatisticsOtherHidden(
             id = id,
             mode = dataDistributionMode,
         )

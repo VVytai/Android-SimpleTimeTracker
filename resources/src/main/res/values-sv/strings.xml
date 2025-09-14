@@ -592,6 +592,7 @@ Exempel:<br/>
     <string name="records_filter_any_comment">Någon kommentar</string>
     <string name="records_filter_select">Välj</string>
     <string name="records_filter_exclude">Exkludera</string>
+    <string name="records_filter_exclude_other">Uteslut andra</string>
     <string name="records_filter_invert_selection">Invertera urval</string>
     <string name="records_filter_duration_min">Minimum</string>
     <string name="records_filter_duration_max">Maximal</string>

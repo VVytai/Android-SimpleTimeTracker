@@ -592,6 +592,7 @@ Exemplo:<br/>
     <string name="records_filter_any_comment">Qualquer comentário</string>
     <string name="records_filter_select">Selecione</string>
     <string name="records_filter_exclude">Excluir</string>
+    <string name="records_filter_exclude_other">Excluir outros</string>
     <string name="records_filter_invert_selection">Seleção invertida</string>
     <string name="records_filter_duration_min">Mínima</string>
     <string name="records_filter_duration_max">Máxima</string>

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.RecyclerView
 import com.example.util.simpletimetracker.core.base.BaseFragment
 import com.example.util.simpletimetracker.core.dialog.CustomRangeSelectionDialogListener
 import com.example.util.simpletimetracker.core.dialog.DateTimeDialogListener
@@ -220,29 +221,30 @@ class StatisticsDetailFragment :
     }
 
     private fun initOnItemSwiped() = with(binding) {
-        fun ViewHolderType.canBeSwiped(): Boolean {
-            return this is StatisticsSelectableViewData
+        fun ViewHolderType.canBeSwiped(): Boolean = this is StatisticsSelectableViewData
+        fun Int.changeAlpha(alpha: Float): Int = ColorUtils.changeAlpha(this, alpha)
+        fun RecyclerView.ViewHolder.getItemType(): ViewHolderType? =
+            adapterPosition.let(contentAdapter::getItemByPosition)
+
+        fun RecyclerView.ViewHolder.isSelectable(): Boolean {
+            val itemsCount = contentAdapter.currentList
+                .filterIsInstance<StatisticsSelectableViewData>().size
+            val currentItem = getItemType()
+            return itemsCount > 1 && currentItem?.canBeSwiped().orFalse()
         }
 
         val context = rvStatisticsDetailContent.context
         rvStatisticsDetailContent.onItemSwiped(
-            iconRes = R.drawable.hide,
+            startIconRes = R.drawable.show,
+            endIconRes = R.drawable.hide,
             iconColor = context.getThemedAttr(R.attr.appContrastColor),
-            backgroundColor = ColorUtils.changeAlpha(
-                context.getThemedAttr(R.attr.appContrastColor), 0.10f,
-            ),
-            getIsSelectable = { viewHolder ->
-                val itemsCount = contentAdapter.currentList
-                    .filterIsInstance<StatisticsSelectableViewData>().size
-                val currentItem = viewHolder?.adapterPosition
-                    ?.let { contentAdapter.getItemByPosition(it) }
-                itemsCount > 1 && currentItem?.canBeSwiped().orFalse()
-            },
-            onSwiped = { viewHolder ->
-                viewHolder?.adapterPosition
-                    ?.let { contentAdapter.getItemByPosition(it) }
-                    ?.let(viewModel::onSwiped)
-            },
+            startText = context.getString(R.string.records_filter_exclude_other),
+            endText = context.getString(R.string.records_filter_exclude),
+            textColor = context.getThemedAttr(R.attr.appContrastColor).changeAlpha(0.3f),
+            backgroundColor = context.getThemedAttr(R.attr.appContrastColor).changeAlpha(0.1f),
+            getIsSelectable = { it?.isSelectable().orFalse() },
+            onSwipedStart = { it?.getItemType()?.let(viewModel::onSwipedStart) },
+            onSwipedEnd = { it?.getItemType()?.let(viewModel::onSwipedEnd) },
         )
     }
 

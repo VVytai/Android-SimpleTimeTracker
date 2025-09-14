@@ -592,6 +592,7 @@ Voorbeeld:<br/>
     <string name="records_filter_any_comment">Elke opmerking</string>
     <string name="records_filter_select">Selecteer</string>
     <string name="records_filter_exclude">Uitsluiten</string>
+    <string name="records_filter_exclude_other">Andere uitsluiten</string>
     <string name="records_filter_invert_selection">Omgekeerde selectie</string>
     <string name="records_filter_duration_min">Minimum</string>
     <string name="records_filter_duration_max">Maximaal</string>

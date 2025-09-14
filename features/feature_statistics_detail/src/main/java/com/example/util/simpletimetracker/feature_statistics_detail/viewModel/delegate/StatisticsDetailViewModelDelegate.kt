@@ -25,5 +25,6 @@ interface StatisticsDetailViewModelDelegate {
         fun getDateFilter(): List<RecordsFilter>
         suspend fun onFiltersChanged()
         fun onStatisticsHidden(id: Long, mode: DataDistributionMode)
+        fun onStatisticsOtherHidden(id: Long, mode: DataDistributionMode)
     }
 }

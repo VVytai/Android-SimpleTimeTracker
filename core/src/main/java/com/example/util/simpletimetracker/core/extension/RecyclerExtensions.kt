@@ -4,7 +4,10 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
+import android.graphics.Rect
+import android.graphics.Typeface
 import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Drawable
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
@@ -15,6 +18,7 @@ import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import java.util.Collections
 import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.feature_views.extension.dpToPx
+import com.example.util.simpletimetracker.feature_views.extension.spToPx
 
 fun RecyclerView.onItemMoved(
     getIsSelectable: (RecyclerView.ViewHolder?) -> Boolean = { true },
@@ -96,20 +100,56 @@ fun RecyclerView.onItemMoved(
 }
 
 fun RecyclerView.onItemSwiped(
-    @DrawableRes iconRes: Int,
+    @DrawableRes startIconRes: Int,
+    @DrawableRes endIconRes: Int,
     @ColorInt iconColor: Int,
+    startText: String,
+    endText: String,
+    @ColorInt textColor: Int,
     @ColorInt backgroundColor: Int,
     getIsSelectable: (RecyclerView.ViewHolder?) -> Boolean = { true },
-    onSwiped: (RecyclerView.ViewHolder?) -> Unit,
+    onSwipedStart: (RecyclerView.ViewHolder?) -> Unit,
+    onSwipedEnd: (RecyclerView.ViewHolder?) -> Unit,
 ) {
-    val swipeDirections = ItemTouchHelper.START
-    val deleteIcon by lazy {
-        ContextCompat.getDrawable(context, iconRes)?.mutate()?.apply { setTint(iconColor) }
+    fun getIcon(@DrawableRes resId: Int): Drawable? {
+        return ContextCompat.getDrawable(context, resId)?.mutate()?.apply { setTint(iconColor) }
     }
-    val intrinsicWidth = deleteIcon?.intrinsicWidth.orZero()
-    val intrinsicHeight = deleteIcon?.intrinsicHeight.orZero()
+
+    fun getTextPaint(): Paint {
+        return Paint().apply {
+            isAntiAlias = true
+            color = textColor
+            textSize = 14.spToPx().toFloat()
+            typeface = Typeface.DEFAULT_BOLD
+        }
+    }
+
+    fun Paint.getTextHeight(text: String): Float {
+        val bounds = Rect(0, 0, 0, 0)
+        getTextBounds(text, 0, text.length, bounds)
+        return bounds.height().toFloat()
+    }
+
+    val swipeDirections = ItemTouchHelper.START or ItemTouchHelper.END
+    val startIcon by lazy { getIcon(startIconRes) }
+    val endIcon by lazy { getIcon(endIconRes) }
+    val iconMargin = 16.dpToPx()
     val background = ColorDrawable()
-    val clearPaint = Paint().apply { xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR) }
+    val clearPaint = Paint().apply {
+        xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
+    }
+    val startTextHeight: Float
+    val startTextPaint = getTextPaint().apply {
+        textAlign = Paint.Align.LEFT
+    }.also {
+        startTextHeight = it.getTextHeight(startText)
+    }
+    val endTextHeight: Float
+    val endTextPaint = getTextPaint().apply {
+        textAlign = Paint.Align.RIGHT
+    }.also {
+        endTextHeight = it.getTextHeight(endText)
+    }
 
     val helper = object : ItemTouchHelper.SimpleCallback(0, 0) {
 
@@ -129,7 +169,17 @@ fun RecyclerView.onItemSwiped(
         }
 
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-            onSwiped(viewHolder)
+            when (direction) {
+                ItemTouchHelper.START -> {
+                    onSwipedStart(viewHolder)
+                }
+                ItemTouchHelper.END -> {
+                    // Prevent item removal.
+                    ItemTouchHelper.Callback.getDefaultUIUtil().clearView(viewHolder.itemView)
+                    adapter?.notifyItemChanged(viewHolder.adapterPosition)
+                    onSwipedEnd(viewHolder)
+                }
+            }
         }
 
         override fun onChildDraw(
@@ -156,27 +206,51 @@ fun RecyclerView.onItemSwiped(
                 return
             }
 
-            // Draw the red delete background
+            // Draw the delete background
             background.color = backgroundColor
             background.setBounds(
-                itemView.right + dX.toInt(),
+                if (dX > 0) itemView.left else itemView.right + dX.toInt(),
                 itemView.top,
-                itemView.right,
+                if (dX > 0) itemView.left + dX.toInt() else itemView.right,
                 itemView.bottom,
             )
             background.draw(canvas)
 
-            // Calculate position of delete icon
+            // Calculate position of the icon.
+            val iconToDraw = if (dX > 0) startIcon else endIcon
             val itemHeight = itemView.bottom - itemView.top
-            val iconMargin = 16.dpToPx()
-            val iconTop = itemView.top + (itemHeight - intrinsicHeight) / 2
-            val iconLeft = itemView.right - iconMargin - intrinsicWidth
-            val iconRight = itemView.right - iconMargin
-            val iconBottom = iconTop + intrinsicHeight
+            val iconTop = itemView.top + (itemHeight - iconToDraw?.intrinsicHeight.orZero()) / 2
+            val iconBottom = iconTop + iconToDraw?.intrinsicHeight.orZero()
+            val iconLeft: Int
+            val iconRight: Int
+            if (dX > 0) {
+                iconLeft = itemView.left + iconMargin
+                iconRight = itemView.left + iconMargin + iconToDraw?.intrinsicWidth.orZero()
+            } else {
+                iconLeft = itemView.right - iconMargin - iconToDraw?.intrinsicWidth.orZero()
+                iconRight = itemView.right - iconMargin
+            }
 
-            // Draw the delete icon
-            deleteIcon?.setBounds(iconLeft, iconTop, iconRight, iconBottom)
-            deleteIcon?.draw(canvas)
+            // Draw the icon.
+            iconToDraw?.setBounds(iconLeft, iconTop, iconRight, iconBottom)
+            iconToDraw?.draw(canvas)
+
+            // Draw the text.
+            if (dX > 0) {
+                canvas.drawText(
+                    startText,
+                    iconRight.toFloat() + iconMargin,
+                    itemView.top.toFloat() + itemView.height / 2 + startTextHeight / 2,
+                    startTextPaint,
+                )
+            } else {
+                canvas.drawText(
+                    endText,
+                    iconLeft.toFloat() - iconMargin,
+                    itemView.top.toFloat() + itemView.height / 2 + endTextHeight / 2,
+                    endTextPaint,
+                )
+            }
 
             super.onChildDraw(canvas, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
         }

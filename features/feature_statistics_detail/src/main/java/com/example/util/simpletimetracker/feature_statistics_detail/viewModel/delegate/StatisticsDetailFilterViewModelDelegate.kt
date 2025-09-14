@@ -89,15 +89,18 @@ class StatisticsDetailFilterViewModelDelegate @Inject constructor(
     }
 
     fun onStatisticsHidden(id: Long, mode: DataDistributionMode) = delegateScope.launch {
-        val type = when (mode) {
-            DataDistributionMode.ACTIVITY -> RecordsFilterExcludeInteractor.ExcludeType.Activity
-            DataDistributionMode.CATEGORY -> RecordsFilterExcludeInteractor.ExcludeType.Category
-            DataDistributionMode.TAG -> RecordsFilterExcludeInteractor.ExcludeType.Tag
-        }
         filter = recordsFilterExcludeInteractor.exclude(
             id = id,
-            type = type,
+            type = mapExcludeType(mode),
             currentFilters = filter,
+        )
+        onFiltersChanged()
+    }
+
+    fun onStatisticsOtherHidden(id: Long, mode: DataDistributionMode) = delegateScope.launch {
+        filter = recordsFilterExcludeInteractor.excludeOther(
+            id = id,
+            type = mapExcludeType(mode),
         )
         onFiltersChanged()
     }
@@ -151,6 +154,15 @@ class StatisticsDetailFilterViewModelDelegate @Inject constructor(
                     .getStatisticsDetailLastDays(),
             ),
         )
+    }
+
+    private fun mapExcludeType(mode: DataDistributionMode): RecordsFilterExcludeInteractor.ExcludeType {
+        val type = when (mode) {
+            DataDistributionMode.ACTIVITY -> RecordsFilterExcludeInteractor.ExcludeType.Activity
+            DataDistributionMode.CATEGORY -> RecordsFilterExcludeInteractor.ExcludeType.Category
+            DataDistributionMode.TAG -> RecordsFilterExcludeInteractor.ExcludeType.Tag
+        }
+        return type
     }
 
     // Delay data load until screen transition finishes

@@ -592,6 +592,7 @@ csv 文件必须包含以逗号分隔的这些列：<br/>
     <string name="records_filter_any_comment">有备注</string>
     <string name="records_filter_select">选择</string>
     <string name="records_filter_exclude">排除</string>
+    <string name="records_filter_exclude_other">排除其他</string>
     <string name="records_filter_invert_selection">反转选择</string>
     <string name="records_filter_duration_min">最小值</string>
     <string name="records_filter_duration_max">最大值</string>

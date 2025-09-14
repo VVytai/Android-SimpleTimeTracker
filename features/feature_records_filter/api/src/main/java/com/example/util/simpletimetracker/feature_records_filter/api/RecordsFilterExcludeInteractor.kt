@@ -10,6 +10,11 @@ interface RecordsFilterExcludeInteractor {
         currentFilters: List<RecordsFilter>,
     ): List<RecordsFilter>
 
+    suspend fun excludeOther(
+        id: Long,
+        type: ExcludeType,
+    ): List<RecordsFilter>
+
     sealed interface ExcludeType {
         data object Activity : ExcludeType
         data object Category : ExcludeType

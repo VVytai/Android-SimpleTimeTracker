@@ -592,6 +592,7 @@ CSV-файл должен содержать следующие столбцы, 
     <string name="records_filter_any_comment">Любой комментарий</string>
     <string name="records_filter_select">Выбрать</string>
     <string name="records_filter_exclude">Исключить</string>
+    <string name="records_filter_exclude_other">Исключить другие</string>
     <string name="records_filter_invert_selection">Инвертировать выбор</string>
     <string name="records_filter_duration_min">Минимум</string>
     <string name="records_filter_duration_max">Максимум</string>

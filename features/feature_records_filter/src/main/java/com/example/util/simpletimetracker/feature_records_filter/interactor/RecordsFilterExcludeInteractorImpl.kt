@@ -94,4 +94,33 @@ class RecordsFilterExcludeInteractorImpl @Inject constructor(
             }
         }
     }
+
+    override suspend fun excludeOther(
+        id: Long,
+        type: ExcludeType,
+    ): List<RecordsFilter> {
+        if (id == UNTRACKED_ITEM_ID) return listOf(RecordsFilter.Untracked)
+
+        return when (type) {
+            is ExcludeType.Activity -> {
+                RecordsFilter.Activity(selected = listOf(id), filtered = emptyList())
+            }
+            is ExcludeType.Category -> {
+                val item = if (id == UNCATEGORIZED_ITEM_ID) {
+                    RecordsFilter.CategoryItem.Uncategorized
+                } else {
+                    RecordsFilter.CategoryItem.Categorized(id)
+                }
+                RecordsFilter.Category(selected = listOf(item), filtered = emptyList())
+            }
+            is ExcludeType.Tag -> {
+                val item = if (id == UNCATEGORIZED_ITEM_ID) {
+                    RecordsFilter.TagItem.Untagged
+                } else {
+                    RecordsFilter.TagItem.Tagged(id)
+                }
+                RecordsFilter.Tags(selected = listOf(item), filtered = emptyList())
+            }
+        }.let(::listOf)
+    }
 }

@@ -225,9 +225,14 @@ class StatisticsDetailViewModel @Inject constructor(
         }
     }
 
-    fun onSwiped(item: ViewHolderType?) {
+    fun onSwipedStart(item: ViewHolderType?) {
         item ?: return
-        dataDistributionDelegate.onStatisticsItemSwiped(item)
+        dataDistributionDelegate.onStatisticsItemSwipedStart(item)
+    }
+
+    fun onSwipedEnd(item: ViewHolderType?) {
+        item ?: return
+        dataDistributionDelegate.onStatisticsItemSwipedEnd(item)
     }
 
     fun onPreviousClick() {
@@ -387,6 +392,10 @@ class StatisticsDetailViewModel @Inject constructor(
 
             override fun onStatisticsHidden(id: Long, mode: DataDistributionMode) {
                 filterDelegate.onStatisticsHidden(id, mode)
+            }
+
+            override fun onStatisticsOtherHidden(id: Long, mode: DataDistributionMode) {
+                filterDelegate.onStatisticsOtherHidden(id, mode)
             }
         }
     }

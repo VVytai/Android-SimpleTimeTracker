@@ -592,6 +592,7 @@ Isibonelo:<br/>
     <string name="records_filter_any_comment">Noma iyiphi imvumo</string>
     <string name="records_filter_select">Khetha</string>
     <string name="records_filter_exclude">Khipha ngaphandle</string>
+    <string name="records_filter_exclude_other">Khipha abanye</string>
     <string name="records_filter_invert_selection">Phendula ukukhetha</string>
     <string name="records_filter_duration_min">Ubuncane</string>
     <string name="records_filter_duration_max">Ubukhulu</string>
