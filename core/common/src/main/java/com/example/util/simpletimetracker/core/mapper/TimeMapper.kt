@@ -493,7 +493,7 @@ class TimeMapper @Inject constructor(
         )
 
         if (useProportionalMinutes) {
-            return formatIntervalProportional(hr, min)
+            return formatIntervalProportional(interval, hr, min)
         }
 
         val willShowHours: Boolean
@@ -557,13 +557,15 @@ class TimeMapper @Inject constructor(
         }
     }
 
-    private fun formatIntervalProportional(hr: Long, min: Long): String {
+    private fun formatIntervalProportional(interval: Long, hr: Long, min: Long): String {
         val hourString = resourceRepo.getString(R.string.time_hour)
         val minutesProportion = min / 60f
         val proportional = hr + minutesProportion
         val proportionalString = "%.2f".format(proportional)
 
-        return "$proportionalString$hourString"
+        val res = "$proportionalString$hourString"
+
+        return if (interval < 0) "-$res" else res
     }
 
     fun toDayDateTitle(
