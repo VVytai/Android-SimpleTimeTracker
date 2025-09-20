@@ -123,6 +123,7 @@ class SettingsViewModel @Inject constructor(
         notificationsDelegate.onDateTimeSet(timestamp, tag)
         displayDelegate.onDateTimeSet(timestamp, tag)
         additionalDelegate.onDateTimeSet(timestamp, tag)
+        backupDelegate.onDateTimeSet(timestamp, tag)
     }
 
     fun onDataExportSettingsSelected(data: DataExportSettingsResult) {
@@ -205,6 +206,8 @@ class SettingsViewModel @Inject constructor(
         const val UNTRACKED_RANGE_START_DIALOG_TAG = "untracked_range_start_dialog_tag"
         const val UNTRACKED_RANGE_END_DIALOG_TAG = "untracked_range_end_dialog_tag"
         const val START_OF_DAY_DIALOG_TAG = "start_of_day_dialog_tag"
+        const val AUTO_BACKUP_TRIGGER_TIME_DIALOG_TAG = "auto_backup_trigger_time_dialog_tag"
+        const val AUTO_EXPORT_TRIGGER_TIME_DIALOG_TAG = "auto_export_trigger_time_dialog_tag"
         const val TAG_EXCLUDE_ACTIVITIES_TYPES_SELECTION = "tag_exclude_activities_types_selection"
         const val COMMENT_EXCLUDE_ACTIVITIES_TYPES_SELECTION = "comment_exclude_activities_types_selection"
         const val SELECT_ACTIVITIES_TO_AUTOSTART_POMODORO = "select_activities_to_autostart_pomodoro"

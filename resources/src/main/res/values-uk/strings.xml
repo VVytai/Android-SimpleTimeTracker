@@ -431,6 +431,7 @@
     <string name="settings_automatic_export">Увімкнути автоматичний експорт таблиці</string>
     <string name="settings_automatic_description">Файл буде збережено у вибраному місці, замінюючи попередньо збережений файл щодня опівночі.</string>
     <string name="settings_automatic_last_save">Останнє збереження:</string>
+    <string name="settings_automatic_save_time">Час збереження</string>
     <string name="settings_restore_backup">Відновлення резервної копії</string>
     <string name="settings_restore_description">Поточні дані будуть втрачені.</string>
     <string name="settings_backup_options">Розширені параметри</string>

@@ -8,7 +8,7 @@ import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteracto
 import com.example.util.simpletimetracker.domain.backup.model.BackupOptionsData
 import com.example.util.simpletimetracker.domain.backup.model.ResultCode
 import com.example.util.simpletimetracker.feature_notification.automaticBackup.scheduler.AutomaticBackupScheduler
-import com.example.util.simpletimetracker.feature_notification.core.GetTimeToDayEndInteractor
+import com.example.util.simpletimetracker.feature_notification.core.GetTimeLeftToTimestampInteractor
 import javax.inject.Inject
 
 class AutomaticBackupInteractorImpl @Inject constructor(
@@ -16,11 +16,12 @@ class AutomaticBackupInteractorImpl @Inject constructor(
     private val backupInteractor: BackupInteractor,
     private val prefsInteractor: PrefsInteractor,
     private val automaticBackupRepo: AutomaticBackupRepo,
-    private val getTimeToDayEndInteractor: GetTimeToDayEndInteractor,
+    private val getTimeLeftToTimestampInteractor: GetTimeLeftToTimestampInteractor,
 ) : AutomaticBackupInteractor {
 
-    override fun schedule() {
-        val timestamp = getTimeToDayEndInteractor.execute()
+    override suspend fun schedule() {
+        val triggerTime = prefsInteractor.getAutomaticBackupTriggerTime()
+        val timestamp = getTimeLeftToTimestampInteractor.execute(triggerTime)
         scheduler.schedule(timestamp)
     }
 

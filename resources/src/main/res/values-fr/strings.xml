@@ -431,6 +431,7 @@ Si le paramètre <b>\"%s\"</b> est activé, l\'application enverra automatiqueme
     <string name="settings_automatic_export">Activer l\'exportation automatique de la feuille de calcul</string>
     <string name="settings_automatic_description">Le fichier sera enregistré à l\'emplacement sélectionné en remplaçant le fichier précédemment enregistré tous les jours à minuit.</string>
     <string name="settings_automatic_last_save">Dernière sauvegarde:</string>
+    <string name="settings_automatic_save_time">Heure d\'enregistrement</string>
     <string name="settings_restore_backup">Restaurer une sauvegarde</string>
     <string name="settings_restore_description">Les données actuelles seront perdues.</string>
     <string name="settings_backup_options">Options avancées</string>

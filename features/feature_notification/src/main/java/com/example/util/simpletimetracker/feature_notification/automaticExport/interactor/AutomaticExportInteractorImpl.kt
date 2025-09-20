@@ -7,7 +7,7 @@ import com.example.util.simpletimetracker.domain.backup.interactor.CsvExportInte
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.backup.model.ResultCode
 import com.example.util.simpletimetracker.feature_notification.automaticExport.scheduler.AutomaticExportScheduler
-import com.example.util.simpletimetracker.feature_notification.core.GetTimeToDayEndInteractor
+import com.example.util.simpletimetracker.feature_notification.core.GetTimeLeftToTimestampInteractor
 import javax.inject.Inject
 
 class AutomaticExportInteractorImpl @Inject constructor(
@@ -15,11 +15,12 @@ class AutomaticExportInteractorImpl @Inject constructor(
     private val csvExportInteractor: CsvExportInteractor,
     private val prefsInteractor: PrefsInteractor,
     private val automaticExportRepo: AutomaticExportRepo,
-    private val getTimeToDayEndInteractor: GetTimeToDayEndInteractor,
+    private val getTimeLeftToTimestampInteractor: GetTimeLeftToTimestampInteractor,
 ) : AutomaticExportInteractor {
 
-    override fun schedule() {
-        val timestamp = getTimeToDayEndInteractor.execute()
+    override suspend fun schedule() {
+        val triggerTime = prefsInteractor.getAutomaticExportTriggerTime()
+        val timestamp = getTimeLeftToTimestampInteractor.execute(triggerTime)
         scheduler.schedule(timestamp)
     }
 

@@ -198,7 +198,6 @@ class StatisticsDetailTagValuesViewDataMapper @Inject constructor(
         )
     }
 
-    // TODO STATS translate strings
     private fun mapMultiplyDurationItems(
         multiplyDuration: Boolean,
         marginTopDp: Int,

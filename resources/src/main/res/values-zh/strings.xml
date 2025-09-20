@@ -431,6 +431,7 @@
     <string name="settings_automatic_export">启用自动电子表格导出</string>
     <string name="settings_automatic_description">文件将在每天午夜覆盖之前选定位置的文件</string>
     <string name="settings_automatic_last_save">最近保存：</string>
+    <string name="settings_automatic_save_time">保存时间</string>
     <string name="settings_restore_backup">还原备份</string>
     <string name="settings_restore_description">当前数据将丢失</string>
     <string name="settings_backup_options">高级选项</string>

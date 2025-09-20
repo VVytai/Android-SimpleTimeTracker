@@ -431,6 +431,7 @@ Jika setelan <b>\"%s\"</b> diaktifkan, aplikasi akan mengirimkan peristiwa pada 
     <string name="settings_automatic_export">Aktifkan ekspor spreadsheet otomatis</string>
     <string name="settings_automatic_description">File akan disimpan di lokasi yang dipilih menggantikan file yang disimpan sebelumnya setiap hari pada tengah malam.</string>
     <string name="settings_automatic_last_save">Penyimpanan terakhir:</string>
+    <string name="settings_automatic_save_time">Waktu simpan</string>
     <string name="settings_restore_backup">Pulihkan cadangan</string>
     <string name="settings_restore_description">Data saat ini akan lenyap.</string>
     <string name="settings_backup_options">Opsi lanjutan</string>

@@ -158,11 +158,15 @@ interface PrefsRepo {
 
     var automaticBackupLastSaveTime: Long
 
+    var automaticBackupTriggerTime: Long
+
     var automaticExportUri: String
 
     var automaticExportError: Boolean
 
     var automaticExportLastSaveTime: Long
+
+    var automaticExportTriggerTime: Long
 
     var repeatButtonType: Int
 

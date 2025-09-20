@@ -431,6 +431,7 @@ Se a definição <b>\"%s\"</b> estiver ativada, a aplicação enviará eventos n
     <string name="settings_automatic_export">Ativar exportação automática da tabela</string>
     <string name="settings_automatic_description">O ficheiro será guardado no local selecionado, substituindo o ficheiro guardado anteriormente todos os dias à meia-noite.</string>
     <string name="settings_automatic_last_save">Última gravação:</string>
+    <string name="settings_automatic_save_time">Hora de gravação</string>
     <string name="settings_restore_backup">Restaurar cópia de segurança</string>
     <string name="settings_restore_description">Os dados atuais serão perdidos.</string>
     <string name="settings_backup_options">Opções avançadas</string>

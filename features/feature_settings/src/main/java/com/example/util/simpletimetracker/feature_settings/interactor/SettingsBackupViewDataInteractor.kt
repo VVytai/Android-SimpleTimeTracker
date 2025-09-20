@@ -5,10 +5,12 @@ import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteracto
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_settings.R
 import com.example.util.simpletimetracker.feature_settings.api.SettingsBlock
+import com.example.util.simpletimetracker.feature_settings.mapper.SettingsMapper
 import com.example.util.simpletimetracker.feature_settings.views.SettingsBottomViewData
 import com.example.util.simpletimetracker.feature_settings.views.SettingsCheckboxViewData
 import com.example.util.simpletimetracker.feature_settings.views.SettingsCollapseViewData
 import com.example.util.simpletimetracker.feature_settings.views.SettingsHintViewData
+import com.example.util.simpletimetracker.feature_settings.views.SettingsSelectorViewData
 import com.example.util.simpletimetracker.feature_settings.views.SettingsTextColor
 import com.example.util.simpletimetracker.feature_settings.views.SettingsTextViewData
 import com.example.util.simpletimetracker.feature_settings.views.SettingsTopViewData
@@ -17,6 +19,7 @@ import javax.inject.Inject
 class SettingsBackupViewDataInteractor @Inject constructor(
     private val resourceRepo: ResourceRepo,
     private val prefsInteractor: PrefsInteractor,
+    private val settingsMapper: SettingsMapper,
     private val settingsCommonInteractor: SettingsCommonInteractor,
 ) {
 
@@ -54,15 +57,16 @@ class SettingsBackupViewDataInteractor @Inject constructor(
                 subtitleColor = SettingsTextColor.Attention,
             )
 
+            val automaticBackupEnabled = loadAutomaticBackupEnabled()
             val automaticBackupLastSaveTime = loadAutomaticBackupLastSaveTime()
             val automaticBackupLastSaveTimeVisible = automaticBackupLastSaveTime.isNotEmpty()
             result += SettingsCheckboxViewData(
                 block = SettingsBlock.BackupAutomatic,
                 title = resourceRepo.getString(R.string.settings_automatic_backup),
                 subtitle = resourceRepo.getString(R.string.settings_automatic_description),
-                isChecked = loadAutomaticBackupEnabled(),
-                bottomSpaceIsVisible = !automaticBackupLastSaveTimeVisible,
-                dividerIsVisible = !automaticBackupLastSaveTimeVisible,
+                isChecked = automaticBackupEnabled,
+                bottomSpaceIsVisible = !automaticBackupEnabled,
+                dividerIsVisible = !automaticBackupEnabled,
                 forceBind = true,
             )
             if (automaticBackupLastSaveTimeVisible) {
@@ -71,6 +75,18 @@ class SettingsBackupViewDataInteractor @Inject constructor(
                     text = automaticBackupLastSaveTime,
                     textColor = SettingsTextColor.Success,
                     topSpaceIsVisible = false,
+                    dividerIsVisible = false,
+                    bottomSpaceIsVisible = false,
+                )
+            }
+            if (automaticBackupEnabled) {
+                result += SettingsSelectorViewData(
+                    block = SettingsBlock.BackupAutomaticTime,
+                    title = resourceRepo.getString(R.string.settings_automatic_save_time),
+                    subtitle = "",
+                    selectedValue = loadAutomaticBackupTriggerTime(),
+                    bottomSpaceIsVisible = true,
+                    dividerIsVisible = true,
                 )
             }
 
@@ -101,5 +117,12 @@ class SettingsBackupViewDataInteractor @Inject constructor(
         } else {
             ""
         }
+    }
+
+    private suspend fun loadAutomaticBackupTriggerTime(): String {
+        return settingsMapper.toStartOfDayText(
+            startOfDayShift = prefsInteractor.getAutomaticBackupTriggerTime(),
+            useMilitaryTime = prefsInteractor.getUseMilitaryTimeFormat(),
+        )
     }
 }

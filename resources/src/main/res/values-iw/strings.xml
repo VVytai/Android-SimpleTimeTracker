@@ -431,6 +431,7 @@
     <string name="settings_automatic_export">הפעל ייצוא גיליון אלקטרוני אוטומטי</string>
     <string name="settings_automatic_description">הקובץ יישמר במיקום שנבחר ויחליף את הקובץ שנשמר בעבר מדי יום בחצות.</string>
     <string name="settings_automatic_last_save">שמירה אחרונה:</string>
+    <string name="settings_automatic_save_time">זמן שמירה</string>
     <string name="settings_restore_backup">שחזר גיבוי</string>
     <string name="settings_restore_description">הנתונים הנוכחיים יאבדו.</string>
     <string name="settings_backup_options">אפשרויות מתקדמות</string>

@@ -431,6 +431,7 @@ Se l\'impostazione <b>\"%s\"</b> è abilitata, l\'app invierà eventi sull\'atti
     <string name="settings_automatic_export">Abilita l\'esportazione automatica del foglio di lavoro</string>
     <string name="settings_automatic_description">Il file verrà salvato nella posizione selezionata sovrascrivendo il file salvato in precedenza ogni giorno a mezzanotte.</string>
     <string name="settings_automatic_last_save">Ultimo salvataggio:</string>
+    <string name="settings_automatic_save_time">Ora di salvataggio</string>
     <string name="settings_restore_backup">Ripristina backup</string>
     <string name="settings_restore_description">I dati attuali verrano persi.</string>
     <string name="settings_backup_options">Opzioni avanzate</string>

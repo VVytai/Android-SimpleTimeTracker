@@ -431,6 +431,7 @@
     <string name="settings_automatic_export">فعال کردن خروجی اکسل خودکار.</string>
     <string name="settings_automatic_description">فایل در محل قبلی ذخیره خواهد شد و هر روز ساعت 12 بامداد فایل قبلی را بازنویسی خواهد کرد.</string>
     <string name="settings_automatic_last_save">فایل ذخیره شده قبلی:</string>
+    <string name="settings_automatic_save_time">زمان ذخیره</string>
     <string name="settings_restore_backup">بازگردانی نسخه پشتیبان</string>
     <string name="settings_restore_description">اطلاعات فعلی از دست خواهند رفت.</string>
     <string name="settings_backup_options">گزینه های پیشرفته</string>

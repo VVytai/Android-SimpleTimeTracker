@@ -1,6 +1,9 @@
 package com.example.util.simpletimetracker.feature_notification.automaticBackup.controller
 
+import com.example.util.simpletimetracker.core.extension.allowDiskRead
 import com.example.util.simpletimetracker.domain.backup.interactor.AutomaticBackupInteractor
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class AutomaticBackupBroadcastController @Inject constructor(
@@ -15,7 +18,7 @@ class AutomaticBackupBroadcastController @Inject constructor(
         automaticBackupInteractor.onFinished()
     }
 
-    fun onBootCompleted() {
+    fun onBootCompleted() = allowDiskRead { MainScope() }.launch {
         automaticBackupInteractor.schedule()
     }
 }

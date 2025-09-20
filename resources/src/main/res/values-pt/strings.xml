@@ -431,6 +431,7 @@ Se a configuração <b>\"%s\"</b> estiver habilitada, o aplicativo enviará even
     <string name="settings_automatic_export">Ativar exportação automática de planilha</string>
     <string name="settings_automatic_description">O arquivo será salvo no local selecionado substituindo o arquivo salvo anteriormente todos os dias à meia-noite.</string>
     <string name="settings_automatic_last_save">Último salvamento:</string>
+    <string name="settings_automatic_save_time">Hora de salvamento</string>
     <string name="settings_restore_backup">Restaurar backup</string>
     <string name="settings_restore_description">Os dados atuais serão perdidos.</string>
     <string name="settings_backup_options">Opções avançadas</string>

@@ -369,6 +369,10 @@ class PrefsRepoImpl @Inject constructor(
         KEY_AUTOMATIC_BACKUP_LAST_SAVE_TIME, 0,
     )
 
+    override var automaticBackupTriggerTime: Long by prefs.delegate(
+        KEY_AUTOMATIC_BACKUP_TRIGGER_TIME, 0,
+    )
+
     override var automaticExportUri: String by prefs.delegate(
         KEY_AUTOMATIC_EXPORT_URI, "",
     )
@@ -379,6 +383,10 @@ class PrefsRepoImpl @Inject constructor(
 
     override var automaticExportLastSaveTime: Long by prefs.delegate(
         KEY_AUTOMATIC_EXPORT_LAST_SAVE_TIME, 0,
+    )
+
+    override var automaticExportTriggerTime: Long by prefs.delegate(
+        KEY_AUTOMATIC_EXPORT_TRIGGER_TIME, 0,
     )
 
     override var repeatButtonType: Int by prefs.delegate(
@@ -710,9 +718,11 @@ class PrefsRepoImpl @Inject constructor(
         private const val KEY_AUTOMATIC_BACKUP_URI = "automaticBackupUri"
         private const val KEY_AUTOMATIC_BACKUP_ERROR = "automaticBackupError"
         private const val KEY_AUTOMATIC_BACKUP_LAST_SAVE_TIME = "automaticBackupLastSaveTime"
+        private const val KEY_AUTOMATIC_BACKUP_TRIGGER_TIME = "automaticBackupTriggerTime"
         private const val KEY_AUTOMATIC_EXPORT_URI = "automaticExportUri"
         private const val KEY_AUTOMATIC_EXPORT_ERROR = "automaticExportError"
         private const val KEY_AUTOMATIC_EXPORT_LAST_SAVE_TIME = "automaticExportLastSaveTime"
+        private const val KEY_AUTOMATIC_EXPORT_TRIGGER_TIME = "automaticExportTriggerTime"
         private const val KEY_POMODORO_MODE_STARTED_TIMESTAMP = "pomodoroModeStartedTimestamp"
         private const val KEY_POMODORO_MODE_PAUSED_TIMESTAMP = "pomodoroModePausedTimestamp"
         private const val KEY_WIDGET = "widget_"

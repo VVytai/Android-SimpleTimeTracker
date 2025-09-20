@@ -431,6 +431,7 @@ If <b>\"%s\"</b> setting is enabled, app will send events on activity started or
     <string name="settings_automatic_export">Enable automatic spreadsheet export</string>
     <string name="settings_automatic_description">File will be saved in the selected location overwriting previously saved file every day at midnight.</string>
     <string name="settings_automatic_last_save">Last save:</string>
+    <string name="settings_automatic_save_time">Save time</string>
     <string name="settings_restore_backup">Restore backup</string>
     <string name="settings_restore_description">Current data will be lost.</string>
     <string name="settings_backup_options">Advanced options</string>

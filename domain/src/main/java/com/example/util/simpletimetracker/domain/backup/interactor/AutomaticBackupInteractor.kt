@@ -2,7 +2,7 @@ package com.example.util.simpletimetracker.domain.backup.interactor
 
 interface AutomaticBackupInteractor {
 
-    fun schedule()
+    suspend fun schedule()
 
     fun cancel()
 

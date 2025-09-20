@@ -431,6 +431,7 @@
     <string name="settings_automatic_export">स्वचालित स्प्रेडशीट निर्यात सक्षम करें</string>
     <string name="settings_automatic_description">फ़ाइल हर दिन आधी रात को पहले से सहेजी गई फ़ाइल को ओवरराइड करते हुए चयनित स्थान में सहेजी जाएगी।</string>
     <string name="settings_automatic_last_save">अंतिम बचत:</string>
+    <string name="settings_automatic_save_time">सहेजने का समय</string>
     <string name="settings_restore_backup">बैकअप  पुनः स्थापित करे।</string>
     <string name="settings_restore_description">वर्तमान डेटा खो जाएगा।</string>
     <string name="settings_backup_options">उन्नत विकल्प</string>

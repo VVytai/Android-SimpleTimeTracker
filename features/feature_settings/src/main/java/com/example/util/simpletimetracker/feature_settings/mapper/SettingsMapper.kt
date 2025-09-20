@@ -266,6 +266,8 @@ class SettingsMapper @Inject constructor(
             .let { if (wasPositive) it else it * -1 }
     }
 
+    // TODO many places showing hints with shiftTimeStamp but work without it,
+    //  need to add shift to logic also? Or need to leave shift only for startOfDayShift?
     fun startOfDayShiftToTimeStamp(
         startOfDayShift: Long,
     ): Long {

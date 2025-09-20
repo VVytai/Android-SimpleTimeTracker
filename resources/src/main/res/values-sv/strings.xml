@@ -431,6 +431,7 @@ Om inställningen <b>\"%s\"</b> är aktiverad, kommer appen att skicka händelse
     <string name="settings_automatic_export">Aktivera automatisk export av kalkylblad</string>
     <string name="settings_automatic_description">Filen kommer att sparas på den valda platsen och åsidosätter tidigare sparad fil varje dag vid midnatt.</string>
     <string name="settings_automatic_last_save">Senast sparad:</string>
+    <string name="settings_automatic_save_time">Sparningstid</string>
     <string name="settings_restore_backup">Återställ säkerhetskopia</string>
     <string name="settings_restore_description">Nuvarande data kommer tas bort.</string>
     <string name="settings_backup_options">Avancerade alternativ</string>

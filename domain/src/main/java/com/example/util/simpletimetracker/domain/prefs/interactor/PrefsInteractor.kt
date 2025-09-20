@@ -835,6 +835,14 @@ class PrefsInteractor @Inject constructor(
         prefsRepo.automaticBackupLastSaveTime
     }
 
+    suspend fun setAutomaticBackupTriggerTime(value: Long) = withContext(Dispatchers.IO) {
+        prefsRepo.automaticBackupTriggerTime = value
+    }
+
+    suspend fun getAutomaticBackupTriggerTime(): Long = withContext(Dispatchers.IO) {
+        prefsRepo.automaticBackupTriggerTime
+    }
+
     suspend fun setAutomaticExportUri(uri: String) = withContext(Dispatchers.IO) {
         prefsRepo.automaticExportUri = uri
     }
@@ -857,6 +865,14 @@ class PrefsInteractor @Inject constructor(
 
     suspend fun getAutomaticExportLastSaveTime(): Long = withContext(Dispatchers.IO) {
         prefsRepo.automaticExportLastSaveTime
+    }
+
+    suspend fun setAutomaticExportTriggerTime(value: Long) = withContext(Dispatchers.IO) {
+        prefsRepo.automaticExportTriggerTime = value
+    }
+
+    suspend fun getAutomaticExportTriggerTime(): Long = withContext(Dispatchers.IO) {
+        prefsRepo.automaticExportTriggerTime
     }
 
     suspend fun getRepeatButtonType(): RepeatButtonType = withContext(Dispatchers.IO) {

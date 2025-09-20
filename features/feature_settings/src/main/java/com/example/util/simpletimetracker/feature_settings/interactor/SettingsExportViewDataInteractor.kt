@@ -5,10 +5,12 @@ import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteracto
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_settings.R
 import com.example.util.simpletimetracker.feature_settings.api.SettingsBlock
+import com.example.util.simpletimetracker.feature_settings.mapper.SettingsMapper
 import com.example.util.simpletimetracker.feature_settings.views.SettingsBottomViewData
 import com.example.util.simpletimetracker.feature_settings.views.SettingsCheckboxViewData
 import com.example.util.simpletimetracker.feature_settings.views.SettingsCollapseViewData
 import com.example.util.simpletimetracker.feature_settings.views.SettingsHintViewData
+import com.example.util.simpletimetracker.feature_settings.views.SettingsSelectorViewData
 import com.example.util.simpletimetracker.feature_settings.views.SettingsTextColor
 import com.example.util.simpletimetracker.feature_settings.views.SettingsTextViewData
 import com.example.util.simpletimetracker.feature_settings.views.SettingsTextWithButtonViewData
@@ -18,6 +20,7 @@ import javax.inject.Inject
 class SettingsExportViewDataInteractor @Inject constructor(
     private val resourceRepo: ResourceRepo,
     private val prefsInteractor: PrefsInteractor,
+    private val settingsMapper: SettingsMapper,
     private val settingsCommonInteractor: SettingsCommonInteractor,
 ) {
 
@@ -61,15 +64,16 @@ class SettingsExportViewDataInteractor @Inject constructor(
                 ),
             )
 
+            val automaticExportEnabled = loadAutomaticExportEnabled()
             val automaticExportLastSaveTime = loadAutomaticExportLastSaveTime()
             val automaticExportLastSaveTimeVisible = automaticExportLastSaveTime.isNotEmpty()
             result += SettingsCheckboxViewData(
                 block = SettingsBlock.ExportSpreadsheetAutomatic,
                 title = resourceRepo.getString(R.string.settings_automatic_export),
                 subtitle = resourceRepo.getString(R.string.settings_automatic_description),
-                isChecked = loadAutomaticExportEnabled(),
-                bottomSpaceIsVisible = !automaticExportLastSaveTimeVisible,
-                dividerIsVisible = !automaticExportLastSaveTimeVisible,
+                isChecked = automaticExportEnabled,
+                bottomSpaceIsVisible = !automaticExportEnabled,
+                dividerIsVisible = !automaticExportEnabled,
                 forceBind = true,
             )
             if (automaticExportLastSaveTimeVisible) {
@@ -78,6 +82,18 @@ class SettingsExportViewDataInteractor @Inject constructor(
                     text = automaticExportLastSaveTime,
                     textColor = SettingsTextColor.Success,
                     topSpaceIsVisible = false,
+                    dividerIsVisible = false,
+                    bottomSpaceIsVisible = false,
+                )
+            }
+            if (automaticExportEnabled) {
+                result += SettingsSelectorViewData(
+                    block = SettingsBlock.ExportSpreadsheetAutomaticTime,
+                    title = resourceRepo.getString(R.string.settings_automatic_save_time),
+                    subtitle = "",
+                    selectedValue = loadAutomaticExportTriggerTime(),
+                    bottomSpaceIsVisible = true,
+                    dividerIsVisible = true,
                 )
             }
 
@@ -109,5 +125,12 @@ class SettingsExportViewDataInteractor @Inject constructor(
         } else {
             ""
         }
+    }
+
+    private suspend fun loadAutomaticExportTriggerTime(): String {
+        return settingsMapper.toStartOfDayText(
+            startOfDayShift = prefsInteractor.getAutomaticExportTriggerTime(),
+            useMilitaryTime = prefsInteractor.getUseMilitaryTimeFormat(),
+        )
     }
 }
