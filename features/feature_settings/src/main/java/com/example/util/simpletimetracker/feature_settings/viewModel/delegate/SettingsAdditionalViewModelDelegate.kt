@@ -100,10 +100,6 @@ class SettingsAdditionalViewModelDelegate @Inject constructor(
         onDurationDisabledDelegate(tag)
     }
 
-    fun onDateTimeSet(timestamp: Long, tag: String?) {
-        onDateTimeSetDelegate(timestamp, tag)
-    }
-
     fun onTypesSelected(typeIds: List<Long>, tag: String?) {
         onTypesSelectedDelegate(typeIds, tag)
     }
@@ -139,11 +135,13 @@ class SettingsAdditionalViewModelDelegate @Inject constructor(
 
     private fun onStartOfDayClicked() {
         delegateScope.launch {
-            parent?.openDateTimeDialog(
+            DurationDialogParams(
                 tag = SettingsViewModel.START_OF_DAY_DIALOG_TAG,
-                timestamp = prefsInteractor.getStartOfDayShift(),
-                useMilitaryTime = true,
-            )
+                value = DurationDialogParams.Value.DurationSeconds(
+                    duration = prefsInteractor.getStartOfDayShift() / 1000,
+                ),
+                showSeconds = false,
+            ).let(router::navigate)
         }
     }
 
@@ -296,30 +294,30 @@ class SettingsAdditionalViewModelDelegate @Inject constructor(
         }
     }
 
-    private fun onDurationSetDelegate(tag: String?, duration: Long) {
+    private fun onDurationSetDelegate(tag: String?, duration: Long) = delegateScope.launch {
         when (tag) {
-            SettingsViewModel.IGNORE_SHORT_RECORDS_DIALOG_TAG -> delegateScope.launch {
+            SettingsViewModel.IGNORE_SHORT_RECORDS_DIALOG_TAG -> {
                 prefsInteractor.setIgnoreShortRecordsDuration(duration)
                 parent?.updateContent()
             }
-        }
-    }
-
-    private fun onDurationDisabledDelegate(tag: String?) {
-        when (tag) {
-            SettingsViewModel.IGNORE_SHORT_RECORDS_DIALOG_TAG -> delegateScope.launch {
-                prefsInteractor.setIgnoreShortRecordsDuration(0)
+            SettingsViewModel.START_OF_DAY_DIALOG_TAG -> {
+                val wasPositive = prefsInteractor.getStartOfDayShift() >= 0
+                val newValue = if (wasPositive) duration else duration * -1
+                prefsInteractor.setStartOfDayShift(newValue * 1000)
+                externalViewsInteractor.onStartOfDayChange()
                 parent?.updateContent()
             }
         }
     }
 
-    private fun onDateTimeSetDelegate(timestamp: Long, tag: String?) = delegateScope.launch {
+    private fun onDurationDisabledDelegate(tag: String?) = delegateScope.launch {
         when (tag) {
+            SettingsViewModel.IGNORE_SHORT_RECORDS_DIALOG_TAG -> {
+                prefsInteractor.setIgnoreShortRecordsDuration(0)
+                parent?.updateContent()
+            }
             SettingsViewModel.START_OF_DAY_DIALOG_TAG -> {
-                val wasPositive = prefsInteractor.getStartOfDayShift() >= 0
-                val newValue = settingsMapper.toStartOfDayShift(timestamp, wasPositive)
-                prefsInteractor.setStartOfDayShift(newValue)
+                prefsInteractor.setStartOfDayShift(0)
                 externalViewsInteractor.onStartOfDayChange()
                 parent?.updateContent()
             }

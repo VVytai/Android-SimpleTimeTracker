@@ -232,9 +232,14 @@ class SettingsAdditionalViewDataInteractor @Inject constructor(
                 showSeconds = false,
             ),
         )
+        val value = if (shift == 0L) {
+            resourceRepo.getString(R.string.change_record_type_goal_time_disabled)
+        } else {
+            timeMapper.formatDuration(shift / 1000)
+        }
 
         return SettingsStartOfDayViewData(
-            startOfDayValue = settingsMapper.toStartOfDayText(shift, useMilitaryTime = true),
+            startOfDayValue = value,
             startOfDaySign = settingsMapper.toStartOfDaySign(shift),
             hint = hint,
         )

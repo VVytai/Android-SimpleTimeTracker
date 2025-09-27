@@ -122,7 +122,6 @@ class SettingsViewModel @Inject constructor(
     fun onDateTimeSet(timestamp: Long, tag: String?) {
         notificationsDelegate.onDateTimeSet(timestamp, tag)
         displayDelegate.onDateTimeSet(timestamp, tag)
-        additionalDelegate.onDateTimeSet(timestamp, tag)
         backupDelegate.onDateTimeSet(timestamp, tag)
     }
 
