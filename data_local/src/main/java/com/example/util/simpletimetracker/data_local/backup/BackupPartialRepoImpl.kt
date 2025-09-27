@@ -309,6 +309,7 @@ class BackupPartialRepoImpl @Inject constructor(
             successCodeMessage = null,
             errorCodeMessage = R.string.settings_file_open_error,
             clearData = false,
+            clearPrefs = false,
             migrateTags = {
                 tags += backupRepo.migrateTags(
                     types = types,

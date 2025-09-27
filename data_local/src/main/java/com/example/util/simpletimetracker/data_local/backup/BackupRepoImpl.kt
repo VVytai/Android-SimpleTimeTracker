@@ -61,6 +61,7 @@ import java.io.InputStreamReader
 import javax.inject.Inject
 import javax.inject.Singleton
 import androidx.core.net.toUri
+import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 
 /**
  * Do not change backup parts order, always add new to the end.
@@ -87,6 +88,7 @@ class BackupRepoImpl @Inject constructor(
     private val complexRuleRepo: ComplexRuleRepo,
     private val recordShortcutRepo: RecordShortcutRepo,
     private val clearDataInteractor: ClearDataInteractor,
+    private val prefsInteractor: PrefsInteractor,
     private val resourceRepo: ResourceRepo,
     private val daysOfWeekDataLocalMapper: DaysOfWeekDataLocalMapper,
     private val backupPrefsRepo: BackupPrefsRepo,
@@ -206,6 +208,7 @@ class BackupRepoImpl @Inject constructor(
             successCodeMessage = R.string.message_backup_restored,
             errorCodeMessage = R.string.message_restore_error,
             clearData = true,
+            clearPrefs = restoreSettings,
             migrateTags = {
                 migrateTags(
                     types = recordTypeRepo.getAll(),
@@ -242,6 +245,7 @@ class BackupRepoImpl @Inject constructor(
         @StringRes successCodeMessage: Int?,
         @StringRes errorCodeMessage: Int,
         clearData: Boolean,
+        clearPrefs: Boolean,
         migrateTags: suspend (MutableList<Pair<RecordTag, Long>>) -> Unit,
         dataHandler: DataHandler,
     ): ResultCode = withContext(Dispatchers.IO) {
@@ -262,6 +266,7 @@ class BackupRepoImpl @Inject constructor(
             if (line != BACKUP_IDENTIFICATION) return@withContext errorCode
 
             if (clearData) clearDataInteractor.execute()
+            if (clearPrefs) prefsInteractor.clear()
 
             // List of tag to related type id.
             val tagsMigrationData: MutableList<Pair<RecordTag, Long>> = mutableListOf()
