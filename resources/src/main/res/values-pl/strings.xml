@@ -509,6 +509,7 @@ Przykład:<br/>
     <string name="statistics_detail_record_time">Zapisy</string>
     <string name="statistics_detail_first_record">Pierwszy</string>
     <string name="statistics_detail_last_record">Ostatni</string>
+    <string name="statistics_detail_time_since">Czas, który upłynął</string>
     <string name="statistics_detail_streaks">Serie</string>
     <string name="statistics_detail_streaks_longest">Najdłuższa</string>
     <string name="statistics_detail_streaks_current">Obecna</string>

@@ -509,6 +509,7 @@ csv फ़ाइल में कॉमा से अलग किए गए य
     <string name="statistics_detail_record_time">रिकॉर्ड समय</string>
     <string name="statistics_detail_first_record">प्रथम</string>
     <string name="statistics_detail_last_record">अंतिम</string>
+    <string name="statistics_detail_time_since">बीता समय</string>
     <string name="statistics_detail_streaks">श्रृंखला</string>
     <string name="statistics_detail_streaks_longest">सबसे लंबे समय तक</string>
     <string name="statistics_detail_streaks_current">मौजूदा</string>

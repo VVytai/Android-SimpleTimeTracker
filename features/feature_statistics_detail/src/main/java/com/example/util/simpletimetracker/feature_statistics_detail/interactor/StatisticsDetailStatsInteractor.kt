@@ -12,8 +12,7 @@ import com.example.util.simpletimetracker.domain.recordType.model.RecordType
 import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
 import com.example.util.simpletimetracker.feature_statistics_detail.R
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailCardInternalViewData
-import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailClickableLongest
-import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailClickableShortest
+import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailClickablePopup
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailClickableTracked
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailStatsViewData
 import kotlinx.coroutines.Dispatchers
@@ -81,16 +80,18 @@ class StatisticsDetailStatsInteractor @Inject constructor(
             timesTrackedIcon = null,
             shortestRecord = "",
             compareShortestRecord = "",
-            shortestRecordDate = "",
+            shortestRecordDate = null,
             averageRecord = "",
             compareAverageRecord = "",
             longestRecord = "",
             compareLongestRecord = "",
-            longestRecordDate = "",
+            longestRecordDate = null,
             firstRecord = "",
             compareFirstRecord = "",
             lastRecord = "",
             compareLastRecord = "",
+            firstRecordClickMessage = null,
+            lastRecordClickMessage = null,
         )
     }
 
@@ -113,6 +114,9 @@ class StatisticsDetailStatsInteractor @Inject constructor(
 
         val shortestRecord = records.minByOrNull(RecordBase::duration)
         val longestRecord = records.maxByOrNull(RecordBase::duration)
+
+        val firstRecordData = recordsSorted.firstOrNull()?.timeStarted
+        val lastRecordData = recordsSorted.lastOrNull()?.timeEnded
 
         val emptyValue by lazy {
             resourceRepo.getString(R.string.statistics_detail_empty)
@@ -151,9 +155,7 @@ class StatisticsDetailStatsInteractor @Inject constructor(
                 .orEmpty()
         }
 
-        fun processLengthHint(value: RecordBase?): String {
-            value ?: return emptyValue
-
+        fun processLengthHint(value: RecordBase): String {
             val result = StringBuilder()
             value.typeIds
                 .mapNotNull(typesMap::get)
@@ -167,6 +169,30 @@ class StatisticsDetailStatsInteractor @Inject constructor(
             value.timeStarted
                 .let(::formatDateTimeYear)
                 .let { result.append(it) }
+
+            return result.toString()
+        }
+
+        fun getTimeSinceMessage(timestamp: Long): String {
+            val result = StringBuilder()
+            result.append(resourceRepo.getString(R.string.statistics_detail_time_since))
+            result.append("\n")
+            val interval = System.currentTimeMillis() - timestamp
+            val timeSince = timeMapper.formatInterval(
+                interval = interval,
+                forceSeconds = showSeconds,
+                durationFormat = durationFormat,
+            )
+            val timeSinceInDays = timeMapper.formatInterval(
+                interval = interval,
+                forceSeconds = showSeconds,
+                durationFormat = DurationFormat.DAYS,
+            )
+            result.append(timeSince)
+            if (timeSince != timeSinceInDays) {
+                result.append("\n")
+                result.append("($timeSinceInDays)")
+            }
 
             return result.toString()
         }
@@ -187,7 +213,7 @@ class StatisticsDetailStatsInteractor @Inject constructor(
                 .let(::formatInterval)
                 .let(::processComparisonString),
             shortestRecordDate = shortestRecord
-                .let(::processLengthHint),
+                ?.let(::processLengthHint),
             averageRecord = getAverage(durations)
                 .let(::formatInterval),
             compareAverageRecord = getAverage(compareDurations)
@@ -199,17 +225,21 @@ class StatisticsDetailStatsInteractor @Inject constructor(
                 .let(::formatInterval)
                 .let(::processComparisonString),
             longestRecordDate = longestRecord
-                .let(::processLengthHint),
-            firstRecord = recordsSorted.firstOrNull()?.timeStarted
+                ?.let(::processLengthHint),
+            firstRecord = firstRecordData
                 .let(::formatDateTimeYear),
             compareFirstRecord = compareRecordsSorted.firstOrNull()?.timeStarted
                 .let(::formatDateTimeYear)
                 .let(::processComparisonString),
-            lastRecord = recordsSorted.lastOrNull()?.timeEnded
+            lastRecord = lastRecordData
                 .let(::formatDateTimeYear),
             compareLastRecord = compareRecordsSorted.lastOrNull()?.timeEnded
                 .let(::formatDateTimeYear)
                 .let(::processComparisonString),
+            firstRecordClickMessage = firstRecordData
+                ?.let(::getTimeSinceMessage),
+            lastRecordClickMessage = lastRecordData
+                ?.let(::getTimeSinceMessage),
         )
     }
 
@@ -221,16 +251,18 @@ class StatisticsDetailStatsInteractor @Inject constructor(
         timesTrackedIcon: StatisticsDetailCardInternalViewData.Icon?,
         shortestRecord: String,
         compareShortestRecord: String,
-        shortestRecordDate: String,
+        shortestRecordDate: String?,
         averageRecord: String,
         compareAverageRecord: String,
         longestRecord: String,
         compareLongestRecord: String,
-        longestRecordDate: String,
+        longestRecordDate: String?,
         firstRecord: String,
         compareFirstRecord: String,
         lastRecord: String,
         compareLastRecord: String,
+        firstRecordClickMessage: String?,
+        lastRecordClickMessage: String?,
     ): StatisticsDetailStatsViewData {
         return StatisticsDetailStatsViewData(
             totalDuration = listOf(
@@ -263,7 +295,7 @@ class StatisticsDetailStatsInteractor @Inject constructor(
                     valueChange = StatisticsDetailCardInternalViewData.ValueChange.None,
                     secondValue = compareShortestRecord,
                     description = resourceRepo.getString(R.string.statistics_detail_shortest_record),
-                    clickable = StatisticsDetailClickableShortest(shortestRecordDate),
+                    clickable = shortestRecordDate?.let { StatisticsDetailClickablePopup(it) },
                 ),
                 StatisticsDetailCardInternalViewData(
                     value = averageRecord,
@@ -276,7 +308,7 @@ class StatisticsDetailStatsInteractor @Inject constructor(
                     valueChange = StatisticsDetailCardInternalViewData.ValueChange.None,
                     secondValue = compareLongestRecord,
                     description = resourceRepo.getString(R.string.statistics_detail_longest_record),
-                    clickable = StatisticsDetailClickableLongest(longestRecordDate),
+                    clickable = longestRecordDate?.let { StatisticsDetailClickablePopup(it) },
                 ),
             ),
             datesTracked = listOf(
@@ -285,12 +317,14 @@ class StatisticsDetailStatsInteractor @Inject constructor(
                     valueChange = StatisticsDetailCardInternalViewData.ValueChange.None,
                     secondValue = compareFirstRecord,
                     description = resourceRepo.getString(R.string.statistics_detail_first_record),
+                    clickable = firstRecordClickMessage?.let { StatisticsDetailClickablePopup(it) },
                 ),
                 StatisticsDetailCardInternalViewData(
                     value = lastRecord,
                     valueChange = StatisticsDetailCardInternalViewData.ValueChange.None,
                     secondValue = compareLastRecord,
                     description = resourceRepo.getString(R.string.statistics_detail_last_record),
+                    clickable = lastRecordClickMessage?.let { StatisticsDetailClickablePopup(it) },
                 ),
             ),
         )

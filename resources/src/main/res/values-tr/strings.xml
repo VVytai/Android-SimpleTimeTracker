@@ -509,6 +509,7 @@ CSV dosyası virgülle ayrılmış şu sütunları içermelidir:<br/>
     <string name="statistics_detail_record_time">Kayıt zamanı</string>
     <string name="statistics_detail_first_record">İlk</string>
     <string name="statistics_detail_last_record">Son</string>
+    <string name="statistics_detail_time_since">Geçen süre</string>
     <string name="statistics_detail_streaks">Diziler</string>
     <string name="statistics_detail_streaks_longest">En uzun</string>
     <string name="statistics_detail_streaks_current">Akım</string>

@@ -509,6 +509,7 @@
     <string name="statistics_detail_record_time">طول تاریخچه</string>
     <string name="statistics_detail_first_record">اولین</string>
     <string name="statistics_detail_last_record">آخرین</string>
+    <string name="statistics_detail_time_since">از زمان</string>
     <string name="statistics_detail_streaks">ردیفی</string>
     <string name="statistics_detail_streaks_longest">طولانی ترین</string>
     <string name="statistics_detail_streaks_current">فعلی</string>

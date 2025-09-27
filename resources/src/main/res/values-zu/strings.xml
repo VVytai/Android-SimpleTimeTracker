@@ -509,6 +509,7 @@ Isibonelo:<br/>
     <string name="statistics_detail_record_time">Isikhathi serekhodi</string>
     <string name="statistics_detail_first_record">Okokuqala</string>
     <string name="statistics_detail_last_record">Okokugcina</string>
+    <string name="statistics_detail_time_since">Isikhathi esidlule</string>
     <string name="statistics_detail_streaks">Uchungechunge</string>
     <string name="statistics_detail_streaks_longest">Olude kakhulu</string>
     <string name="statistics_detail_streaks_current">Okwamanje</string>

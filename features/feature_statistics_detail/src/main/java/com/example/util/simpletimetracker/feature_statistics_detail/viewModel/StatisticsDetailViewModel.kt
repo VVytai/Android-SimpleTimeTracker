@@ -26,8 +26,7 @@ import com.example.util.simpletimetracker.feature_statistics_detail.mapper.Stati
 import com.example.util.simpletimetracker.feature_statistics_detail.model.DataDistributionMode
 import com.example.util.simpletimetracker.feature_statistics_detail.model.StatisticsDetailOptionsListItem
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailCardInternalViewData
-import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailClickableLongest
-import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailClickableShortest
+import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailClickablePopup
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailClickableTracked
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailPreview
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailPreviewCompositeViewData
@@ -187,13 +186,7 @@ class StatisticsDetailViewModel @Inject constructor(
             is StatisticsDetailClickableTracked -> {
                 onRecordsClick()
             }
-            is StatisticsDetailClickableShortest -> {
-                PopupParams(
-                    message = type.message,
-                    anchorCoordinates = coordinates,
-                ).let(router::show)
-            }
-            is StatisticsDetailClickableLongest -> {
+            is StatisticsDetailClickablePopup -> {
                 PopupParams(
                     message = type.message,
                     anchorCoordinates = coordinates,

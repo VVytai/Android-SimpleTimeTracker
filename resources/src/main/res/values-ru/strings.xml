@@ -509,6 +509,7 @@ CSV-файл должен содержать следующие столбцы, 
     <string name="statistics_detail_record_time">Время записи</string>
     <string name="statistics_detail_first_record">Первая</string>
     <string name="statistics_detail_last_record">Последняя</string>
+    <string name="statistics_detail_time_since">Прошедшее время</string>
     <string name="statistics_detail_streaks">Серии</string>
     <string name="statistics_detail_streaks_longest">Самая длинная</string>
     <string name="statistics_detail_streaks_current">Текущая</string>

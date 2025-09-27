@@ -509,6 +509,7 @@ Exemplo:<br/>
     <string name="statistics_detail_record_time">Histórico de registro</string>
     <string name="statistics_detail_first_record">Primeiro</string>
     <string name="statistics_detail_last_record">Último</string>
+    <string name="statistics_detail_time_since">Tempo decorrido</string>
     <string name="statistics_detail_streaks">Series</string>
     <string name="statistics_detail_streaks_longest">Maior</string>
     <string name="statistics_detail_streaks_current">Atual</string>
