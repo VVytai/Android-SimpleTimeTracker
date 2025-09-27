@@ -14,6 +14,7 @@ import com.example.util.simpletimetracker.domain.record.model.RecordsFilter
 import com.example.util.simpletimetracker.feature_statistics_detail.mapper.StatisticsDetailViewDataMapper
 import com.example.util.simpletimetracker.feature_statistics_detail.model.SplitChartGrouping
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailChartViewData
+import kotlinx.coroutines.CoroutineScope
 import java.util.Calendar
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -21,6 +22,8 @@ import kotlin.math.abs
 import kotlin.math.ceil
 import kotlin.math.floor
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.withContext
 
 class StatisticsDetailSplitChartInteractor @Inject constructor(
@@ -145,7 +148,7 @@ class StatisticsDetailSplitChartInteractor @Inject constructor(
         return@withContext mapper.mapToDurationsSlipChartViewData(data, isVisible)
     }
 
-    private fun getDurations(
+    private suspend fun getDurations(
         records: List<RecordBase>,
         range: Range,
         splitChartGrouping: SplitChartGrouping,
@@ -184,19 +187,19 @@ class StatisticsDetailSplitChartInteractor @Inject constructor(
         }
     }
 
-    private fun processRecords(
+    private suspend fun processRecords(
         calendar: Calendar,
         records: List<Range>,
         splitChartGrouping: SplitChartGrouping,
         startOfDayShift: Long,
-    ): List<Range> {
+    ): List<Range> = coroutineScope {
         val processedRecords: MutableList<Range> = mutableListOf()
 
         records.forEach { record ->
             splitIntoRecords(calendar, record, splitChartGrouping, startOfDayShift).forEach(processedRecords::add)
         }
 
-        return processedRecords
+        return@coroutineScope processedRecords
     }
 
     private fun mapToGrouping(
@@ -224,13 +227,15 @@ class StatisticsDetailSplitChartInteractor @Inject constructor(
     /**
      * If a record is on several days or hours - split into several records each within separate range.
      */
-    private tailrec fun splitIntoRecords(
+    private tailrec fun CoroutineScope.splitIntoRecords(
         calendar: Calendar,
         record: Range,
         splitChartGrouping: SplitChartGrouping,
         startOfDayShift: Long,
         splitRecords: MutableList<Range> = mutableListOf(),
     ): List<Range> {
+        ensureActive()
+
         // Avoid infinite loop.
         if (record.duration < 0) return emptyList()
 
