@@ -4,6 +4,7 @@ import android.view.View
 import android.widget.Space
 import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.appcompat.widget.AppCompatTextView
+import androidx.cardview.widget.CardView
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.createRecyclerBindingAdapterDelegate
 import com.example.util.simpletimetracker.feature_settings.api.SettingsBlock
@@ -29,6 +30,7 @@ fun createSettingsCheckboxAdapterDelegate(
             spaceTop = spaceItemSettingsTop,
             spaceBottom = spaceItemSettingsBottom,
             divider = viewItemSettingsDivider,
+            background = backgroundItemSettings,
             onClick = onClick,
         )
     }
@@ -42,6 +44,7 @@ fun checkboxAdapterBindDelegate(
     spaceTop: Space,
     spaceBottom: Space,
     divider: View,
+    background: CardView,
     onClick: (block: SettingsBlock) -> Unit,
 ) {
     title.text = item.title
@@ -60,6 +63,7 @@ fun checkboxAdapterBindDelegate(
     spaceTop.visible = item.topSpaceIsVisible
     spaceBottom.visible = item.bottomSpaceIsVisible
     divider.visible = item.dividerIsVisible
+    background.visible = item.backgroundIsVisible
 
     checkbox.setOnClick { onClick(item.block) }
 }
@@ -72,6 +76,7 @@ data class SettingsCheckboxViewData(
     val topSpaceIsVisible: Boolean = true,
     val bottomSpaceIsVisible: Boolean = true,
     val dividerIsVisible: Boolean = true,
+    val backgroundIsVisible: Boolean = true,
     val forceBind: Boolean = false,
 ) : ViewHolderType {
 

@@ -613,6 +613,7 @@ Exemplo:<br/>
     <string name="pomodoro_state_break">Pausa</string>
     <string name="pomodoro_state_long_break">Pausa longa</string>
     <string name="pomodoro_settings_periods_until_long_break">Períodos até uma pausa longa</string>
+    <string name="pomodoro_settings_show_more_controls">Mostrar mais controlos</string>
 
     <!--  Retroactive tracking mode  -->
     <string name="retroactive_tracking_mode_hint">Selecione o que tem feito</string>

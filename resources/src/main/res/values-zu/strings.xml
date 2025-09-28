@@ -613,6 +613,7 @@ Isibonelo:<br/>
     <string name="pomodoro_state_break">Ikhefu</string>
     <string name="pomodoro_state_long_break">Ikhefu elide</string>
     <string name="pomodoro_settings_periods_until_long_break">Izikhathi ngaphambi kwekhefu elide</string>
+    <string name="pomodoro_settings_show_more_controls">Bonisa okunye ukulawula</string>
 
     <!--  Retroactive tracking mode  -->
     <string name="retroactive_tracking_mode_hint">Khetha into obuyenza</string>

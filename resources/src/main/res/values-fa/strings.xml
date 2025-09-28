@@ -613,6 +613,7 @@
     <string name="pomodoro_state_break">شکستن</string>
     <string name="pomodoro_state_long_break">وقفه طولانی</string>
     <string name="pomodoro_settings_periods_until_long_break">دوره های زمانی تا وقفه طولانی</string>
+    <string name="pomodoro_settings_show_more_controls">نمایش کنترل‌های بیشتر</string>
 
     <!--  Retroactive tracking mode  -->
     <string name="retroactive_tracking_mode_hint">کاری را که انجام می دادید انتخاب کنید</string>

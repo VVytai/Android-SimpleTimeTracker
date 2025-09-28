@@ -431,6 +431,14 @@ class PrefsInteractor @Inject constructor(
         prefsRepo.pomodoroPeriodsUntilLongBreak = value
     }
 
+    suspend fun getPomodoroShowMoreControls(): Boolean = withContext(Dispatchers.IO) {
+        prefsRepo.pomodoroShowMoreControls
+    }
+
+    suspend fun setPomodoroShowMoreControls(value: Boolean) = withContext(Dispatchers.IO) {
+        prefsRepo.pomodoroShowMoreControls = value
+    }
+
     suspend fun getAllowMultipleActivityFilters(): Boolean = withContext(Dispatchers.IO) {
         prefsRepo.allowMultipleActivityFilters
     }

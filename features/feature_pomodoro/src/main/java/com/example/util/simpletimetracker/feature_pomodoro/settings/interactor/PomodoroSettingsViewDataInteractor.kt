@@ -9,6 +9,7 @@ import com.example.util.simpletimetracker.feature_base_adapter.hintBig.HintBigVi
 import com.example.util.simpletimetracker.feature_pomodoro.R
 import com.example.util.simpletimetracker.feature_pomodoro.settings.model.PomodoroHintButtonType
 import com.example.util.simpletimetracker.feature_settings.api.SettingsBlock
+import com.example.util.simpletimetracker.feature_settings.views.SettingsCheckboxViewData
 import com.example.util.simpletimetracker.feature_settings.views.SettingsDurationViewData
 import com.example.util.simpletimetracker.feature_settings.views.SettingsSelectorViewData
 import javax.inject.Inject
@@ -91,6 +92,16 @@ class PomodoroSettingsViewDataInteractor @Inject constructor(
             title = resourceRepo.getString(R.string.pomodoro_settings_periods_until_long_break),
             subtitle = "",
             selectedValue = periodsUntilLongBreak.text,
+            bottomSpaceIsVisible = true,
+            dividerIsVisible = false,
+            backgroundIsVisible = false,
+        )
+
+        result += SettingsCheckboxViewData(
+            block = SettingsBlock.PomodoroShowMoreControls,
+            title = resourceRepo.getString(R.string.pomodoro_settings_show_more_controls),
+            subtitle = "",
+            isChecked = prefsInteractor.getPomodoroShowMoreControls(),
             bottomSpaceIsVisible = true,
             dividerIsVisible = false,
             backgroundIsVisible = false,

@@ -613,6 +613,7 @@ csv फ़ाइल में कॉमा से अलग किए गए य
     <string name="pomodoro_state_break">ब्रेक</string>
     <string name="pomodoro_state_long_break">लंबा ब्रेक</string>
     <string name="pomodoro_settings_periods_until_long_break">लंबे ब्रेक तक की अवधि</string>
+    <string name="pomodoro_settings_show_more_controls">और नियंत्रण दिखाएँ</string>
 
     <!--  Retroactive tracking mode  -->
     <string name="retroactive_tracking_mode_hint">चुनें कि आप क्या कर रहे हैं</string>

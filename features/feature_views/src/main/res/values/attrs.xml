@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <attr name="appCurrentTheme" format="reference" />
     <attr name="appContrastColor" format="reference" />
     <attr name="appTextPrimaryColor" format="reference" />
     <attr name="appLightTextColor" format="reference" />
@@ -182,7 +183,7 @@
     </declare-styleable>
 
     <declare-styleable name="IconsPreviewView">
-        <attr name="iconsPreviewMaxSize" format="dimension"/>
+        <attr name="iconsPreviewMaxSize" format="dimension" />
         <attr name="iconsPreviewColor" format="color" />
     </declare-styleable>
 

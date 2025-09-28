@@ -25,6 +25,7 @@ fun createSettingsCheckboxWithButtonAdapterDelegate(
             spaceTop = spaceItemSettingsTop,
             spaceBottom = spaceItemSettingsBottom,
             divider = viewItemSettingsDivider,
+            background = backgroundItemSettings,
             onClick = onClick,
         )
 

@@ -613,6 +613,7 @@
     <string name="pomodoro_state_break">הפסקה</string>
     <string name="pomodoro_state_long_break">הפסקה ארוכה</string>
     <string name="pomodoro_settings_periods_until_long_break">פרקי זמן עד להפסקה ארוכה</string>
+    <string name="pomodoro_settings_show_more_controls">הצג פקדים נוספים</string>
 
     <!--  Retroactive tracking mode  -->
     <string name="retroactive_tracking_mode_hint">בחר מה עשית</string>

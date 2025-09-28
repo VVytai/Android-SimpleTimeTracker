@@ -613,6 +613,7 @@
     <string name="pomodoro_state_break">Перерва</string>
     <string name="pomodoro_state_long_break">Тривала перерва</string>
     <string name="pomodoro_settings_periods_until_long_break">Циклів до тривалої перерви</string>
+    <string name="pomodoro_settings_show_more_controls">Показати більше елементів керування</string>
 
     <!--  Retroactive tracking mode  -->
     <string name="retroactive_tracking_mode_hint">Виберіть те, чим ви займались</string>

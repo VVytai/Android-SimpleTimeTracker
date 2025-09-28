@@ -613,6 +613,7 @@
     <string name="pomodoro_state_break">فاصل</string>
     <string name="pomodoro_state_long_break">استراحة طويلة</string>
     <string name="pomodoro_settings_periods_until_long_break">الفترات حتى الفاصل الطويل</string>
+    <string name="pomodoro_settings_show_more_controls">عرض المزيد من عناصر التحكم</string>
 
     <!--  Retroactive tracking mode  -->
     <string name="retroactive_tracking_mode_hint">حدد ما كنت تفعله</string>

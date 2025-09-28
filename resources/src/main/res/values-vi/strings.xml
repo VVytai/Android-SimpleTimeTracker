@@ -613,6 +613,7 @@ Ví dụ:<br/>
     <string name="pomodoro_state_break">Nghỉ</string>
     <string name="pomodoro_state_long_break">Nghỉ dài</string>
     <string name="pomodoro_settings_periods_until_long_break">Thời gian cho đến kỳ nghỉ dài</string>
+    <string name="pomodoro_settings_show_more_controls">Hiển thị thêm điều khiển</string>
 
     <!--  Retroactive tracking mode  -->
     <string name="retroactive_tracking_mode_hint">Chọn những gì bạn đã và đang làm</string>

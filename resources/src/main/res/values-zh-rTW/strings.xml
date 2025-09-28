@@ -613,6 +613,7 @@ csv 文件必須包含以逗號分隔的這些列：<br/>
     <string name="pomodoro_state_break">中斷</string>
     <string name="pomodoro_state_long_break">長時間休息</string>
     <string name="pomodoro_settings_periods_until_long_break">長時間休息前的時間</string>
+    <string name="pomodoro_settings_show_more_controls">顯示更多控制項</string>
 
     <!--  Retroactive tracking mode  -->
     <string name="retroactive_tracking_mode_hint">選擇您一直在做的事情</string>

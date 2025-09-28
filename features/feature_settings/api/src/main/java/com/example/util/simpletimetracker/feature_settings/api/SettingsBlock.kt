@@ -122,4 +122,5 @@ enum class SettingsBlock {
     PomodoroBreakTime,
     PomodoroLongBreakTime,
     PomodoroPeriodsUntilLongBreak,
+    PomodoroShowMoreControls,
 }

@@ -52,9 +52,10 @@ class PomodoroSettingsViewModel @Inject constructor(
                 onBreakTimeClicked()
             SettingsBlock.PomodoroLongBreakTime ->
                 onLongBreakTimeClicked()
-            SettingsBlock.PomodoroPeriodsUntilLongBreak -> {
+            SettingsBlock.PomodoroPeriodsUntilLongBreak ->
                 onPeriodsUntilLongBreakClicked()
-            }
+            SettingsBlock.PomodoroShowMoreControls ->
+                onShowMoreControlsClicked()
             else -> {
                 // Do nothing.
             }
@@ -99,7 +100,6 @@ class PomodoroSettingsViewModel @Inject constructor(
             }
             BREAK_TIME_DURATION_DIALOG_TAG -> {
                 prefsInteractor.setPomodoroBreakTime(0)
-                updateContent()
             }
             LONG_BREAK_TIME_DURATION_DIALOG_TAG -> {
                 prefsInteractor.setPomodoroLongBreakTime(0)
@@ -143,6 +143,12 @@ class PomodoroSettingsViewModel @Inject constructor(
             tag = PERIODS_UNTIL_LONG_BREAK_DIALOG_TAG,
             value = DurationDialogParams.Value.Count(count),
         ).let(router::navigate)
+    }
+
+    private fun onShowMoreControlsClicked() = viewModelScope.launch {
+        val newValue = !prefsInteractor.getPomodoroShowMoreControls()
+        prefsInteractor.setPomodoroShowMoreControls(newValue)
+        updateContent()
     }
 
     private suspend fun updateContent() {

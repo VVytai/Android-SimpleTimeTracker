@@ -613,6 +613,7 @@ CSV-файл должен содержать следующие столбцы, 
     <string name="pomodoro_state_break">Перерыв</string>
     <string name="pomodoro_state_long_break">Длинный перерыв</string>
     <string name="pomodoro_settings_periods_until_long_break">Периоды до длительного перерыва</string>
+    <string name="pomodoro_settings_show_more_controls">Показать больше элементов управления</string>
 
     <!--  Retroactive tracking mode  -->
     <string name="retroactive_tracking_mode_hint">Выберите, чем вы занимались</string>

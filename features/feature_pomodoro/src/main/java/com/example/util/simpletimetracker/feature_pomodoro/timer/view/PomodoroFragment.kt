@@ -2,9 +2,11 @@ package com.example.util.simpletimetracker.feature_pomodoro.timer.view
 
 import android.animation.ValueAnimator
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.view.animation.LinearInterpolator
 import androidx.core.view.isInvisible
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import com.example.util.simpletimetracker.core.base.BaseFragment
 import com.example.util.simpletimetracker.core.utils.InsetConfiguration
@@ -38,11 +40,9 @@ class PomodoroFragment : BaseFragment<Binding>() {
         btnPomodoroNext.setOnClick(viewModel::onNextClicked)
     }
 
-    override fun initViewModel() = with(binding) {
-        with(viewModel) {
-            buttonState.observe(::setButtonState)
-            timerState.observe(::setTimerState)
-        }
+    override fun initViewModel() = with(viewModel) {
+        buttonState.observe(::setButtonState)
+        timerState.observe(::setTimerState)
     }
 
     override fun onResume() {
@@ -57,10 +57,24 @@ class PomodoroFragment : BaseFragment<Binding>() {
 
     private fun setButtonState(state: PomodoroButtonState) = with(binding) {
         ivPomodoroButton.setImageResource(state.iconResId)
-        btnPomodoroRestart.isInvisible = !state.additionalButtonsVisible
-        btnPomodoroPause.isInvisible = !state.additionalButtonsVisible
-        btnPomodoroPrev.isInvisible = !state.additionalButtonsVisible
-        btnPomodoroNext.isInvisible = !state.additionalButtonsVisible
+
+        flowPomodoroMainButtons.referencedIds = state.buttonsOrder
+            .map { mapToView(it).id }
+            .toIntArray()
+
+        listOf(
+            PomodoroButtonState.Button.Restart,
+            PomodoroButtonState.Button.Pause,
+            PomodoroButtonState.Button.Prev,
+            PomodoroButtonState.Button.Next,
+        ).forEach {
+            if (it in state.buttonsOrder) {
+                // Invisible to preserve Start button position.
+                mapToView(it).isInvisible = !state.additionalButtonsVisible
+            } else {
+                mapToView(it).isVisible = false
+            }
+        }
     }
 
     private fun setTimerState(state: PomodoroTimerState) = with(binding) {
@@ -84,6 +98,16 @@ class PomodoroFragment : BaseFragment<Binding>() {
                 viewPomodoroTimer.progress = value
             }
             start()
+        }
+    }
+
+    private fun mapToView(button: PomodoroButtonState.Button): View = with(binding) {
+        return@with when (button) {
+            is PomodoroButtonState.Button.Start -> btnPomodoroStart
+            is PomodoroButtonState.Button.Restart -> btnPomodoroRestart
+            is PomodoroButtonState.Button.Pause -> btnPomodoroPause
+            is PomodoroButtonState.Button.Prev -> btnPomodoroPrev
+            is PomodoroButtonState.Button.Next -> btnPomodoroNext
         }
     }
 }

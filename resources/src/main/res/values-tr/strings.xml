@@ -613,6 +613,7 @@ CSV dosyası virgülle ayrılmış şu sütunları içermelidir:<br/>
     <string name="pomodoro_state_break">Ara</string>
     <string name="pomodoro_state_long_break">Uzun ara</string>
     <string name="pomodoro_settings_periods_until_long_break">Uzun araya kalan dönemler</string>
+    <string name="pomodoro_settings_show_more_controls">Daha fazla kontrol göster</string>
 
     <!--  Retroactive tracking mode  -->
     <string name="retroactive_tracking_mode_hint">Ne yaptığınızı seçin</string>

@@ -88,6 +88,8 @@ interface PrefsRepo {
 
     var pomodoroPeriodsUntilLongBreak: Long // 0 - disabled
 
+    var pomodoroShowMoreControls: Boolean
+
     var showGoalsSeparately: Boolean
 
     var allowMultitasking: Boolean

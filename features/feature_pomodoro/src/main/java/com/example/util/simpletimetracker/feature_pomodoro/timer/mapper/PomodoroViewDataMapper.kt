@@ -18,6 +18,7 @@ class PomodoroViewDataMapper @Inject constructor(
 ) {
 
     fun mapButtonState(
+        showMoreControls: Boolean,
         state: GetPomodoroStateInteractor.State,
     ): PomodoroButtonState {
         val isStarted = state is GetPomodoroStateInteractor.State.Running
@@ -26,10 +27,26 @@ class PomodoroViewDataMapper @Inject constructor(
         } else {
             R.drawable.button_play
         }
+        val buttonsOrder = if (showMoreControls) {
+            listOf(
+                PomodoroButtonState.Button.Prev,
+                PomodoroButtonState.Button.Start,
+                PomodoroButtonState.Button.Next,
+                PomodoroButtonState.Button.Restart,
+                PomodoroButtonState.Button.Pause,
+            )
+        } else {
+            listOf(
+                PomodoroButtonState.Button.Restart,
+                PomodoroButtonState.Button.Start,
+                PomodoroButtonState.Button.Next,
+            )
+        }
 
         return PomodoroButtonState(
             iconResId = iconResId,
             additionalButtonsVisible = isStarted,
+            buttonsOrder = buttonsOrder,
         )
     }
 

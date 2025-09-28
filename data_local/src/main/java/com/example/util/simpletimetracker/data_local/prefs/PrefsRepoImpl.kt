@@ -229,6 +229,10 @@ class PrefsRepoImpl @Inject constructor(
         KEY_POMODORO_PERIODS_UNTIL_LONG_BREAK, POMODORO_DEFAULT_UNTIL_LONG_BREAK,
     )
 
+    override var pomodoroShowMoreControls: Boolean by prefs.delegate(
+        KEY_POMODORO_SHOW_MORE_CONTROLS, false
+    )
+
     override var showGoalsSeparately: Boolean by prefs.delegate(
         KEY_SHOW_GOALS_SEPARATELY, false,
     )
@@ -600,6 +604,7 @@ class PrefsRepoImpl @Inject constructor(
             remove(KEY_POMODORO_BREAK_TIME)
             remove(KEY_POMODORO_LONG_BREAK_TIME)
             remove(KEY_POMODORO_PERIODS_UNTIL_LONG_BREAK)
+            remove(KEY_POMODORO_SHOW_MORE_CONTROLS)
         }
     }
 
@@ -664,6 +669,7 @@ class PrefsRepoImpl @Inject constructor(
         const val KEY_POMODORO_BREAK_TIME = "pomodoroBreakTime"
         const val KEY_POMODORO_LONG_BREAK_TIME = "pomodoroLongBreakTime"
         const val KEY_POMODORO_PERIODS_UNTIL_LONG_BREAK = "pomodoroPeriodsUntilLongBreak"
+        const val KEY_POMODORO_SHOW_MORE_CONTROLS = "pomodoroShowMoreControls"
         const val KEY_ALLOW_MULTIPLE_ACTIVITY_FILTERS = "allowMultipleActivityFilters"
         const val KEY_SHOW_CATEGORIES_AS_PREDEFINED_FILTERS = "showCategoriesAsPredefinedFilters"
         const val KEY_SELECTED_PREDEFINED_FILTERS = "selectedPredefinedFilters"
