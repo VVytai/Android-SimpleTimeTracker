@@ -1,6 +1,7 @@
 package com.example.util.simpletimetracker
 
 import android.view.View
+import androidx.test.espresso.Espresso.closeSoftKeyboard
 import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -52,7 +53,7 @@ class RecordTagValueTest : BaseUiTest() {
             checkViewIsDisplayed(
                 allOf(
                     isDescendantOfA(withId(R.id.viewRunningRecordItem)),
-                    withText(fullName),
+                    withText(name),
                 ),
             )
         }
@@ -77,6 +78,7 @@ class RecordTagValueTest : BaseUiTest() {
         clickOnViewWithText(typeName2)
         tryAction { clickOnViewWithText(tagWithValue) }
         typeTextIntoView(R.id.etCommentItemField, value1)
+        closeSoftKeyboard()
         clickOnViewWithText(R.string.duration_dialog_save)
         checkViewIsDisplayed(withText("$tagWithValue ($value1)"))
         clickOnViewWithText(R.string.duration_dialog_save)
@@ -86,6 +88,7 @@ class RecordTagValueTest : BaseUiTest() {
         clickOnViewWithText(typeName3)
         tryAction { clickOnViewWithText(tagWithValueWithSuffix) }
         typeTextIntoView(R.id.etCommentItemField, value2)
+        closeSoftKeyboard()
         clickOnViewWithText(R.string.duration_dialog_save)
         checkViewIsDisplayed(withText("$tagWithValueWithSuffix ($value2 $suffix)"))
         clickOnViewWithText(R.string.duration_dialog_save)
@@ -115,6 +118,7 @@ class RecordTagValueTest : BaseUiTest() {
         clickOnRecyclerItem(changeRecordR.id.rvChangeRecordCategories, withText(tag1))
         clickOnRecyclerItem(changeRecordR.id.rvChangeRecordCategories, withText(tag2))
         typeTextIntoView(R.id.etCommentItemField, "1")
+        closeSoftKeyboard()
         clickOnViewWithText(coreR.string.change_record_type_save)
         checkViewIsDisplayed(allOf(withId(R.id.viewCategoryItem), hasDescendant(withText("$tag2 (1)"))))
         checkPreviewUpdated(hasDescendant(withText("$name - $tag2 (1)")))
@@ -123,6 +127,7 @@ class RecordTagValueTest : BaseUiTest() {
         clickOnRecyclerItem(changeRecordR.id.rvChangeRecordCategories, withText("$tag2 (1)"))
         clickOnRecyclerItem(changeRecordR.id.rvChangeRecordCategories, withText(tag2))
         typeTextIntoView(R.id.etCommentItemField, "2")
+        closeSoftKeyboard()
         clickOnViewWithText(coreR.string.change_record_type_save)
         checkViewIsDisplayed(allOf(withId(R.id.viewCategoryItem), hasDescendant(withText("$tag2 (2)"))))
         checkPreviewUpdated(hasDescendant(withText("$name - $tag2 (2)")))
@@ -156,6 +161,7 @@ class RecordTagValueTest : BaseUiTest() {
         clickOnRecyclerItem(changeRecordR.id.rvChangeRecordCategories, withText(tag1))
         clickOnRecyclerItem(changeRecordR.id.rvChangeRecordCategories, withText(tag2))
         typeTextIntoView(R.id.etCommentItemField, "1")
+        closeSoftKeyboard()
         clickOnViewWithText(coreR.string.change_record_type_save)
         checkViewIsDisplayed(allOf(withId(R.id.viewCategoryItem), hasDescendant(withText("$tag2 (1)"))))
         checkRunningPreviewUpdated(hasDescendant(withText("$name - $tag2 (1)")))

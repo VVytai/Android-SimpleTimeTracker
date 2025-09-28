@@ -21,6 +21,7 @@ import com.example.util.simpletimetracker.core.extension.setWeekToFirstDay
 import com.example.util.simpletimetracker.feature_base_adapter.R
 import com.example.util.simpletimetracker.utils.BaseUiTest
 import com.example.util.simpletimetracker.utils.NavUtils
+import com.example.util.simpletimetracker.utils.checkViewDoesNotExist
 import com.example.util.simpletimetracker.utils.checkViewIsDisplayed
 import com.example.util.simpletimetracker.utils.clickOnView
 import com.example.util.simpletimetracker.utils.clickOnViewWithId
@@ -627,6 +628,68 @@ class DataEditTest : BaseUiTest() {
     }
 
     @Test
+    fun deleteAllToday() {
+        val name1 = "TypeName1"
+        val name2 = "TypeName2"
+        val name3 = "TypeName3"
+
+        // Add data
+        testUtils.addActivity(name1)
+        testUtils.addActivity(name2)
+        testUtils.addActivity(name3)
+        val timeToday = calendar.apply { set(Calendar.HOUR_OF_DAY, 15) }.timeInMillis
+        testUtils.addRecord(typeName = name1, timeStarted = timeToday, timeEnded = timeToday)
+        testUtils.addRecord(typeName = name2, timeStarted = timeToday, timeEnded = timeToday)
+        testUtils.addRecord(
+            typeName = name3,
+            timeStarted = timeToday - TimeUnit.DAYS.toMillis(1),
+            timeEnded = timeToday - TimeUnit.DAYS.toMillis(1),
+        )
+
+        NavUtils.openRecordsScreen()
+        checkViewIsDisplayed(allOf(withId(baseR.id.viewRecordItem), hasDescendant(withText(name1))))
+        checkViewIsDisplayed(allOf(withId(baseR.id.viewRecordItem), hasDescendant(withText(name2))))
+        clickOnViewWithId(recordsR.id.btnRecordsContainerPrevious)
+        checkViewIsDisplayed(allOf(withId(baseR.id.viewRecordItem), hasDescendant(withText(name3))))
+        clickOnViewWithId(recordsR.id.btnRecordsContainerNext)
+
+        // Select
+        NavUtils.openSettingsScreen()
+        NavUtils.openDataEditScreen()
+        onView(
+            allOf(
+                withSubstring(getString(R.string.archive_dialog_delete)),
+                withSubstring(getString(R.string.title_today)),
+                withSubstring("2"),
+                withSubstring(getQuantityString(R.plurals.statistics_detail_times_tracked, 2)),
+            ),
+        ).perform(nestedScrollTo())
+        onView(withId(dataEditR.id.nsvDataEdit)).perform(swipeUp())
+
+        // Check filter
+        clickOnViewWithId(dataEditR.id.btnDataEditDeleteTodayRecordsView)
+        checkViewIsDisplayed(allOf(withId(recordsFilterR.id.tvRecordsFilterTitle), withSubstring("2")))
+        pressBack()
+
+        // Delete
+        clickOnViewWithId(dataEditR.id.btnDataEditDeleteTodayRecords)
+        clickOnViewWithText(coreR.string.ok)
+        clickOnView(
+            allOf(
+                withText(coreR.string.data_edit_success_message),
+                withId(com.google.android.material.R.id.snackbar_text),
+            ),
+        )
+
+        // Check
+        NavUtils.openRecordsScreen()
+        checkViewDoesNotExist(allOf(withId(baseR.id.viewRecordItem), hasDescendant(withText(name1))))
+        checkViewDoesNotExist(allOf(withId(baseR.id.viewRecordItem), hasDescendant(withText(name2))))
+        clickOnViewWithId(recordsR.id.btnRecordsContainerPrevious)
+        checkViewIsDisplayed(allOf(withId(baseR.id.viewRecordItem), hasDescendant(withText(name3))))
+    }
+
+    @Test
     fun deleteAllRecords() {
         val name1 = "TypeName1"
         val name2 = "TypeName2"
@@ -648,8 +711,9 @@ class DataEditTest : BaseUiTest() {
         // Select
         NavUtils.openSettingsScreen()
         NavUtils.openDataEditScreen()
-        onView(withText(R.string.data_edit_button_delete_records))
-            .perform(nestedScrollTo(), click())
+        onView(withText(R.string.data_edit_button_delete_records)).perform(nestedScrollTo())
+        onView(withId(dataEditR.id.nsvDataEdit)).perform(swipeUp())
+        onView(withText(R.string.data_edit_button_delete_records)).perform(click())
         clickOnViewWithText(coreR.string.ok)
 
         // Check
@@ -787,6 +851,47 @@ class DataEditTest : BaseUiTest() {
         clickOnView(allOf(isDescendantOfA(withId(R.id.viewFilterItem)), withText(R.string.range_custom)))
         checkViewIsDisplayed(allOf(withId(recordsFilterR.id.tvRecordsFilterRangeTimeStarted), withText(timeStarted)))
         checkViewIsDisplayed(allOf(withId(recordsFilterR.id.tvRecordsFilterRangeTimeEnded), withText(timeEnded)))
+    }
+
+    @Test
+    fun duplicate() {
+        val type = "type"
+
+        // Add data
+        testUtils.addActivity(
+            name = type,
+            color = firstColor,
+            icon = firstIcon,
+            goals = listOf(GoalsTestUtils.getDailyDurationGoal(TimeUnit.MINUTES.toSeconds(1))),
+        )
+
+        // Duplicate
+        NavUtils.openSettingsScreen()
+        NavUtils.openDataEditScreen()
+        onView(withText(coreR.string.change_record_duplicate)).perform(nestedScrollTo())
+        clickOnViewWithText(coreR.string.change_record_duplicate)
+        clickOnViewWithText(type)
+        clickOnViewWithText(R.string.ok)
+
+        // Check
+        tryAction {
+            checkViewIsDisplayed(
+                allOf(
+                    withId(coreR.id.viewRecordTypeItem),
+                    hasDescendant(withText(type)),
+                    hasDescendant(withTag(firstIcon)),
+                    hasDescendant(withCardColor(firstColor)),
+                ),
+            )
+        }
+        checkViewIsDisplayed(
+            allOf(
+                withId(coreR.id.viewRecordTypeItem),
+                hasDescendant(withText("$type (2)")),
+                hasDescendant(withTag(firstIcon)),
+                hasDescendant(withCardColor(firstColor)),
+            ),
+        )
     }
 
     private fun checkRecord(

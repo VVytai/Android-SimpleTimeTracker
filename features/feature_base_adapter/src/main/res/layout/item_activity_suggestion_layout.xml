@@ -41,7 +41,7 @@
             android:overScrollMode="never"
             app:layout_constraintTop_toBottomOf="@id/tvActivitySuggestionItemActionTitle"
             tools:itemCount="1"
-            tools:listitem="@layout/item_activity_suggestion_element_content" />
+            tools:listitem="@layout/item_list_element_layout" />
 
         <View
             android:id="@+id/viewActivitySuggestionItemDivider"
@@ -75,7 +75,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvActivitySuggestionItemConditionsTitle"
             tools:itemCount="3"
-            tools:listitem="@layout/item_activity_suggestion_element_content" />
+            tools:listitem="@layout/item_list_element_layout" />
 
         <View
             android:id="@+id/viewActivitySuggestionItemConditionsClick"

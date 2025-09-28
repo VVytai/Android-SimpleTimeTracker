@@ -2,7 +2,6 @@ package com.example.util.simpletimetracker
 
 import androidx.test.espresso.Espresso.closeSoftKeyboard
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -37,8 +36,7 @@ class RecordTypeDefaultDurationTest : BaseUiTest() {
         clickOnViewWithText(R.string.running_records_add_type)
         typeTextIntoView(changeRecordTypeR.id.etChangeRecordTypeName, type1)
         closeSoftKeyboard()
-        onView(withText(coreR.string.change_record_type_additional_hint))
-            .perform(nestedScrollTo(), click())
+        onView(withText(coreR.string.change_record_type_default_duration)).perform(nestedScrollTo())
         checkViewIsDisplayed(
             allOf(
                 withId(changeRecordTypeR.id.tvChangeRecordTypeAdditionalDefaultDurationSelectorValue),
@@ -49,8 +47,7 @@ class RecordTypeDefaultDurationTest : BaseUiTest() {
 
         // Change
         longClickOnView(withText(type1))
-        onView(withText(coreR.string.change_record_type_additional_hint))
-            .perform(nestedScrollTo(), click())
+        onView(withText(coreR.string.change_record_type_default_duration)).perform(nestedScrollTo())
         clickOnViewWithId(changeRecordTypeR.id.tvChangeRecordTypeAdditionalDefaultDurationSelectorValue)
         clickOnViewWithId(dialogsR.id.tvNumberKeyboard1)
         clickOnViewWithId(dialogsR.id.tvNumberKeyboard0)
@@ -61,8 +58,7 @@ class RecordTypeDefaultDurationTest : BaseUiTest() {
 
         // Disable
         longClickOnView(withText(type1))
-        onView(withText(coreR.string.change_record_type_additional_hint))
-            .perform(nestedScrollTo(), click())
+        onView(withText(coreR.string.change_record_type_default_duration)).perform(nestedScrollTo())
         clickOnViewWithText("1$minuteString")
         clickOnViewWithId(dialogsR.id.btnNumberKeyboardDelete)
         clickOnViewWithId(dialogsR.id.btnNumberKeyboardDelete)
@@ -78,8 +74,7 @@ class RecordTypeDefaultDurationTest : BaseUiTest() {
 
         // Check
         longClickOnView(withText(type1))
-        onView(withText(coreR.string.change_record_type_additional_hint))
-            .perform(nestedScrollTo(), click())
+        onView(withText(coreR.string.change_record_type_default_duration)).perform(nestedScrollTo())
         checkViewIsDisplayed(
             allOf(
                 withId(changeRecordTypeR.id.tvChangeRecordTypeAdditionalDefaultDurationSelectorValue),

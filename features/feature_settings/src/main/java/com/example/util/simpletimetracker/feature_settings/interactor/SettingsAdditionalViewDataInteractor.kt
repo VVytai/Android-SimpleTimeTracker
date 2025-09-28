@@ -23,6 +23,7 @@ import com.example.util.simpletimetracker.feature_settings.views.SettingsTextWit
 import com.example.util.simpletimetracker.feature_settings.views.SettingsTopViewData
 import java.util.Calendar
 import javax.inject.Inject
+import kotlin.math.abs
 
 class SettingsAdditionalViewDataInteractor @Inject constructor(
     private val resourceRepo: ResourceRepo,
@@ -235,7 +236,7 @@ class SettingsAdditionalViewDataInteractor @Inject constructor(
         val value = if (shift == 0L) {
             resourceRepo.getString(R.string.change_record_type_goal_time_disabled)
         } else {
-            timeMapper.formatDuration(shift / 1000)
+            timeMapper.formatDuration(abs(shift) / 1000)
         }
 
         return SettingsStartOfDayViewData(

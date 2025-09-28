@@ -50,7 +50,7 @@ class StatisticsDetailTagValueTest : BaseUiTest() {
         testUtils.addRecord(
             typeName = name,
             timeStarted = calendar.timeInMillis,
-            timeEnded = calendar.timeInMillis + TimeUnit.HOURS.toMillis(1),
+            timeEnded = calendar.timeInMillis + TimeUnit.HOURS.toMillis(2),
             tagNamesWithValues = listOf(tag to -0.5),
         )
         calendar = Calendar.getInstance()
@@ -58,7 +58,7 @@ class StatisticsDetailTagValueTest : BaseUiTest() {
         testUtils.addRecord(
             typeName = name,
             timeStarted = calendar.timeInMillis,
-            timeEnded = calendar.timeInMillis + TimeUnit.HOURS.toMillis(1),
+            timeEnded = calendar.timeInMillis + TimeUnit.HOURS.toMillis(3),
             tagNamesWithValues = listOf(tag to -0.5),
         )
 
@@ -74,98 +74,145 @@ class StatisticsDetailTagValueTest : BaseUiTest() {
             allOf(withTag(StatisticsDetailBlock.TagValuesChartData), isCompletelyDisplayed()),
         )
 
+        // By totals
         clickOnChartGrouping(coreR.string.statistics_detail_chart_daily)
         clickOnChartLength(coreR.string.statistics_detail_length_ten)
-        checkRangeAverages(
-            rangeId = coreR.string.statistics_detail_chart_daily,
-            average = "0.1",
-            averageNonEmpty = "1",
-        )
+        checkRangeAverages(coreR.string.statistics_detail_chart_daily, "0.1", "1")
+        checkTotals("1", "1", "1")
         clickOnChartLength(coreR.string.statistics_detail_length_fifty)
-        checkRangeAverages(
-            rangeId = coreR.string.statistics_detail_chart_daily,
-            average = "0.02",
-            averageNonEmpty = "1",
-        )
+        checkRangeAverages(coreR.string.statistics_detail_chart_daily, "0.02", "1")
+        checkTotals("1", "1", "1")
         clickOnChartLength(coreR.string.statistics_detail_length_hundred)
-        checkRangeAverages(
-            rangeId = coreR.string.statistics_detail_chart_daily,
-            average = "0.01",
-            averageNonEmpty = "1",
-        )
+        checkRangeAverages(coreR.string.statistics_detail_chart_daily, "0.01", "1")
+        checkTotals("1", "1", "1")
 
         clickOnChartGrouping(coreR.string.statistics_detail_chart_weekly)
         clickOnChartLength(coreR.string.statistics_detail_length_ten)
-        checkRangeAverages(
-            rangeId = coreR.string.statistics_detail_chart_weekly,
-            average = "0.1",
-            averageNonEmpty = "1",
-        )
+        checkRangeAverages(coreR.string.statistics_detail_chart_weekly, "0.1", "1")
+        checkTotals("1", "1", "1")
         clickOnChartLength(coreR.string.statistics_detail_length_fifty)
-        checkRangeAverages(
-            rangeId = coreR.string.statistics_detail_chart_weekly,
-            average = "0.02",
-            averageNonEmpty = "1",
-        )
+        checkRangeAverages(coreR.string.statistics_detail_chart_weekly, "0.02", "1")
+        checkTotals("1", "1", "1")
         clickOnChartLength(coreR.string.statistics_detail_length_hundred)
-        checkRangeAverages(
-            rangeId = coreR.string.statistics_detail_chart_weekly,
-            average = "0.01",
-            averageNonEmpty = "1",
-        )
+        checkRangeAverages(coreR.string.statistics_detail_chart_weekly, "0.01", "1")
+        checkTotals("1", "1", "1")
 
         clickOnChartGrouping(coreR.string.statistics_detail_chart_monthly)
         clickOnChartLength(coreR.string.statistics_detail_length_ten)
-        checkRangeAverages(
-            rangeId = coreR.string.statistics_detail_chart_monthly,
-            average = "0.1",
-            averageNonEmpty = "1",
-        )
+        checkRangeAverages(coreR.string.statistics_detail_chart_monthly, "0.1", "1")
+        checkTotals("1", "1", "1")
         clickOnChartLength(coreR.string.statistics_detail_length_fifty)
-        checkRangeAverages(
-            rangeId = coreR.string.statistics_detail_chart_monthly,
-            average = "0.02",
-            averageNonEmpty = "1",
-        )
+        checkRangeAverages(coreR.string.statistics_detail_chart_monthly, "0.02", "1")
+        checkTotals("1", "1", "1")
         clickOnChartLength(coreR.string.statistics_detail_length_hundred)
-        checkRangeAverages(
-            rangeId = coreR.string.statistics_detail_chart_monthly,
-            average = "0.01",
-            averageNonEmpty = "1",
-        )
+        checkRangeAverages(coreR.string.statistics_detail_chart_monthly, "0.01", "1")
+        checkTotals("1", "1", "1")
 
         clickOnChartGrouping(coreR.string.statistics_detail_chart_yearly)
         clickOnChartLength(coreR.string.statistics_detail_length_ten)
-        checkRangeAverages(
-            rangeId = coreR.string.statistics_detail_chart_yearly,
-            average = "0.1",
-            averageNonEmpty = "1",
-        )
+        checkRangeAverages(coreR.string.statistics_detail_chart_yearly, "0.1", "1")
+        checkTotals("1", "1", "1")
         clickOnChartLength(coreR.string.statistics_detail_length_fifty)
-        checkRangeAverages(
-            rangeId = coreR.string.statistics_detail_chart_yearly,
-            average = "0.01",
-            averageNonEmpty = "0.25",
-        )
+        checkRangeAverages(coreR.string.statistics_detail_chart_yearly, "0.01", "0.25")
+        checkTotals("-0.5", "0.5", "1")
         clickOnChartLength(coreR.string.statistics_detail_length_hundred)
-        checkRangeAverages(
-            rangeId = coreR.string.statistics_detail_chart_yearly,
-            average = "0.005",
-            averageNonEmpty = "0.25",
-        )
+        checkRangeAverages(coreR.string.statistics_detail_chart_yearly, "0.005", "0.25")
+        checkTotals("-0.5", "0.5", "1")
 
-        // Cards
+        // By average
+        clickOnChartMode(R.string.statistics_detail_average_record)
+        clickOnChartGrouping(coreR.string.statistics_detail_chart_daily)
         clickOnChartLength(coreR.string.statistics_detail_length_ten)
-        scrollStatDetailRecyclerToTag(StatisticsDetailBlock.TagValuesTotals)
-        checkCard(coreR.string.records_filter_duration_min, "0")
-        checkCard(coreR.string.statistics_detail_total_duration, "1")
-        checkCard(coreR.string.records_filter_duration_max, "1")
-
+        checkRangeAverages(coreR.string.statistics_detail_chart_daily, "0.05", "0.5")
+        checkTotals("0.5", null, "0.5")
         clickOnChartLength(coreR.string.statistics_detail_length_fifty)
-        scrollStatDetailRecyclerToTag(StatisticsDetailBlock.TagValuesTotals)
-        checkCard(coreR.string.records_filter_duration_min, "-0.5")
-        checkCard(coreR.string.statistics_detail_total_duration, "0.5")
-        checkCard(coreR.string.records_filter_duration_max, "1")
+        checkRangeAverages(coreR.string.statistics_detail_chart_daily, "0.01", "0.5")
+        checkTotals("0.5", null, "0.5")
+        clickOnChartLength(coreR.string.statistics_detail_length_hundred)
+        checkRangeAverages(coreR.string.statistics_detail_chart_daily, "0.005", "0.5")
+        checkTotals("0.5", null, "0.5")
+
+        clickOnChartGrouping(coreR.string.statistics_detail_chart_weekly)
+        clickOnChartLength(coreR.string.statistics_detail_length_ten)
+        checkRangeAverages(coreR.string.statistics_detail_chart_weekly, "0.05", "0.5")
+        checkTotals("0.5", null, "0.5")
+        clickOnChartLength(coreR.string.statistics_detail_length_fifty)
+        checkRangeAverages(coreR.string.statistics_detail_chart_weekly, "0.01", "0.5")
+        checkTotals("0.5", null, "0.5")
+        clickOnChartLength(coreR.string.statistics_detail_length_hundred)
+        checkRangeAverages(coreR.string.statistics_detail_chart_weekly, "0.005", "0.5")
+        checkTotals("0.5", null, "0.5")
+
+        clickOnChartGrouping(coreR.string.statistics_detail_chart_monthly)
+        clickOnChartLength(coreR.string.statistics_detail_length_ten)
+        checkRangeAverages(coreR.string.statistics_detail_chart_monthly, "0.05", "0.5")
+        checkTotals("0.5", null, "0.5")
+        clickOnChartLength(coreR.string.statistics_detail_length_fifty)
+        checkRangeAverages(coreR.string.statistics_detail_chart_monthly, "0.01", "0.5")
+        checkTotals("0.5", null, "0.5")
+        clickOnChartLength(coreR.string.statistics_detail_length_hundred)
+        checkRangeAverages(coreR.string.statistics_detail_chart_monthly, "0.005", "0.5")
+        checkTotals("0.5", null, "0.5")
+
+        clickOnChartGrouping(coreR.string.statistics_detail_chart_yearly)
+        clickOnChartLength(coreR.string.statistics_detail_length_ten)
+        checkRangeAverages(coreR.string.statistics_detail_chart_yearly, "0.05", "0.5")
+        checkTotals("0.5", null, "0.5")
+        clickOnChartLength(coreR.string.statistics_detail_length_fifty)
+        checkRangeAverages(coreR.string.statistics_detail_chart_yearly, "0", "0")
+        checkTotals("-0.5", null, "0.5")
+        clickOnChartLength(coreR.string.statistics_detail_length_hundred)
+        checkRangeAverages(coreR.string.statistics_detail_chart_yearly, "0", "0")
+        checkTotals("-0.5", null, "0.5")
+
+        // Multiply by duration, total
+        clickOnChartMode(R.string.statistics_detail_total_duration)
+        clickOnMultiplyDuration(R.string.statistics_detail_tag_values_multiply_duration)
+        clickOnChartGrouping(coreR.string.statistics_detail_chart_daily)
+        clickOnChartLength(coreR.string.statistics_detail_length_ten)
+        checkRangeAverages(coreR.string.statistics_detail_chart_daily, "0.05", "0.5")
+        checkTotals("0.5", "0.5", "0.5")
+        clickOnChartLength(coreR.string.statistics_detail_length_fifty)
+        checkRangeAverages(coreR.string.statistics_detail_chart_daily, "0.01", "0.5")
+        checkTotals("0.5", "0.5", "0.5")
+        clickOnChartLength(coreR.string.statistics_detail_length_hundred)
+        checkRangeAverages(coreR.string.statistics_detail_chart_daily, "0.005", "0.5")
+        checkTotals("0.5", "0.5", "0.5")
+
+        clickOnChartGrouping(coreR.string.statistics_detail_chart_yearly)
+        clickOnChartLength(coreR.string.statistics_detail_length_ten)
+        checkRangeAverages(coreR.string.statistics_detail_chart_yearly, "0.05", "0.5")
+        checkTotals("0.5", "0.5", "0.5")
+        clickOnChartLength(coreR.string.statistics_detail_length_fifty)
+        checkRangeAverages(coreR.string.statistics_detail_chart_yearly, "-0.02", "-0.5")
+        checkTotals("-1.5", "-1", "0.5")
+        clickOnChartLength(coreR.string.statistics_detail_length_hundred)
+        checkRangeAverages(coreR.string.statistics_detail_chart_yearly, "-0.01", "-0.5")
+        checkTotals("-1.5", "-1", "0.5")
+
+        // Multiply by duration, average
+        clickOnChartMode(R.string.statistics_detail_average_record)
+        clickOnChartGrouping(coreR.string.statistics_detail_chart_daily)
+        clickOnChartLength(coreR.string.statistics_detail_length_ten)
+        checkRangeAverages(coreR.string.statistics_detail_chart_daily, "0.025", "0.25")
+        checkTotals("0.25", null, "0.25")
+        clickOnChartLength(coreR.string.statistics_detail_length_fifty)
+        checkRangeAverages(coreR.string.statistics_detail_chart_daily, "0.005", "0.25")
+        checkTotals("0.25", null, "0.25")
+        clickOnChartLength(coreR.string.statistics_detail_length_hundred)
+        checkRangeAverages(coreR.string.statistics_detail_chart_daily, "0.002", "0.25")
+        checkTotals("0.25", null, "0.25")
+
+        clickOnChartGrouping(coreR.string.statistics_detail_chart_yearly)
+        clickOnChartLength(coreR.string.statistics_detail_length_ten)
+        checkRangeAverages(coreR.string.statistics_detail_chart_yearly, "0.025", "0.25")
+        checkTotals("0.25", null, "0.25")
+        clickOnChartLength(coreR.string.statistics_detail_length_fifty)
+        checkRangeAverages(coreR.string.statistics_detail_chart_yearly, "-0.025", "-0.625")
+        checkTotals("-1.5", null, "0.25")
+        clickOnChartLength(coreR.string.statistics_detail_length_hundred)
+        checkRangeAverages(coreR.string.statistics_detail_chart_yearly, "-0.013", "-0.625")
+        checkTotals("-1.5", null, "0.25")
     }
 
     private fun clickOnChartGrouping(withTextId: Int) {
@@ -188,18 +235,48 @@ class StatisticsDetailTagValueTest : BaseUiTest() {
         )
     }
 
+    private fun clickOnChartMode(withTextId: Int) {
+        scrollStatDetailRecyclerToTag(StatisticsDetailBlock.TagValuesChartMode)
+        clickOnView(
+            allOf(
+                isDescendantOfA(withTag(StatisticsDetailBlock.TagValuesChartMode)),
+                withText(withTextId),
+            ),
+        )
+    }
+
+    @Suppress("SameParameterValue")
+    private fun clickOnMultiplyDuration(withTextId: Int) {
+        scrollStatDetailRecyclerToTag(StatisticsDetailBlock.TagValuesMultiplyDuration)
+        clickOnView(
+            allOf(
+                isDescendantOfA(withTag(StatisticsDetailBlock.TagValuesMultiplyDuration)),
+                withText(withTextId),
+            ),
+        )
+    }
+
     private fun BaseUiTest.checkRangeAverages(
         rangeId: Int,
         average: String = "",
-        checkAverage: Boolean = true,
         averageNonEmpty: String,
     ) {
         checkRangeAverages(
             block = StatisticsDetailBlock.TagValuesRangeAverages,
             rangeId = rangeId,
             average = average,
-            checkAverage = checkAverage,
             averageNonEmpty = averageNonEmpty,
         )
+    }
+
+    private fun checkTotals(
+        min: String,
+        total: String?,
+        max: String,
+    ) {
+        scrollStatDetailRecyclerToTag(StatisticsDetailBlock.TagValuesTotals)
+        checkCard(coreR.string.records_filter_duration_min, min)
+        total?.let { checkCard(coreR.string.statistics_detail_total_duration, total) }
+        checkCard(coreR.string.records_filter_duration_max, max)
     }
 }

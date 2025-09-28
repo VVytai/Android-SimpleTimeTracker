@@ -230,7 +230,7 @@ class PrefsRepoImpl @Inject constructor(
     )
 
     override var pomodoroShowMoreControls: Boolean by prefs.delegate(
-        KEY_POMODORO_SHOW_MORE_CONTROLS, false
+        KEY_POMODORO_SHOW_MORE_CONTROLS, false,
     )
 
     override var showGoalsSeparately: Boolean by prefs.delegate(

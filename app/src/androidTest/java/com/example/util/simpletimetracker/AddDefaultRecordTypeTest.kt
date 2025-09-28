@@ -83,12 +83,19 @@ class AddDefaultRecordTypeTest : BaseUiTest() {
         checkOrder(name1, name1next, ::isCompletelyLeftOf, ::isTopAlignedWith)
         checkOrder(name2, name2next, ::isCompletelyAbove)
 
-        clickOnViewWithText(coreR.string.select_all)
+        // Select all
+        clickOnViewWithText(name1)
+        clickOnViewWithText(name1next)
+        clickOnViewWithText(name2next)
         checkViewIsDisplayed(withText(coreR.string.something_selected))
         checkOrder(name1, name1next, ::isCompletelyLeftOf, ::isTopAlignedWith)
         checkOrder(name2, name2next, ::isCompletelyLeftOf, ::isTopAlignedWith)
 
-        clickOnViewWithText(coreR.string.select_nothing)
+        // Select nothing
+        clickOnViewWithText(name1)
+        clickOnViewWithText(name1next)
+        clickOnViewWithText(name2)
+        clickOnViewWithText(name2next)
         checkViewIsDisplayed(withText(coreR.string.nothing_selected))
         checkOrder(name1, name1next, ::isCompletelyLeftOf, ::isTopAlignedWith)
         checkOrder(name2, name2next, ::isCompletelyLeftOf, ::isTopAlignedWith)

@@ -1,5 +1,6 @@
 package com.example.util.simpletimetracker
 
+import androidx.test.espresso.Espresso.closeSoftKeyboard
 import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
@@ -245,6 +246,7 @@ class RecordActionsChangeTagTest : BaseUiTest() {
         clickOnViewWithText(R.string.data_edit_change_tag)
         clickOnViewWithText(tag1)
         typeTextIntoView(R.id.etCommentItemField, value1)
+        closeSoftKeyboard()
         clickOnViewWithText(R.string.duration_dialog_save)
         clickOnViewWithText(R.string.duration_dialog_save)
         tryAction { checkRecord("$name1 - $tag1 ($value1)") }
@@ -255,6 +257,7 @@ class RecordActionsChangeTagTest : BaseUiTest() {
         clickOnViewWithText(R.string.data_edit_change_tag)
         clickOnViewWithText(tag2)
         typeTextIntoView(R.id.etCommentItemField, value2)
+        closeSoftKeyboard()
         clickOnViewWithText(R.string.duration_dialog_save)
         clickOnViewWithText(R.string.duration_dialog_save)
         tryAction { checkRunningRecord("$name2 - $tag2 ($value2)") }

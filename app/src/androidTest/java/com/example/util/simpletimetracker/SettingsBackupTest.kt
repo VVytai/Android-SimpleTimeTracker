@@ -63,6 +63,8 @@ import com.example.util.simpletimetracker.feature_settings.R as settingsR
 @RunWith(AndroidJUnit4::class)
 class SettingsBackupTest : BaseUiTest() {
 
+    // TODO add different version of db file, add limits, suggestions, shortcuts, tag values.
+    // TODO test both version.
     @Test
     fun restore() {
         // Restore
@@ -84,15 +86,13 @@ class SettingsBackupTest : BaseUiTest() {
         checkViewIsDisplayed(
             allOf(withId(changeRecordTypeR.id.etChangeRecordTypeNote), withText("type note")),
         )
-        onView(withText(R.string.change_record_type_additional_hint)).perform(nestedScrollTo())
-        clickOnViewWithText(R.string.change_record_type_additional_hint)
+        onView(withText(R.string.change_record_type_default_duration)).perform(nestedScrollTo())
         checkViewIsDisplayed(
             allOf(
                 withId(changeRecordTypeR.id.tvChangeRecordTypeAdditionalDefaultDurationSelectorValue),
                 withText("1$minuteString"),
             ),
         )
-        pressBack()
         pressBack()
         NavUtils.openSettingsScreen()
         NavUtils.openArchiveScreen()
@@ -458,7 +458,7 @@ class SettingsBackupTest : BaseUiTest() {
         checkViewIsDisplayed(withText("${getString(R.string.record_tag_hint_short)}(3)"))
 
         clickOnViewWithText("${getString(R.string.shortcut_navigation_records)}(3)")
-        recordList[1].let { clickOnViewWithText(it.name) }
+        recordList[1].let(::listOf).forEach { clickOnViewWithText(it.name) }
         clickOnViewWithText(R.string.duration_dialog_save)
         checkViewIsDisplayed(withText("${getString(R.string.shortcut_navigation_records)}(2)"))
 

@@ -974,7 +974,7 @@ class SettingsTest : BaseUiTest() {
     }
 
     @Test
-    fun proportionalMinutes() {
+    fun durationFormat() {
         val name = "Test"
 
         fun checkView(id: Int, text: String) {
@@ -1002,6 +1002,7 @@ class SettingsTest : BaseUiTest() {
         val timeStarted = timeEnded - TimeUnit.MINUTES.toMillis(75)
         val timeFormat1 = "1$hourString 15$minuteString"
         val timeFormat2 = "%.2f$hourString".format(1.25)
+        val timeFormat3 = "75$minuteString"
         testUtils.addActivity(name)
         testUtils.addRecord(name, timeStarted, timeEnded)
 
@@ -1011,33 +1012,40 @@ class SettingsTest : BaseUiTest() {
         // Check settings
         NavUtils.openSettingsScreen()
         NavUtils.openSettingsDisplay()
-        scrollSettingsRecyclerToText(coreR.string.settings_use_proportional_minutes)
-
-        checkCheckboxIsNotChecked(settingsCheckboxBesideText(coreR.string.settings_use_proportional_minutes))
-        checkViewIsDisplayed(
-            settingsSubtitleBesideText(coreR.string.settings_use_proportional_minutes, withText(timeFormat1)),
-        )
+        scrollSettingsRecyclerToText(timeFormat1)
 
         // Change settings
-        clickOnSettingsCheckboxBesideText(coreR.string.settings_use_proportional_minutes)
-        checkCheckboxIsChecked(settingsCheckboxBesideText(coreR.string.settings_use_proportional_minutes))
-        checkViewIsDisplayed(
-            settingsSubtitleBesideText(coreR.string.settings_use_proportional_minutes, withText(timeFormat2)),
+        clickOnSettingsSpinnerBesideText(coreR.string.settings_duration_format)
+        clickOnViewWithText(coreR.string.settings_duration_format_proportional)
+        settingsSpinnerValueBesideText(
+            coreR.string.settings_duration_format_proportional,
+            withText(coreR.string.settings_duration_format),
         )
-
-        // Check format after setting change
+        checkViewIsDisplayed(withText(timeFormat2))
         checkFormat(timeFormat2)
+
+        // Change setting
+        NavUtils.openSettingsScreen()
+        scrollSettingsRecyclerToText(timeFormat2)
+        clickOnSettingsSpinnerBesideText(coreR.string.settings_duration_format)
+        clickOnViewWithText(coreR.string.minutes)
+        settingsSpinnerValueBesideText(
+            coreR.string.settings_duration_format_proportional,
+            withText(coreR.string.minutes),
+        )
+        checkViewIsDisplayed(withText(timeFormat3))
+        checkFormat(timeFormat3)
 
         // Change settings back
         NavUtils.openSettingsScreen()
-        scrollSettingsRecyclerToText(coreR.string.settings_use_proportional_minutes)
-        clickOnSettingsCheckboxBesideText(coreR.string.settings_use_proportional_minutes)
-        checkCheckboxIsNotChecked(settingsCheckboxBesideText(coreR.string.settings_use_proportional_minutes))
-        checkViewIsDisplayed(
-            settingsSubtitleBesideText(coreR.string.settings_use_proportional_minutes, withText(timeFormat1)),
+        scrollSettingsRecyclerToText(timeFormat3)
+        clickOnSettingsSpinnerBesideText(coreR.string.settings_duration_format)
+        clickOnViewWithText(coreR.string.hours)
+        settingsSpinnerValueBesideText(
+            coreR.string.settings_duration_format_proportional,
+            withText(coreR.string.hours),
         )
-
-        // Check format again
+        checkViewIsDisplayed(withText(timeFormat1))
         checkFormat(timeFormat1)
     }
 
@@ -1259,20 +1267,26 @@ class SettingsTest : BaseUiTest() {
         NavUtils.openSettingsAdditional()
         scrollSettingsRecyclerToText(coreR.string.settings_start_of_day)
         checkViewIsDisplayed(
-            settingsSelectorValueBesideText(coreR.string.settings_start_of_day, withText(startOfDayPreview)),
+            settingsSelectorValueBesideText(
+                coreR.string.settings_start_of_day,
+                withText(R.string.settings_inactivity_reminder_disabled),
+            ),
         )
         checkViewIsNotDisplayed(settingsButtonBesideText(coreR.string.settings_start_of_day))
 
         // Change setting to +1
         clickOnSettingsSelectorBesideText(coreR.string.settings_start_of_day)
-        onView(withClassName(equalTo(CustomTimePicker::class.java.name))).perform(setTime(1, 0))
-        clickOnViewWithId(dialogsR.id.btnDateTimeDialogPositive)
+        clickOnViewWithId(dialogsR.id.tvNumberKeyboard1)
+        clickOnViewWithId(dialogsR.id.tvNumberKeyboard0)
+        clickOnViewWithId(dialogsR.id.tvNumberKeyboard0)
+        clickOnViewWithText(coreR.string.duration_dialog_save)
         startOfDayTimeStamp = calendar.timeInMillis + TimeUnit.HOURS.toMillis(1)
         startOfDayPreview = startOfDayTimeStamp.toTimePreview()
+        var startOfDayDuration = startOfDayTimeStamp.toDurationPreview()
 
         // Check new setting
         checkViewIsDisplayed(
-            settingsSelectorValueBesideText(coreR.string.settings_start_of_day, withText(startOfDayPreview)),
+            settingsSelectorValueBesideText(coreR.string.settings_start_of_day, withText(startOfDayDuration)),
         )
         checkViewIsDisplayed(
             settingsButtonBesideText(
@@ -1322,7 +1336,7 @@ class SettingsTest : BaseUiTest() {
 
         // Check new setting
         checkViewIsDisplayed(
-            settingsSelectorValueBesideText(coreR.string.settings_start_of_day, withText(startOfDayPreview)),
+            settingsSelectorValueBesideText(coreR.string.settings_start_of_day, withText(startOfDayDuration)),
         )
         checkViewIsDisplayed(
             settingsButtonBesideText(
@@ -1371,14 +1385,17 @@ class SettingsTest : BaseUiTest() {
         // Change setting to +2, record will be shifted out from one day
         startOfDayTimeStamp = calendar.timeInMillis + TimeUnit.HOURS.toMillis(2)
         startOfDayPreview = startOfDayTimeStamp.toTimePreview()
-
+        startOfDayDuration = startOfDayTimeStamp.toDurationPreview()
         NavUtils.openSettingsScreen()
         scrollSettingsRecyclerToText(coreR.string.settings_start_of_day)
         clickOnSettingsSelectorBesideText(coreR.string.settings_start_of_day)
-        onView(withClassName(equalTo(CustomTimePicker::class.java.name))).perform(setTime(2, 0))
-        clickOnViewWithId(dialogsR.id.btnDateTimeDialogPositive)
+        longClickOnViewWithId(dialogsR.id.btnNumberKeyboardDelete)
+        clickOnViewWithId(dialogsR.id.tvNumberKeyboard2)
+        clickOnViewWithId(dialogsR.id.tvNumberKeyboard0)
+        clickOnViewWithId(dialogsR.id.tvNumberKeyboard0)
+        clickOnViewWithText(coreR.string.duration_dialog_save)
         checkViewIsDisplayed(
-            settingsSelectorValueBesideText(coreR.string.settings_start_of_day, withText(startOfDayPreview)),
+            settingsSelectorValueBesideText(coreR.string.settings_start_of_day, withText(startOfDayDuration)),
         )
         checkViewIsDisplayed(
             settingsButtonBesideText(
@@ -1387,7 +1404,7 @@ class SettingsTest : BaseUiTest() {
         )
         clickOnSettingsButtonBesideText(coreR.string.settings_start_of_day)
         checkViewIsDisplayed(
-            settingsSelectorValueBesideText(coreR.string.settings_start_of_day, withText(startOfDayPreview)),
+            settingsSelectorValueBesideText(coreR.string.settings_start_of_day, withText(startOfDayDuration)),
         )
 
         // Check records
@@ -1425,16 +1442,15 @@ class SettingsTest : BaseUiTest() {
         pressBack()
 
         // Change setting to 0
-        startOfDayTimeStamp = calendar.timeInMillis
-        startOfDayPreview = startOfDayTimeStamp.toTimePreview()
-
         NavUtils.openSettingsScreen()
         scrollSettingsRecyclerToText(coreR.string.settings_start_of_day)
         clickOnSettingsSelectorBesideText(coreR.string.settings_start_of_day)
-        onView(withClassName(equalTo(CustomTimePicker::class.java.name))).perform(setTime(0, 0))
-        clickOnViewWithId(dialogsR.id.btnDateTimeDialogPositive)
+        clickOnViewWithText(coreR.string.duration_dialog_disable)
         checkViewIsDisplayed(
-            settingsSelectorValueBesideText(coreR.string.settings_start_of_day, withText(startOfDayPreview)),
+            settingsSelectorValueBesideText(
+                coreR.string.settings_start_of_day,
+                withText(R.string.settings_inactivity_reminder_disabled),
+            ),
         )
         checkViewIsNotDisplayed(settingsButtonBesideText(coreR.string.settings_start_of_day))
     }
@@ -2733,5 +2749,13 @@ class SettingsTest : BaseUiTest() {
 
     private fun Long.toTimePreview(): String {
         return timeMapper.formatTime(time = this, useMilitaryTime = true, showSeconds = false)
+    }
+
+    private fun Long.toDurationPreview(): String {
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = this
+        calendar.setToStartOfDay()
+        val interval = this - calendar.timeInMillis
+        return timeMapper.formatDuration(interval / 1000)
     }
 }

@@ -36,6 +36,8 @@ import com.example.util.simpletimetracker.domain.recordTag.model.RecordTag
 import com.example.util.simpletimetracker.domain.recordType.model.RecordType
 import com.example.util.simpletimetracker.domain.recordType.model.RecordTypeGoal
 import com.example.util.simpletimetracker.domain.record.model.RunningRecord
+import com.example.util.simpletimetracker.domain.recordShortcut.interactor.RecordShortcutInteractor
+import com.example.util.simpletimetracker.domain.recordShortcut.model.RecordShortcut
 import com.example.util.simpletimetracker.domain.recordTag.model.RecordTagValueType
 import kotlinx.coroutines.runBlocking
 import java.util.concurrent.TimeUnit
@@ -57,6 +59,7 @@ class TestUtils @Inject constructor(
     private val favouriteColorInteractor: FavouriteColorInteractor,
     private val complexRuleInteractor: ComplexRuleInteractor,
     private val activitySuggestionInteractor: ActivitySuggestionInteractor,
+    private val recordShortcutInteractor: RecordShortcutInteractor,
     private val prefsInteractor: PrefsInteractor,
     private val iconImageMapper: IconImageMapper,
     private val clearDataInteractor: ClearDataInteractor,
@@ -356,6 +359,30 @@ class TestUtils @Inject constructor(
         )
 
         activitySuggestionInteractor.add(listOf(data))
+    }
+
+    fun addShortcut(
+        typeName: String,
+        tagNames: List<String> = emptyList(),
+        comment: String = "",
+    ) = runBlocking {
+        val type = recordTypeInteractor.getAll().firstOrNull { it.name == typeName }
+            ?: return@runBlocking
+        val tagIds = recordTagInteractor.getAll().filter { it.name in tagNames }
+            .map { it.id }
+
+        val data = RecordShortcut(
+            typeId = type.id,
+            comment = comment,
+            tags = tagIds.map {
+                RecordBase.Tag(
+                    tagId = it,
+                    numericValue = null,
+                )
+            },
+        )
+
+        recordShortcutInteractor.add(data)
     }
 
     suspend fun getRunningRecords(): List<RunningRecord> {

@@ -211,19 +211,65 @@ class PomodoroTest : BaseUiTest() {
         checkViewIsDisplayed(withId(pomodoroR.id.btnPomodoroStart))
         checkViewIsNotDisplayed(withId(pomodoroR.id.btnPomodoroRestart))
         checkViewIsNotDisplayed(withId(pomodoroR.id.btnPomodoroNext))
+        checkViewIsNotDisplayed(withId(pomodoroR.id.btnPomodoroPrev))
+        checkViewIsNotDisplayed(withId(pomodoroR.id.btnPomodoroPause))
 
         clickOnViewWithId(pomodoroR.id.btnPomodoroStart)
         checkViewIsDisplayed(withId(pomodoroR.id.btnPomodoroRestart))
         checkViewIsDisplayed(withId(pomodoroR.id.btnPomodoroNext))
+        checkViewIsNotDisplayed(withId(pomodoroR.id.btnPomodoroPrev))
+        checkViewIsNotDisplayed(withId(pomodoroR.id.btnPomodoroPause))
 
         clickOnViewWithId(pomodoroR.id.btnPomodoroStart)
         checkViewIsNotDisplayed(withId(pomodoroR.id.btnPomodoroRestart))
         checkViewIsNotDisplayed(withId(pomodoroR.id.btnPomodoroNext))
+        checkViewIsNotDisplayed(withId(pomodoroR.id.btnPomodoroPrev))
+        checkViewIsNotDisplayed(withId(pomodoroR.id.btnPomodoroPause))
+
+        // More controls
+        NavUtils.openPomodoroSettings()
+        clickOnSettingsCheckboxBesideText(R.string.pomodoro_settings_show_more_controls)
+        pressBack()
+
+        // Check visibility
+        checkViewIsDisplayed(withId(pomodoroR.id.btnPomodoroStart))
+        checkViewIsNotDisplayed(withId(pomodoroR.id.btnPomodoroRestart))
+        checkViewIsNotDisplayed(withId(pomodoroR.id.btnPomodoroNext))
+        checkViewIsNotDisplayed(withId(pomodoroR.id.btnPomodoroPrev))
+        checkViewIsNotDisplayed(withId(pomodoroR.id.btnPomodoroPause))
+
+        clickOnViewWithId(pomodoroR.id.btnPomodoroStart)
+        checkViewIsDisplayed(withId(pomodoroR.id.btnPomodoroRestart))
+        checkViewIsDisplayed(withId(pomodoroR.id.btnPomodoroNext))
+        checkViewIsDisplayed(withId(pomodoroR.id.btnPomodoroPrev))
+        checkViewIsDisplayed(withId(pomodoroR.id.btnPomodoroPause))
+
+        clickOnViewWithId(pomodoroR.id.btnPomodoroStart)
+        checkViewIsNotDisplayed(withId(pomodoroR.id.btnPomodoroRestart))
+        checkViewIsNotDisplayed(withId(pomodoroR.id.btnPomodoroNext))
+        checkViewIsNotDisplayed(withId(pomodoroR.id.btnPomodoroPrev))
+        checkViewIsNotDisplayed(withId(pomodoroR.id.btnPomodoroPause))
+
+        // Pause
+        clickOnViewWithId(pomodoroR.id.btnPomodoroStart)
+        clickOnViewWithId(pomodoroR.id.btnPomodoroPause)
+        checkViewIsNotDisplayed(withId(pomodoroR.id.btnPomodoroRestart))
+        checkViewIsNotDisplayed(withId(pomodoroR.id.btnPomodoroNext))
+        checkViewIsNotDisplayed(withId(pomodoroR.id.btnPomodoroPrev))
+        checkViewIsNotDisplayed(withId(pomodoroR.id.btnPomodoroPause))
+        clickOnViewWithId(pomodoroR.id.btnPomodoroStart)
+        checkViewIsDisplayed(withId(pomodoroR.id.btnPomodoroRestart))
+        checkViewIsDisplayed(withId(pomodoroR.id.btnPomodoroNext))
+        checkViewIsDisplayed(withId(pomodoroR.id.btnPomodoroPrev))
+        checkViewIsDisplayed(withId(pomodoroR.id.btnPomodoroPause))
     }
 
     @Test
     fun pomodoroButtons() {
-        runBlocking { prefsInteractor.setPomodoroPeriodsUntilLongBreak(3) }
+        runBlocking {
+            prefsInteractor.setPomodoroPeriodsUntilLongBreak(3)
+            prefsInteractor.setPomodoroShowMoreControls(true)
+        }
         NavUtils.openPomodoro()
 
         checkStates(
@@ -236,6 +282,7 @@ class PomodoroTest : BaseUiTest() {
             startBefore = true,
             stopAfter = false,
         )
+
         clickOnViewWithId(pomodoroR.id.btnPomodoroRestart)
         clickOnViewWithId(pomodoroR.id.btnPomodoroRestart)
         checkStates(
@@ -245,6 +292,32 @@ class PomodoroTest : BaseUiTest() {
             "04" to breakState,
             "24" to focusState,
             "14" to longBreakState,
+            startBefore = false,
+            stopAfter = false,
+        )
+
+        clickOnViewWithId(pomodoroR.id.btnPomodoroNext)
+        checkStates(
+            "04" to breakState,
+            "24" to focusState,
+            "04" to breakState,
+            "24" to focusState,
+            "14" to longBreakState,
+            "24" to focusState,
+            startBefore = false,
+            stopAfter = false,
+        )
+
+        clickOnViewWithId(pomodoroR.id.btnPomodoroPrev)
+        clickOnViewWithId(pomodoroR.id.btnPomodoroPrev)
+        clickOnViewWithId(pomodoroR.id.btnPomodoroPrev)
+        checkStates(
+            "24" to focusState,
+            "14" to longBreakState,
+            "24" to focusState,
+            "04" to breakState,
+            "24" to focusState,
+            "04" to breakState,
             startBefore = false,
             stopAfter = false,
         )

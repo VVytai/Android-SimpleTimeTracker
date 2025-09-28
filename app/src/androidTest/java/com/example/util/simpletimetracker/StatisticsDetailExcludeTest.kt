@@ -342,6 +342,30 @@ class StatisticsDetailExcludeTest : BaseUiTest() {
         checkDefault()
     }
 
+    @Test
+    fun excludeOthers() {
+        runBlocking { prefsInteractor.setChartFilterType(ChartFilterType.ACTIVITY) }
+        addData()
+        openStats()
+        checkDefault()
+
+        // Exclude other activities
+        clickOnView(withText(R.string.activity_hint))
+        onView(allOf(withId(baseR.id.viewStatisticsItem), hasDescendant(withText(name1))))
+            .perform(drag(Direction.RIGHT, 600))
+        checkTagItem(color3, name1, "3$hourString 0$minuteString", "100%")
+        checkViewDoesNotExist(withText(name2))
+        checkViewDoesNotExist(withText(name3))
+        clickOnView(withText(R.string.category_hint))
+        checkTagItem(color1, category1, "3$hourString 0$minuteString", "100%")
+        checkViewDoesNotExist(withText(category2))
+        checkViewDoesNotExist(withText(uncategorized))
+        clickOnView(withText(R.string.record_tag_hint_short))
+        checkTagItem(color2, tag1, "3$hourString 0$minuteString", "100%")
+        checkViewDoesNotExist(withText(tag2))
+        checkViewDoesNotExist(withText(untagged))
+    }
+
     private fun addData() {
         testUtils.addCategory(category1, color = color1)
         testUtils.addCategory(category2, color = color1)

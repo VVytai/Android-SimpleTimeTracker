@@ -15,6 +15,7 @@ import kotlinx.coroutines.runBlocking
 import org.hamcrest.Matchers.allOf
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.util.concurrent.TimeUnit
 import com.example.util.simpletimetracker.R as coreR
 
 @HiltAndroidTest
@@ -31,17 +32,24 @@ class RecordRepeatTest : BaseUiTest() {
     @Test
     fun click() {
         val type = "type"
+        val typeDefault = "typeDefault"
         val tag = "tag"
         val comment = "comment"
         val fullName = "$type - $tag"
 
         // Add data
         testUtils.addActivity(type)
+        testUtils.addActivity(typeDefault, defaultDuration = 1)
         testUtils.addRecordTag(tag)
         testUtils.addRecord(
             typeName = type,
+            timeStarted = calendar.timeInMillis - TimeUnit.MINUTES.toMillis(5),
+            timeEnded = calendar.timeInMillis - TimeUnit.MINUTES.toMillis(5),
             tagNames = listOf(tag),
             comment = comment,
+        )
+        testUtils.addRecord(
+            typeName = typeDefault,
         )
         Thread.sleep(1000)
 

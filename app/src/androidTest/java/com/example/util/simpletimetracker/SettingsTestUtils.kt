@@ -34,7 +34,7 @@ fun clickOnSettingsRecyclerText(@StringRes id: Int) {
 }
 
 fun clickOnSettingsCheckboxBesideText(@StringRes id: Int) {
-    unconstrainedClickOnView(settingsCheckboxBesideText(id))
+    unconstrainedClickOnView(allOf(hasSibling(withText(id)), withId(settingsR.id.checkboxItemSettings)))
 }
 
 fun clickOnSettingsButtonBesideText(@StringRes id: Int) {
