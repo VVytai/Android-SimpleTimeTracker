@@ -26,15 +26,30 @@ fun Calendar.setWeekToFirstDay() {
 }
 
 fun Calendar.shift(shift: Long): Calendar {
-    // Example
-    // shift 6h
+    if (shift == 0L) return this
+    // Used for start of day shift on dst change.
+    // Example, shift 6h:
     // before 2023-03-26T00:00+01:00[Europe/Amsterdam] DST_OFFSET = 0
     // after 2023-03-26T07:00+02:00[Europe/Amsterdam] DST_OFFSET = 3600000
-    // need to compensate one hour.
-    val dstOffsetBefore = get(Calendar.DST_OFFSET)
+    // need to compensate one hour to preserve correct start of day.
+    var dstOffsetBefore = get(Calendar.DST_OFFSET)
     timeInMillis += shift
-    val dstOffsetAfter = get(Calendar.DST_OFFSET)
-    timeInMillis += (dstOffsetBefore - dstOffsetAfter)
+    var dstOffsetAfter = get(Calendar.DST_OFFSET)
+
+    // Compensate.
+    val dstChange = dstOffsetBefore - dstOffsetAfter
+    dstOffsetBefore = dstOffsetAfter
+    timeInMillis += dstChange
+    dstOffsetAfter = get(Calendar.DST_OFFSET)
+
+    // If dst fix causes another dst change - rollback,
+    // it means timestamp after shift falls right on the dst change period,
+    // for example 30 March 2025 Germany 02:00 -> 03:00,
+    // otherwise 00:00 + 2h would be 01:00 after compensation,
+    // and 01:00 - 2h would be different date.
+    if (dstOffsetBefore != dstOffsetAfter) {
+        timeInMillis -= dstChange
+    }
     return this
 }
 
