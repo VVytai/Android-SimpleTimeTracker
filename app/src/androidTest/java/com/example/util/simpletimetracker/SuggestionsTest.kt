@@ -9,6 +9,8 @@ import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.example.util.simpletimetracker.SuggestionsTestUtils.checkSuggestion
+import com.example.util.simpletimetracker.SuggestionsTestUtils.checkType
 import com.example.util.simpletimetracker.feature_base_adapter.recordTypeSuggestion.RecordTypeSuggestionViewData
 import com.example.util.simpletimetracker.utils.BaseUiTest
 import com.example.util.simpletimetracker.utils.Direction
@@ -17,7 +19,6 @@ import com.example.util.simpletimetracker.utils.checkViewDoesNotExist
 import com.example.util.simpletimetracker.utils.checkViewIsDisplayed
 import com.example.util.simpletimetracker.utils.clickOnViewWithText
 import com.example.util.simpletimetracker.utils.drag
-import com.example.util.simpletimetracker.utils.scrollRecyclerToView
 import com.example.util.simpletimetracker.utils.tryAction
 import com.example.util.simpletimetracker.utils.withTag
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -106,30 +107,30 @@ class SuggestionsTest : BaseUiTest() {
         checkType(type4, false)
 
         // Add suggestions
-        checkSuggestion(withText(R.string.running_records_add_type), typesMap[type1], true)
+        checkSuggestion(type1, withText(R.string.running_records_add_type), typesMap[type1], true)
             .performClick()
         clickOnViewWithText(type2)
         clickOnViewWithText(R.string.change_record_save)
-        checkSuggestion(withText(type2), typesMap[type1], true)
+        checkSuggestion(type1, withText(type2), typesMap[type1], true)
 
-        checkSuggestion(withText(R.string.running_records_add_type), typesMap[type2], true)
+        checkSuggestion(type2, withText(R.string.running_records_add_type), typesMap[type2], true)
             .performClick()
         clickOnViewWithText(type1)
         clickOnViewWithText(type3)
         clickOnViewWithText(R.string.change_record_save)
-        checkSuggestion(withText(type1), typesMap[type2], true)
-        checkSuggestion(withText(type3), typesMap[type2], true)
+        checkSuggestion(type2, withText(type1), typesMap[type2], true)
+        checkSuggestion(type2, withText(type3), typesMap[type2], true)
 
-        checkSuggestion(withText(type1), typesMap[type3], false)
-        checkSuggestion(withText(type2), typesMap[type3], false)
-        checkSuggestion(withText(type3), typesMap[type3], false)
+        checkSuggestion(type3, withText(type1), typesMap[type3], false)
+        checkSuggestion(type3, withText(type2), typesMap[type3], false)
+        checkSuggestion(type3, withText(type3), typesMap[type3], false)
 
         // Check that is saved
         clickOnViewWithText(R.string.change_record_save)
         NavUtils.openSuggestions()
-        checkSuggestion(withText(type2), typesMap[type1], true)
-        checkSuggestion(withText(type1), typesMap[type2], true)
-        checkSuggestion(withText(type3), typesMap[type2], true)
+        checkSuggestion(type1, withText(type2), typesMap[type1], true)
+        checkSuggestion(type2, withText(type1), typesMap[type2], true)
+        checkSuggestion(type2, withText(type3), typesMap[type2], true)
     }
 
     @Test
@@ -163,52 +164,52 @@ class SuggestionsTest : BaseUiTest() {
         // Check
         clickOnViewWithText(R.string.activity_suggestions_calculate)
 
-        checkSuggestion(withText(type1), typesMap[type1], false)
-        var type2Matcher = checkSuggestion(withText(type2), typesMap[type1], true)
-        var type3Matcher = checkSuggestion(withText(type3), typesMap[type1], true)
+        checkSuggestion(type1, withText(type1), typesMap[type1], false)
+        var type2Matcher = checkSuggestion(type1, withText(type2), typesMap[type1], true)
+        var type3Matcher = checkSuggestion(type1, withText(type3), typesMap[type1], true)
         onView(type3Matcher).check(isCompletelyLeftOf(type2Matcher))
 
-        checkSuggestion(withText(type1), typesMap[type2], true)
-        checkSuggestion(withText(type2), typesMap[type2], false)
-        checkSuggestion(withText(type3), typesMap[type2], false)
+        checkSuggestion(type2, withText(type1), typesMap[type2], true)
+        checkSuggestion(type2, withText(type2), typesMap[type2], false)
+        checkSuggestion(type2, withText(type3), typesMap[type2], false)
 
-        checkSuggestion(withText(type1), typesMap[type3], true)
-        checkSuggestion(withText(type2), typesMap[type3], false)
-        checkSuggestion(withText(type3), typesMap[type3], false)
+        checkSuggestion(type3, withText(type1), typesMap[type3], true)
+        checkSuggestion(type3, withText(type2), typesMap[type3], false)
+        checkSuggestion(type3, withText(type3), typesMap[type3], false)
 
         // Check buttons
         pressBack()
         NavUtils.openSuggestions()
 
-        checkSuggestion(withText(type1), typesMap[type1], false)
-        checkSuggestion(withText(type2), typesMap[type1], false)
-        checkSuggestion(withText(type3), typesMap[type1], false)
-        checkSuggestion(withText(R.string.shortcut_navigation_statistics), typesMap[type1], true)
+        checkSuggestion(type1, withText(type1), typesMap[type1], false)
+        checkSuggestion(type1, withText(type2), typesMap[type1], false)
+        checkSuggestion(type1, withText(type3), typesMap[type1], false)
+        checkSuggestion(type1, withText(R.string.shortcut_navigation_statistics), typesMap[type1], true)
             .performClick()
-        tryAction { checkSuggestion(withText(type1), typesMap[type1], false) }
-        type2Matcher = checkSuggestion(withText(type2), typesMap[type1], true)
-        type3Matcher = checkSuggestion(withText(type3), typesMap[type1], true)
+        tryAction { checkSuggestion(type1, withText(type1), typesMap[type1], false) }
+        type2Matcher = checkSuggestion(type1, withText(type2), typesMap[type1], true)
+        type3Matcher = checkSuggestion(type1, withText(type3), typesMap[type1], true)
         onView(type3Matcher).check(isCompletelyLeftOf(type2Matcher))
 
         Thread.sleep(500)
-        checkSuggestion(withText(type1), typesMap[type2], false)
-        checkSuggestion(withText(type2), typesMap[type2], false)
-        checkSuggestion(withText(type3), typesMap[type2], false)
-        checkSuggestion(withText(R.string.shortcut_navigation_statistics), typesMap[type2], true)
+        checkSuggestion(type2, withText(type1), typesMap[type2], false)
+        checkSuggestion(type2, withText(type2), typesMap[type2], false)
+        checkSuggestion(type2, withText(type3), typesMap[type2], false)
+        checkSuggestion(type2, withText(R.string.shortcut_navigation_statistics), typesMap[type2], true)
             .performClick()
-        tryAction { checkSuggestion(withText(type1), typesMap[type2], true) }
-        checkSuggestion(withText(type2), typesMap[type2], false)
-        checkSuggestion(withText(type3), typesMap[type2], false)
+        tryAction { checkSuggestion(type2, withText(type1), typesMap[type2], true) }
+        checkSuggestion(type2, withText(type2), typesMap[type2], false)
+        checkSuggestion(type2, withText(type3), typesMap[type2], false)
 
         Thread.sleep(500)
-        checkSuggestion(withText(type1), typesMap[type3], false)
-        checkSuggestion(withText(type2), typesMap[type3], false)
-        checkSuggestion(withText(type3), typesMap[type3], false)
-        checkSuggestion(withText(R.string.shortcut_navigation_statistics), typesMap[type3], true)
+        checkSuggestion(type3, withText(type1), typesMap[type3], false)
+        checkSuggestion(type3, withText(type2), typesMap[type3], false)
+        checkSuggestion(type3, withText(type3), typesMap[type3], false)
+        checkSuggestion(type3, withText(R.string.shortcut_navigation_statistics), typesMap[type3], true)
             .performClick()
-        tryAction { checkSuggestion(withText(type1), typesMap[type3], true) }
-        checkSuggestion(withText(type2), typesMap[type3], false)
-        checkSuggestion(withText(type3), typesMap[type3], false)
+        tryAction { checkSuggestion(type3, withText(type1), typesMap[type3], true) }
+        checkSuggestion(type3, withText(type2), typesMap[type3], false)
+        checkSuggestion(type3, withText(type3), typesMap[type3], false)
     }
 
     @Test
@@ -230,8 +231,8 @@ class SuggestionsTest : BaseUiTest() {
         NavUtils.openSuggestions()
 
         // Check
-        var type2Matcher = checkSuggestion(withText(type2), typesMap[type1], true)
-        var type3Matcher = checkSuggestion(withText(type3), typesMap[type1], true)
+        var type2Matcher = checkSuggestion(type1, withText(type2), typesMap[type1], true)
+        var type3Matcher = checkSuggestion(type1, withText(type3), typesMap[type1], true)
         onView(type2Matcher).check(isCompletelyLeftOf(type3Matcher))
 
         // Reorder
@@ -341,57 +342,11 @@ class SuggestionsTest : BaseUiTest() {
         onView(this).perform(click())
     }
 
-    private fun checkType(
-        name: String,
-        visible: Boolean,
-    ) {
-        val matcher = suggestionTypeMatcher(name)
-        if (visible) {
-            scrollRecyclerToView(R.id.rvActivitySuggestionsList, matcher)
-            checkViewIsDisplayed(matcher)
-        } else {
-            checkViewDoesNotExist(matcher)
-        }
-    }
-
-    private fun checkSuggestion(
-        textMatcher: Matcher<View>,
-        tag: Any?,
-        visible: Boolean,
-    ): Matcher<View> {
-        val matcher = suggestionMatcher(textMatcher, tag)
-        if (visible) {
-            scrollRecyclerToView(R.id.rvActivitySuggestionsList, matcher)
-            checkViewIsDisplayed(matcher)
-        } else {
-            checkViewDoesNotExist(matcher)
-        }
-        return matcher
-    }
-
-    private fun suggestionTypeMatcher(name: String): Matcher<View> {
-        return allOf(
-            withId(R.id.viewRecordTypeItem),
-            hasDescendant(withText(name)),
-        )
-    }
-
     private fun typeMatcher(name: String): Matcher<View> {
         return allOf(
             withId(R.id.viewRecordTypeItem),
             withTag(RecordTypeSuggestionViewData.TEST_TAG),
             hasDescendant(withText(name)),
-        )
-    }
-
-    private fun suggestionMatcher(
-        textMatcher: Matcher<View>,
-        tag: Any?,
-    ): Matcher<View> {
-        return allOf(
-            withId(R.id.cvActivitySuggestionListItemContent),
-            withTag(tag ?: Any()),
-            hasDescendant(textMatcher),
         )
     }
 

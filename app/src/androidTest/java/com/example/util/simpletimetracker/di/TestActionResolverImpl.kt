@@ -11,7 +11,6 @@ import com.example.util.simpletimetracker.navigation.ResultContainer
 import com.example.util.simpletimetracker.navigation.params.action.ActionParams
 import com.example.util.simpletimetracker.navigation.params.action.OpenFileParams
 import javax.inject.Inject
-import com.example.util.simpletimetracker.test.R as testR
 
 class TestActionResolverImpl @Inject constructor(
     private val resultContainer: ResultContainer,
@@ -30,7 +29,7 @@ class TestActionResolverImpl @Inject constructor(
     private fun openFile() {
         resultContainer.sendResult(
             RequestCode.REQUEST_CODE_OPEN_FILE,
-            resourceToUri(testR.raw.db_version_23).toString(),
+            resourceToUri(testDatabaseNameResId).toString(),
         )
     }
 
@@ -43,5 +42,10 @@ class TestActionResolverImpl @Inject constructor(
                 context.resources.getResourceTypeName(resID) + '/' +
                 context.resources.getResourceEntryName(resID),
         )
+    }
+
+    companion object {
+        // Set in test.
+        var testDatabaseNameResId: Int = 0
     }
 }

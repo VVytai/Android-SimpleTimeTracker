@@ -12,4 +12,8 @@ abstract class ButtonsRowViewData : ViewHolderType {
     override fun getUniqueId(): Long = id
 
     override fun isValidType(other: ViewHolderType): Boolean = other is ButtonsRowViewData
+
+    companion object {
+        const val SELECTED_BUTTON_TEST_TAG = "ButtonsRowViewDataSelected"
+    }
 }

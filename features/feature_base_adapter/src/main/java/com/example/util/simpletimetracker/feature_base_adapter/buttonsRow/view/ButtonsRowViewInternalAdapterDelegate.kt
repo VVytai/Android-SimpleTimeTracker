@@ -19,6 +19,7 @@ internal fun createButtonsRowViewInternalAdapterDelegate(
 
         val color = if (item.isSelected) selectedColor else Color.TRANSPARENT
 
+        btnButtonsRowView.tag = if (item.isSelected) ViewData.SELECTED_BUTTON_TEST_TAG else ""
         btnButtonsRowView.text = item.name
         btnButtonsRowView.setBackgroundColor(color)
         btnButtonsRowView.setTextSize(

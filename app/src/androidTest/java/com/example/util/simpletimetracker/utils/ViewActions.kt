@@ -253,3 +253,16 @@ fun tryAction(action: () -> Unit) {
     }
     action()
 }
+
+fun tryActionWithFallback(
+    onError: () -> Unit,
+    action: () -> Unit,
+) {
+    try {
+        action()
+        return
+    } catch (e: Throwable) {
+        onError.invoke()
+    }
+    action()
+}

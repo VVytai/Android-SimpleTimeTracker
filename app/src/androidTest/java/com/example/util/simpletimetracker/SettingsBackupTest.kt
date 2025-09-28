@@ -10,6 +10,7 @@ import androidx.test.espresso.assertion.PositionAssertions.isCompletelyBelow
 import androidx.test.espresso.assertion.PositionAssertions.isTopAlignedWith
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.PickerActions.setDate
+import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.hasSibling
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
@@ -21,9 +22,16 @@ import androidx.test.espresso.matcher.ViewMatchers.withSubstring
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.util.simpletimetracker.core.mapper.ColorMapper
+import com.example.util.simpletimetracker.di.TestActionResolverImpl
 import com.example.util.simpletimetracker.domain.activityFilter.model.ActivityFilter
+import com.example.util.simpletimetracker.domain.activitySuggestion.model.ActivitySuggestion
+import com.example.util.simpletimetracker.domain.color.model.AppColor
 import com.example.util.simpletimetracker.domain.complexRule.model.ComplexRule
 import com.example.util.simpletimetracker.domain.daysOfWeek.model.DayOfWeek
+import com.example.util.simpletimetracker.domain.record.model.Record
+import com.example.util.simpletimetracker.domain.record.model.RecordBase
+import com.example.util.simpletimetracker.domain.recordType.model.RecordType
+import com.example.util.simpletimetracker.feature_base_adapter.buttonsRow.view.ButtonsRowViewData
 import com.example.util.simpletimetracker.feature_dialogs.dateTime.CustomDatePicker
 import com.example.util.simpletimetracker.utils.BaseUiTest
 import com.example.util.simpletimetracker.utils.NavUtils
@@ -39,13 +47,16 @@ import com.example.util.simpletimetracker.utils.nestedScrollTo
 import com.example.util.simpletimetracker.utils.scrollRecyclerInPagerToView
 import com.example.util.simpletimetracker.utils.scrollRecyclerToView
 import com.example.util.simpletimetracker.utils.tryAction
+import com.example.util.simpletimetracker.utils.tryActionWithFallback
 import com.example.util.simpletimetracker.utils.withCardColor
 import com.example.util.simpletimetracker.utils.withCardColorInt
+import com.example.util.simpletimetracker.utils.withNullTag
 import com.example.util.simpletimetracker.utils.withTag
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.equalTo
+import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.Matcher
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -58,15 +69,56 @@ import com.example.util.simpletimetracker.feature_change_record_type.R as change
 import com.example.util.simpletimetracker.feature_dialogs.R as dialogsR
 import com.example.util.simpletimetracker.feature_records.R as recordsR
 import com.example.util.simpletimetracker.feature_settings.R as settingsR
+import com.example.util.simpletimetracker.test.R as testR
 
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
 class SettingsBackupTest : BaseUiTest() {
 
-    // TODO add different version of db file, add limits, suggestions, shortcuts, tag values.
-    // TODO test both version.
+    // TODO shortcuts, tag values.
     @Test
-    fun restore() {
+    fun restore23() {
+        restore(DatabaseVersion.VER_23)
+    }
+
+    @Test
+    fun restore28() {
+        restore(DatabaseVersion.VER_28)
+    }
+
+    @Test
+    fun fullRestore23() {
+        fullRestore(DatabaseVersion.VER_23)
+    }
+
+    @Test
+    fun fullRestore28() {
+        fullRestore(DatabaseVersion.VER_28)
+    }
+
+    @Test
+    fun partialRestore23() {
+        partialRestore(DatabaseVersion.VER_23)
+    }
+
+    @Test
+    fun partialRestore28() {
+        partialRestore(DatabaseVersion.VER_28)
+    }
+
+    @Test
+    fun partialRestoreWithExistingData23() {
+        partialRestoreWithExistingData(DatabaseVersion.VER_23)
+    }
+
+    @Test
+    fun partialRestoreWithExistingData28() {
+        partialRestoreWithExistingData(DatabaseVersion.VER_28)
+    }
+
+    private fun restore(databaseVersion: DatabaseVersion) {
+        setDatabaseFile(databaseVersion)
+
         // Restore
         NavUtils.openSettingsScreen()
         NavUtils.openSettingsBackup()
@@ -78,10 +130,20 @@ class SettingsBackupTest : BaseUiTest() {
         tryAction { checkViewIsDisplayed(withText(R.string.message_backup_restored)) }
         clickOnViewWithId(com.google.android.material.R.id.snackbar_text)
 
+        // TODO check all data
+        // Check data
+        runBlocking {
+            test(activityDataList, recordTypeRepo.getAll())
+            test(recordDataList, testUtils.recordInteractor.getAll())
+            if (databaseVersion == DatabaseVersion.VER_28) {
+                test(suggestionsDataList, testUtils.activitySuggestionInteractor.getAll())
+            }
+        }
+
         // Check types
         NavUtils.openRunningRecordsScreen()
         checkActivities(activityList.take(3))
-        longClickOnView(allOf(withText("type3"), isCompletelyDisplayed()))
+        longClickOnView(getTypeMatcher("type3"))
         onView(withId(changeRecordTypeR.id.etChangeRecordTypeNote)).perform(nestedScrollTo())
         checkViewIsDisplayed(
             allOf(withId(changeRecordTypeR.id.etChangeRecordTypeNote), withText("type note")),
@@ -267,7 +329,7 @@ class SettingsBackupTest : BaseUiTest() {
         pressBack()
 
         // Check fav icons
-        NavUtils.openRunningRecordsScreen()
+        tryActionWithFallback(onError = { pressBack() }) { NavUtils.openRunningRecordsScreen() }
         clickOnViewWithText(R.string.running_records_add_type)
         closeSoftKeyboard()
         clickOnViewWithText(R.string.change_record_type_icon_image_hint)
@@ -314,10 +376,10 @@ class SettingsBackupTest : BaseUiTest() {
         pressBack()
 
         // Check goals
-        longClickOnView(allOf(withText("type1"), isCompletelyDisplayed()))
+        longClickOnView(getTypeMatcher("type1"))
         checkViewIsNotDisplayed(withId(changeRecordTypeR.id.layoutChangeRecordTypeGoalPreview))
         pressBack()
-        longClickOnView(allOf(withText("type3"), isCompletelyDisplayed()))
+        longClickOnView(getTypeMatcher("type3"))
         clickOnViewWithText(R.string.change_record_type_goal_time_hint)
         onView(
             allOf(
@@ -349,16 +411,50 @@ class SettingsBackupTest : BaseUiTest() {
         ).perform(nestedScrollTo()).check(matches(isDisplayed()))
         pressBack()
         pressBack()
+        NavUtils.openSettingsScreen()
+        NavUtils.openCategoriesScreen()
+        clickOnViewWithText("category3")
+        onView(withText(R.string.change_record_type_goal_time_hint)).perform(nestedScrollTo())
+        clickOnViewWithText(R.string.change_record_type_goal_time_hint)
+        onView(
+            allOf(
+                isDescendantOfA(withId(changeRecordTypeR.id.layoutChangeRecordTypeGoalDaily)),
+                withId(changeRecordTypeR.id.etChangeRecordTypeGoalCountValue),
+                withText("5"),
+            ),
+        ).perform(nestedScrollTo()).check(matches(isDisplayed()))
+        onView(
+            allOf(
+                isDescendantOfA(withId(changeRecordTypeR.id.layoutChangeRecordTypeGoalDaily)),
+                withId(R.id.btnButtonsRowView),
+                when (databaseVersion) {
+                    DatabaseVersion.VER_23 -> withText(R.string.change_record_type_goal_time_hint)
+                    DatabaseVersion.VER_28 -> withText(R.string.change_record_type_limit_time_hint)
+                },
+                withTag(ButtonsRowViewData.SELECTED_BUTTON_TEST_TAG),
+            ),
+        ).perform(nestedScrollTo()).check(matches(isDisplayed()))
+        pressBack()
+        pressBack()
+        pressBack()
 
         // Check rules
-        NavUtils.openSettingsScreen()
         NavUtils.openSettingsAdditional()
         NavUtils.openComplexRules()
         checkRules(ruleList)
+        pressBack()
+
+        if (databaseVersion == DatabaseVersion.VER_28) {
+            // Check suggestions
+            NavUtils.openSuggestions()
+            checkSuggestions(suggestionsList)
+            pressBack()
+        }
     }
 
-    @Test
-    fun fullRestore() {
+    private fun fullRestore(databaseVersion: DatabaseVersion) {
+        setDatabaseFile(databaseVersion)
+
         runBlocking { prefsInteractor.setShowActivityFilters(false) }
 
         // Restore
@@ -378,13 +474,15 @@ class SettingsBackupTest : BaseUiTest() {
         clickOnViewWithText("filter2")
 
         // Check types
-        checkViewIsDisplayed(allOf(withId(R.id.viewRecordTypeItem), hasDescendant(withText("type1"))))
-        checkViewIsDisplayed(allOf(withId(R.id.viewRecordTypeItem), hasDescendant(withText("type2"))))
-        checkViewIsDisplayed(allOf(withId(R.id.viewRecordTypeItem), hasDescendant(withText("type3"))))
+        checkViewIsDisplayed(getTypeMatcher("type1"))
+        checkViewIsDisplayed(getTypeMatcher("type2"))
+        checkViewIsDisplayed(getTypeMatcher("type3"))
     }
 
-    @Test
-    fun partialRestore() {
+    @Suppress("ComplexRedundantLet")
+    private fun partialRestore(databaseVersion: DatabaseVersion) {
+        setDatabaseFile(databaseVersion)
+
         // Restore
         NavUtils.openSettingsScreen()
         NavUtils.openSettingsBackup()
@@ -402,6 +500,9 @@ class SettingsBackupTest : BaseUiTest() {
         checkViewIsDisplayed(withText("${getString(R.string.change_record_favourite_icons_hint)}(2)"))
         checkViewIsDisplayed(withText("${getString(R.string.change_record_favourite_colors_hint)}(2)"))
         checkViewIsDisplayed(withText("${getString(R.string.settings_complex_rules)}(3)"))
+        if (databaseVersion == DatabaseVersion.VER_28) {
+            checkViewIsDisplayed(withText("${getString(R.string.settings_activity_suggestions)}(3)"))
+        }
 
         // Check filtering
         // Activities
@@ -440,6 +541,11 @@ class SettingsBackupTest : BaseUiTest() {
         clickOnViewWithText("${getString(R.string.settings_complex_rules)}(3)")
         checkRules(ruleList)
         pressBack()
+        if (databaseVersion == DatabaseVersion.VER_28) {
+            clickOnViewWithText("${getString(R.string.settings_activity_suggestions)}(3)")
+            checkSuggestionsFilters(suggestionsList)
+            pressBack()
+        }
 
         // Check filtering
         clickOnViewWithText("${getString(R.string.activity_hint)}(4)")
@@ -458,7 +564,7 @@ class SettingsBackupTest : BaseUiTest() {
         checkViewIsDisplayed(withText("${getString(R.string.record_tag_hint_short)}(3)"))
 
         clickOnViewWithText("${getString(R.string.shortcut_navigation_records)}(3)")
-        recordList[1].let(::listOf).forEach { clickOnViewWithText(it.name) }
+        recordList[1].let { clickOnViewWithText(it.name) }
         clickOnViewWithText(R.string.duration_dialog_save)
         checkViewIsDisplayed(withText("${getString(R.string.shortcut_navigation_records)}(2)"))
 
@@ -494,6 +600,20 @@ class SettingsBackupTest : BaseUiTest() {
         clickOnViewWithText(R.string.duration_dialog_save)
         checkViewIsDisplayed(withText("${getString(R.string.settings_complex_rules)}(2)"))
 
+        if (databaseVersion == DatabaseVersion.VER_28) {
+            clickOnViewWithText("${getString(R.string.settings_activity_suggestions)}(2)")
+            suggestionsList[1].let {
+                clickOnView(
+                    allOf(
+                        withId(R.id.rvActivitySuggestionItemActions),
+                        hasDescendant(withText(it.forTypeName)),
+                    ),
+                )
+            }
+            clickOnViewWithText(R.string.duration_dialog_save)
+            checkViewIsDisplayed(withText("${getString(R.string.settings_activity_suggestions)}(1)"))
+        }
+
         // Check consistency
         removeFilter(R.string.activity_hint)
         removeFilter(R.string.category_hint)
@@ -507,6 +627,9 @@ class SettingsBackupTest : BaseUiTest() {
         checkViewIsDisplayed(withText("${getString(R.string.change_record_favourite_icons_hint)}(1)"))
         checkViewIsDisplayed(withText("${getString(R.string.change_record_favourite_colors_hint)}(1)"))
         checkViewIsDisplayed(withText(getString(R.string.settings_complex_rules)))
+        if (databaseVersion == DatabaseVersion.VER_28) {
+            checkViewIsDisplayed(withText(getString(R.string.settings_activity_suggestions)))
+        }
 
         // Restore only activities
         removeFilter(R.string.change_activity_filters_hint)
@@ -525,13 +648,14 @@ class SettingsBackupTest : BaseUiTest() {
 
         // Check data
         NavUtils.openRunningRecordsScreen()
-        activityList.take(3).forEach { checkViewIsDisplayed(withText(it.name)) }
-        activityList.drop(3).forEach { checkViewDoesNotExist(withText(it.name)) }
+        activityList.take(3).forEach { checkViewIsDisplayed(getTypeMatcher(it.name)) }
+        activityList.drop(3).forEach { checkViewDoesNotExist(getTypeMatcher(it.name)) }
     }
 
     @Suppress("ReplaceGetOrSet", "ComplexRedundantLet")
-    @Test
-    fun partialRestoreWithExistingData() {
+    private fun partialRestoreWithExistingData(databaseVersion: DatabaseVersion) {
+        setDatabaseFile(databaseVersion)
+
         val colors = ColorMapper.getAvailableColors()
 
         // Add data
@@ -583,10 +707,18 @@ class SettingsBackupTest : BaseUiTest() {
         ruleList.first().let {
             testUtils.addComplexRule(
                 action = ComplexRule.Action.AllowMultitasking,
-                startingTypeNames = listOf("type1"),
-                currentTypeNames = listOf("type2"),
-                daysOfWeek = listOf(DayOfWeek.SUNDAY, DayOfWeek.MONDAY),
+                startingTypeNames = it.startingTypeNames,
+                currentTypeNames = it.currentTypeNames,
+                daysOfWeek = it.daysOfWeek,
             )
+        }
+        if (databaseVersion == DatabaseVersion.VER_28) {
+            suggestionsList.first().let {
+                testUtils.addSuggestion(
+                    forTypeName = it.forTypeName,
+                    names = it.typeNames,
+                )
+            }
         }
 
         // Restore
@@ -606,6 +738,9 @@ class SettingsBackupTest : BaseUiTest() {
         checkViewIsDisplayed(withText("${getString(R.string.change_record_favourite_icons_hint)}(1)"))
         checkViewIsDisplayed(withText("${getString(R.string.change_record_favourite_colors_hint)}(1)"))
         checkViewIsDisplayed(withText("${getString(R.string.settings_complex_rules)}(2)"))
+        if (databaseVersion == DatabaseVersion.VER_28) {
+            checkViewIsDisplayed(withText("${getString(R.string.settings_activity_suggestions)}(2)"))
+        }
 
         // Check filtering
         // Activities
@@ -644,6 +779,12 @@ class SettingsBackupTest : BaseUiTest() {
         clickOnViewWithText("${getString(R.string.settings_complex_rules)}(2)")
         checkRules(ruleList.drop(1))
         pressBack()
+        // Suggestions
+        if (databaseVersion == DatabaseVersion.VER_28) {
+            clickOnViewWithText("${getString(R.string.settings_activity_suggestions)}(2)")
+            checkSuggestionsFilters(suggestionsList.drop(1))
+            pressBack()
+        }
 
         // Check consistency
         removeFilter(R.string.activity_hint)
@@ -658,6 +799,9 @@ class SettingsBackupTest : BaseUiTest() {
         checkViewIsDisplayed(withText("${getString(R.string.change_record_favourite_icons_hint)}(1)"))
         checkViewIsDisplayed(withText("${getString(R.string.change_record_favourite_colors_hint)}(1)"))
         checkViewIsDisplayed(withText("${getString(R.string.settings_complex_rules)}(1)"))
+        if (databaseVersion == DatabaseVersion.VER_28) {
+            checkViewIsDisplayed(withText(getString(R.string.settings_activity_suggestions)))
+        }
 
         // Restore only activities
         removeFilter(R.string.shortcut_navigation_records)
@@ -678,8 +822,15 @@ class SettingsBackupTest : BaseUiTest() {
 
         // Check data
         NavUtils.openRunningRecordsScreen()
-        activityList.take(3).forEach { checkViewIsDisplayed(withText(it.name)) }
-        activityList.last().let { checkViewDoesNotExist(withText(it.name)) }
+        activityList.take(3).forEach { checkViewIsDisplayed(getTypeMatcher(it.name)) }
+        activityList.last().let { checkViewDoesNotExist(getTypeMatcher(it.name)) }
+    }
+
+    private fun setDatabaseFile(version: DatabaseVersion) {
+        TestActionResolverImpl.testDatabaseNameResId = when (version) {
+            DatabaseVersion.VER_23 -> testR.raw.db_version_23
+            DatabaseVersion.VER_28 -> testR.raw.db_version_28
+        }
     }
 
     private fun getIconResIdByName(name: String): Int {
@@ -709,6 +860,7 @@ class SettingsBackupTest : BaseUiTest() {
             checkViewIsDisplayed(
                 allOf(
                     withId(R.id.viewRecordTypeItem),
+                    withNullTag(),
                     hasDescendant(withText(it.name)),
                     hasDescendant(withTag(getIconResIdByName(it.icon))),
                     hasDescendant(getColorMatcher(it.color)),
@@ -831,6 +983,50 @@ class SettingsBackupTest : BaseUiTest() {
         }
     }
 
+    private fun checkSuggestions(
+        data: List<SuggestionTestData>,
+    ) = runBlocking {
+        val typesMap = testUtils.recordTypeInteractor.getAll().associate { it.name to it.id }
+        data.forEach { suggestion ->
+            SuggestionsTestUtils.checkType(
+                name = suggestion.forTypeName,
+                visible = true,
+            )
+            suggestion.typeNames.forEach {
+                SuggestionsTestUtils.checkSuggestion(
+                    forType = suggestion.forTypeName,
+                    textMatcher = withText(it),
+                    tag = typesMap[suggestion.forTypeName],
+                    visible = true,
+                )
+            }
+        }
+    }
+
+    private fun checkSuggestionsFilters(
+        data: List<SuggestionTestData>,
+    ) {
+        data.forEach { suggestion ->
+            val matchers = mutableListOf<Matcher<View>>()
+            matchers += withId(R.id.containerActivitySuggestionItem)
+            matchers += hasDescendant(
+                allOf(
+                    withId(R.id.rvActivitySuggestionItemActions),
+                    hasDescendant(withText(suggestion.forTypeName)),
+                ),
+            )
+            suggestion.typeNames.forEach {
+                matchers += hasDescendant(
+                    allOf(
+                        withId(R.id.rvActivitySuggestionItemConditions),
+                        hasDescendant(withText(it)),
+                    ),
+                )
+            }
+            checkViewIsDisplayed(allOf(matchers))
+        }
+    }
+
     private fun getColorMatcher(data: ColorTestData): Matcher<View> {
         return when (data) {
             is ColorTestData.Position -> withCardColor(getColorByPosition(data.value))
@@ -839,11 +1035,35 @@ class SettingsBackupTest : BaseUiTest() {
         }
     }
 
+    private fun getTypeMatcher(name: String): Matcher<View> {
+        return allOf(
+            withId(R.id.viewRecordTypeItem),
+            withNullTag(),
+            hasDescendant(withText(name)),
+        )
+    }
+
+    private fun <T> test(testDataList: List<T>, actualDataList: List<T>) {
+        testDataList.forEach { testData ->
+            assertThat(
+                "expected $testData in $actualDataList",
+                testData in actualDataList,
+                `is`(true),
+            )
+        }
+    }
+
     private val activityList = listOf(
         ActivityTestData("type1", "ic_360_24px", ColorTestData.Position(1)),
         ActivityTestData("type2", "ic_add_business_24px", ColorTestData.Position(2)),
         ActivityTestData("type3", "ic_add_location_24px", ColorTestData.Position(3)),
         ActivityTestData("type4", "ic_add_location_alt_24px", ColorTestData.Custom(0xff646464.toInt())),
+    )
+    private val activityDataList = listOf(
+        RecordType(1, "type1", "ic_360_24px", AppColor(1, ""), 0, ""),
+        RecordType(2, "type2", "ic_add_business_24px", AppColor(2, ""), 0, ""),
+        RecordType(3, "type3", "ic_add_location_24px", AppColor(3, ""), 60, "type note"),
+        RecordType(4, "type4", "ic_add_location_alt_24px", AppColor(0, 0xff646464.toInt().toString()), 0, "", true),
     )
     private val categoryList = listOf(
         CategoryTestData("category1", ColorTestData.Position(18)),
@@ -861,6 +1081,12 @@ class SettingsBackupTest : BaseUiTest() {
         RecordTestData("type2 - tag2, tag3", ColorTestData.Position(2), "ic_add_business_24px", 14, 15, 1, null),
         RecordTestData("type3 - tag3", ColorTestData.Position(3), "ic_add_location_24px", 12, 13, 1, "record comment"),
         RecordTestData("type4", ColorTestData.Custom(0xff646464.toInt()), "ic_add_location_alt_24px", 9, 11, 2, null),
+    )
+    private val recordDataList = listOf(
+        Record(1, 1, 1727096400000, 1727100000000, "", emptyList()),
+        Record(2, 2, 1727089200000, 1727092800000, "", listOf(RecordBase.Tag(2, null), RecordBase.Tag(3, null))),
+        Record(4, 3, 1727082000000, 1727085600000, "record comment", listOf(RecordBase.Tag(3, null))),
+        Record(5, 4, 1727071200000, 1727078400000, "", emptyList()),
     )
     private val activityFilterList = listOf(
         ActivityFilterTestData("filter1", ColorTestData.Position(0)),
@@ -896,6 +1122,30 @@ class SettingsBackupTest : BaseUiTest() {
             currentTypeNames = listOf("type2"),
         ),
     )
+    private val suggestionsList = listOf(
+        SuggestionTestData(
+            forTypeName = "type1",
+            typeNames = listOf("type2"),
+        ),
+        SuggestionTestData(
+            forTypeName = "type3",
+            typeNames = listOf("type1", "type2"),
+        ),
+        SuggestionTestData(
+            forTypeName = "type2",
+            typeNames = listOf("type3"),
+        ),
+    )
+    private val suggestionsDataList = listOf(
+        ActivitySuggestion(1, 1, listOf(2L).toSet()),
+        ActivitySuggestion(2, 3, listOf(1L, 2L).toSet()),
+        ActivitySuggestion(3, 2, listOf(3L).toSet()),
+    )
+
+    private enum class DatabaseVersion {
+        VER_23,
+        VER_28,
+    }
 
     private data class ActivityTestData(
         val name: String,
@@ -939,8 +1189,8 @@ class SettingsBackupTest : BaseUiTest() {
     ) {
 
         sealed interface Type {
-            object Image : Type
-            object Emoji : Type
+            data object Image : Type
+            data object Emoji : Type
         }
     }
 
@@ -954,6 +1204,11 @@ class SettingsBackupTest : BaseUiTest() {
         val startingTypeNames: List<String> = emptyList(),
         val currentTypeNames: List<String> = emptyList(),
         val daysOfWeek: List<DayOfWeek> = emptyList(),
+    )
+
+    private data class SuggestionTestData(
+        val forTypeName: String,
+        val typeNames: List<String>,
     )
 
     private sealed interface ColorTestData {

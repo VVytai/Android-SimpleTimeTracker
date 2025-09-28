@@ -11,12 +11,13 @@ import androidx.core.content.ContextCompat
 import androidx.test.espresso.Root
 import androidx.test.espresso.matcher.BoundedMatcher
 import androidx.test.espresso.matcher.ViewMatchers.withTagValue
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.slider.Slider
-import kotlin.math.roundToInt
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
+import kotlin.math.roundToInt
 
 fun withCardColor(expectedId: Int): Matcher<View> =
     object : BoundedMatcher<View, CardView>(CardView::class.java) {
@@ -43,8 +44,34 @@ fun withCardColorInt(@ColorInt colorInt: Int): Matcher<View> =
         }
     }
 
+// TODO doesn't work.
+fun withButtonColor(expectedId: Int): Matcher<View> =
+    object : BoundedMatcher<View, MaterialButton>(MaterialButton::class.java) {
+        override fun matchesSafely(view: MaterialButton): Boolean {
+            val colorInt: Int = ContextCompat.getColor(view.context, expectedId)
+            return view.backgroundTintList?.defaultColor == colorInt
+        }
+
+        override fun describeTo(description: Description) {
+            description.appendText("with button color: ")
+            description.appendValue(expectedId)
+        }
+    }
+
 fun withTag(tagValueMatcher: Any): Matcher<View> =
     withTagValue(equalTo(tagValueMatcher))
+
+fun withNullTag(): Matcher<View> {
+    return object : TypeSafeMatcher<View>() {
+        override fun matchesSafely(view: View?): Boolean {
+            return view?.tag == null
+        }
+
+        override fun describeTo(description: Description) {
+            description.appendText("view with null tag")
+        }
+    }
+}
 
 fun isToast(): Matcher<Root> {
     return object : TypeSafeMatcher<Root>() {

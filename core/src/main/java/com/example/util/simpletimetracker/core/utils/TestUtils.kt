@@ -44,8 +44,8 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class TestUtils @Inject constructor(
-    private val recordTypeInteractor: RecordTypeInteractor,
-    private val recordInteractor: RecordInteractor,
+    val recordTypeInteractor: RecordTypeInteractor,
+    val recordInteractor: RecordInteractor,
     private val runningRecordInteractor: RunningRecordInteractor,
     private val categoryInteractor: CategoryInteractor,
     private val recordTypeCategoryInteractor: RecordTypeCategoryInteractor,
@@ -58,7 +58,7 @@ class TestUtils @Inject constructor(
     private val favouriteIconInteractor: FavouriteIconInteractor,
     private val favouriteColorInteractor: FavouriteColorInteractor,
     private val complexRuleInteractor: ComplexRuleInteractor,
-    private val activitySuggestionInteractor: ActivitySuggestionInteractor,
+    val activitySuggestionInteractor: ActivitySuggestionInteractor,
     private val recordShortcutInteractor: RecordShortcutInteractor,
     private val prefsInteractor: PrefsInteractor,
     private val iconImageMapper: IconImageMapper,
