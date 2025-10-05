@@ -21,6 +21,7 @@ import com.example.util.simpletimetracker.domain.recordType.model.RecordType
 import com.example.util.simpletimetracker.domain.base.ResultContainer
 import com.example.util.simpletimetracker.domain.record.model.RunningRecord
 import com.example.util.simpletimetracker.domain.base.CurrentTimestampProvider
+import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
@@ -90,13 +91,13 @@ class AddRunningRecordMediatorTest {
             id = typeId2,
             timeStarted = 2,
             comment = "comment2",
-            tagIds = listOf(tagId2),
+            tags = listOf(tag(tagId2)),
         ),
         RunningRecord(
             id = typeId3,
             timeStarted = 3,
             comment = "comment3",
-            tagIds = listOf(tagId3),
+            tags = listOf(tag(tagId3)),
         ),
     )
 
@@ -149,7 +150,7 @@ class AddRunningRecordMediatorTest {
         verify(tagSelectionResult, never()).invoke(any())
         verify(subject).startTimer(
             typeId = eq(typeId),
-            tagIds = eq(emptyList()),
+            tags = eq(emptyList()),
             comment = eq(""),
             timeStarted = eq(AddRunningRecordMediator.StartTime.TakeCurrent),
             updateNotificationSwitch = eq(true),
@@ -180,7 +181,7 @@ class AddRunningRecordMediatorTest {
         verify(tagSelectionResult).invoke(eq(result))
         verify(subject, never()).startTimer(
             typeId = any(),
-            tagIds = any(),
+            tags = any(),
             comment = any(),
             timeStarted = any(),
             updateNotificationSwitch = any(),
@@ -207,7 +208,7 @@ class AddRunningRecordMediatorTest {
         verify(tagSelectionResult, never()).invoke(any())
         verify(subject).startTimer(
             typeId = eq(typeId),
-            tagIds = eq(emptyList()),
+            tags = eq(emptyList()),
             comment = eq(""),
             timeStarted = eq(AddRunningRecordMediator.StartTime.TakeCurrent),
             updateNotificationSwitch = eq(false),
@@ -220,7 +221,7 @@ class AddRunningRecordMediatorTest {
         // When
         subject.startTimer(
             typeId = typeId,
-            tagIds = emptyList(),
+            tags = emptyList(),
             comment = "",
             timeStarted = AddRunningRecordMediator.StartTime.TakeCurrent,
             updateNotificationSwitch = true,
@@ -233,7 +234,7 @@ class AddRunningRecordMediatorTest {
                 id = typeId,
                 timeStarted = currentTime,
                 comment = "",
-                tagIds = emptyList(),
+                tags = emptyList(),
             ),
         )
         verify(updateExternalViewsInteractor).onRunningRecordAdd(
@@ -247,7 +248,7 @@ class AddRunningRecordMediatorTest {
         // When
         subject.startTimer(
             typeId = 1,
-            tagIds = listOf(tagId),
+            tags = listOf(tag(tagId)),
             comment = "comment",
             timeStarted = AddRunningRecordMediator.StartTime.TakeCurrent,
             updateNotificationSwitch = true,
@@ -272,7 +273,7 @@ class AddRunningRecordMediatorTest {
         // When
         subject.startTimer(
             typeId = typeId,
-            tagIds = listOf(tagId),
+            tags = listOf(tag(tagId)),
             comment = "comment",
             timeStarted = AddRunningRecordMediator.StartTime.TakeCurrent,
             updateNotificationSwitch = true,
@@ -298,7 +299,7 @@ class AddRunningRecordMediatorTest {
         // When
         subject.startTimer(
             typeId = typeId,
-            tagIds = listOf(tagId),
+            tags = listOf(tag(tagId)),
             comment = "comment",
             timeStarted = AddRunningRecordMediator.StartTime.TakeCurrent,
             updateNotificationSwitch = true,
@@ -329,7 +330,7 @@ class AddRunningRecordMediatorTest {
         // When
         subject.startTimer(
             typeId = typeId,
-            tagIds = listOf(tagId),
+            tags = listOf(tag(tagId)),
             comment = "comment",
             timeStarted = AddRunningRecordMediator.StartTime.TakeCurrent,
             updateNotificationSwitch = true,
@@ -342,7 +343,7 @@ class AddRunningRecordMediatorTest {
                 id = typeId,
                 timeStarted = currentTime,
                 comment = "comment",
-                tagIds = listOf(tagId, tagId2),
+                tags = listOf(tag(tagId), tag(tagId2)),
             ),
         )
     }
@@ -363,7 +364,7 @@ class AddRunningRecordMediatorTest {
         // When
         subject.startTimer(
             typeId = typeId,
-            tagIds = listOf(tagId),
+            tags = listOf(tag(tagId)),
             comment = "comment",
             timeStarted = AddRunningRecordMediator.StartTime.TakeCurrent,
             updateNotificationSwitch = true,
@@ -400,7 +401,7 @@ class AddRunningRecordMediatorTest {
         // When
         subject.startTimer(
             typeId = typeId,
-            tagIds = listOf(tagId),
+            tags = listOf(tag(tagId)),
             comment = "comment",
             timeStarted = AddRunningRecordMediator.StartTime.TakeCurrent,
             updateNotificationSwitch = true,
@@ -436,7 +437,7 @@ class AddRunningRecordMediatorTest {
         // When
         subject.startTimer(
             typeId = typeId,
-            tagIds = listOf(tagId),
+            tags = listOf(tag(tagId)),
             comment = "comment",
             timeStarted = AddRunningRecordMediator.StartTime.TakeCurrent,
             updateNotificationSwitch = true,
@@ -454,7 +455,7 @@ class AddRunningRecordMediatorTest {
                 id = typeId,
                 timeStarted = currentTime,
                 comment = "comment",
-                tagIds = listOf(tagId, tagId2),
+                tags = listOf(tag(tagId), tag(tagId2)),
             ),
         )
     }
@@ -472,7 +473,7 @@ class AddRunningRecordMediatorTest {
                     timeStarted = 0,
                     timeEnded = 0,
                     comment = "",
-                    tagIds = emptyList(),
+                    tags = emptyList(),
                 ),
                 Record(
                     id = 0L,
@@ -480,7 +481,7 @@ class AddRunningRecordMediatorTest {
                     timeStarted = 0,
                     timeEnded = 0,
                     comment = "",
-                    tagIds = emptyList(),
+                    tags = emptyList(),
                 ),
             ),
         )
@@ -494,7 +495,7 @@ class AddRunningRecordMediatorTest {
         // When
         subject.startTimer(
             typeId = typeId,
-            tagIds = listOf(tagId),
+            tags = listOf(tag(tagId)),
             comment = "comment",
             timeStarted = AddRunningRecordMediator.StartTime.TakeCurrent,
             updateNotificationSwitch = true,
@@ -523,7 +524,7 @@ class AddRunningRecordMediatorTest {
                     timeStarted = 0,
                     timeEnded = 0,
                     comment = "",
-                    tagIds = emptyList(),
+                    tags = emptyList(),
                 ),
                 Record(
                     id = 0L,
@@ -531,7 +532,7 @@ class AddRunningRecordMediatorTest {
                     timeStarted = 0,
                     timeEnded = 0,
                     comment = "",
-                    tagIds = emptyList(),
+                    tags = emptyList(),
                 ),
             ),
         )
@@ -545,7 +546,7 @@ class AddRunningRecordMediatorTest {
         // When
         subject.startTimer(
             typeId = typeId,
-            tagIds = listOf(tagId),
+            tags = listOf(tag(tagId)),
             comment = "comment",
             timeStarted = AddRunningRecordMediator.StartTime.Timestamp(timestamp),
             updateNotificationSwitch = true,
@@ -570,7 +571,7 @@ class AddRunningRecordMediatorTest {
         // When
         subject.startTimer(
             typeId = typeId,
-            tagIds = listOf(tagId),
+            tags = listOf(tag(tagId)),
             comment = "comment",
             timeStarted = AddRunningRecordMediator.StartTime.TakeCurrent,
             updateNotificationSwitch = true,
@@ -587,7 +588,7 @@ class AddRunningRecordMediatorTest {
                     timeStarted = currentTime,
                     timeEnded = currentTime + 1000L,
                     comment = "comment",
-                    tagIds = listOf(tagId),
+                    tags = listOf(tag(tagId)),
                 ),
             ),
             updateNotificationSwitch = eq(true),
@@ -604,7 +605,7 @@ class AddRunningRecordMediatorTest {
         // When
         subject.startTimer(
             typeId = typeId,
-            tagIds = listOf(tagId),
+            tags = listOf(tag(tagId)),
             comment = "comment",
             timeStarted = AddRunningRecordMediator.StartTime.TakeCurrent,
             updateNotificationSwitch = true,
@@ -617,7 +618,7 @@ class AddRunningRecordMediatorTest {
                 id = typeId,
                 timeStarted = currentTime,
                 comment = "comment",
-                tagIds = listOf(tagId),
+                tags = listOf(tag(tagId)),
             ),
         )
         verify(addRecordMediator, never()).add(
@@ -639,7 +640,7 @@ class AddRunningRecordMediatorTest {
 //                    timeStarted = 0,
 //                    timeEnded = 0,
 //                    comment = "",
-//                    tagIds = emptyList(),
+//                    tags = emptyList(),
 //                ),
 //                Record(
 //                    id = 0L,
@@ -647,7 +648,7 @@ class AddRunningRecordMediatorTest {
 //                    timeStarted = 0,
 //                    timeEnded = 0,
 //                    comment = "",
-//                    tagIds = emptyList(),
+//                    tags = emptyList(),
 //                ),
 //            ),
 //        )
@@ -655,7 +656,7 @@ class AddRunningRecordMediatorTest {
         // When
         subject.startTimer(
             typeId = typeId,
-            tagIds = listOf(tagId),
+            tags = listOf(tag(tagId)),
             comment = "comment",
             timeStarted = AddRunningRecordMediator.StartTime.TakeCurrent,
             updateNotificationSwitch = true,
@@ -672,7 +673,7 @@ class AddRunningRecordMediatorTest {
                     timeStarted = currentTime - TimeUnit.MINUTES.toMillis(5),
                     timeEnded = currentTime,
                     comment = "comment",
-                    tagIds = listOf(tagId),
+                    tags = listOf(tag(tagId)),
                 ),
             ),
             updateNotificationSwitch = eq(true),
@@ -691,7 +692,7 @@ class AddRunningRecordMediatorTest {
                     timeStarted = 1000,
                     timeEnded = 2000,
                     comment = "",
-                    tagIds = emptyList(),
+                    tags = emptyList(),
                 ),
             ),
         )
@@ -699,7 +700,7 @@ class AddRunningRecordMediatorTest {
         // When
         subject.startTimer(
             typeId = typeId,
-            tagIds = listOf(tagId),
+            tags = listOf(tag(tagId)),
             comment = "comment",
             timeStarted = AddRunningRecordMediator.StartTime.TakeCurrent,
             updateNotificationSwitch = true,
@@ -716,7 +717,7 @@ class AddRunningRecordMediatorTest {
                     timeStarted = 2000,
                     timeEnded = currentTime,
                     comment = "comment",
-                    tagIds = listOf(tagId),
+                    tags = listOf(tag(tagId)),
                 ),
             ),
             updateNotificationSwitch = eq(true),
@@ -735,7 +736,7 @@ class AddRunningRecordMediatorTest {
                     timeStarted = 1000,
                     timeEnded = 2000,
                     comment = "comment1",
-                    tagIds = listOf(tagId),
+                    tags = listOf(tag(tagId)),
                 ),
             ),
         )
@@ -743,7 +744,7 @@ class AddRunningRecordMediatorTest {
         // When
         subject.startTimer(
             typeId = typeId,
-            tagIds = listOf(tagId2),
+            tags = listOf(tag(tagId2)),
             comment = "comment2",
             timeStarted = AddRunningRecordMediator.StartTime.TakeCurrent,
             updateNotificationSwitch = true,
@@ -760,7 +761,7 @@ class AddRunningRecordMediatorTest {
                     timeStarted = 1000,
                     timeEnded = currentTime,
                     comment = "comment2",
-                    tagIds = listOf(tagId2),
+                    tags = listOf(tag(tagId2)),
                 ),
             ),
             updateNotificationSwitch = eq(true),
@@ -779,7 +780,7 @@ class AddRunningRecordMediatorTest {
                     timeStarted = 1000,
                     timeEnded = 2000,
                     comment = "comment1",
-                    tagIds = listOf(tagId),
+                    tags = listOf(tag(tagId)),
                 ),
             ),
         )
@@ -787,7 +788,7 @@ class AddRunningRecordMediatorTest {
         // When
         subject.startTimer(
             typeId = typeId,
-            tagIds = emptyList(),
+            tags = emptyList(),
             comment = "",
             timeStarted = AddRunningRecordMediator.StartTime.TakeCurrent,
             updateNotificationSwitch = true,
@@ -804,7 +805,7 @@ class AddRunningRecordMediatorTest {
                     timeStarted = 1000,
                     timeEnded = currentTime,
                     comment = "comment1",
-                    tagIds = listOf(tagId),
+                    tags = listOf(tag(tagId)),
                 ),
             ),
             updateNotificationSwitch = eq(true),
@@ -823,7 +824,7 @@ class AddRunningRecordMediatorTest {
                     timeStarted = 1000,
                     timeEnded = 2000,
                     comment = "comment1",
-                    tagIds = listOf(tagId),
+                    tags = listOf(tag(tagId)),
                 ),
             ),
         )
@@ -834,7 +835,7 @@ class AddRunningRecordMediatorTest {
         // When
         subject.startTimer(
             typeId = typeId,
-            tagIds = listOf(tagId2),
+            tags = listOf(tag(tagId2)),
             comment = "comment2",
             timeStarted = AddRunningRecordMediator.StartTime.TakeCurrent,
             updateNotificationSwitch = true,
@@ -851,7 +852,7 @@ class AddRunningRecordMediatorTest {
                     timeStarted = currentTime - 1000,
                     timeEnded = currentTime,
                     comment = "comment2",
-                    tagIds = listOf(tagId2),
+                    tags = listOf(tag(tagId2)),
                 ),
             ),
             updateNotificationSwitch = eq(true),
@@ -871,7 +872,7 @@ class AddRunningRecordMediatorTest {
                     timeStarted = 1000,
                     timeEnded = 3000,
                     comment = "comment1",
-                    tagIds = listOf(tagId),
+                    tags = listOf(tag(tagId)),
                 ),
                 Record(
                     id = 20L,
@@ -879,7 +880,7 @@ class AddRunningRecordMediatorTest {
                     timeStarted = 2000,
                     timeEnded = 3000,
                     comment = "comment2",
-                    tagIds = listOf(tagId2),
+                    tags = listOf(tag(tagId2)),
                 ),
             ),
         )
@@ -892,7 +893,7 @@ class AddRunningRecordMediatorTest {
         // When
         subject.startTimer(
             typeId = typeId,
-            tagIds = listOf(tagId),
+            tags = listOf(tag(tagId)),
             comment = "comment",
             timeStarted = AddRunningRecordMediator.StartTime.TakeCurrent,
             updateNotificationSwitch = true,
@@ -917,7 +918,7 @@ class AddRunningRecordMediatorTest {
                     timeStarted = 3000,
                     timeEnded = currentTime,
                     comment = "comment",
-                    tagIds = listOf(tagId),
+                    tags = listOf(tag(tagId)),
                 ),
             ),
             updateNotificationSwitch = eq(true),
@@ -937,7 +938,7 @@ class AddRunningRecordMediatorTest {
                     timeStarted = 500,
                     timeEnded = 3000,
                     comment = "comment",
-                    tagIds = listOf(tagId),
+                    tags = listOf(tag(tagId)),
                 ),
                 Record(
                     id = 10L,
@@ -945,7 +946,7 @@ class AddRunningRecordMediatorTest {
                     timeStarted = 1000,
                     timeEnded = 3000,
                     comment = "comment1",
-                    tagIds = listOf(tagId),
+                    tags = listOf(tag(tagId)),
                 ),
                 Record(
                     id = 20L,
@@ -953,7 +954,7 @@ class AddRunningRecordMediatorTest {
                     timeStarted = 2000,
                     timeEnded = 3000,
                     comment = "comment2",
-                    tagIds = listOf(tagId2),
+                    tags = listOf(tag(tagId2)),
                 ),
                 Record(
                     id = 30L,
@@ -961,7 +962,7 @@ class AddRunningRecordMediatorTest {
                     timeStarted = 3000,
                     timeEnded = 3000,
                     comment = "",
-                    tagIds = emptyList(),
+                    tags = emptyList(),
                 ),
             ),
         )
@@ -975,7 +976,7 @@ class AddRunningRecordMediatorTest {
         // When
         subject.startTimer(
             typeId = typeId,
-            tagIds = listOf(tagId),
+            tags = listOf(tag(tagId)),
             comment = "comment",
             timeStarted = AddRunningRecordMediator.StartTime.TakeCurrent,
             updateNotificationSwitch = true,
@@ -1008,10 +1009,14 @@ class AddRunningRecordMediatorTest {
                     timeStarted = 500,
                     timeEnded = currentTime,
                     comment = "comment",
-                    tagIds = listOf(tagId),
+                    tags = listOf(tag(tagId)),
                 ),
             ),
             updateNotificationSwitch = eq(true),
         )
+    }
+
+    private fun tag(id: Long): RecordBase.Tag {
+        return RecordBase.Tag(id, null)
     }
 }

@@ -29,7 +29,7 @@ jobs:
         run: ./gradlew ktlintCheck
 
       - name: Run tests
-        run: ./gradlew testDebugUnitTest --stacktrace
+        run: ./gradlew test testDebugUnitTest --stacktrace
 
   android_tests:
     runs-on: ubuntu-latest

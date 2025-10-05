@@ -82,7 +82,7 @@ class PomodoroCycleDurationsMapperTest(
                     getSettingsSeconds(0, 0, 0, 0),
                     0L,
                 ),
-                Result(Focus, Focus, 0L),
+                Result(Focus, Focus, Focus, 0L),
             ),
 
             // Focus only.
@@ -92,7 +92,7 @@ class PomodoroCycleDurationsMapperTest(
                     getSettingsSeconds(10, 0, 0, 0),
                     3 * secondInMs,
                 ),
-                Result(Focus, Focus, 3L * secondInMs),
+                Result(Focus, Focus, Focus, 3L * secondInMs),
             ),
             arrayOf(
                 listOf(
@@ -100,7 +100,7 @@ class PomodoroCycleDurationsMapperTest(
                     getSettingsSeconds(10, 0, 0, 0),
                     15 * secondInMs,
                 ),
-                Result(Focus, Focus, 5L * secondInMs),
+                Result(Focus, Focus, Focus, 5L * secondInMs),
             ),
             arrayOf(
                 listOf(
@@ -108,7 +108,7 @@ class PomodoroCycleDurationsMapperTest(
                     getSettingsSeconds(10, 0, 0, 0),
                     15 * secondInMs,
                 ),
-                Result(Focus, Focus, 9L * secondInMs),
+                Result(Focus, Focus, Focus, 9L * secondInMs),
             ),
 
             // Has short break.
@@ -118,7 +118,7 @@ class PomodoroCycleDurationsMapperTest(
                     getSettingsSeconds(25, 5, 0, 0),
                     3 * secondInMs,
                 ),
-                Result(Focus, Break, 3L * secondInMs),
+                Result(Focus, Break, Break, 3L * secondInMs),
             ),
             arrayOf(
                 listOf(
@@ -126,7 +126,7 @@ class PomodoroCycleDurationsMapperTest(
                     getSettingsSeconds(25, 5, 0, 0),
                     24 * secondInMs,
                 ),
-                Result(Focus, Break, 24L * secondInMs),
+                Result(Focus, Break, Break, 24L * secondInMs),
             ),
             arrayOf(
                 listOf(
@@ -134,7 +134,7 @@ class PomodoroCycleDurationsMapperTest(
                     getSettingsSeconds(25, 5, 0, 0),
                     25 * secondInMs,
                 ),
-                Result(Break, Focus, 0L),
+                Result(Break, Focus, Focus, 0L),
             ),
             arrayOf(
                 listOf(
@@ -142,7 +142,7 @@ class PomodoroCycleDurationsMapperTest(
                     getSettingsSeconds(25, 5, 0, 0),
                     29 * secondInMs,
                 ),
-                Result(Break, Focus, 4L * secondInMs),
+                Result(Break, Focus, Focus, 4L * secondInMs),
             ),
             arrayOf(
                 listOf(
@@ -150,7 +150,7 @@ class PomodoroCycleDurationsMapperTest(
                     getSettingsSeconds(25, 5, 0, 0),
                     30 * secondInMs,
                 ),
-                Result(Focus, Break, 0L),
+                Result(Focus, Break, Break, 0L),
             ),
             arrayOf(
                 listOf(
@@ -158,7 +158,7 @@ class PomodoroCycleDurationsMapperTest(
                     getSettingsSeconds(25, 5, 0, 0),
                     37 * secondInMs,
                 ),
-                Result(Focus, Break, 7L * secondInMs),
+                Result(Focus, Break, Break, 7L * secondInMs),
             ),
 
             // Long break zero.
@@ -168,7 +168,7 @@ class PomodoroCycleDurationsMapperTest(
                     getSettingsSeconds(10, 0, 0, 1),
                     105 * secondInMs,
                 ),
-                Result(Focus, Focus, 5L * secondInMs),
+                Result(Focus, Focus, Focus, 5L * secondInMs),
             ),
             arrayOf(
                 listOf(
@@ -176,7 +176,7 @@ class PomodoroCycleDurationsMapperTest(
                     getSettingsSeconds(10, 0, 0, 2),
                     105 * secondInMs,
                 ),
-                Result(Focus, Focus, 5L * secondInMs),
+                Result(Focus, Focus, Focus, 5L * secondInMs),
             ),
 
             // Has one long break.
@@ -186,7 +186,7 @@ class PomodoroCycleDurationsMapperTest(
                     getSettingsSeconds(25, 5, 15, 1),
                     3 * secondInMs,
                 ),
-                Result(Focus, LongBreak, 3L * secondInMs),
+                Result(Focus, LongBreak, LongBreak, 3L * secondInMs),
             ),
             arrayOf(
                 listOf(
@@ -194,7 +194,7 @@ class PomodoroCycleDurationsMapperTest(
                     getSettingsSeconds(25, 5, 15, 1),
                     24 * secondInMs,
                 ),
-                Result(Focus, LongBreak, 24L * secondInMs),
+                Result(Focus, LongBreak, LongBreak, 24L * secondInMs),
             ),
             arrayOf(
                 listOf(
@@ -202,7 +202,7 @@ class PomodoroCycleDurationsMapperTest(
                     getSettingsSeconds(25, 5, 15, 1),
                     25 * secondInMs,
                 ),
-                Result(LongBreak, Focus, 0L),
+                Result(LongBreak, Focus, Focus, 0L),
             ),
             arrayOf(
                 listOf(
@@ -210,7 +210,7 @@ class PomodoroCycleDurationsMapperTest(
                     getSettingsSeconds(25, 5, 15, 1),
                     39 * secondInMs,
                 ),
-                Result(LongBreak, Focus, 14L * secondInMs),
+                Result(LongBreak, Focus, Focus, 14L * secondInMs),
             ),
             arrayOf(
                 listOf(
@@ -218,7 +218,7 @@ class PomodoroCycleDurationsMapperTest(
                     getSettingsSeconds(25, 5, 15, 1),
                     47 * secondInMs,
                 ),
-                Result(Focus, LongBreak, 7L * secondInMs),
+                Result(Focus, LongBreak, LongBreak, 7L * secondInMs),
             ),
 
             // Has short and long breaks.
@@ -228,7 +228,7 @@ class PomodoroCycleDurationsMapperTest(
                     getSettingsSeconds(25, 5, 15, 2),
                     3 * secondInMs,
                 ),
-                Result(Focus, Break, 3L * secondInMs),
+                Result(Focus, LongBreak, Break, 3L * secondInMs),
             ),
             arrayOf(
                 listOf(
@@ -236,7 +236,7 @@ class PomodoroCycleDurationsMapperTest(
                     getSettingsSeconds(25, 5, 15, 2),
                     24 * secondInMs,
                 ),
-                Result(Focus, Break, 24L * secondInMs),
+                Result(Focus, LongBreak, Break, 24L * secondInMs),
             ),
             arrayOf(
                 listOf(
@@ -244,7 +244,7 @@ class PomodoroCycleDurationsMapperTest(
                     getSettingsSeconds(25, 5, 15, 2),
                     25 * secondInMs,
                 ),
-                Result(Break, Focus, 0L),
+                Result(Break, Focus, Focus, 0L),
             ),
             arrayOf(
                 listOf(
@@ -252,7 +252,7 @@ class PomodoroCycleDurationsMapperTest(
                     getSettingsSeconds(25, 5, 15, 2),
                     29 * secondInMs,
                 ),
-                Result(Break, Focus, 4L * secondInMs),
+                Result(Break, Focus, Focus, 4L * secondInMs),
             ),
             arrayOf(
                 listOf(
@@ -260,7 +260,7 @@ class PomodoroCycleDurationsMapperTest(
                     getSettingsSeconds(25, 5, 15, 2),
                     30 * secondInMs,
                 ),
-                Result(Focus, LongBreak, 0L),
+                Result(Focus, Break, LongBreak, 0L),
             ),
             arrayOf(
                 listOf(
@@ -268,7 +268,7 @@ class PomodoroCycleDurationsMapperTest(
                     getSettingsSeconds(25, 5, 15, 2),
                     54 * secondInMs,
                 ),
-                Result(Focus, LongBreak, 24L * secondInMs),
+                Result(Focus, Break, LongBreak, 24L * secondInMs),
             ),
             arrayOf(
                 listOf(
@@ -276,7 +276,7 @@ class PomodoroCycleDurationsMapperTest(
                     getSettingsSeconds(25, 5, 15, 2),
                     55 * secondInMs,
                 ),
-                Result(LongBreak, Focus, 0L),
+                Result(LongBreak, Focus, Focus, 0L),
             ),
             arrayOf(
                 listOf(
@@ -284,7 +284,7 @@ class PomodoroCycleDurationsMapperTest(
                     getSettingsSeconds(25, 5, 15, 2),
                     69 * secondInMs,
                 ),
-                Result(LongBreak, Focus, 14L * secondInMs),
+                Result(LongBreak, Focus, Focus, 14L * secondInMs),
             ),
             arrayOf(
                 listOf(
@@ -292,7 +292,7 @@ class PomodoroCycleDurationsMapperTest(
                     getSettingsSeconds(25, 5, 15, 2),
                     70 * secondInMs,
                 ),
-                Result(Focus, Break, 0L),
+                Result(Focus, LongBreak, Break, 0L),
             ),
             arrayOf(
                 listOf(
@@ -300,7 +300,7 @@ class PomodoroCycleDurationsMapperTest(
                     getSettingsSeconds(25, 5, 15, 2),
                     77 * secondInMs,
                 ),
-                Result(Focus, Break, 7L * secondInMs),
+                Result(Focus, LongBreak, Break, 7L * secondInMs),
             ),
 
             // Standard values.
@@ -310,7 +310,7 @@ class PomodoroCycleDurationsMapperTest(
                     getSettingsMinutes(25, 5, 15, 4),
                     2 * minuteInMs + 3 * secondInMs,
                 ),
-                Result(Focus, Break, 1L * minuteInMs + 3 * secondInMs),
+                Result(Focus, LongBreak, Break, 1L * minuteInMs + 3 * secondInMs),
             ),
             arrayOf(
                 listOf(
@@ -318,7 +318,7 @@ class PomodoroCycleDurationsMapperTest(
                     getSettingsMinutes(25, 5, 15, 4),
                     25 * minuteInMs + 59 * secondInMs,
                 ),
-                Result(Focus, Break, 24 * minuteInMs + 59 * secondInMs),
+                Result(Focus, LongBreak, Break, 24 * minuteInMs + 59 * secondInMs),
             ),
             arrayOf(
                 listOf(
@@ -326,7 +326,7 @@ class PomodoroCycleDurationsMapperTest(
                     getSettingsMinutes(25, 5, 15, 4),
                     28 * minuteInMs + 59 * secondInMs,
                 ),
-                Result(Break, Focus, 2 * minuteInMs + 59 * secondInMs),
+                Result(Break, Focus, Focus, 2 * minuteInMs + 59 * secondInMs),
             ),
             arrayOf(
                 listOf(
@@ -334,7 +334,7 @@ class PomodoroCycleDurationsMapperTest(
                     getSettingsMinutes(25, 5, 15, 4),
                     38 * minuteInMs + 59 * secondInMs,
                 ),
-                Result(Focus, Break, 7 * minuteInMs + 59 * secondInMs),
+                Result(Focus, Break, Break, 7 * minuteInMs + 59 * secondInMs),
             ),
             arrayOf(
                 listOf(
@@ -342,7 +342,7 @@ class PomodoroCycleDurationsMapperTest(
                     getSettingsMinutes(25, 5, 15, 4),
                     58 * minuteInMs + 59 * secondInMs,
                 ),
-                Result(Break, Focus, 2 * minuteInMs + 59 * secondInMs),
+                Result(Break, Focus, Focus, 2 * minuteInMs + 59 * secondInMs),
             ),
             arrayOf(
                 listOf(
@@ -350,7 +350,7 @@ class PomodoroCycleDurationsMapperTest(
                     getSettingsMinutes(25, 5, 15, 4),
                     68 * minuteInMs + 59 * secondInMs,
                 ),
-                Result(Focus, Break, 7 * minuteInMs + 59 * secondInMs),
+                Result(Focus, Break, Break, 7 * minuteInMs + 59 * secondInMs),
             ),
             arrayOf(
                 listOf(
@@ -358,7 +358,7 @@ class PomodoroCycleDurationsMapperTest(
                     getSettingsMinutes(25, 5, 15, 4),
                     88 * minuteInMs + 59 * secondInMs,
                 ),
-                Result(Break, Focus, 2 * minuteInMs + 59 * secondInMs),
+                Result(Break, Focus, Focus, 2 * minuteInMs + 59 * secondInMs),
             ),
             arrayOf(
                 listOf(
@@ -366,7 +366,7 @@ class PomodoroCycleDurationsMapperTest(
                     getSettingsMinutes(25, 5, 15, 4),
                     98 * minuteInMs + 59 * secondInMs,
                 ),
-                Result(Focus, LongBreak, 7 * minuteInMs + 59 * secondInMs),
+                Result(Focus, Break, LongBreak, 7 * minuteInMs + 59 * secondInMs),
             ),
             arrayOf(
                 listOf(
@@ -374,7 +374,7 @@ class PomodoroCycleDurationsMapperTest(
                     getSettingsMinutes(25, 5, 15, 4),
                     118 * minuteInMs + 59 * secondInMs,
                 ),
-                Result(LongBreak, Focus, 2 * minuteInMs + 59 * secondInMs),
+                Result(LongBreak, Focus, Focus, 2 * minuteInMs + 59 * secondInMs),
             ),
             arrayOf(
                 listOf(
@@ -382,15 +382,15 @@ class PomodoroCycleDurationsMapperTest(
                     getSettingsMinutes(25, 5, 15, 4),
                     138 * minuteInMs + 59 * secondInMs,
                 ),
-                Result(Focus, Break, 7 * minuteInMs + 59 * secondInMs),
+                Result(Focus, LongBreak, Break, 7 * minuteInMs + 59 * secondInMs),
             ),
             arrayOf(
                 listOf(
                     1 * minuteInMs,
                     getSettingsMinutes(25, 5, 15, 4),
-                    130 * 7 + 123 * minuteInMs + 59 * secondInMs,
+                    130 * minuteInMs * 7 + 123 * minuteInMs + 59 * secondInMs,
                 ),
-                Result(LongBreak, Focus, 7 * minuteInMs + 59 * secondInMs),
+                Result(LongBreak, Focus, Focus, 7 * minuteInMs + 59 * secondInMs),
             ),
         )
     }

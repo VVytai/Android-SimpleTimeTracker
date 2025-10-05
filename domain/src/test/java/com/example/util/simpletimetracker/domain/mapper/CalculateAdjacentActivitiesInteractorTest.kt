@@ -2,11 +2,13 @@ package com.example.util.simpletimetracker.domain.mapper
 
 import com.example.util.simpletimetracker.domain.record.interactor.CalculateAdjacentActivitiesInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.CalculateAdjacentActivitiesInteractor.CalculationResult
+import com.example.util.simpletimetracker.domain.record.interactor.GetMultitaskRecordsInteractor
 import com.example.util.simpletimetracker.domain.record.model.Record
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
+import org.mockito.kotlin.mock
 
 @RunWith(Parameterized::class)
 class CalculateAdjacentActivitiesInteractorTest(
@@ -14,7 +16,10 @@ class CalculateAdjacentActivitiesInteractorTest(
     private val output: Map<Long, List<CalculationResult>>,
 ) {
 
-    private val subject = CalculateAdjacentActivitiesInteractor()
+    private val getMultitaskRecordsInteractor: GetMultitaskRecordsInteractor = mock()
+    private val subject = CalculateAdjacentActivitiesInteractor(
+        getMultitaskRecordsInteractor = getMultitaskRecordsInteractor,
+    )
 
     @Suppress("UNCHECKED_CAST")
     @Test
@@ -40,7 +45,7 @@ class CalculateAdjacentActivitiesInteractorTest(
             timeStarted = 0L,
             timeEnded = 0L,
             comment = "",
-            tagIds = emptyList(),
+            tags = emptyList(),
         )
 
         @JvmStatic
