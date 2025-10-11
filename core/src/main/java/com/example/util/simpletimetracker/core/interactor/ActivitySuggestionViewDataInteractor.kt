@@ -12,11 +12,9 @@ import javax.inject.Inject
 class ActivitySuggestionViewDataInteractor @Inject constructor(
     private val getCurrentActivitySuggestionsInteractor: GetCurrentActivitySuggestionsInteractor,
     private val recordTypeViewDataMapper: RecordTypeViewDataMapper,
-    private val activityFilterViewDataInteractor: ActivityFilterViewDataInteractor,
 ) {
 
     suspend fun getSuggestionsViewData(
-        filter: ActivityFilterViewDataInteractor.Filter,
         recordTypesMap: Map<Long, RecordType>,
         goals: Map<Long, List<RecordTypeGoal>>,
         runningRecords: List<RunningRecord>,
@@ -28,9 +26,7 @@ class ActivitySuggestionViewDataInteractor @Inject constructor(
         val suggestionTypes = getCurrentActivitySuggestionsInteractor.execute(
             recordTypesMap = recordTypesMap,
             runningRecords = runningRecords,
-        ).let {
-            activityFilterViewDataInteractor.applyFilter(it, filter)
-        }
+        )
 
         return suggestionTypes.map { recordType ->
             recordTypeViewDataMapper.map(

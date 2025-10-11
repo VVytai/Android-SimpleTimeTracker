@@ -239,7 +239,6 @@ class WidgetUniversalViewModel @Inject constructor(
         )
 
         val suggestionsViewData = activitySuggestionViewDataInteractor.getSuggestionsViewData(
-            filter = filter,
             recordTypesMap = recordTypesMap,
             goals = goals,
             runningRecords = runningRecords,
@@ -301,8 +300,8 @@ class WidgetUniversalViewModel @Inject constructor(
         )
 
         return listOf(
-            filtersViewData,
             suggestionsViewData,
+            filtersViewData,
             recordTypesViewData,
             shortcutsViewData,
         ).filter {

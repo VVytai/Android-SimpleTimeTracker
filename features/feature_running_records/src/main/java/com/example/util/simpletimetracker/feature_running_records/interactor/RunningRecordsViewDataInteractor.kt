@@ -129,7 +129,6 @@ class RunningRecordsViewDataInteractor @Inject constructor(
         )
 
         val suggestionsViewData = activitySuggestionViewDataInteractor.getSuggestionsViewData(
-            filter = filter,
             recordTypesMap = recordTypesMap,
             goals = goals,
             runningRecords = runningRecords,
@@ -212,8 +211,8 @@ class RunningRecordsViewDataInteractor @Inject constructor(
 
         return listOf(
             runningRecordsViewData,
-            filtersViewData,
             suggestionsViewData,
+            filtersViewData,
             recordTypesViewData,
             shortcutsViewData,
         ).filter {
