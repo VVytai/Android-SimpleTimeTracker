@@ -8,6 +8,8 @@ import androidx.annotation.AttrRes
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
+import androidx.core.view.isVisible
+import androidx.core.view.updatePadding
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.viewpager2.widget.ViewPager2
@@ -25,6 +27,7 @@ import com.example.util.simpletimetracker.feature_main.R
 import com.example.util.simpletimetracker.feature_main.adapter.MainContentAdapter
 import com.example.util.simpletimetracker.feature_main.provider.MainTabsProvider
 import com.example.util.simpletimetracker.feature_main.viewModel.MainViewModel
+import com.example.util.simpletimetracker.feature_views.extension.dpToPx
 import com.example.util.simpletimetracker.feature_views.extension.getThemedAttr
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -146,6 +149,14 @@ class MainFragment : BaseFragment<Binding>() {
         } else {
             TabLayout.INDICATOR_GRAVITY_BOTTOM
         }.let(mainTabs::setSelectedTabIndicatorGravity)
+
+        mainTabsDivider.isVisible = isAtTheBottom
+
+        (0..<mainTabs.tabCount).forEach { index ->
+            val paddingVertical = if (isAtTheBottom) 16.dpToPx() else 0
+            mainTabs.getTabAt(index)?.view
+                ?.updatePadding(top = paddingVertical, bottom = paddingVertical)
+        }
 
         updateInsetConfiguration(isAtTheBottom)
     }
