@@ -48,6 +48,7 @@
                 android:maxLines="1"
                 android:paddingVertical="4dp"
                 android:textColor="?appLightTextColor"
+                app:layout_constrainedWidth="true"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/ivFilterItemRemove"
                 app:layout_constraintStart_toStartOf="parent"

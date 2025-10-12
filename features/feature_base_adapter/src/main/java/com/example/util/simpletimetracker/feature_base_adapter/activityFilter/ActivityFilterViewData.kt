@@ -8,6 +8,7 @@ data class ActivityFilterViewData(
     val id: Long,
     val name: String,
     @ColorInt val color: Int,
+    @ColorInt val backgroundColor: Int,
     val selected: Boolean,
     val type: ActivityFilterType,
 ) : ViewHolderType {

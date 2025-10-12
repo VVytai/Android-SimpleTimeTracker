@@ -28,6 +28,10 @@ class ActivityFilterViewDataMapper @Inject constructor(
                 color = filter.color,
                 isDarkTheme = isDarkTheme,
             ),
+            backgroundColor = colorMapper.mapToColorInt(
+                color = filter.color,
+                isDarkTheme = isDarkTheme,
+            ),
             selected = selected,
             type = ActivityFilterType.Default,
         )
@@ -43,6 +47,10 @@ class ActivityFilterViewDataMapper @Inject constructor(
             name = filter.name,
             color = mapFilterColor(
                 selected = selected,
+                color = filter.color,
+                isDarkTheme = isDarkTheme,
+            ),
+            backgroundColor = colorMapper.mapToColorInt(
                 color = filter.color,
                 isDarkTheme = isDarkTheme,
             ),

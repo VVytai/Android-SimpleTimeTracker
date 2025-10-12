@@ -3,7 +3,7 @@ package com.example.util.simpletimetracker.feature_base_adapter.recordFilter
 import androidx.core.view.isVisible
 import com.example.util.simpletimetracker.feature_base_adapter.createRecyclerBindingAdapterDelegate
 import com.example.util.simpletimetracker.feature_views.extension.setOnClickWith
-import com.example.util.simpletimetracker.feature_base_adapter.databinding.ItemFilterLayoutBinding as Binding
+import com.example.util.simpletimetracker.feature_views.databinding.ItemFilterLayoutBinding as Binding
 import com.example.util.simpletimetracker.feature_base_adapter.recordFilter.FilterViewData as ViewData
 
 fun createFilterAdapterDelegate(

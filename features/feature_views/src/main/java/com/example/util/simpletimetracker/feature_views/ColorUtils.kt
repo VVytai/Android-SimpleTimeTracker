@@ -7,9 +7,6 @@ import androidx.core.graphics.ColorUtils
 
 object ColorUtils {
 
-    /**
-     * Darkens color.
-     */
     @ColorInt
     fun darkenColor(@ColorInt color: Int): Int {
         return FloatArray(3).apply {

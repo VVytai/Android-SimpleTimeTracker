@@ -16,6 +16,7 @@ fun createActivityFilterAddAdapterDelegate(
 
         itemColor = item.color
         itemName = item.name
+        itemBackgroundVisible = false
         setOnClickWith(item, onItemClick)
     }
 }
