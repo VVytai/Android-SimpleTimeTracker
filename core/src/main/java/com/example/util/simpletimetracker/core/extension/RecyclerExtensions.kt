@@ -8,17 +8,47 @@ import android.graphics.Rect
 import android.graphics.Typeface
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
+import android.view.View
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
+import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.feature_base_adapter.BaseRecyclerAdapter
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
-import java.util.Collections
-import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.feature_views.extension.dpToPx
 import com.example.util.simpletimetracker.feature_views.extension.spToPx
+import java.util.Collections
+
+fun RecyclerView.changeDragSensitivity(scale: Float) = runCatching {
+    val touchSlopField = RecyclerView::class.java.getDeclaredField("mTouchSlop")
+    touchSlopField.isAccessible = true
+    val touchSlop = touchSlopField.get(this) as Int
+    touchSlopField.set(this, (touchSlop * scale).toInt())
+}
+
+fun RecyclerView.horizontalSmoothScrollWithOffset(
+    snapPreference: Int,
+    position: Int,
+    calculateOffset: (recycler: View, view: View) -> Int,
+) {
+    val recycler = this
+    val layoutManager = layoutManager as? LinearLayoutManager ?: return
+    val smoothScroller = object : LinearSmoothScroller(context) {
+        override fun getHorizontalSnapPreference(): Int = snapPreference
+
+        override fun calculateDxToMakeVisible(view: View, snapPreference: Int): Int {
+            val offset = calculateOffset(recycler, view)
+            return super.calculateDxToMakeVisible(view, snapPreference) + offset
+        }
+    }
+
+    smoothScroller.targetPosition = position
+    layoutManager.startSmoothScroll(smoothScroller)
+}
 
 fun RecyclerView.onItemMoved(
     getIsSelectable: (RecyclerView.ViewHolder?) -> Boolean = { true },

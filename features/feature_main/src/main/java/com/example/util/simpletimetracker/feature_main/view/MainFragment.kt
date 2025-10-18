@@ -12,11 +12,14 @@ import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.example.util.simpletimetracker.core.base.BaseFragment
 import com.example.util.simpletimetracker.core.di.BaseViewModelFactory
 import com.example.util.simpletimetracker.core.extension.addOnBackPressedListener
 import com.example.util.simpletimetracker.core.extension.addOnPageChangeCallback
+import com.example.util.simpletimetracker.core.extension.changeDragSensitivity
+import com.example.util.simpletimetracker.core.extension.findRecycler
 import com.example.util.simpletimetracker.core.sharedViewModel.MainTabsViewModel
 import com.example.util.simpletimetracker.core.utils.InsetConfiguration
 import com.example.util.simpletimetracker.core.utils.SHORTCUT_NAVIGATION_KEY
@@ -126,6 +129,7 @@ class MainFragment : BaseFragment<Binding>() {
             },
         )
         mainPager.setCurrentItem(mainPagePosition, false)
+        mainPager.findRecycler()?.changeDragSensitivity(2f)
     }
 
     private fun updateNavBarPosition(isAtTheBottom: Boolean) = with(binding) {
@@ -144,11 +148,8 @@ class MainFragment : BaseFragment<Binding>() {
         }
         set.applyTo(binding.containerMain)
 
-        if (isAtTheBottom) {
-            TabLayout.INDICATOR_GRAVITY_TOP
-        } else {
-            TabLayout.INDICATOR_GRAVITY_BOTTOM
-        }.let(mainTabs::setSelectedTabIndicatorGravity)
+        TabLayout.INDICATOR_GRAVITY_BOTTOM
+            .let(mainTabs::setSelectedTabIndicatorGravity)
 
         mainTabsDivider.isVisible = isAtTheBottom
 

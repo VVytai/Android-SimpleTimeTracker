@@ -15,5 +15,8 @@ sealed interface RecordsContainerOptionsListItem : OptionsListParams.Item.Id {
     data object Share : RecordsContainerOptionsListItem
 
     @Parcelize
-    data object Add : RecordsContainerOptionsListItem
+    data object BackToToday : RecordsContainerOptionsListItem
+
+    @Parcelize
+    data object SelectDate : RecordsContainerOptionsListItem
 }

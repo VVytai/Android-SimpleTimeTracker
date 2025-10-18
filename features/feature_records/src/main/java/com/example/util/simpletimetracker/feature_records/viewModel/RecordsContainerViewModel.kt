@@ -3,6 +3,7 @@ package com.example.util.simpletimetracker.feature_records.viewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.example.util.simpletimetracker.core.base.BaseViewModel
+import com.example.util.simpletimetracker.core.base.SingleLiveEvent
 import com.example.util.simpletimetracker.core.extension.lazySuspend
 import com.example.util.simpletimetracker.core.extension.set
 import com.example.util.simpletimetracker.core.mapper.CalendarToListShiftMapper
@@ -17,7 +18,9 @@ import com.example.util.simpletimetracker.domain.record.interactor.RecordsContai
 import com.example.util.simpletimetracker.domain.record.interactor.RecordsShareUpdateInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.RecordsUpdateInteractor
 import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
+import com.example.util.simpletimetracker.feature_base_adapter.InfiniteRecyclerAdapter
 import com.example.util.simpletimetracker.feature_records.R
+import com.example.util.simpletimetracker.feature_records.mapper.DateSelectorMapper
 import com.example.util.simpletimetracker.feature_records.mapper.RecordsContainerOptionsListMapper
 import com.example.util.simpletimetracker.feature_records.mapper.RecordsViewDataMapper
 import com.example.util.simpletimetracker.feature_records.model.RecordsContainerOptionsListItem
@@ -36,6 +39,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RecordsContainerViewModel @Inject constructor(
+    val dateSelectorMapper: DateSelectorMapper,
     private val router: Router,
     private val timeMapper: TimeMapper,
     private val resourceRepo: ResourceRepo,
@@ -53,6 +57,8 @@ class RecordsContainerViewModel @Inject constructor(
         by lazySuspend { loadTitle(0) }
     val position: LiveData<RecordsContainerPosition>
         by lazySuspend { loadPosition(newPosition = 0, animate = false) }
+    val dateScrollPosition: LiveData<Int> = SingleLiveEvent<Int>()
+    val updateDatesViewData: LiveData<Unit> = SingleLiveEvent<Unit>()
 
     private var lastListShift: Int = 0
     private val currentPosition get() = position.value?.position.orZero()
@@ -91,16 +97,18 @@ class RecordsContainerViewModel @Inject constructor(
         }
     }
 
-    fun onPreviousClick() {
-        onRangeChanged(currentPosition - 1, animate = true)
-    }
-
     fun onTodayLongClick() {
         onRangeChanged(0, animate = true)
     }
 
-    fun onNextClick() {
-        onRangeChanged(currentPosition + 1, animate = true)
+    fun onDateClick(item: InfiniteRecyclerAdapter.Data) {
+        dateScrollPosition.set(item.position)
+    }
+
+    fun onScrolledToDate(position: Int) {
+        if (position != currentPosition) {
+            onRangeChanged(position, animate = true)
+        }
     }
 
     fun onDateTimeSet(timestamp: Long, tag: String?) = viewModelScope.launch {
@@ -136,7 +144,8 @@ class RecordsContainerViewModel @Inject constructor(
             is RecordsContainerOptionsListItem.CalendarView -> onCalendarSwitchClick()
             is RecordsContainerOptionsListItem.Filter -> onFilterClick()
             is RecordsContainerOptionsListItem.Share -> onShareClick()
-            is RecordsContainerOptionsListItem.Add -> onRecordAddClick()
+            is RecordsContainerOptionsListItem.BackToToday -> onTodayLongClick()
+            is RecordsContainerOptionsListItem.SelectDate -> onTodayClick()
         }
     }
 
@@ -256,6 +265,7 @@ class RecordsContainerViewModel @Inject constructor(
     ) {
         updatePosition(newPosition, animate)
         updateTitle(newPosition)
+        dateScrollPosition.set(newPosition)
     }
 
     private fun updatePosition(
@@ -263,7 +273,9 @@ class RecordsContainerViewModel @Inject constructor(
         animate: Boolean,
     ) = viewModelScope.launch {
         val data = loadPosition(shift, animate)
+        dateSelectorMapper.currentSelectedPosition = shift
         position.set(data)
+        updateDatesViewData.set(Unit)
     }
 
     private suspend fun loadPosition(
