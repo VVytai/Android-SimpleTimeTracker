@@ -102,7 +102,19 @@ class RecordsContainerViewModel @Inject constructor(
     }
 
     fun onDateClick(item: InfiniteRecyclerAdapter.Data) {
-        dateScrollPosition.set(item.position)
+        if (currentPosition == item.position) {
+            onTodayClick()
+        } else {
+            dateScrollPosition.set(item.position)
+        }
+    }
+
+    fun onDateLongClick(item: InfiniteRecyclerAdapter.Data) {
+        if (currentPosition == item.position) {
+            dateScrollPosition.set(0)
+        } else {
+            onDateClick(item)
+        }
     }
 
     fun onScrolledToDate(position: Int) {

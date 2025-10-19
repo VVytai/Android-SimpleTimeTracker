@@ -20,6 +20,7 @@ import com.example.util.simpletimetracker.core.sharedViewModel.MainTabsViewModel
 import com.example.util.simpletimetracker.core.sharedViewModel.RemoveRecordViewModel
 import com.example.util.simpletimetracker.core.utils.InsetConfiguration
 import com.example.util.simpletimetracker.core.view.SafeFragmentStateAdapter
+import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.feature_base_adapter.InfiniteRecyclerAdapter
 import com.example.util.simpletimetracker.feature_base_adapter.dateSelector.createDateSelectorAdapterDelegate
 import com.example.util.simpletimetracker.feature_records.adapter.RecordsContainerAdapter
@@ -31,6 +32,7 @@ import com.example.util.simpletimetracker.feature_views.extension.setOnLongClick
 import com.example.util.simpletimetracker.navigation.Router
 import com.example.util.simpletimetracker.navigation.params.notification.SnackBarParams
 import com.example.util.simpletimetracker.navigation.params.screen.OptionsListParams
+import com.google.android.material.animation.Positioning
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import com.example.util.simpletimetracker.feature_records.databinding.RecordsContainerFragmentBinding as Binding
@@ -68,6 +70,7 @@ class RecordsContainerFragment :
             createDateSelectorAdapterDelegate(
                 mapper = viewModel.dateSelectorMapper,
                 onItemClick = viewModel::onDateClick,
+                onItemLongClick = viewModel::onDateLongClick,
             ),
         )
     }
@@ -159,19 +162,11 @@ class RecordsContainerFragment :
     private fun doScrollToPosition(position: Int) {
         scrollWasAlreadyRequested = true
         val recycler = binding.rvDatesContainer
-        val layoutManager = recycler.layoutManager as? LinearLayoutManager ?: return
         val actualPosition = position + InfiniteRecyclerAdapter.FIRST
-        val firstPosition = layoutManager.findFirstVisibleItemPosition()
-        val lastPosition = layoutManager.findLastVisibleItemPosition()
-        val smoothScrollThreshold = 10
 
         // To long to scroll with animation if scroll distance is long,
         // in this case scrollToPosition closer, and than smoothScroll with animation.
-        if ((firstPosition - actualPosition) > smoothScrollThreshold) {
-            recycler.scrollToPosition(actualPosition + smoothScrollThreshold)
-        } else if ((actualPosition - lastPosition) > smoothScrollThreshold) {
-            recycler.scrollToPosition(actualPosition - smoothScrollThreshold)
-        }
+        recycler.scrollToPosition(actualPosition)
 
         recycler.post {
             recycler.horizontalSmoothScrollWithOffset(

@@ -5,7 +5,7 @@ import com.example.util.simpletimetracker.feature_base_adapter.R
 import com.example.util.simpletimetracker.feature_base_adapter.createRecyclerBindingAdapterDelegate
 import com.example.util.simpletimetracker.feature_views.extension.pxToDp
 import com.example.util.simpletimetracker.feature_views.extension.setOnClickWith
-import com.example.util.simpletimetracker.feature_views.extension.setOnLongClickWith
+import com.example.util.simpletimetracker.feature_views.extension.setOnLongClick
 import com.example.util.simpletimetracker.feature_views.extension.setRounded
 import com.example.util.simpletimetracker.feature_base_adapter.InfiniteRecyclerAdapter.Data as ViewData
 import com.example.util.simpletimetracker.feature_base_adapter.databinding.ItemDateSelectorBinding as Binding
@@ -13,6 +13,7 @@ import com.example.util.simpletimetracker.feature_base_adapter.databinding.ItemD
 fun createDateSelectorAdapterDelegate(
     mapper: DateSelectorDataMapper,
     onItemClick: ((ViewData) -> Unit),
+    onItemLongClick: ((ViewData) -> Unit),
 ) = createRecyclerBindingAdapterDelegate<ViewData, Binding>(
     Binding::inflate,
 ) { binding, item, _ ->
@@ -31,6 +32,7 @@ fun createDateSelectorAdapterDelegate(
         viewDateSelectorBackgroundSelected.isVisible = data.isSelected
         viewDateSelectorBackgroundToday.isVisible = data.isToday
         root.setOnClickWith(item, onItemClick)
+        root.setOnLongClick { onItemLongClick(item) }
     }
 }
 
