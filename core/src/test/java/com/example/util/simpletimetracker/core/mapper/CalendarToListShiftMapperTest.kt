@@ -329,6 +329,9 @@ class CalendarToListShiftMapperTest {
                 arrayOf(listOf(0, 999, false, DaysInCalendar.FIVE, 0L, DayOfWeek.MONDAY), 0),
                 arrayOf(listOf(13, 999, false, DaysInCalendar.FIVE, 0L, DayOfWeek.MONDAY), 65),
 
+                // Calendar to list, can't restore last saved position, can restore to today
+                arrayOf(listOf(0, -3, false, DaysInCalendar.THREE, 0L, DayOfWeek.MONDAY), 0),
+
                 // Calendar to list, can restore last saved position
                 arrayOf(listOf(-13, -41, false, DaysInCalendar.THREE, 0L, DayOfWeek.MONDAY), -41),
                 arrayOf(listOf(0, -1, false, DaysInCalendar.THREE, 0L, DayOfWeek.MONDAY), -1),

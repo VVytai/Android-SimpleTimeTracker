@@ -79,6 +79,8 @@ class CalendarToListShiftMapper @Inject constructor(
             )
             if (lastListPosition in (calendarRange.start..calendarRange.end)) {
                 lastListPosition
+            } else if (0 in (calendarRange.start..calendarRange.end)) {
+                0
             } else {
                 calendarRange.end
             }

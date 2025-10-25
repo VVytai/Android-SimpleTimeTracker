@@ -152,7 +152,6 @@ class RecordsContainerFragment :
     }
 
     // TODO DATE Add to statistics
-    // TODO DATE remove Today/ThisWeek etc from time mapper.
     // TODO DATE rename ContainerRangeButton style
     private fun doScrollToPosition(position: Int) {
         scrollWasAlreadyRequested = true
