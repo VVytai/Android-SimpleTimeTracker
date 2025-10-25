@@ -2,14 +2,17 @@ package com.example.util.simpletimetracker.feature_records.view
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.ViewGroup
 import androidx.annotation.VisibleForTesting
+import androidx.core.view.children
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
 import com.example.util.simpletimetracker.core.base.BaseFragment
 import com.example.util.simpletimetracker.core.di.BaseViewModelFactory
 import com.example.util.simpletimetracker.core.dialog.DateTimeDialogListener
@@ -94,6 +97,7 @@ class RecordsContainerFragment :
             }
             adapter = dateSelectorAdapter
             snapHelper.attachToRecyclerView(this)
+            setTouchInterceptListener(::onDateSelectorTouchIntercepted)
             addOnScrollListenerAdapter(onScrollStateChanged = ::onDatesScrolled)
             changeDragSensitivity(0.1f)
         }
@@ -195,6 +199,23 @@ class RecordsContainerFragment :
             }
             scrollWasAlreadyRequested = false
         }
+    }
+
+    private fun onDateSelectorTouchIntercepted(event: MotionEvent) {
+        when (event.action) {
+            MotionEvent.ACTION_DOWN,
+            MotionEvent.ACTION_MOVE,
+            -> blockParentScroll(true)
+            MotionEvent.ACTION_UP,
+            MotionEvent.ACTION_CANCEL,
+            -> blockParentScroll(false)
+        }
+    }
+
+    private fun blockParentScroll(isBlocked: Boolean) {
+        val views = (parentFragment?.view as? ViewGroup)?.children
+        val viewPager = views?.filterIsInstance<ViewPager2>()?.firstOrNull()
+        viewPager?.isUserInputEnabled = !isBlocked
     }
 
     companion object {
