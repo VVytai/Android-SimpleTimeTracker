@@ -53,6 +53,8 @@ class RecordsContainerViewModel @Inject constructor(
 
     val position: LiveData<RecordsContainerPosition>
         by lazySuspend { loadPosition(newPosition = 0, animate = false) }
+    val startDatesSelectorViewData: LiveData<Unit>
+        by lazySuspend { loadDatesSelector() }
     val dateScrollPosition: LiveData<Int> = SingleLiveEvent<Int>()
     val updateDatesViewData: LiveData<Unit> = SingleLiveEvent<Unit>()
 
@@ -267,6 +269,11 @@ class RecordsContainerViewModel @Inject constructor(
     ) {
         updatePosition(newPosition, animate)
         dateScrollPosition.set(newPosition)
+    }
+
+    private suspend fun loadDatesSelector() {
+        val startOfDayShift = prefsInteractor.getStartOfDayShift()
+        dateSelectorMapper.startOfDayShift = startOfDayShift
     }
 
     private fun updatePosition(

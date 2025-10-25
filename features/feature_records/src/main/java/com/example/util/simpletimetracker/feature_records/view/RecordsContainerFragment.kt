@@ -1,5 +1,6 @@
 package com.example.util.simpletimetracker.feature_records.view
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.annotation.VisibleForTesting
@@ -88,7 +89,6 @@ class RecordsContainerFragment :
             }
             adapter = dateSelectorAdapter
             snapHelper.attachToRecyclerView(this)
-            doScrollToPosition(0)
             addOnScrollListenerAdapter(onScrollStateChanged = ::onDatesScrolled)
             changeDragSensitivity(0.1f)
         }
@@ -103,9 +103,9 @@ class RecordsContainerFragment :
     override fun initViewModel() {
         with(viewModel) {
             position.observe(::setPosition)
+            startDatesSelectorViewData.observe { startDatesSelector() }
             dateScrollPosition.observe(::doScrollToPosition)
-            // TODO DATE do better?
-            updateDatesViewData.observe { dateSelectorAdapter.notifyDataSetChanged() }
+            updateDatesViewData.observe { updateDatesSelector() }
         }
         with(removeRecordViewModel) {
             message.observe(::showMessage)
@@ -149,7 +149,6 @@ class RecordsContainerFragment :
     // TODO DATE Add calendar support
     // TODO DATE Add to statistics
     // TODO DATE rename ContainerRangeButton style
-    // TODO DATE check with start of day shift
     private fun doScrollToPosition(position: Int) {
         scrollWasAlreadyRequested = true
         val recycler = binding.rvDatesContainer
@@ -169,6 +168,19 @@ class RecordsContainerFragment :
                 },
             )
         }
+    }
+
+    private fun startDatesSelector() {
+        if (dateSelectorAdapter.isReady) return
+        dateSelectorAdapter.isReady = true
+        updateDatesSelector()
+        doScrollToPosition(0)
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private fun updateDatesSelector() {
+        // TODO do better maybe?
+        dateSelectorAdapter.notifyDataSetChanged()
     }
 
     private fun onDatesScrolled(
