@@ -1,22 +1,74 @@
 package com.example.util.simpletimetracker.feature_records.mapper
 
+import com.example.util.simpletimetracker.core.mapper.CalendarToListShiftMapper
 import com.example.util.simpletimetracker.core.mapper.TimeMapper
-import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
-import com.example.util.simpletimetracker.feature_base_adapter.dateSelector.DateSelectorDataMapper
-import kotlinx.coroutines.runBlocking
+import com.example.util.simpletimetracker.domain.daysOfWeek.mapper.DaysInCalendarMapper
+import com.example.util.simpletimetracker.domain.daysOfWeek.model.DayOfWeek
+import com.example.util.simpletimetracker.domain.daysOfWeek.model.DaysInCalendar
+import com.example.util.simpletimetracker.domain.extension.padDuration
+import com.example.util.simpletimetracker.feature_base_adapter.InfiniteRecyclerAdapter
+import com.example.util.simpletimetracker.feature_base_adapter.dateSelector.DateSelectorDayViewData
+import com.example.util.simpletimetracker.feature_base_adapter.dateSelector.DateSelectorRangeViewData
 import java.util.Calendar
 import javax.inject.Inject
 
 class DateSelectorMapper @Inject constructor(
     private val timeMapper: TimeMapper,
-) : DateSelectorDataMapper {
+    private val daysInCalendarMapper: DaysInCalendarMapper,
+    private val calendarToListShiftMapper: CalendarToListShiftMapper,
+) : InfiniteRecyclerAdapter.DataProvider {
 
     var currentSelectedPosition: Int = 0
-    var startOfDayShift: Long = 0
 
-    override fun mapData(
+    private var isInitialized: Boolean = false
+    private var startOfDayShift: Long = 0
+    private var isCalendarView: Boolean = false
+    private var daysInCalendar: DaysInCalendar = DaysInCalendar.ONE
+    private var firstDayOfWeek: DayOfWeek = DayOfWeek.SUNDAY
+    private var isCalendar: Boolean = false
+    private var currentItem: InfiniteRecyclerAdapter.Data = getItem(0)
+
+    override fun isInitialized(): Boolean {
+        return isInitialized
+    }
+
+    override fun getCurrentItem(): InfiniteRecyclerAdapter.Data {
+        return currentItem
+    }
+
+    override fun getItem(
         position: Int,
-    ): DateSelectorDataMapper.Data {
+    ): InfiniteRecyclerAdapter.Data {
+        return if (isCalendar) {
+            getRangeViewDataData(position)
+        } else {
+            getDayViewDataData(position)
+        }
+    }
+
+    fun setup(
+        startOfDayShift: Long,
+        isCalendarView: Boolean,
+        daysInCalendar: DaysInCalendar,
+        firstDayOfWeek: DayOfWeek,
+    ) {
+        this.startOfDayShift = startOfDayShift
+        this.isCalendarView = isCalendarView
+        this.daysInCalendar = daysInCalendar
+        this.firstDayOfWeek = firstDayOfWeek
+
+        this.isCalendar = isCalendar(
+            isCalendarView = isCalendarView,
+            daysInCalendar = daysInCalendar,
+        )
+        currentItem = getItem(0)
+
+        this.isInitialized = true
+    }
+
+    private fun getDayViewDataData(
+        position: Int,
+    ): DateSelectorDayViewData {
         val calendar = Calendar.getInstance().apply {
             // Shifted by startOfDayShift, so that for example:
             // now it is 01:00 17.10.2025 but today starts at 2:00,
@@ -28,16 +80,65 @@ class DateSelectorMapper @Inject constructor(
             .let(timeMapper::toDayOfWeek)
             .let(timeMapper::toShortDayOfWeekName)
         val dayOfMoth = calendar.get(Calendar.DAY_OF_MONTH).toString()
+
         val isToday = position == 0
         val isFuture = position > 0
         val isSelected = position == currentSelectedPosition
 
-        return DateSelectorDataMapper.Data(
-            dayOfWeek = dayOfWeek,
-            dayOfMonth = dayOfMoth,
-            isToday = isToday,
-            isSelected = isSelected,
-            isFuture = isFuture,
+        return DateSelectorDayViewData(
+            position = position,
+            dayMonth = DateSelectorDayViewData.DayMonth(
+                dayOfWeek = dayOfWeek,
+                dayOfMonth = dayOfMoth,
+            ),
+            cardData = DateSelectorDayViewData.CardData(
+                isToday = isToday,
+                isSelected = isSelected,
+                isFuture = isFuture,
+            ),
         )
+    }
+
+    private fun getRangeViewDataData(
+        position: Int,
+    ): DateSelectorRangeViewData {
+        fun DateSelectorDayViewData.DayMonth.pad(): DateSelectorDayViewData.DayMonth {
+            return copy(
+                dayOfMonth = this.dayOfMonth.padDuration(),
+            )
+        }
+
+        val calendarRange = calendarToListShiftMapper.mapCalendarToListShift(
+            calendarShift = position,
+            daysInCalendar = daysInCalendar,
+            startOfDayShift = startOfDayShift,
+            firstDayOfWeek = firstDayOfWeek,
+        )
+
+        val date1 = getDayViewDataData(calendarRange.start)
+        val date2 = getDayViewDataData(calendarRange.end)
+
+        val isToday = position == 0
+        val isFuture = position > 0
+        val isSelected = position == currentSelectedPosition
+
+        return DateSelectorRangeViewData(
+            position = position,
+            dayMonth1 = date1.dayMonth.pad(),
+            dayMonth2 = date2.dayMonth.pad(),
+            cardData = DateSelectorDayViewData.CardData(
+                isToday = isToday,
+                isSelected = isSelected,
+                isFuture = isFuture,
+            ),
+        )
+    }
+
+    private fun isCalendar(
+        isCalendarView: Boolean,
+        daysInCalendar: DaysInCalendar,
+    ): Boolean {
+        val calendarDayCount = daysInCalendarMapper.mapDaysCount(daysInCalendar)
+        return isCalendarView && calendarDayCount > 1
     }
 }

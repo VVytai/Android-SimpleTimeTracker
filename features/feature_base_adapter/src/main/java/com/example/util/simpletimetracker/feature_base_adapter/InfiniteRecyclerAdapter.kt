@@ -4,35 +4,46 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 
 class InfiniteRecyclerAdapter(
-    val delegate: RecyclerAdapterDelegate,
+    private val dataProvider: DataProvider,
+    vararg delegatesList: RecyclerAdapterDelegate,
     diffUtilCallback: DiffUtilCallback = DiffUtilCallback(),
 ) : ListAdapter<ViewHolderType, BaseRecyclerViewHolder>(diffUtilCallback) {
 
-    var isReady: Boolean = false
+    private val delegates: List<RecyclerAdapterDelegate> = delegatesList.toList()
 
     // "Infinite" recycler.
-    override fun getItemCount(): Int = if (isReady) Int.MAX_VALUE else 0
+    override fun getItemCount(): Int = if (dataProvider.isInitialized()) Int.MAX_VALUE else 0
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseRecyclerViewHolder {
-        return delegate.onCreateViewHolder(parent)
+        return delegates.getOrNull(viewType)?.onCreateViewHolder(parent) ?: run {
+            BaseRecyclerAdapter.createDefaultItem(parent)
+        }
     }
 
     override fun onBindViewHolder(
         holder: BaseRecyclerViewHolder,
         position: Int,
-    ) = holder.bind(Data(position.toShift()), emptyList())
+    ) = holder.bind(dataProvider.getItem(position.toShift()), emptyList())
 
     override fun onBindViewHolder(
         holder: BaseRecyclerViewHolder,
         position: Int,
         payloads: MutableList<Any>,
-    ) = holder.bind(Data(position.toShift()), payloads)
+    ) = holder.bind(dataProvider.getItem(position.toShift()), payloads)
 
-    override fun getItemViewType(position: Int): Int = 1
+    override fun getItemViewType(position: Int): Int =
+        delegates.indexOfFirst { it.isForValidType(dataProvider.getCurrentItem()) }
 
-    data class Data(val position: Int) : ViewHolderType {
+    interface DataProvider {
+        fun isInitialized(): Boolean
+        fun getItem(position: Int): Data
+        fun getCurrentItem(): Data
+    }
+
+    interface Data : ViewHolderType {
+        val position: Int
+
         override fun getUniqueId(): Long = position.toLong()
-        override fun isValidType(other: ViewHolderType): Boolean = other is Data
 
         // Update always.
         override fun areItemsTheSame(other: ViewHolderType): Boolean = false

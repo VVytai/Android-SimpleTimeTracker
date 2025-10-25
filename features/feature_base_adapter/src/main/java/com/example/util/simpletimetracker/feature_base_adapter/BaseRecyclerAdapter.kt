@@ -15,7 +15,7 @@ class BaseRecyclerAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseRecyclerViewHolder {
         return delegates.getOrNull(viewType)?.onCreateViewHolder(parent) ?: run {
             Timber.e(getErrorMessage(viewType))
-            createLoaderAdapterDelegate().onCreateViewHolder(parent)
+            createDefaultItem(parent)
         }
     }
 
@@ -56,5 +56,11 @@ class BaseRecyclerAdapter(
         val items = currentList.map { it::class.java.simpleName }.toSet()
         val delegates = delegates.map(RecyclerAdapterDelegate::getViewHolderTypeName)
         return "No delegate found for viewType: $viewType items: $items delegates: $delegates"
+    }
+
+    companion object {
+        fun createDefaultItem(parent: ViewGroup): BaseRecyclerViewHolder {
+            return createLoaderAdapterDelegate().onCreateViewHolder(parent)
+        }
     }
 }

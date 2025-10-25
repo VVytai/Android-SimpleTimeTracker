@@ -38,7 +38,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RecordsContainerViewModel @Inject constructor(
-    val dateSelectorMapper: DateSelectorMapper,
+    val dateSelectorDataProvider: DateSelectorMapper,
     private val router: Router,
     private val timeMapper: TimeMapper,
     private val resourceRepo: ResourceRepo,
@@ -53,8 +53,6 @@ class RecordsContainerViewModel @Inject constructor(
 
     val position: LiveData<RecordsContainerPosition>
         by lazySuspend { loadPosition(newPosition = 0, animate = false) }
-    val startDatesSelectorViewData: LiveData<Unit>
-        by lazySuspend { loadDatesSelector() }
     val dateScrollPosition: LiveData<Int> = SingleLiveEvent<Int>()
     val updateDatesViewData: LiveData<Unit> = SingleLiveEvent<Unit>()
 
@@ -63,6 +61,14 @@ class RecordsContainerViewModel @Inject constructor(
 
     init {
         subscribeToUpdates()
+    }
+
+    fun initialize() {
+        viewModelScope.launch {
+            setupDatesSelector()
+            updateDatesViewData.set(Unit)
+            dateScrollPosition.set(0)
+        }
     }
 
     fun onOptionsClick() = viewModelScope.launch {
@@ -83,13 +89,13 @@ class RecordsContainerViewModel @Inject constructor(
         if (currentPosition == item.position) {
             onSelectDateClick()
         } else {
-            dateScrollPosition.set(item.position)
+            onRangeChanged(item.position, animate = true)
         }
     }
 
     fun onDateLongClick(item: InfiniteRecyclerAdapter.Data) {
         if (currentPosition == item.position) {
-            dateScrollPosition.set(0)
+            onRangeChanged(0, animate = true)
         } else {
             onDateClick(item)
         }
@@ -216,6 +222,7 @@ class RecordsContainerViewModel @Inject constructor(
             startOfDayShift = prefsInteractor.getStartOfDayShift(),
             firstDayOfWeek = prefsInteractor.getFirstDayOfWeek(),
         )
+        setupDatesSelector()
         onRangeChanged(newPosition, animate = false)
     }
 
@@ -271,9 +278,13 @@ class RecordsContainerViewModel @Inject constructor(
         dateScrollPosition.set(newPosition)
     }
 
-    private suspend fun loadDatesSelector() {
-        val startOfDayShift = prefsInteractor.getStartOfDayShift()
-        dateSelectorMapper.startOfDayShift = startOfDayShift
+    private suspend fun setupDatesSelector() {
+        dateSelectorDataProvider.setup(
+            startOfDayShift = prefsInteractor.getStartOfDayShift(),
+            isCalendarView = prefsInteractor.getShowRecordsCalendar(),
+            daysInCalendar = prefsInteractor.getDaysInCalendar(),
+            firstDayOfWeek = prefsInteractor.getFirstDayOfWeek(),
+        )
     }
 
     private fun updatePosition(
@@ -281,7 +292,7 @@ class RecordsContainerViewModel @Inject constructor(
         animate: Boolean,
     ) = viewModelScope.launch {
         val data = loadPosition(shift, animate)
-        dateSelectorMapper.currentSelectedPosition = shift
+        dateSelectorDataProvider.currentSelectedPosition = shift
         position.set(data)
         updateDatesViewData.set(Unit)
     }

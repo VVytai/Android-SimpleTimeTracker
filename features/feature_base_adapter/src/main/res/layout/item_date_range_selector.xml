@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="96dp"
+    android:layout_height="wrap_content">
+
+    <View
+        android:id="@+id/viewDateSelectorClickable"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="4dp"
+        android:background="?selectableItemBackground"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/viewDateSelectorBackgroundSelected"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="4dp"
+        android:alpha="0.1"
+        android:background="@drawable/bg_rounded_corners"
+        android:backgroundTint="?appContrastColor"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
+
+    <View
+        android:id="@+id/viewDateSelectorBackgroundToday"
+        android:layout_width="4dp"
+        android:layout_height="4dp"
+        android:layout_marginBottom="4dp"
+        android:background="@drawable/bg_rounded_corners"
+        android:backgroundTint="?colorAccent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideDateSelectorRange"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.5" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvDateSelectorDayOfWeek1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="4dp"
+            android:gravity="center|end"
+            android:maxLines="1"
+            android:textColor="?appTextPrimaryColor"
+            android:textSize="12sp"
+            app:autoSizeMinTextSize="1sp"
+            app:autoSizeTextType="uniform"
+            app:layout_constraintBottom_toTopOf="@id/tvDateSelectorDayOfMonth1"
+            app:layout_constraintEnd_toEndOf="@id/guideDateSelectorRange"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Mon" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvDateSelectorDayOfMonth1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginBottom="12dp"
+            android:gravity="center|end"
+            android:textColor="?appTextPrimaryColor"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/guideDateSelectorRange"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvDateSelectorDayOfWeek1"
+            tools:text="24" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvDateSelectorDayOfWeek2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="4dp"
+            android:gravity="center|start"
+            android:maxLines="1"
+            android:textColor="?appTextPrimaryColor"
+            android:textSize="12sp"
+            app:autoSizeMinTextSize="1sp"
+            app:autoSizeTextType="uniform"
+            app:layout_constraintBottom_toTopOf="@id/tvDateSelectorDayOfMonth2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/guideDateSelectorRange"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Sun" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvDateSelectorDayOfMonth2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginBottom="12dp"
+            android:gravity="center|start"
+            android:textColor="?appTextPrimaryColor"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/guideDateSelectorRange"
+            app:layout_constraintTop_toBottomOf="@id/tvDateSelectorDayOfWeek2"
+            tools:text="31" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -21,7 +21,6 @@
             android:id="@+id/dividerRecordContainerDates"
             android:layout_width="match_parent"
             android:layout_height="2dp"
-            android:layout_marginBottom="2dp"
             android:background="?appDividerColor"
             app:layout_constraintBottom_toTopOf="@id/rvDatesContainer" />
 
@@ -33,7 +32,7 @@
             app:layout_constraintEnd_toStartOf="@id/btnRecordsContainerOptions"
             app:layout_constraintStart_toStartOf="parent"
             tools:layoutManager="LinearLayoutManager"
-            tools:listitem="@layout/item_date_selector"
+            tools:listitem="@layout/item_date_day_selector"
             tools:orientation="horizontal" />
 
         <View

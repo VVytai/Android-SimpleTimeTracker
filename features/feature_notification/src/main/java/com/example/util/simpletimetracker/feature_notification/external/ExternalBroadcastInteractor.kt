@@ -1,6 +1,5 @@
 package com.example.util.simpletimetracker.feature_notification.external
 
-import com.example.util.simpletimetracker.core.mapper.IconImageMapper
 import com.example.util.simpletimetracker.domain.color.model.AppColor
 import com.example.util.simpletimetracker.domain.extension.orEmpty
 import com.example.util.simpletimetracker.domain.record.interactor.AddRecordMediator
@@ -32,7 +31,6 @@ class ExternalBroadcastInteractor @Inject constructor(
     private val getSelectableTagsInteractor: GetSelectableTagsInteractor,
     private val recordsUpdateInteractor: RecordsUpdateInteractor,
     private val recordTagInteractor: RecordTagInteractor,
-    private val iconImageMapper: IconImageMapper,
 ) {
 
     suspend fun onActionActivityStart(

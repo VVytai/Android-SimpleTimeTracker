@@ -21,7 +21,8 @@ import com.example.util.simpletimetracker.core.sharedViewModel.RemoveRecordViewM
 import com.example.util.simpletimetracker.core.utils.InsetConfiguration
 import com.example.util.simpletimetracker.core.view.SafeFragmentStateAdapter
 import com.example.util.simpletimetracker.feature_base_adapter.InfiniteRecyclerAdapter
-import com.example.util.simpletimetracker.feature_base_adapter.dateSelector.createDateSelectorAdapterDelegate
+import com.example.util.simpletimetracker.feature_base_adapter.dateSelector.createDateSelectorDayAdapterDelegate
+import com.example.util.simpletimetracker.feature_base_adapter.dateSelector.createDateSelectorRangeAdapterDelegate
 import com.example.util.simpletimetracker.feature_records.adapter.RecordsContainerAdapter
 import com.example.util.simpletimetracker.feature_records.model.RecordsContainerPosition
 import com.example.util.simpletimetracker.feature_records.viewModel.RecordsContainerViewModel
@@ -65,8 +66,12 @@ class RecordsContainerFragment :
     )
     private val dateSelectorAdapter by lazy {
         InfiniteRecyclerAdapter(
-            createDateSelectorAdapterDelegate(
-                mapper = viewModel.dateSelectorMapper,
+            dataProvider = viewModel.dateSelectorDataProvider,
+            createDateSelectorDayAdapterDelegate(
+                onItemClick = viewModel::onDateClick,
+                onItemLongClick = viewModel::onDateLongClick,
+            ),
+            createDateSelectorRangeAdapterDelegate(
                 onItemClick = viewModel::onDateClick,
                 onItemLongClick = viewModel::onDateLongClick,
             ),
@@ -101,9 +106,9 @@ class RecordsContainerFragment :
     }
 
     override fun initViewModel() {
+        viewModel.initialize()
         with(viewModel) {
             position.observe(::setPosition)
-            startDatesSelectorViewData.observe { startDatesSelector() }
             dateScrollPosition.observe(::doScrollToPosition)
             updateDatesViewData.observe { updateDatesSelector() }
         }
@@ -146,8 +151,8 @@ class RecordsContainerFragment :
         initInsets()
     }
 
-    // TODO DATE Add calendar support
     // TODO DATE Add to statistics
+    // TODO DATE remove Today/ThisWeek etc from time mapper.
     // TODO DATE rename ContainerRangeButton style
     private fun doScrollToPosition(position: Int) {
         scrollWasAlreadyRequested = true
@@ -168,13 +173,6 @@ class RecordsContainerFragment :
                 },
             )
         }
-    }
-
-    private fun startDatesSelector() {
-        if (dateSelectorAdapter.isReady) return
-        dateSelectorAdapter.isReady = true
-        updateDatesSelector()
-        doScrollToPosition(0)
     }
 
     @SuppressLint("NotifyDataSetChanged")
