@@ -27,8 +27,8 @@ fun createDateSelectorDayAdapterDelegate(
 
         setDayMoth(
             dayMonth = item.dayMonth,
-            day = tvDateSelectorDayOfWeek,
-            month = tvDateSelectorDayOfMonth,
+            topText = tvDateSelectorTopText,
+            bottomText = tvDateSelectorBottomText,
         )
         root.setCardData(
             cardData = item.cardData,
@@ -36,8 +36,8 @@ fun createDateSelectorDayAdapterDelegate(
             viewToday = viewDateSelectorBackgroundToday,
             viewClickable = viewDateSelectorClickable,
             textViews = listOf(
-                tvDateSelectorDayOfWeek,
-                tvDateSelectorDayOfMonth,
+                tvDateSelectorTopText,
+                tvDateSelectorBottomText,
             ),
         )
 
@@ -48,11 +48,11 @@ fun createDateSelectorDayAdapterDelegate(
 
 internal fun setDayMoth(
     dayMonth: DateSelectorDayViewData.DayMonth,
-    day: TextView,
-    month: TextView,
+    topText: TextView,
+    bottomText: TextView,
 ) {
-    day.text = dayMonth.dayOfWeek
-    month.text = dayMonth.dayOfMonth
+    topText.text = dayMonth.topText
+    bottomText.text = dayMonth.bottomText
 }
 
 internal fun View.setCardData(
@@ -79,8 +79,8 @@ data class DateSelectorDayViewData(
 ) : InfiniteRecyclerAdapter.Data {
 
     data class DayMonth(
-        val dayOfWeek: String,
-        val dayOfMonth: String,
+        val topText: String,
+        val bottomText: String,
     )
 
     data class CardData(

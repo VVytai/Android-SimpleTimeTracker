@@ -21,7 +21,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_margin="4dp"
-        android:alpha="0.1"
+        android:alpha="0.05"
         android:background="@drawable/bg_rounded_corners"
         android:backgroundTint="?appContrastColor"
         android:visibility="gone"
@@ -57,7 +57,7 @@
             app:layout_constraintGuide_percent="0.5" />
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tvDateSelectorDayOfWeek1"
+            android:id="@+id/tvDateSelectorTopText1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
@@ -69,14 +69,14 @@
             android:textSize="12sp"
             app:autoSizeMinTextSize="1sp"
             app:autoSizeTextType="uniform"
-            app:layout_constraintBottom_toTopOf="@id/tvDateSelectorDayOfMonth1"
+            app:layout_constraintBottom_toTopOf="@id/tvDateSelectorBottomText1"
             app:layout_constraintEnd_toEndOf="@id/guideDateSelectorRange"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="Mon" />
+            tools:text="Dec" />
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tvDateSelectorDayOfMonth1"
+            android:id="@+id/tvDateSelectorBottomText1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
@@ -88,11 +88,11 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@id/guideDateSelectorRange"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvDateSelectorDayOfWeek1"
+            app:layout_constraintTop_toBottomOf="@id/tvDateSelectorTopText1"
             tools:text="24" />
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tvDateSelectorDayOfWeek2"
+            android:id="@+id/tvDateSelectorTopText2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
@@ -104,14 +104,14 @@
             android:textSize="12sp"
             app:autoSizeMinTextSize="1sp"
             app:autoSizeTextType="uniform"
-            app:layout_constraintBottom_toTopOf="@id/tvDateSelectorDayOfMonth2"
+            app:layout_constraintBottom_toTopOf="@id/tvDateSelectorBottomText2"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/guideDateSelectorRange"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="Sun" />
+            tools:text="Dec" />
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tvDateSelectorDayOfMonth2"
+            android:id="@+id/tvDateSelectorBottomText2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
@@ -123,7 +123,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/guideDateSelectorRange"
-            app:layout_constraintTop_toBottomOf="@id/tvDateSelectorDayOfWeek2"
+            app:layout_constraintTop_toBottomOf="@id/tvDateSelectorTopText2"
             tools:text="31" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

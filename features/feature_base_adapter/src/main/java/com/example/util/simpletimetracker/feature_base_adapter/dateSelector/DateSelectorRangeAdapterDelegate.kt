@@ -1,14 +1,10 @@
 package com.example.util.simpletimetracker.feature_base_adapter.dateSelector
 
-import androidx.core.view.isVisible
 import com.example.util.simpletimetracker.feature_base_adapter.InfiniteRecyclerAdapter
-import com.example.util.simpletimetracker.feature_base_adapter.R
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.createRecyclerBindingAdapterDelegate
-import com.example.util.simpletimetracker.feature_views.extension.pxToDp
 import com.example.util.simpletimetracker.feature_views.extension.setOnClickWith
 import com.example.util.simpletimetracker.feature_views.extension.setOnLongClick
-import com.example.util.simpletimetracker.feature_views.extension.setRounded
 import com.example.util.simpletimetracker.feature_base_adapter.databinding.ItemDateRangeSelectorBinding as Binding
 import com.example.util.simpletimetracker.feature_base_adapter.dateSelector.DateSelectorRangeViewData as ViewData
 
@@ -24,13 +20,13 @@ fun createDateSelectorRangeAdapterDelegate(
 
         setDayMoth(
             dayMonth = item.dayMonth1,
-            day = tvDateSelectorDayOfWeek1,
-            month = tvDateSelectorDayOfMonth1,
+            topText = tvDateSelectorTopText1,
+            bottomText = tvDateSelectorBottomText1,
         )
         setDayMoth(
             dayMonth = item.dayMonth2,
-            day = tvDateSelectorDayOfWeek2,
-            month = tvDateSelectorDayOfMonth2,
+            topText = tvDateSelectorTopText2,
+            bottomText = tvDateSelectorBottomText2,
         )
         root.setCardData(
             cardData = item.cardData,
@@ -38,10 +34,10 @@ fun createDateSelectorRangeAdapterDelegate(
             viewToday = viewDateSelectorBackgroundToday,
             viewClickable = viewDateSelectorClickable,
             textViews = listOf(
-                tvDateSelectorDayOfWeek1,
-                tvDateSelectorDayOfMonth1,
-                tvDateSelectorDayOfWeek2,
-                tvDateSelectorDayOfMonth2,
+                tvDateSelectorTopText1,
+                tvDateSelectorBottomText1,
+                tvDateSelectorTopText2,
+                tvDateSelectorBottomText2,
             ),
         )
 
