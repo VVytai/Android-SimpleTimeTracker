@@ -22,21 +22,11 @@ class RecordsContainerUpdateInteractor @Inject constructor() {
         onBufferOverflow = BufferOverflow.DROP_OLDEST,
     )
 
-    val firstDayOfWeekUpdated: SharedFlow<Unit> get() = _firstDayOfWeekUpdated.asSharedFlow()
-    private val _firstDayOfWeekUpdated = MutableSharedFlow<Unit>(
-        extraBufferCapacity = 1,
-        onBufferOverflow = BufferOverflow.DROP_OLDEST,
-    )
-
     suspend fun sendShowCalendarUpdated() {
         _showCalendarUpdated.emit(Unit)
     }
 
     suspend fun sendCalendarDaysUpdated() {
         _calendarDaysUpdated.emit(Unit)
-    }
-
-    suspend fun sendFirstDayOfWeekUpdated() {
-        _firstDayOfWeekUpdated.emit(Unit)
     }
 }

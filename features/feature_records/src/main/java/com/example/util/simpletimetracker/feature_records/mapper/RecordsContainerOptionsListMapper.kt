@@ -48,7 +48,6 @@ class RecordsContainerOptionsListMapper @Inject constructor(
             ),
         )
 
-        // TODO DATE add and translate strings
         result += OptionsListParams.Item(
             id = RecordsContainerOptionsListItem.SelectDate,
             text = resourceRepo.getString(R.string.range_select_day),
@@ -58,7 +57,7 @@ class RecordsContainerOptionsListMapper @Inject constructor(
 
         result += OptionsListParams.Item(
             id = RecordsContainerOptionsListItem.BackToToday,
-            text = "Back to today",
+            text = resourceRepo.getString(R.string.range_back_to_today),
             icon = R.drawable.back,
             isIconCheckVisible = false,
         )

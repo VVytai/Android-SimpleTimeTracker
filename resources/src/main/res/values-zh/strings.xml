@@ -42,6 +42,7 @@
     <string name="range_select_week">选择某周</string>
     <string name="range_select_month">选择某月</string>
     <string name="range_select_year">选择某年</string>
+    <string name="range_back_to_today">返回今天</string>
 
     <plurals name="range_last">
         <!--        <item quantity="zero">最近 %s 天</item>-->

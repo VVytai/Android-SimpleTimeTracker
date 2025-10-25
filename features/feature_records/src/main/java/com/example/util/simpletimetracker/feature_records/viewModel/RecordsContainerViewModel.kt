@@ -22,7 +22,6 @@ import com.example.util.simpletimetracker.feature_base_adapter.InfiniteRecyclerA
 import com.example.util.simpletimetracker.feature_records.R
 import com.example.util.simpletimetracker.feature_records.mapper.DateSelectorMapper
 import com.example.util.simpletimetracker.feature_records.mapper.RecordsContainerOptionsListMapper
-import com.example.util.simpletimetracker.feature_records.mapper.RecordsViewDataMapper
 import com.example.util.simpletimetracker.feature_records.model.RecordsContainerOptionsListItem
 import com.example.util.simpletimetracker.feature_records.model.RecordsContainerPosition
 import com.example.util.simpletimetracker.navigation.Router
@@ -43,7 +42,6 @@ class RecordsContainerViewModel @Inject constructor(
     private val router: Router,
     private val timeMapper: TimeMapper,
     private val resourceRepo: ResourceRepo,
-    private val recordsViewDataMapper: RecordsViewDataMapper,
     private val prefsInteractor: PrefsInteractor,
     private val recordsUpdateInteractor: RecordsUpdateInteractor,
     private val recordsContainerUpdateInteractor: RecordsContainerUpdateInteractor,
@@ -53,8 +51,6 @@ class RecordsContainerViewModel @Inject constructor(
     private val recordsContainerMultiselectInteractor: RecordsContainerMultiselectInteractor,
 ) : BaseViewModel() {
 
-    val title: LiveData<String>
-        by lazySuspend { loadTitle(0) }
     val position: LiveData<RecordsContainerPosition>
         by lazySuspend { loadPosition(newPosition = 0, animate = false) }
     val dateScrollPosition: LiveData<Int> = SingleLiveEvent<Int>()
@@ -73,37 +69,17 @@ class RecordsContainerViewModel @Inject constructor(
     }
 
     fun onOptionsLongClick() {
-        onRecordAddClick()
+        onFilterClick()
     }
 
-    fun onTodayClick() {
-        viewModelScope.launch {
-            val useMilitaryTime = prefsInteractor.getUseMilitaryTimeFormat()
-            val firstDayOfWeek = prefsInteractor.getFirstDayOfWeek()
-            val current = timeMapper.toTimestampShifted(
-                rangesFromToday = getActualShift(),
-                range = RangeLength.Day,
-            )
-
-            router.navigate(
-                DateTimeDialogParams(
-                    tag = DATE_TAG,
-                    type = DateTimeDialogType.DATE,
-                    timestamp = current,
-                    useMilitaryTime = useMilitaryTime,
-                    firstDayOfWeek = firstDayOfWeek,
-                ),
-            )
-        }
-    }
-
-    fun onTodayLongClick() {
-        onRangeChanged(0, animate = true)
+    fun onRecordAddClick() = viewModelScope.launch {
+        val params = ChangeRecordParams.New(getActualShift())
+        router.navigate(ChangeRecordFromMainParams(params))
     }
 
     fun onDateClick(item: InfiniteRecyclerAdapter.Data) {
         if (currentPosition == item.position) {
-            onTodayClick()
+            onSelectDateClick()
         } else {
             dateScrollPosition.set(item.position)
         }
@@ -156,16 +132,34 @@ class RecordsContainerViewModel @Inject constructor(
             is RecordsContainerOptionsListItem.CalendarView -> onCalendarSwitchClick()
             is RecordsContainerOptionsListItem.Filter -> onFilterClick()
             is RecordsContainerOptionsListItem.Share -> onShareClick()
-            is RecordsContainerOptionsListItem.BackToToday -> onTodayLongClick()
-            is RecordsContainerOptionsListItem.SelectDate -> onTodayClick()
+            is RecordsContainerOptionsListItem.BackToToday -> onBackToTodayClick()
+            is RecordsContainerOptionsListItem.SelectDate -> onSelectDateClick()
         }
     }
 
-    private fun onRecordAddClick() {
+    private fun onSelectDateClick() {
         viewModelScope.launch {
-            val params = ChangeRecordParams.New(getActualShift())
-            router.navigate(ChangeRecordFromMainParams(params))
+            val useMilitaryTime = prefsInteractor.getUseMilitaryTimeFormat()
+            val firstDayOfWeek = prefsInteractor.getFirstDayOfWeek()
+            val current = timeMapper.toTimestampShifted(
+                rangesFromToday = getActualShift(),
+                range = RangeLength.Day,
+            )
+
+            router.navigate(
+                DateTimeDialogParams(
+                    tag = DATE_TAG,
+                    type = DateTimeDialogType.DATE,
+                    timestamp = current,
+                    useMilitaryTime = useMilitaryTime,
+                    firstDayOfWeek = firstDayOfWeek,
+                ),
+            )
         }
+    }
+
+    private fun onBackToTodayClick() {
+        onRangeChanged(0, animate = true)
     }
 
     private fun onFilterClick() = viewModelScope.launch {
@@ -200,10 +194,6 @@ class RecordsContainerViewModel @Inject constructor(
         viewModelScope.launch {
             recordsContainerUpdateInteractor.calendarDaysUpdated
                 .collect { recalculateRangeOnCalendarDaysChanged() }
-        }
-        viewModelScope.launch {
-            recordsContainerUpdateInteractor.firstDayOfWeekUpdated
-                .collect { updateTitle(currentPosition) }
         }
         viewModelScope.launch {
             recordsContainerMultiselectInteractor.stateChanged
@@ -276,7 +266,6 @@ class RecordsContainerViewModel @Inject constructor(
         animate: Boolean,
     ) {
         updatePosition(newPosition, animate)
-        updateTitle(newPosition)
         dateScrollPosition.set(newPosition)
     }
 
@@ -302,26 +291,6 @@ class RecordsContainerViewModel @Inject constructor(
             isCalendar = isCalendar,
             daysInCalendar = prefsInteractor.getDaysInCalendar(),
             animate = animate,
-        )
-    }
-
-    private fun updateTitle(newPosition: Int) = viewModelScope.launch {
-        val data = loadTitle(newPosition)
-        title.set(data)
-    }
-
-    private suspend fun loadTitle(shift: Int): String {
-        val startOfDayShift = prefsInteractor.getStartOfDayShift()
-        val isCalendarView = prefsInteractor.getShowRecordsCalendar()
-        val calendarDayCount = prefsInteractor.getDaysInCalendar()
-        val firstDayOfWeek = prefsInteractor.getFirstDayOfWeek()
-
-        return recordsViewDataMapper.mapTitle(
-            shift = shift,
-            startOfDayShift = startOfDayShift,
-            isCalendarView = isCalendarView,
-            daysInCalendar = calendarDayCount,
-            firstDayOfWeek = firstDayOfWeek,
         )
     }
 

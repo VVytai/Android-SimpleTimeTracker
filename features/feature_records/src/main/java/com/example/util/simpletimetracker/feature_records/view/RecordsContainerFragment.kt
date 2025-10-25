@@ -1,6 +1,5 @@
 package com.example.util.simpletimetracker.feature_records.view
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.annotation.VisibleForTesting
@@ -20,7 +19,6 @@ import com.example.util.simpletimetracker.core.sharedViewModel.MainTabsViewModel
 import com.example.util.simpletimetracker.core.sharedViewModel.RemoveRecordViewModel
 import com.example.util.simpletimetracker.core.utils.InsetConfiguration
 import com.example.util.simpletimetracker.core.view.SafeFragmentStateAdapter
-import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.feature_base_adapter.InfiniteRecyclerAdapter
 import com.example.util.simpletimetracker.feature_base_adapter.dateSelector.createDateSelectorAdapterDelegate
 import com.example.util.simpletimetracker.feature_records.adapter.RecordsContainerAdapter
@@ -32,7 +30,6 @@ import com.example.util.simpletimetracker.feature_views.extension.setOnLongClick
 import com.example.util.simpletimetracker.navigation.Router
 import com.example.util.simpletimetracker.navigation.params.notification.SnackBarParams
 import com.example.util.simpletimetracker.navigation.params.screen.OptionsListParams
-import com.google.android.material.animation.Positioning
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import com.example.util.simpletimetracker.feature_records.databinding.RecordsContainerFragmentBinding as Binding
@@ -98,15 +95,13 @@ class RecordsContainerFragment :
     }
 
     override fun initUx() = with(binding) {
-        btnRecordsContainerAdd.setOnClick(throttle(viewModel::onOptionsLongClick))
+        btnRecordsContainerAdd.setOnClick(throttle(viewModel::onRecordAddClick))
         btnRecordsContainerOptions.setOnClick(throttle(viewModel::onOptionsClick))
-        containerRecordsContainerCurrentDate.setOnClick(viewModel::onTodayClick)
-        containerRecordsContainerCurrentDate.setOnLongClick(viewModel::onTodayLongClick)
+        btnRecordsContainerOptions.setOnLongClick(throttle(viewModel::onOptionsLongClick))
     }
 
     override fun initViewModel() {
         with(viewModel) {
-            title.observe(::updateTitle)
             position.observe(::setPosition)
             dateScrollPosition.observe(::doScrollToPosition)
             // TODO DATE do better?
@@ -126,10 +121,6 @@ class RecordsContainerFragment :
 
     override fun onOptionsItemClick(id: OptionsListParams.Item.Id) {
         viewModel.onOptionsItemClick(id)
-    }
-
-    private fun updateTitle(title: String) {
-        binding.tvRecordsContainerCurrentDate.text = title
     }
 
     private fun showMessage(message: SnackBarParams?) {
@@ -158,7 +149,7 @@ class RecordsContainerFragment :
     // TODO DATE Add calendar support
     // TODO DATE Add to statistics
     // TODO DATE rename ContainerRangeButton style
-    // TODO DATE remove sharing title from records and stats?
+    // TODO DATE check with start of day shift
     private fun doScrollToPosition(position: Int) {
         scrollWasAlreadyRequested = true
         val recycler = binding.rvDatesContainer

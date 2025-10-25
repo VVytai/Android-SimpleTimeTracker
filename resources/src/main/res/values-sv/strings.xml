@@ -42,6 +42,7 @@
     <string name="range_select_week">Välj vecka</string>
     <string name="range_select_month">Välj månad</string>
     <string name="range_select_year">Välj år</string>
+    <string name="range_back_to_today">Tillbaka till idag</string>
 
     <plurals name="range_last">
         <!--        <item quantity="zero">Senaste %s dagarna</item>-->
