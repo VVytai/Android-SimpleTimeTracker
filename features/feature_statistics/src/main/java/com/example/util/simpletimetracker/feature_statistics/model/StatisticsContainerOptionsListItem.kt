@@ -10,4 +10,13 @@ sealed interface StatisticsContainerOptionsListItem : OptionsListParams.Item.Id 
 
     @Parcelize
     data object Share : StatisticsContainerOptionsListItem
+
+    @Parcelize
+    data object BackToToday : StatisticsContainerOptionsListItem
+
+    @Parcelize
+    data object SelectDate : StatisticsContainerOptionsListItem
+
+    @Parcelize
+    data object SelectRange : StatisticsContainerOptionsListItem
 }

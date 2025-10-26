@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -9,52 +8,25 @@
         android:id="@+id/pagerStatisticsContainer"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@id/btnStatisticsContainerToday"
+        app:layout_constraintBottom_toTopOf="@id/containerDatesSelector"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnStatisticsContainerPrevious"
-        style="@style/ContainerRangeButton"
-        android:layout_marginStart="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/btnStatisticsContainerToday"
-        app:layout_constraintStart_toStartOf="parent" />
 
     <com.example.util.simpletimetracker.feature_views.spinner.CustomSpinner
         android:id="@+id/spinnerStatisticsContainer"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="@id/btnStatisticsContainerToday"
-        app:layout_constraintEnd_toEndOf="@id/btnStatisticsContainerOptions"
-        app:layout_constraintStart_toStartOf="@id/btnStatisticsContainerToday"
-        app:layout_constraintTop_toTopOf="@id/btnStatisticsContainerToday" />
+        app:layout_constraintBottom_toBottomOf="@id/containerDatesSelector"
+        app:layout_constraintEnd_toEndOf="@id/containerDatesSelector"
+        app:layout_constraintStart_toStartOf="@id/containerDatesSelector"
+        app:layout_constraintTop_toTopOf="@id/containerDatesSelector" />
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnStatisticsContainerToday"
-        style="@style/ContainerRangeSelectableMainButton"
+    <include
+        android:id="@+id/containerDatesSelector"
+        layout="@layout/date_selector_layout"
         android:layout_width="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/btnStatisticsContainerOptions"
-        app:layout_constraintStart_toEndOf="@id/btnStatisticsContainerPrevious"
-        tools:text="@string/title_today" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnStatisticsContainerOptions"
-        style="@style/ContainerRangeOptionsButton"
-        android:layout_marginEnd="8dp"
-        app:icon="@drawable/more"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/btnStatisticsContainerNext"
-        app:layout_constraintStart_toEndOf="@id/btnStatisticsContainerToday" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnStatisticsContainerNext"
-        style="@style/ContainerRangeButton"
-        android:layout_marginEnd="8dp"
-        app:icon="@drawable/arrow_right"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_weight="1"
-        app:layout_constraintStart_toEndOf="@id/btnStatisticsContainerOptions" />
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

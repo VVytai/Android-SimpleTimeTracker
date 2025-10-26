@@ -255,11 +255,11 @@ class RecordsContainerViewModel @Inject constructor(
             override val currentPosition: Int
                 get() = this@RecordsContainerViewModel.currentPosition
 
-            override fun onSelectDateClick() =
+            override fun onDateClick() =
                 this@RecordsContainerViewModel.onSelectDateClick()
 
-            override fun onRangeChanged(newPosition: Int, animate: Boolean) =
-                this@RecordsContainerViewModel.onRangeChanged(newPosition, animate)
+            override fun onRangeChanged(newPosition: Int) =
+                this@RecordsContainerViewModel.onRangeChanged(newPosition, true)
         }
     }
 

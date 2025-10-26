@@ -4,8 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.util.simpletimetracker.core.base.SingleLiveEvent
+import com.example.util.simpletimetracker.core.delegates.dateSelector.viewModelDelegate.DateSelectorViewModelDelegate
 import com.example.util.simpletimetracker.core.extension.set
-import com.example.util.simpletimetracker.core.mapper.RangeTitleMapper
 import com.example.util.simpletimetracker.core.mapper.RangeViewDataMapper
 import com.example.util.simpletimetracker.core.mapper.TimeMapper
 import com.example.util.simpletimetracker.core.viewData.RangesViewData
@@ -15,7 +16,6 @@ import com.example.util.simpletimetracker.core.viewData.SelectRangeViewData
 import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.StatisticsUpdateInteractor
-import com.example.util.simpletimetracker.domain.statistics.extension.canBeSwiped
 import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
 import com.example.util.simpletimetracker.feature_statistics.mapper.StatisticsContainerOptionsListMapper
 import com.example.util.simpletimetracker.feature_statistics.model.StatisticsContainerOptionsListItem
@@ -32,21 +32,14 @@ import javax.inject.Inject
 
 @HiltViewModel
 class StatisticsContainerViewModel @Inject constructor(
+    val dateSelectorViewModelDelegate: DateSelectorViewModelDelegate,
     private val router: Router,
     private val timeMapper: TimeMapper,
     private val rangeViewDataMapper: RangeViewDataMapper,
-    private val rangeTitleMapper: RangeTitleMapper,
     private val prefsInteractor: PrefsInteractor,
     private val statisticsUpdateInteractor: StatisticsUpdateInteractor,
     private val statisticsContainerOptionsListMapper: StatisticsContainerOptionsListMapper,
 ) : ViewModel() {
-
-    val title: LiveData<String> by lazy {
-        return@lazy MutableLiveData<String>().let { initial ->
-            viewModelScope.launch { initial.value = loadTitle() }
-            initial
-        }
-    }
 
     val position: LiveData<Int> by lazy {
         return@lazy MutableLiveData(0)
@@ -59,30 +52,22 @@ class StatisticsContainerViewModel @Inject constructor(
         }
     }
 
-    val navButtonsVisibility: LiveData<Boolean> by lazy {
-        return@lazy MutableLiveData<Boolean>().let { initial ->
-            viewModelScope.launch { initial.value = loadNavButtonsVisibility() }
-            initial
+    val selectRangeClick: LiveData<Unit> = SingleLiveEvent<Unit>()
+
+    private var rangeLength: RangeLength? = null
+    private val currentPosition: Int get() = position.value.orZero()
+
+    init {
+        dateSelectorViewModelDelegate.attach(getDateSelectorDelegateParent())
+    }
+
+    fun initialize() {
+        viewModelScope.launch {
+            dateSelectorViewModelDelegate.initialize()
         }
     }
 
-    private var rangeLength: RangeLength? = null
-
-    fun onVisible() {
-        updateTitle()
-    }
-
-    fun onPreviousClick() {
-        updatePosition(position.value.orZero() - 1)
-    }
-
-    fun onTodayClick() {
-        updatePosition(0)
-    }
-
-    fun onNextClick() {
-        updatePosition(position.value.orZero() + 1)
-    }
+    // TODO DATE update on firstDayOfWeek change
 
     fun onOptionsClick() = viewModelScope.launch {
         val items = statisticsContainerOptionsListMapper.map()
@@ -113,7 +98,6 @@ class StatisticsContainerViewModel @Inject constructor(
     fun onRangeUpdated(newRange: RangeLength) {
         if (newRange != rangeLength) {
             rangeLength = newRange
-            updateNavButtonsVisibility()
             updatePosition(0)
         }
     }
@@ -139,14 +123,27 @@ class StatisticsContainerViewModel @Inject constructor(
             is StatisticsContainerOptionsListItem.Share -> {
                 statisticsUpdateInteractor.sendShareClicked()
             }
+            is StatisticsContainerOptionsListItem.BackToToday -> {
+                onBackToTodayClick()
+            }
+            is StatisticsContainerOptionsListItem.SelectDate -> {
+                onSelectDateClick()
+            }
+            is StatisticsContainerOptionsListItem.SelectRange -> {
+                selectRangeClick.set(Unit)
+            }
         }
+    }
+
+    private fun onBackToTodayClick() {
+        updatePosition(0)
     }
 
     private fun onSelectDateClick() = viewModelScope.launch {
         val useMilitaryTime = prefsInteractor.getUseMilitaryTimeFormat()
         val firstDayOfWeek = prefsInteractor.getFirstDayOfWeek()
         val current = timeMapper.toTimestampShifted(
-            rangesFromToday = position.value.orZero(),
+            rangesFromToday = currentPosition,
             range = prefsInteractor.getStatisticsRange(),
         )
 
@@ -188,25 +185,24 @@ class StatisticsContainerViewModel @Inject constructor(
         return rangeLength ?: prefsInteractor.getStatisticsRange()
     }
 
+    private fun getDateSelectorDelegateParent(): DateSelectorViewModelDelegate.Parent {
+        return object : DateSelectorViewModelDelegate.Parent {
+            override val currentPosition: Int
+                get() = this@StatisticsContainerViewModel.currentPosition
+
+            override fun onDateClick() {
+                selectRangeClick.set(Unit)
+            }
+
+            override fun onRangeChanged(newPosition: Int) =
+                this@StatisticsContainerViewModel.updatePosition(newPosition)
+        }
+    }
+
     private fun updatePosition(newPosition: Int) {
-        (position as MutableLiveData).value = newPosition
-        updateTitle()
+        dateSelectorViewModelDelegate.updatePosition(newPosition)
+        position.set(newPosition)
         updateRanges()
-    }
-
-    private fun updateTitle() = viewModelScope.launch {
-        title.set(loadTitle())
-    }
-
-    private suspend fun loadTitle(): String {
-        val startOfDayShift = prefsInteractor.getStartOfDayShift()
-        val firstDayOfWeek = prefsInteractor.getFirstDayOfWeek()
-        return rangeTitleMapper.mapToTitle(
-            rangeLength = getRangeLength(),
-            position = position.value.orZero(),
-            startOfDayShift = startOfDayShift,
-            firstDayOfWeek = firstDayOfWeek,
-        )
     }
 
     private fun updateRanges() = viewModelScope.launch {
@@ -219,14 +215,6 @@ class StatisticsContainerViewModel @Inject constructor(
             addSelection = true,
             lastDaysCount = getCurrentLastDaysCount(),
         )
-    }
-
-    private fun updateNavButtonsVisibility() = viewModelScope.launch {
-        navButtonsVisibility.set(loadNavButtonsVisibility())
-    }
-
-    private suspend fun loadNavButtonsVisibility(): Boolean {
-        return getRangeLength().canBeSwiped()
     }
 
     companion object {

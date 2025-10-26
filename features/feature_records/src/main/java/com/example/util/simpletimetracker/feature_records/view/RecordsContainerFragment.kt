@@ -90,18 +90,18 @@ class RecordsContainerFragment :
         with(viewModel) {
             position.observe(::setPosition)
         }
-        DateSelectorViewDelegate.initViewModel(
-            fragment = this,
-            viewHolder = dateSelectorViewHolder,
-            viewModel = viewModel.dateSelectorViewModelDelegate,
-            binding = binding.containerDatesSelector,
-        )
         with(removeRecordViewModel) {
             message.observe(::showMessage)
         }
         with(mainTabsViewModel) {
             isNavBatAtTheBottom.observe(::updateInsetConfiguration)
         }
+        DateSelectorViewDelegate.initViewModel(
+            fragment = this,
+            viewHolder = dateSelectorViewHolder,
+            viewModel = viewModel.dateSelectorViewModelDelegate,
+            binding = binding.containerDatesSelector,
+        )
     }
 
     override fun onDateTimeSet(timestamp: Long, tag: String?) {

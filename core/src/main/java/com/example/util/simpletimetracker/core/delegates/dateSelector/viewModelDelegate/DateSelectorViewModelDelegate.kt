@@ -33,15 +33,15 @@ class DateSelectorViewModelDelegate @Inject constructor(
 
     fun onDateClick(item: InfiniteRecyclerAdapter.Data) {
         if (parent?.currentPosition == item.position) {
-            parent?.onSelectDateClick()
+            parent?.onDateClick()
         } else {
-            parent?.onRangeChanged(item.position, animate = true)
+            parent?.onRangeChanged(item.position)
         }
     }
 
     fun onDateLongClick(item: InfiniteRecyclerAdapter.Data) {
         if (parent?.currentPosition == item.position) {
-            parent?.onRangeChanged(0, animate = true)
+            parent?.onRangeChanged(0)
         } else {
             onDateClick(item)
         }
@@ -49,7 +49,7 @@ class DateSelectorViewModelDelegate @Inject constructor(
 
     fun onScrolledToDate(position: Int) {
         if (position != parent?.currentPosition) {
-            parent?.onRangeChanged(position, animate = true)
+            parent?.onRangeChanged(position)
         }
     }
 
@@ -75,7 +75,7 @@ class DateSelectorViewModelDelegate @Inject constructor(
     interface Parent {
         val currentPosition: Int
 
-        fun onSelectDateClick()
-        fun onRangeChanged(newPosition: Int, animate: Boolean)
+        fun onDateClick()
+        fun onRangeChanged(newPosition: Int)
     }
 }

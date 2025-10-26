@@ -29,7 +29,7 @@
         android:background="@drawable/bg_alpha_gradient"
         android:rotation="180"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/btnRecordsContainerOptions"
         app:layout_constraintTop_toTopOf="parent" />
 
     <View

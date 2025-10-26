@@ -36,6 +36,29 @@ class StatisticsContainerOptionsListMapper @Inject constructor(
             ),
         )
 
+        // TODO DATE select week, select month, select year
+        result += OptionsListParams.Item(
+            id = StatisticsContainerOptionsListItem.SelectDate,
+            text = resourceRepo.getString(R.string.range_select_day),
+            icon = R.drawable.date,
+            isIconCheckVisible = false,
+        )
+
+        result += OptionsListParams.Item(
+            id = StatisticsContainerOptionsListItem.BackToToday,
+            text = resourceRepo.getString(R.string.range_back_to_today),
+            icon = R.drawable.back,
+            isIconCheckVisible = false,
+        )
+
+        // TODO DATE text and icon
+        result += OptionsListParams.Item(
+            id = StatisticsContainerOptionsListItem.SelectRange,
+            text = "Select range",
+            icon = R.drawable.date,
+            isIconCheckVisible = false,
+        )
+
         return result
     }
 }

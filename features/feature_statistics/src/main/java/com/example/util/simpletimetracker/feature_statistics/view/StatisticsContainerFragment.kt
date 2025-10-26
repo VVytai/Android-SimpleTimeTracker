@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.example.util.simpletimetracker.core.base.BaseFragment
+import com.example.util.simpletimetracker.core.delegates.dateSelector.viewDelegate.DateSelectorViewDelegate
 import com.example.util.simpletimetracker.core.di.BaseViewModelFactory
 import com.example.util.simpletimetracker.core.dialog.CustomRangeSelectionDialogListener
 import com.example.util.simpletimetracker.core.dialog.DateTimeDialogListener
@@ -19,9 +20,6 @@ import com.example.util.simpletimetracker.domain.record.model.Range
 import com.example.util.simpletimetracker.feature_statistics.adapter.StatisticsContainerAdapter
 import com.example.util.simpletimetracker.feature_statistics.viewModel.StatisticsContainerViewModel
 import com.example.util.simpletimetracker.feature_statistics.viewModel.StatisticsSettingsViewModel
-import com.example.util.simpletimetracker.feature_views.extension.setOnClick
-import com.example.util.simpletimetracker.feature_views.extension.setOnLongClick
-import com.example.util.simpletimetracker.feature_views.extension.visible
 import com.example.util.simpletimetracker.navigation.params.screen.OptionsListParams
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -53,6 +51,11 @@ class StatisticsContainerFragment :
     private val mainTabsViewModel: MainTabsViewModel by activityViewModels(
         factoryProducer = { mainTabsViewModelFactory },
     )
+    private val dateSelectorViewHolder by lazy {
+        DateSelectorViewDelegate.getViewHolder(
+            viewModel = viewModel.dateSelectorViewModelDelegate,
+        )
+    }
 
     override fun initUi(): Unit = with(binding) {
         pagerStatisticsContainer.apply {
@@ -62,19 +65,27 @@ class StatisticsContainerFragment :
             offscreenPageLimit = 1
             isUserInputEnabled = false
         }
+        DateSelectorViewDelegate.initUi(
+            fragment = this@StatisticsContainerFragment,
+            viewHolder = dateSelectorViewHolder,
+            viewModel = viewModel.dateSelectorViewModelDelegate,
+            binding = containerDatesSelector,
+        )
     }
 
-    override fun initUx() = with(binding) {
-        btnStatisticsContainerOptions.setOnClick(throttle(viewModel::onOptionsClick))
-        btnStatisticsContainerOptions.setOnLongClick(throttle(viewModel::onOptionsLongClick))
-        spinnerStatisticsContainer.onItemSelected = {
+    override fun initUx() {
+        DateSelectorViewDelegate.initUx(
+            fragment = this,
+            binding = binding.containerDatesSelector,
+            isAddButtonVisible = false,
+            onRecordAddClick = {},
+            onOptionsClick = viewModel::onOptionsClick,
+            onOptionsLongClick = viewModel::onOptionsLongClick,
+        )
+        binding.spinnerStatisticsContainer.onItemSelected = {
             viewModel.onRangeSelected(it)
             settingsViewModel.onRangeSelected(it)
         }
-        btnStatisticsContainerPrevious.setOnClick(viewModel::onPreviousClick)
-        btnStatisticsContainerNext.setOnClick(viewModel::onNextClick)
-        btnStatisticsContainerToday.setOnClick { spinnerStatisticsContainer.performClick() }
-        btnStatisticsContainerToday.setOnLongClick(viewModel::onTodayClick)
     }
 
     override fun onDateTimeSet(timestamp: Long, tag: String?) {
@@ -90,11 +101,11 @@ class StatisticsContainerFragment :
     }
 
     override fun initViewModel() {
+        viewModel.initialize()
         with(viewModel) {
-            title.observe(::updateTitle)
             rangeItems.observe(::updateRangeItems)
             position.observe(::updatePosition)
-            navButtonsVisibility.observe(::updateNavButtons)
+            selectRangeClick.observe { binding.spinnerStatisticsContainer.performClick() }
         }
         with(settingsViewModel) {
             rangeUpdated.observe(viewModel::onRangeUpdated)
@@ -102,28 +113,20 @@ class StatisticsContainerFragment :
         with(mainTabsViewModel) {
             isNavBatAtTheBottom.observe(::updateInsetConfiguration)
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        viewModel.onVisible()
+        DateSelectorViewDelegate.initViewModel(
+            fragment = this,
+            viewHolder = dateSelectorViewHolder,
+            viewModel = viewModel.dateSelectorViewModelDelegate,
+            binding = binding.containerDatesSelector,
+        )
     }
 
     override fun onOptionsItemClick(id: OptionsListParams.Item.Id) {
         viewModel.onOptionsItemClick(id)
     }
 
-    private fun updateNavButtons(isVisible: Boolean) = with(binding) {
-        btnStatisticsContainerPrevious.visible = isVisible
-        btnStatisticsContainerNext.visible = isVisible
-    }
-
     private fun updateRangeItems(viewData: RangesViewData) = with(binding) {
         spinnerStatisticsContainer.setData(viewData.items, viewData.selectedPosition)
-    }
-
-    private fun updateTitle(title: String) = with(binding) {
-        btnStatisticsContainerToday.text = title
     }
 
     private fun updatePosition(position: Int) = with(binding) {
