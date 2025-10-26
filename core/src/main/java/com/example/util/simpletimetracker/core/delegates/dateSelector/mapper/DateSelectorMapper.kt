@@ -1,4 +1,4 @@
-package com.example.util.simpletimetracker.feature_records.mapper
+package com.example.util.simpletimetracker.core.delegates.dateSelector.mapper
 
 import com.example.util.simpletimetracker.core.mapper.CalendarToListShiftMapper
 import com.example.util.simpletimetracker.core.mapper.TimeMapper

@@ -107,6 +107,7 @@ class ChangeRecordTagFragment :
         )
     }
     private val iconsAdapter: BaseRecyclerAdapter by lazy {
+        // TODO move creation to delegate
         BaseRecyclerAdapter(
             createLoaderAdapterDelegate(),
             createIconSelectionAdapterDelegate(viewModel::onIconClick),

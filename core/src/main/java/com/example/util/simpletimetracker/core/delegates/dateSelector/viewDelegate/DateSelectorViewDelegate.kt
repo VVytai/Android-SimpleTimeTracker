@@ -1,0 +1,195 @@
+package com.example.util.simpletimetracker.core.delegates.dateSelector.viewDelegate
+
+import android.annotation.SuppressLint
+import android.view.MotionEvent
+import android.view.ViewGroup
+import androidx.core.view.children
+import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSmoothScroller
+import androidx.recyclerview.widget.LinearSnapHelper
+import androidx.recyclerview.widget.RecyclerView
+import androidx.viewbinding.ViewBinding
+import androidx.viewpager2.widget.ViewPager2
+import com.example.util.simpletimetracker.core.base.BaseFragment
+import com.example.util.simpletimetracker.core.databinding.DateSelectorLayoutBinding
+import com.example.util.simpletimetracker.core.delegates.dateSelector.viewModelDelegate.DateSelectorViewModelDelegate
+import com.example.util.simpletimetracker.core.extension.changeDragSensitivity
+import com.example.util.simpletimetracker.core.extension.horizontalSmoothScrollWithOffset
+import com.example.util.simpletimetracker.feature_base_adapter.InfiniteRecyclerAdapter
+import com.example.util.simpletimetracker.feature_base_adapter.dateSelector.createDateSelectorDayAdapterDelegate
+import com.example.util.simpletimetracker.feature_base_adapter.dateSelector.createDateSelectorRangeAdapterDelegate
+import com.example.util.simpletimetracker.feature_views.extension.addOnScrollListenerAdapter
+import com.example.util.simpletimetracker.feature_views.extension.setOnClick
+import com.example.util.simpletimetracker.feature_views.extension.setOnLongClick
+
+object DateSelectorViewDelegate {
+
+    interface ViewHolder {
+        val adapter: Lazy<InfiniteRecyclerAdapter>
+        val snapHelper: LinearSnapHelper
+    }
+
+    fun getViewHolder(
+        viewModel: DateSelectorViewModelDelegate,
+    ): ViewHolder {
+        return object : ViewHolder {
+            override val adapter: Lazy<InfiniteRecyclerAdapter> = lazy { getAdapter(viewModel) }
+            override val snapHelper: LinearSnapHelper = LinearSnapHelper()
+        }
+    }
+
+    fun initUi(
+        fragment: Fragment,
+        viewHolder: ViewHolder,
+        viewModel: DateSelectorViewModelDelegate,
+        binding: DateSelectorLayoutBinding,
+    ) {
+        fun onDatesScrolled(recyclerView: RecyclerView, newState: Int) {
+            onDatesScrolled(
+                viewHolder = viewHolder,
+                viewModel = viewModel,
+                recyclerView = recyclerView,
+                newState = newState,
+                onScrolledToDate = viewModel::onScrolledToDate,
+            )
+        }
+
+        binding.rvDatesContainer.apply {
+            layoutManager = LinearLayoutManager(context).apply {
+                orientation = RecyclerView.HORIZONTAL
+            }
+            adapter = viewHolder.adapter.value
+            viewHolder.snapHelper.attachToRecyclerView(this)
+            setTouchInterceptListener { onDateSelectorTouchIntercepted(fragment, it) }
+            addOnScrollListenerAdapter(onScrollStateChanged = ::onDatesScrolled)
+            changeDragSensitivity(0.1f)
+        }
+    }
+
+    fun <T : ViewBinding> initUx(
+        fragment: BaseFragment<T>,
+        binding: DateSelectorLayoutBinding,
+        isAddButtonVisible: Boolean,
+        onRecordAddClick: () -> Unit,
+        onOptionsClick: () -> Unit,
+        onOptionsLongClick: () -> Unit,
+    ) = with(fragment) {
+        binding.btnRecordsContainerAdd.isVisible = isAddButtonVisible
+
+        binding.btnRecordsContainerAdd.setOnClick(throttle(onRecordAddClick))
+        binding.btnRecordsContainerOptions.setOnClick(throttle(onOptionsClick))
+        binding.btnRecordsContainerOptions.setOnLongClick(throttle(onOptionsLongClick))
+    }
+
+    fun <T : ViewBinding> initViewModel(
+        fragment: BaseFragment<T>,
+        viewHolder: ViewHolder,
+        viewModel: DateSelectorViewModelDelegate,
+        binding: DateSelectorLayoutBinding,
+    ) = with(fragment) {
+        viewModel.dateScrollPosition.observe { position ->
+            doScrollToPosition(
+                viewModel = viewModel,
+                binding = binding,
+                position = position,
+            )
+        }
+        viewModel.updateDatesViewData.observe {
+            updateDatesSelector(
+                viewHolder = viewHolder,
+            )
+        }
+    }
+
+    private fun getAdapter(
+        viewModel: DateSelectorViewModelDelegate,
+    ): InfiniteRecyclerAdapter {
+        return InfiniteRecyclerAdapter(
+            dataProvider = viewModel.dataProvider,
+            createDateSelectorDayAdapterDelegate(
+                onItemClick = viewModel::onDateClick,
+                onItemLongClick = viewModel::onDateLongClick,
+            ),
+            createDateSelectorRangeAdapterDelegate(
+                onItemClick = viewModel::onDateClick,
+                onItemLongClick = viewModel::onDateLongClick,
+            ),
+        )
+    }
+
+    private fun onDatesScrolled(
+        viewHolder: ViewHolder,
+        viewModel: DateSelectorViewModelDelegate,
+        recyclerView: RecyclerView,
+        newState: Int,
+        onScrolledToDate: (position: Int) -> Unit,
+    ) {
+        if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+            // Scroll already initiated from viewModel, no need to notify it,
+            // otherwise back to today click will be canceled half way.
+            if (!viewModel.scrollWasAlreadyRequested) {
+                val layoutManager = recyclerView.layoutManager as? LinearLayoutManager
+                val snapView = viewHolder.snapHelper.findSnapView(layoutManager) ?: return
+                val snapPosition = layoutManager?.getPosition(snapView) ?: return
+                onScrolledToDate(snapPosition - InfiniteRecyclerAdapter.FIRST)
+            }
+            viewModel.scrollWasAlreadyRequested = false
+        }
+    }
+
+    private fun onDateSelectorTouchIntercepted(
+        fragment: Fragment,
+        event: MotionEvent,
+    ) = with(fragment) {
+        when (event.action) {
+            MotionEvent.ACTION_DOWN,
+            MotionEvent.ACTION_MOVE,
+            -> blockParentScroll(true)
+            MotionEvent.ACTION_UP,
+            MotionEvent.ACTION_CANCEL,
+            -> blockParentScroll(false)
+        }
+    }
+
+    private fun Fragment.blockParentScroll(isBlocked: Boolean) {
+        val views = (parentFragment?.view as? ViewGroup)?.children
+        val viewPager = views?.filterIsInstance<ViewPager2>()?.firstOrNull()
+        viewPager?.isUserInputEnabled = !isBlocked
+    }
+
+    // TODO DATE Add to statistics
+    // TODO DATE rename ContainerRangeButton style
+    private fun doScrollToPosition(
+        viewModel: DateSelectorViewModelDelegate,
+        binding: DateSelectorLayoutBinding,
+        position: Int,
+    ) = with(binding) {
+        viewModel.scrollWasAlreadyRequested = true
+        val actualPosition = position + InfiniteRecyclerAdapter.FIRST
+
+        // To long to scroll with animation if scroll distance is long,
+        // in this case scrollToPosition closer, and than smoothScroll with animation.
+        rvDatesContainer.scrollToPosition(actualPosition)
+
+        rvDatesContainer.post {
+            rvDatesContainer.horizontalSmoothScrollWithOffset(
+                snapPreference = LinearSmoothScroller.SNAP_TO_END,
+                position = actualPosition,
+                calculateOffset = { recyclerView, view ->
+                    // center of the recycler.
+                    -recyclerView.width / 2 + view.width / 2
+                },
+            )
+        }
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private fun updateDatesSelector(
+        viewHolder: ViewHolder,
+    ) {
+        // TODO do better maybe?
+        viewHolder.adapter.value.notifyDataSetChanged()
+    }
+}

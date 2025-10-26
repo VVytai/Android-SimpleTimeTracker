@@ -3,7 +3,7 @@ package com.example.util.simpletimetracker.feature_records.viewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.example.util.simpletimetracker.core.base.BaseViewModel
-import com.example.util.simpletimetracker.core.base.SingleLiveEvent
+import com.example.util.simpletimetracker.core.delegates.dateSelector.viewModelDelegate.DateSelectorViewModelDelegate
 import com.example.util.simpletimetracker.core.extension.lazySuspend
 import com.example.util.simpletimetracker.core.extension.set
 import com.example.util.simpletimetracker.core.mapper.CalendarToListShiftMapper
@@ -18,9 +18,7 @@ import com.example.util.simpletimetracker.domain.record.interactor.RecordsContai
 import com.example.util.simpletimetracker.domain.record.interactor.RecordsShareUpdateInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.RecordsUpdateInteractor
 import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
-import com.example.util.simpletimetracker.feature_base_adapter.InfiniteRecyclerAdapter
 import com.example.util.simpletimetracker.feature_records.R
-import com.example.util.simpletimetracker.feature_records.mapper.DateSelectorMapper
 import com.example.util.simpletimetracker.feature_records.mapper.RecordsContainerOptionsListMapper
 import com.example.util.simpletimetracker.feature_records.model.RecordsContainerOptionsListItem
 import com.example.util.simpletimetracker.feature_records.model.RecordsContainerPosition
@@ -38,7 +36,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RecordsContainerViewModel @Inject constructor(
-    val dateSelectorDataProvider: DateSelectorMapper,
+    val dateSelectorViewModelDelegate: DateSelectorViewModelDelegate,
     private val router: Router,
     private val timeMapper: TimeMapper,
     private val resourceRepo: ResourceRepo,
@@ -53,21 +51,18 @@ class RecordsContainerViewModel @Inject constructor(
 
     val position: LiveData<RecordsContainerPosition>
         by lazySuspend { loadPosition(newPosition = 0, animate = false) }
-    val dateScrollPosition: LiveData<Int> = SingleLiveEvent<Int>()
-    val updateDatesViewData: LiveData<Unit> = SingleLiveEvent<Unit>()
 
     private var lastListShift: Int = 0
-    private val currentPosition get() = position.value?.position.orZero()
+    private val currentPosition: Int get() = position.value?.position.orZero()
 
     init {
+        dateSelectorViewModelDelegate.attach(getDateSelectorDelegateParent())
         subscribeToUpdates()
     }
 
     fun initialize() {
         viewModelScope.launch {
-            setupDatesSelector()
-            updateDatesViewData.set(Unit)
-            dateScrollPosition.set(0)
+            dateSelectorViewModelDelegate.initialize()
         }
     }
 
@@ -83,28 +78,6 @@ class RecordsContainerViewModel @Inject constructor(
     fun onRecordAddClick() = viewModelScope.launch {
         val params = ChangeRecordParams.New(getActualShift())
         router.navigate(ChangeRecordFromMainParams(params))
-    }
-
-    fun onDateClick(item: InfiniteRecyclerAdapter.Data) {
-        if (currentPosition == item.position) {
-            onSelectDateClick()
-        } else {
-            onRangeChanged(item.position, animate = true)
-        }
-    }
-
-    fun onDateLongClick(item: InfiniteRecyclerAdapter.Data) {
-        if (currentPosition == item.position) {
-            onRangeChanged(0, animate = true)
-        } else {
-            onDateClick(item)
-        }
-    }
-
-    fun onScrolledToDate(position: Int) {
-        if (position != currentPosition) {
-            onRangeChanged(position, animate = true)
-        }
     }
 
     fun onDateTimeSet(timestamp: Long, tag: String?) = viewModelScope.launch {
@@ -222,7 +195,7 @@ class RecordsContainerViewModel @Inject constructor(
             startOfDayShift = prefsInteractor.getStartOfDayShift(),
             firstDayOfWeek = prefsInteractor.getFirstDayOfWeek(),
         )
-        setupDatesSelector()
+        dateSelectorViewModelDelegate.recalculateRangeOnCalendarViewSwitched()
         onRangeChanged(newPosition, animate = false)
     }
 
@@ -275,16 +248,19 @@ class RecordsContainerViewModel @Inject constructor(
         animate: Boolean,
     ) {
         updatePosition(newPosition, animate)
-        dateScrollPosition.set(newPosition)
     }
 
-    private suspend fun setupDatesSelector() {
-        dateSelectorDataProvider.setup(
-            startOfDayShift = prefsInteractor.getStartOfDayShift(),
-            isCalendarView = prefsInteractor.getShowRecordsCalendar(),
-            daysInCalendar = prefsInteractor.getDaysInCalendar(),
-            firstDayOfWeek = prefsInteractor.getFirstDayOfWeek(),
-        )
+    private fun getDateSelectorDelegateParent(): DateSelectorViewModelDelegate.Parent {
+        return object : DateSelectorViewModelDelegate.Parent {
+            override val currentPosition: Int
+                get() = this@RecordsContainerViewModel.currentPosition
+
+            override fun onSelectDateClick() =
+                this@RecordsContainerViewModel.onSelectDateClick()
+
+            override fun onRangeChanged(newPosition: Int, animate: Boolean) =
+                this@RecordsContainerViewModel.onRangeChanged(newPosition, animate)
+        }
     }
 
     private fun updatePosition(
@@ -292,9 +268,8 @@ class RecordsContainerViewModel @Inject constructor(
         animate: Boolean,
     ) = viewModelScope.launch {
         val data = loadPosition(shift, animate)
-        dateSelectorDataProvider.currentSelectedPosition = shift
+        dateSelectorViewModelDelegate.updatePosition(shift)
         position.set(data)
-        updateDatesViewData.set(Unit)
     }
 
     private suspend fun loadPosition(

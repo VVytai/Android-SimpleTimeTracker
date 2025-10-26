@@ -1,37 +1,22 @@
 package com.example.util.simpletimetracker.feature_records.view
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.ViewGroup
 import androidx.annotation.VisibleForTesting
-import androidx.core.view.children
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.LinearSmoothScroller
-import androidx.recyclerview.widget.LinearSnapHelper
-import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager2.widget.ViewPager2
 import com.example.util.simpletimetracker.core.base.BaseFragment
+import com.example.util.simpletimetracker.core.delegates.dateSelector.viewDelegate.DateSelectorViewDelegate
 import com.example.util.simpletimetracker.core.di.BaseViewModelFactory
 import com.example.util.simpletimetracker.core.dialog.DateTimeDialogListener
 import com.example.util.simpletimetracker.core.dialog.OptionsListDialogListener
-import com.example.util.simpletimetracker.core.extension.changeDragSensitivity
-import com.example.util.simpletimetracker.core.extension.horizontalSmoothScrollWithOffset
 import com.example.util.simpletimetracker.core.sharedViewModel.MainTabsViewModel
 import com.example.util.simpletimetracker.core.sharedViewModel.RemoveRecordViewModel
 import com.example.util.simpletimetracker.core.utils.InsetConfiguration
 import com.example.util.simpletimetracker.core.view.SafeFragmentStateAdapter
-import com.example.util.simpletimetracker.feature_base_adapter.InfiniteRecyclerAdapter
-import com.example.util.simpletimetracker.feature_base_adapter.dateSelector.createDateSelectorDayAdapterDelegate
-import com.example.util.simpletimetracker.feature_base_adapter.dateSelector.createDateSelectorRangeAdapterDelegate
 import com.example.util.simpletimetracker.feature_records.adapter.RecordsContainerAdapter
 import com.example.util.simpletimetracker.feature_records.model.RecordsContainerPosition
 import com.example.util.simpletimetracker.feature_records.viewModel.RecordsContainerViewModel
-import com.example.util.simpletimetracker.feature_views.extension.addOnScrollListenerAdapter
-import com.example.util.simpletimetracker.feature_views.extension.setOnClick
-import com.example.util.simpletimetracker.feature_views.extension.setOnLongClick
 import com.example.util.simpletimetracker.navigation.Router
 import com.example.util.simpletimetracker.navigation.params.notification.SnackBarParams
 import com.example.util.simpletimetracker.navigation.params.screen.OptionsListParams
@@ -67,21 +52,11 @@ class RecordsContainerFragment :
     private val mainTabsViewModel: MainTabsViewModel by activityViewModels(
         factoryProducer = { mainTabsViewModelFactory },
     )
-    private val dateSelectorAdapter by lazy {
-        InfiniteRecyclerAdapter(
-            dataProvider = viewModel.dateSelectorDataProvider,
-            createDateSelectorDayAdapterDelegate(
-                onItemClick = viewModel::onDateClick,
-                onItemLongClick = viewModel::onDateLongClick,
-            ),
-            createDateSelectorRangeAdapterDelegate(
-                onItemClick = viewModel::onDateClick,
-                onItemLongClick = viewModel::onDateLongClick,
-            ),
+    private val dateSelectorViewHolder by lazy {
+        DateSelectorViewDelegate.getViewHolder(
+            viewModel = viewModel.dateSelectorViewModelDelegate,
         )
     }
-    private val snapHelper by lazy { LinearSnapHelper() }
-    private var scrollWasAlreadyRequested: Boolean = false
 
     override fun initUi(): Unit = with(binding) {
         pagerRecordsContainer.apply {
@@ -91,31 +66,36 @@ class RecordsContainerFragment :
             offscreenPageLimit = 1
             isUserInputEnabled = false
         }
-        rvDatesContainer.apply {
-            layoutManager = LinearLayoutManager(context).apply {
-                orientation = RecyclerView.HORIZONTAL
-            }
-            adapter = dateSelectorAdapter
-            snapHelper.attachToRecyclerView(this)
-            setTouchInterceptListener(::onDateSelectorTouchIntercepted)
-            addOnScrollListenerAdapter(onScrollStateChanged = ::onDatesScrolled)
-            changeDragSensitivity(0.1f)
-        }
+        DateSelectorViewDelegate.initUi(
+            fragment = this@RecordsContainerFragment,
+            viewHolder = dateSelectorViewHolder,
+            viewModel = viewModel.dateSelectorViewModelDelegate,
+            binding = containerDatesSelector,
+        )
     }
 
-    override fun initUx() = with(binding) {
-        btnRecordsContainerAdd.setOnClick(throttle(viewModel::onRecordAddClick))
-        btnRecordsContainerOptions.setOnClick(throttle(viewModel::onOptionsClick))
-        btnRecordsContainerOptions.setOnLongClick(throttle(viewModel::onOptionsLongClick))
+    override fun initUx() {
+        DateSelectorViewDelegate.initUx(
+            fragment = this,
+            binding = binding.containerDatesSelector,
+            isAddButtonVisible = true,
+            onRecordAddClick = viewModel::onRecordAddClick,
+            onOptionsClick = viewModel::onOptionsClick,
+            onOptionsLongClick = viewModel::onOptionsLongClick,
+        )
     }
 
     override fun initViewModel() {
         viewModel.initialize()
         with(viewModel) {
             position.observe(::setPosition)
-            dateScrollPosition.observe(::doScrollToPosition)
-            updateDatesViewData.observe { updateDatesSelector() }
         }
+        DateSelectorViewDelegate.initViewModel(
+            fragment = this,
+            viewHolder = dateSelectorViewHolder,
+            viewModel = viewModel.dateSelectorViewModelDelegate,
+            binding = binding.containerDatesSelector,
+        )
         with(removeRecordViewModel) {
             message.observe(::showMessage)
         }
@@ -134,7 +114,7 @@ class RecordsContainerFragment :
 
     private fun showMessage(message: SnackBarParams?) {
         if (message != null && message.tag == SnackBarParams.TAG.RECORD_DELETE) {
-            router.show(message, binding.btnRecordsContainerAdd)
+            router.show(message, binding.containerDatesSelector.btnRecordsContainerAdd)
             removeRecordViewModel.onMessageShown()
         }
     }
@@ -153,69 +133,6 @@ class RecordsContainerFragment :
             InsetConfiguration.ApplyToView { binding.root }
         }
         initInsets()
-    }
-
-    // TODO DATE Add to statistics
-    // TODO DATE rename ContainerRangeButton style
-    private fun doScrollToPosition(position: Int) {
-        scrollWasAlreadyRequested = true
-        val recycler = binding.rvDatesContainer
-        val actualPosition = position + InfiniteRecyclerAdapter.FIRST
-
-        // To long to scroll with animation if scroll distance is long,
-        // in this case scrollToPosition closer, and than smoothScroll with animation.
-        recycler.scrollToPosition(actualPosition)
-
-        recycler.post {
-            recycler.horizontalSmoothScrollWithOffset(
-                snapPreference = LinearSmoothScroller.SNAP_TO_END,
-                position = actualPosition,
-                calculateOffset = { recyclerView, view ->
-                    // center of the recycler.
-                    -recyclerView.width / 2 + view.width / 2
-                },
-            )
-        }
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
-    private fun updateDatesSelector() {
-        // TODO do better maybe?
-        dateSelectorAdapter.notifyDataSetChanged()
-    }
-
-    private fun onDatesScrolled(
-        recyclerView: RecyclerView,
-        newState: Int,
-    ) {
-        if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-            // Scroll already initiated from viewModel, no need to notify it,
-            // otherwise back to today click will be canceled half way.
-            if (!scrollWasAlreadyRequested) {
-                val layoutManager = recyclerView.layoutManager as? LinearLayoutManager
-                val snapView = snapHelper.findSnapView(layoutManager) ?: return
-                val snapPosition = layoutManager?.getPosition(snapView) ?: return
-                viewModel.onScrolledToDate(snapPosition - InfiniteRecyclerAdapter.FIRST)
-            }
-            scrollWasAlreadyRequested = false
-        }
-    }
-
-    private fun onDateSelectorTouchIntercepted(event: MotionEvent) {
-        when (event.action) {
-            MotionEvent.ACTION_DOWN,
-            MotionEvent.ACTION_MOVE,
-            -> blockParentScroll(true)
-            MotionEvent.ACTION_UP,
-            MotionEvent.ACTION_CANCEL,
-            -> blockParentScroll(false)
-        }
-    }
-
-    private fun blockParentScroll(isBlocked: Boolean) {
-        val views = (parentFragment?.view as? ViewGroup)?.children
-        val viewPager = views?.filterIsInstance<ViewPager2>()?.firstOrNull()
-        viewPager?.isUserInputEnabled = !isBlocked
     }
 
     companion object {
