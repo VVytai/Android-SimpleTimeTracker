@@ -1,6 +1,8 @@
 package com.example.util.simpletimetracker.core.mapper
 
 import com.example.util.simpletimetracker.core.common.R
+import com.example.util.simpletimetracker.core.extension.shift
+import com.example.util.simpletimetracker.core.extension.shiftTimeStamp
 import com.example.util.simpletimetracker.core.repo.BaseResourceRepo
 import com.example.util.simpletimetracker.domain.daysOfWeek.model.DayOfWeek
 import com.example.util.simpletimetracker.domain.extension.padDuration
@@ -92,6 +94,16 @@ class RangeTitleMapper @Inject constructor(
             is RangeLength.Last,
             is RangeLength.Custom,
             -> {
+                fun shiftTimeStamp(timestamp: Long): Long {
+                    // TODO DATE custom range selects date but doesn't account for startOfDayShift
+                    return if (rangeLength is RangeLength.Last) {
+                        /** see [TimeMapper.toDayDateTimestamp] */
+                        calendar.shiftTimeStamp(timestamp, -startOfDayShift)
+                    } else {
+                        timestamp
+                    }
+                }
+
                 val range = timeMapper.getRangeStartAndEnd(
                     rangeLength = rangeLength,
                     shift = position,
@@ -99,8 +111,8 @@ class RangeTitleMapper @Inject constructor(
                     startOfDayShift = startOfDayShift,
                 )
                 DateSelectorData.Double(
-                    data1 = mapToDateSelectorDayOfMonthData(range.timeStarted),
-                    data2 = mapToDateSelectorDayOfMonthData(range.timeEnded - 1),
+                    data1 = mapToDateSelectorDayOfMonthData(shiftTimeStamp(range.timeStarted)),
+                    data2 = mapToDateSelectorDayOfMonthData(shiftTimeStamp(range.timeEnded - 1)),
                 )
             }
         }

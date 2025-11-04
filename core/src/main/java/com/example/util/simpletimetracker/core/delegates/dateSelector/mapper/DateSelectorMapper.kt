@@ -169,7 +169,6 @@ class DateSelectorMapper @Inject constructor(
     }
 
     // TODO DATE backToToday not working while list is flung
-    // TODO DATE last 7 days showing end on tomorrow
     private fun RangeTitleMapper.DateSelectorData.Data.toViewData(): DateSelectorDayViewData.DayMonth {
         return DateSelectorDayViewData.DayMonth(
             topText = this.topText,
