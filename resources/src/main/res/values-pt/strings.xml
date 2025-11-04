@@ -42,6 +42,7 @@
     <string name="range_select_week">Selecionar semana</string>
     <string name="range_select_month">Selecionar mês</string>
     <string name="range_select_year">Selecionar ano</string>
+    <string name="range_select_range">Selecionar intervalo</string>
     <string name="range_back_to_today">Voltar para hoje</string>
 
     <plurals name="range_last">

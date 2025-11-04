@@ -42,6 +42,7 @@
     <string name="range_select_week">選擇周</string>
     <string name="range_select_month">選擇月</string>
     <string name="range_select_year">選擇年</string>
+    <string name="range_select_range">選擇範圍</string>
     <string name="range_back_to_today">返回今天</string>
 
     <plurals name="range_last">

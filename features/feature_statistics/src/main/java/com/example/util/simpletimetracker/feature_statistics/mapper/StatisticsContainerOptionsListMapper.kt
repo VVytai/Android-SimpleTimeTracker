@@ -1,9 +1,11 @@
 package com.example.util.simpletimetracker.feature_statistics.mapper
 
 import com.example.util.simpletimetracker.core.mapper.OptionsListItemMapper
+import com.example.util.simpletimetracker.core.mapper.RangeViewDataMapper
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.domain.extension.plusAssign
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
+import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
 import com.example.util.simpletimetracker.feature_statistics.R
 import com.example.util.simpletimetracker.feature_statistics.model.StatisticsContainerOptionsListItem
 import com.example.util.simpletimetracker.navigation.params.screen.OptionsListParams
@@ -13,9 +15,12 @@ class StatisticsContainerOptionsListMapper @Inject constructor(
     private val resourceRepo: ResourceRepo,
     private val prefsInteractor: PrefsInteractor,
     private val optionsListItemMapper: OptionsListItemMapper,
+    private val rangeViewDataMapper: RangeViewDataMapper,
 ) {
 
-    suspend fun map(): List<OptionsListParams.Item> {
+    suspend fun map(
+        rangeLength: RangeLength,
+    ): List<OptionsListParams.Item> {
         val result = mutableListOf<OptionsListParams.Item>()
         val filterType = prefsInteractor.getChartFilterType()
 
@@ -36,28 +41,32 @@ class StatisticsContainerOptionsListMapper @Inject constructor(
             ),
         )
 
-        // TODO DATE select week, select month, select year
-        result += OptionsListParams.Item(
-            id = StatisticsContainerOptionsListItem.SelectDate,
-            text = resourceRepo.getString(R.string.range_select_day),
-            icon = R.drawable.date,
-            isIconCheckVisible = false,
-        )
+        val selectDateName = rangeViewDataMapper.mapToSelectDateName(rangeLength)?.text
+        if (selectDateName != null) {
+            result += OptionsListParams.Item(
+                id = StatisticsContainerOptionsListItem.SelectDate,
+                text = selectDateName,
+                icon = R.drawable.date,
+                isIconCheckVisible = false,
+            )
+        }
 
-        result += OptionsListParams.Item(
-            id = StatisticsContainerOptionsListItem.BackToToday,
-            text = resourceRepo.getString(R.string.range_back_to_today),
-            icon = R.drawable.back,
-            isIconCheckVisible = false,
-        )
-
-        // TODO DATE text and icon
         result += OptionsListParams.Item(
             id = StatisticsContainerOptionsListItem.SelectRange,
-            text = "Select range",
-            icon = R.drawable.date,
+            text = resourceRepo.getString(R.string.range_select_range),
+            icon = R.drawable.range,
             isIconCheckVisible = false,
         )
+
+        // Back to today will not work on overall range because of only one item in the list.
+        if (rangeLength != RangeLength.All) {
+            result += OptionsListParams.Item(
+                id = StatisticsContainerOptionsListItem.BackToToday,
+                text = resourceRepo.getString(R.string.range_back_to_today),
+                icon = R.drawable.back,
+                isIconCheckVisible = false,
+            )
+        }
 
         return result
     }

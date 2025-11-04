@@ -20,6 +20,7 @@ import com.example.util.simpletimetracker.core.extension.horizontalSmoothScrollW
 import com.example.util.simpletimetracker.feature_base_adapter.InfiniteRecyclerAdapter
 import com.example.util.simpletimetracker.feature_base_adapter.dateSelector.createDateSelectorDayAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.dateSelector.createDateSelectorRangeAdapterDelegate
+import com.example.util.simpletimetracker.feature_base_adapter.dateSelector.createDateSelectorSingleAdapterDelegate
 import com.example.util.simpletimetracker.feature_views.extension.addOnScrollListenerAdapter
 import com.example.util.simpletimetracker.feature_views.extension.setOnClick
 import com.example.util.simpletimetracker.feature_views.extension.setOnLongClick
@@ -49,7 +50,6 @@ object DateSelectorViewDelegate {
         fun onDatesScrolled(recyclerView: RecyclerView, newState: Int) {
             onDatesScrolled(
                 viewHolder = viewHolder,
-                viewModel = viewModel,
                 recyclerView = recyclerView,
                 newState = newState,
                 onScrolledToDate = viewModel::onScrolledToDate,
@@ -91,7 +91,6 @@ object DateSelectorViewDelegate {
     ) = with(fragment) {
         viewModel.dateScrollPosition.observe { position ->
             doScrollToPosition(
-                viewModel = viewModel,
                 binding = binding,
                 position = position,
             )
@@ -100,6 +99,10 @@ object DateSelectorViewDelegate {
             updateDatesSelector(
                 viewHolder = viewHolder,
             )
+        }
+        viewModel.borderShadowsVisibility.observe { isVisible ->
+            binding.viewRecordsContainerBorderShadowStart.isVisible = isVisible
+            binding.viewRecordsContainerBorderShadowEnd.isVisible = isVisible
         }
     }
 
@@ -116,26 +119,23 @@ object DateSelectorViewDelegate {
                 onItemClick = viewModel::onDateClick,
                 onItemLongClick = viewModel::onDateLongClick,
             ),
+            createDateSelectorSingleAdapterDelegate(
+                onItemClick = viewModel::onDateClick,
+            )
         )
     }
 
     private fun onDatesScrolled(
         viewHolder: ViewHolder,
-        viewModel: DateSelectorViewModelDelegate,
         recyclerView: RecyclerView,
         newState: Int,
         onScrolledToDate: (position: Int) -> Unit,
     ) {
         if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-            // Scroll already initiated from viewModel, no need to notify it,
-            // otherwise back to today click will be canceled half way.
-            if (!viewModel.scrollWasAlreadyRequested) {
-                val layoutManager = recyclerView.layoutManager as? LinearLayoutManager
-                val snapView = viewHolder.snapHelper.findSnapView(layoutManager) ?: return
-                val snapPosition = layoutManager?.getPosition(snapView) ?: return
-                onScrolledToDate(snapPosition - InfiniteRecyclerAdapter.FIRST)
-            }
-            viewModel.scrollWasAlreadyRequested = false
+            val layoutManager = recyclerView.layoutManager as? LinearLayoutManager
+            val snapView = viewHolder.snapHelper.findSnapView(layoutManager) ?: return
+            val snapPosition = layoutManager?.getPosition(snapView) ?: return
+            onScrolledToDate(snapPosition - InfiniteRecyclerAdapter.FIRST)
         }
     }
 
@@ -159,16 +159,14 @@ object DateSelectorViewDelegate {
         viewPager?.isUserInputEnabled = !isBlocked
     }
 
-    // TODO DATE Add to statistics
+    // TODO DATE add to details stats
     // TODO DATE rename ContainerRangeButton style
     // TODO DATE remove select date from select range dialog
     // TODO DATE change select range from spinner to sheet
     private fun doScrollToPosition(
-        viewModel: DateSelectorViewModelDelegate,
         binding: DateSelectorLayoutBinding,
         position: Int,
     ) = with(binding) {
-        viewModel.scrollWasAlreadyRequested = true
         val actualPosition = position + InfiniteRecyclerAdapter.FIRST
 
         // To long to scroll with animation if scroll distance is long,

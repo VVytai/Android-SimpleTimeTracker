@@ -72,6 +72,7 @@ class RecordsContainerFragment :
             viewModel = viewModel.dateSelectorViewModelDelegate,
             binding = containerDatesSelector,
         )
+        viewModel.initialize()
     }
 
     override fun initUx() {
@@ -86,7 +87,6 @@ class RecordsContainerFragment :
     }
 
     override fun initViewModel() {
-        viewModel.initialize()
         with(viewModel) {
             position.observe(::setPosition)
         }

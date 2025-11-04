@@ -554,32 +554,59 @@ class TimeMapper @Inject constructor(
         return "$proportionalString$hourString"
     }
 
+    fun toDayDateTimestamp(
+        daysFromToday: Int,
+        startOfDayShift: Long,
+    ): Long {
+        val calendar = Calendar.getInstance()
+
+        calendar.apply {
+            // Shifted by startOfDayShift, so that for example:
+            // now it is 01:00 17.10.2025 but today starts at 2:00,
+            // it would show 16.10.2025.
+            timeInMillis = currentTimestampProvider.get()
+            shift(-startOfDayShift)
+            add(Calendar.DATE, daysFromToday)
+        }
+
+        return calendar.timeInMillis
+    }
+
     fun toDayDateTitle(
         daysFromToday: Int,
         startOfDayShift: Long,
     ): String = synchronized(lock) {
-        val calendar = Calendar.getInstance()
-
-        calendar.apply {
-            timeInMillis = currentTimestampProvider.get() - startOfDayShift
-            add(Calendar.DATE, daysFromToday)
-        }
-
-        return dayTitleFormat.format(calendar.timeInMillis)
+        val calendar = toDayDateTimestamp(daysFromToday, startOfDayShift)
+        return dayTitleFormat.format(calendar)
     }
 
     fun toDayShortDateTitle(
         daysFromToday: Int,
         startOfDayShift: Long,
     ): String = synchronized(lock) {
+        val calendar = toDayDateTimestamp(daysFromToday, startOfDayShift)
+        return weekTitleFormat.format(calendar)
+    }
+
+    fun toWeekDateTimestamp(
+        weeksFromToday: Int,
+        startOfDayShift: Long,
+        firstDayOfWeek: DayOfWeek,
+    ): Pair<Long, Long> {
         val calendar = Calendar.getInstance()
+        val dayOfWeek = toCalendarDayOfWeek(firstDayOfWeek)
 
         calendar.apply {
-            timeInMillis = currentTimestampProvider.get() - startOfDayShift
-            add(Calendar.DATE, daysFromToday)
+            this.firstDayOfWeek = dayOfWeek
+            timeInMillis = currentTimestampProvider.get()
+            shift(-startOfDayShift)
+            setWeekToFirstDay()
+            add(Calendar.DATE, weeksFromToday * 7)
         }
+        val rangeStart = calendar.timeInMillis
+        val rangeEnd = calendar.apply { add(Calendar.DATE, 6) }.timeInMillis
 
-        return weekTitleFormat.format(calendar.timeInMillis)
+        return rangeStart to rangeEnd
     }
 
     fun toWeekDateTitle(
@@ -587,48 +614,50 @@ class TimeMapper @Inject constructor(
         startOfDayShift: Long,
         firstDayOfWeek: DayOfWeek,
     ): String = synchronized(lock) {
-        val calendar = Calendar.getInstance()
-        val dayOfWeek = toCalendarDayOfWeek(firstDayOfWeek)
-
-        calendar.apply {
-            this.firstDayOfWeek = dayOfWeek
-            timeInMillis = currentTimestampProvider.get() - startOfDayShift
-            setWeekToFirstDay()
-            add(Calendar.DATE, weeksFromToday * 7)
-        }
-        val rangeStart = calendar.timeInMillis
-        val rangeEnd = calendar.apply { add(Calendar.DATE, 6) }.timeInMillis
-
+        val (rangeStart, rangeEnd) = toWeekDateTimestamp(weeksFromToday, startOfDayShift, firstDayOfWeek)
         return weekTitleFormat.format(rangeStart) + " - " + weekTitleFormat.format(rangeEnd)
+    }
+
+    fun toMonthDateTimestamp(
+        monthsFromToday: Int,
+        startOfDayShift: Long,
+    ): Long {
+        val calendar = Calendar.getInstance()
+
+        return calendar.apply {
+            timeInMillis = currentTimestampProvider.get()
+            shift(-startOfDayShift)
+            add(Calendar.MONTH, monthsFromToday)
+        }.timeInMillis
     }
 
     fun toMonthDateTitle(
         monthsFromToday: Int,
         startOfDayShift: Long,
     ): String = synchronized(lock) {
+        val calendar = toMonthDateTimestamp(monthsFromToday, startOfDayShift)
+        return monthTitleFormat.format(calendar)
+    }
+
+    fun toYearDateTimestamp(
+        yearsFromToday: Int,
+        startOfDayShift: Long,
+    ): Long {
         val calendar = Calendar.getInstance()
 
-        calendar.apply {
+        return calendar.apply {
             timeInMillis = currentTimestampProvider.get()
             shift(-startOfDayShift)
-            add(Calendar.MONTH, monthsFromToday)
-        }
-
-        return monthTitleFormat.format(calendar.timeInMillis)
+            add(Calendar.YEAR, yearsFromToday)
+        }.timeInMillis
     }
 
     fun toYearDateTitle(
         yearsFromToday: Int,
         startOfDayShift: Long,
     ): String = synchronized(lock) {
-        val calendar = Calendar.getInstance()
-
-        calendar.apply {
-            timeInMillis = currentTimestampProvider.get() - startOfDayShift
-            add(Calendar.YEAR, yearsFromToday)
-        }
-
-        return yearTitleFormat.format(calendar.timeInMillis)
+        val calendar = toYearDateTimestamp(yearsFromToday, startOfDayShift)
+        return yearTitleFormat.format(calendar)
     }
 
     fun getStartOfDayTimeStamp(
@@ -714,8 +743,4 @@ class TimeMapper @Inject constructor(
         val date: String,
         val time: String,
     )
-
-    companion object {
-        private const val MINUTES_IN_MILLIS = 60_000
-    }
 }

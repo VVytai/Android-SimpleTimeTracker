@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="96dp"
-    android:layout_height="wrap_content">
+    android:layout_height="60dp">
 
     <View
         android:id="@+id/viewDateSelectorClickable"
@@ -45,6 +45,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="4dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -60,8 +62,6 @@
             android:id="@+id/tvDateSelectorTopText1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:layout_marginTop="12dp"
             android:layout_marginEnd="4dp"
             android:gravity="center|end"
             android:maxLines="1"
@@ -79,9 +79,7 @@
             android:id="@+id/tvDateSelectorBottomText1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
             android:layout_marginEnd="4dp"
-            android:layout_marginBottom="12dp"
             android:gravity="center|end"
             android:textColor="?appTextPrimaryColor"
             android:textStyle="bold"
@@ -96,8 +94,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginEnd="4dp"
             android:gravity="center|start"
             android:maxLines="1"
             android:textColor="?appTextPrimaryColor"
@@ -115,8 +111,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
-            android:layout_marginEnd="4dp"
-            android:layout_marginBottom="12dp"
             android:gravity="center|start"
             android:textColor="?appTextPrimaryColor"
             android:textStyle="bold"

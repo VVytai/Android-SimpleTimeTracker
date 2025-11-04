@@ -12,7 +12,14 @@ class InfiniteRecyclerAdapter(
     private val delegates: List<RecyclerAdapterDelegate> = delegatesList.toList()
 
     // "Infinite" recycler.
-    override fun getItemCount(): Int = if (dataProvider.isInitialized()) Int.MAX_VALUE else 0
+    override fun getItemCount(): Int {
+        if (!dataProvider.isInitialized()) return 0
+
+        return when (dataProvider.getCount()) {
+            is DataProvider.Count.Infinite -> Int.MAX_VALUE
+            is DataProvider.Count.One -> 1
+        }
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseRecyclerViewHolder {
         return delegates.getOrNull(viewType)?.onCreateViewHolder(parent) ?: run {
@@ -36,8 +43,14 @@ class InfiniteRecyclerAdapter(
 
     interface DataProvider {
         fun isInitialized(): Boolean
+        fun getCount(): Count
         fun getItem(position: Int): Data
         fun getCurrentItem(): Data
+
+        sealed interface Count {
+            data object Infinite : Count
+            data object One : Count
+        }
     }
 
     interface Data : ViewHolderType {

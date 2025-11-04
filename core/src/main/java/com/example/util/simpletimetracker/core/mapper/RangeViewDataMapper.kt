@@ -47,6 +47,8 @@ class RangeViewDataMapper @Inject constructor(
         )
     }
 
+    // TODO the same as rangeTitleMapper.mapToTitle but to avoid "Today" texts
+    //  its use different mapping for day/week/month/year.
     fun mapToShareTitle(
         rangeLength: RangeLength,
         position: Int,
@@ -83,7 +85,7 @@ class RangeViewDataMapper @Inject constructor(
         )
     }
 
-    private fun mapToSelectDateName(rangeLength: RangeLength): SelectDateViewData? {
+    fun mapToSelectDateName(rangeLength: RangeLength): SelectDateViewData? {
         return when (rangeLength) {
             is RangeLength.Day -> R.string.range_select_day
             is RangeLength.Week -> R.string.range_select_week

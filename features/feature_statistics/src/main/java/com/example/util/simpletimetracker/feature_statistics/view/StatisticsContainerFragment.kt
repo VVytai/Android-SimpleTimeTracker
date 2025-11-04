@@ -71,6 +71,7 @@ class StatisticsContainerFragment :
             viewModel = viewModel.dateSelectorViewModelDelegate,
             binding = containerDatesSelector,
         )
+        viewModel.initialize()
     }
 
     override fun initUx() {
@@ -101,7 +102,6 @@ class StatisticsContainerFragment :
     }
 
     override fun initViewModel() {
-        viewModel.initialize()
         with(viewModel) {
             rangeItems.observe(::updateRangeItems)
             position.observe(::updatePosition)
@@ -119,6 +119,11 @@ class StatisticsContainerFragment :
             viewModel = viewModel.dateSelectorViewModelDelegate,
             binding = binding.containerDatesSelector,
         )
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.onVisible()
     }
 
     override fun onOptionsItemClick(id: OptionsListParams.Item.Id) {

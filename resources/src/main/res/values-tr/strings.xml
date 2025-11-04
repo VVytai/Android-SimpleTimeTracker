@@ -42,6 +42,7 @@
     <string name="range_select_week">Hafta seçin</string>
     <string name="range_select_month">Ay seçin</string>
     <string name="range_select_year">Yıl seçin</string>
+    <string name="range_select_range">Aralık seç</string>
     <string name="range_back_to_today">Bugüne dön</string>
 
     <plurals name="range_last">

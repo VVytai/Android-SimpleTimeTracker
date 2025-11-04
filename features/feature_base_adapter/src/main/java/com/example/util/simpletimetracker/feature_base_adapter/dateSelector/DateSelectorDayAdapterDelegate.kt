@@ -7,7 +7,6 @@ import com.example.util.simpletimetracker.feature_base_adapter.InfiniteRecyclerA
 import com.example.util.simpletimetracker.feature_base_adapter.R
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.createRecyclerBindingAdapterDelegate
-import com.example.util.simpletimetracker.feature_base_adapter.dateSelector.DateSelectorDayViewData
 import com.example.util.simpletimetracker.feature_views.extension.pxToDp
 import com.example.util.simpletimetracker.feature_views.extension.setOnClickWith
 import com.example.util.simpletimetracker.feature_views.extension.setOnLongClick
@@ -47,16 +46,17 @@ fun createDateSelectorDayAdapterDelegate(
 }
 
 internal fun setDayMoth(
-    dayMonth: DateSelectorDayViewData.DayMonth,
+    dayMonth: ViewData.DayMonth,
     topText: TextView,
     bottomText: TextView,
 ) {
     topText.text = dayMonth.topText
+    topText.isVisible = dayMonth.topText.isNotEmpty()
     bottomText.text = dayMonth.bottomText
 }
 
 internal fun View.setCardData(
-    cardData: DateSelectorDayViewData.CardData,
+    cardData: ViewData.CardData,
     viewSelected: View,
     viewToday: View,
     viewClickable: View,

@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.util.simpletimetracker.core.base.SingleLiveEvent
+import com.example.util.simpletimetracker.core.delegates.dateSelector.mapper.DateSelectorMapper
 import com.example.util.simpletimetracker.core.delegates.dateSelector.viewModelDelegate.DateSelectorViewModelDelegate
 import com.example.util.simpletimetracker.core.extension.set
 import com.example.util.simpletimetracker.core.mapper.RangeViewDataMapper
@@ -67,10 +68,18 @@ class StatisticsContainerViewModel @Inject constructor(
         }
     }
 
-    // TODO DATE update on firstDayOfWeek change
+    fun onVisible() {
+        // TODO update only when necessary?
+        viewModelScope.launch {
+            dateSelectorViewModelDelegate.setup()
+            dateSelectorViewModelDelegate.updatePosition(currentPosition)
+        }
+    }
 
     fun onOptionsClick() = viewModelScope.launch {
-        val items = statisticsContainerOptionsListMapper.map()
+        val items = statisticsContainerOptionsListMapper.map(
+            rangeLength = getRangeLength(),
+        )
         router.navigate(OptionsListParams(items))
     }
 
@@ -98,7 +107,10 @@ class StatisticsContainerViewModel @Inject constructor(
     fun onRangeUpdated(newRange: RangeLength) {
         if (newRange != rangeLength) {
             rangeLength = newRange
-            updatePosition(0)
+            viewModelScope.launch {
+                dateSelectorViewModelDelegate.setup()
+                updatePosition(0)
+            }
         }
     }
 
@@ -194,8 +206,14 @@ class StatisticsContainerViewModel @Inject constructor(
                 selectRangeClick.set(Unit)
             }
 
-            override fun onRangeChanged(newPosition: Int) =
+            override fun updatePosition(newPosition: Int) =
                 this@StatisticsContainerViewModel.updatePosition(newPosition)
+
+            override suspend fun getSetupData(): DateSelectorMapper.SetupData.Type {
+                return DateSelectorMapper.SetupData.Type.Statistics(
+                    rangeLength = getRangeLength(),
+                )
+            }
         }
     }
 

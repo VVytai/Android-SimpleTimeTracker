@@ -10,6 +10,7 @@ import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteracto
 import com.example.util.simpletimetracker.domain.record.interactor.RemoveRunningRecordMediator
 import com.example.util.simpletimetracker.domain.record.interactor.RunningRecordInteractor
 import com.example.util.simpletimetracker.domain.notifications.interactor.UpdateExternalViewsInteractor
+import com.example.util.simpletimetracker.domain.record.interactor.RecordsContainerUpdateInteractor
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_settings.R
 import com.example.util.simpletimetracker.feature_settings.api.SettingsBlock
@@ -36,6 +37,7 @@ class SettingsAdditionalViewModelDelegate @Inject constructor(
     private val runningRecordInteractor: RunningRecordInteractor,
     private val removeRunningRecordMediator: RemoveRunningRecordMediator,
     private val externalViewsInteractor: UpdateExternalViewsInteractor,
+    private val recordsContainerUpdateInteractor: RecordsContainerUpdateInteractor,
 ) : ViewModelDelegate() {
 
     val keepScreenOnCheckbox: LiveData<Boolean>
@@ -118,6 +120,7 @@ class SettingsAdditionalViewModelDelegate @Inject constructor(
             prefsInteractor.setFirstDayOfWeek(newDayOfWeek)
             externalViewsInteractor.onFirstDayOfWeekChange()
             parent?.updateContent()
+            recordsContainerUpdateInteractor.sendFirstDayOfWeekUpdated()
         }
     }
 

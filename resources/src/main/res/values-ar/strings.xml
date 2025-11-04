@@ -42,6 +42,7 @@
     <string name="range_select_week">اختر أسبوع</string>
     <string name="range_select_month">اختر شهر</string>
     <string name="range_select_year">اختر سنة</string>
+    <string name="range_select_range">اختر النطاق</string>
     <string name="range_back_to_today">العودة إلى اليوم</string>
 
     <plurals name="range_last">

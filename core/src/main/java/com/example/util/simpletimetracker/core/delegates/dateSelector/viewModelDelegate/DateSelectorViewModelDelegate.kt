@@ -1,6 +1,7 @@
 package com.example.util.simpletimetracker.core.delegates.dateSelector.viewModelDelegate
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.example.util.simpletimetracker.core.base.SingleLiveEvent
 import com.example.util.simpletimetracker.core.base.ViewModelDelegate
 import com.example.util.simpletimetracker.core.delegates.dateSelector.mapper.DateSelectorMapper
@@ -16,8 +17,7 @@ class DateSelectorViewModelDelegate @Inject constructor(
 
     val dateScrollPosition: LiveData<Int> = SingleLiveEvent<Int>()
     val updateDatesViewData: LiveData<Unit> = SingleLiveEvent<Unit>()
-
-    var scrollWasAlreadyRequested: Boolean = false
+    val borderShadowsVisibility: LiveData<Boolean> = MutableLiveData()
 
     private var parent: Parent? = null
 
@@ -26,22 +26,26 @@ class DateSelectorViewModelDelegate @Inject constructor(
     }
 
     suspend fun initialize() {
-        setupDatesSelector()
+        setup()
         updateDatesViewData.set(Unit)
         dateScrollPosition.set(0)
+    }
+
+    suspend fun setup() {
+        setupDatesSelector()
     }
 
     fun onDateClick(item: InfiniteRecyclerAdapter.Data) {
         if (parent?.currentPosition == item.position) {
             parent?.onDateClick()
         } else {
-            parent?.onRangeChanged(item.position)
+            parent?.updatePosition(item.position)
         }
     }
 
     fun onDateLongClick(item: InfiniteRecyclerAdapter.Data) {
         if (parent?.currentPosition == item.position) {
-            parent?.onRangeChanged(0)
+            parent?.updatePosition(0)
         } else {
             onDateClick(item)
         }
@@ -49,7 +53,7 @@ class DateSelectorViewModelDelegate @Inject constructor(
 
     fun onScrolledToDate(position: Int) {
         if (position != parent?.currentPosition) {
-            parent?.onRangeChanged(position)
+            parent?.updatePosition(position)
         }
     }
 
@@ -59,23 +63,25 @@ class DateSelectorViewModelDelegate @Inject constructor(
         dateScrollPosition.set(shift)
     }
 
-    suspend fun recalculateRangeOnCalendarViewSwitched() {
-        setupDatesSelector()
-    }
-
     private suspend fun setupDatesSelector() {
-        dataProvider.setup(
+        val setupData = DateSelectorMapper.SetupData(
+            type = parent?.getSetupData() ?: return,
             startOfDayShift = prefsInteractor.getStartOfDayShift(),
-            isCalendarView = prefsInteractor.getShowRecordsCalendar(),
-            daysInCalendar = prefsInteractor.getDaysInCalendar(),
             firstDayOfWeek = prefsInteractor.getFirstDayOfWeek(),
         )
+        dataProvider.setup(setupData)
+
+        // Updates after setup.
+        val shadowsVisibility = dataProvider.getCount() ==
+            InfiniteRecyclerAdapter.DataProvider.Count.Infinite
+        borderShadowsVisibility.set(shadowsVisibility)
     }
 
     interface Parent {
         val currentPosition: Int
 
         fun onDateClick()
-        fun onRangeChanged(newPosition: Int)
+        fun updatePosition(newPosition: Int)
+        suspend fun getSetupData(): DateSelectorMapper.SetupData.Type
     }
 }

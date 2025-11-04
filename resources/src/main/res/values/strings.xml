@@ -42,6 +42,7 @@
     <string name="range_select_week">Select week</string>
     <string name="range_select_month">Select month</string>
     <string name="range_select_year">Select year</string>
+    <string name="range_select_range">Select range</string>
     <string name="range_back_to_today">Back to today</string>
 
     <plurals name="range_last">
