@@ -98,13 +98,4 @@
         android:background="?appDividerColor"
         app:layout_constraintBottom_toBottomOf="parent" />
 
-    <View
-        android:id="@+id/viewItemOptionsListVerticalDivider"
-        android:layout_width="1dp"
-        android:layout_height="match_parent"
-        android:background="?appDividerColor"
-        android:visibility="gone"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:visibility="visible" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

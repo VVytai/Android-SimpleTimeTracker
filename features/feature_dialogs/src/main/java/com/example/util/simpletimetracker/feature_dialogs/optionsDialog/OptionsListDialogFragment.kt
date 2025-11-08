@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.util.simpletimetracker.core.base.BaseBottomSheetFragment
 import com.example.util.simpletimetracker.core.dialog.OptionsListDialogListener
 import com.example.util.simpletimetracker.core.extension.findListener
@@ -14,7 +14,6 @@ import com.example.util.simpletimetracker.core.utils.fragmentArgumentDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.BaseRecyclerAdapter
 import com.example.util.simpletimetracker.feature_base_adapter.optionsList.OptionsListViewData
 import com.example.util.simpletimetracker.feature_base_adapter.optionsList.createOptionsListAdapterDelegate
-import com.example.util.simpletimetracker.feature_views.extension.setSpanSizeLookup
 import com.example.util.simpletimetracker.navigation.params.screen.OptionsListParams
 import dagger.hilt.android.AndroidEntryPoint
 import com.example.util.simpletimetracker.feature_dialogs.databinding.OptionsListDialogFragmentBinding as Binding
@@ -50,10 +49,9 @@ class OptionsListDialogFragment :
 
     override fun initUi(): Unit = with(binding) {
         rvOptionsList.apply {
-            val manager = GridLayoutManager(context, SPAN_COUNT)
+            val manager = LinearLayoutManager(context)
             layoutManager = manager
             adapter = contentAdapter
-            setIconsSpanSize(manager, contentAdapter)
         }
     }
 
@@ -71,20 +69,8 @@ class OptionsListDialogFragment :
         item.let(throttle(::onClick))
     }
 
-    private fun setIconsSpanSize(
-        layoutManager: GridLayoutManager?,
-        adapter: BaseRecyclerAdapter,
-    ) {
-        layoutManager?.setSpanSizeLookup { position ->
-            val item = adapter.getItemByPosition(position)
-            val isFullWidth = item is OptionsListViewData && item.isFullWidth
-            if (isFullWidth) SPAN_COUNT else 1
-        }
-    }
-
     companion object {
         private const val ARGS_PARAMS = "args_params"
-        private const val SPAN_COUNT = 1
 
         fun createBundle(data: OptionsListParams): Bundle = Bundle().apply {
             putParcelable(ARGS_PARAMS, data)

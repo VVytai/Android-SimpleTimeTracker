@@ -17,7 +17,6 @@ data class OptionsListParams(
         val isIconCheckVisible: Boolean,
         val isChecked: Boolean = false,
         val isSelected: Boolean = false,
-        val isFullWidth: Boolean = true,
     ) : Parcelable {
 
         interface Id : Parcelable

@@ -80,7 +80,6 @@ class RangeViewDataMapper @Inject constructor(
                 is RangeLength.Year -> R.drawable.date_year
                 else -> null
             }
-            val isFullWidth = range is RangeLength.Last
             return OptionsListParams.Item(
                 id = id,
                 text = text,
@@ -88,7 +87,6 @@ class RangeViewDataMapper @Inject constructor(
                 isIconCheckVisible = false,
                 isChecked = isSelected,
                 isSelected = isSelected,
-                isFullWidth = isFullWidth,
             )
         }
 
