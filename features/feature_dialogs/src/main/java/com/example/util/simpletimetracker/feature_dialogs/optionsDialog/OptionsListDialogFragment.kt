@@ -50,7 +50,7 @@ class OptionsListDialogFragment :
 
     override fun initUi(): Unit = with(binding) {
         rvOptionsList.apply {
-            val manager = GridLayoutManager(context, 2)
+            val manager = GridLayoutManager(context, SPAN_COUNT)
             layoutManager = manager
             adapter = contentAdapter
             setIconsSpanSize(manager, contentAdapter)
