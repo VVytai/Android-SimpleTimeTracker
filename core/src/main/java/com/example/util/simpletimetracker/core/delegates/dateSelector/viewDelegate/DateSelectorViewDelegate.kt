@@ -121,7 +121,7 @@ object DateSelectorViewDelegate {
             ),
             createDateSelectorSingleAdapterDelegate(
                 onItemClick = viewModel::onDateClick,
-            )
+            ),
         )
     }
 

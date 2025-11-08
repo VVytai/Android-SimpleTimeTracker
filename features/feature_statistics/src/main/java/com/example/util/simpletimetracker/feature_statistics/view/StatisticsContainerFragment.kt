@@ -19,7 +19,6 @@ import com.example.util.simpletimetracker.core.viewData.RangesViewData
 import com.example.util.simpletimetracker.domain.record.model.Range
 import com.example.util.simpletimetracker.feature_statistics.adapter.StatisticsContainerAdapter
 import com.example.util.simpletimetracker.feature_statistics.viewModel.StatisticsContainerViewModel
-import com.example.util.simpletimetracker.feature_statistics.viewModel.StatisticsSettingsViewModel
 import com.example.util.simpletimetracker.navigation.params.screen.OptionsListParams
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -39,15 +38,9 @@ class StatisticsContainerFragment :
         InsetConfiguration.DoNotApply
 
     @Inject
-    lateinit var settingsViewModelFactory: BaseViewModelFactory<StatisticsSettingsViewModel>
-
-    @Inject
     lateinit var mainTabsViewModelFactory: BaseViewModelFactory<MainTabsViewModel>
 
     private val viewModel: StatisticsContainerViewModel by viewModels()
-    private val settingsViewModel: StatisticsSettingsViewModel by activityViewModels(
-        factoryProducer = { settingsViewModelFactory },
-    )
     private val mainTabsViewModel: MainTabsViewModel by activityViewModels(
         factoryProducer = { mainTabsViewModelFactory },
     )
@@ -85,7 +78,6 @@ class StatisticsContainerFragment :
         )
         binding.spinnerStatisticsContainer.onItemSelected = {
             viewModel.onRangeSelected(it)
-            settingsViewModel.onRangeSelected(it)
         }
     }
 
@@ -94,11 +86,11 @@ class StatisticsContainerFragment :
     }
 
     override fun onCustomRangeSelected(range: Range) {
-        settingsViewModel.onCustomRangeSelected(range)
+        viewModel.onCustomRangeSelected(range)
     }
 
     override fun onCountSet(count: Long, tag: String?) {
-        settingsViewModel.onCountSet(count, tag)
+        viewModel.onCountSet(count, tag)
     }
 
     override fun initViewModel() {
@@ -106,9 +98,6 @@ class StatisticsContainerFragment :
             rangeItems.observe(::updateRangeItems)
             position.observe(::updatePosition)
             selectRangeClick.observe { binding.spinnerStatisticsContainer.performClick() }
-        }
-        with(settingsViewModel) {
-            rangeUpdated.observe(viewModel::onRangeUpdated)
         }
         with(mainTabsViewModel) {
             isNavBatAtTheBottom.observe(::updateInsetConfiguration)

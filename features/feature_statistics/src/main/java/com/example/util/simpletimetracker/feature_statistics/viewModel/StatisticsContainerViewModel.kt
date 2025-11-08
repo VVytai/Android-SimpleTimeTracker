@@ -10,13 +10,16 @@ import com.example.util.simpletimetracker.core.delegates.dateSelector.viewModelD
 import com.example.util.simpletimetracker.core.extension.set
 import com.example.util.simpletimetracker.core.mapper.RangeViewDataMapper
 import com.example.util.simpletimetracker.core.mapper.TimeMapper
+import com.example.util.simpletimetracker.core.viewData.RangeViewData
 import com.example.util.simpletimetracker.core.viewData.RangesViewData
 import com.example.util.simpletimetracker.core.viewData.SelectDateViewData
 import com.example.util.simpletimetracker.core.viewData.SelectLastDaysViewData
 import com.example.util.simpletimetracker.core.viewData.SelectRangeViewData
+import com.example.util.simpletimetracker.domain.daysOfWeek.interactor.GetProcessedLastDaysCountInteractor
 import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.StatisticsUpdateInteractor
+import com.example.util.simpletimetracker.domain.record.model.Range
 import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
 import com.example.util.simpletimetracker.feature_statistics.mapper.StatisticsContainerOptionsListMapper
 import com.example.util.simpletimetracker.feature_statistics.model.StatisticsContainerOptionsListItem
@@ -40,6 +43,7 @@ class StatisticsContainerViewModel @Inject constructor(
     private val prefsInteractor: PrefsInteractor,
     private val statisticsUpdateInteractor: StatisticsUpdateInteractor,
     private val statisticsContainerOptionsListMapper: StatisticsContainerOptionsListMapper,
+    private val getProcessedLastDaysCountInteractor: GetProcessedLastDaysCountInteractor,
 ) : ViewModel() {
 
     val position: LiveData<Int> by lazy {
@@ -94,22 +98,15 @@ class StatisticsContainerViewModel @Inject constructor(
                 updateRanges()
             }
             is SelectRangeViewData -> {
-                onSelectRangeClick()
+                onSelectCustomRangeClick()
                 updateRanges()
             }
             is SelectLastDaysViewData -> {
                 onSelectLastDaysClick()
                 updateRanges()
             }
-        }
-    }
-
-    fun onRangeUpdated(newRange: RangeLength) {
-        if (newRange != rangeLength) {
-            rangeLength = newRange
-            viewModelScope.launch {
-                dateSelectorViewModelDelegate.setup()
-                updatePosition(0)
+            is RangeViewData -> viewModelScope.launch {
+                onRangeUpdated(item.range)
             }
         }
     }
@@ -124,6 +121,17 @@ class StatisticsContainerViewModel @Inject constructor(
                 ).toInt().let(::updatePosition)
             }
         }
+    }
+
+    fun onCustomRangeSelected(range: Range) = viewModelScope.launch {
+        onRangeUpdated(RangeLength.Custom(range))
+    }
+
+    fun onCountSet(count: Long, tag: String?) = viewModelScope.launch {
+        if (tag != LAST_DAYS_COUNT_TAG) return@launch
+
+        val lastDaysCount = getProcessedLastDaysCountInteractor.execute(count)
+        onRangeUpdated(RangeLength.Last(lastDaysCount))
     }
 
     fun onOptionsItemClick(id: OptionsListParams.Item.Id) = viewModelScope.launch {
@@ -144,6 +152,17 @@ class StatisticsContainerViewModel @Inject constructor(
             is StatisticsContainerOptionsListItem.SelectRange -> {
                 selectRangeClick.set(Unit)
             }
+        }
+    }
+
+    private suspend fun onRangeUpdated(newRange: RangeLength) {
+        prefsInteractor.setStatisticsRange(newRange)
+        statisticsUpdateInteractor.sendRangeChanged(newRange)
+
+        if (newRange != rangeLength) {
+            rangeLength = newRange
+            dateSelectorViewModelDelegate.setup()
+            updatePosition(0)
         }
     }
 
@@ -170,7 +189,7 @@ class StatisticsContainerViewModel @Inject constructor(
         )
     }
 
-    private fun onSelectRangeClick() = viewModelScope.launch {
+    private fun onSelectCustomRangeClick() = viewModelScope.launch {
         val currentCustomRange = (prefsInteractor.getStatisticsRange() as? RangeLength.Custom)?.range
 
         CustomRangeSelectionParams(
@@ -236,7 +255,7 @@ class StatisticsContainerViewModel @Inject constructor(
     }
 
     companion object {
-        const val LAST_DAYS_COUNT_TAG = "statistics_last_days_count_tag"
+        private const val LAST_DAYS_COUNT_TAG = "statistics_last_days_count_tag"
         private const val DATE_TAG = "statistics_date_tag"
     }
 }

@@ -31,7 +31,6 @@ import com.example.util.simpletimetracker.feature_statistics.adapter.createStati
 import com.example.util.simpletimetracker.feature_statistics.adapter.createStatisticsTitleAdapterDelegate
 import com.example.util.simpletimetracker.feature_statistics.extra.StatisticsExtra
 import com.example.util.simpletimetracker.feature_statistics.viewData.StatisticsChartViewData
-import com.example.util.simpletimetracker.feature_statistics.viewModel.StatisticsSettingsViewModel
 import com.example.util.simpletimetracker.feature_statistics.viewModel.StatisticsViewModel
 import com.example.util.simpletimetracker.feature_views.pieChart.PieChartView
 import com.example.util.simpletimetracker.navigation.params.screen.StatisticsParams
@@ -51,18 +50,12 @@ class StatisticsFragment :
         InsetConfiguration.DoNotApply
 
     @Inject
-    lateinit var settingsViewModelFactory: BaseViewModelFactory<StatisticsSettingsViewModel>
-
-    @Inject
     lateinit var mainTabsViewModelFactory: BaseViewModelFactory<MainTabsViewModel>
 
     @Inject
     lateinit var deviceRepo: DeviceRepo
 
     private val viewModel: StatisticsViewModel by viewModels()
-    private val settingsViewModel: StatisticsSettingsViewModel by activityViewModels(
-        factoryProducer = { settingsViewModelFactory },
-    )
     private val mainTabsViewModel: MainTabsViewModel by activityViewModels(
         factoryProducer = { mainTabsViewModelFactory },
     )
@@ -92,9 +85,6 @@ class StatisticsFragment :
                 mainTabsViewModel.onHandled()
             }
             animateChartParticles.observe(::setAnimateParticles)
-        }
-        with(settingsViewModel) {
-            rangeUpdated.observe { viewModel.onRangeUpdated() }
         }
         with(mainTabsViewModel) {
             tabReselected.observe(viewModel::onTabReselected)

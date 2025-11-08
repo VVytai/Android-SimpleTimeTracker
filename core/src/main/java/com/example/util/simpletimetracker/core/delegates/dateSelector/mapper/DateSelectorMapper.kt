@@ -33,7 +33,7 @@ class DateSelectorMapper @Inject constructor(
     override fun getCount(): InfiniteRecyclerAdapter.DataProvider.Count {
         val type = setupData.type
         val isRangeAll = type is SetupData.Type.Statistics &&
-                type.rangeLength == RangeLength.All
+            type.rangeLength == RangeLength.All
 
         return if (isRangeAll) {
             InfiniteRecyclerAdapter.DataProvider.Count.One

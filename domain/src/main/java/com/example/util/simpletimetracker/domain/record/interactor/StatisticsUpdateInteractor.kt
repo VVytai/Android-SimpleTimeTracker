@@ -1,5 +1,6 @@
 package com.example.util.simpletimetracker.domain.record.interactor
 
+import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -22,11 +23,21 @@ class StatisticsUpdateInteractor @Inject constructor() {
         onBufferOverflow = BufferOverflow.DROP_OLDEST,
     )
 
+    val rangeChanged: SharedFlow<RangeLength> get() = _rangeChanged.asSharedFlow()
+    private val _rangeChanged = MutableSharedFlow<RangeLength>(
+        extraBufferCapacity = 1,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST,
+    )
+
     suspend fun sendShareClicked() {
         _shareClicked.emit(Unit)
     }
 
     suspend fun sendFilterClicked() {
         _filterClicked.emit(Unit)
+    }
+
+    suspend fun sendRangeChanged(rangeLength: RangeLength) {
+        _rangeChanged.emit(rangeLength)
     }
 }

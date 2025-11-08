@@ -89,10 +89,6 @@ class StatisticsViewModel @Inject constructor(
         updateAnimateChartParticles()
     }
 
-    fun onRangeUpdated() {
-        if (isVisible) updateStatistics()
-    }
-
     fun onItemClick(
         item: StatisticsViewData,
         sharedElements: Map<Any, String>,
@@ -159,6 +155,9 @@ class StatisticsViewModel @Inject constructor(
         }
         viewModelScope.launch {
             statisticsUpdateInteractor.filterClicked.collect { if (isVisible) onFilterClick() }
+        }
+        viewModelScope.launch {
+            statisticsUpdateInteractor.rangeChanged.collect { if (isVisible) updateStatistics() }
         }
     }
 
