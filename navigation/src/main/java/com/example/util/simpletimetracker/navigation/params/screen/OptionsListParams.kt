@@ -13,8 +13,11 @@ data class OptionsListParams(
     data class Item(
         val id: Id,
         val text: String,
-        @DrawableRes val icon: Int,
+        @DrawableRes val icon: Int?,
         val isIconCheckVisible: Boolean,
+        val isChecked: Boolean = false,
+        val isSelected: Boolean = false,
+        val isFullWidth: Boolean = true,
     ) : Parcelable {
 
         interface Id : Parcelable

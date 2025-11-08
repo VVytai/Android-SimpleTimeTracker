@@ -198,17 +198,17 @@ inline fun <T : View> T.postDelayed(
 }
 
 fun View.setRounded(radiusDp: Int) {
-    outlineProvider = object : ViewOutlineProvider() {
-        override fun getOutline(view: View, outline: Outline) {
-            outline.setRoundRect(
-                0,
-                0,
-                width,
-                height,
-                radiusDp.dpToPx().toFloat(),
-            )
-        }
-    }
+    outlineProvider = getViewOutlineProvider(0, 0, width, height, radiusDp)
+    clipToOutline = true
+}
+
+fun View.setRoundedStart(radiusDp: Int) {
+    outlineProvider = getViewOutlineProvider(0, 0, width + radiusDp.dpToPx(), height, radiusDp)
+    clipToOutline = true
+}
+
+fun View.setRoundedEnd(radiusDp: Int) {
+    outlineProvider = getViewOutlineProvider(-radiusDp.dpToPx(), 0, width, height, radiusDp)
     clipToOutline = true
 }
 
@@ -223,4 +223,19 @@ inline fun <reified T : ViewGroup.LayoutParams> View.safeUpdateLayoutParams(
 fun View.showKeyboard() {
     requestFocus()
     context.getSystemService<InputMethodManager>()?.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
+}
+
+@Suppress("SameParameterValue")
+private fun getViewOutlineProvider(
+    left: Int,
+    top: Int,
+    right: Int,
+    bottom: Int,
+    radiusDp: Int,
+): ViewOutlineProvider {
+    return object : ViewOutlineProvider() {
+        override fun getOutline(view: View, outline: Outline) {
+            outline.setRoundRect(left, top, right, bottom, radiusDp.dpToPx().toFloat())
+        }
+    }
 }

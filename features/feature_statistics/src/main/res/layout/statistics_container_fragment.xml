@@ -11,15 +11,6 @@
         app:layout_constraintBottom_toTopOf="@id/containerDatesSelector"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.example.util.simpletimetracker.feature_views.spinner.CustomSpinner
-        android:id="@+id/spinnerStatisticsContainer"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="@id/containerDatesSelector"
-        app:layout_constraintEnd_toEndOf="@id/containerDatesSelector"
-        app:layout_constraintStart_toStartOf="@id/containerDatesSelector"
-        app:layout_constraintTop_toTopOf="@id/containerDatesSelector" />
-
     <include
         android:id="@+id/containerDatesSelector"
         layout="@layout/date_selector_layout"

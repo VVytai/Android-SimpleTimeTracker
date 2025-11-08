@@ -161,8 +161,6 @@ object DateSelectorViewDelegate {
 
     // TODO DATE add to details stats
     // TODO DATE rename ContainerRangeButton style
-    // TODO DATE remove select date from select range dialog
-    // TODO DATE change select range from spinner to sheet
     private fun doScrollToPosition(
         binding: DateSelectorLayoutBinding,
         position: Int,

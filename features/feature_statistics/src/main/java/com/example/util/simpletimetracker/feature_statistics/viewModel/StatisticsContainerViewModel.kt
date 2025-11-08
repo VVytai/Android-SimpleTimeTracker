@@ -4,17 +4,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.util.simpletimetracker.core.base.SingleLiveEvent
 import com.example.util.simpletimetracker.core.delegates.dateSelector.mapper.DateSelectorMapper
 import com.example.util.simpletimetracker.core.delegates.dateSelector.viewModelDelegate.DateSelectorViewModelDelegate
 import com.example.util.simpletimetracker.core.extension.set
+import com.example.util.simpletimetracker.core.extension.toModel
 import com.example.util.simpletimetracker.core.mapper.RangeViewDataMapper
 import com.example.util.simpletimetracker.core.mapper.TimeMapper
-import com.example.util.simpletimetracker.core.viewData.RangeViewData
-import com.example.util.simpletimetracker.core.viewData.RangesViewData
-import com.example.util.simpletimetracker.core.viewData.SelectDateViewData
-import com.example.util.simpletimetracker.core.viewData.SelectLastDaysViewData
-import com.example.util.simpletimetracker.core.viewData.SelectRangeViewData
+import com.example.util.simpletimetracker.core.viewData.RangeSelectionOptionsListItem
 import com.example.util.simpletimetracker.domain.daysOfWeek.interactor.GetProcessedLastDaysCountInteractor
 import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
@@ -23,7 +19,6 @@ import com.example.util.simpletimetracker.domain.record.model.Range
 import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
 import com.example.util.simpletimetracker.feature_statistics.mapper.StatisticsContainerOptionsListMapper
 import com.example.util.simpletimetracker.feature_statistics.model.StatisticsContainerOptionsListItem
-import com.example.util.simpletimetracker.feature_views.spinner.CustomSpinner
 import com.example.util.simpletimetracker.navigation.Router
 import com.example.util.simpletimetracker.navigation.params.screen.CustomRangeSelectionParams
 import com.example.util.simpletimetracker.navigation.params.screen.DateTimeDialogParams
@@ -49,15 +44,6 @@ class StatisticsContainerViewModel @Inject constructor(
     val position: LiveData<Int> by lazy {
         return@lazy MutableLiveData(0)
     }
-
-    val rangeItems: LiveData<RangesViewData> by lazy {
-        return@lazy MutableLiveData<RangesViewData>().let { initial ->
-            viewModelScope.launch { initial.value = loadRanges() }
-            initial
-        }
-    }
-
-    val selectRangeClick: LiveData<Unit> = SingleLiveEvent<Unit>()
 
     private var rangeLength: RangeLength? = null
     private val currentPosition: Int get() = position.value.orZero()
@@ -91,22 +77,19 @@ class StatisticsContainerViewModel @Inject constructor(
         statisticsUpdateInteractor.sendFilterClicked()
     }
 
-    fun onRangeSelected(item: CustomSpinner.CustomSpinnerItem) {
-        when (item) {
-            is SelectDateViewData -> {
+    fun onRangeSelected(id: RangeSelectionOptionsListItem) {
+        when (id) {
+            is RangeSelectionOptionsListItem.SelectDate -> {
                 onSelectDateClick()
-                updateRanges()
             }
-            is SelectRangeViewData -> {
+            is RangeSelectionOptionsListItem.Custom -> {
                 onSelectCustomRangeClick()
-                updateRanges()
             }
-            is SelectLastDaysViewData -> {
+            is RangeSelectionOptionsListItem.Last -> {
                 onSelectLastDaysClick()
-                updateRanges()
             }
-            is RangeViewData -> viewModelScope.launch {
-                onRangeUpdated(item.range)
+            is RangeSelectionOptionsListItem.Simple -> viewModelScope.launch {
+                onRangeUpdated(id.rangeLengthParams.toModel())
             }
         }
     }
@@ -134,8 +117,7 @@ class StatisticsContainerViewModel @Inject constructor(
         onRangeUpdated(RangeLength.Last(lastDaysCount))
     }
 
-    fun onOptionsItemClick(id: OptionsListParams.Item.Id) = viewModelScope.launch {
-        if (id !is StatisticsContainerOptionsListItem) return@launch
+    fun onOptionsItemClick(id: StatisticsContainerOptionsListItem) = viewModelScope.launch {
         when (id) {
             is StatisticsContainerOptionsListItem.Filter -> {
                 statisticsUpdateInteractor.sendFilterClicked()
@@ -150,7 +132,7 @@ class StatisticsContainerViewModel @Inject constructor(
                 onSelectDateClick()
             }
             is StatisticsContainerOptionsListItem.SelectRange -> {
-                selectRangeClick.set(Unit)
+                onSelectRangeClick()
             }
         }
     }
@@ -208,6 +190,15 @@ class StatisticsContainerViewModel @Inject constructor(
         ).let(router::navigate)
     }
 
+    private fun onSelectRangeClick() = viewModelScope.launch {
+        val data = rangeViewDataMapper.mapToRangesOptions(
+            currentRange = getRangeLength(),
+            addSelection = true,
+            lastDaysCount = getCurrentLastDaysCount(),
+        )
+        router.navigate(data)
+    }
+
     private suspend fun getCurrentLastDaysCount(): Int {
         return prefsInteractor.getStatisticsLastDays()
     }
@@ -222,7 +213,7 @@ class StatisticsContainerViewModel @Inject constructor(
                 get() = this@StatisticsContainerViewModel.currentPosition
 
             override fun onDateClick() {
-                selectRangeClick.set(Unit)
+                this@StatisticsContainerViewModel.onSelectRangeClick()
             }
 
             override fun updatePosition(newPosition: Int) =
@@ -239,19 +230,6 @@ class StatisticsContainerViewModel @Inject constructor(
     private fun updatePosition(newPosition: Int) {
         dateSelectorViewModelDelegate.updatePosition(newPosition)
         position.set(newPosition)
-        updateRanges()
-    }
-
-    private fun updateRanges() = viewModelScope.launch {
-        rangeItems.set(loadRanges())
-    }
-
-    private suspend fun loadRanges(): RangesViewData {
-        return rangeViewDataMapper.mapToRanges(
-            currentRange = getRangeLength(),
-            addSelection = true,
-            lastDaysCount = getCurrentLastDaysCount(),
-        )
     }
 
     companion object {

@@ -21,6 +21,9 @@ class OptionsListViewDataInteractor @Inject constructor() {
             text = item.text,
             icon = item.icon,
             isIconCheckVisible = item.isIconCheckVisible,
+            isChecked = item.isChecked,
+            isSelected = item.isSelected,
+            isFullWidth = item.isFullWidth,
         )
     }
 }
