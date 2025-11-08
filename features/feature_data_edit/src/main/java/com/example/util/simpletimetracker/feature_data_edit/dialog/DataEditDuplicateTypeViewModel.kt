@@ -9,6 +9,7 @@ import com.example.util.simpletimetracker.core.extension.set
 import com.example.util.simpletimetracker.core.mapper.RecordTypeViewDataMapper
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.domain.activityFilter.interactor.ActivityFilterInteractor
+import com.example.util.simpletimetracker.domain.activitySuggestion.interactor.ActivitySuggestionInteractor
 import com.example.util.simpletimetracker.domain.category.interactor.RecordTypeCategoryInteractor
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTypeGoalInteractor
@@ -38,6 +39,7 @@ class DataEditDuplicateTypeViewModel @Inject constructor(
     private val recordTypeGoalInteractor: RecordTypeGoalInteractor,
     private val activityFilterInteractor: ActivityFilterInteractor,
     private val recordTypeViewDataMapper: RecordTypeViewDataMapper,
+    private val activitySuggestionInteractor: ActivitySuggestionInteractor,
 ) : ViewModel() {
 
     val viewData: LiveData<List<ViewHolderType>> by lazy {
@@ -91,6 +93,25 @@ class DataEditDuplicateTypeViewModel @Inject constructor(
                 )
                 activityFilterInteractor.add(newFilter)
             }
+            activitySuggestionInteractor.getAll()
+                .firstOrNull { it.forTypeId == type.id }
+                ?.copy(id = 0, forTypeId = addedId) // Zero creates new record.
+                ?.let { activitySuggestionInteractor.add(listOf(it)) }
+            // Reload again to get actual data with new duplicated activity.
+            activitySuggestionInteractor.getAll()
+                .mapNotNull {
+                    // Add right after the duplicated activity.
+                    val currentTypeIdIndex = it.suggestionIds.indexOf(type.id)
+                    if (currentTypeIdIndex != -1) {
+                        val newSuggests = it.suggestionIds.toMutableList()
+                        newSuggests.add(currentTypeIdIndex + 1, addedId)
+                        it.copy(suggestionIds = newSuggests.toSet())
+                    } else {
+                        return@mapNotNull null
+                    }
+                }
+                .takeIf { it.isNotEmpty() }
+                ?.let { activitySuggestionInteractor.add(it) }
             updateViewData()
         }
     }
