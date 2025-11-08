@@ -36,13 +36,6 @@ fun createOptionsListAdapterDelegate(
             val columnIndex = layoutParams?.spanIndex.orZero()
             val spanSize = layoutParams?.spanSize.orZero()
 
-            if (item.isChecked) {
-                val checkMarkBias = if (columnIndex > 0) 1f else 0f
-                ivItemOptionsListCheck.safeUpdateLayoutParams<ConstraintLayout.LayoutParams> {
-                    horizontalBias = checkMarkBias
-                }
-            }
-
             if (item.isSelected) {
                 val selectedRadius = 8
                 viewItemOptionsListSelectedBackground.apply {

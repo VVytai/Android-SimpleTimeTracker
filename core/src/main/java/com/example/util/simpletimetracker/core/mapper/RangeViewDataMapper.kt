@@ -73,11 +73,18 @@ class RangeViewDataMapper @Inject constructor(
                 is RangeLength.Custom -> RangeSelectionOptionsListItem.Custom
                 is RangeLength.Last -> RangeSelectionOptionsListItem.Last
             }
+            val icon = when (range) {
+                is RangeLength.Day -> R.drawable.date_day
+                is RangeLength.Week -> R.drawable.date_week
+                is RangeLength.Month -> R.drawable.date_month
+                is RangeLength.Year -> R.drawable.date_year
+                else -> null
+            }
             val isFullWidth = range is RangeLength.Last
             return OptionsListParams.Item(
                 id = id,
                 text = text,
-                icon = null,
+                icon = icon,
                 isIconCheckVisible = false,
                 isChecked = isSelected,
                 isSelected = isSelected,

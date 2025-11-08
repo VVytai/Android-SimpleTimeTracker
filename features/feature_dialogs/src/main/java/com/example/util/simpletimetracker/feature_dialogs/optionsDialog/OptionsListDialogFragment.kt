@@ -84,7 +84,7 @@ class OptionsListDialogFragment :
 
     companion object {
         private const val ARGS_PARAMS = "args_params"
-        private const val SPAN_COUNT = 2
+        private const val SPAN_COUNT = 1
 
         fun createBundle(data: OptionsListParams): Bundle = Bundle().apply {
             putParcelable(ARGS_PARAMS, data)
