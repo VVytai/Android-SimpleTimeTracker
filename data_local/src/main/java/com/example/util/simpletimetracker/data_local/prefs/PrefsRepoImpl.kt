@@ -406,7 +406,7 @@ class PrefsRepoImpl @Inject constructor(
     )
 
     override var isNavBarAtTheBottom: Boolean by prefs.delegate(
-        KEY_IS_NAV_BAR_AT_THE_BOTTOM, false,
+        KEY_IS_NAV_BAR_AT_THE_BOTTOM, true,
     )
 
     override var isCategoriesSearchEnabled: Boolean by prefs.delegate(
