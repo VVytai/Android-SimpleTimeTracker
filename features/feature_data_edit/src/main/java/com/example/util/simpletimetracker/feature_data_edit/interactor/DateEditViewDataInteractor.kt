@@ -48,6 +48,14 @@ class DateEditViewDataInteractor @Inject constructor(
         )
     }
 
+    suspend fun getSelectedTypeIds(
+        filters: List<RecordsFilter>,
+    ): List<Long> {
+        val records = recordFilterInteractor.getByFilter(filters)
+            .filterIsInstance<Record>()
+        return records.map { it.typeId }.distinct()
+    }
+
     suspend fun getChangeActivityState(
         newTypeId: Long,
     ): DataEditChangeActivityState {
@@ -108,16 +116,14 @@ class DateEditViewDataInteractor @Inject constructor(
     }
 
     fun filterTags(
-        typeForTagSelection: Long?,
+        typesForTagSelection: List<Long>,
         tags: List<CategoryViewData.Record>,
         typesToTags: List<RecordTypeToTag>,
     ): List<CategoryViewData.Record> {
-        val typeId = typeForTagSelection.orZero()
-
         val selectableTagIds = filterSelectableTagsInteractor.execute(
             tagIds = tags.map { it.id },
             typesToTags = typesToTags,
-            typeIds = listOf(typeId),
+            typeIds = typesForTagSelection,
         )
 
         return tags.filter { it.id in selectableTagIds }

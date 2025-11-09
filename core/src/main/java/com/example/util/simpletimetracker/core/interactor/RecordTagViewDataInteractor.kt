@@ -27,10 +27,10 @@ class RecordTagViewDataInteractor @Inject constructor(
     private val commonViewDataMapper: CommonViewDataMapper,
 ) {
 
-    // typeId == null - show all tags.
+    // typeId is empty - show all tags.
     suspend fun getViewData(
         selectedTags: List<RecordBase.Tag>,
-        typeId: Long?,
+        typeIds: List<Long>,
         showAllTags: Boolean,
         multipleChoiceAvailable: Boolean,
         showAddButton: Boolean,
@@ -44,11 +44,7 @@ class RecordTagViewDataInteractor @Inject constructor(
 
         val isDarkTheme = prefsInteractor.getDarkMode()
         val allTags = recordTagInteractor.getAll().filterArchived()
-        val recordTags = if (typeId != null) {
-            getSelectableTagsInteractor.execute(typeId).filterArchived()
-        } else {
-            allTags
-        }
+        val recordTags = getSelectableTagsInteractor.execute(*typeIds.toLongArray()).filterArchived()
         val recordTagIds = recordTags.map { it.id }
         val tagsFromOtherActivities = allTags.filter { it.id !in recordTagIds }
         val hasMoreTags = tagsFromOtherActivities.isNotEmpty()

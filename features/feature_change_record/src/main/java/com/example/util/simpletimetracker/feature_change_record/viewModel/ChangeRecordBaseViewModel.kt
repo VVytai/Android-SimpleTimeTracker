@@ -907,7 +907,7 @@ abstract class ChangeRecordBaseViewModel(
     private suspend fun loadCategoriesViewData(): ChangeRecordTagsViewData {
         return recordTagViewDataInteractor.getViewData(
             selectedTags = newTags,
-            typeId = newTypeId,
+            typeIds = listOf(newTypeId),
             showAllTags = showAllTags,
             multipleChoiceAvailable = true,
             showAddButton = true,

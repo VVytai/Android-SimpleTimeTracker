@@ -147,7 +147,9 @@ class DataEditViewModel @Inject constructor(
 
     fun onAddTagsClick() {
         if (addTagState is DataEditAddTagsState.Disabled) {
-            openTagSelection(ADD_TAGS_TAG)
+            viewModelScope.launch {
+                openTagSelection(ADD_TAGS_TAG)
+            }
         } else {
             addTagState = DataEditAddTagsState.Disabled
             updateAddTagState()
@@ -157,7 +159,9 @@ class DataEditViewModel @Inject constructor(
 
     fun onRemoveTagsClick() {
         if (removeTagState is DataEditRemoveTagsState.Disabled) {
-            openTagSelection(REMOVE_TAGS_TAG)
+            viewModelScope.launch {
+                openTagSelection(REMOVE_TAGS_TAG)
+            }
         } else {
             removeTagState = DataEditRemoveTagsState.Disabled
             updateRemoveTagState()
@@ -342,12 +346,12 @@ class DataEditViewModel @Inject constructor(
         router.back()
     }
 
-    private fun openTagSelection(tag: String) {
+    private suspend fun openTagSelection(tag: String) {
         // Show tag selection with typed tags for changed activity (if it is selected)
-        // or for filtered activity (if it is only one).
+        // or for filtered activities.
         // Otherwise show only general tags.
-        val typeId = getTypeForTagSelection().orZero()
-        router.navigate(DataEditTagSelectionDialogParams(tag, typeId))
+        val typeIds = getTypeForTagSelection()
+        router.navigate(DataEditTagSelectionDialogParams(tag, typeIds))
     }
 
     private fun showMessage(stringResId: Int) {
@@ -363,10 +367,11 @@ class DataEditViewModel @Inject constructor(
         if (tagsToAdd == null && tagsToRemove == null) return@launch
 
         val typeToTags = recordTypeToTagInteractor.getAll()
+        val typeForTagSelection = getTypeForTagSelection()
 
         if (tagsToAdd != null) {
             val newTags = dataEditViewDataInteractor.filterTags(
-                typeForTagSelection = getTypeForTagSelection(),
+                typesForTagSelection = typeForTagSelection,
                 tags = tagsToAdd,
                 typesToTags = typeToTags,
             )
@@ -381,7 +386,7 @@ class DataEditViewModel @Inject constructor(
         // If there are some tags selected to remove.
         if (tagsToRemove != null) {
             val newTags = dataEditViewDataInteractor.filterTags(
-                typeForTagSelection = getTypeForTagSelection(),
+                typesForTagSelection = typeForTagSelection,
                 tags = tagsToRemove,
                 typesToTags = typeToTags,
             )
@@ -396,12 +401,10 @@ class DataEditViewModel @Inject constructor(
         updateChangeButtonState()
     }
 
-    private fun getTypeForTagSelection(): Long? {
+    private suspend fun getTypeForTagSelection(): List<Long> {
         return (typeState as? DataEditChangeActivityState.Enabled)
-            ?.viewData?.id
-            ?: filters.getTypeIds()
-                .takeIf { it.size == 1 }
-                ?.firstOrNull()
+            ?.viewData?.id?.let(::listOf)
+            ?: dataEditViewDataInteractor.getSelectedTypeIds(filters)
     }
 
     private suspend fun getTodayRecords(): List<Record> {

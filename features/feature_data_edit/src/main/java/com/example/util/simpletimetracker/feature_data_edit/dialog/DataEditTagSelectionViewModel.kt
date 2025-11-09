@@ -68,7 +68,7 @@ class DataEditTagSelectionViewModel @Inject constructor(
                 // TODO TAG add tag value selection?
                 RecordBase.Tag(tagId = it, numericValue = null)
             },
-            typeId = extra.typeId,
+            typeIds = extra.typeIds,
             showAllTags = false,
             multipleChoiceAvailable = true,
             showAddButton = false,

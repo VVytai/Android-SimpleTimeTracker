@@ -32,8 +32,7 @@ class TypesSelectionViewDataInteractor @Inject constructor(
         extra: TypesSelectionDialogParams,
         types: List<RecordType>,
     ): List<TypesSelectionCacheHolder> {
-        val extraType = extra.type
-        return when (extraType) {
+        return when (val extraType = extra.type) {
             is TypesSelectionDialogParams.Type.Activity -> {
                 types.filter {
                     !it.hidden || it.id in extra.idsShouldBeVisible
