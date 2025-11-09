@@ -14,6 +14,8 @@ import com.example.util.simpletimetracker.feature_base_adapter.emptySpace.EmptyS
 import com.example.util.simpletimetracker.feature_base_adapter.hint.HintViewData
 import com.example.util.simpletimetracker.feature_base_adapter.recordComment.RecordCommentViewData
 import com.example.util.simpletimetracker.feature_base_adapter.recordFilter.FilterViewData
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class RecordCommentSearchViewDataInteractor @Inject constructor(
@@ -28,7 +30,7 @@ class RecordCommentSearchViewDataInteractor @Inject constructor(
     suspend fun getViewData(
         comment: String,
         typeId: Long,
-    ): List<ViewHolderType> {
+    ): List<ViewHolderType> = withContext(Dispatchers.Default) {
         val disabledFilters = prefsInteractor.getHiddenCommentFilters()
         val result = mutableListOf<ViewHolderType>()
 
@@ -56,7 +58,7 @@ class RecordCommentSearchViewDataInteractor @Inject constructor(
             result += addHint(last, needToShowHint, R.string.change_record_last_comments_hint)
         }
 
-        return result
+        return@withContext result
     }
 
     fun map(data: CommentFilterTypeViewData): CommentFilterType {
@@ -107,14 +109,13 @@ class RecordCommentSearchViewDataInteractor @Inject constructor(
     ): List<ViewHolderType> {
         return if (comment.isNotEmpty()) {
             recordInteractor.searchComment(comment)
-                .asSequence()
                 .sortedByDescending { it.timeStarted }
                 .distinctBy { it.comment }
+                .take(SIMILAR_COMMENTS_TO_SHOW)
                 .mapNotNull {
                     if (it.comment == comment) return@mapNotNull null
                     RecordCommentViewData.Last(it.comment)
                 }
-                .toList()
         } else {
             emptyList()
         }
@@ -200,5 +201,6 @@ class RecordCommentSearchViewDataInteractor @Inject constructor(
 
     companion object {
         private const val LAST_COMMENTS_TO_SHOW = 20
+        private const val SIMILAR_COMMENTS_TO_SHOW = 100
     }
 }
