@@ -439,6 +439,14 @@ class ChangeRecordTagFragment :
         iconChangeRecordTagIconPreview.setPadding(iconPreviewPadding.dpToPx())
         val activitiesSize = if (state.current is Type) sizeDefault else sizeBig
         fieldChangeRecordTagType.updateLayoutParams { height = activitiesSize }
+
+        // More button
+        val moreButtonText = if (isAdditionalVisible) {
+            R.string.change_record_type_less_fields
+        } else {
+            R.string.change_record_type_more_fields
+        }
+        tvChangeRecordTagMoreFieldsText.setText(moreButtonText)
     }
 
     private fun updateIconColorSourceSelected(selected: Boolean) = with(binding) {

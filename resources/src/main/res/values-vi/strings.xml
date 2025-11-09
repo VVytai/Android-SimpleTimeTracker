@@ -211,6 +211,7 @@
     <string name="change_record_type_goal_count">Đếm</string>
     <string name="change_record_type_delete_alert">Xóa bỏ?</string>
     <string name="change_record_type_more_fields">Thêm</string>
+    <string name="change_record_type_less_fields">Ít hơn</string>
 
     <!--  Complex rules  -->
     <string name="complex_rules_hint">Cho phép ứng dụng tinh chỉnh hơn của một số cài đặt</string>

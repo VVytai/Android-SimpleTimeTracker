@@ -305,6 +305,14 @@ class ChangeCategoryFragment :
         fieldChangeCategoryColor.updateLayoutParams { height = colorSize }
         val activitiesSize = if (state.current is Type) sizeDefault else sizeBig
         fieldChangeCategoryType.updateLayoutParams { height = activitiesSize }
+
+        // More button
+        val moreButtonText = if (isAdditionalVisible) {
+            R.string.change_record_type_less_fields
+        } else {
+            R.string.change_record_type_more_fields
+        }
+        tvChangeCategoryMoreFieldsText.setText(moreButtonText)
     }
 
     private fun updateGoalsState(state: ChangeRecordTypeGoalsViewData) = with(binding) {

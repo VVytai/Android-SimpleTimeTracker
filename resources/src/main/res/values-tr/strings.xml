@@ -211,6 +211,7 @@ Bu, genel olarak verimli ve verimsiz aktivitelere ne kadar zaman harcadığını
     <string name="change_record_type_goal_count">Saymak</string>
     <string name="change_record_type_delete_alert">Silmek?</string>
     <string name="change_record_type_more_fields">Daha fazla</string>
+    <string name="change_record_type_less_fields">Daha az</string>
 
     <!--  Complex rules  -->
     <string name="complex_rules_hint">Bazı ayarların daha ince ayarlı uygulanmasına olanak tanır</string>

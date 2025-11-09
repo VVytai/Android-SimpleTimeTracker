@@ -211,6 +211,7 @@ Lokhu kukuvumela ukuthi ubone isikhathi osichitha emisebenzini esebenzayo nezing
     <string name="change_record_type_goal_count">Inani</string>
     <string name="change_record_type_delete_alert">Susa?</string>
     <string name="change_record_type_more_fields">Okuningi</string>
+    <string name="change_record_type_less_fields">Okuncane</string>
 
     <!--  Complex rules  -->
     <string name="complex_rules_hint">Ivumela ukusetshenziswa okunembile kwezinye izilungiselelo</string>

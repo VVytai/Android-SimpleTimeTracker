@@ -320,13 +320,14 @@
                     app:layout_constraintTop_toTopOf="parent">
 
                     <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tvChangeRecordTagMoreFieldsText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="?appInputFieldBorder"
                         android:gravity="center"
                         android:paddingHorizontal="12dp"
                         android:paddingVertical="4dp"
-                        android:text="@string/change_record_type_more_fields" />
+                        tools:text="@string/change_record_type_more_fields" />
 
                 </androidx.cardview.widget.CardView>
 

@@ -428,6 +428,14 @@ class ChangeRecordTypeFragment :
         fieldChangeRecordTypeIcon.updateLayoutParams { height = iconSize }
         val iconPreviewPadding = if (state.current is Icon) 4 else 8
         iconChangeRecordTypeIconPreview.setPadding(iconPreviewPadding.dpToPx())
+
+        // More button
+        val moreButtonText = if (isAdditionalVisible) {
+            R.string.change_record_type_less_fields
+        } else {
+            R.string.change_record_type_more_fields
+        }
+        tvChangeRecordTypeMoreFieldsText.setText(moreButtonText)
     }
 
     private fun updateGoalsState(state: ChangeRecordTypeGoalsViewData) = with(binding) {
