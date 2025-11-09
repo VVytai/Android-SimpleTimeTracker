@@ -67,7 +67,6 @@ class SettingsAdditionalViewModelDelegate @Inject constructor(
             SettingsBlock.AdditionalCloseAfterOneTag -> onRecordTagSelectionCloseClicked()
             SettingsBlock.AdditionalTagSelectionExcludeActivities -> onRecordTagSelectionExcludeActivitiesClicked()
             SettingsBlock.AdditionalShowCommentInput -> onShowCommentInputClicked()
-            SettingsBlock.AdditionalShowCommentSuggestions -> onShowCommentSuggestionsClicked()
             SettingsBlock.AdditionalCommentInputExcludeActivities -> onCommentInputExcludeActivitiesClicked()
             SettingsBlock.AdditionalKeepStatisticsRange -> onKeepStatisticsRangeClicked()
             SettingsBlock.AdditionalRetroactiveTrackingMode -> onRetroactiveTrackingModeClicked()
@@ -226,14 +225,6 @@ class SettingsAdditionalViewModelDelegate @Inject constructor(
         delegateScope.launch {
             val newValue = !prefsInteractor.getShowCommentInput()
             prefsInteractor.setShowCommentInput(newValue)
-            parent?.updateContent()
-        }
-    }
-
-    private fun onShowCommentSuggestionsClicked() {
-        delegateScope.launch {
-            val newValue = !prefsInteractor.getIsCommentSelectionSuggestionsEnabled()
-            prefsInteractor.setIsCommentSelectionSuggestionsEnabled(newValue)
             parent?.updateContent()
         }
     }

@@ -55,7 +55,6 @@ class ChangeRecordViewDataInteractor @Inject constructor(
     }
 
     // TODO replace fav to text button?
-    // TODO add button to hide similar comments?
     suspend fun getCommentsViewData(
         comment: String,
         typeId: Long,
@@ -77,9 +76,10 @@ class ChangeRecordViewDataInteractor @Inject constructor(
             },
         ).let(items::add)
 
-        items += recordCommentSearchViewDataInteractor.getSearchData(comment)
-        items += recordCommentSearchViewDataInteractor.getFavouriteData()
-        items += recordCommentSearchViewDataInteractor.getLastCommentsData(typeId)
+        items += recordCommentSearchViewDataInteractor.getViewData(
+            comment = comment,
+            typeId = typeId,
+        )
 
         return items
     }

@@ -1,21 +1,22 @@
 package com.example.util.simpletimetracker.domain.prefs.interactor
 
+import com.example.util.simpletimetracker.domain.base.CommentFilterType
 import com.example.util.simpletimetracker.domain.base.DurationFormat
-import com.example.util.simpletimetracker.domain.extension.orZero
+import com.example.util.simpletimetracker.domain.darkMode.interactor.IsSystemInDarkModeInteractor
 import com.example.util.simpletimetracker.domain.darkMode.model.DarkMode
-import com.example.util.simpletimetracker.domain.recordTag.model.CardTagOrder
-import com.example.util.simpletimetracker.domain.statistics.model.ChartFilterType
 import com.example.util.simpletimetracker.domain.daysOfWeek.model.DayOfWeek
 import com.example.util.simpletimetracker.domain.daysOfWeek.model.DaysInCalendar
-import com.example.util.simpletimetracker.domain.darkMode.interactor.IsSystemInDarkModeInteractor
-import com.example.util.simpletimetracker.domain.recordType.model.CardOrder
-import com.example.util.simpletimetracker.domain.statistics.model.StatisticsWidgetData
+import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.domain.prefs.repo.PrefsRepo
-import com.example.util.simpletimetracker.domain.widget.model.QuickSettingsWidgetType
 import com.example.util.simpletimetracker.domain.record.model.Range
-import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
 import com.example.util.simpletimetracker.domain.record.model.RepeatButtonType
+import com.example.util.simpletimetracker.domain.recordTag.model.CardTagOrder
+import com.example.util.simpletimetracker.domain.recordType.model.CardOrder
+import com.example.util.simpletimetracker.domain.statistics.model.ChartFilterType
+import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
 import com.example.util.simpletimetracker.domain.statistics.model.StatisticsStreaksType
+import com.example.util.simpletimetracker.domain.statistics.model.StatisticsWidgetData
+import com.example.util.simpletimetracker.domain.widget.model.QuickSettingsWidgetType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -938,12 +939,27 @@ class PrefsInteractor @Inject constructor(
         prefsRepo.isArchiveSearchEnabled = value
     }
 
-    suspend fun getIsCommentSelectionSuggestionsEnabled(): Boolean = withContext(Dispatchers.IO) {
-        prefsRepo.isCommentSelectionSuggestionsEnabled
+    suspend fun getHiddenCommentFilters(): Set<CommentFilterType> = withContext(Dispatchers.IO) {
+        fun map(data: String): CommentFilterType? {
+            return when (data.toIntOrNull()) {
+                0 -> CommentFilterType.Similar
+                1 -> CommentFilterType.Favourite
+                2 -> CommentFilterType.Last
+                else -> null
+            }
+        }
+        prefsRepo.hiddenCommentFilters.mapNotNull(::map).toSet()
     }
 
-    suspend fun setIsCommentSelectionSuggestionsEnabled(value: Boolean) = withContext(Dispatchers.IO) {
-        prefsRepo.isCommentSelectionSuggestionsEnabled = value
+    suspend fun setHiddenCommentFilters(data: Set<CommentFilterType>) = withContext(Dispatchers.IO) {
+        fun map(data: CommentFilterType): String {
+            return when (data) {
+                is CommentFilterType.Similar -> 0
+                is CommentFilterType.Favourite -> 1
+                is CommentFilterType.Last -> 2
+            }.toString()
+        }
+        prefsRepo.hiddenCommentFilters = data.map(::map).toSet()
     }
 
     suspend fun getDurationSuggestionsWasPrepopulated(): Boolean = withContext(Dispatchers.IO) {

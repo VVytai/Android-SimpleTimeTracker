@@ -182,7 +182,7 @@ interface PrefsRepo {
 
     var isArchiveSearchEnabled: Boolean
 
-    var isCommentSelectionSuggestionsEnabled: Boolean
+    var hiddenCommentFilters: Set<String>
 
     var durationSuggestionsWasPrepopulated: Boolean
 

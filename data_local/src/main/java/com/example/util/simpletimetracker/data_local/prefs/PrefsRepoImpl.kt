@@ -417,8 +417,8 @@ class PrefsRepoImpl @Inject constructor(
         KEY_IS_ARCHIVE_SEARCH_ENABLED, false,
     )
 
-    override var isCommentSelectionSuggestionsEnabled: Boolean by prefs.delegate(
-        KEY_IS_COMMENT_SELECTION_SUGGESTIONS_ENABLED, false,
+    override var hiddenCommentFilters: Set<String> by prefs.delegate(
+        KEY_HIDDEN_COMMENT_FILTERS, emptySet(),
     )
 
     override var durationSuggestionsWasPrepopulated: Boolean by prefs.delegate(
@@ -711,7 +711,7 @@ class PrefsRepoImpl @Inject constructor(
         const val KEY_IS_NAV_BAR_AT_THE_BOTTOM = "isNavBarAtTheBottom"
         const val KEY_IS_CATEGORIES_SEARCH_ENABLED = "isCategoriesSearchEnabled"
         const val KEY_IS_ARCHIVE_SEARCH_ENABLED = "isArchiveSearchEnabled"
-        const val KEY_IS_COMMENT_SELECTION_SUGGESTIONS_ENABLED = "isCommentSelectionSuggestionsEnabled"
+        const val KEY_HIDDEN_COMMENT_FILTERS = "hiddenCommentFilters"
         const val KEY_DURATION_SUGGESTIONS_WAS_PREPOPULATED = "durationSuggestionsWasPrepopulated"
         const val KEY_TYPE_ADDITIONAL_FIELDS_SHOWN = "typeAdditionalFieldsShown"
         const val KEY_CATEGORY_ADDITIONAL_FIELDS_SHOWN = "categoryAdditionalFieldsShown"
@@ -749,5 +749,6 @@ class PrefsRepoImpl @Inject constructor(
         private const val KEY_SHOW_NOTIFICATION_WITH_SWITCH_HIDE = "showNotificationWithSwitchHide" // Boolean
         private const val KEY_SHOW_CALENDAR_BUTTON_ON_RECORDS_TAB = "showCalendarButtonOnRecordsTab" // Boolean
         private const val KEY_USE_PROPORTIONAL_MINUTES = "useProportionalMinutes" // Boolean
+        private const val KEY_IS_COMMENT_SELECTION_SUGGESTIONS_ENABLED = "isCommentSelectionSuggestionsEnabled"
     }
 }

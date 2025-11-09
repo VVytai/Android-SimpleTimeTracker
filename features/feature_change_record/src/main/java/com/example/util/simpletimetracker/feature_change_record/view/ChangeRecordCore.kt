@@ -32,8 +32,10 @@ import com.example.util.simpletimetracker.feature_base_adapter.recordType.create
 import com.example.util.simpletimetracker.feature_change_record.R
 import com.example.util.simpletimetracker.feature_base_adapter.button.createButtonAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.category.createCategoryShowAllAdapterDelegate
+import com.example.util.simpletimetracker.feature_base_adapter.emptySpace.createEmptySpaceAdapterDelegate
 import com.example.util.simpletimetracker.feature_change_record.adapter.createChangeRecordChangePreviewAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.recordComment.createRecordCommentAdapterDelegate
+import com.example.util.simpletimetracker.feature_base_adapter.recordFilter.createFilterAdapterDelegate
 import com.example.util.simpletimetracker.feature_change_record.adapter.createChangeRecordCommentFieldAdapterDelegate
 import com.example.util.simpletimetracker.feature_change_record.adapter.createChangeRecordSliderAdapterDelegate
 import com.example.util.simpletimetracker.feature_change_record.adapter.createChangeRecordTimeAdjustmentAdapterDelegate
@@ -92,12 +94,16 @@ class ChangeRecordCore(
     private val commentsAdapter: BaseRecyclerAdapter by lazy {
         BaseRecyclerAdapter(
             createHintAdapterDelegate(),
+            createEmptySpaceAdapterDelegate(),
             createChangeRecordCommentFieldAdapterDelegate(
                 afterTextChange = viewModel::onCommentChange,
                 onFavouriteClick = viewModel::onFavouriteCommentClick,
             ),
             createRecordCommentAdapterDelegate(
                 onItemClick = viewModel::onCommentClick,
+            ),
+            createFilterAdapterDelegate(
+                onClick = viewModel::onCommentFilterClick
             ),
         )
     }

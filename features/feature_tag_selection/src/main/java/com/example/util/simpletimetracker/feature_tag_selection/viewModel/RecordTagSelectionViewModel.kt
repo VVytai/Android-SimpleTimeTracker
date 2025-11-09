@@ -6,6 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.util.simpletimetracker.core.base.BaseViewModel
 import com.example.util.simpletimetracker.core.extension.lazySuspend
 import com.example.util.simpletimetracker.core.extension.set
+import com.example.util.simpletimetracker.core.interactor.RecordCommentSearchViewDataInteractor
+import com.example.util.simpletimetracker.core.viewData.CommentFilterTypeViewData
 import com.example.util.simpletimetracker.domain.extension.addOrRemove
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.AddRunningRecordMediator
@@ -16,6 +18,7 @@ import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.category.CategoryViewData
 import com.example.util.simpletimetracker.feature_base_adapter.loader.LoaderViewData
 import com.example.util.simpletimetracker.feature_base_adapter.recordComment.RecordCommentViewData
+import com.example.util.simpletimetracker.feature_base_adapter.recordFilter.FilterViewData
 import com.example.util.simpletimetracker.feature_tag_selection.interactor.RecordTagSelectionViewDataInteractor
 import com.example.util.simpletimetracker.navigation.Router
 import com.example.util.simpletimetracker.navigation.params.screen.RecordTagSelectionParams
@@ -33,6 +36,7 @@ class RecordTagSelectionViewModel @Inject constructor(
     private val prefsInteractor: PrefsInteractor,
     private val addTagToTypeIfNotExistMediator: AddTagToTypeIfNotExistMediator,
     private val needTagValueSelectionInteractor: NeedTagValueSelectionInteractor,
+    private val recordCommentSearchViewDataInteractor: RecordCommentSearchViewDataInteractor,
 ) : BaseViewModel() {
 
     lateinit var extra: RecordTagSelectionParams
@@ -108,20 +112,25 @@ class RecordTagSelectionViewModel @Inject constructor(
     }
 
     fun onCommentClick(item: RecordCommentViewData) {
-        viewModelScope.launch {
-            if (item.text != newComment) {
-                newComment = item.text
-                updateViewData()
-            }
+        if (item.text != newComment) {
+            newComment = item.text
+            updateViewData()
         }
     }
 
+    fun onCommentFilterClick(item: FilterViewData) = viewModelScope.launch {
+        val data = item.type as? CommentFilterTypeViewData ?: return@launch
+        val type = recordCommentSearchViewDataInteractor.map(data)
+        val newFilters = prefsInteractor.getHiddenCommentFilters().toMutableSet()
+        newFilters.addOrRemove(type)
+        prefsInteractor.setHiddenCommentFilters(newFilters.toSet())
+        updateViewData()
+    }
+
     fun onCommentChange(comment: String) {
-        viewModelScope.launch {
-            if (comment != newComment) {
-                newComment = comment
-                updateViewData(fromCommentChange = true)
-            }
+        if (comment != newComment) {
+            newComment = comment
+            updateViewData(fromCommentChange = true)
         }
     }
 

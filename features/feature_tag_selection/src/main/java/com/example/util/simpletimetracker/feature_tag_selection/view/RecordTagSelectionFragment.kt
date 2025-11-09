@@ -25,6 +25,7 @@ import com.example.util.simpletimetracker.feature_base_adapter.hint.createHintAd
 import com.example.util.simpletimetracker.feature_base_adapter.info.createInfoAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.loader.createLoaderAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.recordComment.createRecordCommentAdapterDelegate
+import com.example.util.simpletimetracker.feature_base_adapter.recordFilter.createFilterAdapterDelegate
 import com.example.util.simpletimetracker.feature_tag_selection.adapter.createRecordTagSelectionTextAdapterDelegate
 import com.example.util.simpletimetracker.feature_tag_selection.viewModel.RecordTagSelectionViewModel
 import com.example.util.simpletimetracker.feature_views.extension.safeUpdateLayoutParams
@@ -65,6 +66,7 @@ class RecordTagSelectionFragment :
             createCommentFieldAdapterDelegate(viewModel::onCommentChange),
             createRecordTagSelectionTextAdapterDelegate(),
             createRecordCommentAdapterDelegate(viewModel::onCommentClick),
+            createFilterAdapterDelegate(viewModel::onCommentFilterClick)
         )
     }
     private val params: RecordTagSelectionParams by fragmentArgumentDelegate(

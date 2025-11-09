@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.util.simpletimetracker.core.extension.set
+import com.example.util.simpletimetracker.core.interactor.RecordCommentSearchViewDataInteractor
 import com.example.util.simpletimetracker.core.interactor.RecordTagViewDataInteractor
 import com.example.util.simpletimetracker.core.interactor.RecordTypesViewDataInteractor
 import com.example.util.simpletimetracker.core.interactor.SnackBarMessageNavigationInteractor
@@ -59,6 +60,7 @@ class ChangeRunningRecordViewModel @Inject constructor(
     favouriteCommentInteractor: FavouriteCommentInteractor,
     snackBarMessageNavigationInteractor: SnackBarMessageNavigationInteractor,
     needTagValueSelectionInteractor: NeedTagValueSelectionInteractor,
+    recordCommentSearchViewDataInteractor: RecordCommentSearchViewDataInteractor,
     private val router: Router,
     private val addRunningRecordMediator: AddRunningRecordMediator,
     private val removeRunningRecordMediator: RemoveRunningRecordMediator,
@@ -82,6 +84,7 @@ class ChangeRunningRecordViewModel @Inject constructor(
     favouriteCommentInteractor = favouriteCommentInteractor,
     changeRecordActionsDelegate = changeRecordActionsDelegate,
     needTagValueSelectionInteractor = needTagValueSelectionInteractor,
+    recordCommentSearchViewDataInteractor = recordCommentSearchViewDataInteractor,
 ) {
 
     lateinit var extra: ChangeRunningRecordParams

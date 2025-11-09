@@ -39,10 +39,7 @@ class CsvExportSettingsDialogFragment :
 
     private val filterSelectionAdapter: BaseRecyclerAdapter by lazy {
         BaseRecyclerAdapter(
-            createFilterAdapterDelegate(
-                onClick = viewModel::onFilterClick,
-                onRemoveClick = {},
-            ),
+            createFilterAdapterDelegate(viewModel::onFilterClick),
         )
     }
     private val params: DataExportSettingDialogParams by fragmentArgumentDelegate(

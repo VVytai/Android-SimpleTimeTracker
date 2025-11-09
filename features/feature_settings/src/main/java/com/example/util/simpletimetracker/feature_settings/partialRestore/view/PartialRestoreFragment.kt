@@ -36,9 +36,7 @@ class PartialRestoreFragment :
             createHintAdapterDelegate(),
             createFilterAdapterDelegate(
                 onClick = viewModel::onFilterClick,
-                onRemoveClick = {
-                    viewModel.onFilterRemoveClick(it)
-                },
+                onRemoveClick = viewModel::onFilterRemoveClick,
             ),
         )
     }

@@ -39,7 +39,6 @@ import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Compani
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_IS_ACTIVITY_FILTERS_COLLAPSED
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_IS_ARCHIVE_SEARCH_ENABLED
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_IS_CATEGORIES_SEARCH_ENABLED
-import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_IS_COMMENT_SELECTION_SUGGESTIONS_ENABLED
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_IS_NAV_BAR_AT_THE_BOTTOM
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_KEEP_SCREEN_ON
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_KEEP_STATISTICS_RANGE
@@ -86,6 +85,7 @@ import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Compani
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_TAG_ORDER
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_TAG_ORDER_MANUAL
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_DURATION_PRESENTATION_FORMAT
+import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_HIDDEN_COMMENT_FILTERS
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_POMODORO_SHOW_MORE_CONTROLS
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_TYPE_ADDITIONAL_FIELDS_SHOWN
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_UNTRACKED_RANGE_ENABLED
@@ -232,7 +232,7 @@ class BackupPrefsRepo @Inject constructor(
             PrefsProcessor(KEY_IS_NAV_BAR_AT_THE_BOTTOM, ::isNavBarAtTheBottom),
             PrefsProcessor(KEY_IS_CATEGORIES_SEARCH_ENABLED, ::isCategoriesSearchEnabled),
             PrefsProcessor(KEY_IS_ARCHIVE_SEARCH_ENABLED, ::isArchiveSearchEnabled),
-            PrefsProcessor(KEY_IS_COMMENT_SELECTION_SUGGESTIONS_ENABLED, ::isCommentSelectionSuggestionsEnabled),
+            PrefsProcessor(KEY_HIDDEN_COMMENT_FILTERS, ::hiddenCommentFilters),
             PrefsProcessor(KEY_DURATION_SUGGESTIONS_WAS_PREPOPULATED, ::durationSuggestionsWasPrepopulated),
             PrefsProcessor(KEY_TYPE_ADDITIONAL_FIELDS_SHOWN, ::typeAdditionalFieldsShown),
             PrefsProcessor(KEY_CATEGORY_ADDITIONAL_FIELDS_SHOWN, ::categoryAdditionalFieldsShown),

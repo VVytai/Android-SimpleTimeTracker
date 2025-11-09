@@ -6,10 +6,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.util.simpletimetracker.core.extension.set
 import com.example.util.simpletimetracker.core.extension.toParams
+import com.example.util.simpletimetracker.core.interactor.RecordCommentSearchViewDataInteractor
 import com.example.util.simpletimetracker.core.interactor.RecordTagViewDataInteractor
 import com.example.util.simpletimetracker.core.interactor.RecordTypesViewDataInteractor
 import com.example.util.simpletimetracker.core.interactor.SnackBarMessageNavigationInteractor
 import com.example.util.simpletimetracker.core.view.timeAdjustment.TimeAdjustmentView
+import com.example.util.simpletimetracker.core.viewData.CommentFilterTypeViewData
 import com.example.util.simpletimetracker.domain.extension.addOrRemove
 import com.example.util.simpletimetracker.domain.extension.orFalse
 import com.example.util.simpletimetracker.domain.favourite.interactor.FavouriteCommentInteractor
@@ -25,6 +27,7 @@ import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.button.ButtonViewData
 import com.example.util.simpletimetracker.feature_base_adapter.category.CategoryViewData
 import com.example.util.simpletimetracker.feature_base_adapter.recordComment.RecordCommentViewData
+import com.example.util.simpletimetracker.feature_base_adapter.recordFilter.FilterViewData
 import com.example.util.simpletimetracker.feature_base_adapter.recordType.RecordTypeViewData
 import com.example.util.simpletimetracker.feature_change_record.R
 import com.example.util.simpletimetracker.feature_change_record.adapter.ChangeRecordChangePreviewViewData
@@ -68,6 +71,7 @@ abstract class ChangeRecordBaseViewModel(
     private val favouriteCommentInteractor: FavouriteCommentInteractor,
     private val changeRecordActionsDelegate: ChangeRecordActionsDelegateImpl,
     private val needTagValueSelectionInteractor: NeedTagValueSelectionInteractor,
+    private val recordCommentSearchViewDataInteractor: RecordCommentSearchViewDataInteractor,
 ) : ViewModel() {
 
     val types: LiveData<List<ViewHolderType>> by lazy {
@@ -387,6 +391,15 @@ abstract class ChangeRecordBaseViewModel(
                 updateCommentsViewData()
             }
         }
+    }
+
+    fun onCommentFilterClick(item: FilterViewData) = viewModelScope.launch {
+        val data = item.type as? CommentFilterTypeViewData ?: return@launch
+        val type = recordCommentSearchViewDataInteractor.map(data)
+        val newFilters = prefsInteractor.getHiddenCommentFilters().toMutableSet()
+        newFilters.addOrRemove(type)
+        prefsInteractor.setHiddenCommentFilters(newFilters.toSet())
+        updateCommentsViewData()
     }
 
     fun onCommentChange(comment: String) {

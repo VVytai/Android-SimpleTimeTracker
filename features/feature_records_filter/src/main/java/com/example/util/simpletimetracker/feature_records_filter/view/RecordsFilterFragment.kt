@@ -99,10 +99,7 @@ class RecordsFilterFragment :
             createRecordsFilterButtonAdapterDelegate(viewModel::onInnerFilterButtonClick),
             createDayOfWeekAdapterDelegate(viewModel::onDayOfWeekClick),
             createRecordsFilterRangeAdapterDelegate(viewModel::onRangeTimeClick),
-            createFilterAdapterDelegate(
-                onClick = viewModel::onInnerFilterClick,
-                onRemoveClick = {},
-            ),
+            createFilterAdapterDelegate(viewModel::onInnerFilterClick),
         )
     }
     private val recordsAdapter: BaseRecyclerAdapter by lazy {

@@ -29,7 +29,6 @@ class RecordTagSelectionViewDataInteractor @Inject constructor(
     ): List<ViewHolderType> {
         val typeId = extra.typeId
         val closeAfterOneTagSelected = prefsInteractor.getRecordTagSelectionCloseAfterOne()
-        val showSuggestions = prefsInteractor.getIsCommentSelectionSuggestionsEnabled()
         val shouldShowCommentSelection = RecordTagSelectionParams.Field.Comment in extra.fields
         val shouldShowTagSelection = RecordTagSelectionParams.Field.Tags in extra.fields
 
@@ -48,11 +47,10 @@ class RecordTagSelectionViewDataInteractor @Inject constructor(
                 hint = resourceRepo.getString(R.string.change_record_comment_hint),
             )
 
-            if (showSuggestions) {
-                result += recordCommentSearchViewDataInteractor.getSearchData(comment)
-                result += recordCommentSearchViewDataInteractor.getFavouriteData()
-                result += recordCommentSearchViewDataInteractor.getLastCommentsData(typeId)
-            }
+            result += recordCommentSearchViewDataInteractor.getViewData(
+                comment = comment,
+                typeId = typeId,
+            )
         }
 
         if (shouldShowTagSelection) {

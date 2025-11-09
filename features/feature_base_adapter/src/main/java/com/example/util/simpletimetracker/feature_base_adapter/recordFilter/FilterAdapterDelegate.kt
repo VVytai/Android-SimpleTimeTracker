@@ -8,7 +8,7 @@ import com.example.util.simpletimetracker.feature_base_adapter.recordFilter.Filt
 
 fun createFilterAdapterDelegate(
     onClick: (ViewData) -> Unit,
-    onRemoveClick: (ViewData) -> Unit,
+    onRemoveClick: (ViewData) -> Unit = {},
 ) = createRecyclerBindingAdapterDelegate<ViewData, Binding>(
     Binding::inflate,
 ) { binding, item, _ ->
