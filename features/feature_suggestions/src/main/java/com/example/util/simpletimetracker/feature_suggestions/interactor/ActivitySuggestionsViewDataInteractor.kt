@@ -85,6 +85,7 @@ class ActivitySuggestionsViewDataInteractor @Inject constructor(
             }
             result += recordTypeViewDataMapper.map(
                 recordType = recordTypesMap[typeId] ?: return@forEachIndexed,
+                numberOfCards = 0, // Use default size.
                 isDarkTheme = isDarkTheme,
             )
             result += EmptySpaceViewData(
@@ -135,6 +136,7 @@ class ActivitySuggestionsViewDataInteractor @Inject constructor(
     ): ActivitySuggestionListViewData? {
         return recordTypeViewDataMapper.map(
             recordType = recordTypesMap[suggestionTypeId] ?: return null,
+            numberOfCards = 0, // Use default size.
             isDarkTheme = isDarkTheme,
         ).let {
             ActivitySuggestionListViewData(
@@ -178,7 +180,7 @@ class ActivitySuggestionsViewDataInteractor @Inject constructor(
         isDarkTheme: Boolean,
     ): ActivitySuggestionSpecialViewData {
         return recordTypeViewDataMapper.mapToAddItem(
-            numberOfCards = null,
+            numberOfCards = 0, // Use default size.
             isDarkTheme = isDarkTheme,
         ).copy(
             name = resourceRepo.getString(R.string.shortcut_navigation_statistics),
@@ -216,7 +218,7 @@ class ActivitySuggestionsViewDataInteractor @Inject constructor(
         }.let(RecordTypeIcon::Image)
 
         return recordTypeViewDataMapper.mapToAddItem(
-            numberOfCards = null,
+            numberOfCards = 0, // Use default size.
             isDarkTheme = isDarkTheme,
         ).copy(
             name = name,

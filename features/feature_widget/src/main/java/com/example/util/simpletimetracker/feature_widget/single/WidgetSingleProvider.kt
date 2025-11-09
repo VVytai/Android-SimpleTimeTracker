@@ -173,7 +173,7 @@ class WidgetSingleProvider : AppWidgetProvider() {
 
             if (recordTypeId == REPEAT_BUTTON_ITEM_ID) {
                 val viewData = recordTypeViewDataMapper.mapToRepeatItem(
-                    numberOfCards = 0,
+                    numberOfCards = 0, // Size is not used here.
                     isDarkTheme = isDarkTheme,
                 )
                 view = prepareView(

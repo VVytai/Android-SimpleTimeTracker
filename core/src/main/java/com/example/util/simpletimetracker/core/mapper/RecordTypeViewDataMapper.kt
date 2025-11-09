@@ -36,14 +36,15 @@ class RecordTypeViewDataMapper @Inject constructor(
 
     fun map(
         recordType: RecordType,
+        numberOfCards: Int,
         isDarkTheme: Boolean,
     ): RecordTypeViewData {
-        return RecordTypeViewData(
-            id = recordType.id,
-            name = recordType.name,
-            iconId = iconMapper.mapIcon(recordType.icon),
-            iconColor = colorMapper.toIconColor(isDarkTheme),
-            color = mapColor(recordType.color, isDarkTheme),
+        return map(
+            recordType = recordType,
+            numberOfCards = numberOfCards,
+            isDarkTheme = isDarkTheme,
+            checkState = GoalCheckmarkView.CheckState.HIDDEN,
+            isComplete = false,
         )
     }
 
@@ -97,7 +98,7 @@ class RecordTypeViewDataMapper @Inject constructor(
     }
 
     fun mapToAddItem(
-        numberOfCards: Int?,
+        numberOfCards: Int,
         isDarkTheme: Boolean,
     ): RunningRecordTypeSpecialViewData {
         return mapToSpecial(
@@ -233,7 +234,7 @@ class RecordTypeViewDataMapper @Inject constructor(
         type: RunningRecordTypeSpecialViewData.Type,
         @StringRes name: Int,
         icon: RecordTypeIcon,
-        numberOfCards: Int?,
+        numberOfCards: Int,
         isDarkTheme: Boolean,
         checkState: GoalCheckmarkView.CheckState,
     ): RunningRecordTypeSpecialViewData {
@@ -242,9 +243,9 @@ class RecordTypeViewDataMapper @Inject constructor(
             name = name.let(resourceRepo::getString),
             iconId = icon,
             color = colorMapper.toInactiveColor(isDarkTheme),
-            width = numberOfCards?.let(recordTypeCardSizeMapper::toCardWidth),
-            height = numberOfCards?.let(recordTypeCardSizeMapper::toCardHeight),
-            asRow = numberOfCards?.let(recordTypeCardSizeMapper::toCardAsRow).orFalse(),
+            width = numberOfCards.let(recordTypeCardSizeMapper::toCardWidth),
+            height = numberOfCards.let(recordTypeCardSizeMapper::toCardHeight),
+            asRow = numberOfCards.let(recordTypeCardSizeMapper::toCardAsRow).orFalse(),
             checkState = checkState,
         )
     }

@@ -23,8 +23,8 @@ fun createRecordTypeAdapterDelegate(
         val transitionName = transitionNamePrefix + item.id
 
         layoutParams = layoutParams.also { params ->
-            item.width?.dpToPx()?.let { params.width = it }
-            item.height?.dpToPx()?.let { params.height = it }
+            item.width.dpToPx().let { params.width = it }
+            item.height.dpToPx().let { params.height = it }
         }
 
         itemIsRow = item.asRow

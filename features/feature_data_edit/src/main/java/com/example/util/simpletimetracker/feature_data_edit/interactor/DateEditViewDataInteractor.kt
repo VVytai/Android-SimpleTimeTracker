@@ -5,13 +5,13 @@ import com.example.util.simpletimetracker.core.mapper.CategoryViewDataMapper
 import com.example.util.simpletimetracker.core.mapper.RecordTypeViewDataMapper
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.domain.extension.orZero
-import com.example.util.simpletimetracker.domain.recordTag.interactor.FilterSelectableTagsInteractor
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
-import com.example.util.simpletimetracker.domain.recordTag.interactor.RecordTagInteractor
-import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTypeInteractor
 import com.example.util.simpletimetracker.domain.record.model.Record
-import com.example.util.simpletimetracker.domain.recordTag.model.RecordTypeToTag
 import com.example.util.simpletimetracker.domain.record.model.RecordsFilter
+import com.example.util.simpletimetracker.domain.recordTag.interactor.FilterSelectableTagsInteractor
+import com.example.util.simpletimetracker.domain.recordTag.interactor.RecordTagInteractor
+import com.example.util.simpletimetracker.domain.recordTag.model.RecordTypeToTag
+import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTypeInteractor
 import com.example.util.simpletimetracker.feature_base_adapter.category.CategoryViewData
 import com.example.util.simpletimetracker.feature_data_edit.R
 import com.example.util.simpletimetracker.feature_data_edit.model.DataEditChangeActivityState
@@ -52,6 +52,7 @@ class DateEditViewDataInteractor @Inject constructor(
         newTypeId: Long,
     ): DataEditChangeActivityState {
         val isDarkTheme = prefsInteractor.getDarkMode()
+        val numberOfCards = prefsInteractor.getNumberOfCards()
         val type = newTypeId.let { recordTypeInteractor.get(it) }
 
         return if (type == null) {
@@ -60,6 +61,7 @@ class DateEditViewDataInteractor @Inject constructor(
             DataEditChangeActivityState.Enabled(
                 recordTypeViewDataMapper.map(
                     recordType = type,
+                    numberOfCards = numberOfCards,
                     isDarkTheme = isDarkTheme,
                 ),
             )

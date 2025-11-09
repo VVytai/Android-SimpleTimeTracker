@@ -477,6 +477,7 @@ class ChangeRecordTypeViewModel @Inject constructor(
 
     private suspend fun loadRecordPreviewViewData(): RecordTypeViewData {
         val isDarkTheme = prefsInteractor.getDarkMode()
+        val numberOfCards = prefsInteractor.getNumberOfCards()
 
         return RecordType(
             name = newName,
@@ -484,7 +485,7 @@ class ChangeRecordTypeViewModel @Inject constructor(
             color = colorSelectionViewModelDelegateImpl.newColor,
             defaultDuration = newDefaultDuration,
             note = newNote,
-        ).let { recordTypeViewDataMapper.map(it, isDarkTheme) }
+        ).let { recordTypeViewDataMapper.map(it, numberOfCards, isDarkTheme) }
     }
 
     private suspend fun updateCategoriesViewData() {

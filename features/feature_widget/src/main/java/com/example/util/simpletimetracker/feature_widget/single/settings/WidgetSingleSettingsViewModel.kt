@@ -54,12 +54,13 @@ class WidgetSingleSettingsViewModel @Inject constructor(
 
     private suspend fun loadRecordTypesViewData(): List<ViewHolderType> {
         val isDarkTheme = prefsInteractor.getDarkMode()
+        val numberOfCards = prefsInteractor.getNumberOfCards()
 
         return recordTypeInteractor.getAll()
             .filter { !it.hidden }
-            .map { recordTypeViewDataMapper.map(it, isDarkTheme) }
+            .map { recordTypeViewDataMapper.map(it, numberOfCards, isDarkTheme) }
             .takeUnless { it.isEmpty() }
-            ?.plus(recordTypeViewDataMapper.mapToRepeatItem(numberOfCards = 0, isDarkTheme))
+            ?.plus(recordTypeViewDataMapper.mapToRepeatItem(numberOfCards, isDarkTheme))
             ?: recordTypeViewDataMapper.mapToEmpty()
     }
 }

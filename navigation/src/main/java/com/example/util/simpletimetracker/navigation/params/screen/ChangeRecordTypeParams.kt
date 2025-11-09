@@ -30,8 +30,8 @@ sealed class ChangeRecordTypeParams : ScreenParams, Parcelable {
 
     @Parcelize
     data class SizePreview(
-        val width: Int? = null,
-        val height: Int? = null,
+        val width: Int = 0,
+        val height: Int = 0,
         val asRow: Boolean = false,
     ) : Parcelable
 }
