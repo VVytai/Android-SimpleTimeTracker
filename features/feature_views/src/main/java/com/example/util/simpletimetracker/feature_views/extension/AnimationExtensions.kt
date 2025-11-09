@@ -4,7 +4,10 @@ import android.animation.ArgbEvaluator
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.view.View
+import android.view.animation.AccelerateDecelerateInterpolator
+import android.view.animation.Animation
 import android.view.animation.LinearInterpolator
+import android.view.animation.ScaleAnimation
 import androidx.annotation.ColorInt
 
 fun View.rotate(from: Float, to: Float, duration: Long = 300) {
@@ -26,6 +29,24 @@ fun View.animateAlpha(isVisible: Boolean, duration: Long = 300) {
         interpolator = LinearInterpolator()
         start()
     }
+}
+
+fun View.animateScaleBoop(
+    scale: Float,
+    duration: Long = 300
+) {
+    val animation = ScaleAnimation(
+        1f, scale, // Start and end values for the X axis scaling
+        1f, scale, // Start and end values for the Y axis scaling
+        Animation.RELATIVE_TO_SELF, 0.5f, // Pivot point of X scaling
+        Animation.RELATIVE_TO_SELF, 0.5f, // Pivot point of Y scaling
+    ).apply {
+        this.duration = duration
+        repeatMode = Animation.REVERSE
+        repeatCount = 1
+        interpolator = AccelerateDecelerateInterpolator()
+    }
+    startAnimation(animation)
 }
 
 fun View.rotateDown() {

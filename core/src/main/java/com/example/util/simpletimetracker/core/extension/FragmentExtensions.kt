@@ -2,6 +2,7 @@ package com.example.util.simpletimetracker.core.extension
 
 import android.graphics.drawable.Drawable
 import android.view.View
+import android.view.animation.DecelerateInterpolator
 import androidx.activity.OnBackPressedCallback
 import androidx.annotation.DrawableRes
 import androidx.core.content.res.ResourcesCompat
@@ -9,6 +10,8 @@ import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.transition.TransitionInflater
 import com.example.util.simpletimetracker.core.utils.BuildVersions
+import com.example.util.simpletimetracker.core.utils.doOnEnd
+import com.example.util.simpletimetracker.feature_views.extension.animateScaleBoop
 
 fun Fragment.hideKeyboard() {
     activity?.hideKeyboard()
@@ -30,8 +33,13 @@ inline fun Fragment.setSharedTransitions(
 ) {
     val context = this.context ?: return
     if (BuildVersions.isLollipopOrHigher() && additionalCondition.invoke()) {
-        sharedElementEnterTransition = TransitionInflater.from(context)
+        val transition = TransitionInflater.from(context)
             .inflateTransition(android.R.transition.move)
+        transition?.apply {
+            interpolator = DecelerateInterpolator()
+            doOnEnd { sharedView.animateScaleBoop(scale = 1.05f, duration = 100) }
+        }
+        sharedElementEnterTransition = transition
     }
     ViewCompat.setTransitionName(sharedView, transitionName)
 }
