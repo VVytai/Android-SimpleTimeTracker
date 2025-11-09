@@ -56,6 +56,7 @@ class StatisticsViewModel @Inject constructor(
     private var isTabScrolling: Boolean = false
     private var isChartAttached: Boolean = false
     private var isChartFilterOpened: Boolean = false
+    private var isOptionsListOpened: Boolean = false
     private var timerJob: Job? = null
     private val shift: Int get() = extra?.shift.orZero()
 
@@ -136,6 +137,11 @@ class StatisticsViewModel @Inject constructor(
         updateAnimateChartParticles()
     }
 
+    fun onFilterOpened() {
+        isChartFilterOpened = true
+        updateAnimateChartParticles()
+    }
+
     fun onShareView(view: Any) = viewModelScope.launch {
         sharingInteractor.execute(view = view, filename = SHARING_NAME)
     }
@@ -159,6 +165,12 @@ class StatisticsViewModel @Inject constructor(
         viewModelScope.launch {
             statisticsUpdateInteractor.rangeChanged.collect { if (isVisible) updateStatistics() }
         }
+        viewModelScope.launch {
+            statisticsUpdateInteractor.optionsVisible.collect {
+                isOptionsListOpened = it
+                updateAnimateChartParticles()
+            }
+        }
     }
 
     private fun onFilterClick() = viewModelScope.launch {
@@ -169,8 +181,6 @@ class StatisticsViewModel @Inject constructor(
             filteredTagIds = prefsInteractor.getFilteredTags(),
         )
         router.navigate(params)
-        isChartFilterOpened = true
-        updateAnimateChartParticles()
     }
 
     private fun onShareClick() = viewModelScope.launch {
@@ -183,7 +193,11 @@ class StatisticsViewModel @Inject constructor(
     }
 
     private fun updateAnimateChartParticles() {
-        val shouldAnimate = isVisible && isChartAttached && !isTabScrolling && !isChartFilterOpened
+        val shouldAnimate = isVisible &&
+            isChartAttached &&
+            !isTabScrolling &&
+            !isChartFilterOpened &&
+            !isOptionsListOpened
         animateChartParticles.set(shouldAnimate)
     }
 

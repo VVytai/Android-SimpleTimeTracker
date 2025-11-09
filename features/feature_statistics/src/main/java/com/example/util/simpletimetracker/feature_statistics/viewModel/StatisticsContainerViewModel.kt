@@ -137,6 +137,18 @@ class StatisticsContainerViewModel @Inject constructor(
         }
     }
 
+    fun onOptionsDialogOpened() {
+        viewModelScope.launch {
+            statisticsUpdateInteractor.sendOptionsVisible(isVisible = true)
+        }
+    }
+
+    fun onOptionsDialogClosed () {
+        viewModelScope.launch {
+            statisticsUpdateInteractor.sendOptionsVisible(isVisible = false)
+        }
+    }
+
     private suspend fun onRangeUpdated(newRange: RangeLength) {
         prefsInteractor.setStatisticsRange(newRange)
         statisticsUpdateInteractor.sendRangeChanged(newRange)

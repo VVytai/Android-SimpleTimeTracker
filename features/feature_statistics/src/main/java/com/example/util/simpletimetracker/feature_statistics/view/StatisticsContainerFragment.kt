@@ -122,6 +122,14 @@ class StatisticsContainerFragment :
         }
     }
 
+    override fun onOptionsDialogOpened() {
+        viewModel.onOptionsDialogOpened()
+    }
+
+    override fun onOptionsDialogClosed() {
+        viewModel.onOptionsDialogClosed()
+    }
+
     private fun updatePosition(position: Int) = with(binding) {
         pagerStatisticsContainer.setCurrentItem(
             position + StatisticsContainerAdapter.FIRST,

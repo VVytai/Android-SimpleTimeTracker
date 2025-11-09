@@ -29,6 +29,12 @@ class StatisticsUpdateInteractor @Inject constructor() {
         onBufferOverflow = BufferOverflow.DROP_OLDEST,
     )
 
+    val optionsVisible: SharedFlow<Boolean> get() = _optionsVisible.asSharedFlow()
+    private val _optionsVisible = MutableSharedFlow<Boolean>(
+        extraBufferCapacity = 1,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST,
+    )
+
     suspend fun sendShareClicked() {
         _shareClicked.emit(Unit)
     }
@@ -39,5 +45,9 @@ class StatisticsUpdateInteractor @Inject constructor() {
 
     suspend fun sendRangeChanged(rangeLength: RangeLength) {
         _rangeChanged.emit(rangeLength)
+    }
+
+    suspend fun sendOptionsVisible(isVisible: Boolean) {
+        _optionsVisible.emit(isVisible)
     }
 }

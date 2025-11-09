@@ -53,6 +53,7 @@ class ChartFilterDialogFragment : BaseBottomSheetFragment<Binding>() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         chartFilterDialogListener = context.findListener<ChartFilterDialogListener>()
+        chartFilterDialogListener?.onChartFilterDialogOpened()
     }
 
     override fun onDismiss(dialog: DialogInterface) {

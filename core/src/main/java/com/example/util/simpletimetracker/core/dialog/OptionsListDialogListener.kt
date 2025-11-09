@@ -5,4 +5,8 @@ import com.example.util.simpletimetracker.navigation.params.screen.OptionsListPa
 interface OptionsListDialogListener {
 
     fun onOptionsItemClick(id: OptionsListParams.Item.Id)
+
+    fun onOptionsDialogOpened() = Unit
+
+    fun onOptionsDialogClosed() = Unit
 }

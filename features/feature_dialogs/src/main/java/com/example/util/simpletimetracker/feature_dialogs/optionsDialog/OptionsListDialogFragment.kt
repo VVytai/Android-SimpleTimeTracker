@@ -1,6 +1,7 @@
 package com.example.util.simpletimetracker.feature_dialogs.optionsDialog
 
 import android.content.Context
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -41,10 +42,16 @@ class OptionsListDialogFragment :
     override fun onAttach(context: Context) {
         super.onAttach(context)
         listener = context.findListener<OptionsListDialogListener>()
+        listener?.onOptionsDialogOpened()
     }
 
     override fun initDialog() {
         setSkipCollapsed()
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        listener?.onOptionsDialogClosed()
     }
 
     override fun initUi(): Unit = with(binding) {

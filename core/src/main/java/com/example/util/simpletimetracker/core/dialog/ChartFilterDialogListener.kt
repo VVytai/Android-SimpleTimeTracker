@@ -10,4 +10,6 @@ interface ChartFilterDialogListener {
     )
 
     fun onChartFilterDialogDismissed()
+
+    fun onChartFilterDialogOpened() = Unit
 }

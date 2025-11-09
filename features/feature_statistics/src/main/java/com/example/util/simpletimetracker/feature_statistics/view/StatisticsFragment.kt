@@ -113,6 +113,10 @@ class StatisticsFragment :
         viewModel.onFilterClosed()
     }
 
+    override fun onChartFilterDialogOpened() {
+        viewModel.onFilterOpened()
+    }
+
     private fun setAnimateParticles(animate: Boolean) {
         statisticsAdapter.currentList
             .indexOfFirst { it is StatisticsChartViewData }
