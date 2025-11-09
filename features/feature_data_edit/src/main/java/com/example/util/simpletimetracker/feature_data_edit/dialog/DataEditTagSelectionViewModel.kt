@@ -8,17 +8,22 @@ import com.example.util.simpletimetracker.domain.extension.addOrRemove
 import com.example.util.simpletimetracker.core.extension.set
 import com.example.util.simpletimetracker.core.interactor.RecordTagViewDataInteractor
 import com.example.util.simpletimetracker.domain.record.model.RecordBase
+import com.example.util.simpletimetracker.domain.recordTag.interactor.NeedTagValueSelectionInteractor
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.category.CategoryViewData
 import com.example.util.simpletimetracker.feature_base_adapter.loader.LoaderViewData
+import com.example.util.simpletimetracker.navigation.Router
 import com.example.util.simpletimetracker.navigation.params.screen.DataEditTagSelectionDialogParams
+import com.example.util.simpletimetracker.navigation.params.screen.RecordTagValueSelectionParams
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.launch
 
 @HiltViewModel
 class DataEditTagSelectionViewModel @Inject constructor(
+    private val router: Router,
     private val recordTagViewDataInteractor: RecordTagViewDataInteractor,
+    private val needTagValueSelectionInteractor: NeedTagValueSelectionInteractor,
 ) : ViewModel() {
 
     lateinit var extra: DataEditTagSelectionDialogParams
@@ -32,23 +37,50 @@ class DataEditTagSelectionViewModel @Inject constructor(
             initial
         }
     }
-    val tagSelected: LiveData<List<Long>> = MutableLiveData()
+    val tagSelected: LiveData<List<RecordBase.Tag>> = MutableLiveData()
 
-    private var selectedIds: MutableList<Long> = mutableListOf()
+    private var selectedIds: List<RecordBase.Tag> = emptyList()
 
     fun onTagClick(item: CategoryViewData) {
         viewModelScope.launch {
             when (item) {
                 is CategoryViewData.Record.Tagged -> {
-                    selectedIds.addOrRemove(item.id)
+                    val needValueSelection = if (extra.showValueSelection) {
+                        needTagValueSelectionInteractor.execute(
+                            selectedTagIds = selectedIds.map { it.tagId },
+                            clickedTagId = item.id,
+                        )
+                    } else {
+                        false
+                    }
+                    if (needValueSelection) {
+                        RecordTagValueSelectionParams(
+                            tag = DATA_EDIT_TAG_VALUE_SELECTION,
+                            tagId = item.id,
+                        ).let(router::navigate)
+                    } else {
+                        selectedIds = selectedIds.addOrRemove(item.id)
+                    }
                 }
                 is CategoryViewData.Record.Untagged -> {
-                    selectedIds.clear()
+                    selectedIds = emptyList()
                 }
                 else -> return@launch
             }
             updateViewData()
         }
+    }
+
+    fun onTagValueSelected(
+        params: RecordTagValueSelectionParams,
+        value: Double,
+    ) {
+        if (params.tag != DATA_EDIT_TAG_VALUE_SELECTION) return
+        selectedIds = selectedIds + RecordBase.Tag(
+            tagId = params.tagId,
+            numericValue = value,
+        )
+        updateViewData()
     }
 
     fun onSaveClick() {
@@ -64,10 +96,7 @@ class DataEditTagSelectionViewModel @Inject constructor(
         val result: MutableList<ViewHolderType> = mutableListOf()
 
         recordTagViewDataInteractor.getViewData(
-            selectedTags = selectedIds.map {
-                // TODO TAG add tag value selection?
-                RecordBase.Tag(tagId = it, numericValue = null)
-            },
+            selectedTags = selectedIds,
             typeIds = extra.typeIds,
             showAllTags = false,
             multipleChoiceAvailable = true,
@@ -78,5 +107,9 @@ class DataEditTagSelectionViewModel @Inject constructor(
         ).data.let(result::addAll)
 
         return result
+    }
+
+    companion object {
+        private const val DATA_EDIT_TAG_VALUE_SELECTION = "DATA_EDIT_TAG_VALUE_SELECTION"
     }
 }

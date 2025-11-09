@@ -8,11 +8,13 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.viewModels
 import com.example.util.simpletimetracker.core.base.BaseBottomSheetFragment
+import com.example.util.simpletimetracker.core.dialog.OnTagValueSelectedListener
 import com.example.util.simpletimetracker.core.extension.blockContentScroll
 import com.example.util.simpletimetracker.core.extension.getAllFragments
 import com.example.util.simpletimetracker.core.extension.setFullScreen
 import com.example.util.simpletimetracker.core.extension.setSkipCollapsed
 import com.example.util.simpletimetracker.core.utils.fragmentArgumentDelegate
+import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.feature_base_adapter.BaseRecyclerAdapter
 import com.example.util.simpletimetracker.feature_base_adapter.category.createCategoryAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.divider.createDividerAdapterDelegate
@@ -22,6 +24,7 @@ import com.example.util.simpletimetracker.feature_base_adapter.info.createInfoAd
 import com.example.util.simpletimetracker.feature_base_adapter.loader.createLoaderAdapterDelegate
 import com.example.util.simpletimetracker.feature_views.extension.setOnClick
 import com.example.util.simpletimetracker.navigation.params.screen.DataEditTagSelectionDialogParams
+import com.example.util.simpletimetracker.navigation.params.screen.RecordTagValueSelectionParams
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
@@ -30,7 +33,9 @@ import dagger.hilt.android.AndroidEntryPoint
 import com.example.util.simpletimetracker.feature_data_edit.databinding.DataEditTagSelectionDialogFragmentBinding as Binding
 
 @AndroidEntryPoint
-class DataEditTagSelectionDialogFragment : BaseBottomSheetFragment<Binding>() {
+class DataEditTagSelectionDialogFragment :
+    BaseBottomSheetFragment<Binding>(),
+    OnTagValueSelectedListener {
 
     override val inflater: (LayoutInflater, ViewGroup?, Boolean) -> Binding =
         Binding::inflate
@@ -48,7 +53,7 @@ class DataEditTagSelectionDialogFragment : BaseBottomSheetFragment<Binding>() {
         )
     }
     private val params: DataEditTagSelectionDialogParams by fragmentArgumentDelegate(
-        key = ARGS_PARAMS, default = DataEditTagSelectionDialogParams(),
+        key = ARGS_PARAMS, default = DataEditTagSelectionDialogParams.Empty,
     )
     private var listener: DataEditTagSelectionDialogListener? = null
 
@@ -99,7 +104,11 @@ class DataEditTagSelectionDialogFragment : BaseBottomSheetFragment<Binding>() {
         tagSelected.observe(::dismiss)
     }
 
-    private fun dismiss(tagIds: List<Long>) {
+    override fun onTagValueSelected(params: RecordTagValueSelectionParams, data: Double) {
+        viewModel.onTagValueSelected(params, data)
+    }
+
+    private fun dismiss(tagIds: List<RecordBase.Tag>) {
         listener?.onTagsSelected(params.tag, tagIds)
         dismiss()
     }

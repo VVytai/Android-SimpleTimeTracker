@@ -4,9 +4,9 @@ import com.example.util.simpletimetracker.core.interactor.RecordFilterInteractor
 import com.example.util.simpletimetracker.core.mapper.CategoryViewDataMapper
 import com.example.util.simpletimetracker.core.mapper.RecordTypeViewDataMapper
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
-import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.record.model.Record
+import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.domain.record.model.RecordsFilter
 import com.example.util.simpletimetracker.domain.recordTag.interactor.FilterSelectableTagsInteractor
 import com.example.util.simpletimetracker.domain.recordTag.interactor.RecordTagInteractor
@@ -83,20 +83,23 @@ class DateEditViewDataInteractor @Inject constructor(
     }
 
     suspend fun getTagState(
-        tagIds: List<Long>,
+        tagIds: List<RecordBase.Tag>,
     ): List<CategoryViewData.Record> {
         val isDarkTheme = prefsInteractor.getDarkMode()
         val types = recordTypeInteractor.getAll().associateBy { it.id }
+        val selectedTagsMap = tagIds.associateBy { it.tagId }
+        val selectedTagIds = selectedTagsMap.keys
+        val allTags = recordTagInteractor.getAll()
+        val selected = allTags.filter { it.id in selectedTagIds }
 
-        return recordTagInteractor.getAll()
-            .filter { it.id in tagIds }
-            .map {
-                categoryViewDataMapper.mapRecordTag(
-                    tag = it,
-                    type = types[it.iconColorSource],
-                    isDarkTheme = isDarkTheme,
-                )
-            }
+        return selected.map {
+            categoryViewDataMapper.mapRecordTagWithValue(
+                tag = it,
+                tagData = selectedTagsMap[it.id],
+                type = types[it.iconColorSource],
+                isDarkTheme = isDarkTheme,
+            )
+        }
     }
 
     suspend fun getChangeButtonState(

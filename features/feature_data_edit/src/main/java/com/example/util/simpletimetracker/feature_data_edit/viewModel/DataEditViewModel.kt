@@ -10,9 +10,10 @@ import com.example.util.simpletimetracker.core.extension.toParams
 import com.example.util.simpletimetracker.core.interactor.RecordFilterInteractor
 import com.example.util.simpletimetracker.core.repo.DataEditRepo
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
+import com.example.util.simpletimetracker.domain.extension.orEmpty
 import com.example.util.simpletimetracker.domain.extension.orZero
-import com.example.util.simpletimetracker.domain.record.extension.getTypeIds
 import com.example.util.simpletimetracker.domain.record.model.Record
+import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.domain.record.model.RecordsFilter
 import com.example.util.simpletimetracker.domain.recordTag.interactor.RecordTypeToTagInteractor
 import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
@@ -148,7 +149,7 @@ class DataEditViewModel @Inject constructor(
     fun onAddTagsClick() {
         if (addTagState is DataEditAddTagsState.Disabled) {
             viewModelScope.launch {
-                openTagSelection(ADD_TAGS_TAG)
+                openTagSelection(ADD_TAGS_TAG, showValueSelection = true)
             }
         } else {
             addTagState = DataEditAddTagsState.Disabled
@@ -160,7 +161,7 @@ class DataEditViewModel @Inject constructor(
     fun onRemoveTagsClick() {
         if (removeTagState is DataEditRemoveTagsState.Disabled) {
             viewModelScope.launch {
-                openTagSelection(REMOVE_TAGS_TAG)
+                openTagSelection(REMOVE_TAGS_TAG, showValueSelection = false)
             }
         } else {
             removeTagState = DataEditRemoveTagsState.Disabled
@@ -189,12 +190,12 @@ class DataEditViewModel @Inject constructor(
         updateChangeButtonState()
     }
 
-    fun onTagsSelected(tag: String, tagIds: List<Long>) = viewModelScope.launch {
+    fun onTagsSelected(tag: String, tagIds: List<RecordBase.Tag>) = viewModelScope.launch {
         when (tag) {
             ADD_TAGS_TAG -> {
                 addTagState = dataEditViewDataInteractor.getTagState(tagIds)
                     .takeUnless { it.isEmpty() }
-                    ?.let(DataEditAddTagsState::Enabled)
+                    ?.let { DataEditAddTagsState.Enabled(tagIds, it) }
                     ?: DataEditAddTagsState.Disabled
                 updateAddTagState()
                 updateChangeButtonState()
@@ -346,12 +347,20 @@ class DataEditViewModel @Inject constructor(
         router.back()
     }
 
-    private suspend fun openTagSelection(tag: String) {
+    private suspend fun openTagSelection(
+        tag: String,
+        showValueSelection: Boolean,
+    ) {
         // Show tag selection with typed tags for changed activity (if it is selected)
         // or for filtered activities.
         // Otherwise show only general tags.
         val typeIds = getTypeForTagSelection()
-        router.navigate(DataEditTagSelectionDialogParams(tag, typeIds))
+        val params = DataEditTagSelectionDialogParams(
+            tag = tag,
+            typeIds = typeIds,
+            showValueSelection = showValueSelection,
+        )
+        router.navigate(params)
     }
 
     private fun showMessage(stringResId: Int) {
@@ -361,6 +370,7 @@ class DataEditViewModel @Inject constructor(
 
     private fun checkTagStateConsistency() = viewModelScope.launch {
         val tagsToAdd = (addTagState as? DataEditAddTagsState.Enabled)?.viewData
+        val tagsDataToAdd = (addTagState as? DataEditAddTagsState.Enabled)?.tags
         val tagsToRemove = (removeTagState as? DataEditRemoveTagsState.Enabled)?.viewData
 
         // If there are some tags selected to add or remove.
@@ -375,8 +385,10 @@ class DataEditViewModel @Inject constructor(
                 tags = tagsToAdd,
                 typesToTags = typeToTags,
             )
-            addTagState = if (newTags.isNotEmpty()) {
-                DataEditAddTagsState.Enabled(newTags)
+            val newTagsIds = newTags.map { it.id }
+            val newTagsData = tagsDataToAdd.orEmpty().filter { it.tagId in newTagsIds }
+            addTagState = if (newTags.isNotEmpty() && newTagsData.isNotEmpty()) {
+                DataEditAddTagsState.Enabled(newTagsData, newTags)
             } else {
                 DataEditAddTagsState.Disabled
             }

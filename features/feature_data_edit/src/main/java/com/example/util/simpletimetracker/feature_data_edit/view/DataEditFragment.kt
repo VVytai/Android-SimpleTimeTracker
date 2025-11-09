@@ -12,6 +12,7 @@ import com.example.util.simpletimetracker.core.dialog.StandardDialogListener
 import com.example.util.simpletimetracker.core.extension.hideKeyboard
 import com.example.util.simpletimetracker.core.extension.showKeyboard
 import com.example.util.simpletimetracker.core.utils.InsetConfiguration
+import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.feature_base_adapter.BaseRecyclerAdapter
 import com.example.util.simpletimetracker.feature_base_adapter.category.createCategoryAdapterDelegate
 import com.example.util.simpletimetracker.feature_data_edit.dialog.DataEditTagSelectionDialogListener
@@ -142,7 +143,7 @@ class DataEditFragment :
         viewModel.onTypeDismissed()
     }
 
-    override fun onTagsSelected(tag: String, tagIds: List<Long>) {
+    override fun onTagsSelected(tag: String, tagIds: List<RecordBase.Tag>) {
         viewModel.onTagsSelected(tag, tagIds)
     }
 

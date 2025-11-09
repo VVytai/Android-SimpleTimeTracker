@@ -47,9 +47,7 @@ class DateEditChangeInteractor @Inject constructor(
         val newComment = (commentState as? DataEditChangeCommentState.Enabled)
             ?.viewData
         val addTags = (addTagState as? DataEditAddTagsState.Enabled)
-            ?.viewData?.map(CategoryViewData.Record::id)
-            // TODO TAG add tag value selection?
-            ?.map { RecordBase.Tag(tagId = it, numericValue = null) }
+            ?.tags
         val removeTags = (removeTagState as? DataEditRemoveTagsState.Enabled)
             ?.viewData?.map(CategoryViewData.Record::id)
         val deleteRecord = deleteRecordsState is DataEditDeleteRecordsState.Enabled
