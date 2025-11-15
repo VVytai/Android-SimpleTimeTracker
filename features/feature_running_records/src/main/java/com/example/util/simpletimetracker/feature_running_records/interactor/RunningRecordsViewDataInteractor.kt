@@ -21,6 +21,8 @@ import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.divider.DividerViewData
 import com.example.util.simpletimetracker.feature_base_adapter.emptySpace.EmptySpaceViewData
 import com.example.util.simpletimetracker.feature_running_records.mapper.RunningRecordsViewDataMapper
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class RunningRecordsViewDataInteractor @Inject constructor(
@@ -43,7 +45,7 @@ class RunningRecordsViewDataInteractor @Inject constructor(
     suspend fun getViewData(
         completeTypeIds: Set<Long>,
         navBarHeightDp: Int,
-    ): List<ViewHolderType> {
+    ): List<ViewHolderType> = withContext(Dispatchers.Default) {
         val recordTypes = recordTypeInteractor.getAll()
         val recordTypesMap = recordTypes.associateBy(RecordType::id)
         val recordTags = recordTagInteractor.getAll()
@@ -209,7 +211,7 @@ class RunningRecordsViewDataInteractor @Inject constructor(
             ).let(::listOf)
         }
 
-        return listOf(
+        return@withContext listOf(
             runningRecordsViewData,
             suggestionsViewData,
             filtersViewData,

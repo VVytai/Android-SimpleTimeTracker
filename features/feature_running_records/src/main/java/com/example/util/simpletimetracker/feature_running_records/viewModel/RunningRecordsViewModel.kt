@@ -86,6 +86,7 @@ class RunningRecordsViewModel @Inject constructor(
         SingleLiveEvent()
 
     private var timerJob: Job? = null
+    private var updateJob: Job? = null
     private var completeTypeJob: Job? = null
     private var completeTypeIds: Set<Long> = emptySet()
     private var navBarHeightDp: Int = 0
@@ -405,9 +406,12 @@ class RunningRecordsViewModel @Inject constructor(
         previewUpdate.set(update)
     }
 
-    private fun updateRunningRecords() = viewModelScope.launch {
-        val data = loadRunningRecordsViewData()
-        runningRecords.set(data)
+    private fun updateRunningRecords() {
+        updateJob?.cancel()
+        updateJob = viewModelScope.launch {
+            val data = loadRunningRecordsViewData()
+            runningRecords.set(data)
+        }
     }
 
     private suspend fun loadRunningRecordsViewData(): List<ViewHolderType> {
