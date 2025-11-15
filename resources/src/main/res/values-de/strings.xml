@@ -435,6 +435,10 @@ Wenn die Einstellung <b>\"%s\"</b> aktiviert ist, sendet die App Ereignisse zu g
     <string name="settings_automatic_description">Die Datei wird am ausgewählten Ort gespeichert und überschreibt die zuvor gespeicherte Datei jeden Tag um Mitternacht.</string>
     <string name="settings_automatic_last_save">Zuletzt gespeichert:</string>
     <string name="settings_automatic_save_time">Speicherzeit</string>
+    <string name="settings_export_csv_format">Tabellenkalkulations-Zeitformat</string>
+    <string name="settings_date_time_format_local">Lokal</string>
+    <string name="settings_date_time_format_utc">UTC</string>
+    <string name="settings_date_time_format_timezone">Zeitzone</string>
     <string name="settings_restore_backup">Backup wiederherstellen</string>
     <string name="settings_restore_description">Aktuelle Daten gehen verloren.</string>
     <string name="settings_backup_options">Erweiterte Optionen</string>

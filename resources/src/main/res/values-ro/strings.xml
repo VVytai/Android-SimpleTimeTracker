@@ -435,6 +435,10 @@ Dacă opțiunea <b>\"%s\"</b> este activă, aplicația va trimite evenimente la 
     <string name="settings_automatic_description">Fișierul va fi salvat în locația aleasă, suprascriind fișierul salvat anterior, în fiecare zi la miezul nopții.</string>
     <string name="settings_automatic_last_save">Ultima salvare:</string>
     <string name="settings_automatic_save_time">Ora de salvare</string>
+    <string name="settings_export_csv_format">Format orar al foii de calcul</string>
+    <string name="settings_date_time_format_local">Local</string>
+    <string name="settings_date_time_format_utc">UTC</string>
+    <string name="settings_date_time_format_timezone">Fus orar</string>
     <string name="settings_restore_backup">Restaurare backup</string>
     <string name="settings_restore_description">Informația curentă va fi pierdută.</string>
     <string name="settings_backup_options">Opțiuni avansate</string>

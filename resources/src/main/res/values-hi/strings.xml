@@ -435,6 +435,10 @@
     <string name="settings_automatic_description">फ़ाइल हर दिन आधी रात को पहले से सहेजी गई फ़ाइल को ओवरराइड करते हुए चयनित स्थान में सहेजी जाएगी।</string>
     <string name="settings_automatic_last_save">अंतिम बचत:</string>
     <string name="settings_automatic_save_time">सहेजने का समय</string>
+    <string name="settings_export_csv_format">स्प्रेडशीट समय प्रारूप</string>
+    <string name="settings_date_time_format_local">स्थानीय</string>
+    <string name="settings_date_time_format_utc">UTC</string>
+    <string name="settings_date_time_format_timezone">समय क्षेत्र</string>
     <string name="settings_restore_backup">बैकअप  पुनः स्थापित करे।</string>
     <string name="settings_restore_description">वर्तमान डेटा खो जाएगा।</string>
     <string name="settings_backup_options">उन्नत विकल्प</string>

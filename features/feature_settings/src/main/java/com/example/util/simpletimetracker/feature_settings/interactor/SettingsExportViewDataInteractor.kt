@@ -6,11 +6,14 @@ import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_settings.R
 import com.example.util.simpletimetracker.feature_settings.api.SettingsBlock
 import com.example.util.simpletimetracker.feature_settings.mapper.SettingsMapper
+import com.example.util.simpletimetracker.feature_settings.viewData.ExportDateTimeFormatViewData
+import com.example.util.simpletimetracker.feature_settings.viewData.FirstDayOfWeekViewData
 import com.example.util.simpletimetracker.feature_settings.views.SettingsBottomViewData
 import com.example.util.simpletimetracker.feature_settings.views.SettingsCheckboxViewData
 import com.example.util.simpletimetracker.feature_settings.views.SettingsCollapseViewData
 import com.example.util.simpletimetracker.feature_settings.views.SettingsHintViewData
 import com.example.util.simpletimetracker.feature_settings.views.SettingsSelectorViewData
+import com.example.util.simpletimetracker.feature_settings.views.SettingsSpinnerViewData
 import com.example.util.simpletimetracker.feature_settings.views.SettingsTextColor
 import com.example.util.simpletimetracker.feature_settings.views.SettingsTextViewData
 import com.example.util.simpletimetracker.feature_settings.views.SettingsTextWithButtonViewData
@@ -97,6 +100,24 @@ class SettingsExportViewDataInteractor @Inject constructor(
                 )
             }
 
+            val dateTimeFormatViewData = loadDateTimeFormatViewData()
+            result += SettingsSpinnerViewData(
+                block = SettingsBlock.ExportSpreadsheetDateTimeFormat,
+                title = resourceRepo.getString(R.string.settings_export_csv_format),
+                value = dateTimeFormatViewData.items
+                    .getOrNull(dateTimeFormatViewData.selectedPosition)?.text.orEmpty(),
+                items = dateTimeFormatViewData.items,
+                selectedPosition = dateTimeFormatViewData.selectedPosition,
+                processSameItemSelected = false,
+                dividerIsVisible = false,
+                bottomSpaceIsVisible = false,
+            )
+            result += SettingsHintViewData(
+                block = SettingsBlock.ExportSpreadsheetDateTimeFormatHint,
+                text = loadDateTimeFormatHintViewData(),
+                topSpaceIsVisible = false,
+            )
+
             result += SettingsTextViewData(
                 block = SettingsBlock.ExportIcs,
                 title = resourceRepo.getString(R.string.settings_export_ics),
@@ -132,5 +153,15 @@ class SettingsExportViewDataInteractor @Inject constructor(
             startOfDayShift = prefsInteractor.getAutomaticExportTriggerTime(),
             useMilitaryTime = prefsInteractor.getUseMilitaryTimeFormat(),
         )
+    }
+
+    private suspend fun loadDateTimeFormatViewData(): ExportDateTimeFormatViewData {
+        return prefsInteractor.getCsvExportDateTimeFormat()
+            .let(settingsMapper::toCsvExportDateTimeFormat)
+    }
+
+    private suspend fun loadDateTimeFormatHintViewData(): String {
+        return prefsInteractor.getCsvExportDateTimeFormat()
+            .let(settingsMapper::toCsvExportDateTimeFormatHint)
     }
 }

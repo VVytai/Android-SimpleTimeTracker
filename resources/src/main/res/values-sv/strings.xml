@@ -435,6 +435,10 @@ Om inställningen <b>\"%s\"</b> är aktiverad, kommer appen att skicka händelse
     <string name="settings_automatic_description">Filen kommer att sparas på den valda platsen och åsidosätter tidigare sparad fil varje dag vid midnatt.</string>
     <string name="settings_automatic_last_save">Senast sparad:</string>
     <string name="settings_automatic_save_time">Sparningstid</string>
+    <string name="settings_export_csv_format">Kalkylbladets tidsformat</string>
+    <string name="settings_date_time_format_local">Lokal</string>
+    <string name="settings_date_time_format_utc">UTC</string>
+    <string name="settings_date_time_format_timezone">Tidszon</string>
     <string name="settings_restore_backup">Återställ säkerhetskopia</string>
     <string name="settings_restore_description">Nuvarande data kommer tas bort.</string>
     <string name="settings_backup_options">Avancerade alternativ</string>

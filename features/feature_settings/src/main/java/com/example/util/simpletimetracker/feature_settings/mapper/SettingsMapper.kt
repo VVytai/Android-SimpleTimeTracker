@@ -1,17 +1,20 @@
 package com.example.util.simpletimetracker.feature_settings.mapper
 
+import com.example.util.simpletimetracker.core.extension.setToStartOfDay
 import com.example.util.simpletimetracker.core.extension.shiftTimeStamp
 import com.example.util.simpletimetracker.core.interactor.LanguageInteractor
+import com.example.util.simpletimetracker.core.mapper.FileExportDateTimeFormatMapper
 import com.example.util.simpletimetracker.core.mapper.TimeMapper
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.domain.base.DurationFormat
-import com.example.util.simpletimetracker.domain.extension.orZero
+import com.example.util.simpletimetracker.domain.fileExport.ExportDateTimeFormat
 import com.example.util.simpletimetracker.domain.darkMode.model.DarkMode
 import com.example.util.simpletimetracker.domain.daysOfWeek.mapper.DaysInCalendarMapper
-import com.example.util.simpletimetracker.domain.recordTag.model.CardTagOrder
 import com.example.util.simpletimetracker.domain.daysOfWeek.model.DayOfWeek
 import com.example.util.simpletimetracker.domain.daysOfWeek.model.DaysInCalendar
+import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.domain.record.model.RepeatButtonType
+import com.example.util.simpletimetracker.domain.recordTag.model.CardTagOrder
 import com.example.util.simpletimetracker.domain.recordType.model.CardOrder
 import com.example.util.simpletimetracker.domain.statistics.model.WidgetTransparencyPercent
 import com.example.util.simpletimetracker.feature_settings.R
@@ -19,6 +22,7 @@ import com.example.util.simpletimetracker.feature_settings.viewData.CardOrderVie
 import com.example.util.simpletimetracker.feature_settings.viewData.DarkModeViewData
 import com.example.util.simpletimetracker.feature_settings.viewData.DaysInCalendarViewData
 import com.example.util.simpletimetracker.feature_settings.viewData.DurationFormatViewData
+import com.example.util.simpletimetracker.feature_settings.viewData.ExportDateTimeFormatViewData
 import com.example.util.simpletimetracker.feature_settings.viewData.FirstDayOfWeekViewData
 import com.example.util.simpletimetracker.feature_settings.viewData.LanguageViewData
 import com.example.util.simpletimetracker.feature_settings.viewData.RepeatButtonViewData
@@ -35,6 +39,7 @@ class SettingsMapper @Inject constructor(
     private val resourceRepo: ResourceRepo,
     private val languageInteractor: LanguageInteractor,
     private val daysInCalendarMapper: DaysInCalendarMapper,
+    private val fileExportDateTimeFormatMapper: FileExportDateTimeFormatMapper,
 ) {
 
     private val cardOrderList: List<CardOrder> = listOf(
@@ -94,6 +99,9 @@ class SettingsMapper @Inject constructor(
         DarkMode.Enabled,
         DarkMode.Disabled,
     )
+
+    private val exportDateTimeFormatList: List<ExportDateTimeFormat> =
+        fileExportDateTimeFormatMapper.getAvailableFormats()
 
     fun toCardOrderViewData(currentOrder: CardOrder): CardOrderViewData {
         return CardOrderViewData(
@@ -228,6 +236,25 @@ class SettingsMapper @Inject constructor(
         return languageInteractor.getTag(language)
     }
 
+    fun toCsvExportDateTimeFormat(current: ExportDateTimeFormat): ExportDateTimeFormatViewData {
+        return ExportDateTimeFormatViewData(
+            items = exportDateTimeFormatList
+                .map {
+                    when (it) {
+                        ExportDateTimeFormat.Local -> R.string.settings_date_time_format_local
+                        ExportDateTimeFormat.Utc -> R.string.settings_date_time_format_utc
+                        ExportDateTimeFormat.TimeZone -> R.string.settings_date_time_format_timezone
+                    }.let(resourceRepo::getString)
+                }
+                .map(CustomSpinner::CustomSpinnerTextItem),
+            selectedPosition = toPosition(current),
+        )
+    }
+
+    fun toCsvExportDateTimeFormat(position: Int): ExportDateTimeFormat {
+        return exportDateTimeFormatList.getOrNull(position) ?: exportDateTimeFormatList.first()
+    }
+
     fun toDurationViewData(duration: Long): SettingsDurationViewData {
         return if (duration > 0) {
             SettingsDurationViewData(
@@ -342,6 +369,13 @@ class SettingsMapper @Inject constructor(
         }
     }
 
+    fun toCsvExportDateTimeFormatHint(format: ExportDateTimeFormat): String {
+        return fileExportDateTimeFormatMapper.mapDateTime(
+            format = format,
+            timestamp = Calendar.getInstance().apply { setToStartOfDay() }.timeInMillis,
+        )
+    }
+
     private fun toPosition(cardOrder: CardOrder): Int {
         return cardOrderList.indexOf(cardOrder).takeUnless { it == -1 }.orZero()
     }
@@ -410,5 +444,9 @@ class SettingsMapper @Inject constructor(
 
     private fun toPosition(darkMode: DarkMode): Int {
         return darkModeList.indexOf(darkMode).takeUnless { it == -1 }.orZero()
+    }
+
+    private fun toPosition(exportDateTimeFormat: ExportDateTimeFormat): Int {
+        return exportDateTimeFormatList.indexOf(exportDateTimeFormat).takeUnless { it == -1 }.orZero()
     }
 }

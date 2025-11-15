@@ -104,6 +104,8 @@ enum class SettingsBlock {
     ExportSpreadsheetAutomatic,
     ExportSpreadsheetAutomaticHint,
     ExportSpreadsheetAutomaticTime,
+    ExportSpreadsheetDateTimeFormat,
+    ExportSpreadsheetDateTimeFormatHint,
     ExportSpreadsheetImport,
     ExportSpreadsheetImportHint,
     ExportIcs,

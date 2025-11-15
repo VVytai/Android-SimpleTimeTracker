@@ -59,7 +59,7 @@ class SettingsBackupViewModelDelegate @Inject constructor(
                 )
             SettingsBlock.BackupCustomized ->
                 onCustomizeClick()
-            // TODO move to export delegate
+            // TODO move to export delegate?
             SettingsBlock.ExportSpreadsheet ->
                 settingsFileWorkDelegate.onExportCsvClick(CSV_EXPORT_DIALOG_TAG)
             SettingsBlock.ExportSpreadsheetAutomatic ->

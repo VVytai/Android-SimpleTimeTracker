@@ -41,7 +41,11 @@ class AutomaticExportInteractorImpl @Inject constructor(
                 onFinished()
                 return
             }
-        val result = csvExportInteractor.saveCsvFile(uri, range = null)
+        val result = csvExportInteractor.saveCsvFile(
+            uriString = uri,
+            range = null,
+            dateTimeFormat = prefsInteractor.getCsvExportDateTimeFormat(),
+        )
 
         if (result is ResultCode.Success) {
             schedule()

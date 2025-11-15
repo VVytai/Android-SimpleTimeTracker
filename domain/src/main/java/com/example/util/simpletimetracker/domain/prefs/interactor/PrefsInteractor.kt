@@ -2,11 +2,13 @@ package com.example.util.simpletimetracker.domain.prefs.interactor
 
 import com.example.util.simpletimetracker.domain.base.CommentFilterType
 import com.example.util.simpletimetracker.domain.base.DurationFormat
+import com.example.util.simpletimetracker.domain.fileExport.ExportDateTimeFormat
 import com.example.util.simpletimetracker.domain.darkMode.interactor.IsSystemInDarkModeInteractor
 import com.example.util.simpletimetracker.domain.darkMode.model.DarkMode
 import com.example.util.simpletimetracker.domain.daysOfWeek.model.DayOfWeek
 import com.example.util.simpletimetracker.domain.daysOfWeek.model.DaysInCalendar
 import com.example.util.simpletimetracker.domain.extension.orZero
+import com.example.util.simpletimetracker.domain.fileExport.IsExportFormatAvailableInteractor
 import com.example.util.simpletimetracker.domain.prefs.repo.PrefsRepo
 import com.example.util.simpletimetracker.domain.record.model.Range
 import com.example.util.simpletimetracker.domain.record.model.RepeatButtonType
@@ -24,6 +26,7 @@ import javax.inject.Inject
 class PrefsInteractor @Inject constructor(
     private val prefsRepo: PrefsRepo,
     private val isSystemInDarkModeInteractor: IsSystemInDarkModeInteractor,
+    private val isExportFormatAvailableInteractor: IsExportFormatAvailableInteractor,
 ) {
 
     suspend fun getFilteredTypesOnList(): List<Long> = withContext(Dispatchers.IO) {
@@ -219,6 +222,16 @@ class PrefsInteractor @Inject constructor(
 
     suspend fun getFileExportLastDays(): Int = withContext(Dispatchers.IO) {
         prefsRepo.fileExportRangeLastDays
+    }
+
+    suspend fun getCsvExportDateTimeFormat(): ExportDateTimeFormat = withContext(Dispatchers.IO) {
+        mapToExportDateTimeFormat(prefsRepo.csvExportDateTimeFormat)
+            .takeIf(isExportFormatAvailableInteractor::execute)
+            ?: ExportDateTimeFormat.Local
+    }
+
+    suspend fun setCsvExportDateTimeFormat(value: ExportDateTimeFormat) = withContext(Dispatchers.IO) {
+        prefsRepo.csvExportDateTimeFormat = mapFromExportDateTimeFormat(value)
     }
 
     suspend fun getCsvExportCustomFileName(): String = withContext(Dispatchers.IO) {
@@ -1112,6 +1125,23 @@ class PrefsInteractor @Inject constructor(
             ChartFilterType.ACTIVITY -> 0
             ChartFilterType.CATEGORY -> 1
             ChartFilterType.RECORD_TAG -> 2
+        }
+    }
+
+    private fun mapToExportDateTimeFormat(data: Int): ExportDateTimeFormat {
+        return when (data) {
+            0 -> ExportDateTimeFormat.Local
+            1 -> ExportDateTimeFormat.Utc
+            2 -> ExportDateTimeFormat.TimeZone
+            else -> ExportDateTimeFormat.Local
+        }
+    }
+
+    private fun mapFromExportDateTimeFormat(data: ExportDateTimeFormat): Int {
+        return when (data) {
+            ExportDateTimeFormat.Local -> 0
+            ExportDateTimeFormat.Utc -> 1
+            ExportDateTimeFormat.TimeZone -> 2
         }
     }
 

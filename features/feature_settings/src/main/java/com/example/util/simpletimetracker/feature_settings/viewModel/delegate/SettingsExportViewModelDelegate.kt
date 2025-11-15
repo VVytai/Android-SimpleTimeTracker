@@ -3,13 +3,17 @@ package com.example.util.simpletimetracker.feature_settings.viewModel.delegate
 import com.example.util.simpletimetracker.core.base.ViewModelDelegate
 import com.example.util.simpletimetracker.feature_settings.api.SettingsBlock
 import com.example.util.simpletimetracker.domain.extension.flip
+import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_settings.interactor.SettingsExportViewDataInteractor
+import com.example.util.simpletimetracker.feature_settings.mapper.SettingsMapper
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class SettingsExportViewModelDelegate @Inject constructor(
     private val settingsExportViewDataInteractor: SettingsExportViewDataInteractor,
+    private val settingsMapper: SettingsMapper,
+    private val prefsInteractor: PrefsInteractor,
 ) : ViewModelDelegate() {
 
     private var parent: SettingsParent? = null
@@ -34,6 +38,15 @@ class SettingsExportViewModelDelegate @Inject constructor(
         }
     }
 
+    fun onSpinnerPositionSelected(block: SettingsBlock, position: Int) {
+        when (block) {
+            SettingsBlock.ExportSpreadsheetDateTimeFormat -> onDateTimeFormatSelected(position)
+            else -> {
+                // Do nothing
+            }
+        }
+    }
+
     fun collapse() {
         isCollapsed = true
     }
@@ -41,5 +54,13 @@ class SettingsExportViewModelDelegate @Inject constructor(
     private fun onCollapseClick() = delegateScope.launch {
         isCollapsed = isCollapsed.flip()
         parent?.updateContent()
+    }
+
+    private fun onDateTimeFormatSelected(position: Int) {
+        delegateScope.launch {
+            val newData = settingsMapper.toCsvExportDateTimeFormat(position)
+            prefsInteractor.setCsvExportDateTimeFormat(newData)
+            parent?.updateContent()
+        }
     }
 }

@@ -435,6 +435,10 @@ Se l\'impostazione <b>\"%s\"</b> è abilitata, l\'app invierà eventi sull\'atti
     <string name="settings_automatic_description">Il file verrà salvato nella posizione selezionata sovrascrivendo il file salvato in precedenza ogni giorno a mezzanotte.</string>
     <string name="settings_automatic_last_save">Ultimo salvataggio:</string>
     <string name="settings_automatic_save_time">Ora di salvataggio</string>
+    <string name="settings_export_csv_format">Formato orario del foglio di calcolo</string>
+    <string name="settings_date_time_format_local">Locale</string>
+    <string name="settings_date_time_format_utc">UTC</string>
+    <string name="settings_date_time_format_timezone">Fuso orario</string>
     <string name="settings_restore_backup">Ripristina backup</string>
     <string name="settings_restore_description">I dati attuali verrano persi.</string>
     <string name="settings_backup_options">Opzioni avanzate</string>

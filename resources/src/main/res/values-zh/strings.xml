@@ -435,6 +435,10 @@
     <string name="settings_automatic_description">文件将在每天午夜覆盖之前选定位置的文件</string>
     <string name="settings_automatic_last_save">最近保存：</string>
     <string name="settings_automatic_save_time">保存时间</string>
+    <string name="settings_export_csv_format">电子表格时间格式</string>
+    <string name="settings_date_time_format_local">本地</string>
+    <string name="settings_date_time_format_utc">UTC</string>
+    <string name="settings_date_time_format_timezone">时区</string>
     <string name="settings_restore_backup">还原备份</string>
     <string name="settings_restore_description">当前数据将丢失</string>
     <string name="settings_backup_options">高级选项</string>

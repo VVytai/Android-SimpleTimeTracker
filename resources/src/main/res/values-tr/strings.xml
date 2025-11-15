@@ -435,6 +435,10 @@ Bu davranışı etkinleştirmek için bu uygulamaların şu parametrelerle \"int
     <string name="settings_automatic_description">Dosya, her gün gece yarısında önceden kaydedilmiş dosyanın üzerine yazılarak seçilen konuma kaydedilecektir.</string>
     <string name="settings_automatic_last_save">Son kaydetme:</string>
     <string name="settings_automatic_save_time">Kayıt zamanı</string>
+    <string name="settings_export_csv_format">Elektronik tablo saat biçimi</string>
+    <string name="settings_date_time_format_local">Yerel</string>
+    <string name="settings_date_time_format_utc">UTC</string>
+    <string name="settings_date_time_format_timezone">Saat dilimi</string>
     <string name="settings_restore_backup">Yedeklemeyi geri yükle</string>
     <string name="settings_restore_description">Varolan veri silinecek.</string>
     <string name="settings_backup_options">Gelişmiş seçenekler</string>

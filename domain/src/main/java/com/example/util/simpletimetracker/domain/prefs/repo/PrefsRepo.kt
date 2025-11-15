@@ -39,6 +39,8 @@ interface PrefsRepo {
     var fileExportRangeCustomEnd: Long
     var fileExportRangeLastDays: Int
 
+    var csvExportDateTimeFormat: Int
+
     var csvExportCustomFileName: String
     var icsExportCustomFileName: String
 

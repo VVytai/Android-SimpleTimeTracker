@@ -435,6 +435,10 @@
     <string name="settings_automatic_description">سيحفظ الملف في المكان المحدد كل يوم عند منتصف الليل متجاوزاً الملف المحفوظ مسبقًا.</string>
     <string name="settings_automatic_last_save">آخر المحفوظات:</string>
     <string name="settings_automatic_save_time">وقت الحفظ</string>
+    <string name="settings_export_csv_format">تنسيق الوقت لجداول البيانات</string>
+    <string name="settings_date_time_format_local">محلي</string>
+    <string name="settings_date_time_format_utc">UTC</string>
+    <string name="settings_date_time_format_timezone">منطقة زمنية</string>
     <string name="settings_restore_backup">استيراد نسخة الاحتياطية</string>
     <string name="settings_restore_description">ستفقد البيانات الحالية.</string>
     <string name="settings_backup_options">خيارات متقدمة</string>

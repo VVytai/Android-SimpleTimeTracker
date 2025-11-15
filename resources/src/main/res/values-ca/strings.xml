@@ -435,6 +435,10 @@ Si la configuració <b>\"%s\"</b> és habilitada, l\'aplicació enviarà esdeven
     <string name="settings_automatic_description">L\'arxiu es desarà a la ubicació seleccionada sobreescrivint l\'arxiu anterior cada dia a mitjanit.</string>
     <string name="settings_automatic_last_save">Últim desat:</string>
     <string name="settings_automatic_save_time">Hora de desament</string>
+    <string name="settings_export_csv_format">Format d\'hora del full de càlcul</string>
+    <string name="settings_date_time_format_local">Local</string>
+    <string name="settings_date_time_format_utc">UTC</string>
+    <string name="settings_date_time_format_timezone">Fus horari</string>
     <string name="settings_restore_backup">Recupera còpia de seguretat</string>
     <string name="settings_restore_description">Les dades actuals s\'esborraran.</string>
     <string name="settings_backup_options">Opcions avançades</string>

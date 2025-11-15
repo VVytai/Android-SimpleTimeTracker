@@ -23,6 +23,7 @@ import com.example.util.simpletimetracker.domain.backup.model.PartialBackupResto
 import com.example.util.simpletimetracker.domain.record.model.Range
 import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
 import com.example.util.simpletimetracker.domain.backup.model.ResultCode
+import com.example.util.simpletimetracker.domain.fileExport.ExportDateTimeFormat
 import com.example.util.simpletimetracker.navigation.RequestCode
 import com.example.util.simpletimetracker.navigation.Router
 import com.example.util.simpletimetracker.navigation.params.action.ActionParams
@@ -120,9 +121,10 @@ class SettingsFileWorkDelegate @Inject constructor(
             .takeIf { it != CSV_EXPORT_DEFAULT_FILE_NAME }
             .orEmpty()
             .let { prefsInteractor.setCsvExportCustomFileName(it) }
+        val dateTimeFormat = prefsInteractor.getCsvExportDateTimeFormat()
         requestFileWork(
             requestCode = RequestCode.REQUEST_CODE_CREATE_FILE,
-            work = { onSaveCsvFile(it, range) },
+            work = { onSaveCsvFile(it, range, dateTimeFormat) },
             params = CreateFileParams(
                 fileName = data.customFileName
                     .let(::insertDateTimeIntoFileName),
@@ -402,12 +404,14 @@ class SettingsFileWorkDelegate @Inject constructor(
     private fun onSaveCsvFile(
         uriString: String?,
         range: Range?,
+        dateTimeFormat: ExportDateTimeFormat,
     ) {
         if (uriString == null) return
         executeFileWork(shareUriString = uriString) {
             csvExportInteractor.saveCsvFile(
                 uriString = uriString,
                 range = range,
+                dateTimeFormat = dateTimeFormat,
             )
         }
     }

@@ -38,7 +38,7 @@ class RecordTagSelectionDialogFragment :
 
     override fun initDialog() {
         setSkipCollapsed()
-        // TODO block content scroll
+        // TODO block content scroll? Somehow its blocked without it.
     }
 
     override fun initUi() {

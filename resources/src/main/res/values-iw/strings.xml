@@ -435,6 +435,10 @@
     <string name="settings_automatic_description">הקובץ יישמר במיקום שנבחר ויחליף את הקובץ שנשמר בעבר מדי יום בחצות.</string>
     <string name="settings_automatic_last_save">שמירה אחרונה:</string>
     <string name="settings_automatic_save_time">זמן שמירה</string>
+    <string name="settings_export_csv_format">תבנית זמן של גיליון אלקטרוני</string>
+    <string name="settings_date_time_format_local">מקומי</string>
+    <string name="settings_date_time_format_utc">UTC</string>
+    <string name="settings_date_time_format_timezone">אזור זמן</string>
     <string name="settings_restore_backup">שחזר גיבוי</string>
     <string name="settings_restore_description">הנתונים הנוכחיים יאבדו.</string>
     <string name="settings_backup_options">אפשרויות מתקדמות</string>

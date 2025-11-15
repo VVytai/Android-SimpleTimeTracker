@@ -435,6 +435,10 @@
     <string name="settings_automatic_description">Файл будет сохраняться в выбранном месте каждый день в полночь вместо ранее сохраненного файла.</string>
     <string name="settings_automatic_last_save">Последнее сохранение:</string>
     <string name="settings_automatic_save_time">Время сохранения</string>
+    <string name="settings_export_csv_format">Формат времени таблицы</string>
+    <string name="settings_date_time_format_local">Локальное</string>
+    <string name="settings_date_time_format_utc">UTC</string>
+    <string name="settings_date_time_format_timezone">Часовой пояс</string>
     <string name="settings_restore_backup">Восстановление резервной копии</string>
     <string name="settings_restore_description">Текущие данные будут потеряны.</string>
     <string name="settings_backup_options">Расширенные параметры</string>

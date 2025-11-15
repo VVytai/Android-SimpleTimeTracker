@@ -23,8 +23,6 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
 import java.io.InputStreamReader
-import java.text.SimpleDateFormat
-import java.util.Locale
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
@@ -32,7 +30,9 @@ import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.io.BufferedOutputStream
 import androidx.core.net.toUri
+import com.example.util.simpletimetracker.core.mapper.FileExportDateTimeFormatMapper
 import com.example.util.simpletimetracker.core.mapper.RecordTagFullNameMapper
+import com.example.util.simpletimetracker.domain.fileExport.ExportDateTimeFormat
 import com.example.util.simpletimetracker.domain.record.model.RecordBase
 
 class CsvRepoImpl @Inject constructor(
@@ -44,11 +44,13 @@ class CsvRepoImpl @Inject constructor(
     private val recordTagRepo: RecordTagRepo,
     private val resourceRepo: ResourceRepo,
     private val recordTagFullNameMapper: RecordTagFullNameMapper,
+    private val fileExportDateTimeFormatMapper: FileExportDateTimeFormatMapper,
 ) : CsvRepo {
 
     override suspend fun saveCsvFile(
         uriString: String,
         range: Range?,
+        dateTimeFormat: ExportDateTimeFormat,
     ): ResultCode = withContext(Dispatchers.IO) {
         var fileDescriptor: ParcelFileDescriptor? = null
         var fileOutputStream: BufferedOutputStream? = null
@@ -80,6 +82,7 @@ class CsvRepoImpl @Inject constructor(
                 .forEach { record ->
                     val tagIds = record.tags.map(RecordBase.Tag::tagId)
                     toCsvString(
+                        dateTimeFormat = dateTimeFormat,
                         record = record,
                         recordType = recordTypes[record.typeId],
                         categories = typeToCategories[record.typeId].orEmpty(),
@@ -190,6 +193,7 @@ class CsvRepoImpl @Inject constructor(
     }
 
     private fun toCsvString(
+        dateTimeFormat: ExportDateTimeFormat,
         record: Record,
         recordType: RecordType?,
         categories: List<Category>,
@@ -200,8 +204,8 @@ class CsvRepoImpl @Inject constructor(
             String.format(
                 "\"%s\",%s,%s,\"%s\",\"%s\",\"%s\",%s,%s\n",
                 recordType.name.cleanText(),
-                formatDateTime(record.timeStarted),
-                formatDateTime(record.timeEnded),
+                formatDateTime(dateTimeFormat, record.timeStarted),
+                formatDateTime(dateTimeFormat, record.timeEnded),
                 record.comment.cleanText(),
                 categories
                     .joinToString(separator = ", ", transform = { it.name })
@@ -218,10 +222,14 @@ class CsvRepoImpl @Inject constructor(
         }
     }
 
-    private fun formatDateTime(timestamp: Long): String {
-        synchronized(dateTimeFormat) {
-            return dateTimeFormat.format(timestamp)
-        }
+    private fun formatDateTime(
+        format: ExportDateTimeFormat,
+        timestamp: Long
+    ): String {
+        return fileExportDateTimeFormatMapper.mapDateTime(
+            format = format,
+            timestamp = timestamp,
+        )
     }
 
     private fun formatDurationMinutes(interval: Long): String {
@@ -244,11 +252,11 @@ class CsvRepoImpl @Inject constructor(
     }
 
     private fun parseDateTime(timeString: String): Long? {
-        return synchronized(dateTimeFormat) {
-            runCatching {
-                dateTimeFormat.parse(timeString)
-            }.getOrNull()?.time
+        fileExportDateTimeFormatMapper.getAvailableFormats().forEach { format ->
+            val result = fileExportDateTimeFormatMapper.parseDateTime(format, timeString)
+            if (result != null) return result
         }
+        return null
     }
 
     private fun String.cleanText(): String {
@@ -257,7 +265,5 @@ class CsvRepoImpl @Inject constructor(
 
     companion object {
         private const val CSV_HEADER = "activity name,time started,time ended,comment,categories,record tags,duration,duration minutes\n"
-
-        private val dateTimeFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US)
     }
 }

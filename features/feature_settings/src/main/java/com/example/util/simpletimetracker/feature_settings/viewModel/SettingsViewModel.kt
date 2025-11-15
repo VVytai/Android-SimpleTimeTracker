@@ -101,6 +101,7 @@ class SettingsViewModel @Inject constructor(
         displayDelegate.onSpinnerPositionSelected(block, position)
         additionalDelegate.onSpinnerPositionSelected(block, position)
         mainDelegate.onSpinnerPositionSelected(block, position)
+        exportDelegate.onSpinnerPositionSelected(block, position)
     }
 
     fun onPositiveClick(tag: String?) {

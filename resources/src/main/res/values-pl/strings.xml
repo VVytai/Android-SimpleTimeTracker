@@ -435,6 +435,10 @@ Jeśli <b>\"%s\"</b> jest włączone, aplikacja będzie wysyłać zdarzenia doty
     <string name="settings_automatic_description">Plik zostanie zapisany w wybranej lokalizacji, zastępując poprzednio zapisany plik codziennie o północy.</string>
     <string name="settings_automatic_last_save">Ostatni zapis:</string>
     <string name="settings_automatic_save_time">Czas zapisu</string>
+    <string name="settings_export_csv_format">Format czasu arkusza kalkulacyjnego</string>
+    <string name="settings_date_time_format_local">Lokalny</string>
+    <string name="settings_date_time_format_utc">UTC</string>
+    <string name="settings_date_time_format_timezone">Strefa czasowa</string>
     <string name="settings_restore_backup">Przywracanie kopii zapasowej</string>
     <string name="settings_restore_description">Bieżące dane zostaną utracone.</string>
     <string name="settings_backup_options">Zaawansowane opcje</string>

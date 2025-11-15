@@ -18,6 +18,7 @@ import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Compani
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_CATEGORY_ORDER_MANUAL
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_CHART_FILTER_TYPE
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_CSV_EXPORT_CUSTOM_FILENAME
+import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_CSV_EXPORT_DATE_TIME_FORMAT
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_DARK_MODE_2
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_DAYS_IN_CALENDAR
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_DEFAULT_TYPES_HIDDEN
@@ -171,6 +172,7 @@ class BackupPrefsRepo @Inject constructor(
             PrefsProcessor(KEY_FILE_EXPORT_RANGE_CUSTOM_START, ::fileExportRangeCustomStart),
             PrefsProcessor(KEY_FILE_EXPORT_RANGE_CUSTOM_END, ::fileExportRangeCustomEnd),
             PrefsProcessor(KEY_FILE_EXPORT_RANGE_LAST_DAYS, ::fileExportRangeLastDays),
+            PrefsProcessor(KEY_CSV_EXPORT_DATE_TIME_FORMAT, ::csvExportDateTimeFormat),
             PrefsProcessor(KEY_CSV_EXPORT_CUSTOM_FILENAME, ::csvExportCustomFileName),
             PrefsProcessor(KEY_ICS_EXPORT_CUSTOM_FILENAME, ::icsExportCustomFileName),
             PrefsProcessor(KEY_KEEP_STATISTICS_RANGE, ::keepStatisticsRange),

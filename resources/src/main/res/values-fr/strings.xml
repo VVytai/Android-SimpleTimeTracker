@@ -435,6 +435,10 @@ Si le paramètre <b>\"%s\"</b> est activé, l\'application enverra automatiqueme
     <string name="settings_automatic_description">Le fichier sera enregistré à l\'emplacement sélectionné en remplaçant le fichier précédemment enregistré tous les jours à minuit.</string>
     <string name="settings_automatic_last_save">Dernière sauvegarde:</string>
     <string name="settings_automatic_save_time">Heure d\'enregistrement</string>
+    <string name="settings_export_csv_format">Format horaire du tableur</string>
+    <string name="settings_date_time_format_local">Local</string>
+    <string name="settings_date_time_format_utc">UTC</string>
+    <string name="settings_date_time_format_timezone">Fuseau horaire</string>
     <string name="settings_restore_backup">Restaurer une sauvegarde</string>
     <string name="settings_restore_description">Les données actuelles seront perdues.</string>
     <string name="settings_backup_options">Options avancées</string>

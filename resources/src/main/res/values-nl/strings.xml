@@ -435,6 +435,10 @@ Als de instelling <b>\"%s\"</b> is ingeschakeld, stuurt de app gebeurtenissen ov
     <string name="settings_automatic_description">Het bestand wordt elke dag om middernacht op de geselecteerde locatie opgeslagen en vervangt het eerder opgeslagen bestand.</string>
     <string name="settings_automatic_last_save">Laatste opslag:</string>
     <string name="settings_automatic_save_time">Opslagtijd</string>
+    <string name="settings_export_csv_format">Spreadsheet-tijdnotatie</string>
+    <string name="settings_date_time_format_local">Lokaal</string>
+    <string name="settings_date_time_format_utc">UTC</string>
+    <string name="settings_date_time_format_timezone">Tijdzone</string>
     <string name="settings_restore_backup">Back-up terugzetten</string>
     <string name="settings_restore_description">De huidige gegevens gaan verloren.</string>
     <string name="settings_backup_options">Geavanceerde opties</string>
