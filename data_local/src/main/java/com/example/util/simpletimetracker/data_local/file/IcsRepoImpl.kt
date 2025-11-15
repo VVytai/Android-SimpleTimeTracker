@@ -27,6 +27,7 @@ import java.util.Locale
 import java.util.TimeZone
 import javax.inject.Inject
 import androidx.core.net.toUri
+import com.example.util.simpletimetracker.core.mapper.RecordTagFullNameMapper
 import com.example.util.simpletimetracker.domain.record.model.RecordBase
 
 class IcsRepoImpl @Inject constructor(
@@ -37,6 +38,7 @@ class IcsRepoImpl @Inject constructor(
     private val recordTypeCategoryRepo: RecordTypeCategoryRepo,
     private val recordTagRepo: RecordTagRepo,
     private val resourceRepo: ResourceRepo,
+    private val recordTagFullNameMapper: RecordTagFullNameMapper,
 ) : IcsRepo {
 
     private val commentTitle: String by lazy {
@@ -87,6 +89,7 @@ class IcsRepoImpl @Inject constructor(
                         recordType = recordTypes[record.typeId],
                         categories = typeToCategories[record.typeId].orEmpty(),
                         recordTags = recordTags.filter { it.id in tagIds },
+                        recordTagsData = record.tags,
                     )
                         ?.toByteArray()
                         ?.let { fileOutputStream?.write(it) }
@@ -116,6 +119,7 @@ class IcsRepoImpl @Inject constructor(
         recordType: RecordType?,
         categories: List<Category>,
         recordTags: List<RecordTag>,
+        recordTagsData: List<RecordBase.Tag>,
     ): String? {
         if (recordType == null) return null
 
@@ -124,8 +128,9 @@ class IcsRepoImpl @Inject constructor(
         val categoriesString = categories
             .joinToString(separator = ", ", transform = { it.name.clean() })
             .wrapText(categoryTitle)
-        val tagsString = recordTags
-            .joinToString(separator = ", ", transform = { it.name.clean() })
+        val tagsString = recordTagFullNameMapper
+            .getFullName(tags = recordTags, tagData = recordTagsData)
+            .clean()
             .wrapText(tagsTitle)
         val description = commentString + categoriesString + tagsString
         val categoriesProperty = categories

@@ -32,6 +32,7 @@ import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.io.BufferedOutputStream
 import androidx.core.net.toUri
+import com.example.util.simpletimetracker.core.mapper.RecordTagFullNameMapper
 import com.example.util.simpletimetracker.domain.record.model.RecordBase
 
 class CsvRepoImpl @Inject constructor(
@@ -42,6 +43,7 @@ class CsvRepoImpl @Inject constructor(
     private val recordTypeCategoryRepo: RecordTypeCategoryRepo,
     private val recordTagRepo: RecordTagRepo,
     private val resourceRepo: ResourceRepo,
+    private val recordTagFullNameMapper: RecordTagFullNameMapper,
 ) : CsvRepo {
 
     override suspend fun saveCsvFile(
@@ -82,6 +84,7 @@ class CsvRepoImpl @Inject constructor(
                         recordType = recordTypes[record.typeId],
                         categories = typeToCategories[record.typeId].orEmpty(),
                         recordTags = recordTags.filter { it.id in tagIds },
+                        recordTagsData = record.tags,
                     )
                         ?.toByteArray()
                         ?.let { fileOutputStream?.write(it) }
@@ -191,6 +194,7 @@ class CsvRepoImpl @Inject constructor(
         recordType: RecordType?,
         categories: List<Category>,
         recordTags: List<RecordTag>,
+        recordTagsData: List<RecordBase.Tag>,
     ): String? {
         return if (recordType != null) {
             String.format(
@@ -199,12 +203,13 @@ class CsvRepoImpl @Inject constructor(
                 formatDateTime(record.timeStarted),
                 formatDateTime(record.timeEnded),
                 record.comment.cleanText(),
-                categories.takeUnless { it.isEmpty() }
-                    ?.joinToString(separator = ", ", transform = { it.name })
-                    .orEmpty().cleanText(),
-                recordTags.takeUnless { it.isEmpty() }
-                    ?.joinToString(separator = ", ", transform = { it.name })
-                    .orEmpty().cleanText(),
+                categories
+                    .joinToString(separator = ", ", transform = { it.name })
+                    .cleanText(),
+                recordTagFullNameMapper.getFullName(
+                    tags = recordTags,
+                    tagData = recordTagsData,
+                ).cleanText(),
                 formatDuration(record.duration),
                 formatDurationMinutes(record.duration),
             )
