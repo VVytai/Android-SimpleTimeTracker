@@ -37,6 +37,11 @@ abstract class BaseActivity<T : ViewBinding> : AppCompatActivity() {
         initViewModel()
     }
 
+    override fun onResume() {
+        super.onResume()
+        contextProvider.attach(this)
+    }
+
     open fun initUi() {
         // Override in subclasses
     }
