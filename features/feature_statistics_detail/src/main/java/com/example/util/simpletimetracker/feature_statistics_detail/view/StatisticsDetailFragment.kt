@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.example.util.simpletimetracker.core.base.BaseFragment
+import com.example.util.simpletimetracker.core.delegates.dateSelector.viewDelegate.DateSelectorViewDelegate
 import com.example.util.simpletimetracker.core.dialog.CustomRangeSelectionDialogListener
 import com.example.util.simpletimetracker.core.dialog.DateTimeDialogListener
 import com.example.util.simpletimetracker.core.dialog.DurationDialogListener
@@ -16,11 +17,12 @@ import com.example.util.simpletimetracker.core.extension.setSharedTransitions
 import com.example.util.simpletimetracker.core.extension.toViewData
 import com.example.util.simpletimetracker.core.utils.InsetConfiguration
 import com.example.util.simpletimetracker.core.utils.fragmentArgumentDelegate
-import com.example.util.simpletimetracker.core.viewData.RangesViewData
+import com.example.util.simpletimetracker.core.viewData.RangeSelectionOptionsListItem
 import com.example.util.simpletimetracker.domain.extension.orFalse
 import com.example.util.simpletimetracker.domain.record.model.Range
 import com.example.util.simpletimetracker.feature_base_adapter.BaseRecyclerAdapter
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
+import com.example.util.simpletimetracker.feature_base_adapter.buttonsRow.createButtonsRowAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.hint.createHintAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.statistics.StatisticsSelectableViewData
 import com.example.util.simpletimetracker.feature_base_adapter.statistics.createStatisticsAdapterDelegate
@@ -28,7 +30,6 @@ import com.example.util.simpletimetracker.feature_base_adapter.statistics.create
 import com.example.util.simpletimetracker.feature_statistics_detail.R
 import com.example.util.simpletimetracker.feature_statistics_detail.adapter.createStatisticsDetailBarChartAdapterDelegate
 import com.example.util.simpletimetracker.feature_statistics_detail.adapter.createStatisticsDetailButtonAdapterDelegate
-import com.example.util.simpletimetracker.feature_base_adapter.buttonsRow.createButtonsRowAdapterDelegate
 import com.example.util.simpletimetracker.feature_statistics_detail.adapter.createStatisticsDetailCardAdapterDelegate
 import com.example.util.simpletimetracker.feature_statistics_detail.adapter.createStatisticsDetailCardDoubleAdapterDelegate
 import com.example.util.simpletimetracker.feature_statistics_detail.adapter.createStatisticsDetailDayCalendarAdapterDelegate
@@ -38,14 +39,12 @@ import com.example.util.simpletimetracker.feature_statistics_detail.adapter.crea
 import com.example.util.simpletimetracker.feature_statistics_detail.adapter.createStatisticsDetailPreviewsAdapterDelegate
 import com.example.util.simpletimetracker.feature_statistics_detail.adapter.createStatisticsDetailSeriesCalendarAdapterDelegate
 import com.example.util.simpletimetracker.feature_statistics_detail.adapter.createStatisticsDetailSeriesChartAdapterDelegate
+import com.example.util.simpletimetracker.feature_statistics_detail.model.StatisticsDetailOptionsListItem
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailPreviewCompositeViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailPreviewViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.viewModel.StatisticsDetailViewModel
 import com.example.util.simpletimetracker.feature_views.ColorUtils
 import com.example.util.simpletimetracker.feature_views.extension.getThemedAttr
-import com.example.util.simpletimetracker.feature_views.extension.setOnClick
-import com.example.util.simpletimetracker.feature_views.extension.setOnLongClick
-import com.example.util.simpletimetracker.feature_views.extension.visible
 import com.example.util.simpletimetracker.navigation.params.screen.OptionsListParams
 import com.example.util.simpletimetracker.navigation.params.screen.RecordsFilterResultParams
 import com.example.util.simpletimetracker.navigation.params.screen.StatisticsDetailParams
@@ -109,6 +108,11 @@ class StatisticsDetailFragment :
             ),
         )
     }
+    private val dateSelectorViewHolder by lazy {
+        DateSelectorViewDelegate.getViewHolder(
+            viewModel = viewModel.dateSelectorViewModelDelegate,
+        )
+    }
     private val params: StatisticsDetailParams by fragmentArgumentDelegate(
         key = ARGS_PARAMS, default = StatisticsDetailParams.Empty,
     )
@@ -123,16 +127,24 @@ class StatisticsDetailFragment :
         )
 
         rvStatisticsDetailContent.adapter = contentAdapter
+
+        DateSelectorViewDelegate.initUi(
+            fragment = this@StatisticsDetailFragment,
+            viewHolder = dateSelectorViewHolder,
+            viewModel = viewModel.dateSelectorViewModelDelegate,
+            binding = containerDatesSelector,
+        )
     }
 
     override fun initUx() = with(binding) {
-        btnStatisticsDetailOptions.setOnClick(throttle(viewModel::onOptionsClick))
-        btnStatisticsDetailOptions.setOnLongClick(throttle(viewModel::onOptionsLongClick))
-        spinnerStatisticsDetail.onItemSelected = viewModel::onRangeSelected
-        btnStatisticsDetailPrevious.setOnClick(viewModel::onPreviousClick)
-        btnStatisticsDetailNext.setOnClick(viewModel::onNextClick)
-        btnStatisticsDetailToday.setOnClick { spinnerStatisticsDetail.performClick() }
-        btnStatisticsDetailToday.setOnLongClick(viewModel::onTodayClick)
+        DateSelectorViewDelegate.initUx(
+            fragment = this@StatisticsDetailFragment,
+            binding = binding.containerDatesSelector,
+            isAddButtonVisible = false,
+            onRecordAddClick = {},
+            onOptionsClick = viewModel::onOptionsClick,
+            onOptionsLongClick = viewModel::onOptionsLongClick,
+        )
         initOnItemSwiped()
     }
 
@@ -150,14 +162,15 @@ class StatisticsDetailFragment :
 
     override fun initViewModel(): Unit = with(viewModel) {
         initialize(params)
-
-        // TODO expand appbar on short list.
-        scrollToTop.observe { scrollToTop() }
+        scrollToTop.observe { scrollToTop() } // TODO expand appbar on short list.
         content.observe(contentAdapter::replace)
         previewViewData.observe(::setPreviewViewData)
-        title.observe(binding.btnStatisticsDetailToday::setText)
-        rangeItems.observe(::updateRangeItems)
-        rangeButtonsVisibility.observe(::updateRangeButtonsVisibility)
+        DateSelectorViewDelegate.initViewModel(
+            fragment = this@StatisticsDetailFragment,
+            viewHolder = dateSelectorViewHolder,
+            viewModel = viewModel.dateSelectorViewModelDelegate,
+            binding = binding.containerDatesSelector,
+        )
     }
 
     override fun onResume() {
@@ -174,7 +187,14 @@ class StatisticsDetailFragment :
     }
 
     override fun onOptionsItemClick(id: OptionsListParams.Item.Id) {
-        viewModel.onOptionsItemClick(id)
+        when (id) {
+            is StatisticsDetailOptionsListItem -> {
+                viewModel.onOptionsItemClick(id)
+            }
+            is RangeSelectionOptionsListItem -> {
+                viewModel.onRangeSelected(id)
+            }
+        }
     }
 
     private fun setPreview() = params.preview?.run {
@@ -204,15 +224,6 @@ class StatisticsDetailFragment :
         } else {
             viewStatisticsDetailItem.itemIconVisible = false
         }
-    }
-
-    private fun updateRangeItems(viewData: RangesViewData) = with(binding) {
-        spinnerStatisticsDetail.setData(viewData.items, viewData.selectedPosition)
-    }
-
-    private fun updateRangeButtonsVisibility(isVisible: Boolean) = with(binding) {
-        btnStatisticsDetailPrevious.visible = isVisible
-        btnStatisticsDetailNext.visible = isVisible
     }
 
     private fun scrollToTop() {

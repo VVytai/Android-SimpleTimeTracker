@@ -6,6 +6,7 @@ import com.example.util.simpletimetracker.core.mapper.TimeMapper
 import com.example.util.simpletimetracker.domain.daysOfWeek.mapper.DaysInCalendarMapper
 import com.example.util.simpletimetracker.domain.daysOfWeek.model.DayOfWeek
 import com.example.util.simpletimetracker.domain.daysOfWeek.model.DaysInCalendar
+import com.example.util.simpletimetracker.domain.statistics.extension.canBeSwiped
 import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
 import com.example.util.simpletimetracker.feature_base_adapter.InfiniteRecyclerAdapter
 import com.example.util.simpletimetracker.feature_base_adapter.dateSelector.DateSelectorDayViewData
@@ -32,10 +33,10 @@ class DateSelectorMapper @Inject constructor(
 
     override fun getCount(): InfiniteRecyclerAdapter.DataProvider.Count {
         val type = setupData.type
-        val isRangeAll = type is SetupData.Type.Statistics &&
-            type.rangeLength == RangeLength.All
+        val isOneItem = type is SetupData.Type.Statistics &&
+            !type.rangeLength.canBeSwiped()
 
-        return if (isRangeAll) {
+        return if (isOneItem) {
             InfiniteRecyclerAdapter.DataProvider.Count.One
         } else {
             InfiniteRecyclerAdapter.DataProvider.Count.Infinite

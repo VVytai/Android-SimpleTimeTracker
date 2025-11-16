@@ -20,7 +20,7 @@ interface StatisticsDetailViewModelDelegate {
         val rangePosition: Int
 
         fun updateContent()
-        fun onRangeChanged()
+        suspend fun onRangeChanged()
         fun updateViewData()
         fun getDateFilter(): List<RecordsFilter>
         suspend fun onFiltersChanged()

@@ -8,6 +8,6 @@ sealed interface DataEditAddTagsState {
     object Disabled : DataEditAddTagsState
     data class Enabled(
         val tags: List<RecordBase.Tag>,
-        val viewData: List<CategoryViewData.Record>
+        val viewData: List<CategoryViewData.Record>,
     ) : DataEditAddTagsState
 }

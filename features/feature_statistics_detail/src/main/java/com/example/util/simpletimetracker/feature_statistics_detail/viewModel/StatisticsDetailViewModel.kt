@@ -5,10 +5,12 @@ import androidx.lifecycle.viewModelScope
 import com.example.util.simpletimetracker.core.base.BaseViewModel
 import com.example.util.simpletimetracker.core.base.SingleLiveEvent
 import com.example.util.simpletimetracker.core.base.ViewModelDelegate
+import com.example.util.simpletimetracker.core.delegates.dateSelector.mapper.DateSelectorMapper
+import com.example.util.simpletimetracker.core.delegates.dateSelector.viewModelDelegate.DateSelectorViewModelDelegate
 import com.example.util.simpletimetracker.core.extension.lazySuspend
 import com.example.util.simpletimetracker.core.extension.set
 import com.example.util.simpletimetracker.core.extension.toParams
-import com.example.util.simpletimetracker.core.viewData.RangesViewData
+import com.example.util.simpletimetracker.core.viewData.RangeSelectionOptionsListItem
 import com.example.util.simpletimetracker.domain.base.Coordinates
 import com.example.util.simpletimetracker.domain.record.model.Range
 import com.example.util.simpletimetracker.domain.record.model.RecordBase
@@ -44,7 +46,6 @@ import com.example.util.simpletimetracker.feature_statistics_detail.viewModel.de
 import com.example.util.simpletimetracker.feature_statistics_detail.viewModel.delegate.StatisticsDetailStreaksViewModelDelegate
 import com.example.util.simpletimetracker.feature_statistics_detail.viewModel.delegate.StatisticsDetailTagValueViewModelDelegate
 import com.example.util.simpletimetracker.feature_statistics_detail.viewModel.delegate.StatisticsDetailViewModelDelegate
-import com.example.util.simpletimetracker.feature_views.spinner.CustomSpinner
 import com.example.util.simpletimetracker.navigation.Router
 import com.example.util.simpletimetracker.navigation.params.notification.PopupParams
 import com.example.util.simpletimetracker.navigation.params.screen.OptionsListParams
@@ -57,6 +58,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class StatisticsDetailViewModel @Inject constructor(
+    val dateSelectorViewModelDelegate: DateSelectorViewModelDelegate,
     private val router: Router,
     private val statisticsDetailContentInteractor: StatisticsDetailContentInteractor,
     private val previewDelegate: StatisticsDetailPreviewViewModelDelegate,
@@ -77,9 +79,6 @@ class StatisticsDetailViewModel @Inject constructor(
 
     val scrollToTop: LiveData<Unit> = SingleLiveEvent()
     val content: LiveData<List<ViewHolderType>> by lazySuspend { loadContent() }
-    val title: LiveData<String> by rangeDelegate::title
-    val rangeItems: LiveData<RangesViewData> by rangeDelegate::rangeItems
-    val rangeButtonsVisibility: LiveData<Boolean> by rangeDelegate::rangeButtonsVisibility
     val previewViewData: LiveData<StatisticsDetailPreviewCompositeViewData?> by previewDelegate::viewData
 
     private lateinit var extra: StatisticsDetailParams
@@ -103,6 +102,7 @@ class StatisticsDetailViewModel @Inject constructor(
     init {
         val delegateParent = getDelegateParent()
         delegates.forEach { it.attach(delegateParent) }
+        dateSelectorViewModelDelegate.attach(getDateSelectorDelegateParent())
     }
 
     override fun onCleared() {
@@ -115,10 +115,18 @@ class StatisticsDetailViewModel @Inject constructor(
         this.extra = extra
         rangeDelegate.initialize(extra)
         filterDelegate.initialize(extra)
+        viewModelScope.launch {
+            dateSelectorViewModelDelegate.initialize()
+        }
     }
 
     fun onVisible() {
         filterDelegate.onVisible()
+        // TODO update only when necessary?
+        viewModelScope.launch {
+            dateSelectorViewModelDelegate.setup()
+            dateSelectorViewModelDelegate.updatePosition(rangeDelegate.provideRangePosition())
+        }
     }
 
     fun onTypesFilterSelected(result: RecordsFilterResultParams) {
@@ -228,20 +236,9 @@ class StatisticsDetailViewModel @Inject constructor(
         dataDistributionDelegate.onStatisticsItemSwipedEnd(item)
     }
 
-    fun onPreviousClick() {
-        rangeDelegate.onPreviousClick()
-    }
-
-    fun onTodayClick() {
-        rangeDelegate.onTodayClick()
-    }
-
-    fun onNextClick() {
-        rangeDelegate.onNextClick()
-    }
-
     fun onOptionsClick() = viewModelScope.launch {
-        val items = statisticsDetailOptionsListMapper.map()
+        val rangeLength = rangeDelegate.provideRangeLength()
+        val items = statisticsDetailOptionsListMapper.map(rangeLength)
         router.navigate(OptionsListParams(items))
     }
 
@@ -249,16 +246,18 @@ class StatisticsDetailViewModel @Inject constructor(
         filterDelegate.onFilterClick()
     }
 
-    fun onOptionsItemClick(id: OptionsListParams.Item.Id) {
-        if (id !is StatisticsDetailOptionsListItem) return
+    fun onOptionsItemClick(id: StatisticsDetailOptionsListItem) {
         when (id) {
             is StatisticsDetailOptionsListItem.Filter -> filterDelegate.onFilterClick()
             is StatisticsDetailOptionsListItem.Compare -> filterDelegate.onCompareClick()
+            is StatisticsDetailOptionsListItem.BackToToday -> rangeDelegate.onBackToTodayClick()
+            is StatisticsDetailOptionsListItem.SelectDate -> rangeDelegate.onSelectDateClick()
+            is StatisticsDetailOptionsListItem.SelectRange -> rangeDelegate.onSelectRangeClick()
         }
     }
 
-    fun onRangeSelected(item: CustomSpinner.CustomSpinnerItem) {
-        rangeDelegate.onRangeSelected(item)
+    fun onRangeSelected(id: RangeSelectionOptionsListItem) {
+        rangeDelegate.onRangeSelected(id)
     }
 
     fun onDateTimeSet(timestamp: Long, tag: String?) {
@@ -310,6 +309,7 @@ class StatisticsDetailViewModel @Inject constructor(
         goalsDelegate.updateViewData()
         dataDistributionDelegate.updateViewData()
         tagValueDelegate.updateViewData()
+        dateSelectorViewModelDelegate.updatePosition(rangeDelegate.provideRangePosition())
     }
 
     private fun updateContent() {
@@ -362,7 +362,8 @@ class StatisticsDetailViewModel @Inject constructor(
                 this@StatisticsDetailViewModel.updateContent()
             }
 
-            override fun onRangeChanged() {
+            override suspend fun onRangeChanged() {
+                dateSelectorViewModelDelegate.setup()
                 splitChartDelegate.updateSplitChartGroupingViewData()
                 streaksDelegate.updateStreaksGoalViewData()
                 dailyCalendarDelegate.updateViewData()
@@ -389,6 +390,26 @@ class StatisticsDetailViewModel @Inject constructor(
 
             override fun onStatisticsOtherHidden(id: Long, mode: DataDistributionMode) {
                 filterDelegate.onStatisticsOtherHidden(id, mode)
+            }
+        }
+    }
+
+    private fun getDateSelectorDelegateParent(): DateSelectorViewModelDelegate.Parent {
+        return object : DateSelectorViewModelDelegate.Parent {
+            override val currentPosition: Int
+                get() = this@StatisticsDetailViewModel.rangeDelegate.provideRangePosition()
+
+            override fun onDateClick() {
+                rangeDelegate.onSelectRangeClick()
+            }
+
+            override fun updatePosition(newPosition: Int) =
+                this@StatisticsDetailViewModel.rangeDelegate.updatePosition(newPosition)
+
+            override suspend fun getSetupData(): DateSelectorMapper.SetupData.Type {
+                return DateSelectorMapper.SetupData.Type.Statistics(
+                    rangeLength = rangeDelegate.provideRangeLength(),
+                )
             }
         }
     }

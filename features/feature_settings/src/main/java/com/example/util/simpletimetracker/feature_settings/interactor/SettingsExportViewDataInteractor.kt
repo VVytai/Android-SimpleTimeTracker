@@ -7,7 +7,6 @@ import com.example.util.simpletimetracker.feature_settings.R
 import com.example.util.simpletimetracker.feature_settings.api.SettingsBlock
 import com.example.util.simpletimetracker.feature_settings.mapper.SettingsMapper
 import com.example.util.simpletimetracker.feature_settings.viewData.ExportDateTimeFormatViewData
-import com.example.util.simpletimetracker.feature_settings.viewData.FirstDayOfWeekViewData
 import com.example.util.simpletimetracker.feature_settings.views.SettingsBottomViewData
 import com.example.util.simpletimetracker.feature_settings.views.SettingsCheckboxViewData
 import com.example.util.simpletimetracker.feature_settings.views.SettingsCollapseViewData

@@ -66,7 +66,7 @@ class RecordTagSelectionFragment :
             createCommentFieldAdapterDelegate(viewModel::onCommentChange),
             createRecordTagSelectionTextAdapterDelegate(),
             createRecordCommentAdapterDelegate(viewModel::onCommentClick),
-            createFilterAdapterDelegate(viewModel::onCommentFilterClick)
+            createFilterAdapterDelegate(viewModel::onCommentFilterClick),
         )
     }
     private val params: RecordTagSelectionParams by fragmentArgumentDelegate(

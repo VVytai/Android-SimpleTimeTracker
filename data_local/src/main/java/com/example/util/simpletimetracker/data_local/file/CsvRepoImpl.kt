@@ -224,7 +224,7 @@ class CsvRepoImpl @Inject constructor(
 
     private fun formatDateTime(
         format: ExportDateTimeFormat,
-        timestamp: Long
+        timestamp: Long,
     ): String {
         return fileExportDateTimeFormatMapper.mapDateTime(
             format = format,
@@ -264,6 +264,7 @@ class CsvRepoImpl @Inject constructor(
     }
 
     companion object {
-        private const val CSV_HEADER = "activity name,time started,time ended,comment,categories,record tags,duration,duration minutes\n"
+        private const val CSV_HEADER =
+            "activity name,time started,time ended,comment,categories,record tags,duration,duration minutes\n"
     }
 }

@@ -33,7 +33,7 @@ fun View.animateAlpha(isVisible: Boolean, duration: Long = 300) {
 
 fun View.animateScaleBoop(
     scale: Float,
-    duration: Long = 300
+    duration: Long = 300,
 ) {
     val animation = ScaleAnimation(
         1f, scale, // Start and end values for the X axis scaling

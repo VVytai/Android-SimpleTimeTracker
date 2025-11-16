@@ -130,7 +130,7 @@ class PrefsRepoImpl @Inject constructor(
     )
 
     override var csvExportDateTimeFormat: Int by prefs.delegate(
-        KEY_CSV_EXPORT_DATE_TIME_FORMAT, 0
+        KEY_CSV_EXPORT_DATE_TIME_FORMAT, 0,
     )
 
     override var csvExportCustomFileName: String by prefs.delegate(

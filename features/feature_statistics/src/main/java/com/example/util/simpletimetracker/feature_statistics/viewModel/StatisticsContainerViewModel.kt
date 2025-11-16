@@ -143,7 +143,7 @@ class StatisticsContainerViewModel @Inject constructor(
         }
     }
 
-    fun onOptionsDialogClosed () {
+    fun onOptionsDialogClosed() {
         viewModelScope.launch {
             statisticsUpdateInteractor.sendOptionsVisible(isVisible = false)
         }

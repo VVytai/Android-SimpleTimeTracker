@@ -10,4 +10,13 @@ sealed interface StatisticsDetailOptionsListItem : OptionsListParams.Item.Id {
 
     @Parcelize
     data object Compare : StatisticsDetailOptionsListItem
+
+    @Parcelize
+    data object BackToToday : StatisticsDetailOptionsListItem
+
+    @Parcelize
+    data object SelectDate : StatisticsDetailOptionsListItem
+
+    @Parcelize
+    data object SelectRange : StatisticsDetailOptionsListItem
 }

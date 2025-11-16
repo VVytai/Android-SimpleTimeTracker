@@ -103,7 +103,7 @@ class ChangeRecordCore(
                 onItemClick = viewModel::onCommentClick,
             ),
             createFilterAdapterDelegate(
-                onClick = viewModel::onCommentFilterClick
+                onClick = viewModel::onCommentFilterClick,
             ),
         )
     }
