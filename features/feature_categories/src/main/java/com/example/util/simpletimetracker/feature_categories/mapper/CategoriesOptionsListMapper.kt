@@ -1,5 +1,6 @@
 package com.example.util.simpletimetracker.feature_categories.mapper
 
+import com.example.util.simpletimetracker.core.mapper.OptionsListItemMapper
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.domain.extension.plusAssign
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
@@ -11,6 +12,7 @@ import javax.inject.Inject
 class CategoriesOptionsListMapper @Inject constructor(
     private val resourceRepo: ResourceRepo,
     private val prefsInteractor: PrefsInteractor,
+    private val optionsListItemMapper: OptionsListItemMapper,
 ) {
 
     suspend fun map(
@@ -22,20 +24,15 @@ class CategoriesOptionsListMapper @Inject constructor(
             id = CategoriesOptionsListItem.Help,
             text = resourceRepo.getString(R.string.help),
             icon = R.drawable.unknown,
-            isIconCheckVisible = false,
         )
 
-        result += OptionsListParams.Item(
+        result += optionsListItemMapper.mapCommonItem(
             id = CategoriesOptionsListItem.EnabledSearch,
-            text = resourceRepo.getString(R.string.enable_search_hint),
-            icon = R.drawable.search,
             isIconCheckVisible = prefsInteractor.getIsCategoriesSearchEnabled(),
         )
 
-        result += OptionsListParams.Item(
+        result += optionsListItemMapper.mapCommonItem(
             id = CategoriesOptionsListItem.Filter,
-            text = resourceRepo.getString(R.string.chart_filter_hint),
-            icon = R.drawable.filter,
             isIconCheckVisible = selectedIds.isNotEmpty(),
         )
 

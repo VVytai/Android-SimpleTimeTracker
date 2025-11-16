@@ -14,7 +14,7 @@ data class OptionsListParams(
         val id: Id,
         val text: String,
         @DrawableRes val icon: Int?,
-        val isIconCheckVisible: Boolean,
+        val isIconCheckVisible: Boolean = false,
         val isChecked: Boolean = false,
         val isSelected: Boolean = false,
     ) : Parcelable {

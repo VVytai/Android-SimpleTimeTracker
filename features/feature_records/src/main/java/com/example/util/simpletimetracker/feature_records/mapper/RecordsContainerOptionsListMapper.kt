@@ -28,38 +28,26 @@ class RecordsContainerOptionsListMapper @Inject constructor(
                 R.string.records_switch_to_calendar
             }.let(resourceRepo::getString),
             icon = if (isCalendar) R.drawable.list else R.drawable.calendar,
-            isIconCheckVisible = false,
         )
 
-        result += OptionsListParams.Item(
+        result += optionsListItemMapper.mapCommonItem(
             id = RecordsContainerOptionsListItem.Share,
-            text = resourceRepo.getString(R.string.message_action_share),
-            icon = R.drawable.share,
-            isIconCheckVisible = false,
         )
 
-        result += OptionsListParams.Item(
+        result += optionsListItemMapper.mapCommonItem(
             id = RecordsContainerOptionsListItem.Filter,
-            text = resourceRepo.getString(R.string.chart_filter_hint),
-            icon = R.drawable.filter,
             isIconCheckVisible = optionsListItemMapper.isIconCheckVisible(
                 filteredIds = prefsInteractor.getListFilteredIds(filterType),
                 existingIds = optionsListItemMapper.getExistingIds(filterType),
             ),
         )
 
-        result += OptionsListParams.Item(
+        result += optionsListItemMapper.mapCommonItem(
             id = RecordsContainerOptionsListItem.SelectDate,
-            text = resourceRepo.getString(R.string.range_select_day),
-            icon = R.drawable.date,
-            isIconCheckVisible = false,
         )
 
-        result += OptionsListParams.Item(
+        result += optionsListItemMapper.mapCommonItem(
             id = RecordsContainerOptionsListItem.BackToToday,
-            text = resourceRepo.getString(R.string.range_back_to_today),
-            icon = R.drawable.back,
-            isIconCheckVisible = false,
         )
 
         return result

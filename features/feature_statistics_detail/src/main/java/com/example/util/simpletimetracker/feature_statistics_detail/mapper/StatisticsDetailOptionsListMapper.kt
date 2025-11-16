@@ -1,5 +1,6 @@
 package com.example.util.simpletimetracker.feature_statistics_detail.mapper
 
+import com.example.util.simpletimetracker.core.mapper.OptionsListItemMapper
 import com.example.util.simpletimetracker.core.mapper.RangeViewDataMapper
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.domain.extension.plusAssign
@@ -12,6 +13,7 @@ import javax.inject.Inject
 class StatisticsDetailOptionsListMapper @Inject constructor(
     private val resourceRepo: ResourceRepo,
     private val rangeViewDataMapper: RangeViewDataMapper,
+    private val optionsListItemMapper: OptionsListItemMapper,
 ) {
 
     fun map(
@@ -23,40 +25,27 @@ class StatisticsDetailOptionsListMapper @Inject constructor(
             id = StatisticsDetailOptionsListItem.Compare,
             text = resourceRepo.getString(R.string.types_compare_hint),
             icon = R.drawable.compare,
-            isIconCheckVisible = false,
         )
 
-        result += OptionsListParams.Item(
+        result += optionsListItemMapper.mapCommonItem(
             id = StatisticsDetailOptionsListItem.Filter,
-            text = resourceRepo.getString(R.string.chart_filter_hint),
-            icon = R.drawable.filter,
-            isIconCheckVisible = false,
         )
 
         val selectDateName = rangeViewDataMapper.mapToSelectDateName(rangeLength)?.text
         if (selectDateName != null) {
-            result += OptionsListParams.Item(
+            result += optionsListItemMapper.mapCommonItem(
                 id = StatisticsDetailOptionsListItem.SelectDate,
-                text = selectDateName,
-                icon = R.drawable.date,
-                isIconCheckVisible = false,
-            )
+            )?.copy(text = selectDateName)
         }
 
-        result += OptionsListParams.Item(
+        result += optionsListItemMapper.mapCommonItem(
             id = StatisticsDetailOptionsListItem.SelectRange,
-            text = resourceRepo.getString(R.string.range_select_range),
-            icon = R.drawable.range,
-            isIconCheckVisible = false,
         )
 
         // Back to today will not work on overall range because of only one item in the list.
         if (rangeLength != RangeLength.All) {
-            result += OptionsListParams.Item(
+            result += optionsListItemMapper.mapCommonItem(
                 id = StatisticsDetailOptionsListItem.BackToToday,
-                text = resourceRepo.getString(R.string.range_back_to_today),
-                icon = R.drawable.back,
-                isIconCheckVisible = false,
             )
         }
 

@@ -84,7 +84,6 @@ class RangeViewDataMapper @Inject constructor(
                 id = id,
                 text = text,
                 icon = icon,
-                isIconCheckVisible = false,
                 isChecked = isSelected,
                 isSelected = isSelected,
             )
@@ -95,7 +94,6 @@ class RangeViewDataMapper @Inject constructor(
                 id = RangeSelectionOptionsListItem.SelectDate,
                 text = it,
                 icon = R.drawable.date,
-                isIconCheckVisible = false,
             )
         }.takeIf { addSelection }?.let(::listOf) ?: emptyList()
 
