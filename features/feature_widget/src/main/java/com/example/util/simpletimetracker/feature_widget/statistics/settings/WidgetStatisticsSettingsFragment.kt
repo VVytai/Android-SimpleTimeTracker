@@ -6,15 +6,17 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import com.example.util.simpletimetracker.core.base.BaseFragment
 import com.example.util.simpletimetracker.core.dialog.DurationDialogListener
+import com.example.util.simpletimetracker.core.dialog.OptionsListDialogListener
 import com.example.util.simpletimetracker.core.manager.ThemeManager
 import com.example.util.simpletimetracker.core.utils.InsetConfiguration
-import com.example.util.simpletimetracker.core.viewData.RangesViewData
+import com.example.util.simpletimetracker.core.viewData.RangeSelectionOptionsListItem
 import com.example.util.simpletimetracker.feature_base_adapter.BaseRecyclerAdapter
 import com.example.util.simpletimetracker.feature_base_adapter.category.createCategoryAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.empty.createEmptyAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.loader.createLoaderAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.recordType.createRecordTypeAdapterDelegate
 import com.example.util.simpletimetracker.feature_views.extension.setOnClick
+import com.example.util.simpletimetracker.navigation.params.screen.OptionsListParams
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
@@ -26,7 +28,8 @@ import com.example.util.simpletimetracker.feature_widget.databinding.WidgetStati
 @AndroidEntryPoint
 class WidgetStatisticsSettingsFragment :
     BaseFragment<Binding>(),
-    DurationDialogListener {
+    DurationDialogListener,
+    OptionsListDialogListener {
 
     override val inflater: (LayoutInflater, ViewGroup?, Boolean) -> Binding =
         Binding::inflate
@@ -64,10 +67,7 @@ class WidgetStatisticsSettingsFragment :
         btnWidgetStatisticsShowAll.setOnClick(viewModel::onShowAllClick)
         btnWidgetStatisticsHideAll.setOnClick(viewModel::onHideAllClick)
         btnWidgetStatisticsSettingsSave.setOnClick(throttle(viewModel::onSaveClick))
-        spinnerWidgetStatisticsSettingsRange.onItemSelected = {
-            viewModel.onRangeSelected(it)
-        }
-        btnWidgetStatisticsSettingsRange.setOnClick { spinnerWidgetStatisticsSettingsRange.performClick() }
+        btnWidgetStatisticsSettingsRange.setOnClick(throttle(viewModel::onSelectRangeClick))
         checkboxWidgetStatisticsNewItems.setOnClick(throttle(viewModel::onDoNotIncludeNewItemsClick))
     }
 
@@ -77,7 +77,6 @@ class WidgetStatisticsSettingsFragment :
             filterTypeViewData.observe(buttonsWidgetStatisticsSettingsFilterType.adapter::replace)
             types.observe(recordTypesAdapter::replace)
             title.observe(btnWidgetStatisticsSettingsRange::setText)
-            rangeItems.observe(::setRangeItemsState)
             doNotIncludeNewItems.observe(::setDoNotIncludeItemsState)
             handled.observe(::exit)
         }
@@ -87,6 +86,14 @@ class WidgetStatisticsSettingsFragment :
         viewModel.onCountSet(count, tag)
     }
 
+    override fun onOptionsItemClick(id: OptionsListParams.Item.Id) {
+        when (id) {
+            is RangeSelectionOptionsListItem -> {
+                viewModel.onRangeSelected(id)
+            }
+        }
+    }
+
     private fun getWidgetId(): Int {
         return activity?.intent?.extras
             ?.getInt(
@@ -94,10 +101,6 @@ class WidgetStatisticsSettingsFragment :
                 AppWidgetManager.INVALID_APPWIDGET_ID,
             )
             ?: AppWidgetManager.INVALID_APPWIDGET_ID
-    }
-
-    private fun setRangeItemsState(state: RangesViewData) = with(binding) {
-        spinnerWidgetStatisticsSettingsRange.setData(state.items, state.selectedPosition)
     }
 
     private fun setDoNotIncludeItemsState(isChecked: Boolean) = with(binding) {

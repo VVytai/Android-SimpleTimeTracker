@@ -4,35 +4,33 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.util.simpletimetracker.domain.extension.addOrRemove
 import com.example.util.simpletimetracker.core.extension.set
+import com.example.util.simpletimetracker.core.extension.toModel
 import com.example.util.simpletimetracker.core.interactor.ChartFilterViewDataInteractor
 import com.example.util.simpletimetracker.core.mapper.ChartFilterViewDataMapper
 import com.example.util.simpletimetracker.core.mapper.RangeTitleMapper
 import com.example.util.simpletimetracker.core.mapper.RangeViewDataMapper
-import com.example.util.simpletimetracker.feature_base_adapter.buttonsRow.view.ButtonsRowViewData
 import com.example.util.simpletimetracker.core.viewData.ChartFilterTypeViewData
-import com.example.util.simpletimetracker.core.viewData.RangeViewData
-import com.example.util.simpletimetracker.core.viewData.RangesViewData
-import com.example.util.simpletimetracker.core.viewData.SelectLastDaysViewData
+import com.example.util.simpletimetracker.core.viewData.RangeSelectionOptionsListItem
 import com.example.util.simpletimetracker.domain.base.ARCHIVED_BUTTON_ITEM_ID
 import com.example.util.simpletimetracker.domain.category.interactor.CategoryInteractor
 import com.example.util.simpletimetracker.domain.category.model.Category
 import com.example.util.simpletimetracker.domain.daysOfWeek.interactor.GetProcessedLastDaysCountInteractor
-import com.example.util.simpletimetracker.domain.statistics.model.StatisticsWidgetData
+import com.example.util.simpletimetracker.domain.extension.addOrRemove
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.recordTag.interactor.RecordTagInteractor
+import com.example.util.simpletimetracker.domain.recordTag.model.RecordTag
 import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTypeInteractor
-import com.example.util.simpletimetracker.domain.widget.interactor.WidgetInteractor
+import com.example.util.simpletimetracker.domain.recordType.model.RecordType
 import com.example.util.simpletimetracker.domain.statistics.model.ChartFilterType
 import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
-import com.example.util.simpletimetracker.domain.recordTag.model.RecordTag
-import com.example.util.simpletimetracker.domain.recordType.model.RecordType
+import com.example.util.simpletimetracker.domain.statistics.model.StatisticsWidgetData
+import com.example.util.simpletimetracker.domain.widget.interactor.WidgetInteractor
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
+import com.example.util.simpletimetracker.feature_base_adapter.buttonsRow.view.ButtonsRowViewData
 import com.example.util.simpletimetracker.feature_base_adapter.category.CategoryViewData
 import com.example.util.simpletimetracker.feature_base_adapter.loader.LoaderViewData
 import com.example.util.simpletimetracker.feature_base_adapter.recordType.RecordTypeViewData
-import com.example.util.simpletimetracker.feature_views.spinner.CustomSpinner
 import com.example.util.simpletimetracker.feature_widget.statistics.interactor.WidgetStatisticsIdsInteractor
 import com.example.util.simpletimetracker.navigation.Router
 import com.example.util.simpletimetracker.navigation.params.screen.DurationDialogParams
@@ -82,15 +80,6 @@ class WidgetStatisticsSettingsViewModel @Inject constructor(
             viewModelScope.launch {
                 initializeWidgetData()
                 initial.value = loadTitle()
-            }
-            initial
-        }
-    }
-    val rangeItems: LiveData<RangesViewData> by lazy {
-        return@lazy MutableLiveData<RangesViewData>().let { initial ->
-            viewModelScope.launch {
-                initializeWidgetData()
-                initial.value = loadRanges()
             }
             initial
         }
@@ -180,16 +169,18 @@ class WidgetStatisticsSettingsViewModel @Inject constructor(
         }
     }
 
-    fun onRangeSelected(item: CustomSpinner.CustomSpinnerItem) {
-        when (item) {
-            is RangeViewData -> {
-                widgetData = widgetData.copy(rangeLength = item.range)
+    fun onRangeSelected(id: RangeSelectionOptionsListItem) {
+        when (id) {
+            is RangeSelectionOptionsListItem.Simple -> {
+                val newRange = id.rangeLengthParams.toModel()
+                widgetData = widgetData.copy(rangeLength = newRange)
                 updateTitle()
-                updateRanges()
             }
-            is SelectLastDaysViewData -> {
+            is RangeSelectionOptionsListItem.Last -> {
                 onSelectLastDaysClick()
             }
+            RangeSelectionOptionsListItem.Custom,
+            RangeSelectionOptionsListItem.SelectDate -> Unit
         }
     }
 
@@ -200,7 +191,6 @@ class WidgetStatisticsSettingsViewModel @Inject constructor(
         val newRange = RangeLength.Last(lastDaysCount)
         widgetData = widgetData.copy(rangeLength = newRange)
         updateTitle()
-        updateRanges()
     }
 
     fun onDoNotIncludeNewItemsClick() = viewModelScope.launch {
@@ -236,6 +226,15 @@ class WidgetStatisticsSettingsViewModel @Inject constructor(
             widgetInteractor.updateStatisticsWidget(extra.widgetId)
             (handled as MutableLiveData).value = extra.widgetId
         }
+    }
+
+    fun onSelectRangeClick() = viewModelScope.launch {
+        val data = rangeViewDataMapper.mapToRangesOptions(
+            currentRange = widgetData.rangeLength,
+            addSelection = false,
+            lastDaysCount = getCurrentLastDaysCount(),
+        )
+        router.navigate(data)
     }
 
     private fun removeAllIds() = viewModelScope.launch {
@@ -395,18 +394,6 @@ class WidgetStatisticsSettingsViewModel @Inject constructor(
             position = 0,
             startOfDayShift = startOfDayShift,
             firstDayOfWeek = firstDayOfWeek,
-        )
-    }
-
-    private fun updateRanges() = viewModelScope.launch {
-        rangeItems.set(loadRanges())
-    }
-
-    private suspend fun loadRanges(): RangesViewData {
-        return rangeViewDataMapper.mapToRanges(
-            currentRange = widgetData.rangeLength,
-            addSelection = false,
-            lastDaysCount = getCurrentLastDaysCount(),
         )
     }
 

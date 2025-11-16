@@ -92,15 +92,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/btnWidgetStatisticsShowAll" />
 
-    <com.example.util.simpletimetracker.feature_views.spinner.CustomSpinner
-        android:id="@+id/spinnerWidgetStatisticsSettingsRange"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="@id/btnWidgetStatisticsSettingsRange"
-        app:layout_constraintEnd_toEndOf="@id/btnWidgetStatisticsSettingsRange"
-        app:layout_constraintStart_toStartOf="@id/btnWidgetStatisticsSettingsRange"
-        app:layout_constraintTop_toTopOf="@id/btnWidgetStatisticsSettingsRange" />
-
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnWidgetStatisticsSettingsRange"
         style="@style/ContainerRangeSelectableMainButton"

@@ -301,7 +301,6 @@ class RecordsViewModel @Inject constructor(
         updateRecords()
     }
 
-    @Suppress("MoveVariableDeclarationIntoWhen")
     private suspend fun onShareClicked() {
         val state = loadRecordsViewData(true)
         val data = when (state) {
@@ -318,7 +317,7 @@ class RecordsViewModel @Inject constructor(
             }
             is RecordsState.CalendarData.Data -> {
                 RecordsShareState(
-                    recordsViewDataMapper.mapTitle(
+                    recordsViewDataMapper.mapToShareCalendarTitle(
                         shift = shift,
                         startOfDayShift = prefsInteractor.getStartOfDayShift(),
                         isCalendarView = prefsInteractor.getShowRecordsCalendar(),

@@ -80,8 +80,7 @@ class RecordsViewDataMapper @Inject constructor(
         )
     }
 
-    // TODO DATE remove?
-    fun mapTitle(
+    fun mapToShareCalendarTitle(
         shift: Int,
         startOfDayShift: Long,
         isCalendarView: Boolean,

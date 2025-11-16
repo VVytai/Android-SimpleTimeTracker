@@ -5,11 +5,9 @@ import com.example.util.simpletimetracker.core.extension.toParams
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.core.viewData.RangeSelectionOptionsListItem
 import com.example.util.simpletimetracker.core.viewData.RangeViewData
-import com.example.util.simpletimetracker.core.viewData.RangesViewData
 import com.example.util.simpletimetracker.core.viewData.SelectDateViewData
 import com.example.util.simpletimetracker.core.viewData.SelectLastDaysViewData
 import com.example.util.simpletimetracker.core.viewData.SelectRangeViewData
-import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.domain.daysOfWeek.model.DayOfWeek
 import com.example.util.simpletimetracker.domain.record.model.Range
 import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
@@ -21,37 +19,6 @@ class RangeViewDataMapper @Inject constructor(
     private val timeMapper: TimeMapper,
     private val rangeTitleMapper: RangeTitleMapper,
 ) {
-
-    // TODO DATE remove
-    @Deprecated("Use new dialog and remove")
-    fun mapToRanges(
-        currentRange: RangeLength,
-        addSelection: Boolean,
-        lastDaysCount: Int,
-    ): RangesViewData {
-        val selectDateButton = mapToSelectDateName(currentRange)
-            ?.takeIf { addSelection }?.let(::listOf) ?: emptyList()
-        val selectRangeButton = mapToSelectRange()
-            .takeIf { addSelection }?.let(::listOf) ?: emptyList()
-        val selectLastDaysButton = mapToSelectLastDays(lastDaysCount)
-            .let(::listOf)
-
-        val data = selectDateButton +
-            selectRangeButton +
-            selectLastDaysButton +
-            ranges.mapNotNull(::mapToRangeName)
-
-        val selectedPosition = when (currentRange) {
-            is RangeLength.Custom -> data.indexOfFirst { it is SelectRangeViewData }
-            is RangeLength.Last -> data.indexOfFirst { it is SelectLastDaysViewData }
-            else -> data.indexOfFirst { (it as? RangeViewData)?.range == currentRange }
-        }.takeUnless { it == -1 }.orZero()
-
-        return RangesViewData(
-            items = data,
-            selectedPosition = selectedPosition,
-        )
-    }
 
     fun mapToRangesOptions(
         currentRange: RangeLength,

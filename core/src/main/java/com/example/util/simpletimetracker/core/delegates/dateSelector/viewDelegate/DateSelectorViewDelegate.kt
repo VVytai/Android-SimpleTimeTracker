@@ -159,8 +159,6 @@ object DateSelectorViewDelegate {
         viewPager?.isUserInputEnabled = !isBlocked
     }
 
-    // TODO DATE add to details stats
-    // TODO DATE rename ContainerRangeButton style
     private fun doScrollToPosition(
         binding: DateSelectorLayoutBinding,
         position: Int,
