@@ -28,6 +28,7 @@ fun createCommentFieldAdapterDelegate(
         }
         etCommentItemField.inputType = when (item.valueType) {
             is ViewData.ValueType.TextMultiLine -> {
+                InputType.TYPE_CLASS_TEXT or
                 InputType.TYPE_TEXT_FLAG_MULTI_LINE
             }
             is ViewData.ValueType.NumberDecimal -> {
