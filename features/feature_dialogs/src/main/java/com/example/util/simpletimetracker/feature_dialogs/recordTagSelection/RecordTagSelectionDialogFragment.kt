@@ -4,9 +4,12 @@ import com.example.util.simpletimetracker.feature_dialogs.databinding.RecordTagS
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.descendants
 import androidx.fragment.app.commit
+import androidx.recyclerview.widget.RecyclerView
 import com.example.util.simpletimetracker.core.base.BaseBottomSheetFragment
 import com.example.util.simpletimetracker.core.dialog.OnTagSelectedListener
+import com.example.util.simpletimetracker.core.extension.blockContentScroll
 import com.example.util.simpletimetracker.core.extension.setFullScreen
 import com.example.util.simpletimetracker.core.extension.setSkipCollapsed
 import com.example.util.simpletimetracker.core.manager.KeyboardVisibilityManager
@@ -38,7 +41,11 @@ class RecordTagSelectionDialogFragment :
 
     override fun initDialog() {
         setSkipCollapsed()
-        // TODO block content scroll? Somehow its blocked without it.
+        binding.containerRecordTagSelection.post {
+            binding.root.descendants
+                .filterIsInstance<RecyclerView>().firstOrNull()
+                ?.let(::blockContentScroll)
+        }
     }
 
     override fun initUi() {

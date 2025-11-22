@@ -180,7 +180,8 @@ class WidgetStatisticsSettingsViewModel @Inject constructor(
                 onSelectLastDaysClick()
             }
             RangeSelectionOptionsListItem.Custom,
-            RangeSelectionOptionsListItem.SelectDate -> Unit
+            RangeSelectionOptionsListItem.SelectDate,
+            -> Unit
         }
     }
 

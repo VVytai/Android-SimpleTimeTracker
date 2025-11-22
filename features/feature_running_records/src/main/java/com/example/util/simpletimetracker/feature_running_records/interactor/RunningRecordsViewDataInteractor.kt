@@ -116,14 +116,9 @@ class RunningRecordsViewDataInteractor @Inject constructor(
                             showSeconds = showSeconds,
                         )
                     }
-                    .let {
-                        val hint = mapper.mapToHasRunningRecords()
-                        if (isNavBarAtTheBottom) {
-                            listOf(hint) + it
-                        } else {
-                            it + hint
-                        }
-                    }
+                    .plus(
+                        mapper.mapToHasRunningRecords(),
+                    )
             }
         }
 

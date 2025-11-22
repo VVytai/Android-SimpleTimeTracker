@@ -37,7 +37,7 @@ inline fun Fragment.setSharedTransitions(
             .inflateTransition(android.R.transition.move)
         transition?.apply {
             interpolator = DecelerateInterpolator()
-            doOnEnd { sharedView.animateScaleBoop(scale = 1.05f, duration = 100) }
+            doOnEnd { sharedView.animateScaleBoop(scale = 1.03f, duration = 100) }
         }
         sharedElementEnterTransition = transition
     }

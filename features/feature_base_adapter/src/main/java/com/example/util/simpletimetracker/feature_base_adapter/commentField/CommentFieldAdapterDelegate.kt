@@ -32,7 +32,7 @@ fun createCommentFieldAdapterDelegate(
             }
             is ViewData.ValueType.TextMultiLine -> {
                 InputType.TYPE_CLASS_TEXT or
-                InputType.TYPE_TEXT_FLAG_MULTI_LINE
+                    InputType.TYPE_TEXT_FLAG_MULTI_LINE
             }
             is ViewData.ValueType.NumberDecimal -> {
                 InputType.TYPE_CLASS_NUMBER or
