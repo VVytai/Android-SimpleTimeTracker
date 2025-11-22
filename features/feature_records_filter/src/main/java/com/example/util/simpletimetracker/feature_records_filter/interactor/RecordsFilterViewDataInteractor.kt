@@ -516,6 +516,7 @@ class RecordsFilterViewDataInteractor @Inject constructor(
             marginTopDp = -2,
             marginHorizontal = resourceRepo.getDimenInDp(R.dimen.edit_screen_margin_horizontal),
             hint = resourceRepo.getString(R.string.change_record_comment_hint),
+            valueType = CommentFieldViewData.ValueType.TextMultiLine,
         )
 
         return@withContext result

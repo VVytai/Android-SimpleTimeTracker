@@ -45,6 +45,7 @@ class RecordTagSelectionViewDataInteractor @Inject constructor(
                 marginTopDp = 0,
                 marginHorizontal = resourceRepo.getDimenInDp(R.dimen.edit_screen_margin_horizontal),
                 hint = resourceRepo.getString(R.string.change_record_comment_hint),
+                valueType = CommentFieldViewData.ValueType.TextMultiLine,
             )
 
             result += recordCommentSearchViewDataInteractor.getViewData(

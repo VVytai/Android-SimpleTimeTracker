@@ -27,6 +27,9 @@ fun createCommentFieldAdapterDelegate(
             false
         }
         etCommentItemField.inputType = when (item.valueType) {
+            is ViewData.ValueType.TextSingleLine -> {
+                InputType.TYPE_CLASS_TEXT
+            }
             is ViewData.ValueType.TextMultiLine -> {
                 InputType.TYPE_CLASS_TEXT or
                 InputType.TYPE_TEXT_FLAG_MULTI_LINE
@@ -60,7 +63,7 @@ data class CommentFieldViewData(
     val marginTopDp: Int,
     val marginHorizontal: Int,
     val hint: String,
-    val valueType: ValueType = ValueType.TextMultiLine,
+    val valueType: ValueType,
 ) : ViewHolderType {
 
     override fun getUniqueId(): Long = id
@@ -70,6 +73,7 @@ data class CommentFieldViewData(
 
     sealed interface ValueType {
         data object TextMultiLine : ValueType
+        data object TextSingleLine : ValueType
         data object NumberDecimal : ValueType
     }
 }
