@@ -58,6 +58,12 @@ class GoalsTabTest : BaseUiTest() {
         runBlocking { prefsInteractor.setShowGoalsSeparately(true) }
     }
 
+    override fun after() {
+        super.after()
+        // Prefs are read before setUp is called, set it here to get right value on next test run.
+        runBlocking { prefsInteractor.setShowGoalsSeparately(true) }
+    }
+
     @Test
     fun goalsAdded() {
         val type = "type"

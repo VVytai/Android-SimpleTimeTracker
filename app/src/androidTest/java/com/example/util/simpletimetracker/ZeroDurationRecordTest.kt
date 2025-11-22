@@ -13,7 +13,6 @@ import com.example.util.simpletimetracker.utils.BaseUiTest
 import com.example.util.simpletimetracker.utils.NavUtils
 import com.example.util.simpletimetracker.utils.checkViewIsDisplayed
 import com.example.util.simpletimetracker.utils.clickOnView
-import com.example.util.simpletimetracker.utils.longClickOnViewWithIdOnPager
 import com.example.util.simpletimetracker.utils.withPluralText
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.hamcrest.CoreMatchers.allOf
@@ -21,7 +20,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import com.example.util.simpletimetracker.core.R as coreR
 import com.example.util.simpletimetracker.feature_base_adapter.R as baseR
-import com.example.util.simpletimetracker.feature_statistics.R as statisticsR
 
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
@@ -55,7 +53,7 @@ class ZeroDurationRecordTest : BaseUiTest() {
 
         // Check statistics
         NavUtils.openStatisticsScreen()
-        longClickOnViewWithIdOnPager(statisticsR.id.btnStatisticsContainerOptions)
+        NavUtils.openFilter()
         Thread.sleep(1000)
         clickOnView(
             allOf(

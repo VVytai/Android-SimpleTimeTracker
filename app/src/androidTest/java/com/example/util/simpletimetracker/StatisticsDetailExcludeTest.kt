@@ -19,7 +19,6 @@ import com.example.util.simpletimetracker.utils.NavUtils
 import com.example.util.simpletimetracker.utils.checkViewDoesNotExist
 import com.example.util.simpletimetracker.utils.clickOnView
 import com.example.util.simpletimetracker.utils.drag
-import com.example.util.simpletimetracker.utils.longClickOnViewWithId
 import com.example.util.simpletimetracker.utils.tryAction
 import com.example.util.simpletimetracker.utils.withCardColor
 import com.example.util.simpletimetracker.utils.withTag
@@ -31,7 +30,6 @@ import org.junit.runner.RunWith
 import com.example.util.simpletimetracker.core.R as coreR
 import com.example.util.simpletimetracker.feature_base_adapter.R as baseR
 import com.example.util.simpletimetracker.feature_records_filter.R as recordsFilterR
-import com.example.util.simpletimetracker.feature_statistics_detail.R as statisticsDetailR
 import com.example.util.simpletimetracker.feature_views.R as viewsR
 
 @Suppress("SameParameterValue")
@@ -76,7 +74,7 @@ class StatisticsDetailExcludeTest : BaseUiTest() {
         checkTagItem(viewsR.color.colorUntracked, untagged, "1$hourString 0$minuteString", "25%")
 
         // Exclude category
-        longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        NavUtils.openFilter()
         Thread.sleep(1000)
         clickOnView(
             allOf(
@@ -102,7 +100,7 @@ class StatisticsDetailExcludeTest : BaseUiTest() {
         checkTagItem(viewsR.color.colorUntracked, untagged, "1$hourString 0$minuteString", "25%")
 
         // Exclude tag
-        longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        NavUtils.openFilter()
         Thread.sleep(1000)
         clickOnView(
             allOf(
@@ -135,7 +133,7 @@ class StatisticsDetailExcludeTest : BaseUiTest() {
         checkTagItem(viewsR.color.colorUntracked, untagged, "1$hourString 0$minuteString", "25%")
 
         // Check default
-        longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        NavUtils.openFilter()
         Thread.sleep(1000)
         clickOnView(withSubstring(getString(coreR.string.record_tag_hint)))
         clickOnView(withSubstring(getString(coreR.string.records_filter_exclude)))
@@ -173,7 +171,7 @@ class StatisticsDetailExcludeTest : BaseUiTest() {
         checkTagItem(viewsR.color.colorUntracked, untagged, "1$hourString 0$minuteString", "25%")
 
         // Exclude category
-        longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        NavUtils.openFilter()
         Thread.sleep(1000)
         clickOnView(
             allOf(
@@ -200,7 +198,7 @@ class StatisticsDetailExcludeTest : BaseUiTest() {
         checkTagItem(viewsR.color.colorUntracked, untagged, "1$hourString 0$minuteString", "25%")
 
         // Exclude tag
-        longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        NavUtils.openFilter()
         Thread.sleep(1000)
         clickOnView(
             allOf(
@@ -232,7 +230,7 @@ class StatisticsDetailExcludeTest : BaseUiTest() {
         checkTagItem(viewsR.color.colorUntracked, untagged, "1$hourString 0$minuteString", "25%")
 
         // Check default
-        longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        NavUtils.openFilter()
         Thread.sleep(1000)
         clickOnView(withSubstring(getString(coreR.string.record_tag_hint)))
         clickOnView(withSubstring(getString(coreR.string.records_filter_exclude)))
@@ -270,7 +268,7 @@ class StatisticsDetailExcludeTest : BaseUiTest() {
         checkTagItem(viewsR.color.colorUntracked, untagged, "1$hourString 0$minuteString", "25%")
 
         // Exclude category
-        longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        NavUtils.openFilter()
         Thread.sleep(1000)
         clickOnView(
             allOf(
@@ -297,7 +295,7 @@ class StatisticsDetailExcludeTest : BaseUiTest() {
         checkTagItem(viewsR.color.colorUntracked, untagged, "1$hourString 0$minuteString", "25%")
 
         // Exclude tag
-        longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        NavUtils.openFilter()
         Thread.sleep(1000)
         clickOnView(
             allOf(
@@ -330,7 +328,7 @@ class StatisticsDetailExcludeTest : BaseUiTest() {
         checkTagItem(viewsR.color.colorUntracked, untagged, "1$hourString 0$minuteString", "25%")
 
         // Check default
-        longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        NavUtils.openFilter()
         Thread.sleep(1000)
         clickOnView(
             allOf(

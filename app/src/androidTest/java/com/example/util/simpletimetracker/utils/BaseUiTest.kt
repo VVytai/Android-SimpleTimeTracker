@@ -23,6 +23,7 @@ import com.example.util.simpletimetracker.domain.backup.repo.BackupRepo
 import com.example.util.simpletimetracker.domain.base.DurationFormat
 import com.example.util.simpletimetracker.domain.complexRule.repo.ComplexRuleRepo
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
+import com.example.util.simpletimetracker.domain.record.mapper.RangeMapper
 import com.example.util.simpletimetracker.domain.recordType.repo.RecordTypeRepo
 import com.example.util.simpletimetracker.feature_records.view.RecordsContainerFragment
 import com.example.util.simpletimetracker.feature_settings.viewModel.delegate.SettingsFileWorkDelegate
@@ -54,6 +55,9 @@ open class BaseUiTest {
 
     @Inject
     lateinit var timeMapper: TimeMapper
+
+    @Inject
+    lateinit var rangeMapper: RangeMapper
 
     @Inject
     lateinit var prefsInteractor: PrefsInteractor
@@ -125,7 +129,8 @@ open class BaseUiTest {
     @Before
     open fun setUp() {
         if (!this::testUtils.isInitialized) hiltRule.inject()
-        clearData()
+        testUtils.clearDatabase()
+        testUtils.clearPrefs()
         runBlocking {
             prefsInteractor.setShowUntrackedInRecords(true)
             prefsInteractor.setShowUntrackedInStatistics(true)
@@ -139,6 +144,7 @@ open class BaseUiTest {
 
     @After
     open fun after() {
+        testUtils.clearPrefs()
         enableAnimations()
         unregisterIdlingResource()
     }
@@ -182,11 +188,6 @@ open class BaseUiTest {
 
     internal fun Long.formatInterval(): String {
         return timeMapper.formatInterval(interval = this, forceSeconds = false, durationFormat = DurationFormat.HOURS)
-    }
-
-    private fun clearData() {
-        testUtils.clearDatabase()
-        testUtils.clearPrefs()
     }
 
     private fun disableAnimations() {

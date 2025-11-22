@@ -12,7 +12,6 @@ import com.example.util.simpletimetracker.utils.checkViewDoesNotExist
 import com.example.util.simpletimetracker.utils.checkViewIsDisplayed
 import com.example.util.simpletimetracker.utils.clickOnView
 import com.example.util.simpletimetracker.utils.clickOnViewWithText
-import com.example.util.simpletimetracker.utils.longClickOnViewWithIdOnPager
 import com.example.util.simpletimetracker.utils.tryAction
 import dagger.hilt.android.testing.HiltAndroidTest
 import java.util.concurrent.TimeUnit
@@ -54,7 +53,7 @@ class StatisticsFilterTest : BaseUiTest() {
         )
 
         // Filter untracked
-        longClickOnViewWithIdOnPager(statisticsR.id.btnStatisticsContainerOptions)
+        NavUtils.openFilter()
         clickOnView(
             allOf(isDescendantOfA(withId(baseR.id.viewRecordTypeItem)), withText(coreR.string.untracked_time_name)),
         )
@@ -67,7 +66,7 @@ class StatisticsFilterTest : BaseUiTest() {
         )
 
         // Filter activity
-        longClickOnViewWithIdOnPager(statisticsR.id.btnStatisticsContainerOptions)
+        NavUtils.openFilter()
         clickOnView(allOf(isDescendantOfA(withId(baseR.id.viewRecordTypeItem)), withText(name1)))
         pressBack()
         tryAction { checkViewDoesNotExist(allOf(withText(coreR.string.untracked_time_name), isCompletelyDisplayed())) }
@@ -78,7 +77,7 @@ class StatisticsFilterTest : BaseUiTest() {
         )
 
         // Filter all
-        longClickOnViewWithIdOnPager(statisticsR.id.btnStatisticsContainerOptions)
+        NavUtils.openFilter()
         clickOnView(allOf(isDescendantOfA(withId(baseR.id.viewRecordTypeItem)), withText(name2)))
         pressBack()
         tryAction { checkViewDoesNotExist(allOf(withText(coreR.string.untracked_time_name), isCompletelyDisplayed())) }
@@ -88,7 +87,7 @@ class StatisticsFilterTest : BaseUiTest() {
         checkViewIsDisplayed(allOf(withText(coreR.string.no_data), isCompletelyDisplayed()))
 
         // Show all
-        longClickOnViewWithIdOnPager(statisticsR.id.btnStatisticsContainerOptions)
+        NavUtils.openFilter()
         clickOnViewWithText(coreR.string.types_filter_show_all)
         pressBack()
         tryAction { checkViewIsDisplayed(allOf(withText(coreR.string.untracked_time_name), isCompletelyDisplayed())) }
@@ -99,7 +98,7 @@ class StatisticsFilterTest : BaseUiTest() {
         )
 
         // Hide all
-        longClickOnViewWithIdOnPager(statisticsR.id.btnStatisticsContainerOptions)
+        NavUtils.openFilter()
         clickOnViewWithText(coreR.string.types_filter_hide_all)
         pressBack()
         tryAction { checkViewDoesNotExist(allOf(withText(coreR.string.untracked_time_name), isCompletelyDisplayed())) }
@@ -144,7 +143,7 @@ class StatisticsFilterTest : BaseUiTest() {
         )
 
         // Switch filter
-        longClickOnViewWithIdOnPager(statisticsR.id.btnStatisticsContainerOptions)
+        NavUtils.openFilter()
         clickOnViewWithText(coreR.string.category_hint)
         pressBack()
 
@@ -158,7 +157,7 @@ class StatisticsFilterTest : BaseUiTest() {
         )
 
         // Filter untracked
-        longClickOnViewWithIdOnPager(statisticsR.id.btnStatisticsContainerOptions)
+        NavUtils.openFilter()
         clickOnView(
             allOf(isDescendantOfA(withId(baseR.id.viewCategoryItem)), withText(coreR.string.untracked_time_name)),
         )
@@ -172,7 +171,7 @@ class StatisticsFilterTest : BaseUiTest() {
         )
 
         // Filter uncategorized
-        longClickOnViewWithIdOnPager(statisticsR.id.btnStatisticsContainerOptions)
+        NavUtils.openFilter()
         clickOnView(
             allOf(isDescendantOfA(withId(baseR.id.viewCategoryItem)), withText(coreR.string.uncategorized_time_name)),
         )
@@ -186,7 +185,7 @@ class StatisticsFilterTest : BaseUiTest() {
         )
 
         // Filter tag
-        longClickOnViewWithIdOnPager(statisticsR.id.btnStatisticsContainerOptions)
+        NavUtils.openFilter()
         clickOnView(allOf(isDescendantOfA(withId(baseR.id.viewCategoryItem)), withText(tag1)))
         pressBack()
         tryAction { checkViewDoesNotExist(allOf(withText(tag1), isCompletelyDisplayed())) }
@@ -196,7 +195,7 @@ class StatisticsFilterTest : BaseUiTest() {
         )
 
         // Filter all
-        longClickOnViewWithIdOnPager(statisticsR.id.btnStatisticsContainerOptions)
+        NavUtils.openFilter()
         clickOnView(allOf(isDescendantOfA(withId(baseR.id.viewCategoryItem)), withText(tag2)))
         pressBack()
         tryAction { checkViewDoesNotExist(allOf(withText(tag1), isCompletelyDisplayed())) }
@@ -205,7 +204,7 @@ class StatisticsFilterTest : BaseUiTest() {
         checkViewIsDisplayed(allOf(withText(coreR.string.no_data), isCompletelyDisplayed()))
 
         // Show all
-        longClickOnViewWithIdOnPager(statisticsR.id.btnStatisticsContainerOptions)
+        NavUtils.openFilter()
         clickOnViewWithText(coreR.string.types_filter_show_all)
         pressBack()
         tryAction { checkViewIsDisplayed(allOf(withText(tag1), isCompletelyDisplayed())) }
@@ -217,7 +216,7 @@ class StatisticsFilterTest : BaseUiTest() {
         )
 
         // Hide all
-        longClickOnViewWithIdOnPager(statisticsR.id.btnStatisticsContainerOptions)
+        NavUtils.openFilter()
         clickOnViewWithText(coreR.string.types_filter_hide_all)
         pressBack()
         tryAction { checkViewDoesNotExist(allOf(withText(tag1), isCompletelyDisplayed())) }
@@ -263,7 +262,7 @@ class StatisticsFilterTest : BaseUiTest() {
         )
 
         // Switch filter
-        longClickOnViewWithIdOnPager(statisticsR.id.btnStatisticsContainerOptions)
+        NavUtils.openFilter()
         clickOnViewWithText(coreR.string.record_tag_hint_short)
         pressBack()
 
@@ -277,7 +276,7 @@ class StatisticsFilterTest : BaseUiTest() {
         )
 
         // Filter untracked
-        longClickOnViewWithIdOnPager(statisticsR.id.btnStatisticsContainerOptions)
+        NavUtils.openFilter()
         clickOnView(
             allOf(isDescendantOfA(withId(baseR.id.viewCategoryItem)), withText(coreR.string.untracked_time_name)),
         )
@@ -291,7 +290,7 @@ class StatisticsFilterTest : BaseUiTest() {
         )
 
         // Filter untagged
-        longClickOnViewWithIdOnPager(statisticsR.id.btnStatisticsContainerOptions)
+        NavUtils.openFilter()
         clickOnView(
             allOf(isDescendantOfA(withId(baseR.id.viewCategoryItem)), withText(coreR.string.change_record_untagged)),
         )
@@ -305,7 +304,7 @@ class StatisticsFilterTest : BaseUiTest() {
         )
 
         // Filter tag
-        longClickOnViewWithIdOnPager(statisticsR.id.btnStatisticsContainerOptions)
+        NavUtils.openFilter()
         clickOnView(allOf(isDescendantOfA(withId(baseR.id.viewCategoryItem)), withText(tag1)))
         pressBack()
         tryAction { checkViewDoesNotExist(allOf(withText(tag1), isCompletelyDisplayed())) }
@@ -315,7 +314,7 @@ class StatisticsFilterTest : BaseUiTest() {
         )
 
         // Filter all
-        longClickOnViewWithIdOnPager(statisticsR.id.btnStatisticsContainerOptions)
+        NavUtils.openFilter()
         clickOnView(allOf(isDescendantOfA(withId(baseR.id.viewCategoryItem)), withText(tag2)))
         pressBack()
         tryAction { checkViewDoesNotExist(allOf(withText(tag1), isCompletelyDisplayed())) }
@@ -324,7 +323,7 @@ class StatisticsFilterTest : BaseUiTest() {
         checkViewIsDisplayed(allOf(withText(coreR.string.no_data), isCompletelyDisplayed()))
 
         // Show all
-        longClickOnViewWithIdOnPager(statisticsR.id.btnStatisticsContainerOptions)
+        NavUtils.openFilter()
         clickOnViewWithText(coreR.string.types_filter_show_all)
         pressBack()
         tryAction { checkViewIsDisplayed(allOf(withText(tag1), isCompletelyDisplayed())) }
@@ -336,7 +335,7 @@ class StatisticsFilterTest : BaseUiTest() {
         )
 
         // Hide all
-        longClickOnViewWithIdOnPager(statisticsR.id.btnStatisticsContainerOptions)
+        NavUtils.openFilter()
         clickOnViewWithText(coreR.string.types_filter_hide_all)
         pressBack()
         tryAction { checkViewDoesNotExist(allOf(withText(tag1), isCompletelyDisplayed())) }

@@ -9,28 +9,30 @@ import androidx.test.espresso.matcher.ViewMatchers.withClassName
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.example.util.simpletimetracker.domain.extension.padDuration
 import com.example.util.simpletimetracker.feature_dialogs.dateTime.CustomDatePicker
 import com.example.util.simpletimetracker.utils.BaseUiTest
 import com.example.util.simpletimetracker.utils.NavUtils
 import com.example.util.simpletimetracker.utils.checkViewIsDisplayed
+import com.example.util.simpletimetracker.utils.clickOnCurrentDate
 import com.example.util.simpletimetracker.utils.clickOnView
 import com.example.util.simpletimetracker.utils.clickOnViewWithId
 import com.example.util.simpletimetracker.utils.clickOnViewWithText
-import com.example.util.simpletimetracker.utils.longClickOnViewWithId
+import com.example.util.simpletimetracker.utils.dateSelectorMatcher
+import com.example.util.simpletimetracker.utils.longClickOnCurrentDate
 import dagger.hilt.android.testing.HiltAndroidTest
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Locale
-import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.equalTo
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
+import java.util.concurrent.TimeUnit
 import com.example.util.simpletimetracker.core.R as coreR
 import com.example.util.simpletimetracker.feature_base_adapter.R as baseR
 import com.example.util.simpletimetracker.feature_dialogs.R as dialogsR
-import com.example.util.simpletimetracker.feature_records.R as recordsR
 
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
@@ -55,7 +57,7 @@ class RecordsRangesTest : BaseUiTest() {
         NavUtils.openRecordsScreen()
         checkViewIsDisplayed(allOf(withText(name), isCompletelyDisplayed()))
 
-        clickOnViewWithId(recordsR.id.btnRecordsContainerPrevious)
+        clickOnCurrentDate(-1)
         checkViewIsDisplayed(
             allOf(
                 withId(baseR.id.viewRecordItem),
@@ -63,7 +65,7 @@ class RecordsRangesTest : BaseUiTest() {
                 isCompletelyDisplayed(),
             ),
         )
-        clickOnViewWithId(recordsR.id.btnRecordsContainerPrevious)
+        clickOnCurrentDate(-2)
         checkViewIsDisplayed(
             allOf(
                 withId(baseR.id.viewRecordItem),
@@ -72,12 +74,12 @@ class RecordsRangesTest : BaseUiTest() {
             ),
         )
 
-        longClickOnViewWithId(recordsR.id.btnRecordsContainerToday)
+        longClickOnCurrentDate()
         checkViewIsDisplayed(allOf(withText(name), isCompletelyDisplayed()))
 
-        clickOnViewWithId(recordsR.id.btnRecordsContainerNext)
+        clickOnCurrentDate(1)
         checkViewIsDisplayed(allOf(withText(coreR.string.no_data), isCompletelyDisplayed()))
-        clickOnViewWithId(recordsR.id.btnRecordsContainerNext)
+        clickOnCurrentDate(2)
         checkViewIsDisplayed(allOf(withText(coreR.string.no_data), isCompletelyDisplayed()))
     }
 
@@ -93,7 +95,7 @@ class RecordsRangesTest : BaseUiTest() {
         }
 
         // Check yesterday
-        clickOnViewWithId(recordsR.id.btnRecordsContainerToday)
+        clickOnCurrentDate()
         onView(withClassName(equalTo(CustomDatePicker::class.java.name)))
             .perform(
                 setDate(
@@ -104,10 +106,15 @@ class RecordsRangesTest : BaseUiTest() {
             )
         clickOnViewWithId(dialogsR.id.btnDateTimeDialogPositive)
 
-        checkViewIsDisplayed(allOf(withText(coreR.string.title_yesterday), isCompletelyDisplayed()))
+        checkViewIsDisplayed(
+            allOf(
+                dateSelectorMatcher(-1),
+                hasDescendant(withText(calendarPrev.get(Calendar.DAY_OF_MONTH).toString().padDuration())),
+            ),
+        )
 
         // Check tomorrow
-        clickOnViewWithId(recordsR.id.btnRecordsContainerToday)
+        clickOnCurrentDate(-1)
         onView(withClassName(equalTo(CustomDatePicker::class.java.name)))
             .perform(
                 setDate(
@@ -118,7 +125,12 @@ class RecordsRangesTest : BaseUiTest() {
             )
         clickOnViewWithId(dialogsR.id.btnDateTimeDialogPositive)
 
-        checkViewIsDisplayed(allOf(withText(coreR.string.title_tomorrow), isCompletelyDisplayed()))
+        checkViewIsDisplayed(
+            allOf(
+                dateSelectorMatcher(1),
+                hasDescendant(withText(calendarNext.get(Calendar.DAY_OF_MONTH).toString().padDuration())),
+            ),
+        )
     }
 
     @Test
@@ -130,16 +142,14 @@ class RecordsRangesTest : BaseUiTest() {
             set(Calendar.MONTH, 0)
             set(Calendar.DAY_OF_MONTH, 1)
         }
-        val titlePrev = dayTitleFormat.format(calendarPrev.timeInMillis)
         val calendarNext = Calendar.getInstance().apply {
             set(Calendar.YEAR, 2050)
             set(Calendar.MONTH, 0)
             set(Calendar.DAY_OF_MONTH, 1)
         }
-        val titleNext = dayTitleFormat.format(calendarNext.timeInMillis)
 
         // Check prev date
-        clickOnViewWithId(recordsR.id.btnRecordsContainerToday)
+        clickOnCurrentDate()
         onView(withClassName(equalTo(CustomDatePicker::class.java.name)))
             .perform(
                 setDate(
@@ -150,10 +160,17 @@ class RecordsRangesTest : BaseUiTest() {
             )
         clickOnViewWithId(dialogsR.id.btnDateTimeDialogPositive)
 
-        checkViewIsDisplayed(allOf(withText(titlePrev), isCompletelyDisplayed()))
+        checkViewIsDisplayed(
+            allOf(
+                withId(R.id.containerDateSelectorDay),
+                hasDescendant(withText(calendarPrev.get(Calendar.DAY_OF_MONTH).toString())),
+            ),
+        )
 
         // Check next date
-        clickOnViewWithId(recordsR.id.btnRecordsContainerToday)
+        NavUtils.openOptionsList()
+        clickOnViewWithText(R.string.range_back_to_today)
+        clickOnCurrentDate()
         onView(withClassName(equalTo(CustomDatePicker::class.java.name)))
             .perform(
                 setDate(
@@ -164,7 +181,12 @@ class RecordsRangesTest : BaseUiTest() {
             )
         clickOnViewWithId(dialogsR.id.btnDateTimeDialogPositive)
 
-        checkViewIsDisplayed(allOf(withText(titleNext), isCompletelyDisplayed()))
+        checkViewIsDisplayed(
+            allOf(
+                withId(R.id.containerDateSelectorDay),
+                hasDescendant(withText(calendarNext.get(Calendar.DAY_OF_MONTH).toString())),
+            ),
+        )
     }
 
     companion object {

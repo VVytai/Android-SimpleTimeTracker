@@ -23,6 +23,8 @@ import com.example.util.simpletimetracker.utils.BaseUiTest
 import com.example.util.simpletimetracker.utils.NavUtils
 import com.example.util.simpletimetracker.utils.checkViewDoesNotExist
 import com.example.util.simpletimetracker.utils.checkViewIsDisplayed
+import com.example.util.simpletimetracker.utils.clickOnCurrentDate
+import com.example.util.simpletimetracker.utils.clickOnPrevDate
 import com.example.util.simpletimetracker.utils.clickOnView
 import com.example.util.simpletimetracker.utils.clickOnViewWithId
 import com.example.util.simpletimetracker.utils.clickOnViewWithText
@@ -649,9 +651,9 @@ class DataEditTest : BaseUiTest() {
         NavUtils.openRecordsScreen()
         checkViewIsDisplayed(allOf(withId(baseR.id.viewRecordItem), hasDescendant(withText(name1))))
         checkViewIsDisplayed(allOf(withId(baseR.id.viewRecordItem), hasDescendant(withText(name2))))
-        clickOnViewWithId(recordsR.id.btnRecordsContainerPrevious)
+        clickOnCurrentDate(-1)
         checkViewIsDisplayed(allOf(withId(baseR.id.viewRecordItem), hasDescendant(withText(name3))))
-        clickOnViewWithId(recordsR.id.btnRecordsContainerNext)
+        clickOnCurrentDate(-2)
 
         // Select
         NavUtils.openSettingsScreen()
@@ -685,7 +687,7 @@ class DataEditTest : BaseUiTest() {
         NavUtils.openRecordsScreen()
         checkViewDoesNotExist(allOf(withId(baseR.id.viewRecordItem), hasDescendant(withText(name1))))
         checkViewDoesNotExist(allOf(withId(baseR.id.viewRecordItem), hasDescendant(withText(name2))))
-        clickOnViewWithId(recordsR.id.btnRecordsContainerPrevious)
+        clickOnPrevDate()
         checkViewIsDisplayed(allOf(withId(baseR.id.viewRecordItem), hasDescendant(withText(name3))))
     }
 

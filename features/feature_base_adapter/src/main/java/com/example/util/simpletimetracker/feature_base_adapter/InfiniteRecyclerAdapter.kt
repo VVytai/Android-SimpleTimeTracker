@@ -30,13 +30,13 @@ class InfiniteRecyclerAdapter(
     override fun onBindViewHolder(
         holder: BaseRecyclerViewHolder,
         position: Int,
-    ) = holder.bind(dataProvider.getItem(position.toShift()), emptyList())
+    ) = holder.bind(dataProvider.getItem(toShift(position)), emptyList())
 
     override fun onBindViewHolder(
         holder: BaseRecyclerViewHolder,
         position: Int,
         payloads: MutableList<Any>,
-    ) = holder.bind(dataProvider.getItem(position.toShift()), payloads)
+    ) = holder.bind(dataProvider.getItem(toShift(position)), payloads)
 
     override fun getItemViewType(position: Int): Int =
         delegates.indexOfFirst { it.isForValidType(dataProvider.getCurrentItem()) }
@@ -63,10 +63,20 @@ class InfiniteRecyclerAdapter(
         override fun areContentsTheSame(other: ViewHolderType): Boolean = false
     }
 
-    private fun Int.toShift(): Int = this - FIRST
+    fun toShift(position: Int): Int {
+        return when (dataProvider.getCount()) {
+            is DataProvider.Count.Infinite -> position - FIRST
+            is DataProvider.Count.One -> 0
+        }
+    }
+
+    fun toPosition(shift: Int): Int {
+        return shift + FIRST
+    }
 
     companion object {
         // First page is at the center of range.
-        const val FIRST = Int.MAX_VALUE / 2
+        private const val FIRST = Int.MAX_VALUE / 2
+        const val TEST_TAG = "InfiniteRecyclerAdapter"
     }
 }

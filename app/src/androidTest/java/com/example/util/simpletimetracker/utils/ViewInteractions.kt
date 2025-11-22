@@ -42,6 +42,28 @@ fun typeTextIntoView(id: Int, text: String): ViewInteraction =
 fun clickOnViewWithId(id: Int): ViewInteraction =
     onView(withId(id)).perform(click())
 
+fun clickOnPrevDate(): ViewInteraction =
+    unconstrainedClickOnView(dateSelectorMatcher(-1))
+
+fun clickOnNextDate(): ViewInteraction =
+    unconstrainedClickOnView(dateSelectorMatcher(1))
+
+fun clickOnCurrentDate(position: Int = 0) {
+    unconstrainedClickOnView(dateSelectorMatcher(position))
+    Thread.sleep(200)
+}
+
+fun clickOnCurrentSelectedDate() {
+    clickOnView(selectedDateMatcher())
+}
+
+fun longClickOnCurrentSelectedDate() {
+    longClickOnView(selectedDateMatcher())
+}
+
+fun longClickOnCurrentDate(position: Int = 0): ViewInteraction =
+    longClickOnView(dateSelectorMatcher(position))
+
 fun clickOnViewWithIdOnPager(id: Int): ViewInteraction =
     onView(allOf(isCompletelyDisplayed(), withId(id))).perform(click())
 
@@ -71,6 +93,9 @@ fun clickOnRecyclerItem(id: Int, matcher: Matcher<View>): ViewInteraction =
 
 fun scrollRecyclerToPosition(id: Int, position: Int): ViewInteraction =
     onView(withId(id)).perform(scrollToPosition<BaseRecyclerViewHolder>(position))
+
+fun scrollRecyclerInPagerToPosition(id: Int, position: Int): ViewInteraction =
+    onView(allOf(withId(id), isCompletelyDisplayed())).perform(scrollToPosition<BaseRecyclerViewHolder>(position))
 
 fun scrollRecyclerToView(id: Int, matcher: Matcher<View>): ViewInteraction =
     onView(withId(id)).perform(scrollTo<BaseRecyclerViewHolder>(matcher))

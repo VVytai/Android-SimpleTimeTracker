@@ -28,10 +28,9 @@ import com.example.util.simpletimetracker.GoalsTestUtils.getWeeklyDurationGoalCa
 import com.example.util.simpletimetracker.utils.BaseUiTest
 import com.example.util.simpletimetracker.utils.NavUtils
 import com.example.util.simpletimetracker.utils.checkViewIsDisplayed
+import com.example.util.simpletimetracker.utils.clickOnCurrentDate
 import com.example.util.simpletimetracker.utils.clickOnView
-import com.example.util.simpletimetracker.utils.clickOnViewWithId
 import com.example.util.simpletimetracker.utils.clickOnViewWithText
-import com.example.util.simpletimetracker.utils.longClickOnViewWithIdOnPager
 import com.example.util.simpletimetracker.utils.scrollRecyclerInPagerToView
 import com.example.util.simpletimetracker.utils.scrollToBottom
 import com.example.util.simpletimetracker.utils.tryAction
@@ -170,7 +169,7 @@ class GoalsStatisticsTest : BaseUiTest() {
         addRecords(testUtils, otherGoals)
 
         NavUtils.openStatisticsScreen()
-        clickOnViewWithId(statisticsR.id.btnStatisticsContainerToday)
+        clickOnCurrentDate()
         clickOnViewWithText(coreR.string.range_week)
 
         // Goal time not finished
@@ -247,7 +246,7 @@ class GoalsStatisticsTest : BaseUiTest() {
         addRecords(testUtils, otherGoals)
 
         NavUtils.openStatisticsScreen()
-        clickOnViewWithId(statisticsR.id.btnStatisticsContainerToday)
+        clickOnCurrentDate()
         clickOnViewWithText(coreR.string.range_month)
 
         // Goal time not finished
@@ -368,7 +367,7 @@ class GoalsStatisticsTest : BaseUiTest() {
         addRecords(testUtils, otherGoals.second())
 
         NavUtils.openStatisticsScreen()
-        longClickOnViewWithIdOnPager(statisticsR.id.btnStatisticsContainerOptions)
+        NavUtils.openFilter()
         clickOnViewWithText(coreR.string.category_hint)
         pressBack()
 
@@ -490,9 +489,9 @@ class GoalsStatisticsTest : BaseUiTest() {
         addRecords(testUtils, otherGoals.second())
 
         NavUtils.openStatisticsScreen()
-        clickOnViewWithId(statisticsR.id.btnStatisticsContainerToday)
+        clickOnCurrentDate()
         clickOnViewWithText(coreR.string.range_week)
-        longClickOnViewWithIdOnPager(statisticsR.id.btnStatisticsContainerOptions)
+        NavUtils.openFilter()
         clickOnViewWithText(coreR.string.category_hint)
         pressBack()
 
@@ -614,9 +613,9 @@ class GoalsStatisticsTest : BaseUiTest() {
         addRecords(testUtils, otherGoals.second())
 
         NavUtils.openStatisticsScreen()
-        clickOnViewWithId(statisticsR.id.btnStatisticsContainerToday)
+        clickOnCurrentDate()
         clickOnViewWithText(coreR.string.range_month)
-        longClickOnViewWithIdOnPager(statisticsR.id.btnStatisticsContainerOptions)
+        NavUtils.openFilter()
         clickOnViewWithText(coreR.string.category_hint)
         pressBack()
 

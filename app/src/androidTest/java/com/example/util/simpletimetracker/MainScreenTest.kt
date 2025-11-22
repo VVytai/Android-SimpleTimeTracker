@@ -9,12 +9,12 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.util.simpletimetracker.utils.BaseUiTest
 import com.example.util.simpletimetracker.utils.NavUtils
+import com.example.util.simpletimetracker.utils.clickOnNextDate
+import com.example.util.simpletimetracker.utils.clickOnPrevDate
 import com.example.util.simpletimetracker.utils.clickOnRecyclerItem
 import com.example.util.simpletimetracker.utils.clickOnView
-import com.example.util.simpletimetracker.utils.clickOnViewWithId
 import com.example.util.simpletimetracker.utils.clickOnViewWithText
-import com.example.util.simpletimetracker.utils.longClickOnViewWithId
-import com.example.util.simpletimetracker.utils.longClickOnViewWithIdOnPager
+import com.example.util.simpletimetracker.utils.longClickOnCurrentDate
 import com.example.util.simpletimetracker.utils.tryAction
 import com.example.util.simpletimetracker.utils.typeTextIntoView
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -25,8 +25,6 @@ import com.example.util.simpletimetracker.core.R as coreR
 import com.example.util.simpletimetracker.feature_base_adapter.R as baseR
 import com.example.util.simpletimetracker.feature_change_record.R as changeRecordR
 import com.example.util.simpletimetracker.feature_change_record_type.R as changeRecordTypeR
-import com.example.util.simpletimetracker.feature_records.R as recordsR
-import com.example.util.simpletimetracker.feature_statistics.R as statisticsR
 
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
@@ -59,25 +57,25 @@ class MainScreenTest : BaseUiTest() {
         clickOnView(allOf(withText(name), isCompletelyDisplayed()))
         pressBack()
 
-        longClickOnViewWithId(recordsR.id.btnRecordAdd)
+        NavUtils.openAddRecord()
         pressBack()
 
-        longClickOnViewWithId(recordsR.id.btnRecordAdd)
+        NavUtils.openAddRecord()
         clickOnViewWithText(coreR.string.change_record_type_field)
         clickOnRecyclerItem(changeRecordR.id.rvChangeRecordType, withText(name))
         clickOnViewWithText(coreR.string.change_record_save)
 
-        clickOnViewWithId(recordsR.id.btnRecordsContainerPrevious)
-        longClickOnViewWithId(recordsR.id.btnRecordsContainerToday)
-        clickOnViewWithId(recordsR.id.btnRecordsContainerNext)
+        clickOnPrevDate()
+        longClickOnCurrentDate()
+        clickOnNextDate()
 
         // Statistics
         NavUtils.openStatisticsScreen()
-        longClickOnViewWithIdOnPager(statisticsR.id.btnStatisticsContainerOptions)
+        NavUtils.openFilter()
         pressBack()
-        clickOnViewWithId(statisticsR.id.btnStatisticsContainerPrevious)
-        longClickOnViewWithId(statisticsR.id.btnStatisticsContainerToday)
-        clickOnViewWithId(statisticsR.id.btnStatisticsContainerNext)
+        clickOnPrevDate()
+        longClickOnCurrentDate()
+        clickOnNextDate()
 
         // Settings
         NavUtils.openSettingsScreen()

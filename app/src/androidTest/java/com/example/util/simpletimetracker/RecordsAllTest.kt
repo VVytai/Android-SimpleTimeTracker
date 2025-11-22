@@ -17,12 +17,11 @@ import com.example.util.simpletimetracker.utils.BaseUiTest
 import com.example.util.simpletimetracker.utils.NavUtils
 import com.example.util.simpletimetracker.utils.checkViewDoesNotExist
 import com.example.util.simpletimetracker.utils.checkViewIsDisplayed
+import com.example.util.simpletimetracker.utils.clickOnCurrentDate
+import com.example.util.simpletimetracker.utils.clickOnPrevDate
 import com.example.util.simpletimetracker.utils.clickOnView
 import com.example.util.simpletimetracker.utils.clickOnViewWithId
-import com.example.util.simpletimetracker.utils.clickOnViewWithIdOnPager
 import com.example.util.simpletimetracker.utils.clickOnViewWithText
-import com.example.util.simpletimetracker.utils.longClickOnViewWithId
-import com.example.util.simpletimetracker.utils.longClickOnViewWithIdOnPager
 import com.example.util.simpletimetracker.utils.tryAction
 import com.example.util.simpletimetracker.utils.withPluralText
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -32,9 +31,7 @@ import org.junit.runner.RunWith
 import com.example.util.simpletimetracker.core.R as coreR
 import com.example.util.simpletimetracker.feature_base_adapter.R as baseR
 import com.example.util.simpletimetracker.feature_change_record.R as changeRecordR
-import com.example.util.simpletimetracker.feature_records.R as recordsR
 import com.example.util.simpletimetracker.feature_records_all.R as recordsAllR
-import com.example.util.simpletimetracker.feature_statistics.R as statisticsR
 import com.example.util.simpletimetracker.feature_statistics_detail.R as statisticsDetailR
 
 @HiltAndroidTest
@@ -73,7 +70,7 @@ class RecordsAllTest : BaseUiTest() {
         checkViewIsDisplayed(firstRecord)
 
         // Add another record
-        clickOnViewWithId(recordsR.id.btnRecordsContainerPrevious)
+        clickOnPrevDate()
         NavUtils.addRecordWithTime(
             name = name,
             hourStarted = 17,
@@ -98,7 +95,7 @@ class RecordsAllTest : BaseUiTest() {
         // Open statistics
         NavUtils.openStatisticsScreen()
         clickOnView(allOf(withText(name), isCompletelyDisplayed()))
-        clickOnViewWithIdOnPager(statisticsDetailR.id.btnStatisticsDetailToday)
+        clickOnCurrentDate()
         clickOnViewWithText(coreR.string.range_overall)
 
         // Open records all
@@ -167,7 +164,7 @@ class RecordsAllTest : BaseUiTest() {
         // Check statistics
         NavUtils.openStatisticsScreen()
         clickOnView(allOf(withText(name), isCompletelyDisplayed()))
-        clickOnViewWithIdOnPager(statisticsDetailR.id.btnStatisticsDetailToday)
+        clickOnCurrentDate()
         clickOnViewWithText(coreR.string.range_overall)
         scrollStatDetailRecyclerToTag(StatisticsDetailBlock.Total)
         checkViewIsDisplayed(allOf(withPluralText(coreR.plurals.statistics_detail_times_tracked, 2), hasSibling(withText("2"))))
@@ -250,7 +247,7 @@ class RecordsAllTest : BaseUiTest() {
         tryAction { checkViewIsDisplayed(firstRecord) }
 
         // Add another record
-        clickOnViewWithId(recordsR.id.btnRecordsContainerPrevious)
+        clickOnPrevDate()
         NavUtils.addRecordWithTime(
             name = typeName2,
             hourStarted = 17,
@@ -271,11 +268,11 @@ class RecordsAllTest : BaseUiTest() {
 
         // Open statistics
         NavUtils.openStatisticsScreen()
-        longClickOnViewWithIdOnPager(statisticsR.id.btnStatisticsContainerOptions)
+        NavUtils.openFilter()
         clickOnViewWithText(coreR.string.category_hint)
         pressBack()
         tryAction { clickOnView(allOf(withText(categoryName1), isCompletelyDisplayed())) }
-        clickOnViewWithIdOnPager(statisticsDetailR.id.btnStatisticsDetailToday)
+        clickOnCurrentDate()
         clickOnViewWithText(coreR.string.range_overall)
 
         // Open records all
@@ -315,7 +312,7 @@ class RecordsAllTest : BaseUiTest() {
         // Open records all
         NavUtils.openStatisticsScreen()
         clickOnView(allOf(withText(name1), isCompletelyDisplayed()))
-        clickOnViewWithIdOnPager(statisticsDetailR.id.btnStatisticsDetailToday)
+        tryAction { clickOnCurrentDate() }
         clickOnViewWithText(coreR.string.range_overall)
         scrollStatDetailRecyclerToTag(StatisticsDetailBlock.Total)
         clickOnStatDetailRecycler(withPluralText(coreR.plurals.statistics_detail_times_tracked, 1))
@@ -332,7 +329,7 @@ class RecordsAllTest : BaseUiTest() {
         // Change filter
         pressBack()
         onView(withId(statisticsDetailR.id.containerStatisticsDetailContent)).perform(swipeDown())
-        longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        NavUtils.openFilter()
         checkViewIsDisplayed(allOf(isDescendantOfA(withId(baseR.id.viewRecordTypeItem)), withText(name1)))
         checkViewIsDisplayed(allOf(isDescendantOfA(withId(baseR.id.viewRecordTypeItem)), withText(name2)))
         checkViewIsDisplayed(allOf(isDescendantOfA(withId(baseR.id.viewRecordTypeItem)), withText(name3)))
@@ -349,7 +346,7 @@ class RecordsAllTest : BaseUiTest() {
         // Change filter
         pressBack()
         onView(withId(statisticsDetailR.id.containerStatisticsDetailContent)).perform(swipeDown())
-        longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        NavUtils.openFilter()
         clickOnView(allOf(isDescendantOfA(withId(baseR.id.viewRecordTypeItem)), withText(name1)))
         clickOnView(allOf(isDescendantOfA(withId(baseR.id.viewRecordTypeItem)), withText(name2)))
         pressBack()

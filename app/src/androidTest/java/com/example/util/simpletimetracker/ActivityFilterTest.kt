@@ -82,7 +82,7 @@ class ActivityFilterTest : BaseUiTest() {
 
         // Selecting color
         clickOnRecyclerItem(changeActivityFilterR.id.rvChangeActivityFilterColor, withCardColor(firstColor))
-        checkPreviewUpdated(withCardColor(firstColor))
+        checkPreviewUpdated(hasDescendant(withCardColor(firstColor)))
         checkViewIsDisplayed(
             allOf(withId(changeActivityFilterR.id.viewColorItemSelected), withParent(withCardColor(firstColor))),
         )
@@ -90,7 +90,7 @@ class ActivityFilterTest : BaseUiTest() {
         // Selecting color
         scrollRecyclerToPosition(changeActivityFilterR.id.rvChangeActivityFilterColor, lastColorPosition)
         clickOnRecyclerItem(changeActivityFilterR.id.rvChangeActivityFilterColor, withCardColor(lastColor))
-        checkPreviewUpdated(withCardColor(lastColor))
+        checkPreviewUpdated(hasDescendant(withCardColor(lastColor)))
         checkViewIsDisplayed(
             allOf(withId(changeActivityFilterR.id.viewColorItemSelected), withParent(withCardColor(lastColor))),
         )
@@ -189,7 +189,12 @@ class ActivityFilterTest : BaseUiTest() {
 
         // Filter added
         checkViewIsDisplayed(withText(name))
-        checkViewIsDisplayed(withCardColor(lastColor))
+        checkViewIsDisplayed(
+            allOf(
+                withId(R.id.viewFilterItem),
+                hasDescendant(withCardColor(lastColor)),
+            ),
+        )
 
         // Check types saved
         longClickOnView(withText(name))
@@ -230,7 +235,7 @@ class ActivityFilterTest : BaseUiTest() {
 
         // Preview is updated
         checkPreviewUpdated(hasDescendant(withText(name)))
-        checkPreviewUpdated(withCardColor(firstColor))
+        checkPreviewUpdated(hasDescendant(withCardColor(firstColor)))
 
         // Change name
         typeTextIntoView(changeActivityFilterR.id.etChangeActivityFilterName, newName)
@@ -243,7 +248,7 @@ class ActivityFilterTest : BaseUiTest() {
         )
         scrollRecyclerToView(changeActivityFilterR.id.rvChangeActivityFilterColor, withCardColor(lastColor))
         clickOnRecyclerItem(changeActivityFilterR.id.rvChangeActivityFilterColor, withCardColor(lastColor))
-        checkPreviewUpdated(withCardColor(lastColor))
+        checkPreviewUpdated(hasDescendant(withCardColor(lastColor)))
         checkViewIsDisplayed(
             allOf(withId(changeActivityFilterR.id.viewColorItemSelected), withParent(withCardColor(lastColor))),
         )
@@ -268,7 +273,12 @@ class ActivityFilterTest : BaseUiTest() {
 
         // Filter updated
         checkViewIsDisplayed(withText(newName))
-        checkViewIsDisplayed(withCardColor(lastColor))
+        checkViewIsDisplayed(
+            allOf(
+                withId(R.id.viewFilterItem),
+                hasDescendant(withCardColor(lastColor)),
+            ),
+        )
         longClickOnView(withText(newName))
         clickOnViewWithText(coreR.string.category_hint)
         onView(withText(categoryName1)).check(isCompletelyBelow(withId(changeActivityFilterR.id.viewDividerItem)))

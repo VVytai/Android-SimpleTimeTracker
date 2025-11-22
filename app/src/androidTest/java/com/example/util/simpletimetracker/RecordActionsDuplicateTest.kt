@@ -18,7 +18,6 @@ import com.example.util.simpletimetracker.utils.clickOnViewWithId
 import com.example.util.simpletimetracker.utils.clickOnViewWithText
 import com.example.util.simpletimetracker.utils.getMillis
 import com.example.util.simpletimetracker.utils.longClickOnView
-import com.example.util.simpletimetracker.utils.longClickOnViewWithId
 import com.example.util.simpletimetracker.utils.nestedScrollTo
 import com.example.util.simpletimetracker.utils.nthChildOf
 import com.example.util.simpletimetracker.utils.recyclerItemCount
@@ -245,7 +244,7 @@ class RecordActionsDuplicateTest : BaseUiTest() {
         // Open add new record
         onView(allOf(withId(recordsR.id.rvRecordsList), isCompletelyDisplayed()))
             .check(recyclerItemCount(1))
-        longClickOnViewWithId(recordsR.id.btnRecordAdd)
+        NavUtils.openAddRecord()
 
         // Duplicate untracked doesn't work
         clickOnViewWithText(coreR.string.change_record_actions_hint)

@@ -21,6 +21,7 @@ import com.example.util.simpletimetracker.utils.BaseUiTest
 import com.example.util.simpletimetracker.utils.NavUtils
 import com.example.util.simpletimetracker.utils.checkViewDoesNotExist
 import com.example.util.simpletimetracker.utils.checkViewIsDisplayed
+import com.example.util.simpletimetracker.utils.clickOnPrevDate
 import com.example.util.simpletimetracker.utils.clickOnView
 import com.example.util.simpletimetracker.utils.clickOnViewWithId
 import com.example.util.simpletimetracker.utils.clickOnViewWithText
@@ -274,7 +275,7 @@ class GoalsDaysOfWeek : BaseUiTest() {
         scrollTo(name2)
         checkStatisticsGoal(name2, minuteString, "$goalHint - 1$hourString 0$minuteString")
 
-        clickOnViewWithId(statisticsR.id.btnStatisticsContainerPrevious)
+        clickOnPrevDate()
         scrollTo(name1)
         checkStatisticsGoal(name1, "0$minuteString", "$goalHint - 1$hourString 0$minuteString")
         scrollTo(name2)

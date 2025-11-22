@@ -9,8 +9,8 @@ import com.example.util.simpletimetracker.feature_statistics_detail.adapter.Stat
 import com.example.util.simpletimetracker.utils.BaseUiTest
 import com.example.util.simpletimetracker.utils.NavUtils
 import com.example.util.simpletimetracker.utils.checkViewIsDisplayed
+import com.example.util.simpletimetracker.utils.clickOnCurrentDate
 import com.example.util.simpletimetracker.utils.clickOnView
-import com.example.util.simpletimetracker.utils.clickOnViewWithIdOnPager
 import com.example.util.simpletimetracker.utils.clickOnViewWithText
 import com.example.util.simpletimetracker.utils.tryAction
 import com.example.util.simpletimetracker.utils.withTag
@@ -22,7 +22,6 @@ import org.junit.runner.RunWith
 import java.util.Calendar
 import java.util.concurrent.TimeUnit
 import com.example.util.simpletimetracker.core.R as coreR
-import com.example.util.simpletimetracker.feature_statistics_detail.R as statisticsDetailR
 
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
@@ -65,7 +64,7 @@ class StatisticsDetailTagValueTest : BaseUiTest() {
         // Check detailed statistics
         NavUtils.openStatisticsScreen()
         tryAction { clickOnView(allOf(withText(tag), isCompletelyDisplayed())) }
-        clickOnViewWithIdOnPager(statisticsDetailR.id.btnStatisticsDetailToday)
+        clickOnCurrentDate()
         clickOnViewWithText(coreR.string.range_overall)
 
         // Bar chart

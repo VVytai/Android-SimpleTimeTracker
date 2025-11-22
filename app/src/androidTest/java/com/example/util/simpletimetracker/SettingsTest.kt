@@ -16,13 +16,15 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withSubstring
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.example.util.simpletimetracker.DateSelectorUtils.toWeekTitle
 import com.example.util.simpletimetracker.core.extension.setToStartOfDay
 import com.example.util.simpletimetracker.core.extension.setWeekToFirstDay
 import com.example.util.simpletimetracker.core.interactor.LanguageInteractor
-import com.example.util.simpletimetracker.domain.language.AppLanguage
 import com.example.util.simpletimetracker.domain.activityFilter.model.ActivityFilter
 import com.example.util.simpletimetracker.domain.base.DurationFormat
 import com.example.util.simpletimetracker.domain.daysOfWeek.model.DayOfWeek
+import com.example.util.simpletimetracker.domain.extension.padDuration
+import com.example.util.simpletimetracker.domain.language.AppLanguage
 import com.example.util.simpletimetracker.feature_dialogs.dateTime.CustomDatePicker
 import com.example.util.simpletimetracker.feature_dialogs.dateTime.CustomTimePicker
 import com.example.util.simpletimetracker.utils.BaseUiTest
@@ -32,12 +34,15 @@ import com.example.util.simpletimetracker.utils.checkCheckboxIsNotChecked
 import com.example.util.simpletimetracker.utils.checkViewDoesNotExist
 import com.example.util.simpletimetracker.utils.checkViewIsDisplayed
 import com.example.util.simpletimetracker.utils.checkViewIsNotDisplayed
+import com.example.util.simpletimetracker.utils.clickOnCurrentDate
+import com.example.util.simpletimetracker.utils.clickOnPrevDate
 import com.example.util.simpletimetracker.utils.clickOnRecyclerItem
 import com.example.util.simpletimetracker.utils.clickOnView
 import com.example.util.simpletimetracker.utils.clickOnViewWithId
-import com.example.util.simpletimetracker.utils.clickOnViewWithIdOnPager
 import com.example.util.simpletimetracker.utils.clickOnViewWithText
+import com.example.util.simpletimetracker.utils.dateSelectorMatcher
 import com.example.util.simpletimetracker.utils.getMillis
+import com.example.util.simpletimetracker.utils.longClickOnCurrentDate
 import com.example.util.simpletimetracker.utils.longClickOnView
 import com.example.util.simpletimetracker.utils.longClickOnViewWithId
 import com.example.util.simpletimetracker.utils.recyclerItemCount
@@ -60,7 +65,6 @@ import com.example.util.simpletimetracker.feature_change_record.R as changeRecor
 import com.example.util.simpletimetracker.feature_change_record_type.R as changeRecordTypeR
 import com.example.util.simpletimetracker.feature_dialogs.R as dialogsR
 import com.example.util.simpletimetracker.feature_records.R as recordsR
-import com.example.util.simpletimetracker.feature_statistics.R as statisticsR
 import com.example.util.simpletimetracker.feature_statistics_detail.R as statisticsDetailR
 import com.example.util.simpletimetracker.feature_tag_selection.R as tagSelectionR
 
@@ -233,7 +237,7 @@ class SettingsTest : BaseUiTest() {
         )
 
         NavUtils.openRecordsScreen()
-        clickOnViewWithId(recordsR.id.btnRecordsContainerPrevious)
+        clickOnPrevDate()
         checkItemCount(9)
         checkRecordDuration(TimeUnit.HOURS.toMillis(20), displayed = true)
         checkRecordDuration(TimeUnit.MINUTES.toMillis(30), displayed = true)
@@ -290,7 +294,7 @@ class SettingsTest : BaseUiTest() {
 
         // Check disabled
         NavUtils.openRecordsScreen()
-        clickOnViewWithId(recordsR.id.btnRecordsContainerPrevious)
+        clickOnCurrentDate(-1)
         checkRecord(
             nameResId = coreR.string.untracked_time_name,
             timeStart = startOfDay.toTimePreview(),
@@ -1108,7 +1112,7 @@ class SettingsTest : BaseUiTest() {
 
         // Check statistics
         NavUtils.openStatisticsScreen()
-        clickOnViewWithId(statisticsR.id.btnStatisticsContainerToday)
+        clickOnCurrentDate()
         clickOnViewWithText(coreR.string.range_week)
         clickOnView(
             allOf(
@@ -1119,7 +1123,7 @@ class SettingsTest : BaseUiTest() {
         )
 
         // Check detailed statistics
-        clickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailToday)
+        clickOnCurrentDate()
         clickOnViewWithText(coreR.string.range_week)
         checkViewIsDisplayed(
             allOf(
@@ -1130,19 +1134,18 @@ class SettingsTest : BaseUiTest() {
         )
 
         // Check range titles
-        var titlePrev = timeMapper.toWeekTitle(
-            weeksFromToday = -1,
-            startOfDayShift = 0,
+        var titlePrev = toWeekTitle(
+            shift = -1,
             firstDayOfWeek = if (isTodaySunday) DayOfWeek.MONDAY else DayOfWeek.SUNDAY,
         )
-        longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailToday)
-        clickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailPrevious)
-        checkViewIsDisplayed(allOf(withText(titlePrev), isCompletelyDisplayed()))
+        longClickOnCurrentDate()
+        clickOnCurrentDate(-1)
+        checkWeekTitle(titlePrev)
         pressBack()
-        longClickOnViewWithId(statisticsR.id.btnStatisticsContainerToday)
-        clickOnViewWithId(statisticsR.id.btnStatisticsContainerPrevious)
-        checkViewIsDisplayed(allOf(withText(titlePrev), isCompletelyDisplayed()))
-        longClickOnViewWithId(statisticsR.id.btnStatisticsContainerToday)
+        longClickOnCurrentDate()
+        clickOnCurrentDate(-1)
+        checkWeekTitle(titlePrev)
+        longClickOnCurrentDate()
 
         // Change setting
         NavUtils.openSettingsScreen()
@@ -1162,7 +1165,7 @@ class SettingsTest : BaseUiTest() {
                 isCompletelyDisplayed(),
             ),
         )
-        clickOnViewWithId(statisticsR.id.btnStatisticsContainerPrevious)
+        clickOnCurrentDate(-1)
         clickOnView(
             allOf(
                 withId(baseR.id.viewStatisticsItem),
@@ -1172,7 +1175,7 @@ class SettingsTest : BaseUiTest() {
         )
 
         // Check detailed statistics
-        clickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailToday)
+        tryAction { clickOnCurrentDate() }
         clickOnViewWithText(coreR.string.range_week)
         checkViewIsDisplayed(
             allOf(
@@ -1181,7 +1184,7 @@ class SettingsTest : BaseUiTest() {
                 isCompletelyDisplayed(),
             ),
         )
-        clickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailPrevious)
+        clickOnCurrentDate(-1)
         checkViewIsDisplayed(
             allOf(
                 withPluralText(coreR.plurals.statistics_detail_times_tracked, 1),
@@ -1191,19 +1194,18 @@ class SettingsTest : BaseUiTest() {
         )
 
         // Check range titles
-        titlePrev = timeMapper.toWeekTitle(
-            weeksFromToday = -1,
-            startOfDayShift = 0,
+        titlePrev = toWeekTitle(
+            shift = -1,
             firstDayOfWeek = if (isTodaySunday) DayOfWeek.SUNDAY else DayOfWeek.MONDAY,
         )
-        longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailToday)
-        clickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailPrevious)
-        checkViewIsDisplayed(allOf(withText(titlePrev), isCompletelyDisplayed()))
+        longClickOnCurrentDate()
+        clickOnCurrentDate(-1)
+        checkWeekTitle(titlePrev)
         pressBack()
-        longClickOnViewWithId(statisticsR.id.btnStatisticsContainerToday)
-        clickOnViewWithId(statisticsR.id.btnStatisticsContainerPrevious)
-        checkViewIsDisplayed(allOf(withText(titlePrev), isCompletelyDisplayed()))
-        longClickOnViewWithId(statisticsR.id.btnStatisticsContainerToday)
+        longClickOnCurrentDate()
+        clickOnCurrentDate(-1)
+        checkWeekTitle(titlePrev)
+        longClickOnCurrentDate()
     }
 
     @Test
@@ -1231,10 +1233,10 @@ class SettingsTest : BaseUiTest() {
 
         // Check records
         NavUtils.openRecordsScreen()
-        clickOnViewWithId(recordsR.id.btnRecordsContainerPrevious)
-        clickOnViewWithId(recordsR.id.btnRecordsContainerPrevious)
+        clickOnCurrentDate(-1)
+        clickOnCurrentDate(-2)
         checkRecord(name = name, timeStart = timeStartedPreview, timeEnd = startOfDayPreview)
-        clickOnViewWithId(recordsR.id.btnRecordsContainerNext)
+        clickOnCurrentDate(-1)
         checkRecord(
             nameResId = coreR.string.untracked_time_name, timeStart = timeEndedPreview, timeEnd = startOfDayPreview,
         )
@@ -1242,23 +1244,23 @@ class SettingsTest : BaseUiTest() {
 
         // Check statistics
         NavUtils.openStatisticsScreen()
-        clickOnViewWithId(statisticsR.id.btnStatisticsContainerPrevious)
-        clickOnViewWithId(statisticsR.id.btnStatisticsContainerPrevious)
+        clickOnCurrentDate(-1)
+        clickOnCurrentDate(-2)
         checkStatisticsItem(name = name, hours = 2)
-        clickOnViewWithId(statisticsR.id.btnStatisticsContainerNext)
+        clickOnCurrentDate(-1)
         checkStatisticsItem(nameResId = coreR.string.untracked_time_name, hours = 22)
         checkStatisticsItem(name = name, hours = 2)
 
         // Check detailed statistics
         clickOnView(allOf(withText(name), isCompletelyDisplayed()))
-        clickOnView(allOf(withId(statisticsDetailR.id.btnStatisticsDetailToday), isCompletelyDisplayed()))
+        tryAction { clickOnCurrentDate() }
         clickOnViewWithText(coreR.string.range_day)
         checkStatisticsDetailRecords(0)
-        clickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailPrevious)
+        clickOnCurrentDate(-1)
         checkStatisticsDetailRecords(1)
-        clickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailPrevious)
+        clickOnCurrentDate(-2)
         checkStatisticsDetailRecords(1)
-        clickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailPrevious)
+        clickOnCurrentDate(-3)
         checkStatisticsDetailRecords(0)
         pressBack()
 
@@ -1296,11 +1298,11 @@ class SettingsTest : BaseUiTest() {
 
         // Check records
         NavUtils.openRecordsScreen()
-        longClickOnViewWithId(recordsR.id.btnRecordsContainerToday)
-        clickOnViewWithId(recordsR.id.btnRecordsContainerPrevious)
-        clickOnViewWithId(recordsR.id.btnRecordsContainerPrevious)
+        longClickOnCurrentDate()
+        clickOnCurrentDate(-1)
+        clickOnCurrentDate(-2)
         checkRecord(name = name, timeStart = timeStartedPreview, timeEnd = startOfDayPreview)
-        clickOnViewWithId(recordsR.id.btnRecordsContainerNext)
+        clickOnCurrentDate(-1)
         checkRecord(
             nameResId = coreR.string.untracked_time_name, timeStart = timeEndedPreview, timeEnd = startOfDayPreview,
         )
@@ -1308,24 +1310,24 @@ class SettingsTest : BaseUiTest() {
 
         // Check statistics
         NavUtils.openStatisticsScreen()
-        longClickOnViewWithId(statisticsR.id.btnStatisticsContainerToday)
-        clickOnViewWithId(statisticsR.id.btnStatisticsContainerPrevious)
-        clickOnViewWithId(statisticsR.id.btnStatisticsContainerPrevious)
+        longClickOnCurrentDate()
+        clickOnCurrentDate(-1)
+        clickOnCurrentDate(-2)
         checkStatisticsItem(name = name, hours = 3)
-        clickOnViewWithId(statisticsR.id.btnStatisticsContainerNext)
+        clickOnCurrentDate(-1)
         checkStatisticsItem(nameResId = coreR.string.untracked_time_name, hours = 23)
         checkStatisticsItem(name = name, hours = 1)
 
         // Check detailed statistics
         clickOnView(allOf(withText(name), isCompletelyDisplayed()))
-        clickOnView(allOf(withId(statisticsDetailR.id.btnStatisticsDetailToday), isCompletelyDisplayed()))
+        tryAction { clickOnCurrentDate() }
         clickOnViewWithText(coreR.string.range_day)
         checkStatisticsDetailRecords(0)
-        clickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailPrevious)
+        clickOnCurrentDate(-1)
         checkStatisticsDetailRecords(1)
-        clickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailPrevious)
+        clickOnCurrentDate(-2)
         checkStatisticsDetailRecords(1)
-        clickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailPrevious)
+        clickOnCurrentDate(-3)
         checkStatisticsDetailRecords(0)
         pressBack()
 
@@ -1349,11 +1351,11 @@ class SettingsTest : BaseUiTest() {
 
         // Check records
         NavUtils.openRecordsScreen()
-        longClickOnViewWithId(recordsR.id.btnRecordsContainerToday)
-        clickOnViewWithId(recordsR.id.btnRecordsContainerPrevious)
-        clickOnViewWithId(recordsR.id.btnRecordsContainerPrevious)
+        longClickOnCurrentDate()
+        clickOnCurrentDate(-1)
+        clickOnCurrentDate(-2)
         checkRecord(name = name, timeStart = timeStartedPreview, timeEnd = startOfDayPreview)
-        clickOnViewWithId(recordsR.id.btnRecordsContainerNext)
+        clickOnCurrentDate(-1)
         checkRecord(
             nameResId = coreR.string.untracked_time_name, timeStart = timeEndedPreview, timeEnd = startOfDayPreview,
         )
@@ -1361,24 +1363,24 @@ class SettingsTest : BaseUiTest() {
 
         // Check statistics
         NavUtils.openStatisticsScreen()
-        longClickOnViewWithId(statisticsR.id.btnStatisticsContainerToday)
-        clickOnViewWithId(statisticsR.id.btnStatisticsContainerPrevious)
-        clickOnViewWithId(statisticsR.id.btnStatisticsContainerPrevious)
+        longClickOnCurrentDate()
+        clickOnCurrentDate(-1)
+        clickOnCurrentDate(-2)
         checkStatisticsItem(name = name, hours = 1)
-        clickOnViewWithId(statisticsR.id.btnStatisticsContainerNext)
+        clickOnCurrentDate(-1)
         checkStatisticsItem(nameResId = coreR.string.untracked_time_name, hours = 21)
         checkStatisticsItem(name = name, hours = 3)
 
         // Check detailed statistics
         clickOnView(allOf(withText(name), isCompletelyDisplayed()))
-        clickOnView(allOf(withId(statisticsDetailR.id.btnStatisticsDetailToday), isCompletelyDisplayed()))
+        tryAction { clickOnCurrentDate() }
         clickOnViewWithText(coreR.string.range_day)
         checkStatisticsDetailRecords(0)
-        clickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailPrevious)
+        clickOnCurrentDate(-1)
         checkStatisticsDetailRecords(1)
-        clickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailPrevious)
+        clickOnCurrentDate(-2)
         checkStatisticsDetailRecords(1)
-        clickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailPrevious)
+        clickOnCurrentDate(-3)
         checkStatisticsDetailRecords(0)
         pressBack()
 
@@ -1409,35 +1411,35 @@ class SettingsTest : BaseUiTest() {
 
         // Check records
         NavUtils.openRecordsScreen()
-        longClickOnViewWithId(recordsR.id.btnRecordsContainerToday)
-        clickOnViewWithId(recordsR.id.btnRecordsContainerPrevious)
-        clickOnViewWithId(recordsR.id.btnRecordsContainerPrevious)
+        longClickOnCurrentDate()
+        clickOnCurrentDate(-1)
+        clickOnCurrentDate(-2)
         checkRecord(name = name, timeStart = timeStartedPreview, timeEnd = timeEndedPreview)
-        clickOnViewWithId(recordsR.id.btnRecordsContainerNext)
+        clickOnCurrentDate(-1)
         checkRecord(
             nameResId = coreR.string.untracked_time_name, timeStart = startOfDayPreview, timeEnd = startOfDayPreview,
         )
 
         // Check statistics
         NavUtils.openStatisticsScreen()
-        longClickOnViewWithId(statisticsR.id.btnStatisticsContainerToday)
-        clickOnViewWithId(statisticsR.id.btnStatisticsContainerPrevious)
-        clickOnViewWithId(statisticsR.id.btnStatisticsContainerPrevious)
+        longClickOnCurrentDate()
+        clickOnCurrentDate(-1)
+        clickOnCurrentDate(-2)
         checkStatisticsItem(name = name, hours = 4)
-        clickOnViewWithId(statisticsR.id.btnStatisticsContainerNext)
+        clickOnCurrentDate(-1)
         checkStatisticsItem(nameResId = coreR.string.untracked_time_name, hours = 24)
 
         // Check detailed statistics
-        clickOnViewWithId(statisticsR.id.btnStatisticsContainerPrevious)
+        clickOnCurrentDate(-2)
         clickOnView(allOf(withText(name), isCompletelyDisplayed()))
-        clickOnView(allOf(withId(statisticsDetailR.id.btnStatisticsDetailToday), isCompletelyDisplayed()))
+        tryAction { clickOnCurrentDate() }
         clickOnViewWithText(coreR.string.range_day)
         checkStatisticsDetailRecords(0)
-        clickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailPrevious)
+        clickOnCurrentDate(-1)
         checkStatisticsDetailRecords(0)
-        clickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailPrevious)
+        clickOnCurrentDate(-2)
         checkStatisticsDetailRecords(1)
-        clickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailPrevious)
+        clickOnCurrentDate(-3)
         checkStatisticsDetailRecords(0)
         pressBack()
 
@@ -1773,6 +1775,15 @@ class SettingsTest : BaseUiTest() {
 
     @Test
     fun commentSelectionSuggestions() {
+        fun checkHint(textResId: Int) {
+            checkViewIsDisplayed(
+                allOf(
+                    withId(R.id.tvHintItemText),
+                    withText(textResId),
+                ),
+            )
+        }
+
         val nameNoComments = "Name1"
         val nameComment = "Name2"
         val nameComments = "Name3"
@@ -1790,18 +1801,10 @@ class SettingsTest : BaseUiTest() {
         testUtils.addRecord(nameComments, comment = comment2)
         testUtils.addRecord(nameComments, comment = comment3)
 
-        // Disabled
         NavUtils.openSettingsScreen()
         NavUtils.openSettingsAdditional()
         scrollSettingsRecyclerToText(coreR.string.settings_show_comment_input)
-        checkViewDoesNotExist(withText(coreR.string.settings_show_comment_suggestions))
-
         clickOnSettingsCheckboxBesideText(coreR.string.settings_show_comment_input)
-        scrollSettingsRecyclerToText(coreR.string.settings_show_comment_suggestions)
-        checkViewIsDisplayed(withText(coreR.string.settings_show_comment_suggestions))
-        checkCheckboxIsNotChecked(settingsCheckboxBesideText(coreR.string.settings_show_comment_suggestions))
-        clickOnSettingsCheckboxBesideText(coreR.string.settings_show_comment_suggestions)
-        checkCheckboxIsChecked(settingsCheckboxBesideText(coreR.string.settings_show_comment_suggestions))
 
         // Has no data
         NavUtils.openRunningRecordsScreen()
@@ -1839,8 +1842,8 @@ class SettingsTest : BaseUiTest() {
         testUtils.addFavouriteComment(favComment1)
         clickOnViewWithText(nameComments)
         checkViewDoesNotExist(withText(coreR.string.change_record_similar_comments_hint))
-        checkViewIsDisplayed(withText(coreR.string.change_record_last_comments_hint))
-        checkViewIsDisplayed(withText(coreR.string.change_record_favourite_comments_hint))
+        checkHint(coreR.string.change_record_last_comments_hint)
+        checkHint(coreR.string.change_record_favourite_comments_hint)
         checkViewDoesNotExist(withText(comment1))
         checkViewIsDisplayed(withText(comment2))
         checkViewIsDisplayed(withText(comment3))
@@ -1856,9 +1859,9 @@ class SettingsTest : BaseUiTest() {
         typeTextIntoView(tagSelectionR.id.etCommentItemField, "comm")
         Thread.sleep(1000)
         closeSoftKeyboard()
-        checkViewIsDisplayed(withText(coreR.string.change_record_similar_comments_hint))
+        checkHint(coreR.string.change_record_similar_comments_hint)
         checkViewDoesNotExist(withText(coreR.string.change_record_last_comments_hint))
-        checkViewIsDisplayed(withText(coreR.string.change_record_favourite_comments_hint))
+        checkHint(coreR.string.change_record_favourite_comments_hint)
         checkViewIsDisplayed(withText(comment1))
         checkViewIsDisplayed(withText(comment2))
         checkViewIsDisplayed(withText(comment3))
@@ -1867,29 +1870,13 @@ class SettingsTest : BaseUiTest() {
         typeTextIntoView(changeRecordR.id.etCommentItemField, "1")
         Thread.sleep(1000)
         closeSoftKeyboard()
-        checkViewIsDisplayed(withText(coreR.string.change_record_similar_comments_hint))
+        checkHint(coreR.string.change_record_similar_comments_hint)
         checkViewDoesNotExist(withText(coreR.string.change_record_last_comments_hint))
-        checkViewIsDisplayed(withText(coreR.string.change_record_favourite_comments_hint))
+        checkHint(coreR.string.change_record_favourite_comments_hint)
         checkViewIsDisplayed(withText(comment1))
         checkViewDoesNotExist(withText(comment2))
         checkViewDoesNotExist(withText(comment3))
         checkViewIsDisplayed(withText(favComment1))
-        pressBack()
-
-        // Has data but disabled
-        NavUtils.openSettingsScreen()
-        scrollSettingsRecyclerToText(coreR.string.settings_show_comment_suggestions)
-        checkViewIsDisplayed(withText(coreR.string.settings_show_comment_suggestions))
-        checkCheckboxIsChecked(settingsCheckboxBesideText(coreR.string.settings_show_comment_suggestions))
-        clickOnSettingsCheckboxBesideText(coreR.string.settings_show_comment_suggestions)
-        checkCheckboxIsNotChecked(settingsCheckboxBesideText(coreR.string.settings_show_comment_suggestions))
-
-        NavUtils.openRunningRecordsScreen()
-        clickOnViewWithText(nameComments)
-        tryAction { checkViewIsDisplayed(withId(tagSelectionR.id.inputCommentField)) }
-        checkViewDoesNotExist(withText(coreR.string.change_record_similar_comments_hint))
-        checkViewDoesNotExist(withText(coreR.string.change_record_last_comments_hint))
-        checkViewDoesNotExist(withText(coreR.string.change_record_favourite_comments_hint))
         pressBack()
     }
 
@@ -2215,7 +2202,6 @@ class SettingsTest : BaseUiTest() {
         // Record is shown
         NavUtils.openRecordsScreen()
         checkViewDoesNotExist(allOf(withId(recordsR.id.viewRecordsCalendar), isCompletelyDisplayed()))
-        checkViewDoesNotExist(allOf(withId(recordsR.id.tvRecordsCalendarHint), isCompletelyDisplayed()))
         checkViewIsDisplayed(allOf(withId(recordsR.id.rvRecordsList), isCompletelyDisplayed()))
         checkViewIsDisplayed(allOf(withText(name), isCompletelyDisplayed()))
 
@@ -2231,7 +2217,6 @@ class SettingsTest : BaseUiTest() {
         // Record is not shown
         NavUtils.openRecordsScreen()
         checkViewIsDisplayed(allOf(withId(recordsR.id.viewRecordsCalendar), isCompletelyDisplayed()))
-        checkViewIsDisplayed(allOf(withId(recordsR.id.tvRecordsCalendarHint), isCompletelyDisplayed()))
         checkViewDoesNotExist(allOf(withId(recordsR.id.rvRecordsList), isCompletelyDisplayed()))
         checkViewDoesNotExist(allOf(withText(name), isCompletelyDisplayed()))
 
@@ -2255,7 +2240,6 @@ class SettingsTest : BaseUiTest() {
         // Record is shown
         NavUtils.openRecordsScreen()
         checkViewDoesNotExist(allOf(withId(recordsR.id.viewRecordsCalendar), isCompletelyDisplayed()))
-        checkViewDoesNotExist(allOf(withId(recordsR.id.tvRecordsCalendarHint), isCompletelyDisplayed()))
         checkViewIsDisplayed(allOf(withId(recordsR.id.rvRecordsList), isCompletelyDisplayed()))
         checkViewIsDisplayed(allOf(withText(name), isCompletelyDisplayed()))
     }
@@ -2265,15 +2249,42 @@ class SettingsTest : BaseUiTest() {
         fun mapTitle(
             shiftStart: Int,
             shiftEnd: Int,
-        ): String {
-            return timeMapper.toDayShortDateTitle(shiftStart, 0) +
-                " - " +
-                timeMapper.toDayShortDateTitle(shiftEnd, 0)
+        ): Pair<String, String> {
+            val start = timeMapper.toDayDateTimestamp(shiftStart, 0).let {
+                calendar.timeInMillis = it
+                calendar.get(Calendar.DAY_OF_MONTH).toString().padDuration()
+            }
+            val end = timeMapper.toDayDateTimestamp(shiftEnd, 0).let {
+                calendar.timeInMillis = it
+                calendar.get(Calendar.DAY_OF_MONTH).toString().padDuration()
+            }
+            return start to end
+        }
+
+        fun checkCalendarTitle(
+            position: Int,
+            shiftStart: Int,
+            shiftEnd: Int,
+        ) {
+            val title = mapTitle(shiftStart, shiftEnd)
+            checkViewIsDisplayed(
+                allOf(
+                    dateSelectorMatcher(position),
+                    withId(R.id.containerDateSelectorRange),
+                    hasDescendant(withText(title.first)),
+                    hasDescendant(withText(title.second)),
+                ),
+            )
         }
 
         // Disabled
         NavUtils.openRecordsScreen()
-        checkViewIsDisplayed(allOf(withText(coreR.string.title_today), isCompletelyDisplayed()))
+        checkViewIsDisplayed(
+            allOf(
+                dateSelectorMatcher(0),
+                withId(R.id.containerDateSelectorDay),
+            ),
+        )
 
         NavUtils.openSettingsScreen()
         NavUtils.openSettingsDisplay()
@@ -2287,7 +2298,12 @@ class SettingsTest : BaseUiTest() {
 
         // One day
         NavUtils.openRecordsScreen()
-        checkViewIsDisplayed(allOf(withText(coreR.string.title_today), isCompletelyDisplayed()))
+        checkViewIsDisplayed(
+            allOf(
+                dateSelectorMatcher(0),
+                withId(R.id.containerDateSelectorDay),
+            ),
+        )
 
         // Three days
         NavUtils.openSettingsScreen()
@@ -2295,13 +2311,13 @@ class SettingsTest : BaseUiTest() {
         clickOnViewWithText("3")
         NavUtils.openRecordsScreen()
 
-        checkViewIsDisplayed(withText(mapTitle(-2, 0)))
-        clickOnViewWithId(recordsR.id.btnRecordsContainerPrevious)
-        checkViewIsDisplayed(withText(mapTitle(-5, -3)))
-        clickOnViewWithId(recordsR.id.btnRecordsContainerNext)
-        clickOnViewWithId(recordsR.id.btnRecordsContainerNext)
-        checkViewIsDisplayed(withText(mapTitle(1, 3)))
-        clickOnViewWithId(recordsR.id.btnRecordsContainerPrevious)
+        checkCalendarTitle(0, -2, 0)
+        clickOnCurrentDate(-1)
+        checkCalendarTitle(-1, -5, -3)
+        clickOnCurrentDate(0)
+        clickOnCurrentDate(1)
+        checkCalendarTitle(1, 1, 3)
+        clickOnCurrentDate(0)
 
         // Five days
         NavUtils.openSettingsScreen()
@@ -2309,13 +2325,13 @@ class SettingsTest : BaseUiTest() {
         clickOnViewWithText("5")
         NavUtils.openRecordsScreen()
 
-        checkViewIsDisplayed(withText(mapTitle(-4, 0)))
-        clickOnViewWithId(recordsR.id.btnRecordsContainerPrevious)
-        checkViewIsDisplayed(withText(mapTitle(-9, -5)))
-        clickOnViewWithId(recordsR.id.btnRecordsContainerNext)
-        clickOnViewWithId(recordsR.id.btnRecordsContainerNext)
-        checkViewIsDisplayed(withText(mapTitle(1, 5)))
-        clickOnViewWithId(recordsR.id.btnRecordsContainerPrevious)
+        checkCalendarTitle(0, -4, 0)
+        clickOnCurrentDate(-1)
+        checkCalendarTitle(-1, -9, -5)
+        clickOnCurrentDate(0)
+        clickOnCurrentDate(1)
+        checkCalendarTitle(1, 1, 5)
+        clickOnCurrentDate(0)
 
         // Seven days
         NavUtils.openSettingsScreen()
@@ -2323,20 +2339,25 @@ class SettingsTest : BaseUiTest() {
         clickOnViewWithText("7")
         NavUtils.openRecordsScreen()
 
-        checkViewIsDisplayed(withText(mapTitle(-6, 0)))
-        clickOnViewWithId(recordsR.id.btnRecordsContainerPrevious)
-        checkViewIsDisplayed(withText(mapTitle(-13, -7)))
-        clickOnViewWithId(recordsR.id.btnRecordsContainerNext)
-        clickOnViewWithId(recordsR.id.btnRecordsContainerNext)
-        checkViewIsDisplayed(withText(mapTitle(1, 7)))
-        clickOnViewWithId(recordsR.id.btnRecordsContainerPrevious)
+        checkCalendarTitle(0, -6, 0)
+        clickOnCurrentDate(-1)
+        checkCalendarTitle(-1, -13, -7)
+        clickOnCurrentDate(0)
+        clickOnCurrentDate(1)
+        checkCalendarTitle(1, 1, 7)
+        clickOnCurrentDate(0)
 
         // Disable
         NavUtils.openSettingsScreen()
         clickOnSettingsCheckboxBesideText(coreR.string.settings_show_records_calendar)
         checkViewDoesNotExist(withText(coreR.string.settings_days_in_calendar))
         NavUtils.openRecordsScreen()
-        checkViewIsDisplayed(allOf(withText(coreR.string.title_today), isCompletelyDisplayed()))
+        checkViewIsDisplayed(
+            allOf(
+                dateSelectorMatcher(0),
+                withId(R.id.containerDateSelectorDay),
+            ),
+        )
     }
 
     @Test
@@ -2349,11 +2370,21 @@ class SettingsTest : BaseUiTest() {
 
         // Check range not transferred
         NavUtils.openStatisticsScreen()
-        clickOnViewWithIdOnPager(statisticsR.id.btnStatisticsContainerToday)
+        clickOnCurrentDate()
         clickOnViewWithText(coreR.string.range_week)
-        checkViewIsDisplayed(allOf(withText(coreR.string.title_this_week), isCompletelyDisplayed()))
+        checkViewIsDisplayed(
+            allOf(
+                dateSelectorMatcher(0),
+                withId(R.id.containerDateSelectorRange),
+            ),
+        )
         clickOnView(allOf(withText(name), isCompletelyDisplayed()))
-        checkViewIsDisplayed(allOf(withText(coreR.string.title_today), isCompletelyDisplayed()))
+        checkViewIsDisplayed(
+            allOf(
+                dateSelectorMatcher(0),
+                withId(R.id.containerDateSelectorDay),
+            ),
+        )
         pressBack()
 
         // Change setting
@@ -2366,9 +2397,19 @@ class SettingsTest : BaseUiTest() {
 
         // Check range transfer
         NavUtils.openStatisticsScreen()
-        checkViewIsDisplayed(allOf(withText(coreR.string.title_this_week), isCompletelyDisplayed()))
+        checkViewIsDisplayed(
+            allOf(
+                dateSelectorMatcher(0),
+                withId(R.id.containerDateSelectorRange),
+            ),
+        )
         clickOnView(allOf(withText(name), isCompletelyDisplayed()))
-        checkViewIsDisplayed(allOf(withText(coreR.string.title_this_week), isCompletelyDisplayed()))
+        checkViewIsDisplayed(
+            allOf(
+                dateSelectorMatcher(0),
+                withId(R.id.containerDateSelectorRange),
+            ),
+        )
         pressBack()
     }
 
@@ -2749,6 +2790,17 @@ class SettingsTest : BaseUiTest() {
 
     private fun Long.toTimePreview(): String {
         return timeMapper.formatTime(time = this, useMilitaryTime = true, showSeconds = false)
+    }
+
+    fun checkWeekTitle(title: Pair<String, String>) {
+        checkViewIsDisplayed(
+            allOf(
+                dateSelectorMatcher(-1),
+                withId(R.id.containerDateSelectorRange),
+                hasDescendant(withText(title.first)),
+                hasDescendant(withText(title.second)),
+            ),
+        )
     }
 
     private fun Long.toDurationPreview(): String {

@@ -26,6 +26,7 @@ import com.example.util.simpletimetracker.navigation.params.screen.DurationDialo
 import com.example.util.simpletimetracker.navigation.params.screen.TypesSelectionDialogParams
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.math.abs
 
 class SettingsAdditionalViewModelDelegate @Inject constructor(
     private val router: Router,
@@ -137,7 +138,7 @@ class SettingsAdditionalViewModelDelegate @Inject constructor(
             DurationDialogParams(
                 tag = SettingsViewModel.START_OF_DAY_DIALOG_TAG,
                 value = DurationDialogParams.Value.DurationSeconds(
-                    duration = prefsInteractor.getStartOfDayShift() / 1000,
+                    duration = abs(prefsInteractor.getStartOfDayShift()) / 1000,
                 ),
                 showSeconds = false,
             ).let(router::navigate)

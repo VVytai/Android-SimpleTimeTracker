@@ -18,26 +18,24 @@ import com.example.util.simpletimetracker.feature_records_filter.viewData.Record
 import com.example.util.simpletimetracker.utils.BaseUiTest
 import com.example.util.simpletimetracker.utils.NavUtils
 import com.example.util.simpletimetracker.utils.checkViewIsDisplayed
+import com.example.util.simpletimetracker.utils.clickOnCurrentDate
 import com.example.util.simpletimetracker.utils.clickOnView
 import com.example.util.simpletimetracker.utils.clickOnViewWithId
 import com.example.util.simpletimetracker.utils.clickOnViewWithText
-import com.example.util.simpletimetracker.utils.longClickOnViewWithId
-import com.example.util.simpletimetracker.utils.longClickOnViewWithIdOnPager
 import com.example.util.simpletimetracker.utils.tryAction
 import com.example.util.simpletimetracker.utils.typeTextIntoView
 import com.example.util.simpletimetracker.utils.withPluralText
 import com.example.util.simpletimetracker.utils.withTag
 import dagger.hilt.android.testing.HiltAndroidTest
-import java.util.Calendar
-import java.util.concurrent.TimeUnit
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.equalTo
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.util.Calendar
+import java.util.concurrent.TimeUnit
 import com.example.util.simpletimetracker.core.R as coreR
 import com.example.util.simpletimetracker.feature_base_adapter.R as baseR
 import com.example.util.simpletimetracker.feature_records_filter.R as recordsFilterR
-import com.example.util.simpletimetracker.feature_statistics.R as statisticsR
 import com.example.util.simpletimetracker.feature_statistics_detail.R as statisticsDetailR
 
 @Suppress("SameParameterValue")
@@ -67,25 +65,25 @@ class StatisticsDetailFilterTest : BaseUiTest() {
         )
         checkRecordsCard(1)
 
-        longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        NavUtils.openFilter()
         clickOnView(allOf(isDescendantOfA(withId(baseR.id.viewRecordTypeItem)), withText(name1)))
         clickOnView(allOf(isDescendantOfA(withId(baseR.id.viewRecordTypeItem)), withText(name2)))
         pressBack()
         checkRecordsCard(2)
 
-        longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        NavUtils.openFilter()
         clickOnView(allOf(isDescendantOfA(withId(baseR.id.viewRecordTypeItem)), withText(name2)))
         pressBack()
         checkRecordsCard(0)
 
-        longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        NavUtils.openFilter()
         clickOnView(withSubstring(getString(coreR.string.activity_hint)))
         clickOnView(allOf(isDescendantOfA(withId(baseR.id.viewRecordTypeItem)), withText(name1)))
         clickOnView(allOf(isDescendantOfA(withId(baseR.id.viewRecordTypeItem)), withText(name2)))
         pressBack()
         checkRecordsCard(3)
 
-        longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        NavUtils.openFilter()
         selectAll(
             type = RecordsFilterSelectionButtonType.Type.Activities,
             subtype = RecordsFilterSelectionButtonType.Subtype.SelectNone,
@@ -93,7 +91,7 @@ class StatisticsDetailFilterTest : BaseUiTest() {
         pressBack()
         checkRecordsCard(0)
 
-        longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        NavUtils.openFilter()
         clickOnView(withSubstring(getString(coreR.string.activity_hint)))
         selectAll(
             type = RecordsFilterSelectionButtonType.Type.Activities,
@@ -130,7 +128,7 @@ class StatisticsDetailFilterTest : BaseUiTest() {
 
         // Check
         NavUtils.openStatisticsScreen()
-        tryAction { longClickOnViewWithIdOnPager(statisticsR.id.btnStatisticsContainerOptions) }
+        tryAction { NavUtils.openFilter() }
         clickOnViewWithText(coreR.string.category_hint)
         pressBack()
         tryAction { clickOnView(allOf(withText(categoryName1), isCompletelyDisplayed())) }
@@ -139,20 +137,20 @@ class StatisticsDetailFilterTest : BaseUiTest() {
         )
         checkRecordsCard(1)
 
-        longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        NavUtils.openFilter()
         clickOnInnerCategoryFilter()
         clickOnView(allOf(isDescendantOfA(withId(baseR.id.viewCategoryItem)), withText(categoryName1)))
         clickOnView(allOf(isDescendantOfA(withId(baseR.id.viewCategoryItem)), withText(categoryName2)))
         pressBack()
         checkRecordsCard(2)
 
-        longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        NavUtils.openFilter()
         clickOnInnerCategoryFilter()
         clickOnView(allOf(isDescendantOfA(withId(baseR.id.viewCategoryItem)), withText(categoryName2)))
         pressBack()
         checkRecordsCard(0)
 
-        longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        NavUtils.openFilter()
         clickOnView(withSubstring(getString(coreR.string.activity_hint)))
         clickOnInnerCategoryFilter()
         clickOnView(
@@ -161,14 +159,14 @@ class StatisticsDetailFilterTest : BaseUiTest() {
         pressBack()
         checkRecordsCard(3)
 
-        longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        NavUtils.openFilter()
         clickOnInnerCategoryFilter()
         clickOnView(allOf(isDescendantOfA(withId(baseR.id.viewCategoryItem)), withText(categoryName1)))
         clickOnView(allOf(isDescendantOfA(withId(baseR.id.viewCategoryItem)), withText(categoryName2)))
         pressBack()
         checkRecordsCard(6)
 
-        longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        NavUtils.openFilter()
         selectAll(
             type = RecordsFilterSelectionButtonType.Type.Categories,
             subtype = RecordsFilterSelectionButtonType.Subtype.SelectNone,
@@ -176,7 +174,7 @@ class StatisticsDetailFilterTest : BaseUiTest() {
         pressBack()
         checkRecordsCard(0)
 
-        longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        NavUtils.openFilter()
         clickOnView(withSubstring(getString(coreR.string.activity_hint)))
         selectAll(
             type = RecordsFilterSelectionButtonType.Type.Categories,
@@ -213,7 +211,7 @@ class StatisticsDetailFilterTest : BaseUiTest() {
         )
         checkRecordsCard(3)
 
-        longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        NavUtils.openFilter()
         clickOnView(
             allOf(
                 hasSibling(withSubstring(getString(coreR.string.activity_hint))),
@@ -226,22 +224,22 @@ class StatisticsDetailFilterTest : BaseUiTest() {
         pressBack()
         checkRecordsCard(1)
 
-        longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        NavUtils.openFilter()
         clickOnViewWithText(coreR.string.records_filter_any_comment)
         pressBack()
         checkRecordsCard(5)
 
-        longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        NavUtils.openFilter()
         typeTextIntoView(recordsFilterR.id.etCommentItemField, "CoMm")
         pressBack()
         checkRecordsCard(5)
 
-        longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        NavUtils.openFilter()
         typeTextIntoView(recordsFilterR.id.etCommentItemField, comment1)
         pressBack()
         checkRecordsCard(2)
 
-        longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        NavUtils.openFilter()
         typeTextIntoView(recordsFilterR.id.etCommentItemField, comment2)
         pressBack()
         checkRecordsCard(3)
@@ -277,7 +275,7 @@ class StatisticsDetailFilterTest : BaseUiTest() {
         )
         checkRecordsCard(7)
 
-        longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        NavUtils.openFilter()
         clickOnView(withSubstring(getString(R.string.record_tag_hint)))
         clickOnView(withSubstring(getString(coreR.string.records_filter_exclude)))
         clickOnView(
@@ -286,28 +284,28 @@ class StatisticsDetailFilterTest : BaseUiTest() {
         pressBack()
         checkRecordsCard(6)
 
-        longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        NavUtils.openFilter()
         clickOnView(withSubstring(getString(R.string.record_tag_hint)))
         clickOnView(withSubstring(getString(coreR.string.records_filter_exclude)))
         clickOnView(allOf(isDescendantOfA(withId(baseR.id.viewCategoryItem)), withText(tag1)))
         pressBack()
         checkRecordsCard(2)
 
-        longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        NavUtils.openFilter()
         clickOnView(withSubstring(getString(R.string.record_tag_hint)))
         clickOnView(withSubstring(getString(coreR.string.records_filter_exclude)))
         clickOnView(allOf(isDescendantOfA(withId(baseR.id.viewCategoryItem)), withText(tag2)))
         pressBack()
         checkRecordsCard(1)
 
-        longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        NavUtils.openFilter()
         clickOnView(withSubstring(getString(R.string.record_tag_hint)))
         clickOnView(withSubstring(getString(coreR.string.records_filter_exclude)))
         clickOnView(allOf(isDescendantOfA(withId(baseR.id.viewCategoryItem)), withText(tag3)))
         pressBack()
         checkRecordsCard(0)
 
-        longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        NavUtils.openFilter()
         clickOnView(
             allOf(
                 hasSibling(withSubstring(getString(R.string.record_tag_hint))),
@@ -320,7 +318,7 @@ class StatisticsDetailFilterTest : BaseUiTest() {
         pressBack()
         checkRecordsCard(4)
 
-        longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        NavUtils.openFilter()
         clickOnView(withSubstring(getString(R.string.record_tag_hint)))
         clickOnView(withSubstring(getString(coreR.string.records_filter_exclude)))
         clickOnView(allOf(isDescendantOfA(withId(baseR.id.viewCategoryItem)), withText(tag1)))
@@ -358,7 +356,7 @@ class StatisticsDetailFilterTest : BaseUiTest() {
         )
         checkRecordsCard(7)
 
-        longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        NavUtils.openFilter()
         clickOnView(withSubstring(getString(R.string.record_tag_hint)))
         clickOnInnerSelectTagFilter()
         clickOnView(
@@ -367,28 +365,28 @@ class StatisticsDetailFilterTest : BaseUiTest() {
         pressBack()
         checkRecordsCard(1)
 
-        longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        NavUtils.openFilter()
         clickOnView(withSubstring(getString(R.string.record_tag_hint)))
         clickOnInnerSelectTagFilter()
         clickOnView(allOf(isDescendantOfA(withId(baseR.id.viewCategoryItem)), withText(tag1)))
         pressBack()
         checkRecordsCard(5)
 
-        longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        NavUtils.openFilter()
         clickOnView(withSubstring(getString(R.string.record_tag_hint)))
         clickOnInnerSelectTagFilter()
         clickOnView(allOf(isDescendantOfA(withId(baseR.id.viewCategoryItem)), withText(tag2)))
         pressBack()
         checkRecordsCard(6)
 
-        longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        NavUtils.openFilter()
         clickOnView(withSubstring(getString(R.string.record_tag_hint)))
         clickOnInnerSelectTagFilter()
         clickOnView(allOf(isDescendantOfA(withId(baseR.id.viewCategoryItem)), withText(tag3)))
         pressBack()
         checkRecordsCard(7)
 
-        longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        NavUtils.openFilter()
         clickOnView(
             allOf(
                 hasSibling(withSubstring(getString(R.string.record_tag_hint))),
@@ -401,14 +399,14 @@ class StatisticsDetailFilterTest : BaseUiTest() {
         pressBack()
         checkRecordsCard(3)
 
-        longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        NavUtils.openFilter()
         clickOnView(withSubstring(getString(R.string.record_tag_hint)))
         clickOnInnerSelectTagFilter()
         clickOnView(allOf(isDescendantOfA(withId(baseR.id.viewCategoryItem)), withText(tag1)))
         pressBack()
         checkRecordsCard(5)
 
-        longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        NavUtils.openFilter()
         clickOnView(
             allOf(
                 hasSibling(withSubstring(getString(coreR.string.activity_hint))),
@@ -425,7 +423,7 @@ class StatisticsDetailFilterTest : BaseUiTest() {
         pressBack()
         checkRecordsCard(0)
 
-        longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        NavUtils.openFilter()
         clickOnView(withSubstring(getString(R.string.record_tag_hint)))
         clickOnInnerSelectTagFilter()
         selectAll(
@@ -466,7 +464,7 @@ class StatisticsDetailFilterTest : BaseUiTest() {
         )
         checkRecordsCard(7)
 
-        longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        NavUtils.openFilter()
         clickOnView(withSubstring(getString(coreR.string.record_tag_hint)))
         clickOnInnerSelectTagFilter()
         clickOnView(
@@ -507,7 +505,7 @@ class StatisticsDetailFilterTest : BaseUiTest() {
         )
         checkRecordsCard(4)
 
-        longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        NavUtils.openFilter()
         clickOnView(
             allOf(
                 isDescendantOfA(withId(recordsFilterR.id.rvRecordsFilterFilters)),
@@ -520,7 +518,7 @@ class StatisticsDetailFilterTest : BaseUiTest() {
         pressBack()
         checkRecordsCard(1)
 
-        longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        NavUtils.openFilter()
         clickOnView(withSubstring(getString(coreR.string.records_filter_manually_filtered)))
         clickOnView(withText("$name1 - $tag1"))
         clickOnView(withText("$name1 - $tag2"))
@@ -528,7 +526,7 @@ class StatisticsDetailFilterTest : BaseUiTest() {
         checkRecordsCard(3)
 
         // Invert selection
-        longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        NavUtils.openFilter()
         clickOnView(withSubstring(getString(coreR.string.records_filter_manually_filtered)))
         clickOnViewWithText(coreR.string.records_filter_invert_selection)
         pressBack()
@@ -605,62 +603,62 @@ class StatisticsDetailFilterTest : BaseUiTest() {
 
         // Check
         NavUtils.openStatisticsScreen()
-        clickOnView(allOf(withText(coreR.string.title_today), isCompletelyDisplayed()))
+        clickOnCurrentDate()
         clickOnViewWithText(coreR.string.range_overall)
         tryAction { clickOnView(allOf(withText(name1), isCompletelyDisplayed())) }
-        clickOnViewWithText(coreR.string.title_today)
+        clickOnCurrentDate()
         clickOnViewWithText(coreR.string.range_overall)
         checkRecordsCard(28)
 
-        longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        NavUtils.openFilter()
         clickOnView(withSubstring(getString(coreR.string.range_day)))
         clickOnViewWithText(coreR.string.day_of_week_monday)
         pressBack()
         checkRecordsCard(1)
 
-        longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        NavUtils.openFilter()
         clickOnView(withSubstring(getString(coreR.string.range_day)))
         clickOnViewWithText(coreR.string.day_of_week_monday)
         clickOnViewWithText(coreR.string.day_of_week_tuesday)
         pressBack()
         checkRecordsCard(2)
 
-        longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        NavUtils.openFilter()
         clickOnView(withSubstring(getString(coreR.string.range_day)))
         clickOnViewWithText(coreR.string.day_of_week_tuesday)
         clickOnViewWithText(coreR.string.day_of_week_wednesday)
         pressBack()
         checkRecordsCard(3)
 
-        longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        NavUtils.openFilter()
         clickOnView(withSubstring(getString(coreR.string.range_day)))
         clickOnViewWithText(coreR.string.day_of_week_wednesday)
         clickOnViewWithText(coreR.string.day_of_week_thursday)
         pressBack()
         checkRecordsCard(4)
 
-        longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        NavUtils.openFilter()
         clickOnView(withSubstring(getString(coreR.string.range_day)))
         clickOnViewWithText(coreR.string.day_of_week_thursday)
         clickOnViewWithText(coreR.string.day_of_week_friday)
         pressBack()
         checkRecordsCard(5)
 
-        longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        NavUtils.openFilter()
         clickOnView(withSubstring(getString(coreR.string.range_day)))
         clickOnViewWithText(coreR.string.day_of_week_friday)
         clickOnViewWithText(coreR.string.day_of_week_saturday)
         pressBack()
         checkRecordsCard(6)
 
-        longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        NavUtils.openFilter()
         clickOnView(withSubstring(getString(coreR.string.range_day)))
         clickOnViewWithText(coreR.string.day_of_week_saturday)
         clickOnViewWithText(coreR.string.day_of_week_sunday)
         pressBack()
         checkRecordsCard(7)
 
-        longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        NavUtils.openFilter()
         clickOnView(withSubstring(getString(coreR.string.range_day)))
         clickOnViewWithText(coreR.string.day_of_week_saturday)
         pressBack()
@@ -696,7 +694,7 @@ class StatisticsDetailFilterTest : BaseUiTest() {
         checkRecordsCard(3)
 
         // 0s - 1h
-        longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        NavUtils.openFilter()
         clickOnView(withSubstring(getString(coreR.string.records_all_sort_duration)))
         clickOnViewWithId(recordsFilterR.id.fieldRecordsFilterRangeTimeEnded)
         repeat(6) { clickOnViewWithId(R.id.btnNumberKeyboardDelete) }
@@ -707,7 +705,7 @@ class StatisticsDetailFilterTest : BaseUiTest() {
         checkRecordsCard(1)
 
         // 1h - 2h
-        longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        NavUtils.openFilter()
         clickOnView(withSubstring(getString(coreR.string.records_all_sort_duration)))
         clickOnViewWithId(recordsFilterR.id.fieldRecordsFilterRangeTimeStarted)
         clickOnViewWithId(R.id.tvNumberKeyboard1)
@@ -722,7 +720,7 @@ class StatisticsDetailFilterTest : BaseUiTest() {
         checkRecordsCard(2)
 
         // 0s - 2h
-        longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        NavUtils.openFilter()
         clickOnView(withSubstring(getString(coreR.string.records_all_sort_duration)))
         clickOnViewWithId(recordsFilterR.id.fieldRecordsFilterRangeTimeStarted)
         repeat(5) { clickOnViewWithId(R.id.btnNumberKeyboardDelete) }
@@ -731,7 +729,7 @@ class StatisticsDetailFilterTest : BaseUiTest() {
         checkRecordsCard(3)
 
         // 0s - 10m
-        longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        NavUtils.openFilter()
         clickOnView(withSubstring(getString(coreR.string.records_all_sort_duration)))
         clickOnViewWithId(recordsFilterR.id.fieldRecordsFilterRangeTimeEnded)
         repeat(5) { clickOnViewWithId(R.id.btnNumberKeyboardDelete) }
@@ -783,15 +781,15 @@ class StatisticsDetailFilterTest : BaseUiTest() {
 
         // Check
         NavUtils.openStatisticsScreen()
-        clickOnView(allOf(withText(coreR.string.title_today), isCompletelyDisplayed()))
+        clickOnCurrentDate()
         clickOnViewWithText(coreR.string.range_overall)
         tryAction { clickOnView(allOf(withText(name1), isCompletelyDisplayed())) }
-        clickOnViewWithText(coreR.string.title_today)
+        clickOnCurrentDate()
         clickOnViewWithText(coreR.string.range_overall)
         checkRecordsCard(10)
 
         // 0h - 1h
-        longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        NavUtils.openFilter()
         clickOnView(withSubstring(getString(coreR.string.date_time_dialog_time)))
         clickOnViewWithId(recordsFilterR.id.fieldRecordsFilterRangeTimeEnded)
         onView(withClassName(equalTo(CustomTimePicker::class.java.name))).perform(setTime(1, 0))
@@ -800,7 +798,7 @@ class StatisticsDetailFilterTest : BaseUiTest() {
         checkRecordsCard(0)
 
         // 0h - 6h
-        longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        NavUtils.openFilter()
         clickOnView(withSubstring(getString(coreR.string.date_time_dialog_time)))
         clickOnViewWithId(recordsFilterR.id.fieldRecordsFilterRangeTimeEnded)
         onView(withClassName(equalTo(CustomTimePicker::class.java.name))).perform(setTime(6, 0))
@@ -809,7 +807,7 @@ class StatisticsDetailFilterTest : BaseUiTest() {
         checkRecordsCard(1)
 
         // 0h - 12h
-        longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        NavUtils.openFilter()
         clickOnView(withSubstring(getString(coreR.string.date_time_dialog_time)))
         clickOnViewWithId(recordsFilterR.id.fieldRecordsFilterRangeTimeEnded)
         onView(withClassName(equalTo(CustomTimePicker::class.java.name))).perform(setTime(12, 0))
@@ -818,7 +816,7 @@ class StatisticsDetailFilterTest : BaseUiTest() {
         checkRecordsCard(3)
 
         // 0h - 18h
-        longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        NavUtils.openFilter()
         clickOnView(withSubstring(getString(coreR.string.date_time_dialog_time)))
         clickOnViewWithId(recordsFilterR.id.fieldRecordsFilterRangeTimeEnded)
         onView(withClassName(equalTo(CustomTimePicker::class.java.name))).perform(setTime(18, 0))
@@ -827,7 +825,7 @@ class StatisticsDetailFilterTest : BaseUiTest() {
         checkRecordsCard(6)
 
         // 0h - 23h
-        longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        NavUtils.openFilter()
         clickOnView(withSubstring(getString(coreR.string.date_time_dialog_time)))
         clickOnViewWithId(recordsFilterR.id.fieldRecordsFilterRangeTimeEnded)
         onView(withClassName(equalTo(CustomTimePicker::class.java.name))).perform(setTime(23, 0))
@@ -836,7 +834,7 @@ class StatisticsDetailFilterTest : BaseUiTest() {
         checkRecordsCard(10)
 
         // 12h - 23h
-        longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        NavUtils.openFilter()
         clickOnView(withSubstring(getString(coreR.string.date_time_dialog_time)))
         clickOnViewWithId(recordsFilterR.id.fieldRecordsFilterRangeTimeStarted)
         onView(withClassName(equalTo(CustomTimePicker::class.java.name))).perform(setTime(12, 0))
@@ -845,7 +843,7 @@ class StatisticsDetailFilterTest : BaseUiTest() {
         checkRecordsCard(7)
 
         // 18h - 6h
-        longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        NavUtils.openFilter()
         clickOnView(withSubstring(getString(coreR.string.date_time_dialog_time)))
         clickOnViewWithId(recordsFilterR.id.fieldRecordsFilterRangeTimeStarted)
         onView(withClassName(equalTo(CustomTimePicker::class.java.name))).perform(setTime(18, 0))
@@ -910,19 +908,19 @@ class StatisticsDetailFilterTest : BaseUiTest() {
         )
         checkRecordsCard(12)
 
-        longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        NavUtils.openFilter()
         clickOnView(allOf(isDescendantOfA(withId(baseR.id.viewRecordTypeItem)), withText(name1)))
         clickOnView(allOf(isDescendantOfA(withId(baseR.id.viewRecordTypeItem)), withText(name2)))
         pressBack()
         checkRecordsCard(12)
 
-        longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        NavUtils.openFilter()
         clickOnView(withSubstring(getString(coreR.string.change_record_comment_field)))
         typeTextIntoView(recordsFilterR.id.etCommentItemField, comment2)
         pressBack()
         checkRecordsCard(4)
 
-        longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        NavUtils.openFilter()
         clickOnView(withSubstring(getString(coreR.string.record_tag_hint)))
         clickOnInnerSelectTagFilter()
         clickOnView(
@@ -931,7 +929,7 @@ class StatisticsDetailFilterTest : BaseUiTest() {
         pressBack()
         checkRecordsCard(2)
 
-        longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        NavUtils.openFilter()
         clickOnView(withSubstring(getString(coreR.string.record_tag_hint)))
         clickOnView(withSubstring(getString(coreR.string.records_filter_exclude)))
         clickOnView(
@@ -940,7 +938,7 @@ class StatisticsDetailFilterTest : BaseUiTest() {
         pressBack()
         checkRecordsCard(1)
 
-        longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        NavUtils.openFilter()
         clickOnView(
             allOf(
                 isDescendantOfA(withId(recordsFilterR.id.rvRecordsFilterFilters)),

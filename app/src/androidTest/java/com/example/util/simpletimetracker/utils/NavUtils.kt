@@ -28,7 +28,6 @@ import com.example.util.simpletimetracker.feature_change_record_tag.R as changeR
 import com.example.util.simpletimetracker.feature_change_record_type.R as changeRecordTypeR
 import com.example.util.simpletimetracker.feature_dialogs.R as dialogsR
 import com.example.util.simpletimetracker.feature_main.R as mainR
-import com.example.util.simpletimetracker.feature_records.R as recordsR
 
 object NavUtils {
 
@@ -294,8 +293,20 @@ object NavUtils {
         clickOnViewWithText(coreR.string.change_category_save)
     }
 
+    fun openAddRecord() {
+        clickOnViewWithIdOnPager(R.id.btnRecordsContainerAdd)
+    }
+
+    fun openOptionsList() {
+        clickOnViewWithIdOnPager(R.id.btnRecordsContainerOptions)
+    }
+
+    fun openFilter() {
+        longClickOnViewWithIdOnPager(R.id.btnRecordsContainerOptions)
+    }
+
     fun addRecord(name: String) {
-        tryAction { longClickOnViewWithId(recordsR.id.btnRecordAdd) }
+        tryAction { openAddRecord() }
 
         // Activity
         clickOnViewWithText(coreR.string.change_record_type_field)
@@ -313,7 +324,7 @@ object NavUtils {
         comment: String? = null,
         tag: String? = null,
     ) {
-        tryAction { longClickOnViewWithId(recordsR.id.btnRecordAdd) }
+        tryAction { openAddRecord() }
 
         // Time started
         clickOnViewWithId(changeRecordR.id.fieldChangeRecordTimeStarted)

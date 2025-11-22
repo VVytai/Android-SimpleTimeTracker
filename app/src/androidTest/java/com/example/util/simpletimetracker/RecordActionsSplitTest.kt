@@ -21,7 +21,6 @@ import com.example.util.simpletimetracker.utils.clickOnViewWithId
 import com.example.util.simpletimetracker.utils.clickOnViewWithText
 import com.example.util.simpletimetracker.utils.getMillis
 import com.example.util.simpletimetracker.utils.longClickOnView
-import com.example.util.simpletimetracker.utils.longClickOnViewWithId
 import com.example.util.simpletimetracker.utils.nestedScrollTo
 import com.example.util.simpletimetracker.utils.recyclerItemCount
 import com.example.util.simpletimetracker.utils.setPickerTime
@@ -260,7 +259,7 @@ class RecordActionsSplitTest : BaseUiTest() {
         ).check(
             recyclerItemCount(1),
         )
-        longClickOnViewWithId(recordsR.id.btnRecordAdd)
+        NavUtils.openAddRecord()
 
         // Split untracked doesn't work
         onView(withText(coreR.string.change_record_actions_hint)).perform(nestedScrollTo())

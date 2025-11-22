@@ -37,9 +37,6 @@ fun createOptionsListAdapterDelegate(
         }
         ivItemOptionsListCheck.isVisible = item.isChecked
         viewItemOptionsListSelectedBackground.isVisible = item.isSelected
-        if (item.isSelected) {
-            viewItemOptionsListSelectedBackground.setRounded(0)
-        }
 
         root.setOnClickWith(item, onClick)
     }

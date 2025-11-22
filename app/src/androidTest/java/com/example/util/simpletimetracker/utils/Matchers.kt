@@ -10,9 +10,14 @@ import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.test.espresso.Root
 import androidx.test.espresso.matcher.BoundedMatcher
+import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withTagValue
+import com.example.util.simpletimetracker.R
+import com.example.util.simpletimetracker.feature_base_adapter.InfiniteRecyclerAdapter
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.slider.Slider
+import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.Description
 import org.hamcrest.Matcher
@@ -126,4 +131,18 @@ fun nthChildOf(parentMatcher: Matcher<View?>, childPosition: Int): Matcher<View>
             return parentMatcher.matches(view.parent) && group.getChildAt(childPosition).equals(view)
         }
     }
+}
+
+fun dateSelectorMatcher(position: Int): Matcher<View> {
+    return allOf(
+        isCompletelyDisplayed(),
+        withTag(InfiniteRecyclerAdapter.TEST_TAG + position),
+    )
+}
+
+fun selectedDateMatcher(): Matcher<View> {
+    return allOf(
+        isCompletelyDisplayed(),
+        withId(R.id.viewDateSelectorBackgroundSelected),
+    )
 }

@@ -1,6 +1,7 @@
 package com.example.util.simpletimetracker
 
 import android.view.View
+import androidx.test.espresso.Espresso.closeSoftKeyboard
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.contrib.PickerActions
@@ -18,12 +19,12 @@ import com.example.util.simpletimetracker.utils.NavUtils
 import com.example.util.simpletimetracker.utils.checkViewDoesNotExist
 import com.example.util.simpletimetracker.utils.checkViewIsDisplayed
 import com.example.util.simpletimetracker.utils.checkViewIsNotDisplayed
+import com.example.util.simpletimetracker.utils.clickOnCurrentDate
 import com.example.util.simpletimetracker.utils.clickOnRecyclerItem
 import com.example.util.simpletimetracker.utils.clickOnView
 import com.example.util.simpletimetracker.utils.clickOnViewWithId
 import com.example.util.simpletimetracker.utils.clickOnViewWithText
 import com.example.util.simpletimetracker.utils.longClickOnView
-import com.example.util.simpletimetracker.utils.longClickOnViewWithId
 import com.example.util.simpletimetracker.utils.tryAction
 import com.example.util.simpletimetracker.utils.typeTextIntoView
 import com.example.util.simpletimetracker.utils.withCardColor
@@ -38,7 +39,6 @@ import java.util.Calendar
 import com.example.util.simpletimetracker.core.R as coreR
 import com.example.util.simpletimetracker.feature_change_record.R as changeRecordR
 import com.example.util.simpletimetracker.feature_dialogs.R as dialogsR
-import com.example.util.simpletimetracker.feature_records.R as recordsR
 import com.example.util.simpletimetracker.feature_statistics_detail.R as statisticsDetailR
 
 @HiltAndroidTest
@@ -65,7 +65,7 @@ class ChangeRecordTest : BaseUiTest() {
 
         // Add record
         NavUtils.openRecordsScreen()
-        longClickOnViewWithId(recordsR.id.btnRecordAdd)
+        NavUtils.openAddRecord()
 
         val currentTime = System.currentTimeMillis()
         var timeStartedTimestamp = currentTime - 60 * 60 * 1000
@@ -188,6 +188,7 @@ class ChangeRecordTest : BaseUiTest() {
         clickOnViewWithText(coreR.string.change_record_comment_field)
         typeTextIntoView(changeRecordR.id.etChangeRecordCommentField, newComment)
         clickOnViewWithText(coreR.string.change_record_comment_field)
+        closeSoftKeyboard()
 
         // Preview is updated
         checkPreviewUpdated(hasDescendant(withText(fullName2)))
@@ -202,7 +203,7 @@ class ChangeRecordTest : BaseUiTest() {
 
         // Record updated
         checkViewDoesNotExist(allOf(withText(newName), isCompletelyDisplayed()))
-        clickOnViewWithId(recordsR.id.btnRecordsContainerPrevious)
+        clickOnCurrentDate(-1)
         checkViewIsDisplayed(
             allOf(
                 withId(changeRecordR.id.viewRecordItem),
@@ -232,7 +233,7 @@ class ChangeRecordTest : BaseUiTest() {
 
         // Add record
         NavUtils.openRecordsScreen()
-        longClickOnViewWithId(recordsR.id.btnRecordAdd)
+        NavUtils.openAddRecord()
         clickOnViewWithText(coreR.string.change_record_type_field)
         clickOnRecyclerItem(changeRecordR.id.rvChangeRecordType, withText(name))
         clickOnViewWithText(coreR.string.change_record_save)
@@ -296,7 +297,7 @@ class ChangeRecordTest : BaseUiTest() {
 
         // No tags - not shown
         NavUtils.openRecordsScreen()
-        longClickOnViewWithId(R.id.btnRecordAdd)
+        NavUtils.openAddRecord()
         clickOnViewWithText(coreR.string.change_record_tag_field)
         checkViewDoesNotExist(withText(R.string.types_filter_show_all))
         pressBack()

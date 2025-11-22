@@ -12,7 +12,6 @@ import com.example.util.simpletimetracker.utils.NavUtils
 import com.example.util.simpletimetracker.utils.checkViewDoesNotExist
 import com.example.util.simpletimetracker.utils.checkViewIsDisplayed
 import com.example.util.simpletimetracker.utils.clickOnView
-import com.example.util.simpletimetracker.utils.clickOnViewWithId
 import com.example.util.simpletimetracker.utils.clickOnViewWithText
 import com.example.util.simpletimetracker.utils.tryAction
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -51,7 +50,7 @@ class RecordsOptionsTest : BaseUiTest() {
         checkViewIsDisplayed(allOf(withText(name2), isCompletelyDisplayed()))
 
         // Filter untracked
-        clickOnViewWithId(recordsR.id.btnRecordAdd)
+        NavUtils.openOptionsList()
         clickOnViewWithText(R.string.chart_filter_hint)
         clickOnView(
             allOf(isDescendantOfA(withId(baseR.id.viewRecordTypeItem)), withText(coreR.string.untracked_time_name)),
@@ -62,7 +61,7 @@ class RecordsOptionsTest : BaseUiTest() {
         checkViewIsDisplayed(allOf(withText(name2), isCompletelyDisplayed()))
 
         // Filter activity
-        clickOnViewWithId(recordsR.id.btnRecordAdd)
+        NavUtils.openOptionsList()
         clickOnViewWithText(R.string.chart_filter_hint)
         clickOnView(allOf(isDescendantOfA(withId(baseR.id.viewRecordTypeItem)), withText(name1)))
         pressBack()
@@ -71,7 +70,7 @@ class RecordsOptionsTest : BaseUiTest() {
         checkViewIsDisplayed(allOf(withText(name2), isCompletelyDisplayed()))
 
         // Filter all
-        clickOnViewWithId(recordsR.id.btnRecordAdd)
+        NavUtils.openOptionsList()
         clickOnViewWithText(R.string.chart_filter_hint)
         clickOnView(allOf(isDescendantOfA(withId(baseR.id.viewRecordTypeItem)), withText(name2)))
         pressBack()
@@ -81,7 +80,7 @@ class RecordsOptionsTest : BaseUiTest() {
         checkViewIsDisplayed(allOf(withText(coreR.string.no_data), isCompletelyDisplayed()))
 
         // Show all
-        clickOnViewWithId(recordsR.id.btnRecordAdd)
+        NavUtils.openOptionsList()
         clickOnViewWithText(R.string.chart_filter_hint)
         clickOnViewWithText(coreR.string.types_filter_show_all)
         pressBack()
@@ -90,7 +89,7 @@ class RecordsOptionsTest : BaseUiTest() {
         checkViewIsDisplayed(allOf(withText(name2), isCompletelyDisplayed()))
 
         // Hide all
-        clickOnViewWithId(recordsR.id.btnRecordAdd)
+        NavUtils.openOptionsList()
         clickOnViewWithText(R.string.chart_filter_hint)
         clickOnViewWithText(coreR.string.types_filter_hide_all)
         pressBack()
@@ -131,7 +130,7 @@ class RecordsOptionsTest : BaseUiTest() {
         checkViewIsDisplayed(allOf(withText(name3), isCompletelyDisplayed()))
 
         // Switch filter
-        clickOnViewWithId(recordsR.id.btnRecordAdd)
+        NavUtils.openOptionsList()
         clickOnViewWithText(R.string.chart_filter_hint)
         clickOnViewWithText(coreR.string.category_hint)
         pressBack()
@@ -144,7 +143,7 @@ class RecordsOptionsTest : BaseUiTest() {
         checkViewIsDisplayed(allOf(withText(name3), isCompletelyDisplayed()))
 
         // Filter untracked
-        clickOnViewWithId(recordsR.id.btnRecordAdd)
+        NavUtils.openOptionsList()
         clickOnViewWithText(R.string.chart_filter_hint)
         clickOnView(
             allOf(isDescendantOfA(withId(baseR.id.viewCategoryItem)), withText(coreR.string.untracked_time_name)),
@@ -156,7 +155,7 @@ class RecordsOptionsTest : BaseUiTest() {
         checkViewIsDisplayed(allOf(withText(name3), isCompletelyDisplayed()))
 
         // Filter uncategorized
-        clickOnViewWithId(recordsR.id.btnRecordAdd)
+        NavUtils.openOptionsList()
         clickOnViewWithText(R.string.chart_filter_hint)
         clickOnView(
             allOf(isDescendantOfA(withId(baseR.id.viewCategoryItem)), withText(coreR.string.uncategorized_time_name)),
@@ -168,7 +167,7 @@ class RecordsOptionsTest : BaseUiTest() {
         checkViewDoesNotExist(allOf(withText(name3), isCompletelyDisplayed()))
 
         // Filter tag
-        clickOnViewWithId(recordsR.id.btnRecordAdd)
+        NavUtils.openOptionsList()
         clickOnViewWithText(R.string.chart_filter_hint)
         clickOnView(allOf(isDescendantOfA(withId(baseR.id.viewCategoryItem)), withText(tag1)))
         pressBack()
@@ -178,7 +177,7 @@ class RecordsOptionsTest : BaseUiTest() {
         checkViewDoesNotExist(allOf(withText(name3), isCompletelyDisplayed()))
 
         // Filter all
-        clickOnViewWithId(recordsR.id.btnRecordAdd)
+        NavUtils.openOptionsList()
         clickOnViewWithText(R.string.chart_filter_hint)
         clickOnView(allOf(isDescendantOfA(withId(baseR.id.viewCategoryItem)), withText(tag2)))
         pressBack()
@@ -189,7 +188,7 @@ class RecordsOptionsTest : BaseUiTest() {
         checkViewIsDisplayed(allOf(withText(coreR.string.no_data), isCompletelyDisplayed()))
 
         // Show all
-        clickOnViewWithId(recordsR.id.btnRecordAdd)
+        NavUtils.openOptionsList()
         clickOnViewWithText(R.string.chart_filter_hint)
         clickOnViewWithText(coreR.string.types_filter_show_all)
         pressBack()
@@ -199,7 +198,7 @@ class RecordsOptionsTest : BaseUiTest() {
         checkViewIsDisplayed(allOf(withText(name3), isCompletelyDisplayed()))
 
         // Hide all
-        clickOnViewWithId(recordsR.id.btnRecordAdd)
+        NavUtils.openOptionsList()
         clickOnViewWithText(R.string.chart_filter_hint)
         clickOnViewWithText(coreR.string.types_filter_hide_all)
         pressBack()
@@ -242,7 +241,7 @@ class RecordsOptionsTest : BaseUiTest() {
         checkViewIsDisplayed(allOf(withSubstring(name3), isCompletelyDisplayed()))
 
         // Switch filter
-        clickOnViewWithId(recordsR.id.btnRecordAdd)
+        NavUtils.openOptionsList()
         clickOnViewWithText(R.string.chart_filter_hint)
         clickOnViewWithText(coreR.string.record_tag_hint_short)
         pressBack()
@@ -254,7 +253,7 @@ class RecordsOptionsTest : BaseUiTest() {
         checkViewIsDisplayed(allOf(withSubstring(name3), isCompletelyDisplayed()))
 
         // Filter untracked
-        clickOnViewWithId(recordsR.id.btnRecordAdd)
+        NavUtils.openOptionsList()
         clickOnViewWithText(R.string.chart_filter_hint)
         clickOnView(
             allOf(isDescendantOfA(withId(baseR.id.viewCategoryItem)), withText(coreR.string.untracked_time_name)),
@@ -266,7 +265,7 @@ class RecordsOptionsTest : BaseUiTest() {
         checkViewIsDisplayed(allOf(withSubstring(name3), isCompletelyDisplayed()))
 
         // Filter untagged
-        clickOnViewWithId(recordsR.id.btnRecordAdd)
+        NavUtils.openOptionsList()
         clickOnViewWithText(R.string.chart_filter_hint)
         clickOnView(
             allOf(isDescendantOfA(withId(baseR.id.viewCategoryItem)), withText(coreR.string.change_record_untagged)),
@@ -278,7 +277,7 @@ class RecordsOptionsTest : BaseUiTest() {
         checkViewDoesNotExist(allOf(withSubstring(name3), isCompletelyDisplayed()))
 
         // Filter tag
-        clickOnViewWithId(recordsR.id.btnRecordAdd)
+        NavUtils.openOptionsList()
         clickOnViewWithText(R.string.chart_filter_hint)
         clickOnView(allOf(isDescendantOfA(withId(baseR.id.viewCategoryItem)), withText(tag1)))
         pressBack()
@@ -288,7 +287,7 @@ class RecordsOptionsTest : BaseUiTest() {
         checkViewDoesNotExist(allOf(withSubstring(name3), isCompletelyDisplayed()))
 
         // Filter all
-        clickOnViewWithId(recordsR.id.btnRecordAdd)
+        NavUtils.openOptionsList()
         clickOnViewWithText(R.string.chart_filter_hint)
         clickOnView(allOf(isDescendantOfA(withId(baseR.id.viewCategoryItem)), withText(tag2)))
         pressBack()
@@ -299,7 +298,7 @@ class RecordsOptionsTest : BaseUiTest() {
         checkViewIsDisplayed(allOf(withText(coreR.string.no_data), isCompletelyDisplayed()))
 
         // Show all
-        clickOnViewWithId(recordsR.id.btnRecordAdd)
+        NavUtils.openOptionsList()
         clickOnViewWithText(R.string.chart_filter_hint)
         clickOnViewWithText(coreR.string.types_filter_show_all)
         pressBack()
@@ -309,7 +308,7 @@ class RecordsOptionsTest : BaseUiTest() {
         checkViewIsDisplayed(allOf(withSubstring(name3), isCompletelyDisplayed()))
 
         // Hide all
-        clickOnViewWithId(recordsR.id.btnRecordAdd)
+        NavUtils.openOptionsList()
         clickOnViewWithText(R.string.chart_filter_hint)
         clickOnViewWithText(coreR.string.types_filter_hide_all)
         pressBack()
@@ -331,27 +330,24 @@ class RecordsOptionsTest : BaseUiTest() {
         // Record is shown
         NavUtils.openRecordsScreen()
         checkViewDoesNotExist(allOf(withId(recordsR.id.viewRecordsCalendar), isCompletelyDisplayed()))
-        checkViewDoesNotExist(allOf(withId(recordsR.id.tvRecordsCalendarHint), isCompletelyDisplayed()))
         checkViewIsDisplayed(allOf(withId(recordsR.id.rvRecordsList), isCompletelyDisplayed()))
         checkViewIsDisplayed(allOf(withText(name), isCompletelyDisplayed()))
 
         // Change setting
-        clickOnViewWithId(recordsR.id.btnRecordAdd)
+        NavUtils.openOptionsList()
         clickOnViewWithText(R.string.records_switch_to_calendar)
 
         // Record is not shown
         checkViewIsDisplayed(allOf(withId(recordsR.id.viewRecordsCalendar), isCompletelyDisplayed()))
-        checkViewIsDisplayed(allOf(withId(recordsR.id.tvRecordsCalendarHint), isCompletelyDisplayed()))
         checkViewDoesNotExist(allOf(withId(recordsR.id.rvRecordsList), isCompletelyDisplayed()))
         checkViewDoesNotExist(allOf(withText(name), isCompletelyDisplayed()))
 
         // Change setting
-        clickOnViewWithId(recordsR.id.btnRecordAdd)
+        NavUtils.openOptionsList()
         clickOnViewWithText(R.string.records_switch_to_list)
 
         // Record is shown
         checkViewDoesNotExist(allOf(withId(recordsR.id.viewRecordsCalendar), isCompletelyDisplayed()))
-        checkViewDoesNotExist(allOf(withId(recordsR.id.tvRecordsCalendarHint), isCompletelyDisplayed()))
         checkViewIsDisplayed(allOf(withId(recordsR.id.rvRecordsList), isCompletelyDisplayed()))
         checkViewIsDisplayed(allOf(withText(name), isCompletelyDisplayed()))
     }

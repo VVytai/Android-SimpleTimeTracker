@@ -14,7 +14,6 @@ import com.example.util.simpletimetracker.utils.checkViewIsDisplayed
 import com.example.util.simpletimetracker.utils.clickOnView
 import com.example.util.simpletimetracker.utils.clickOnViewWithText
 import com.example.util.simpletimetracker.utils.longClickOnView
-import com.example.util.simpletimetracker.utils.longClickOnViewWithId
 import com.example.util.simpletimetracker.utils.nestedScrollTo
 import com.example.util.simpletimetracker.utils.scrollRecyclerToView
 import com.example.util.simpletimetracker.utils.tryAction
@@ -28,7 +27,6 @@ import java.util.concurrent.TimeUnit
 import com.example.util.simpletimetracker.core.R as coreR
 import com.example.util.simpletimetracker.feature_base_adapter.R as baseR
 import com.example.util.simpletimetracker.feature_change_record.R as changeRecordR
-import com.example.util.simpletimetracker.feature_records.R as recordsR
 
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
@@ -77,7 +75,7 @@ class RecordActionsMergeTest : BaseUiTest() {
         pressBack()
 
         // New record - not shown
-        longClickOnViewWithId(recordsR.id.btnRecordAdd)
+        NavUtils.openAddRecord()
         onView(withText(coreR.string.change_record_actions_hint)).perform(nestedScrollTo())
         clickOnViewWithText(coreR.string.change_record_actions_hint)
         checkViewDoesNotExist(withText(coreR.string.change_record_merge))

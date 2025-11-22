@@ -12,7 +12,6 @@ import com.example.util.simpletimetracker.utils.clickOnView
 import com.example.util.simpletimetracker.utils.clickOnViewWithId
 import com.example.util.simpletimetracker.utils.clickOnViewWithText
 import com.example.util.simpletimetracker.utils.longClickOnView
-import com.example.util.simpletimetracker.utils.longClickOnViewWithId
 import com.example.util.simpletimetracker.utils.tryAction
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.hamcrest.Matchers.allOf
@@ -21,7 +20,6 @@ import org.junit.runner.RunWith
 import com.example.util.simpletimetracker.core.R as coreR
 import com.example.util.simpletimetracker.feature_change_record_type.R as changeRecordTypeR
 import com.example.util.simpletimetracker.feature_change_record_tag.R as changeRecordTagR
-import com.example.util.simpletimetracker.feature_records.R as recordsR
 import com.example.util.simpletimetracker.feature_archive.R as archiveR
 
 @HiltAndroidTest
@@ -44,7 +42,7 @@ class MessagesTest : BaseUiTest() {
     @Test
     fun messageRecordActivity() {
         NavUtils.openRecordsScreen()
-        longClickOnViewWithId(recordsR.id.btnRecordAdd)
+        NavUtils.openAddRecord()
         clickOnViewWithText(coreR.string.change_record_save)
         checkViewIsDisplayed(
             allOf(

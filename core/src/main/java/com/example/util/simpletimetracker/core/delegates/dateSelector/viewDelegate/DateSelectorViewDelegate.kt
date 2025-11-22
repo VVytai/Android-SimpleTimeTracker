@@ -91,8 +91,9 @@ object DateSelectorViewDelegate {
     ) = with(fragment) {
         viewModel.dateScrollPosition.observe { position ->
             doScrollToPosition(
+                viewHolder = viewHolder,
                 binding = binding,
-                position = position,
+                shift = position,
             )
         }
         viewModel.updateDatesViewData.observe {
@@ -135,7 +136,7 @@ object DateSelectorViewDelegate {
             val layoutManager = recyclerView.layoutManager as? LinearLayoutManager
             val snapView = viewHolder.snapHelper.findSnapView(layoutManager) ?: return
             val snapPosition = layoutManager?.getPosition(snapView) ?: return
-            onScrolledToDate(snapPosition - InfiniteRecyclerAdapter.FIRST)
+            onScrolledToDate(viewHolder.adapter.value.toShift(snapPosition))
         }
     }
 
@@ -160,10 +161,11 @@ object DateSelectorViewDelegate {
     }
 
     private fun doScrollToPosition(
+        viewHolder: ViewHolder,
         binding: DateSelectorLayoutBinding,
-        position: Int,
+        shift: Int,
     ) = with(binding) {
-        val actualPosition = position + InfiniteRecyclerAdapter.FIRST
+        val actualPosition = viewHolder.adapter.value.toPosition(shift)
 
         // To long to scroll with animation if scroll distance is long,
         // in this case scrollToPosition closer, and than smoothScroll with animation.

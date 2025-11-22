@@ -17,7 +17,6 @@ import com.example.util.simpletimetracker.utils.clickOnView
 import com.example.util.simpletimetracker.utils.clickOnViewWithId
 import com.example.util.simpletimetracker.utils.clickOnViewWithText
 import com.example.util.simpletimetracker.utils.longClickOnView
-import com.example.util.simpletimetracker.utils.longClickOnViewWithId
 import com.example.util.simpletimetracker.utils.nestedScrollTo
 import com.example.util.simpletimetracker.utils.recyclerItemCount
 import com.example.util.simpletimetracker.utils.scrollRecyclerToView
@@ -25,12 +24,12 @@ import com.example.util.simpletimetracker.utils.tryAction
 import com.example.util.simpletimetracker.utils.withCardColor
 import com.example.util.simpletimetracker.utils.withTag
 import dagger.hilt.android.testing.HiltAndroidTest
-import java.util.Calendar
-import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.allOf
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.util.Calendar
+import java.util.concurrent.TimeUnit
 import com.example.util.simpletimetracker.core.R as coreR
 import com.example.util.simpletimetracker.feature_base_adapter.R as baseR
 import com.example.util.simpletimetracker.feature_change_record.R as changeRecordR
@@ -190,7 +189,7 @@ class RecordActionsContinueTest : BaseUiTest() {
         // Open add new record
         onView(allOf(withId(recordsR.id.rvRecordsList), isCompletelyDisplayed()))
             .check(recyclerItemCount(1))
-        longClickOnViewWithId(recordsR.id.btnRecordAdd)
+        NavUtils.openAddRecord()
 
         // Continue untracked doesn't work
         onView(withText(coreR.string.change_record_actions_hint)).perform(nestedScrollTo())
@@ -283,7 +282,7 @@ class RecordActionsContinueTest : BaseUiTest() {
         }
 
         // Try continue from add record
-        longClickOnViewWithId(recordsR.id.btnRecordAdd)
+        NavUtils.openAddRecord()
         clickOnViewWithText(coreR.string.change_record_type_field)
         clickOnRecyclerItem(changeRecordR.id.rvChangeRecordType, withText(name))
         adjust("+30")
@@ -335,7 +334,7 @@ class RecordActionsContinueTest : BaseUiTest() {
         NavUtils.openRecordsScreen()
 
         // Continue
-        longClickOnViewWithId(recordsR.id.btnRecordAdd)
+        NavUtils.openAddRecord()
         clickOnViewWithText(coreR.string.change_record_type_field)
         clickOnRecyclerItem(changeRecordR.id.rvChangeRecordType, withText(name))
         onView(withText(coreR.string.change_record_actions_hint)).perform(nestedScrollTo())
@@ -371,7 +370,7 @@ class RecordActionsContinueTest : BaseUiTest() {
         NavUtils.openRecordsScreen()
 
         // Continue
-        longClickOnViewWithId(recordsR.id.btnRecordAdd)
+        NavUtils.openAddRecord()
         clickOnViewWithText(coreR.string.change_record_type_field)
         clickOnRecyclerItem(changeRecordR.id.rvChangeRecordType, withText(name2))
         onView(withText(coreR.string.change_record_actions_hint)).perform(nestedScrollTo())

@@ -18,6 +18,7 @@ fun createDateSelectorRangeAdapterDelegate(
     with(binding) {
         item as ViewData
 
+        setTestTag(root, item)
         setDayMoth(
             dayMonth = item.dayMonth1,
             topText = tvDateSelectorTopText1,

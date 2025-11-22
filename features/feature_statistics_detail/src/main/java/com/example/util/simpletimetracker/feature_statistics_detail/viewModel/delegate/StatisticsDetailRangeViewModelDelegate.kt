@@ -155,7 +155,7 @@ class StatisticsDetailRangeViewModelDelegate @Inject constructor(
     }
 
     private fun onRangeUpdated(newRange: RangeLength) = delegateScope.launch {
-        prefsInteractor.setStatisticsDetailRange(rangeLength)
+        prefsInteractor.setStatisticsDetailRange(newRange)
 
         if (newRange != rangeLength) {
             rangeLength = newRange

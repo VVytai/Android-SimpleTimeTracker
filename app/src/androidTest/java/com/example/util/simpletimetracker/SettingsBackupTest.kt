@@ -38,11 +38,11 @@ import com.example.util.simpletimetracker.utils.NavUtils
 import com.example.util.simpletimetracker.utils.checkViewDoesNotExist
 import com.example.util.simpletimetracker.utils.checkViewIsDisplayed
 import com.example.util.simpletimetracker.utils.checkViewIsNotDisplayed
+import com.example.util.simpletimetracker.utils.clickOnCurrentDate
 import com.example.util.simpletimetracker.utils.clickOnView
 import com.example.util.simpletimetracker.utils.clickOnViewWithId
 import com.example.util.simpletimetracker.utils.clickOnViewWithText
 import com.example.util.simpletimetracker.utils.longClickOnView
-import com.example.util.simpletimetracker.utils.longClickOnViewWithId
 import com.example.util.simpletimetracker.utils.nestedScrollTo
 import com.example.util.simpletimetracker.utils.scrollRecyclerInPagerToView
 import com.example.util.simpletimetracker.utils.scrollRecyclerToView
@@ -163,7 +163,7 @@ class SettingsBackupTest : BaseUiTest() {
         // Check records
         pressBack()
         NavUtils.openRecordsScreen()
-        clickOnViewWithId(recordsR.id.btnRecordsContainerToday)
+        clickOnCurrentDate()
         onView(withClassName(equalTo(CustomDatePicker::class.java.name)))
             .perform(setDate(2024, 9, 23))
         clickOnViewWithId(dialogsR.id.btnDateTimeDialogPositive)
@@ -315,7 +315,7 @@ class SettingsBackupTest : BaseUiTest() {
 
         // Check fav comments
         NavUtils.openRecordsScreen()
-        longClickOnViewWithId(R.id.btnRecordAdd)
+        NavUtils.openAddRecord()
         onView(withText(R.string.change_record_comment_field)).perform(nestedScrollTo())
         clickOnViewWithText(R.string.change_record_comment_field)
         checkViewIsDisplayed(withText(R.string.change_record_favourite_comments_hint))
@@ -934,7 +934,7 @@ class SettingsBackupTest : BaseUiTest() {
                 allOf(
                     withId(R.id.viewActivityFilterItem),
                     hasDescendant(withText(it.name)),
-                    getColorMatcher(it.color),
+                    hasDescendant(getColorMatcher(it.color)),
                 ),
             )
         }

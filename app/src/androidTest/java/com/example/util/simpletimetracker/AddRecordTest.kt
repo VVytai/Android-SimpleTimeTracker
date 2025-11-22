@@ -22,7 +22,6 @@ import com.example.util.simpletimetracker.utils.clickOnRecyclerItem
 import com.example.util.simpletimetracker.utils.clickOnView
 import com.example.util.simpletimetracker.utils.clickOnViewWithId
 import com.example.util.simpletimetracker.utils.clickOnViewWithText
-import com.example.util.simpletimetracker.utils.longClickOnViewWithId
 import com.example.util.simpletimetracker.utils.tryAction
 import com.example.util.simpletimetracker.utils.typeTextIntoView
 import com.example.util.simpletimetracker.utils.withCardColor
@@ -37,7 +36,6 @@ import java.util.Calendar
 import com.example.util.simpletimetracker.core.R as coreR
 import com.example.util.simpletimetracker.feature_change_record.R as changeRecordR
 import com.example.util.simpletimetracker.feature_dialogs.R as dialogsR
-import com.example.util.simpletimetracker.feature_records.R as recordsR
 
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
@@ -59,7 +57,7 @@ class AddRecordTest : BaseUiTest() {
 
         // Add record
         NavUtils.openRecordsScreen()
-        longClickOnViewWithId(recordsR.id.btnRecordAdd)
+        NavUtils.openAddRecord()
 
         // View is set up
         checkViewIsNotDisplayed(withId(changeRecordR.id.btnChangeRecordDelete))
@@ -208,7 +206,7 @@ class AddRecordTest : BaseUiTest() {
     @Test
     fun addRecordTypesEmpty() {
         NavUtils.openRecordsScreen()
-        longClickOnViewWithId(recordsR.id.btnRecordAdd)
+        NavUtils.openAddRecord()
 
         // Open activity chooser
         clickOnViewWithText(coreR.string.change_record_type_field)
@@ -221,7 +219,7 @@ class AddRecordTest : BaseUiTest() {
         testUtils.addActivity(name)
 
         NavUtils.openRecordsScreen()
-        longClickOnViewWithId(recordsR.id.btnRecordAdd)
+        NavUtils.openAddRecord()
 
         // Select activity
         clickOnViewWithText(coreR.string.change_record_type_field)
@@ -252,7 +250,7 @@ class AddRecordTest : BaseUiTest() {
 
         // Check comments
         NavUtils.openRecordsScreen()
-        longClickOnViewWithId(recordsR.id.btnRecordAdd)
+        NavUtils.openAddRecord()
 
         // No last comments
         clickOnViewWithText(coreR.string.change_record_comment_field)
@@ -326,7 +324,7 @@ class AddRecordTest : BaseUiTest() {
 
         // Check
         NavUtils.openRecordsScreen()
-        longClickOnViewWithId(recordsR.id.btnRecordAdd)
+        NavUtils.openAddRecord()
 
         // No favourites
         clickOnViewWithText(coreR.string.change_record_comment_field)
@@ -369,9 +367,19 @@ class AddRecordTest : BaseUiTest() {
         clickOnRecyclerItem(changeRecordR.id.rvChangeRecordType, withText(name))
         clickOnViewWithText(coreR.string.change_record_comment_field)
         closeSoftKeyboard()
-        checkViewIsDisplayed(withText(coreR.string.change_record_last_comments_hint))
+        checkViewIsDisplayed(
+            allOf(
+                withId(R.id.tvHintItemText),
+                withText(coreR.string.change_record_last_comments_hint),
+            ),
+        )
         checkViewIsDisplayed(withText(comment))
-        checkViewIsDisplayed(withText(coreR.string.change_record_favourite_comments_hint))
+        checkViewIsDisplayed(
+            allOf(
+                withId(R.id.tvHintItemText),
+                withText(coreR.string.change_record_favourite_comments_hint),
+            ),
+        )
         checkViewIsDisplayed(withText(comment2))
     }
 
@@ -388,7 +396,7 @@ class AddRecordTest : BaseUiTest() {
 
         // Check
         NavUtils.openRecordsScreen()
-        longClickOnViewWithId(recordsR.id.btnRecordAdd)
+        NavUtils.openAddRecord()
         clickOnViewWithText(coreR.string.change_record_comment_field)
         closeSoftKeyboard()
 
@@ -415,7 +423,7 @@ class AddRecordTest : BaseUiTest() {
     fun addRecordAdjustTime() {
         // Add record
         NavUtils.openRecordsScreen()
-        longClickOnViewWithId(recordsR.id.btnRecordAdd)
+        NavUtils.openAddRecord()
 
         // Setup
         val hourStarted = 15
@@ -557,7 +565,7 @@ class AddRecordTest : BaseUiTest() {
 
         // Switch start and end
         NavUtils.openRecordsScreen()
-        longClickOnViewWithId(recordsR.id.btnRecordAdd)
+        NavUtils.openAddRecord()
         checkField(isStart = true, isDuration = false)
         checkField(isStart = false, isDuration = false)
 
@@ -590,7 +598,7 @@ class AddRecordTest : BaseUiTest() {
     fun adjustDuration() {
         // Add record
         NavUtils.openRecordsScreen()
-        longClickOnViewWithId(recordsR.id.btnRecordAdd)
+        NavUtils.openAddRecord()
 
         // Setup
         val hourStarted = 15

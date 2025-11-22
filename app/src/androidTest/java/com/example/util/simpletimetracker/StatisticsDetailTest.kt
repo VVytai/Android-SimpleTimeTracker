@@ -16,11 +16,11 @@ import com.example.util.simpletimetracker.utils.BaseUiTest
 import com.example.util.simpletimetracker.utils.NavUtils
 import com.example.util.simpletimetracker.utils.checkViewDoesNotExist
 import com.example.util.simpletimetracker.utils.checkViewIsDisplayed
+import com.example.util.simpletimetracker.utils.clickOnCurrentDate
+import com.example.util.simpletimetracker.utils.clickOnNextDate
 import com.example.util.simpletimetracker.utils.clickOnView
-import com.example.util.simpletimetracker.utils.clickOnViewWithId
-import com.example.util.simpletimetracker.utils.clickOnViewWithIdOnPager
 import com.example.util.simpletimetracker.utils.clickOnViewWithText
-import com.example.util.simpletimetracker.utils.longClickOnViewWithId
+import com.example.util.simpletimetracker.utils.dateSelectorMatcher
 import com.example.util.simpletimetracker.utils.recyclerItemCount
 import com.example.util.simpletimetracker.utils.tryAction
 import com.example.util.simpletimetracker.utils.withCardColor
@@ -35,7 +35,6 @@ import java.util.concurrent.TimeUnit
 import com.example.util.simpletimetracker.core.R as coreR
 import com.example.util.simpletimetracker.feature_base_adapter.R as baseR
 import com.example.util.simpletimetracker.feature_records_all.R as recordsAllR
-import com.example.util.simpletimetracker.feature_statistics.R as statisticsR
 import com.example.util.simpletimetracker.feature_statistics_detail.R as statisticsDetailR
 import com.example.util.simpletimetracker.feature_views.R as viewsR
 
@@ -100,12 +99,12 @@ class StatisticsDetailTest : BaseUiTest() {
 
         // Check detailed statistics
         NavUtils.openStatisticsScreen()
-        clickOnViewWithId(statisticsR.id.btnStatisticsContainerToday)
+        clickOnCurrentDate()
         clickOnViewWithText(coreR.string.range_overall)
         tryAction { clickOnView(allOf(withText(name), isCompletelyDisplayed())) }
 
         // Check one day
-        clickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailToday)
+        clickOnCurrentDate()
         clickOnViewWithText(coreR.string.range_custom)
         NavUtils.setCustomRange(
             yearStarted = calendarToday.get(Calendar.YEAR),
@@ -115,12 +114,8 @@ class StatisticsDetailTest : BaseUiTest() {
             monthEnded = calendarToday.get(Calendar.MONTH),
             dayEnded = calendarToday.get(Calendar.DAY_OF_MONTH),
         )
-        checkViewIsDisplayed(
-            allOf(withId(statisticsDetailR.id.btnStatisticsDetailPrevious), isCompletelyDisplayed()),
-        )
-        checkViewIsDisplayed(
-            allOf(withId(statisticsDetailR.id.btnStatisticsDetailNext), isCompletelyDisplayed()),
-        )
+        checkViewIsDisplayed(dateSelectorMatcher(-1))
+        checkViewIsDisplayed(dateSelectorMatcher(1))
         checkViewDoesNotExist(
             allOf(withTag(StatisticsDetailBlock.DailyCalendarHint), isCompletelyDisplayed()),
         )
@@ -141,7 +136,7 @@ class StatisticsDetailTest : BaseUiTest() {
         checkRecordsCard(1)
 
         // Check two days
-        clickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailToday)
+        clickOnCurrentDate()
         clickOnViewWithText(coreR.string.range_custom)
         NavUtils.setCustomRange(
             yearStarted = calendarYesterday.get(Calendar.YEAR),
@@ -171,7 +166,7 @@ class StatisticsDetailTest : BaseUiTest() {
         checkRecordsCard(2)
 
         // Check weeks
-        clickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailToday)
+        clickOnCurrentDate()
         clickOnViewWithText(coreR.string.range_custom)
         NavUtils.setCustomRange(
             yearStarted = calendarPrevWeek.get(Calendar.YEAR),
@@ -208,7 +203,7 @@ class StatisticsDetailTest : BaseUiTest() {
         checkRecordsCard(3)
 
         // Check months
-        clickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailToday)
+        clickOnCurrentDate()
         clickOnViewWithText(coreR.string.range_custom)
         NavUtils.setCustomRange(
             yearStarted = calendarPrevMonth.get(Calendar.YEAR),
@@ -251,7 +246,7 @@ class StatisticsDetailTest : BaseUiTest() {
         checkRecordsCard(4)
 
         // Check years
-        clickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailToday)
+        clickOnCurrentDate()
         clickOnViewWithText(coreR.string.range_custom)
         NavUtils.setCustomRange(
             yearStarted = calendarPrevYear.get(Calendar.YEAR),
@@ -335,12 +330,12 @@ class StatisticsDetailTest : BaseUiTest() {
         checkPreview(color, icon, name)
 
         // Switch range
-        clickOnViewWithIdOnPager(statisticsDetailR.id.btnStatisticsDetailToday)
+        clickOnCurrentDate()
         clickOnViewWithText(coreR.string.range_overall)
 
         // Check buttons
-        checkViewDoesNotExist(allOf(withId(statisticsDetailR.id.btnStatisticsDetailPrevious), isCompletelyDisplayed()))
-        checkViewDoesNotExist(allOf(withId(statisticsDetailR.id.btnStatisticsDetailNext), isCompletelyDisplayed()))
+        checkViewDoesNotExist(dateSelectorMatcher(-1))
+        checkViewDoesNotExist(dateSelectorMatcher(1))
 
         // Daily calendar
         checkViewDoesNotExist(
@@ -513,7 +508,7 @@ class StatisticsDetailTest : BaseUiTest() {
         checkPreview(color, icon, name)
 
         // Switch range
-        clickOnViewWithIdOnPager(statisticsDetailR.id.btnStatisticsDetailToday)
+        clickOnCurrentDate()
         clickOnViewWithText(coreR.string.range_day)
 
         // Daily calendar
@@ -574,7 +569,7 @@ class StatisticsDetailTest : BaseUiTest() {
         )
 
         // Next day
-        clickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailNext)
+        clickOnNextDate()
         checkEmptyStatistics()
     }
 
@@ -619,7 +614,7 @@ class StatisticsDetailTest : BaseUiTest() {
         checkPreview(color, icon, name)
 
         // Switch range
-        clickOnViewWithIdOnPager(statisticsDetailR.id.btnStatisticsDetailToday)
+        clickOnCurrentDate()
         clickOnViewWithText(coreR.string.range_week)
 
         // Daily calendar
@@ -643,13 +638,13 @@ class StatisticsDetailTest : BaseUiTest() {
             average = "25$minuteString",
             averageNonEmpty = "3$hourString 0$minuteString",
         )
-        clickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailPrevious)
+        clickOnCurrentDate(-1)
         checkRangeAverages(
             rangeId = coreR.string.statistics_detail_chart_daily,
             average = "8$minuteString",
             averageNonEmpty = "1$hourString 0$minuteString",
         )
-        clickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailNext)
+        clickOnCurrentDate()
 
         // Cards
         checkCards()
@@ -685,7 +680,7 @@ class StatisticsDetailTest : BaseUiTest() {
         checkNoTagItem(getString(coreR.string.change_record_untagged))
 
         // Next week
-        clickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailNext)
+        clickOnNextDate()
         checkEmptyStatistics()
     }
 
@@ -733,7 +728,7 @@ class StatisticsDetailTest : BaseUiTest() {
         checkPreview(color, icon, name)
 
         // Switch range
-        clickOnViewWithIdOnPager(statisticsDetailR.id.btnStatisticsDetailToday)
+        clickOnCurrentDate()
         clickOnViewWithText(coreR.string.range_month)
 
         // Daily calendar
@@ -758,7 +753,7 @@ class StatisticsDetailTest : BaseUiTest() {
             checkAverage = false,
             averageNonEmpty = "3$hourString 0$minuteString",
         )
-        clickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailPrevious)
+        clickOnCurrentDate(-1)
         clickOnChartGrouping(coreR.string.statistics_detail_chart_daily)
         checkRangeAverages(
             rangeId = coreR.string.statistics_detail_chart_daily,
@@ -771,7 +766,7 @@ class StatisticsDetailTest : BaseUiTest() {
             checkAverage = false,
             averageNonEmpty = "1$hourString 0$minuteString",
         )
-        clickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailNext)
+        clickOnCurrentDate()
         clickOnChartGrouping(coreR.string.statistics_detail_chart_daily)
         checkViewDoesNotExist(
             allOf(withText(coreR.string.statistics_detail_chart_monthly), isCompletelyDisplayed()),
@@ -818,7 +813,7 @@ class StatisticsDetailTest : BaseUiTest() {
         checkNoTagItem("Untagged")
 
         // Next month
-        clickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailNext)
+        clickOnNextDate()
         checkEmptyStatistics()
     }
 
@@ -859,7 +854,7 @@ class StatisticsDetailTest : BaseUiTest() {
         checkPreview(color, icon, name)
 
         // Switch range
-        clickOnViewWithIdOnPager(statisticsDetailR.id.btnStatisticsDetailToday)
+        clickOnCurrentDate()
         clickOnViewWithText(coreR.string.range_year)
 
         // Daily calendar
@@ -890,7 +885,7 @@ class StatisticsDetailTest : BaseUiTest() {
             average = "15$minuteString",
             averageNonEmpty = "3$hourString 0$minuteString",
         )
-        clickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailPrevious)
+        clickOnCurrentDate(-1)
         clickOnChartGrouping(coreR.string.statistics_detail_chart_daily)
         checkRangeAverages(
             rangeId = coreR.string.statistics_detail_chart_daily,
@@ -909,7 +904,7 @@ class StatisticsDetailTest : BaseUiTest() {
             average = "5$minuteString",
             averageNonEmpty = "1$hourString 0$minuteString",
         )
-        clickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailNext)
+        clickOnCurrentDate()
         clickOnChartGrouping(coreR.string.statistics_detail_chart_daily)
         checkViewDoesNotExist(
             allOf(withText(coreR.string.statistics_detail_chart_yearly), isCompletelyDisplayed()),
@@ -946,7 +941,7 @@ class StatisticsDetailTest : BaseUiTest() {
         checkAllRecords(3)
 
         // Next year
-        clickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailNext)
+        clickOnCurrentDate(1)
         checkEmptyStatistics()
     }
 
@@ -993,7 +988,7 @@ class StatisticsDetailTest : BaseUiTest() {
         checkPreview(color, icon, name)
 
         // Switch range
-        clickOnViewWithIdOnPager(statisticsDetailR.id.btnStatisticsDetailToday)
+        clickOnCurrentDate()
         clickOnView(withPluralText(coreR.plurals.range_last, 7, 7))
         clickOnViewWithText(coreR.string.duration_dialog_save)
 
@@ -1064,17 +1059,32 @@ class StatisticsDetailTest : BaseUiTest() {
         // Open stat detail
         NavUtils.openStatisticsScreen()
         clickOnView(allOf(withText(name), isCompletelyDisplayed()))
-        checkViewIsDisplayed(allOf(withText(coreR.string.title_today), isCompletelyDisplayed()))
+        checkViewIsDisplayed(
+            allOf(
+                dateSelectorMatcher(0),
+                withId(R.id.containerDateSelectorDay),
+            ),
+        )
 
         // Change range
-        clickOnViewWithIdOnPager(statisticsDetailR.id.btnStatisticsDetailToday)
+        clickOnCurrentDate()
         clickOnViewWithText(coreR.string.range_week)
-        checkViewIsDisplayed(allOf(withText(coreR.string.title_this_week), isCompletelyDisplayed()))
+        checkViewIsDisplayed(
+            allOf(
+                dateSelectorMatcher(0),
+                withId(R.id.containerDateSelectorRange),
+            ),
+        )
         pressBack()
 
         // Range saved
         clickOnView(allOf(withText(name), isCompletelyDisplayed()))
-        checkViewIsDisplayed(allOf(withText(coreR.string.title_this_week), isCompletelyDisplayed()))
+        checkViewIsDisplayed(
+            allOf(
+                dateSelectorMatcher(0),
+                withId(R.id.containerDateSelectorRange),
+            ),
+        )
     }
 
     @Test
@@ -1110,7 +1120,7 @@ class StatisticsDetailTest : BaseUiTest() {
         // Check detailed statistics
         NavUtils.openStatisticsScreen()
         tryAction { clickOnView(allOf(withText(name), isCompletelyDisplayed())) }
-        clickOnViewWithIdOnPager(statisticsDetailR.id.btnStatisticsDetailToday)
+        clickOnCurrentDate()
         clickOnViewWithText(coreR.string.range_overall)
 
         scrollStatDetailRecyclerToTag(StatisticsDetailBlock.Series)
@@ -1155,12 +1165,12 @@ class StatisticsDetailTest : BaseUiTest() {
         NavUtils.openStatisticsScreen()
         tryAction { clickOnView(allOf(withText(coreR.string.untracked_time_name), isCompletelyDisplayed())) }
 
-        clickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailPrevious)
+        clickOnCurrentDate(-1)
         checkCard(coreR.string.statistics_detail_total_duration, "24$hourString 0$minuteString")
         checkRecordsCard(1)
         checkCard(coreR.string.statistics_detail_average_record, "24$hourString 0$minuteString")
 
-        clickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailPrevious)
+        clickOnCurrentDate(-2)
         checkCard(coreR.string.statistics_detail_total_duration, "3$hourString 0$minuteString")
         checkRecordsCard(1)
         checkCard(coreR.string.statistics_detail_average_record, "3$hourString 0$minuteString")
@@ -1194,7 +1204,7 @@ class StatisticsDetailTest : BaseUiTest() {
         // Check
         NavUtils.openStatisticsScreen()
         tryAction { clickOnView(allOf(withText(name1), isCompletelyDisplayed())) }
-        longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        NavUtils.openFilter()
         clickOnView(withText(coreR.string.multitask_time_name))
         pressBack()
 
@@ -1280,7 +1290,7 @@ class StatisticsDetailTest : BaseUiTest() {
         // Check on one record
         NavUtils.openStatisticsScreen()
         tryAction { clickOnView(allOf(withText(name1), isCompletelyDisplayed())) }
-        clickOnViewWithIdOnPager(statisticsDetailR.id.btnStatisticsDetailToday)
+        clickOnCurrentDate()
         clickOnViewWithText(coreR.string.range_overall)
         checkViewDoesNotExist(
             allOf(withTag(StatisticsDetailBlock.ChartSplitByActivity), isCompletelyDisplayed()),
@@ -1294,7 +1304,7 @@ class StatisticsDetailTest : BaseUiTest() {
         clickOnView(withText(R.string.records_all_sort_duration))
 
         // Not visible for days
-        clickOnViewWithIdOnPager(statisticsDetailR.id.btnStatisticsDetailToday)
+        clickOnCurrentDate()
         clickOnViewWithText(coreR.string.range_day)
         checkViewDoesNotExist(
             allOf(withTag(StatisticsDetailBlock.ChartSplitByActivity), isCompletelyDisplayed()),
@@ -1335,7 +1345,7 @@ class StatisticsDetailTest : BaseUiTest() {
         // Open stats
         NavUtils.openStatisticsScreen()
         tryAction { clickOnView(allOf(withText(R.string.statistics_total_tracked), isCompletelyDisplayed())) }
-        clickOnViewWithIdOnPager(statisticsDetailR.id.btnStatisticsDetailToday)
+        clickOnCurrentDate()
         clickOnViewWithText(coreR.string.range_overall)
 
         // Activity split

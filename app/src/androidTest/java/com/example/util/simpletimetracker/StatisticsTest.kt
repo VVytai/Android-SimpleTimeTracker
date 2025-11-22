@@ -12,19 +12,21 @@ import com.example.util.simpletimetracker.utils.BaseUiTest
 import com.example.util.simpletimetracker.utils.NavUtils
 import com.example.util.simpletimetracker.utils.checkViewDoesNotExist
 import com.example.util.simpletimetracker.utils.checkViewIsDisplayed
+import com.example.util.simpletimetracker.utils.clickOnCurrentDate
+import com.example.util.simpletimetracker.utils.clickOnCurrentSelectedDate
+import com.example.util.simpletimetracker.utils.clickOnNextDate
+import com.example.util.simpletimetracker.utils.clickOnPrevDate
 import com.example.util.simpletimetracker.utils.clickOnView
-import com.example.util.simpletimetracker.utils.clickOnViewWithId
 import com.example.util.simpletimetracker.utils.clickOnViewWithText
-import com.example.util.simpletimetracker.utils.longClickOnViewWithIdOnPager
 import com.example.util.simpletimetracker.utils.tryAction
 import com.example.util.simpletimetracker.utils.withCardColor
 import com.example.util.simpletimetracker.utils.withPluralText
 import com.example.util.simpletimetracker.utils.withTag
 import dagger.hilt.android.testing.HiltAndroidTest
-import java.util.concurrent.TimeUnit
 import org.hamcrest.CoreMatchers.allOf
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.util.concurrent.TimeUnit
 import com.example.util.simpletimetracker.core.R as coreR
 import com.example.util.simpletimetracker.feature_base_adapter.R as baseR
 import com.example.util.simpletimetracker.feature_statistics.R as statisticsR
@@ -56,28 +58,28 @@ class StatisticsTest : BaseUiTest() {
         checkRecordsRange(firstColor, lastColor, firstIcon, lastIcon, name, newName)
 
         // Switch to week range
-        clickOnView(allOf(withText(coreR.string.title_today), isCompletelyDisplayed()))
+        clickOnCurrentSelectedDate()
         clickOnViewWithText(coreR.string.range_week)
         checkRecordsRange(firstColor, lastColor, firstIcon, lastIcon, name, newName)
 
         // Switch to month range
-        clickOnView(allOf(withText(coreR.string.title_this_week), isCompletelyDisplayed()))
+        clickOnCurrentSelectedDate()
         clickOnViewWithText(coreR.string.range_month)
         checkRecordsRange(firstColor, lastColor, firstIcon, lastIcon, name, newName)
 
         // Switch to year range
-        clickOnView(allOf(withText(coreR.string.title_this_month), isCompletelyDisplayed()))
+        clickOnCurrentSelectedDate()
         clickOnViewWithText(coreR.string.range_year)
         checkRecordsRange(firstColor, lastColor, firstIcon, lastIcon, name, newName)
 
         // Switch to last days range
-        clickOnView(allOf(withText(coreR.string.title_this_year), isCompletelyDisplayed()))
+        clickOnCurrentSelectedDate()
         clickOnView(withPluralText(coreR.plurals.range_last, 7, 7))
         clickOnViewWithText(coreR.string.duration_dialog_save)
         checkRecordsRange(firstColor, lastColor, firstIcon, lastIcon, name, newName)
 
         // Switch to overall range
-        clickOnView(allOf(withPluralText(coreR.plurals.range_last, 7, 7), isCompletelyDisplayed()))
+        clickOnCurrentSelectedDate()
         clickOnViewWithText(coreR.string.range_overall)
         Thread.sleep(1000)
 
@@ -89,7 +91,7 @@ class StatisticsTest : BaseUiTest() {
                 isCompletelyDisplayed(),
             ),
         )
-        longClickOnViewWithIdOnPager(statisticsR.id.btnStatisticsContainerOptions)
+        NavUtils.openFilter()
         clickOnViewWithText(coreR.string.untracked_time_name)
         pressBack()
         checkViewIsDisplayed(
@@ -164,38 +166,38 @@ class StatisticsTest : BaseUiTest() {
         testUtils.addRecord(typeName1, timeStarted = before, timeEnded = before)
 
         NavUtils.openStatisticsScreen()
-        longClickOnViewWithIdOnPager(statisticsR.id.btnStatisticsContainerOptions)
+        NavUtils.openFilter()
         clickOnViewWithText(coreR.string.category_hint)
         pressBack()
 
         // Check day range
-        clickOnViewWithId(statisticsR.id.btnStatisticsContainerToday)
+        clickOnCurrentSelectedDate()
         clickOnViewWithText(coreR.string.range_day)
         checkCategoryRange(firstColor, lastColor, categoryName1, categoryName2, categoryName3)
 
         // Switch to week range
-        clickOnView(allOf(withText(coreR.string.title_today), isCompletelyDisplayed()))
+        clickOnCurrentSelectedDate()
         clickOnViewWithText(coreR.string.range_week)
         checkCategoryRange(firstColor, lastColor, categoryName1, categoryName2, categoryName3)
 
         // Switch to month range
-        clickOnView(allOf(withText(coreR.string.title_this_week), isCompletelyDisplayed()))
+        clickOnCurrentSelectedDate()
         clickOnViewWithText(coreR.string.range_month)
         checkCategoryRange(firstColor, lastColor, categoryName1, categoryName2, categoryName3)
 
         // Switch to year range
-        clickOnView(allOf(withText(coreR.string.title_this_month), isCompletelyDisplayed()))
+        clickOnCurrentSelectedDate()
         clickOnViewWithText(coreR.string.range_year)
         checkCategoryRange(firstColor, lastColor, categoryName1, categoryName2, categoryName3)
 
         // Switch to last days range
-        clickOnView(allOf(withText(coreR.string.title_this_year), isCompletelyDisplayed()))
+        clickOnCurrentSelectedDate()
         clickOnView(withPluralText(coreR.plurals.range_last, 7, 7))
         clickOnViewWithText(coreR.string.duration_dialog_save)
         checkCategoryRange(firstColor, lastColor, categoryName1, categoryName2, categoryName3)
 
         // Switch to overall range
-        clickOnView(allOf(withPluralText(coreR.plurals.range_last, 7, 7), isCompletelyDisplayed()))
+        clickOnCurrentSelectedDate()
         clickOnViewWithText(coreR.string.range_overall)
         Thread.sleep(1000)
 
@@ -207,7 +209,7 @@ class StatisticsTest : BaseUiTest() {
                 isCompletelyDisplayed(),
             ),
         )
-        longClickOnViewWithIdOnPager(statisticsR.id.btnStatisticsContainerOptions)
+        NavUtils.openFilter()
         clickOnViewWithText(coreR.string.untracked_time_name)
         pressBack()
         checkViewIsDisplayed(
@@ -292,38 +294,38 @@ class StatisticsTest : BaseUiTest() {
         testUtils.addRecord(typeName1, timeStarted = before, timeEnded = before)
 
         NavUtils.openStatisticsScreen()
-        longClickOnViewWithIdOnPager(statisticsR.id.btnStatisticsContainerOptions)
+        NavUtils.openFilter()
         clickOnViewWithText(coreR.string.record_tag_hint_short)
         pressBack()
 
         // Check day range
-        clickOnViewWithId(statisticsR.id.btnStatisticsContainerToday)
+        clickOnCurrentSelectedDate()
         clickOnViewWithText(coreR.string.range_day)
         checkTagRange(firstColor, lastColor, tagName1, tagName2, tagName3)
 
         // Switch to week range
-        clickOnView(allOf(withText(coreR.string.title_today), isCompletelyDisplayed()))
+        clickOnCurrentSelectedDate()
         clickOnViewWithText(coreR.string.range_week)
         checkTagRange(firstColor, lastColor, tagName1, tagName2, tagName3)
 
         // Switch to month range
-        clickOnView(allOf(withText(coreR.string.title_this_week), isCompletelyDisplayed()))
+        clickOnCurrentSelectedDate()
         clickOnViewWithText(coreR.string.range_month)
         checkTagRange(firstColor, lastColor, tagName1, tagName2, tagName3)
 
         // Switch to year range
-        clickOnView(allOf(withText(coreR.string.title_this_month), isCompletelyDisplayed()))
+        clickOnCurrentSelectedDate()
         clickOnViewWithText(coreR.string.range_year)
         checkTagRange(firstColor, lastColor, tagName1, tagName2, tagName3)
 
         // Switch to last days range
-        clickOnView(allOf(withText(coreR.string.title_this_year), isCompletelyDisplayed()))
+        clickOnCurrentSelectedDate()
         clickOnView(withPluralText(coreR.plurals.range_last, 7, 7))
         clickOnViewWithText(coreR.string.duration_dialog_save)
         checkTagRange(firstColor, lastColor, tagName1, tagName2, tagName3)
 
         // Switch to overall range
-        clickOnView(allOf(withPluralText(coreR.plurals.range_last, 7, 7), isCompletelyDisplayed()))
+        clickOnCurrentSelectedDate()
         clickOnViewWithText(coreR.string.range_overall)
         Thread.sleep(1000)
 
@@ -335,7 +337,7 @@ class StatisticsTest : BaseUiTest() {
                 isCompletelyDisplayed(),
             ),
         )
-        longClickOnViewWithIdOnPager(statisticsR.id.btnStatisticsContainerOptions)
+        NavUtils.openFilter()
         clickOnViewWithText(coreR.string.untracked_time_name)
         pressBack()
         checkViewIsDisplayed(
@@ -438,7 +440,7 @@ class StatisticsTest : BaseUiTest() {
             ),
         )
         if (!checkPrevious) return
-        clickOnViewWithId(statisticsR.id.btnStatisticsContainerPrevious)
+        clickOnPrevDate()
         checkViewIsDisplayed(
             allOf(
                 withId(baseR.id.viewStatisticsItem),
@@ -462,7 +464,7 @@ class StatisticsTest : BaseUiTest() {
                 isCompletelyDisplayed(),
             ),
         )
-        clickOnViewWithId(statisticsR.id.btnStatisticsContainerNext)
+        clickOnCurrentDate()
     }
 
     private fun checkCategoryRange(
@@ -529,7 +531,7 @@ class StatisticsTest : BaseUiTest() {
             ),
         )
         if (!checkPrevious) return
-        clickOnViewWithId(statisticsR.id.btnStatisticsContainerPrevious)
+        clickOnPrevDate()
         checkViewIsDisplayed(
             allOf(
                 withId(baseR.id.viewStatisticsItem),
@@ -553,7 +555,7 @@ class StatisticsTest : BaseUiTest() {
                 isCompletelyDisplayed(),
             ),
         )
-        clickOnViewWithId(statisticsR.id.btnStatisticsContainerNext)
+        clickOnCurrentDate()
     }
 
     private fun checkTagRange(
@@ -620,7 +622,7 @@ class StatisticsTest : BaseUiTest() {
             ),
         )
         if (!checkPrevious) return
-        clickOnViewWithId(statisticsR.id.btnStatisticsContainerPrevious)
+        clickOnPrevDate()
         checkViewIsDisplayed(
             allOf(
                 withId(baseR.id.viewStatisticsItem),
@@ -644,7 +646,7 @@ class StatisticsTest : BaseUiTest() {
                 isCompletelyDisplayed(),
             ),
         )
-        clickOnViewWithId(statisticsR.id.btnStatisticsContainerNext)
+        clickOnCurrentDate()
     }
 
     @Test
@@ -680,7 +682,7 @@ class StatisticsTest : BaseUiTest() {
         pressBack()
 
         // Check total tracked for category
-        longClickOnViewWithIdOnPager(statisticsR.id.btnStatisticsContainerOptions)
+        NavUtils.openFilter()
         clickOnViewWithText(coreR.string.category_hint)
         pressBack()
         clickOnView(allOf(withText(R.string.statistics_total_tracked), isCompletelyDisplayed()))
@@ -696,7 +698,7 @@ class StatisticsTest : BaseUiTest() {
         pressBack()
 
         // Check total tracked for tag
-        longClickOnViewWithIdOnPager(statisticsR.id.btnStatisticsContainerOptions)
+        NavUtils.openFilter()
         clickOnViewWithText(coreR.string.record_tag_hint_short)
         pressBack()
         clickOnView(allOf(withText(R.string.statistics_total_tracked), isCompletelyDisplayed()))

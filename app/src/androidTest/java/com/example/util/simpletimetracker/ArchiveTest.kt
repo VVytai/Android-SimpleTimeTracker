@@ -17,8 +17,6 @@ import com.example.util.simpletimetracker.utils.clickOnView
 import com.example.util.simpletimetracker.utils.clickOnViewWithId
 import com.example.util.simpletimetracker.utils.clickOnViewWithText
 import com.example.util.simpletimetracker.utils.longClickOnView
-import com.example.util.simpletimetracker.utils.longClickOnViewWithId
-import com.example.util.simpletimetracker.utils.longClickOnViewWithIdOnPager
 import com.example.util.simpletimetracker.utils.tryAction
 import com.example.util.simpletimetracker.utils.typeTextIntoView
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -29,9 +27,6 @@ import com.example.util.simpletimetracker.core.R as coreR
 import com.example.util.simpletimetracker.feature_change_record_tag.R as changeRecordTagR
 import com.example.util.simpletimetracker.feature_change_record_type.R as changeRecordTypeR
 import com.example.util.simpletimetracker.feature_dialogs.R as dialogsR
-import com.example.util.simpletimetracker.feature_records.R as recordsR
-import com.example.util.simpletimetracker.feature_statistics.R as statisticsR
-import com.example.util.simpletimetracker.feature_statistics_detail.R as statisticsDetailR
 
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
@@ -60,7 +55,7 @@ class ArchiveTest : BaseUiTest() {
 
         // Not shown on records
         NavUtils.openRecordsScreen()
-        longClickOnViewWithId(recordsR.id.btnRecordAdd)
+        NavUtils.openAddRecord()
         clickOnViewWithText(coreR.string.change_record_type_field)
         checkTypeVisible(name1)
         checkTypeNotVisible(name2)
@@ -69,7 +64,7 @@ class ArchiveTest : BaseUiTest() {
 
         // Still shown in stat filter
         NavUtils.openStatisticsScreen()
-        longClickOnViewWithIdOnPager(statisticsR.id.btnStatisticsContainerOptions)
+        NavUtils.openFilter()
         tryAction { checkTypeVisible(name1) }
         checkTypeNotVisible(name2)
         clickOnViewWithText(R.string.settings_archive)
@@ -78,7 +73,7 @@ class ArchiveTest : BaseUiTest() {
 
         // Still shown in stat detail filter
         clickOnView(allOf(withText(name1), isCompletelyDisplayed()))
-        longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        NavUtils.openFilter()
         tryAction { checkTypeVisible(name1) }
         checkTypeNotVisible(name2)
         clickOnViewWithText(R.string.settings_archive)
@@ -182,7 +177,7 @@ class ArchiveTest : BaseUiTest() {
 
         // Not shown on records
         NavUtils.openRecordsScreen()
-        longClickOnViewWithId(recordsR.id.btnRecordAdd)
+        NavUtils.openAddRecord()
         clickOnViewWithText(coreR.string.change_record_type_field)
         clickOnView(allOf(withId(R.id.viewRecordTypeItem), hasDescendant(withText(name1))))
         tryAction { checkTagVisible(tag1) }
@@ -195,7 +190,7 @@ class ArchiveTest : BaseUiTest() {
         // Still shown in stat detail filter
         NavUtils.openStatisticsScreen()
         clickOnView(allOf(withText(name1), isCompletelyDisplayed()))
-        longClickOnViewWithId(statisticsDetailR.id.btnStatisticsDetailOptions)
+        NavUtils.openFilter()
         clickOnViewWithText(coreR.string.record_tag_hint)
         checkTagVisible(tag1)
         checkTagNotVisible(tag2)

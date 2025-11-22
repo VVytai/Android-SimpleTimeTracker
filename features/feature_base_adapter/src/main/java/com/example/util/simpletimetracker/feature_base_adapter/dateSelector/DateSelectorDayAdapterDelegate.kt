@@ -24,6 +24,7 @@ fun createDateSelectorDayAdapterDelegate(
     with(binding) {
         item as ViewData
 
+        setTestTag(root, item)
         setDayMoth(
             dayMonth = item.dayMonth,
             topText = tvDateSelectorTopText,
@@ -43,6 +44,13 @@ fun createDateSelectorDayAdapterDelegate(
         root.setOnClickWith(item, onItemClick)
         root.setOnLongClick { onItemLongClick(item) }
     }
+}
+
+internal fun setTestTag(
+    root: View,
+    data: InfiniteRecyclerAdapter.Data,
+) {
+    root.tag = InfiniteRecyclerAdapter.TEST_TAG + data.position
 }
 
 internal fun setDayMoth(

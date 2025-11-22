@@ -16,6 +16,8 @@ import com.example.util.simpletimetracker.utils.BaseUiTest
 import com.example.util.simpletimetracker.utils.NavUtils
 import com.example.util.simpletimetracker.utils.checkViewDoesNotExist
 import com.example.util.simpletimetracker.utils.checkViewIsDisplayed
+import com.example.util.simpletimetracker.utils.clickOnCurrentDate
+import com.example.util.simpletimetracker.utils.clickOnPrevDate
 import com.example.util.simpletimetracker.utils.clickOnView
 import com.example.util.simpletimetracker.utils.clickOnViewWithId
 import com.example.util.simpletimetracker.utils.clickOnViewWithText
@@ -37,7 +39,6 @@ import java.util.concurrent.TimeUnit
 import com.example.util.simpletimetracker.core.R as coreR
 import com.example.util.simpletimetracker.feature_base_adapter.R as baseR
 import com.example.util.simpletimetracker.feature_change_record.R as changeRecordR
-import com.example.util.simpletimetracker.feature_records.R as recordsR
 
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
@@ -178,7 +179,7 @@ class RecordActionsMoveTest : BaseUiTest() {
                 ),
             )
         }
-        clickOnViewWithId(recordsR.id.btnRecordsContainerPrevious)
+        clickOnPrevDate()
         tryAction {
             checkRecord(
                 name = fullName,
@@ -216,7 +217,7 @@ class RecordActionsMoveTest : BaseUiTest() {
 
         // Check
         tryAction { checkViewDoesNotExist(getRecordMatcher(name)) }
-        clickOnViewWithId(recordsR.id.btnRecordsContainerPrevious)
+        clickOnPrevDate()
         tryAction { checkViewIsDisplayed(getRecordMatcher(name)) }
     }
 
@@ -253,7 +254,7 @@ class RecordActionsMoveTest : BaseUiTest() {
         // Check
         tryAction { checkViewDoesNotExist(getRecordMatcher(name1)) }
         tryAction { checkViewDoesNotExist(getRecordMatcher(name2)) }
-        clickOnViewWithId(recordsR.id.btnRecordsContainerPrevious)
+        clickOnCurrentDate(-1)
         tryAction { checkViewIsDisplayed(getRecordMatcher(name1)) }
         tryAction { checkViewIsDisplayed(getRecordMatcher(name2)) }
     }

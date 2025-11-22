@@ -24,7 +24,6 @@ import com.example.util.simpletimetracker.utils.clickOnRecyclerItem
 import com.example.util.simpletimetracker.utils.clickOnViewWithId
 import com.example.util.simpletimetracker.utils.clickOnViewWithText
 import com.example.util.simpletimetracker.utils.longClickOnView
-import com.example.util.simpletimetracker.utils.longClickOnViewWithIdOnPager
 import com.example.util.simpletimetracker.utils.scrollRecyclerToView
 import com.example.util.simpletimetracker.utils.tryAction
 import com.example.util.simpletimetracker.utils.typeTextIntoView
@@ -42,7 +41,6 @@ import com.example.util.simpletimetracker.feature_change_record_tag.R as changeR
 import com.example.util.simpletimetracker.feature_change_activity_filter.R as changeActivityFilterTagR
 import com.example.util.simpletimetracker.feature_change_record_type.R as changeRecordTypeR
 import com.example.util.simpletimetracker.feature_dialogs.R as dialogsR
-import com.example.util.simpletimetracker.feature_statistics.R as statisticsR
 
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
@@ -426,7 +424,7 @@ class CustomColorTest : BaseUiTest() {
         testUtils.addActivity(name = name, categories = listOf(categoryName))
         testUtils.addRecord(name)
         NavUtils.openStatisticsScreen()
-        longClickOnViewWithIdOnPager(statisticsR.id.btnStatisticsContainerOptions)
+        NavUtils.openFilter()
         clickOnViewWithText(coreR.string.category_hint)
         pressBack()
         Thread.sleep(1000)
@@ -543,7 +541,7 @@ class CustomColorTest : BaseUiTest() {
         // Select color
         clickOnViewWithText(coreR.string.change_category_color_hint)
         clickOnRecyclerItem(changeActivityFilterTagR.id.rvChangeActivityFilterColor, withCardColorInt(colorInt))
-        checkPreviewUpdated(withCardColorInt(colorInt))
+        checkPreviewUpdated(hasDescendant(withCardColorInt(colorInt)))
         checkViewIsDisplayed(allOf(withId(dialogsR.id.viewColorItemSelected), withParent(withCardColorInt(colorInt))))
 
         // Check selected color is preselected on color selection
@@ -570,7 +568,7 @@ class CustomColorTest : BaseUiTest() {
         clickOnViewWithText(coreR.string.duration_dialog_save)
 
         // Check new color selected
-        checkPreviewUpdated(withCardColorInt(customColorInt))
+        checkPreviewUpdated(hasDescendant(withCardColorInt(customColorInt)))
         checkViewIsNotDisplayed(
             allOf(withId(dialogsR.id.viewColorItemSelected), withParent(withCardColorInt(colorInt))),
         )
@@ -590,12 +588,12 @@ class CustomColorTest : BaseUiTest() {
         checkViewIsDisplayed(
             allOf(
                 withId(R.id.viewActivityFilterItem),
-                withCardColorInt(customColorInt),
+                hasDescendant(withCardColorInt(customColorInt)),
                 hasDescendant(withText(filterName)),
             ),
         )
         longClickOnView(withText(filterName))
-        checkPreviewUpdated(withCardColorInt(customColorInt))
+        checkPreviewUpdated(hasDescendant(withCardColorInt(customColorInt)))
         clickOnViewWithText(coreR.string.change_category_color_hint)
         checkViewIsNotDisplayed(
             allOf(withId(dialogsR.id.viewColorItemSelected), withParent(withCardColorInt(colorInt))),
@@ -738,7 +736,7 @@ class CustomColorTest : BaseUiTest() {
         checkViewIsDisplayed(
             allOf(
                 withId(changeActivityFilterTagR.id.previewChangeActivityFilter),
-                withCardColorInt(customColorInt),
+                hasDescendant(withCardColorInt(customColorInt)),
             ),
         )
 

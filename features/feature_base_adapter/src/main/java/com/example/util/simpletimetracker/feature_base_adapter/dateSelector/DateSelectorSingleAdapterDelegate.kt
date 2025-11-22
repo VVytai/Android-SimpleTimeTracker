@@ -21,6 +21,7 @@ fun createDateSelectorSingleAdapterDelegate(
         root.updateLayoutParams {
             width = ViewGroup.LayoutParams.MATCH_PARENT
         }
+        setTestTag(root, item)
         setDayMoth(
             dayMonth = item.dayMonth,
             topText = tvDateSelectorTopText,
