@@ -178,7 +178,7 @@ class RecordsContainerViewModel @Inject constructor(
                 .collect { recalculateRangeOnCalendarDaysChanged() }
         }
         viewModelScope.launch {
-            recordsContainerUpdateInteractor.firstDayOfWeekUpdated
+            recordsContainerUpdateInteractor.dateSelectorUpdate
                 .collect {
                     viewModelScope.launch {
                         dateSelectorViewModelDelegate.setup()

@@ -120,7 +120,7 @@ class SettingsAdditionalViewModelDelegate @Inject constructor(
             prefsInteractor.setFirstDayOfWeek(newDayOfWeek)
             externalViewsInteractor.onFirstDayOfWeekChange()
             parent?.updateContent()
-            recordsContainerUpdateInteractor.sendFirstDayOfWeekUpdated()
+            recordsContainerUpdateInteractor.sendDateSelectorUpdate()
         }
     }
 
@@ -151,6 +151,7 @@ class SettingsAdditionalViewModelDelegate @Inject constructor(
             prefsInteractor.setStartOfDayShift(newValue)
             externalViewsInteractor.onStartOfDaySignChange()
             parent?.updateContent()
+            recordsContainerUpdateInteractor.sendDateSelectorUpdate()
         }
     }
 
@@ -298,6 +299,7 @@ class SettingsAdditionalViewModelDelegate @Inject constructor(
                 prefsInteractor.setStartOfDayShift(newValue * 1000)
                 externalViewsInteractor.onStartOfDayChange()
                 parent?.updateContent()
+                recordsContainerUpdateInteractor.sendDateSelectorUpdate()
             }
         }
     }
@@ -312,6 +314,7 @@ class SettingsAdditionalViewModelDelegate @Inject constructor(
                 prefsInteractor.setStartOfDayShift(0)
                 externalViewsInteractor.onStartOfDayChange()
                 parent?.updateContent()
+                recordsContainerUpdateInteractor.sendDateSelectorUpdate()
             }
         }
     }

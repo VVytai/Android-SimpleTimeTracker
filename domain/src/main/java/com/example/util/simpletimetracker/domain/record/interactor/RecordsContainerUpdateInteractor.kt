@@ -22,8 +22,8 @@ class RecordsContainerUpdateInteractor @Inject constructor() {
         onBufferOverflow = BufferOverflow.DROP_OLDEST,
     )
 
-    val firstDayOfWeekUpdated: SharedFlow<Unit> get() = _firstDayOfWeekUpdated.asSharedFlow()
-    private val _firstDayOfWeekUpdated = MutableSharedFlow<Unit>(
+    val dateSelectorUpdate: SharedFlow<Unit> get() = _dateSelectorUpdate.asSharedFlow()
+    private val _dateSelectorUpdate = MutableSharedFlow<Unit>(
         extraBufferCapacity = 1,
         onBufferOverflow = BufferOverflow.DROP_OLDEST,
     )
@@ -36,7 +36,7 @@ class RecordsContainerUpdateInteractor @Inject constructor() {
         _calendarDaysUpdated.emit(Unit)
     }
 
-    suspend fun sendFirstDayOfWeekUpdated() {
-        _firstDayOfWeekUpdated.emit(Unit)
+    suspend fun sendDateSelectorUpdate() {
+        _dateSelectorUpdate.emit(Unit)
     }
 }
