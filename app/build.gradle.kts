@@ -1,5 +1,8 @@
 import com.example.util.simpletimetracker.Base
 import com.example.util.simpletimetracker.applyAndroidLibrary
+import com.malinskiy.marathon.config.vendor.android.ScreenRecordConfiguration
+import com.malinskiy.marathon.config.vendor.android.ScreenshotConfiguration
+import com.malinskiy.marathon.config.vendor.android.VideoConfiguration
 
 plugins {
     alias(libs.plugins.gradleApplication)
@@ -154,4 +157,8 @@ marathon {
             totalAllowedRetryQuota = 100
         }
     }
+    screenRecordConfiguration = ScreenRecordConfiguration(
+        videoConfiguration = VideoConfiguration(enabled = false),
+        screenshotConfiguration = ScreenshotConfiguration(enabled = false),
+    )
 }
