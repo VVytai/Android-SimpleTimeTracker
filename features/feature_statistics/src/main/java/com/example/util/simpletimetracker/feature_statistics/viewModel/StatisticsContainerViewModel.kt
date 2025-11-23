@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.util.simpletimetracker.core.delegates.dateSelector.mapper.DateSelectorMapper
 import com.example.util.simpletimetracker.core.delegates.dateSelector.viewModelDelegate.DateSelectorViewModelDelegate
 import com.example.util.simpletimetracker.core.extension.set
+import com.example.util.simpletimetracker.core.extension.shiftTimeStamp
 import com.example.util.simpletimetracker.core.extension.toModel
 import com.example.util.simpletimetracker.core.mapper.RangeViewDataMapper
 import com.example.util.simpletimetracker.core.mapper.TimeMapper
@@ -95,10 +96,11 @@ class StatisticsContainerViewModel @Inject constructor(
     }
 
     fun onDateTimeSet(timestamp: Long, tag: String?) = viewModelScope.launch {
+        val startOfDayShift = prefsInteractor.getStartOfDayShift()
         when (tag) {
             DATE_TAG -> {
                 timeMapper.toTimestampShift(
-                    toTime = timestamp,
+                    toTime = timestamp.shiftTimeStamp(startOfDayShift),
                     range = prefsInteractor.getStatisticsRange(),
                     firstDayOfWeek = prefsInteractor.getFirstDayOfWeek(),
                 ).toInt().let(::updatePosition)
@@ -167,9 +169,11 @@ class StatisticsContainerViewModel @Inject constructor(
     private fun onSelectDateClick() = viewModelScope.launch {
         val useMilitaryTime = prefsInteractor.getUseMilitaryTimeFormat()
         val firstDayOfWeek = prefsInteractor.getFirstDayOfWeek()
+        val startOfDayShift = prefsInteractor.getStartOfDayShift()
         val current = timeMapper.toTimestampShifted(
             rangesFromToday = currentPosition,
             range = prefsInteractor.getStatisticsRange(),
+            startOfDayShift = startOfDayShift,
         )
 
         router.navigate(

@@ -68,6 +68,7 @@ class StatisticsViewModel @Inject constructor(
         val timestamp = timeMapper.toTimestampShifted(
             rangesFromToday = shift,
             range = rangeLength,
+            // TODO start of day shift?
         )
         _effects.emit(Effect.OnOpenDatePicker(timestamp))
     }

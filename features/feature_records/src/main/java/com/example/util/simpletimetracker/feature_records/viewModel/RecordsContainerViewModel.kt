@@ -7,6 +7,7 @@ import com.example.util.simpletimetracker.core.delegates.dateSelector.mapper.Dat
 import com.example.util.simpletimetracker.core.delegates.dateSelector.viewModelDelegate.DateSelectorViewModelDelegate
 import com.example.util.simpletimetracker.core.extension.lazySuspend
 import com.example.util.simpletimetracker.core.extension.set
+import com.example.util.simpletimetracker.core.extension.shiftTimeStamp
 import com.example.util.simpletimetracker.core.mapper.CalendarToListShiftMapper
 import com.example.util.simpletimetracker.core.mapper.TimeMapper
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
@@ -82,11 +83,12 @@ class RecordsContainerViewModel @Inject constructor(
     }
 
     fun onDateTimeSet(timestamp: Long, tag: String?) = viewModelScope.launch {
+        val startOfDayShift = prefsInteractor.getStartOfDayShift()
         when (tag) {
             DATE_TAG -> {
                 timeMapper
                     .toTimestampShift(
-                        toTime = timestamp,
+                        toTime = timestamp.shiftTimeStamp(startOfDayShift),
                         range = RangeLength.Day,
                         firstDayOfWeek = prefsInteractor.getFirstDayOfWeek(),
                     )
@@ -123,9 +125,11 @@ class RecordsContainerViewModel @Inject constructor(
         viewModelScope.launch {
             val useMilitaryTime = prefsInteractor.getUseMilitaryTimeFormat()
             val firstDayOfWeek = prefsInteractor.getFirstDayOfWeek()
+            val startOfDayShift = prefsInteractor.getStartOfDayShift()
             val current = timeMapper.toTimestampShifted(
                 rangesFromToday = getActualShift(),
                 range = RangeLength.Day,
+                startOfDayShift = startOfDayShift,
             )
 
             router.navigate(

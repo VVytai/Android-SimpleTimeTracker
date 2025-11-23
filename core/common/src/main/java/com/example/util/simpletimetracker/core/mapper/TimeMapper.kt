@@ -129,7 +129,11 @@ class TimeMapper @Inject constructor(
         return shortYearFormat.format(time)
     }
 
-    fun toTimestampShifted(rangesFromToday: Int, range: RangeLength): Long {
+    fun toTimestampShifted(
+        rangesFromToday: Int,
+        range: RangeLength,
+        startOfDayShift: Long = 0,
+    ): Long {
         val calendarStep = when (range) {
             is RangeLength.Day -> Calendar.DAY_OF_YEAR
             is RangeLength.Week -> Calendar.WEEK_OF_YEAR
@@ -140,16 +144,13 @@ class TimeMapper @Inject constructor(
             is RangeLength.Last -> return 0
         }
 
-        return if (rangesFromToday != 0) {
-            Calendar.getInstance()
-                .apply {
-                    timeInMillis = System.currentTimeMillis()
-                    add(calendarStep, rangesFromToday)
-                }
-                .timeInMillis
-        } else {
-            return System.currentTimeMillis()
-        }
+        return Calendar.getInstance()
+            .apply {
+                timeInMillis = System.currentTimeMillis()
+                shift(-startOfDayShift)
+                add(calendarStep, rangesFromToday)
+            }
+            .timeInMillis
     }
 
     fun toTimestampShift(

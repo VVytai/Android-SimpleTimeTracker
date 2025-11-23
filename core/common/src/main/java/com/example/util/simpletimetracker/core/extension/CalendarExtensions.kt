@@ -54,7 +54,13 @@ fun Calendar.shift(shift: Long): Calendar {
 }
 
 fun Calendar.shiftTimeStamp(timestamp: Long, shift: Long): Long {
+    if (shift == 0L) return timestamp
     timeInMillis = timestamp
     shift(shift)
     return timeInMillis
+}
+
+fun Long.shiftTimeStamp(shift: Long): Long {
+    if (shift == 0L) return this
+    return Calendar.getInstance().shiftTimeStamp(timestamp = this, shift = shift)
 }

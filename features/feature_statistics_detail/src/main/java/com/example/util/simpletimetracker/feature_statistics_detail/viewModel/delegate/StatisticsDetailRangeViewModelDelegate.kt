@@ -1,6 +1,7 @@
 package com.example.util.simpletimetracker.feature_statistics_detail.viewModel.delegate
 
 import com.example.util.simpletimetracker.core.base.ViewModelDelegate
+import com.example.util.simpletimetracker.core.extension.shiftTimeStamp
 import com.example.util.simpletimetracker.core.extension.toModel
 import com.example.util.simpletimetracker.core.interactor.RecordFilterInteractor
 import com.example.util.simpletimetracker.core.mapper.RangeViewDataMapper
@@ -64,10 +65,11 @@ class StatisticsDetailRangeViewModelDelegate @Inject constructor(
     }
 
     fun onDateTimeSet(timestamp: Long, tag: String?) = delegateScope.launch {
+        val startOfDayShift = prefsInteractor.getStartOfDayShift()
         when (tag) {
             DATE_TAG -> {
                 timeMapper.toTimestampShift(
-                    toTime = timestamp,
+                    toTime = timestamp.shiftTimeStamp(startOfDayShift),
                     range = rangeLength,
                     firstDayOfWeek = prefsInteractor.getFirstDayOfWeek(),
                 ).toInt().let(::updatePosition)
@@ -89,9 +91,11 @@ class StatisticsDetailRangeViewModelDelegate @Inject constructor(
     fun onSelectDateClick() = delegateScope.launch {
         val useMilitaryTime = prefsInteractor.getUseMilitaryTimeFormat()
         val firstDayOfWeek = prefsInteractor.getFirstDayOfWeek()
+        val startOfDayShift = prefsInteractor.getStartOfDayShift()
         val current = timeMapper.toTimestampShifted(
             rangesFromToday = rangePosition,
             range = rangeLength,
+            startOfDayShift = startOfDayShift,
         )
 
         router.navigate(
