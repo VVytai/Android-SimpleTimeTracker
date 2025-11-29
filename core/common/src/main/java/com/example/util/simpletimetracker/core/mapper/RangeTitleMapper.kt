@@ -46,6 +46,7 @@ class RangeTitleMapper @Inject constructor(
     fun mapToDateSelectorData(
         rangeLength: RangeLength,
         position: Int,
+        isSelected: Boolean,
         startOfDayShift: Long,
         firstDayOfWeek: DayOfWeek,
     ): DateSelectorData {
@@ -54,6 +55,11 @@ class RangeTitleMapper @Inject constructor(
             is RangeLength.Day -> {
                 calendar.timeInMillis = timeMapper.toDayDateTimestamp(position, startOfDayShift)
                 val data = DateSelectorData.Data(
+                    additionalHint = if (isSelected) {
+                        timeMapper.formatShortMonth(calendar.timeInMillis)
+                    } else {
+                        ""
+                    },
                     topText = calendar.get(Calendar.DAY_OF_WEEK)
                         .let(timeMapper::toDayOfWeek)
                         .let(timeMapper::toShortDayOfWeekName),
@@ -64,13 +70,24 @@ class RangeTitleMapper @Inject constructor(
             is RangeLength.Week -> {
                 val (start, end) = timeMapper.toWeekDateTimestamp(position, startOfDayShift, firstDayOfWeek)
                 DateSelectorData.Double(
-                    data1 = mapToDateSelectorDayOfMonthData(start),
-                    data2 = mapToDateSelectorDayOfMonthData(end),
+                    data1 = mapToDateSelectorDayOfMonthData(
+                        isSelected = isSelected,
+                        timestamp = start,
+                    ),
+                    data2 = mapToDateSelectorDayOfMonthData(
+                        isSelected = isSelected,
+                        timestamp = end,
+                    ),
                 )
             }
             is RangeLength.Month -> {
                 calendar.timeInMillis = timeMapper.toMonthDateTimestamp(position, startOfDayShift)
                 val data = DateSelectorData.Data(
+                    additionalHint = if (isSelected) {
+                        calendar.get(Calendar.YEAR).toString()
+                    } else {
+                        ""
+                    },
                     topText = "",
                     bottomText = timeMapper.formatShortMonth(calendar.timeInMillis),
                 )
@@ -79,6 +96,7 @@ class RangeTitleMapper @Inject constructor(
             is RangeLength.Year -> {
                 calendar.timeInMillis = timeMapper.toYearDateTimestamp(position, startOfDayShift)
                 val data = DateSelectorData.Data(
+                    additionalHint = "",
                     topText = "",
                     bottomText = calendar.get(Calendar.YEAR).toString(),
                 )
@@ -86,6 +104,7 @@ class RangeTitleMapper @Inject constructor(
             }
             is RangeLength.All -> {
                 val data = DateSelectorData.Data(
+                    additionalHint = "",
                     topText = "",
                     bottomText = resourceRepo.getString(R.string.range_overall),
                 )
@@ -111,18 +130,30 @@ class RangeTitleMapper @Inject constructor(
                     startOfDayShift = startOfDayShift,
                 )
                 DateSelectorData.Double(
-                    data1 = mapToDateSelectorDayOfMonthData(shiftTimeStamp(range.timeStarted)),
-                    data2 = mapToDateSelectorDayOfMonthData(shiftTimeStamp(range.timeEnded - 1)),
+                    data1 = mapToDateSelectorDayOfMonthData(
+                        isSelected = isSelected,
+                        timestamp = shiftTimeStamp(range.timeStarted),
+                    ),
+                    data2 = mapToDateSelectorDayOfMonthData(
+                        isSelected = isSelected,
+                        timestamp = shiftTimeStamp(range.timeEnded - 1),
+                    ),
                 )
             }
         }
     }
 
     fun mapToDateSelectorDayOfMonthData(
+        isSelected: Boolean,
         timestamp: Long,
     ): DateSelectorData.Data {
         val calendar = Calendar.getInstance().apply { timeInMillis = timestamp }
         return DateSelectorData.Data(
+            additionalHint = if (isSelected) {
+                calendar.get(Calendar.YEAR).toString()
+            } else {
+                ""
+            },
             topText = timeMapper.formatShortMonth(calendar.timeInMillis),
             bottomText = calendar.get(Calendar.DAY_OF_MONTH).toString().padDuration(),
         )
@@ -164,6 +195,7 @@ class RangeTitleMapper @Inject constructor(
         data class Wide(val data: Data) : DateSelectorData
 
         data class Data(
+            val additionalHint: String,
             val topText: String,
             val bottomText: String,
         )

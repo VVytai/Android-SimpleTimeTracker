@@ -25,6 +25,10 @@ fun createDateSelectorDayAdapterDelegate(
         item as ViewData
 
         setTestTag(root, item)
+        setAdditionalHint(
+            dayMonth = item.dayMonth,
+            additionalText = tvDateSelectorAdditionalHint,
+        )
         setDayMoth(
             dayMonth = item.dayMonth,
             topText = tvDateSelectorTopText,
@@ -51,6 +55,14 @@ internal fun setTestTag(
     data: InfiniteRecyclerAdapter.Data,
 ) {
     root.tag = InfiniteRecyclerAdapter.TEST_TAG + data.position
+}
+
+internal fun setAdditionalHint(
+    dayMonth: ViewData.DayMonth,
+    additionalText: TextView,
+) {
+    additionalText.text = dayMonth.additionalHint
+    additionalText.isVisible = dayMonth.additionalHint.isNotEmpty()
 }
 
 internal fun setDayMoth(
@@ -87,6 +99,7 @@ data class DateSelectorDayViewData(
 ) : InfiniteRecyclerAdapter.Data {
 
     data class DayMonth(
+        val additionalHint: String,
         val topText: String,
         val bottomText: String,
     )

@@ -7,7 +7,6 @@ import com.example.util.simpletimetracker.feature_base_adapter.createRecyclerBin
 import com.example.util.simpletimetracker.feature_views.GoalCheckmarkView
 import com.example.util.simpletimetracker.feature_views.extension.setMargins
 import com.example.util.simpletimetracker.feature_views.extension.setOnClickWith
-import com.example.util.simpletimetracker.feature_views.extension.setRounded
 import com.example.util.simpletimetracker.feature_base_adapter.databinding.ItemOptionsListLayoutBinding as Binding
 import com.example.util.simpletimetracker.feature_base_adapter.optionsList.OptionsListViewData as ViewData
 

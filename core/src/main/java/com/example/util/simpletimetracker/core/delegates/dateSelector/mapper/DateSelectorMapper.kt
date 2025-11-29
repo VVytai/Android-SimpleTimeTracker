@@ -59,6 +59,7 @@ class DateSelectorMapper @Inject constructor(
                 if (isCalendar) {
                     getCalendarViewDataData(
                         position = position,
+                        isSelected = isSelected(position),
                         type = type,
                     )
                 } else {
@@ -66,6 +67,7 @@ class DateSelectorMapper @Inject constructor(
                         data = rangeTitleMapper.mapToDateSelectorData(
                             rangeLength = RangeLength.Day,
                             position = position,
+                            isSelected = isSelected(position),
                             startOfDayShift = setupData.startOfDayShift,
                             firstDayOfWeek = setupData.firstDayOfWeek,
                         ),
@@ -78,6 +80,7 @@ class DateSelectorMapper @Inject constructor(
                     data = rangeTitleMapper.mapToDateSelectorData(
                         rangeLength = type.rangeLength,
                         position = position,
+                        isSelected = isSelected(position),
                         startOfDayShift = setupData.startOfDayShift,
                         firstDayOfWeek = setupData.firstDayOfWeek,
                     ),
@@ -98,6 +101,7 @@ class DateSelectorMapper @Inject constructor(
 
     private fun getCalendarViewDataData(
         position: Int,
+        isSelected: Boolean,
         type: SetupData.Type.Records,
     ): DateSelectorRangeViewData {
         val calendarRange = calendarToListShiftMapper.mapCalendarToListShift(
@@ -112,7 +116,10 @@ class DateSelectorMapper @Inject constructor(
                 daysFromToday = position,
                 startOfDayShift = setupData.startOfDayShift,
             )
-            return rangeTitleMapper.mapToDateSelectorDayOfMonthData(timestamp)
+            return rangeTitleMapper.mapToDateSelectorDayOfMonthData(
+                isSelected = isSelected,
+                timestamp = timestamp,
+            )
         }
 
         return DateSelectorRangeViewData(
@@ -128,13 +135,19 @@ class DateSelectorMapper @Inject constructor(
     ): DateSelectorDayViewData.CardData {
         val isToday = position == 0
         val isFuture = position > 0
-        val isSelected = position == currentSelectedPosition
+        val isSelected = isSelected(position)
 
         return DateSelectorDayViewData.CardData(
             isToday = isToday,
             isSelected = isSelected,
             isFuture = isFuture,
         )
+    }
+
+    private fun isSelected(
+        position: Int,
+    ): Boolean {
+        return position == currentSelectedPosition
     }
 
     private fun mapToViewData(
@@ -172,6 +185,7 @@ class DateSelectorMapper @Inject constructor(
     // TODO DATE backToToday not working while list is flung
     private fun RangeTitleMapper.DateSelectorData.Data.toViewData(): DateSelectorDayViewData.DayMonth {
         return DateSelectorDayViewData.DayMonth(
+            additionalHint = this.additionalHint,
             topText = this.topText,
             bottomText = this.bottomText,
         )

@@ -53,6 +53,7 @@ class CardSizeViewModel @Inject constructor(
         }
     }
 
+    // TODO remove runBlocking
     private var numberOfCards: Int = runBlocking { prefsInteractor.getNumberOfCards() }
     private var types: List<RecordType> = emptyList()
 
