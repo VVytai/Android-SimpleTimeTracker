@@ -233,6 +233,7 @@ class WidgetUniversalViewModel @Inject constructor(
         val filter = activityFilterViewDataInteractor.getFilter()
         val filtersViewData = activityFilterViewDataInteractor.getFilterViewData(
             filter = filter,
+            searchText = "",
             isDarkTheme = isDarkTheme,
             isFiltersCollapsed = isFiltersCollapsed,
             appendAddButton = false,
@@ -244,6 +245,7 @@ class WidgetUniversalViewModel @Inject constructor(
             runningRecords = runningRecords,
             allDailyCurrents = allDailyCurrents,
             completeTypeIds = completeTypeIds,
+            searchText = "",
             numberOfCards = numberOfCards,
             isDarkTheme = isDarkTheme,
         )
@@ -286,6 +288,7 @@ class WidgetUniversalViewModel @Inject constructor(
             recordTypesMap = recordTypesMap,
             recordTags = recordTags,
             runningRecords = runningRecords,
+            searchText = "",
             isDarkTheme = isDarkTheme,
         )
 

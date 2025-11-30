@@ -335,6 +335,7 @@
     <string name="settings_enable_pomodoro_mode">הצג כפתור פומודורו במסך ראשי</string>
     <string name="settings_show_goals_separately">הצג מטרות בלשונית נפרדת</string>
     <string name="settings_show_nav_bar_at_the_bottom">הצג סרגל ניווט בתחתית</string>
+    <string name="settings_enable_search_on_main">אפשר חיפוש במסך הראשי</string>
     <string name="settings_allow_multitasking">אפשר ריבוי משימות</string>
     <string name="settings_disallow_multitasking">אל תאפשר ריבוי משימות</string>
     <string name="settings_allow_multitasking_hint">אם מושבת, התחלת טיימר חדש תעצור אוטומטית פעילויות אחרות.</string>

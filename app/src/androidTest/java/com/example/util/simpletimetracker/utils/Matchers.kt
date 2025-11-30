@@ -63,7 +63,7 @@ fun withButtonColor(expectedId: Int): Matcher<View> =
         }
     }
 
-fun withTag(tagValueMatcher: Any): Matcher<View> =
+fun withTag(tagValueMatcher: Any?): Matcher<View> =
     withTagValue(equalTo(tagValueMatcher))
 
 fun withNullTag(): Matcher<View> {

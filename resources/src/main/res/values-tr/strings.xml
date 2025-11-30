@@ -335,6 +335,7 @@ Bu, genel olarak verimli ve verimsiz aktivitelere ne kadar zaman harcadığını
     <string name="settings_enable_pomodoro_mode">Pomodoro butonunu ana ekranda göster</string>
     <string name="settings_show_goals_separately">Hedefleri ayrı bir sekmede göster</string>
     <string name="settings_show_nav_bar_at_the_bottom">Gezinme çubuğunu altta göster</string>
+    <string name="settings_enable_search_on_main">Ana ekranda aramayı etkinleştir</string>
     <string name="settings_allow_multitasking">Çoklu göreve izin ver</string>
     <string name="settings_disallow_multitasking">Çoklu göreve izin verme</string>
     <string name="settings_allow_multitasking_hint">Devre dışı bırakılırsa, yeni zamanlayıcı başlatmak diğer aktivitelerin zamanlayıcısını otomatik olarak durdurur.</string>

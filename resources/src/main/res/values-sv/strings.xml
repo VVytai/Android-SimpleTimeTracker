@@ -335,6 +335,7 @@ Detta gör att du kan se hur mycket tid du spenderar på produktiva kontra icke-
     <string name="settings_enable_pomodoro_mode">Visa Pomodoro-knappen på huvudskärmen</string>
     <string name="settings_show_goals_separately">Visa mål på en separat flik</string>
     <string name="settings_show_nav_bar_at_the_bottom">Visa navigeringsfältet längst ned</string>
+    <string name="settings_enable_search_on_main">Aktivera sökning på huvudsidan</string>
     <string name="settings_allow_multitasking">Tillåt multitasking</string>
     <string name="settings_disallow_multitasking">Tillåt inte multitasking</string>
     <string name="settings_allow_multitasking_hint">Om inaktiverad så stoppas pågående aktivitet vid start av annan aktivitet.</string>

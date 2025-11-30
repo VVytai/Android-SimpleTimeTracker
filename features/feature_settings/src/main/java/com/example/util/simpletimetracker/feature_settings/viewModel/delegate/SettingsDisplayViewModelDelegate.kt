@@ -9,6 +9,7 @@ import com.example.util.simpletimetracker.domain.pomodoro.interactor.PomodoroSto
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.RecordsContainerUpdateInteractor
 import com.example.util.simpletimetracker.domain.notifications.interactor.UpdateExternalViewsInteractor
+import com.example.util.simpletimetracker.domain.record.interactor.UpdateRunningRecordsInteractor
 import com.example.util.simpletimetracker.domain.recordTag.model.CardTagOrder
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_settings.R
@@ -33,6 +34,7 @@ class SettingsDisplayViewModelDelegate @Inject constructor(
     private val settingsDisplayViewDataInteractor: SettingsDisplayViewDataInteractor,
     private val pomodoroStopInteractor: PomodoroStopInteractor,
     private val recordsContainerUpdateInteractor: RecordsContainerUpdateInteractor,
+    private val updateRunningRecordsInteractor: UpdateRunningRecordsInteractor,
 ) : ViewModelDelegate() {
 
     private var parent: SettingsParent? = null
@@ -63,6 +65,7 @@ class SettingsDisplayViewModelDelegate @Inject constructor(
             SettingsBlock.DisplayUntrackedRangeCheckbox -> onUntrackedRangeClicked()
             SettingsBlock.DisplayCalendarView -> onShowRecordsCalendarClicked()
             SettingsBlock.DisplayReverseOrder -> onReverseOrderInCalendarClicked()
+            SettingsBlock.DisplayEnabledSearchOnMain -> onEnableSearchOnMainClicked()
             SettingsBlock.DisplayShowActivityFilters -> onShowActivityFiltersClicked()
             SettingsBlock.DisplayEnablePomodoroMode -> onEnablePomodoroModeClicked()
             SettingsBlock.DisplayEnableRepeatButton -> onEnableRepeatButtonClicked()
@@ -293,6 +296,15 @@ class SettingsDisplayViewModelDelegate @Inject constructor(
             prefsInteractor.setEnableRepeatButton(newValue)
             externalViewsInteractor.onRepeatEnabled()
             parent?.updateContent()
+        }
+    }
+
+    private fun onEnableSearchOnMainClicked() {
+        delegateScope.launch {
+            val newValue = !prefsInteractor.getEnableSearchOnMain()
+            prefsInteractor.setEnableSearchOnMain(newValue)
+            parent?.updateContent()
+            updateRunningRecordsInteractor.sendFullUpdate()
         }
     }
 

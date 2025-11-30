@@ -76,6 +76,8 @@ interface PrefsRepo {
 
     var enableRepeatButton: Boolean
 
+    var enableSearchOnMain: Boolean
+
     var enablePomodoroMode: Boolean
 
     var pomodoroModeStartedTimestamp: Long // in milliseconds, 0 - disabled

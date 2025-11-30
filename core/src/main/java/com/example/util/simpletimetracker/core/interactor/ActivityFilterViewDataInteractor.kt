@@ -6,10 +6,12 @@ import com.example.util.simpletimetracker.domain.activityFilter.interactor.Prede
 import com.example.util.simpletimetracker.domain.activityFilter.model.ActivityFilter
 import com.example.util.simpletimetracker.domain.activityFilter.model.PredefinedFilter
 import com.example.util.simpletimetracker.domain.category.interactor.RecordTypeCategoryInteractor
+import com.example.util.simpletimetracker.domain.extension.search
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.recordShortcut.model.RecordShortcut
 import com.example.util.simpletimetracker.domain.recordType.model.RecordType
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
+import com.example.util.simpletimetracker.feature_base_adapter.activityFilter.ActivityFilterViewData
 import javax.inject.Inject
 
 class ActivityFilterViewDataInteractor @Inject constructor(
@@ -33,6 +35,7 @@ class ActivityFilterViewDataInteractor @Inject constructor(
 
     fun getFilterViewData(
         filter: Filter,
+        searchText: String,
         isDarkTheme: Boolean,
         isFiltersCollapsed: Boolean,
         appendAddButton: Boolean,
@@ -52,14 +55,14 @@ class ActivityFilterViewDataInteractor @Inject constructor(
                             isDarkTheme = isDarkTheme,
                             selected = it.selected,
                         )
-                    }
+                    }.search(searchText, { name })
                     result += filter.userFilters.map {
                         activityFilterViewDataMapper.mapFiltered(
                             filter = it,
                             isDarkTheme = isDarkTheme,
                             selected = it.selected,
                         )
-                    }
+                    }.search(searchText, { name })
                 }
                 // Show collapse button if there are several filters,
                 // or if they are collapsed, just in case (collapse and then remove all but one).

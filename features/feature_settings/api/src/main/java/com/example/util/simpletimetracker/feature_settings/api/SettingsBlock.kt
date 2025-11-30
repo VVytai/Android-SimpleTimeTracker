@@ -45,6 +45,7 @@ enum class SettingsBlock {
     DisplayCalendarView,
     DisplayReverseOrder,
     DisplayDaysInCalendar,
+    DisplayEnabledSearchOnMain,
     DisplayShowActivityFilters,
     DisplayAllowMultipleActivityFilters,
     DisplayShowCategoriesAsPredefinedFilters,

@@ -25,6 +25,7 @@ import com.example.util.simpletimetracker.domain.base.DurationFormat
 import com.example.util.simpletimetracker.domain.daysOfWeek.model.DayOfWeek
 import com.example.util.simpletimetracker.domain.extension.padDuration
 import com.example.util.simpletimetracker.domain.language.AppLanguage
+import com.example.util.simpletimetracker.feature_base_adapter.recordTypeSuggestion.RecordTypeSuggestionViewData
 import com.example.util.simpletimetracker.feature_dialogs.dateTime.CustomDatePicker
 import com.example.util.simpletimetracker.feature_dialogs.dateTime.CustomTimePicker
 import com.example.util.simpletimetracker.utils.BaseUiTest
@@ -50,6 +51,7 @@ import com.example.util.simpletimetracker.utils.recyclerItemCount
 import com.example.util.simpletimetracker.utils.tryAction
 import com.example.util.simpletimetracker.utils.typeTextIntoView
 import com.example.util.simpletimetracker.utils.withPluralText
+import com.example.util.simpletimetracker.utils.withTag
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.allOf
@@ -2727,6 +2729,124 @@ class SettingsTest : BaseUiTest() {
         clickOnRecyclerItem(changeRecordR.id.rvChangeRecordType, withText(name3))
         clickOnViewWithText(R.string.change_record_save)
         checkRunningMark(false)
+    }
+
+    @Test
+    fun searchOnMain() {
+        val name1 = "TypeName1"
+        val name2 = "TypeName2"
+        val name3 = "TypeName3"
+        val name4 = "LoWeRcAsE"
+        val filter1 = "Filter1"
+        val filter2 = "Filter2"
+
+        // Add data
+        runBlocking { prefsInteractor.setShowActivityFilters(true) }
+        testUtils.addActivity(name1)
+        testUtils.addActivity(name2)
+        testUtils.addActivity(name3)
+        testUtils.addActivity(name4)
+        testUtils.addActivityFilter(filter1)
+        testUtils.addActivityFilter(filter2)
+        testUtils.addSuggestion(name1, listOf(name2, name3))
+        testUtils.addShortcut(name1)
+        testUtils.addShortcut(name2)
+        testUtils.addRecord(name1) // for suggests
+        Thread.sleep(1000)
+
+        fun checkType(name: String, isVisible: Boolean) {
+            val matcher = allOf(
+                withId(R.id.viewRecordTypeItem),
+                withTag(null),
+                hasDescendant(withText(name)),
+            )
+            if (isVisible) checkViewIsDisplayed(matcher) else checkViewDoesNotExist(matcher)
+        }
+
+        fun checkFilter(name: String, isVisible: Boolean) {
+            val matcher = allOf(
+                withId(R.id.viewActivityFilterItem),
+                hasDescendant(withText(name)),
+            )
+            if (isVisible) checkViewIsDisplayed(matcher) else checkViewDoesNotExist(matcher)
+        }
+
+        fun checkSuggestion(name: String, isVisible: Boolean) {
+            val matcher = allOf(
+                withId(R.id.viewRecordTypeItem),
+                withTag(RecordTypeSuggestionViewData.TEST_TAG),
+                hasDescendant(withText(name)),
+            )
+            if (isVisible) checkViewIsDisplayed(matcher) else checkViewDoesNotExist(matcher)
+        }
+
+        // Setting disabled
+        checkType(name1, true)
+        checkType(name2, true)
+        checkType(name3, true)
+        checkFilter(filter1, true)
+        checkFilter(filter2, true)
+        checkSuggestion(name2, true)
+        checkSuggestion(name3, true)
+        checkViewDoesNotExist(withId(R.id.etCommentItemField))
+
+        // Change setting
+        NavUtils.openSettingsScreen()
+        NavUtils.openSettingsDisplay()
+        scrollSettingsRecyclerToText(coreR.string.settings_enable_search_on_main)
+        checkCheckboxIsNotChecked(settingsCheckboxBesideText(coreR.string.settings_enable_search_on_main))
+        clickOnSettingsCheckboxBesideText(coreR.string.settings_enable_search_on_main)
+        checkCheckboxIsChecked(settingsCheckboxBesideText(coreR.string.settings_enable_search_on_main))
+
+        NavUtils.openRunningRecordsScreen()
+        checkType(name1, true)
+        checkType(name2, true)
+        checkType(name3, true)
+        checkFilter(filter1, true)
+        checkFilter(filter2, true)
+        checkSuggestion(name2, true)
+        checkSuggestion(name3, true)
+        checkViewIsDisplayed(withId(R.id.etCommentItemField))
+
+        // Check search
+        typeTextIntoView(R.id.etCommentItemField, "2")
+        Thread.sleep(500)
+        checkType(name1, false)
+        checkType(name2, true)
+        checkType(name3, false)
+        checkFilter(filter1, false)
+        checkFilter(filter2, true)
+        checkSuggestion(name2, true)
+        checkSuggestion(name3, false)
+
+        // Check when search entered but setting disabled
+        NavUtils.openSettingsScreen()
+        checkCheckboxIsChecked(settingsCheckboxBesideText(coreR.string.settings_enable_search_on_main))
+        clickOnSettingsCheckboxBesideText(coreR.string.settings_enable_search_on_main)
+        checkCheckboxIsNotChecked(settingsCheckboxBesideText(coreR.string.settings_enable_search_on_main))
+
+        NavUtils.openRunningRecordsScreen()
+        checkType(name1, true)
+        checkType(name2, true)
+        checkType(name3, true)
+        checkFilter(filter1, true)
+        checkFilter(filter2, true)
+        checkSuggestion(name2, true)
+        checkSuggestion(name3, true)
+        checkViewDoesNotExist(withId(R.id.etCommentItemField))
+
+        // Check lowercase
+        NavUtils.openSettingsScreen()
+        clickOnSettingsCheckboxBesideText(coreR.string.settings_enable_search_on_main)
+        checkCheckboxIsChecked(settingsCheckboxBesideText(coreR.string.settings_enable_search_on_main))
+
+        NavUtils.openRunningRecordsScreen()
+        typeTextIntoView(R.id.etCommentItemField, "lowercase")
+        Thread.sleep(500)
+        checkType(name1, false)
+        checkType(name2, false)
+        checkType(name3, false)
+        checkType(name4, true)
     }
 
     @Test

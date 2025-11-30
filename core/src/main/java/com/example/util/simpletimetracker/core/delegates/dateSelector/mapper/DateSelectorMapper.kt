@@ -176,7 +176,7 @@ class DateSelectorMapper @Inject constructor(
                 DateSelectorSingleViewData(
                     position = position,
                     dayMonth = data.data.toViewData(),
-                    cardData = cardData,
+                    cardData = cardData.copy(isToday = false),
                 )
             }
         }

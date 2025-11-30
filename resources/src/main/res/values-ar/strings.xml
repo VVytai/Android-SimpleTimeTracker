@@ -335,6 +335,7 @@
     <string name="settings_enable_pomodoro_mode">إظهار زر بومودورو على الشاشة الرئيسية</string>
     <string name="settings_show_goals_separately">إظهار الأهداف في علامة تبويب منفصلة</string>
     <string name="settings_show_nav_bar_at_the_bottom">إظهار شريط التنقل في الأسفل</string>
+    <string name="settings_enable_search_on_main">تفعيل البحث على الشاشة الرئيسية</string>
     <string name="settings_allow_multitasking">السماح بتعدد المهام</string>
     <string name="settings_disallow_multitasking">عدم السماح بتعدد المهام</string>
     <string name="settings_allow_multitasking_hint">ًإذا كان غير مفعل، فبدء تشغيل مهمة جديدة سيوقف الأنشطة الأخرى تلقائيا.</string>

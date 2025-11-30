@@ -335,6 +335,7 @@ Esto te permite ver cuánto tiempo estás dedicando a actividades productivas fr
     <string name="settings_enable_pomodoro_mode">Mostrar el botón Pomodoro en la pantalla principal</string>
     <string name="settings_show_goals_separately">Mostrar objetivos en una pestaña separada</string>
     <string name="settings_show_nav_bar_at_the_bottom">Mostrar barra de navegación en la parte inferior</string>
+    <string name="settings_enable_search_on_main">Habilitar la búsqueda en la pantalla principal</string>
     <string name="settings_allow_multitasking">Permitir el registro multitarea</string>
     <string name="settings_disallow_multitasking">No permitir la multitarea</string>
     <string name="settings_allow_multitasking_hint">Si está deshabilitado, al iniciar un nuevo temporizador se detendrá automáticamente el de las otras actividades.</string>

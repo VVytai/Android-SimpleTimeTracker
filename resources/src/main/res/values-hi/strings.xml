@@ -335,6 +335,7 @@
     <string name="settings_enable_pomodoro_mode">मुख्य स्क्रीन पर पोमोडोरो बटन दिखाएँ</string>
     <string name="settings_show_goals_separately">एक अलग टैब पर लक्ष्य दिखाएँ</string>
     <string name="settings_show_nav_bar_at_the_bottom">सबसे नीचे नेविगेशन बार दिखाएँ</string>
+    <string name="settings_enable_search_on_main">मुख्य स्क्रीन पर खोज सक्षम करें</string>
     <string name="settings_allow_multitasking">मल्टीटास्किंग की अनुमति दें</string>
     <string name="settings_disallow_multitasking">मल्टीटास्किंग की अनुमति न दें</string>
     <string name="settings_allow_multitasking_hint">यदि बंद हे तो नया टाइमर शुरू होने पर यह अन्य स्वचालित गतिविधियों को रोक देगा।</string>

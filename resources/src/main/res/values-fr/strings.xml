@@ -335,6 +335,7 @@ Cela vous permet de voir combien de temps vous passez globalement sur des activi
     <string name="settings_enable_pomodoro_mode">Afficher le bouton Pomodoro sur l\'écran principal</string>
     <string name="settings_show_goals_separately">Afficher les objectifs dans un onglet séparé</string>
     <string name="settings_show_nav_bar_at_the_bottom">Afficher la barre de navigation en bas</string>
+    <string name="settings_enable_search_on_main">Activer la recherche sur l\'écran principal</string>
     <string name="settings_allow_multitasking">Autoriser le multitâche</string>
     <string name="settings_disallow_multitasking">Interdire le multitâche</string>
     <string name="settings_allow_multitasking_hint">Si désactivé, le démarrage d\'une nouvelle activité arrêtera automatiquement les autres activités en cours.</string>

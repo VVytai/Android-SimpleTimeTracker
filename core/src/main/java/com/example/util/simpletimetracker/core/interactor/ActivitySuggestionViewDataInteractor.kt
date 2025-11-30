@@ -3,9 +3,11 @@ package com.example.util.simpletimetracker.core.interactor
 import com.example.util.simpletimetracker.core.mapper.RecordTypeViewDataMapper
 import com.example.util.simpletimetracker.core.viewData.RecordTypeSuggestionType
 import com.example.util.simpletimetracker.domain.activitySuggestion.interactor.GetCurrentActivitySuggestionsInteractor
+import com.example.util.simpletimetracker.domain.extension.search
 import com.example.util.simpletimetracker.domain.record.model.RunningRecord
 import com.example.util.simpletimetracker.domain.recordType.model.RecordType
 import com.example.util.simpletimetracker.domain.recordType.model.RecordTypeGoal
+import com.example.util.simpletimetracker.feature_base_adapter.activityFilter.ActivityFilterViewData
 import com.example.util.simpletimetracker.feature_base_adapter.recordTypeSuggestion.RecordTypeSuggestionViewData
 import javax.inject.Inject
 
@@ -20,6 +22,7 @@ class ActivitySuggestionViewDataInteractor @Inject constructor(
         runningRecords: List<RunningRecord>,
         allDailyCurrents: Map<Long, GetCurrentRecordsDurationInteractor.Result>,
         completeTypeIds: Set<Long>,
+        searchText: String,
         numberOfCards: Int,
         isDarkTheme: Boolean,
     ): List<RecordTypeSuggestionViewData> {
@@ -45,6 +48,9 @@ class ActivitySuggestionViewDataInteractor @Inject constructor(
                     type = RecordTypeSuggestionType,
                 )
             }
-        }
+        }.search(
+            text = searchText,
+            searchableContent = { data.name },
+        )
     }
 }

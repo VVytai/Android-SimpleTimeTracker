@@ -16,7 +16,7 @@ import com.example.util.simpletimetracker.core.sharedViewModel.RemoveRecordViewM
 import com.example.util.simpletimetracker.core.utils.InsetConfiguration
 import com.example.util.simpletimetracker.core.utils.updateRunningRecordPreview
 import com.example.util.simpletimetracker.domain.extension.orZero
-import com.example.util.simpletimetracker.domain.record.interactor.UpdateRunningRecordFromChangeScreenInteractor
+import com.example.util.simpletimetracker.domain.record.interactor.UpdateRunningRecordsInteractor
 import com.example.util.simpletimetracker.domain.statistics.model.ChartFilterType
 import com.example.util.simpletimetracker.feature_base_adapter.BaseRecyclerAdapter
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
@@ -204,7 +204,7 @@ class RecordsFragment :
         viewModel.onShareView(view.root)
     }
 
-    private fun onPreviewUpdate(update: UpdateRunningRecordFromChangeScreenInteractor.Update) {
+    private fun onPreviewUpdate(update: UpdateRunningRecordsInteractor.Update) {
         updateRunningRecordPreview(
             currentList = recordsAdapter.currentList,
             recyclerView = binding.rvRecordsList,

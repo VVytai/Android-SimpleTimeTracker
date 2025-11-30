@@ -67,3 +67,14 @@ fun <T> List<T>.addBetweenEach(
     }
     return result
 }
+
+inline fun <T> List<T>.search(
+    text: String,
+    crossinline searchableContent: T.() -> String,
+): List<T> {
+    return if (text.isNotEmpty()) {
+        this.filter { text in it.searchableContent().lowercase() }
+    } else {
+        this
+    }
+}

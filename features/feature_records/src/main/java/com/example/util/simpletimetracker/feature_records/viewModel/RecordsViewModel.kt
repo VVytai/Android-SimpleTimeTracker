@@ -17,7 +17,7 @@ import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteracto
 import com.example.util.simpletimetracker.domain.record.interactor.RecordsContainerMultiselectInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.RecordsShareUpdateInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.RecordsUpdateInteractor
-import com.example.util.simpletimetracker.domain.record.interactor.UpdateRunningRecordFromChangeScreenInteractor
+import com.example.util.simpletimetracker.domain.record.interactor.UpdateRunningRecordsInteractor
 import com.example.util.simpletimetracker.domain.record.model.MultiSelectedRecordId
 import com.example.util.simpletimetracker.domain.statistics.model.ChartFilterType
 import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
@@ -54,7 +54,7 @@ class RecordsViewModel @Inject constructor(
     private val sharingInteractor: SharingInteractor,
     private val rangeViewDataMapper: RangeViewDataMapper,
     private val recordsViewDataMapper: RecordsViewDataMapper,
-    private val updateRunningRecordFromChangeScreenInteractor: UpdateRunningRecordFromChangeScreenInteractor,
+    private val updateRunningRecordsInteractor: UpdateRunningRecordsInteractor,
     private val getChangeRecordNavigationParamsInteractor: GetChangeRecordNavigationParamsInteractor,
     private val recordsContainerMultiselectInteractor: RecordsContainerMultiselectInteractor,
     private val themeChangedInteractor: ThemeChangedInteractor,
@@ -71,7 +71,7 @@ class RecordsViewModel @Inject constructor(
     }
     val sharingData: SingleLiveEvent<RecordsShareState> = SingleLiveEvent()
     val resetScreen: SingleLiveEvent<Unit> = SingleLiveEvent()
-    val previewUpdate: SingleLiveEvent<UpdateRunningRecordFromChangeScreenInteractor.Update> = SingleLiveEvent()
+    val previewUpdate: SingleLiveEvent<UpdateRunningRecordsInteractor.Update> = SingleLiveEvent()
 
     private var isVisible: Boolean = false
     private var timerJob: Job? = null
@@ -267,7 +267,7 @@ class RecordsViewModel @Inject constructor(
             recordsShareUpdateInteractor.shareClicked.collect { if (isVisible) onShareClicked() }
         }
         viewModelScope.launch {
-            updateRunningRecordFromChangeScreenInteractor.dataUpdated.collect { onUpdateReceived(it) }
+            updateRunningRecordsInteractor.dataUpdated.collect { onUpdateReceived(it) }
         }
         viewModelScope.launch {
             themeChangedInteractor.themeChanged.collect { updateRecords() }
@@ -275,7 +275,7 @@ class RecordsViewModel @Inject constructor(
     }
 
     private fun onUpdateReceived(
-        update: UpdateRunningRecordFromChangeScreenInteractor.Update,
+        update: UpdateRunningRecordsInteractor.Update,
     ) {
         // No need to update.
         if (shift != 0) return

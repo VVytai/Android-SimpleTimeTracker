@@ -335,6 +335,7 @@ This allows you to see how much time you\'re spending on productive versus unpro
     <string name="settings_enable_pomodoro_mode">Show Pomodoro button on main screen</string>
     <string name="settings_show_goals_separately">Show goals on a separate tab</string>
     <string name="settings_show_nav_bar_at_the_bottom">Show navigation bar at the bottom</string>
+    <string name="settings_enable_search_on_main">Enable search on main screen</string>
     <string name="settings_allow_multitasking">Allow multitasking</string>
     <string name="settings_disallow_multitasking">Disallow multitasking</string>
     <string name="settings_allow_multitasking_hint">If disabled, starting new timer will automatically stop other activities.</string>

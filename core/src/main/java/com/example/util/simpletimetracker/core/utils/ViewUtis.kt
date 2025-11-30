@@ -4,8 +4,8 @@ import android.view.View
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.util.simpletimetracker.core.R
-import com.example.util.simpletimetracker.domain.record.interactor.UpdateRunningRecordFromChangeScreenInteractor
-import com.example.util.simpletimetracker.domain.record.interactor.UpdateRunningRecordFromChangeScreenInteractor.GoalState
+import com.example.util.simpletimetracker.domain.record.interactor.UpdateRunningRecordsInteractor
+import com.example.util.simpletimetracker.domain.record.interactor.UpdateRunningRecordsInteractor.GoalState
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.runningRecord.RunningRecordViewData
 import com.example.util.simpletimetracker.feature_views.GoalCheckmarkView.CheckState
@@ -32,7 +32,7 @@ fun View.setChooserColor(opened: Boolean) {
 fun updateRunningRecordPreview(
     currentList: List<ViewHolderType>,
     recyclerView: RecyclerView,
-    update: UpdateRunningRecordFromChangeScreenInteractor.Update,
+    update: UpdateRunningRecordsInteractor.Update,
 ) {
     val itemIndex = currentList
         .indexOfFirst { it is RunningRecordViewData && it.id == update.id }

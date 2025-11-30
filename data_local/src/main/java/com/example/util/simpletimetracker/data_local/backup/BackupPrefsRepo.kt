@@ -86,6 +86,7 @@ import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Compani
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_TAG_ORDER
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_TAG_ORDER_MANUAL
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_DURATION_PRESENTATION_FORMAT
+import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_ENABLE_SEARCH_ON_MAIN
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_HIDDEN_COMMENT_FILTERS
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_POMODORO_SHOW_MORE_CONTROLS
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_TYPE_ADDITIONAL_FIELDS_SHOWN
@@ -190,6 +191,7 @@ class BackupPrefsRepo @Inject constructor(
             PrefsProcessor(KEY_SHOW_CATEGORIES_AS_PREDEFINED_FILTERS, ::showCategoriesAsPredefinedFilters),
             PrefsProcessor(KEY_SELECTED_PREDEFINED_FILTERS, ::selectedPredefinedFilters),
             PrefsProcessor(KEY_ENABLE_REPEAT_BUTTON, ::enableRepeatButton),
+            PrefsProcessor(KEY_ENABLE_SEARCH_ON_MAIN, ::enableSearchOnMain),
             PrefsProcessor(KEY_ENABLE_POMODORO_MODE, ::enablePomodoroMode),
             PrefsProcessor(KEY_POMODORO_FOCUS_TIME, ::pomodoroFocusTime),
             PrefsProcessor(KEY_POMODORO_BREAK_TIME, ::pomodoroBreakTime),

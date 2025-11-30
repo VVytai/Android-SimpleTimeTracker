@@ -15,10 +15,11 @@ import com.example.util.simpletimetracker.core.utils.doOnApplyWindowInsetsListen
 import com.example.util.simpletimetracker.core.utils.getNavBarInsets
 import com.example.util.simpletimetracker.core.utils.updateRunningRecordPreview
 import com.example.util.simpletimetracker.core.viewData.RecordTypeSuggestionType
-import com.example.util.simpletimetracker.domain.record.interactor.UpdateRunningRecordFromChangeScreenInteractor
+import com.example.util.simpletimetracker.domain.record.interactor.UpdateRunningRecordsInteractor
 import com.example.util.simpletimetracker.feature_base_adapter.BaseRecyclerAdapter
 import com.example.util.simpletimetracker.feature_base_adapter.activityFilter.createActivityFilterAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.activityFilter.createActivityFilterAddAdapterDelegate
+import com.example.util.simpletimetracker.feature_base_adapter.commentField.createCommentFieldAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.divider.createDividerAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.empty.createEmptyAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.emptySpace.createEmptySpaceAdapterDelegate
@@ -35,6 +36,7 @@ import com.example.util.simpletimetracker.feature_running_records.viewModel.Runn
 import com.example.util.simpletimetracker.feature_views.TransitionNames
 import com.example.util.simpletimetracker.feature_views.extension.addOnScrollListenerAdapter
 import com.example.util.simpletimetracker.feature_views.extension.pxToDp
+import com.example.util.simpletimetracker.feature_views.extension.setMargins
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
@@ -103,6 +105,9 @@ class RunningRecordsFragment :
             createActivityFilterAddAdapterDelegate(
                 onItemClick = throttle(viewModel::onActivityFilterSpecialClick),
             ),
+            createCommentFieldAdapterDelegate(
+                afterTextChange = viewModel::onSearchTextChange,
+            )
         )
     }
 
@@ -176,7 +181,7 @@ class RunningRecordsFragment :
         mainTabsViewModel.onHandled()
     }
 
-    private fun onPreviewUpdate(update: UpdateRunningRecordFromChangeScreenInteractor.Update) {
+    private fun onPreviewUpdate(update: UpdateRunningRecordsInteractor.Update) {
         updateRunningRecordPreview(
             currentList = runningRecordsAdapter.currentList,
             recyclerView = binding.rvRunningRecordsList,

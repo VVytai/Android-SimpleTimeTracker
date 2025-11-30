@@ -205,6 +205,10 @@ class PrefsRepoImpl @Inject constructor(
         KEY_ENABLE_REPEAT_BUTTON, false,
     )
 
+    override var enableSearchOnMain: Boolean by prefs.delegate(
+        KEY_ENABLE_SEARCH_ON_MAIN, false,
+    )
+
     override var enablePomodoroMode: Boolean by prefs.delegate(
         KEY_ENABLE_POMODORO_MODE, true,
     )
@@ -669,6 +673,7 @@ class PrefsRepoImpl @Inject constructor(
         const val KEY_SHOW_ACTIVITY_FILTERS = "showActivityFilters"
         const val KEY_IS_ACTIVITY_FILTERS_COLLAPSED = "isActivityFiltersCollapsed"
         const val KEY_ENABLE_REPEAT_BUTTON = "enableRepeatButton"
+        const val KEY_ENABLE_SEARCH_ON_MAIN = "enableSearchOnMain"
         const val KEY_ENABLE_POMODORO_MODE = "enablePomodoroMode"
         const val KEY_POMODORO_FOCUS_TIME = "pomodoroFocusTime"
         const val KEY_POMODORO_BREAK_TIME = "pomodoroBreakTime"

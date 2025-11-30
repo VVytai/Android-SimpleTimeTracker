@@ -335,6 +335,7 @@ Acest lucru îți permite să vezi cât timp petreci în activități productive
     <string name="settings_enable_pomodoro_mode">Afișați butonul Pomodoro pe ecranul principal</string>
     <string name="settings_show_goals_separately">Afișează țelurile într-o foaie separată</string>
     <string name="settings_show_nav_bar_at_the_bottom">Afișați bara de navigare în partea de jos</string>
+    <string name="settings_enable_search_on_main">Activează căutarea pe ecranul principal</string>
     <string name="settings_allow_multitasking">Permite multitasking</string>
     <string name="settings_disallow_multitasking">Nu permite multitasking</string>
     <string name="settings_allow_multitasking_hint">Dacă este dezactivat, activarea unei noi activități va opri alte activități.</string>

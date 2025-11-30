@@ -18,7 +18,7 @@ import com.example.util.simpletimetracker.domain.record.interactor.RecordInterac
 import com.example.util.simpletimetracker.domain.recordTag.interactor.RecordTypeToTagInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.RemoveRunningRecordMediator
 import com.example.util.simpletimetracker.domain.record.interactor.RunningRecordInteractor
-import com.example.util.simpletimetracker.domain.record.interactor.UpdateRunningRecordFromChangeScreenInteractor
+import com.example.util.simpletimetracker.domain.record.interactor.UpdateRunningRecordsInteractor
 import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.domain.statistics.model.ChartFilterType
 import com.example.util.simpletimetracker.domain.record.model.RunningRecord
@@ -69,7 +69,7 @@ class ChangeRunningRecordViewModel @Inject constructor(
     private val resourceRepo: ResourceRepo,
     private val statisticsDetailNavigationInteractor: StatisticsDetailNavigationInteractor,
     private val changeRunningRecordMapper: ChangeRunningRecordMapper,
-    private val updateRunningRecordFromChangeScreenInteractor: UpdateRunningRecordFromChangeScreenInteractor,
+    private val updateRunningRecordsInteractor: UpdateRunningRecordsInteractor,
     private val addTagToTypeIfNotExistMediator: AddTagToTypeIfNotExistMediator,
 ) : ChangeRecordBaseViewModel(
     router = router,
@@ -172,7 +172,7 @@ class ChangeRunningRecordViewModel @Inject constructor(
             fullUpdate = fullUpdate,
             recordPreview = recordPreview,
         )
-        updateRunningRecordFromChangeScreenInteractor.send(update)
+        updateRunningRecordsInteractor.send(update)
     }
 
     override fun getChangeCategoryParams(data: ChangeTagData): ChangeRecordTagFromScreen {

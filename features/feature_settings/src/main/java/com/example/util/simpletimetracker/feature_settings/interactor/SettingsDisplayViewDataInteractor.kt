@@ -200,6 +200,12 @@ class SettingsDisplayViewDataInteractor @Inject constructor(
                 bottomSpaceIsVisible = true,
                 dividerIsVisible = true,
             )
+            result += SettingsCheckboxViewData(
+                block = SettingsBlock.DisplayEnabledSearchOnMain,
+                title = resourceRepo.getString(R.string.settings_enable_search_on_main),
+                subtitle = "",
+                isChecked = prefsInteractor.getEnableSearchOnMain(),
+            )
             val widgetTransparencyViewData = loadWidgetTransparencyViewData()
             result += SettingsSpinnerViewData(
                 block = SettingsBlock.DisplayWidgetBackground,

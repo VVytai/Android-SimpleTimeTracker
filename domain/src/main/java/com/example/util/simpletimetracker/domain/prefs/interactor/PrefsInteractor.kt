@@ -389,6 +389,14 @@ class PrefsInteractor @Inject constructor(
         prefsRepo.enableRepeatButton = isEnabled
     }
 
+    suspend fun getEnableSearchOnMain(): Boolean = withContext(Dispatchers.IO) {
+        prefsRepo.enableSearchOnMain
+    }
+
+    suspend fun setEnableSearchOnMain(isEnabled: Boolean) = withContext(Dispatchers.IO) {
+        prefsRepo.enableSearchOnMain = isEnabled
+    }
+
     suspend fun getEnablePomodoroMode(): Boolean = withContext(Dispatchers.IO) {
         prefsRepo.enablePomodoroMode
     }

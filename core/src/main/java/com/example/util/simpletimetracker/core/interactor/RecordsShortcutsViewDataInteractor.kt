@@ -1,10 +1,12 @@
 package com.example.util.simpletimetracker.core.interactor
 
 import com.example.util.simpletimetracker.core.mapper.RecordShortcutViewDataMapper
+import com.example.util.simpletimetracker.domain.extension.search
 import com.example.util.simpletimetracker.domain.record.model.RunningRecord
 import com.example.util.simpletimetracker.domain.recordShortcut.interactor.RecordShortcutInteractor
 import com.example.util.simpletimetracker.domain.recordTag.model.RecordTag
 import com.example.util.simpletimetracker.domain.recordType.model.RecordType
+import com.example.util.simpletimetracker.feature_base_adapter.activityFilter.ActivityFilterViewData
 import com.example.util.simpletimetracker.feature_base_adapter.recordShortcut.RecordShortcutViewData
 import javax.inject.Inject
 
@@ -19,6 +21,7 @@ class RecordsShortcutsViewDataInteractor @Inject constructor(
         recordTypesMap: Map<Long, RecordType>,
         recordTags: List<RecordTag>,
         runningRecords: List<RunningRecord>,
+        searchText: String,
         isDarkTheme: Boolean,
     ): List<RecordShortcutViewData> {
         val shortcuts = recordShortcutInteractor.getAll()
@@ -42,6 +45,9 @@ class RecordsShortcutsViewDataInteractor @Inject constructor(
                 isDarkTheme = isDarkTheme,
                 isFiltered = isRunning,
             )
-        }
+        }.search(
+            text = searchText,
+            searchableContent = { data.name },
+        )
     }
 }

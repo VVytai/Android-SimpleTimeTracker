@@ -335,6 +335,7 @@ Lokhu kukuvumela ukuthi ubone isikhathi osichitha emisebenzini esebenzayo nezing
     <string name="settings_enable_pomodoro_mode">Bonisa inkinobho yePomodoro ekhasini eliyinhloko</string>
     <string name="settings_show_goals_separately">Bonisa imigomo kuthebhu ehlukile</string>
     <string name="settings_show_nav_bar_at_the_bottom">Bonisa ibha yokuzulazula phansi</string>
+    <string name="settings_enable_search_on_main">Vumela ukusesha esikrinini esiyinhloko</string>
     <string name="settings_allow_multitasking">Vumela ukwenza imisebenzi eminingi</string>
     <string name="settings_disallow_multitasking">Ungavumeli ukwenza imisebenzi eminingi</string>
     <string name="settings_allow_multitasking_hint">Uma kungavunyelwe, ukuqala ithayima entsha kuzoyeka eminye imisebenzi ngokuzenzakalelayo.</string>

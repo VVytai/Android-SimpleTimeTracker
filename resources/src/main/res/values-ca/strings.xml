@@ -335,6 +335,7 @@ Això et permet veure quant de temps dediques a activitats productives versus no
     <string name="settings_enable_pomodoro_mode">Mostra el botó Pomodoro a la pantalla principal</string>
     <string name="settings_show_goals_separately">Mostra els objectius en una pestanya separada</string>
     <string name="settings_show_nav_bar_at_the_bottom">Mostra la barra de navegació a la part inferior</string>
+    <string name="settings_enable_search_on_main">Habilita la cerca a la pantalla principal</string>
     <string name="settings_allow_multitasking">Permet la multitasca</string>
     <string name="settings_disallow_multitasking">No permetre la multitasca</string>
     <string name="settings_allow_multitasking_hint">Si és desactivat, en començar un nou temporitzador s\'aturaran automàticament les altres activitats.</string>

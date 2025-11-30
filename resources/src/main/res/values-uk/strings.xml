@@ -335,6 +335,7 @@
     <string name="settings_enable_pomodoro_mode">Показувати кнопку Pomodoro на головному екрані</string>
     <string name="settings_show_goals_separately">Показувати цілі на окремій вкладці</string>
     <string name="settings_show_nav_bar_at_the_bottom">Показувати панель навігації внизу</string>
+    <string name="settings_enable_search_on_main">Увімкнути пошук на головному екрані</string>
     <string name="settings_allow_multitasking">Дозволити багатозадачність</string>
     <string name="settings_disallow_multitasking">Заборонити багатозадачність</string>
     <string name="settings_allow_multitasking_hint">Якщо вимкнено, запуск нового таймера автоматично зупинить інші активності.</string>

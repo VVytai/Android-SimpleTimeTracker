@@ -335,6 +335,7 @@ I <b>tag</b> ti permettono di aggiungere maggiori dettagli a un\'attività speci
     <string name="settings_enable_pomodoro_mode">Mostra il pulsante Pomodoro sulla schermata principale</string>
     <string name="settings_show_goals_separately">Mostra gli obiettivi in una scheda separata</string>
     <string name="settings_show_nav_bar_at_the_bottom">Mostra la barra di navigazione in basso</string>
+    <string name="settings_enable_search_on_main">Abilita la ricerca nella schermata principale</string>
     <string name="settings_allow_multitasking">Abilita multitasking</string>
     <string name="settings_disallow_multitasking">Non consentire il multitasking</string>
     <string name="settings_allow_multitasking_hint">Se disabilitato, avviare un nuovo timer fermerà automaticamente le altre attività.</string>

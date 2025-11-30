@@ -8,17 +8,26 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class UpdateRunningRecordFromChangeScreenInteractor @Inject constructor() {
+class UpdateRunningRecordsInteractor @Inject constructor() {
 
     val dataUpdated: SharedFlow<Update> get() = _dataUpdated.asSharedFlow()
-
     private val _dataUpdated = MutableSharedFlow<Update>(
+        extraBufferCapacity = 1,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST,
+    )
+
+    val fullUpdate: SharedFlow<Unit> get() = _fullUpdate.asSharedFlow()
+    private val _fullUpdate = MutableSharedFlow<Unit>(
         extraBufferCapacity = 1,
         onBufferOverflow = BufferOverflow.DROP_OLDEST,
     )
 
     suspend fun send(update: Update) {
         _dataUpdated.emit(update)
+    }
+
+    suspend fun sendFullUpdate() {
+        _fullUpdate.emit(Unit)
     }
 
     data class Update(

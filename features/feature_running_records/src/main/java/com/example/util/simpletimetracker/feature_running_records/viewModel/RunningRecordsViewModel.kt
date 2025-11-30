@@ -12,20 +12,20 @@ import com.example.util.simpletimetracker.core.interactor.GetChangeRecordNavigat
 import com.example.util.simpletimetracker.core.interactor.RecordRepeatInteractor
 import com.example.util.simpletimetracker.core.model.NavigationTab
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
-import com.example.util.simpletimetracker.domain.extension.orZero
-import com.example.util.simpletimetracker.domain.record.interactor.AddRunningRecordMediator
 import com.example.util.simpletimetracker.domain.activityFilter.interactor.ChangeSelectedActivityFilterMediator
 import com.example.util.simpletimetracker.domain.activityFilter.model.ActivityFilterType
 import com.example.util.simpletimetracker.domain.base.UNTRACKED_ITEM_ID
 import com.example.util.simpletimetracker.domain.darkMode.interactor.ThemeChangedInteractor
+import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
-import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTypeInteractor
+import com.example.util.simpletimetracker.domain.record.interactor.AddRunningRecordMediator
 import com.example.util.simpletimetracker.domain.record.interactor.RemoveRunningRecordMediator
 import com.example.util.simpletimetracker.domain.record.interactor.RunningRecordInteractor
-import com.example.util.simpletimetracker.domain.record.interactor.UpdateRunningRecordFromChangeScreenInteractor
+import com.example.util.simpletimetracker.domain.record.interactor.UpdateRunningRecordsInteractor
 import com.example.util.simpletimetracker.domain.record.model.RecordDataSelectionDialogResult
 import com.example.util.simpletimetracker.domain.recordAction.interactor.RecordActionRepeatMediator
 import com.example.util.simpletimetracker.domain.recordShortcut.interactor.RecordShortcutInteractor
+import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTypeInteractor
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.activityFilter.ActivityFilterAddViewData
 import com.example.util.simpletimetracker.feature_base_adapter.activityFilter.ActivityFilterViewData
@@ -70,7 +70,7 @@ class RunningRecordsViewModel @Inject constructor(
     private val runningRecordsViewDataInteractor: RunningRecordsViewDataInteractor,
     private val changeSelectedActivityFilterMediator: ChangeSelectedActivityFilterMediator,
     private val prefsInteractor: PrefsInteractor,
-    private val updateRunningRecordFromChangeScreenInteractor: UpdateRunningRecordFromChangeScreenInteractor,
+    private val updateRunningRecordsInteractor: UpdateRunningRecordsInteractor,
     private val recordTypeInteractor: RecordTypeInteractor,
     private val getChangeRecordNavigationParamsInteractor: GetChangeRecordNavigationParamsInteractor,
     private val themeChangedInteractor: ThemeChangedInteractor,
@@ -82,7 +82,7 @@ class RunningRecordsViewModel @Inject constructor(
     }
     val resetScreen: SingleLiveEvent<Unit> =
         SingleLiveEvent()
-    val previewUpdate: SingleLiveEvent<UpdateRunningRecordFromChangeScreenInteractor.Update> =
+    val previewUpdate: SingleLiveEvent<UpdateRunningRecordsInteractor.Update> =
         SingleLiveEvent()
 
     private var timerJob: Job? = null
@@ -90,6 +90,7 @@ class RunningRecordsViewModel @Inject constructor(
     private var completeTypeJob: Job? = null
     private var completeTypeIds: Set<Long> = emptySet()
     private var navBarHeightDp: Int = 0
+    private var searchText: String = ""
 
     init {
         subscribeToUpdates()
@@ -312,6 +313,13 @@ class RunningRecordsViewModel @Inject constructor(
         )
     }
 
+    fun onSearchTextChange(text: String) {
+        if (text != searchText) {
+            searchText = text
+            updateRunningRecords(fromValueChange = true)
+        }
+    }
+
     fun onVisible() {
         startUpdate()
         checkForRetroActiveMultitaskHint()
@@ -393,7 +401,10 @@ class RunningRecordsViewModel @Inject constructor(
 
     private fun subscribeToUpdates() {
         viewModelScope.launch {
-            updateRunningRecordFromChangeScreenInteractor.dataUpdated.collect { onUpdateReceived(it) }
+            updateRunningRecordsInteractor.dataUpdated.collect { onUpdateReceived(it) }
+        }
+        viewModelScope.launch {
+            updateRunningRecordsInteractor.fullUpdate.collect { updateRunningRecords() }
         }
         viewModelScope.launch {
             themeChangedInteractor.themeChanged.collect { updateRunningRecords() }
@@ -401,23 +412,29 @@ class RunningRecordsViewModel @Inject constructor(
     }
 
     private fun onUpdateReceived(
-        update: UpdateRunningRecordFromChangeScreenInteractor.Update,
+        update: UpdateRunningRecordsInteractor.Update,
     ) {
         previewUpdate.set(update)
     }
 
-    private fun updateRunningRecords() {
+    private fun updateRunningRecords(
+        fromValueChange: Boolean = false,
+    ) {
         updateJob?.cancel()
         updateJob = viewModelScope.launch {
-            val data = loadRunningRecordsViewData()
+            val data = loadRunningRecordsViewData(fromValueChange)
             runningRecords.set(data)
         }
     }
 
-    private suspend fun loadRunningRecordsViewData(): List<ViewHolderType> {
+    private suspend fun loadRunningRecordsViewData(
+        fromSearchChange: Boolean,
+    ): List<ViewHolderType> {
         return runningRecordsViewDataInteractor.getViewData(
             completeTypeIds = completeTypeIds,
             navBarHeightDp = navBarHeightDp,
+            searchText = searchText,
+            fromSearchChange = fromSearchChange,
         )
     }
 

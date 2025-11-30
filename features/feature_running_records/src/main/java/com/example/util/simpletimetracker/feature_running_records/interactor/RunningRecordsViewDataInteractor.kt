@@ -1,5 +1,6 @@
 package com.example.util.simpletimetracker.feature_running_records.interactor
 
+import com.example.util.simpletimetracker.core.R
 import com.example.util.simpletimetracker.core.interactor.ActivityFilterViewDataInteractor
 import com.example.util.simpletimetracker.core.interactor.ActivitySuggestionViewDataInteractor
 import com.example.util.simpletimetracker.core.interactor.FilterGoalsByDayOfWeekInteractor
@@ -7,8 +8,10 @@ import com.example.util.simpletimetracker.core.interactor.GetCurrentRecordsDurat
 import com.example.util.simpletimetracker.core.interactor.GetRunningRecordViewDataMediator
 import com.example.util.simpletimetracker.core.interactor.RecordsShortcutsViewDataInteractor
 import com.example.util.simpletimetracker.core.mapper.RecordTypeViewDataMapper
+import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.domain.extension.addBetweenEach
 import com.example.util.simpletimetracker.domain.extension.plus
+import com.example.util.simpletimetracker.domain.extension.search
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.RecordInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.RunningRecordInteractor
@@ -18,14 +21,18 @@ import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTyp
 import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTypeInteractor
 import com.example.util.simpletimetracker.domain.recordType.model.RecordType
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
+import com.example.util.simpletimetracker.feature_base_adapter.commentField.CommentFieldViewData
 import com.example.util.simpletimetracker.feature_base_adapter.divider.DividerViewData
 import com.example.util.simpletimetracker.feature_base_adapter.emptySpace.EmptySpaceViewData
+import com.example.util.simpletimetracker.feature_base_adapter.recordType.RecordTypeViewData
+import com.example.util.simpletimetracker.feature_base_adapter.recordTypeSuggestion.RecordTypeSuggestionViewData
 import com.example.util.simpletimetracker.feature_running_records.mapper.RunningRecordsViewDataMapper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class RunningRecordsViewDataInteractor @Inject constructor(
+    private val resourceRepo: ResourceRepo,
     private val prefsInteractor: PrefsInteractor,
     private val recordTypeInteractor: RecordTypeInteractor,
     private val recordTagInteractor: RecordTagInteractor,
@@ -45,6 +52,8 @@ class RunningRecordsViewDataInteractor @Inject constructor(
     suspend fun getViewData(
         completeTypeIds: Set<Long>,
         navBarHeightDp: Int,
+        searchText: String,
+        fromSearchChange: Boolean,
     ): List<ViewHolderType> = withContext(Dispatchers.Default) {
         val recordTypes = recordTypeInteractor.getAll()
         val recordTypesMap = recordTypes.associateBy(RecordType::id)
@@ -64,6 +73,7 @@ class RunningRecordsViewDataInteractor @Inject constructor(
         val retroactiveTrackingModeEnabled = prefsInteractor.getRetroactiveTrackingMode()
         val isFiltersCollapsed = prefsInteractor.getIsActivityFiltersCollapsed()
         val isNavBarAtTheBottom = prefsInteractor.getIsNavBarAtTheBottom()
+        val enableSearchOnMain = prefsInteractor.getEnableSearchOnMain()
         val goals = filterGoalsByDayOfWeekInteractor
             .execute(recordTypeGoalInteractor.getAllTypeGoals())
             .groupBy { it.idData.value }
@@ -76,6 +86,7 @@ class RunningRecordsViewDataInteractor @Inject constructor(
             // No goals - no need to calculate durations.
             emptyMap()
         }
+        val actualSearchText = if (enableSearchOnMain) searchText else ""
 
         val runningRecordsViewData = when {
             showFirstEnterHint -> {
@@ -122,9 +133,23 @@ class RunningRecordsViewDataInteractor @Inject constructor(
             }
         }
 
+        val searchViewData = if (enableSearchOnMain) {
+            CommentFieldViewData(
+                id = "running_records_search".hashCode().toLong(),
+                text = if (fromSearchChange) null else actualSearchText,
+                marginTopDp = -3,
+                marginHorizontal = 8,
+                hint = resourceRepo.getString(R.string.search_hint),
+                valueType = CommentFieldViewData.ValueType.TextSingleLine,
+            ).let(::listOf)
+        } else {
+            emptyList()
+        }
+
         val filter = activityFilterViewDataInteractor.getFilter()
         val filtersViewData = activityFilterViewDataInteractor.getFilterViewData(
             filter = filter,
+            searchText = actualSearchText,
             isDarkTheme = isDarkTheme,
             isFiltersCollapsed = isFiltersCollapsed,
             appendAddButton = true,
@@ -136,6 +161,7 @@ class RunningRecordsViewDataInteractor @Inject constructor(
             runningRecords = runningRecords,
             allDailyCurrents = allDailyCurrents,
             completeTypeIds = completeTypeIds,
+            searchText = actualSearchText,
             numberOfCards = numberOfCards,
             isDarkTheme = isDarkTheme,
         )
@@ -160,7 +186,10 @@ class RunningRecordsViewDataInteractor @Inject constructor(
                     ),
                     isComplete = it.id in completeTypeIds,
                 )
-            }
+            }.search(
+                text = actualSearchText,
+                searchableContent = { name },
+            )
             .let { data ->
                 mutableListOf<ViewHolderType>().apply {
                     data.let(::addAll)
@@ -195,6 +224,7 @@ class RunningRecordsViewDataInteractor @Inject constructor(
             recordTypesMap = recordTypesMap,
             recordTags = recordTags,
             runningRecords = runningRecords,
+            searchText = actualSearchText,
             isDarkTheme = isDarkTheme,
         )
 
@@ -213,6 +243,7 @@ class RunningRecordsViewDataInteractor @Inject constructor(
 
         return@withContext listOf(
             runningRecordsViewData,
+            searchViewData,
             suggestionsViewData,
             filtersViewData,
             recordTypesViewData,
