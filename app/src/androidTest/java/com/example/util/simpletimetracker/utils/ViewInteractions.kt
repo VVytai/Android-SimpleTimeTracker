@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package com.example.util.simpletimetracker.utils
 
 import android.view.View
@@ -42,15 +44,19 @@ fun typeTextIntoView(id: Int, text: String): ViewInteraction =
 fun clickOnViewWithId(id: Int): ViewInteraction =
     onView(withId(id)).perform(click())
 
-fun clickOnPrevDate(): ViewInteraction =
+fun clickOnPrevDate() {
     unconstrainedClickOnView(dateSelectorMatcher(-1))
+    Thread.sleep(200) // Wait for scroll.
+}
 
-fun clickOnNextDate(): ViewInteraction =
+fun clickOnNextDate() {
     unconstrainedClickOnView(dateSelectorMatcher(1))
+    Thread.sleep(200) // Wait for scroll.
+}
 
 fun clickOnCurrentDate(position: Int = 0) {
     unconstrainedClickOnView(dateSelectorMatcher(position))
-    Thread.sleep(200)
+    Thread.sleep(200) // Wait for scroll.
 }
 
 fun clickOnCurrentSelectedDate() {

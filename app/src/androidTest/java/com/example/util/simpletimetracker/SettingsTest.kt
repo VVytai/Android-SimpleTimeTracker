@@ -35,6 +35,7 @@ import com.example.util.simpletimetracker.utils.checkViewDoesNotExist
 import com.example.util.simpletimetracker.utils.checkViewIsDisplayed
 import com.example.util.simpletimetracker.utils.checkViewIsNotDisplayed
 import com.example.util.simpletimetracker.utils.clickOnCurrentDate
+import com.example.util.simpletimetracker.utils.clickOnCurrentSelectedDate
 import com.example.util.simpletimetracker.utils.clickOnPrevDate
 import com.example.util.simpletimetracker.utils.clickOnRecyclerItem
 import com.example.util.simpletimetracker.utils.clickOnView
@@ -1320,7 +1321,7 @@ class SettingsTest : BaseUiTest() {
 
         // Check detailed statistics
         clickOnView(allOf(withText(name), isCompletelyDisplayed()))
-        tryAction { clickOnCurrentDate() }
+        clickOnCurrentSelectedDate()
         clickOnViewWithText(coreR.string.range_day)
         checkStatisticsDetailRecords(0)
         clickOnCurrentDate(-1)

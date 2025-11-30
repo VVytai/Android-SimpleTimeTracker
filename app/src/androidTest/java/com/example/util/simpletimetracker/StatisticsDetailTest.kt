@@ -17,6 +17,7 @@ import com.example.util.simpletimetracker.utils.NavUtils
 import com.example.util.simpletimetracker.utils.checkViewDoesNotExist
 import com.example.util.simpletimetracker.utils.checkViewIsDisplayed
 import com.example.util.simpletimetracker.utils.clickOnCurrentDate
+import com.example.util.simpletimetracker.utils.clickOnCurrentSelectedDate
 import com.example.util.simpletimetracker.utils.clickOnNextDate
 import com.example.util.simpletimetracker.utils.clickOnView
 import com.example.util.simpletimetracker.utils.clickOnViewWithText
@@ -104,7 +105,7 @@ class StatisticsDetailTest : BaseUiTest() {
         tryAction { clickOnView(allOf(withText(name), isCompletelyDisplayed())) }
 
         // Check one day
-        clickOnCurrentDate()
+        clickOnCurrentSelectedDate()
         clickOnViewWithText(coreR.string.range_custom)
         NavUtils.setCustomRange(
             yearStarted = calendarToday.get(Calendar.YEAR),
@@ -614,7 +615,7 @@ class StatisticsDetailTest : BaseUiTest() {
         checkPreview(color, icon, name)
 
         // Switch range
-        clickOnCurrentDate()
+        clickOnCurrentSelectedDate()
         clickOnViewWithText(coreR.string.range_week)
 
         // Daily calendar
@@ -988,7 +989,7 @@ class StatisticsDetailTest : BaseUiTest() {
         checkPreview(color, icon, name)
 
         // Switch range
-        clickOnCurrentDate()
+        clickOnCurrentSelectedDate()
         clickOnView(withPluralText(coreR.plurals.range_last, 7, 7))
         clickOnViewWithText(coreR.string.duration_dialog_save)
 
@@ -1165,7 +1166,7 @@ class StatisticsDetailTest : BaseUiTest() {
         NavUtils.openStatisticsScreen()
         tryAction { clickOnView(allOf(withText(coreR.string.untracked_time_name), isCompletelyDisplayed())) }
 
-        clickOnCurrentDate(-1)
+        tryAction { clickOnCurrentDate(-1) }
         checkCard(coreR.string.statistics_detail_total_duration, "24$hourString 0$minuteString")
         checkRecordsCard(1)
         checkCard(coreR.string.statistics_detail_average_record, "24$hourString 0$minuteString")
@@ -1290,7 +1291,7 @@ class StatisticsDetailTest : BaseUiTest() {
         // Check on one record
         NavUtils.openStatisticsScreen()
         tryAction { clickOnView(allOf(withText(name1), isCompletelyDisplayed())) }
-        clickOnCurrentDate()
+        clickOnCurrentSelectedDate()
         clickOnViewWithText(coreR.string.range_overall)
         checkViewDoesNotExist(
             allOf(withTag(StatisticsDetailBlock.ChartSplitByActivity), isCompletelyDisplayed()),

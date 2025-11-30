@@ -243,11 +243,11 @@ fun scrollToBottom(): ViewAction = object : ViewAction {
 }
 
 fun tryAction(action: () -> Unit) {
-    repeat(5) {
+    repeat(3) {
         try {
             action()
             return
-        } catch (e: Throwable) {
+        } catch (_: Throwable) {
             Thread.sleep(1000)
         }
     }
@@ -261,7 +261,7 @@ fun tryActionWithFallback(
     try {
         action()
         return
-    } catch (e: Throwable) {
+    } catch (_: Throwable) {
         onError.invoke()
     }
     action()

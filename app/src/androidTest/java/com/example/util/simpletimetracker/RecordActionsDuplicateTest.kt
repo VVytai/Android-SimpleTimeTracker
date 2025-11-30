@@ -196,7 +196,6 @@ class RecordActionsDuplicateTest : BaseUiTest() {
         clickOnRecyclerItem(changeRecordR.id.rvChangeRecordType, withText(name))
         clickOnViewWithText(coreR.string.change_record_comment_field)
         typeTextIntoView(changeRecordR.id.etChangeRecordCommentField, comment)
-        closeSoftKeyboard()
         clickOnViewWithText(coreR.string.change_record_comment_field)
 
         // Duplicate
