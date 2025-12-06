@@ -1,6 +1,6 @@
 package com.example.util.simpletimetracker.feature_change_record.viewModel.delegates
 
-import com.example.util.simpletimetracker.core.repo.ResourceRepo
+import com.example.util.simpletimetracker.core.mapper.RecordQuickActionMapper
 import com.example.util.simpletimetracker.domain.extension.plusAssign
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.AddRecordMediator
@@ -8,7 +8,6 @@ import com.example.util.simpletimetracker.domain.record.model.Record
 import com.example.util.simpletimetracker.domain.recordAction.model.RecordQuickAction
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.hint.HintViewData
-import com.example.util.simpletimetracker.feature_change_record.R
 import com.example.util.simpletimetracker.feature_change_record.adapter.ChangeRecordChangePreviewViewData
 import com.example.util.simpletimetracker.feature_change_record.adapter.ChangeRecordSliderViewData
 import com.example.util.simpletimetracker.feature_change_record.adapter.ChangeRecordTimeAdjustmentViewData
@@ -26,11 +25,11 @@ import javax.inject.Inject
 import kotlinx.coroutines.ensureActive
 
 class ChangeRecordActionsSplitDelegate @Inject constructor(
-    private val resourceRepo: ResourceRepo,
     private val prefsInteractor: PrefsInteractor,
     private val changeRecordViewDataInteractor: ChangeRecordViewDataInteractor,
     private val addRecordMediator: AddRecordMediator,
     private val changeRecordViewDataMapper: ChangeRecordViewDataMapper,
+    private val recordQuickActionMapper: RecordQuickActionMapper,
 ) : ChangeRecordActionsSubDelegate {
 
     private var bridge: ChangeRecordDelegateBridge? = null
@@ -77,9 +76,12 @@ class ChangeRecordActionsSplitDelegate @Inject constructor(
         val newTimeEnded = params.splitParams.splitPreviewTimeEnded
         val showTimeEnded = params.splitParams.showTimeEndedOnSplitPreview
         val isDarkTheme = prefsInteractor.getDarkMode()
+        val action = RecordQuickAction.SPLIT
 
         val result = mutableListOf<ViewHolderType>()
-        result += HintViewData(resourceRepo.getString(R.string.change_record_split_hint))
+        result += HintViewData(
+            text = recordQuickActionMapper.mapHint(action).orEmpty(),
+        )
         result += ChangeRecordTimePreviewViewData(
             block = ChangeRecordActionsBlock.SplitTimePreview,
             text = loadTimeSplitValue(newTimeSplit),
@@ -112,7 +114,7 @@ class ChangeRecordActionsSplitDelegate @Inject constructor(
             isCompareVisible = false,
         )
         result += changeRecordViewDataMapper.mapRecordActionButton(
-            action = RecordQuickAction.SPLIT,
+            action = action,
             isEnabled = params.baseParams.isButtonEnabled,
             isDarkTheme = isDarkTheme,
         )

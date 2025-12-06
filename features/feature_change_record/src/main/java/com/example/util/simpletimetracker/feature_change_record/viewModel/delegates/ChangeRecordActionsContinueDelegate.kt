@@ -1,6 +1,6 @@
 package com.example.util.simpletimetracker.feature_change_record.viewModel.delegates
 
-import com.example.util.simpletimetracker.core.repo.ResourceRepo
+import com.example.util.simpletimetracker.core.mapper.RecordQuickActionMapper
 import com.example.util.simpletimetracker.domain.extension.plusAssign
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.recordAction.interactor.RecordActionContinueMediator
@@ -16,10 +16,10 @@ import javax.inject.Inject
 
 class ChangeRecordActionsContinueDelegate @Inject constructor(
     private val router: Router,
-    private val resourceRepo: ResourceRepo,
     private val prefsInteractor: PrefsInteractor,
     private val recordActionContinueMediator: RecordActionContinueMediator,
     private val changeRecordViewDataMapper: ChangeRecordViewDataMapper,
+    private val recordQuickActionMapper: RecordQuickActionMapper,
 ) : ChangeRecordActionsSubDelegate {
 
     private var bridge: ChangeRecordDelegateBridge? = null
@@ -68,13 +68,14 @@ class ChangeRecordActionsContinueDelegate @Inject constructor(
         if (!params.continueParams.isAvailable) return emptyList()
         if (prefsInteractor.getRetroactiveTrackingMode()) return emptyList()
         val isDarkTheme = prefsInteractor.getDarkMode()
+        val action = RecordQuickAction.CONTINUE
 
         val result = mutableListOf<ViewHolderType>()
         result += HintViewData(
-            text = resourceRepo.getString(R.string.change_record_continue_hint),
+            text = recordQuickActionMapper.mapHint(action).orEmpty(),
         )
         result += changeRecordViewDataMapper.mapRecordActionButton(
-            action = RecordQuickAction.CONTINUE,
+            action = action,
             isEnabled = params.baseParams.isButtonEnabled,
             isDarkTheme = isDarkTheme,
         )

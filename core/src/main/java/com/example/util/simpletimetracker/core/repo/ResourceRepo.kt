@@ -51,21 +51,13 @@ class ResourceRepo @Inject constructor(
         return context.resources.getDimension(dimenResId).pxToDp()
     }
 
-    fun getThemedAttr(attrId: Int, themeId: Int): Int {
+    fun getThemedAttr(attrId: Int, isDarkTheme: Boolean): Int {
+        val themeId = if (isDarkTheme) R.style.AppThemeDark else R.style.AppTheme
         return TypedValue().apply {
             ContextThemeWrapper(context, themeId)
                 .theme
                 .resolveAttribute(attrId, this, true)
         }.data
-    }
-
-    fun getThemedAttr(attrId: Int, isDarkTheme: Boolean): Int {
-        val theme = if (isDarkTheme) {
-            R.style.AppThemeDark
-        } else {
-            R.style.AppTheme
-        }
-        return getThemedAttr(attrId = attrId, themeId = theme)
     }
 
     fun getDrawable(@DrawableRes drawableResId: Int): Drawable? {

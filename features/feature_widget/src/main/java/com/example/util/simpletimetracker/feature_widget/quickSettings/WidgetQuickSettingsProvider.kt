@@ -116,7 +116,7 @@ class WidgetQuickSettingsProvider : AppWidgetProvider() {
         }
 
         val iconColor = if (isChecked) {
-            resourceRepo.getThemedAttr(R.attr.colorSecondary, R.style.AppTheme)
+            resourceRepo.getThemedAttr(R.attr.colorSecondary, false)
         } else {
             resourceRepo.getColor(R.color.widget_universal_empty_color)
         }

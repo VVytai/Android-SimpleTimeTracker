@@ -1,13 +1,12 @@
 package com.example.util.simpletimetracker.feature_change_record.viewModel.delegates
 
-import com.example.util.simpletimetracker.core.repo.ResourceRepo
+import com.example.util.simpletimetracker.core.mapper.RecordQuickActionMapper
 import com.example.util.simpletimetracker.domain.extension.plusAssign
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.recordAction.interactor.RecordActionShortcutMediator
 import com.example.util.simpletimetracker.domain.recordAction.model.RecordQuickAction
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.hint.HintViewData
-import com.example.util.simpletimetracker.feature_change_record.R
 import com.example.util.simpletimetracker.feature_change_record.mapper.ChangeRecordViewDataMapper
 import com.example.util.simpletimetracker.feature_change_record.viewModel.base.ChangeRecordDelegateBridge
 import com.example.util.simpletimetracker.feature_change_record.viewModel.base.ChangeRecordActionsSubDelegate
@@ -16,10 +15,10 @@ import javax.inject.Inject
 
 class ChangeRecordActionsShortcutDelegate @Inject constructor(
     private val router: Router,
-    private val resourceRepo: ResourceRepo,
     private val prefsInteractor: PrefsInteractor,
     private val recordActionShortcutMediator: RecordActionShortcutMediator,
     private val changeRecordViewDataMapper: ChangeRecordViewDataMapper,
+    private val recordQuickActionMapper: RecordQuickActionMapper,
 ) : ChangeRecordActionsSubDelegate {
 
     private var bridge: ChangeRecordDelegateBridge? = null
@@ -54,14 +53,14 @@ class ChangeRecordActionsShortcutDelegate @Inject constructor(
         val params = bridge?.getParams() ?: return emptyList()
         if (!params.shortcutParams.isAvailable) return emptyList()
         val isDarkTheme = prefsInteractor.getDarkMode()
+        val action = RecordQuickAction.SHORTCUT
 
         val result = mutableListOf<ViewHolderType>()
         result += HintViewData(
-            // TODO use from quick actions mapper?
-            text = resourceRepo.getString(R.string.change_record_shortcut_hint),
+            text = recordQuickActionMapper.mapHint(action).orEmpty(),
         )
         result += changeRecordViewDataMapper.mapRecordActionButton(
-            action = RecordQuickAction.SHORTCUT,
+            action = action,
             isEnabled = params.baseParams.isButtonEnabled,
             isDarkTheme = isDarkTheme,
         )

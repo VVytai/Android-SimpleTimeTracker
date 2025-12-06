@@ -232,18 +232,17 @@ class IconSelectionMapper @Inject constructor(
         return if (iconType == IconType.TEXT) {
             IconSelectionSelectorStateViewData.None
         } else {
-            val theme = if (isDarkTheme) R.style.AppThemeDark else R.style.AppTheme
             IconSelectionSelectorStateViewData.Available(
                 state = iconImageState,
                 searchButtonColor = when (iconImageState) {
                     is IconImageState.Chooser -> R.attr.appInactiveColor
                     is IconImageState.Search -> R.attr.colorSecondary
-                }.let { resourceRepo.getThemedAttr(it, theme) },
+                }.let { resourceRepo.getThemedAttr(it, isDarkTheme) },
                 favouriteButtonColor = if (isSelectedIconFavourite) {
                     R.attr.colorSecondary
                 } else {
                     R.attr.appInactiveColor
-                }.let { resourceRepo.getThemedAttr(it, theme) },
+                }.let { resourceRepo.getThemedAttr(it, isDarkTheme) },
             )
         }
     }

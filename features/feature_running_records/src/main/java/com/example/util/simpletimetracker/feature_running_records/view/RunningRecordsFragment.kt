@@ -36,7 +36,6 @@ import com.example.util.simpletimetracker.feature_running_records.viewModel.Runn
 import com.example.util.simpletimetracker.feature_views.TransitionNames
 import com.example.util.simpletimetracker.feature_views.extension.addOnScrollListenerAdapter
 import com.example.util.simpletimetracker.feature_views.extension.pxToDp
-import com.example.util.simpletimetracker.feature_views.extension.setMargins
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
@@ -107,7 +106,7 @@ class RunningRecordsFragment :
             ),
             createCommentFieldAdapterDelegate(
                 afterTextChange = viewModel::onSearchTextChange,
-            )
+            ),
         )
     }
 

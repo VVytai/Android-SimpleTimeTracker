@@ -24,8 +24,6 @@ import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.commentField.CommentFieldViewData
 import com.example.util.simpletimetracker.feature_base_adapter.divider.DividerViewData
 import com.example.util.simpletimetracker.feature_base_adapter.emptySpace.EmptySpaceViewData
-import com.example.util.simpletimetracker.feature_base_adapter.recordType.RecordTypeViewData
-import com.example.util.simpletimetracker.feature_base_adapter.recordTypeSuggestion.RecordTypeSuggestionViewData
 import com.example.util.simpletimetracker.feature_running_records.mapper.RunningRecordsViewDataMapper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

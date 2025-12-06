@@ -1,6 +1,7 @@
 package com.example.util.simpletimetracker.feature_change_record.viewModel.delegates
 
 import com.example.util.simpletimetracker.core.base.ViewModelDelegate
+import com.example.util.simpletimetracker.core.mapper.RecordQuickActionMapper
 import com.example.util.simpletimetracker.domain.extension.addOrRemove
 import com.example.util.simpletimetracker.core.mapper.TimeMapper
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
@@ -41,6 +42,7 @@ class ChangeRecordActionsAdjustDelegate @Inject constructor(
     private val recordInteractor: RecordInteractor,
     private val timeMapper: TimeMapper,
     private val prefsInteractor: PrefsInteractor,
+    private val recordQuickActionMapper: RecordQuickActionMapper,
 ) : ViewModelDelegate(),
     ChangeRecordActionsSubDelegate {
 
@@ -91,13 +93,14 @@ class ChangeRecordActionsAdjustDelegate @Inject constructor(
         val useMilitaryTime = prefsInteractor.getUseMilitaryTimeFormat()
         val showSeconds = prefsInteractor.getShowSeconds()
         val isDarkTheme = prefsInteractor.getDarkMode()
+        val action = RecordQuickAction.ADJUST
 
         val result = mutableListOf<ViewHolderType>()
         val hintText = if (params.adjustParams.isTimeEndedAvailable) {
-            R.string.change_record_change_adjacent_records
+            recordQuickActionMapper.mapHint(action).orEmpty()
         } else {
-            R.string.change_record_change_prev_record
-        }.let(resourceRepo::getString)
+            resourceRepo.getString(R.string.change_record_change_prev_record)
+        }
         result += HintViewData(hintText)
         val state = loadViewData(
             recordId = params.adjustParams.originalRecordId,
@@ -144,7 +147,7 @@ class ChangeRecordActionsAdjustDelegate @Inject constructor(
         }
         result += state.changesPreview
         result += changeRecordViewDataMapper.mapRecordActionButton(
-            action = RecordQuickAction.ADJUST,
+            action = action,
             isEnabled = params.baseParams.isButtonEnabled,
             isDarkTheme = isDarkTheme,
         )

@@ -11,7 +11,6 @@ import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteracto
 import com.example.util.simpletimetracker.domain.recordShortcut.model.RecordShortcut
 import com.example.util.simpletimetracker.domain.recordType.model.RecordType
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
-import com.example.util.simpletimetracker.feature_base_adapter.activityFilter.ActivityFilterViewData
 import javax.inject.Inject
 
 class ActivityFilterViewDataInteractor @Inject constructor(

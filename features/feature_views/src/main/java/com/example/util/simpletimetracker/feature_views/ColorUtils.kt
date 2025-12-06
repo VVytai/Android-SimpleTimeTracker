@@ -16,6 +16,15 @@ object ColorUtils {
         }.let(Color::HSVToColor)
     }
 
+    @ColorInt
+    fun darkenColorByFactor(@ColorInt color: Int): Int {
+        return FloatArray(3).apply {
+            Color.colorToHSV(color, this)
+            // change value
+            this[2] *= 0.8f
+        }.let(Color::HSVToColor)
+    }
+
     /**
      * Lightens dark colors and darkens light colors.
      */

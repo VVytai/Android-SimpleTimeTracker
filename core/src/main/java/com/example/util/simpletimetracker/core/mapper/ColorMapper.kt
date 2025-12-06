@@ -1,11 +1,11 @@
 package com.example.util.simpletimetracker.core.mapper
 
-import android.graphics.Color
 import androidx.annotation.ColorInt
 import com.example.util.simpletimetracker.core.R
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.domain.color.mapper.AppColorMapper
 import com.example.util.simpletimetracker.domain.color.model.AppColor
+import com.example.util.simpletimetracker.feature_views.ColorUtils.darkenColorByFactor
 import com.example.util.simpletimetracker.feature_views.viewData.RecordTypeIcon
 import javax.inject.Inject
 
@@ -16,25 +16,16 @@ class ColorMapper @Inject constructor(
 
     @ColorInt fun mapToColorInt(color: AppColor, isDarkTheme: Boolean): Int {
         return appColorMapper.mapToColorInt(color).let {
-            if (isDarkTheme) darkenColor(it) else it
+            if (isDarkTheme) darkenColorByFactor(it) else it
         }
     }
 
-    // TODO use resourceRepo getThemedAttr, also others
     fun toUntrackedColor(isDarkTheme: Boolean): Int {
-        return if (isDarkTheme) {
-            R.color.colorUntrackedDark
-        } else {
-            R.color.colorUntracked
-        }.let(resourceRepo::getColor)
+        return resourceRepo.getThemedAttr(R.attr.appUntrackedColor, isDarkTheme)
     }
 
     fun toIconColor(isDarkTheme: Boolean): Int {
-        return if (isDarkTheme) {
-            R.color.colorIconDark
-        } else {
-            R.color.colorIcon
-        }.let(resourceRepo::getColor)
+        return resourceRepo.getThemedAttr(R.attr.appIconColor, isDarkTheme)
     }
 
     fun toIconColor(
@@ -57,11 +48,7 @@ class ColorMapper @Inject constructor(
     }
 
     fun toFilteredColor(isDarkTheme: Boolean): Int {
-        return if (isDarkTheme) {
-            R.color.colorFilteredDark
-        } else {
-            R.color.colorFiltered
-        }.let(resourceRepo::getColor)
+        return resourceRepo.getThemedAttr(R.attr.appFilteredColor, isDarkTheme)
     }
 
     fun toFilteredColor(
@@ -88,56 +75,23 @@ class ColorMapper @Inject constructor(
     }
 
     fun toFilteredIconColor(isDarkTheme: Boolean): Int {
-        return if (isDarkTheme) {
-            R.color.colorIconFilteredDark
-        } else {
-            R.color.colorIconFiltered
-        }.let(resourceRepo::getColor)
+        return resourceRepo.getThemedAttr(R.attr.appIconFilteredColor, isDarkTheme)
     }
 
     fun toActiveColor(isDarkTheme: Boolean): Int {
-        return if (isDarkTheme) {
-            R.color.colorActiveDark
-        } else {
-            R.color.colorActive
-        }.let(resourceRepo::getColor)
+        return resourceRepo.getThemedAttr(R.attr.appActiveColor, isDarkTheme)
     }
 
     fun toInactiveColor(isDarkTheme: Boolean): Int {
-        return if (isDarkTheme) {
-            R.color.colorInactiveDark
-        } else {
-            R.color.colorInactive
-        }.let(resourceRepo::getColor)
+        return resourceRepo.getThemedAttr(R.attr.appInactiveColor, isDarkTheme)
     }
 
     fun toPositiveColor(isDarkTheme: Boolean): Int {
-        return if (isDarkTheme) {
-            R.color.colorPositiveDark
-        } else {
-            R.color.colorPositive
-        }.let(resourceRepo::getColor)
+        return resourceRepo.getThemedAttr(R.attr.appPositiveColor, isDarkTheme)
     }
 
     fun toNegativeColor(isDarkTheme: Boolean): Int {
-        return if (isDarkTheme) {
-            R.color.colorNegativeDark
-        } else {
-            R.color.colorNegative
-        }.let(resourceRepo::getColor)
-    }
-
-    // TODO move to ColorUtils
-    /**
-     * Darkens color.
-     */
-    @ColorInt
-    fun darkenColor(@ColorInt color: Int): Int {
-        return FloatArray(3).apply {
-            Color.colorToHSV(color, this)
-            // change value
-            this[2] *= 0.8f
-        }.let(Color::HSVToColor)
+        return resourceRepo.getThemedAttr(R.attr.appNegativeColor, isDarkTheme)
     }
 
     companion object {

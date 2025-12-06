@@ -105,16 +105,12 @@ class DateEditViewDataInteractor @Inject constructor(
     suspend fun getChangeButtonState(
         enabled: Boolean,
     ): DataEditChangeButtonState {
-        val theme = if (prefsInteractor.getDarkMode()) {
-            R.style.AppThemeDark
-        } else {
-            R.style.AppTheme
-        }
+        val isDarkTheme = prefsInteractor.getDarkMode()
 
         return DataEditChangeButtonState(
             enabled = enabled,
             backgroundTint = (if (enabled) R.attr.appActiveColor else R.attr.appInactiveColor)
-                .let { resourceRepo.getThemedAttr(it, theme) },
+                .let { resourceRepo.getThemedAttr(it, isDarkTheme) },
         )
     }
 

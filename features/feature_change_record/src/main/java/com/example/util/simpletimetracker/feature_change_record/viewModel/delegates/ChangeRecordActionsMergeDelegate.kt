@@ -1,6 +1,6 @@
 package com.example.util.simpletimetracker.feature_change_record.viewModel.delegates
 
-import com.example.util.simpletimetracker.core.repo.ResourceRepo
+import com.example.util.simpletimetracker.core.mapper.RecordQuickActionMapper
 import com.example.util.simpletimetracker.domain.extension.plusAssign
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.record.model.Record
@@ -8,7 +8,6 @@ import com.example.util.simpletimetracker.domain.recordAction.interactor.RecordA
 import com.example.util.simpletimetracker.domain.recordAction.model.RecordQuickAction
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.hint.HintViewData
-import com.example.util.simpletimetracker.feature_change_record.R
 import com.example.util.simpletimetracker.feature_change_record.adapter.ChangeRecordChangePreviewViewData
 import com.example.util.simpletimetracker.feature_change_record.interactor.ChangeRecordViewDataInteractor
 import com.example.util.simpletimetracker.feature_change_record.mapper.ChangeRecordViewDataMapper
@@ -21,11 +20,11 @@ import javax.inject.Inject
 
 class ChangeRecordActionsMergeDelegate @Inject constructor(
     private val router: Router,
-    private val resourceRepo: ResourceRepo,
     private val prefsInteractor: PrefsInteractor,
     private val changeRecordViewDataInteractor: ChangeRecordViewDataInteractor,
     private val recordActionMergeMediator: RecordActionMergeMediator,
     private val changeRecordViewDataMapper: ChangeRecordViewDataMapper,
+    private val recordQuickActionMapper: RecordQuickActionMapper,
 ) : ChangeRecordActionsSubDelegate {
 
     private var bridge: ChangeRecordDelegateBridge? = null
@@ -48,6 +47,7 @@ class ChangeRecordActionsMergeDelegate @Inject constructor(
         val params = bridge?.getParams() ?: return emptyList()
         if (!params.mergeParams.mergeAvailable) return emptyList()
         val isDarkTheme = prefsInteractor.getDarkMode()
+        val action = RecordQuickAction.MERGE
 
         val result = mutableListOf<ViewHolderType>()
         val previewData = loadMergePreviewViewData(
@@ -56,7 +56,7 @@ class ChangeRecordActionsMergeDelegate @Inject constructor(
         )
         if (previewData != null) {
             result += HintViewData(
-                text = resourceRepo.getString(R.string.change_record_merge_hint),
+                text = recordQuickActionMapper.mapHint(action).orEmpty(),
             )
             result += ChangeRecordChangePreviewViewData(
                 id = previewData.id,
@@ -69,7 +69,7 @@ class ChangeRecordActionsMergeDelegate @Inject constructor(
                 isCompareVisible = true,
             )
             result += changeRecordViewDataMapper.mapRecordActionButton(
-                action = RecordQuickAction.MERGE,
+                action = action,
                 isEnabled = params.baseParams.isButtonEnabled,
                 isDarkTheme = isDarkTheme,
             )

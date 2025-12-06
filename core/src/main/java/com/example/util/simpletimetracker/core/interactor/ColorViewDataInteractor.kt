@@ -13,6 +13,7 @@ import com.example.util.simpletimetracker.feature_base_adapter.color.ColorFavour
 import com.example.util.simpletimetracker.feature_base_adapter.color.ColorPaletteViewData
 import com.example.util.simpletimetracker.feature_base_adapter.color.ColorViewData
 import com.example.util.simpletimetracker.feature_base_adapter.hint.HintViewData
+import com.example.util.simpletimetracker.feature_views.ColorUtils.darkenColorByFactor
 import javax.inject.Inject
 
 class ColorViewDataInteractor @Inject constructor(
@@ -53,7 +54,7 @@ class ColorViewDataInteractor @Inject constructor(
                     colorId = colorId.toLong(),
                     type = ColorViewData.Type.Base,
                     colorInt = colorInt.let {
-                        if (isDarkTheme) colorMapper.darkenColor(it) else it
+                        if (isDarkTheme) darkenColorByFactor(it) else it
                     },
                     selected = !customColorSelected && currentColor?.colorId == colorId,
                 )

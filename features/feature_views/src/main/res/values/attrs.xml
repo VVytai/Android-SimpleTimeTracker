@@ -34,6 +34,8 @@
     <attr name="appNegativeColor" format="reference" />
     <attr name="appInfoColor" format="reference" />
     <attr name="appUntrackedColor" format="reference" />
+    <attr name="appFilteredColor" format="reference" />
+    <attr name="appIconFilteredColor" format="reference" />
 
     <declare-styleable name="IconView">
         <attr name="itemIcon" format="reference" />
