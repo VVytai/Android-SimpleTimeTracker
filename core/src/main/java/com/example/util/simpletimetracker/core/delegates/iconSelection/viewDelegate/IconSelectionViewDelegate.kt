@@ -185,7 +185,7 @@ object IconSelectionViewDelegate {
         data: List<ViewHolderType>,
         layout: IconSelectionLayoutBinding,
     ) = with(layout) {
-        btnIconSelectionSwitch.adapter.replace(data)
+        btnIconSelectionSwitch.replace(data)
     }
 
     private fun updateIconsState(

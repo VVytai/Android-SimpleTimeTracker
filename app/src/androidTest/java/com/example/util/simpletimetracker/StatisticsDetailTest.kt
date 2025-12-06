@@ -714,8 +714,10 @@ class StatisticsDetailTest : BaseUiTest() {
             timeEnded = calendar.timeInMillis + TimeUnit.HOURS.toMillis(2),
             tagNames = listOf(tag2),
         )
-        calendar = Calendar.getInstance()
-            .apply { add(Calendar.MONTH, -1) }
+        calendar = Calendar.getInstance().apply {
+            add(Calendar.MONTH, -1)
+            set(Calendar.DAY_OF_MONTH, 15)
+        }
         testUtils.addRecord(
             typeName = name,
             timeStarted = calendar.timeInMillis,
@@ -729,7 +731,7 @@ class StatisticsDetailTest : BaseUiTest() {
         checkPreview(color, icon, name)
 
         // Switch range
-        clickOnCurrentDate()
+        clickOnCurrentSelectedDate()
         clickOnViewWithText(coreR.string.range_month)
 
         // Daily calendar

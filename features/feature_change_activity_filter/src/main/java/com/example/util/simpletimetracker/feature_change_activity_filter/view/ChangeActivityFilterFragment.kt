@@ -135,7 +135,7 @@ class ChangeActivityFilterFragment :
             filterPreview.observeOnce(viewLifecycleOwner, ::updateUi)
             filterPreview.observe(::updatePreview)
             colors.observe(colorsAdapter::replace)
-            filterTypeViewData.observe(buttonsChangeActivityFilterType.adapter::replace)
+            filterTypeViewData.observe(buttonsChangeActivityFilterType::replace)
             viewData.observe(::updateTypes)
             chooserState.observe(::updateChooserState)
             keyboardVisibility.observe { visible ->

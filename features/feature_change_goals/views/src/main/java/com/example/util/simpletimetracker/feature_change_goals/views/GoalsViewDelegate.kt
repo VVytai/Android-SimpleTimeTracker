@@ -161,7 +161,7 @@ object GoalsViewDelegate {
 
             if (goal.subtypeItems.isNotEmpty()) {
                 view.btnChangeRecordTypeGoalSubtype.visible = true
-                view.btnChangeRecordTypeGoalSubtype.adapter.replace(goal.subtypeItems)
+                view.btnChangeRecordTypeGoalSubtype.replace(goal.subtypeItems)
             } else {
                 view.btnChangeRecordTypeGoalSubtype.visible = false
             }

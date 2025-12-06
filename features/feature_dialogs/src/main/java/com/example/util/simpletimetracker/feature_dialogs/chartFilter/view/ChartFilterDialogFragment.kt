@@ -85,7 +85,7 @@ class ChartFilterDialogFragment : BaseBottomSheetFragment<Binding>() {
 
     override fun initViewModel(): Unit = with(viewModel) {
         extra = params
-        filterTypeViewData.observe(binding.buttonsChartFilterType.adapter::replace)
+        filterTypeViewData.observe(binding.buttonsChartFilterType::replace)
         types.observe(::setViewData)
         onDataSelected.observe(::onDataSelected)
     }

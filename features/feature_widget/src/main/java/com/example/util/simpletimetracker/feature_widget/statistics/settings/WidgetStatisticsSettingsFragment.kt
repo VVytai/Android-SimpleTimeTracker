@@ -74,7 +74,7 @@ class WidgetStatisticsSettingsFragment :
     override fun initViewModel() = with(binding) {
         with(viewModel) {
             extra = WidgetStatisticsSettingsExtra(getWidgetId())
-            filterTypeViewData.observe(buttonsWidgetStatisticsSettingsFilterType.adapter::replace)
+            filterTypeViewData.observe(buttonsWidgetStatisticsSettingsFilterType::replace)
             types.observe(recordTypesAdapter::replace)
             title.observe(btnWidgetStatisticsSettingsRange::setText)
             doNotIncludeNewItems.observe(::setDoNotIncludeItemsState)

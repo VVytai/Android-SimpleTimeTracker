@@ -64,7 +64,7 @@ class CardSizeDialogFragment : BaseBottomSheetFragment<Binding>() {
 
     override fun initViewModel(): Unit = with(viewModel) {
         recordTypes.observe(recordTypesAdapter::replace)
-        buttons.observe(binding.buttonsCardSize.adapter::replace)
+        buttons.observe(binding.buttonsCardSize::replace)
         defaultButton.observe(::updateDefaultButton)
     }
 

@@ -19,11 +19,7 @@ fun createButtonsRowAdapterDelegate(
 
         setMargins(top = item.marginTopDp)
         // Replace without animation on reuse for different buttons.
-        if (tag != item.block) {
-            adapter.replaceFast(item.data)
-        } else {
-            adapter.replace(item.data)
-        }
+        replace(item.data, isFast = tag != item.block)
         listener = { onClick(item.block, it) }
         tag = item.block
     }
