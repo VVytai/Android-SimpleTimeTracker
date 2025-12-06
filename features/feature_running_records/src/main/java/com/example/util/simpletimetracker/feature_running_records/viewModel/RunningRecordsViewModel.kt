@@ -87,6 +87,7 @@ class RunningRecordsViewModel @Inject constructor(
 
     private var timerJob: Job? = null
     private var updateJob: Job? = null
+    private var searchJob: Job? = null
     private var completeTypeJob: Job? = null
     private var completeTypeIds: Set<Long> = emptySet()
     private var navBarHeightDp: Int = 0
@@ -315,8 +316,13 @@ class RunningRecordsViewModel @Inject constructor(
 
     fun onSearchTextChange(text: String) {
         if (text != searchText) {
-            searchText = text
-            updateRunningRecords(fromValueChange = true)
+            searchJob?.cancel()
+            searchJob = viewModelScope.launch {
+                searchText = text
+                // Do not delay on clear.
+                if (text.isNotEmpty()) delay(500)
+                updateRunningRecords(fromValueChange = true)
+            }
         }
     }
 
