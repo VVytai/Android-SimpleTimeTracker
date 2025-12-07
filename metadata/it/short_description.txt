@@ -1,1 +1,1 @@
-Traccia quanto tempo trascorri su diverse attività durante il giorno.
+Timer per lavoro, studio e migliori abitudini quotidiane.

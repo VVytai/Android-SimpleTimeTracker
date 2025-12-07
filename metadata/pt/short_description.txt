@@ -1,1 +1,1 @@
-Monitore quanto tempo você gasta em diferentes atividades durante o dia.
+Rastreador de tempo para trabalho, estudo e melhores hábitos diários.
