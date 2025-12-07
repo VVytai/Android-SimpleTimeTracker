@@ -5,6 +5,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.util.simpletimetracker.core.mapper.ColorMapper
+import com.example.util.simpletimetracker.domain.darkMode.model.DarkMode
 import com.example.util.simpletimetracker.domain.recordType.model.CardOrder
 import com.example.util.simpletimetracker.domain.recordType.model.RecordType
 import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
@@ -27,40 +28,85 @@ import java.util.concurrent.TimeUnit
 @RunWith(AndroidJUnit4::class)
 class ScreenCaptureTest : BaseUiTest() {
 
+    override fun setUp() {
+        super.setUp()
+        runBlocking {
+            prefsInteractor.setDarkMode(DarkMode.Enabled)
+        }
+    }
+
+    override fun after() {
+        // Do not call super in order to keep prefs.
+    }
+
     @Test
     fun screenshots() {
+        val isMainTabComplex = false
+        val showGoals = true
+        val showMainButtons = true
+
         val colors = ColorMapper.getAvailableColors()
         val icons = iconImageMapper
             .getAvailableImages(loadSearchHints = false).values
             .flatten().associateBy { it.iconName }.mapValues { it.value.iconResId }
         val readType = "Read"
+        val workType = "Work"
         val guitarType = "Guitar"
         val readTag = "Mody Dick"
+        val workTag1 = "Home"
+        val workTag2 = "Office"
         val readComment = "I think it's related to the whale"
+        val mainFilter = "Main"
 
         // Add data
         runBlocking {
             prefsInteractor.setCardOrder(CardOrder.COLOR)
             prefsInteractor.setNumberOfCards(5)
             prefsInteractor.setShowNotifications(true)
-            prefsInteractor.setEnableRepeatButton(true)
+            prefsInteractor.setEnableRepeatButton(showMainButtons)
+            prefsInteractor.setDefaultTypesHidden(true)
             prefsInteractor.setStatisticsDetailRange(RangeLength.All)
-            val pomodoroStarted = System.currentTimeMillis() - TimeUnit.MINUTES.toMillis(7)
-            prefsInteractor.setPomodoroModeStartedTimestampMs(pomodoroStarted)
+            prefsInteractor.setEnablePomodoroMode(showMainButtons)
+            if (showMainButtons) {
+                val pomodoroStarted = System.currentTimeMillis() - TimeUnit.MINUTES.toMillis(7)
+                prefsInteractor.setPomodoroModeStartedTimestampMs(pomodoroStarted)
+            }
         }
         defaultTypes.forEach { type ->
             testUtils.addActivity(
                 name = type.name,
                 color = colors.getOrNull(type.colorId),
                 icon = icons[type.icon],
-                goals = if (type.goal != null) {
+                goals = if (type.goal != null && showGoals) {
                     GoalsTestUtils.getDailyDurationGoal(type.goal * 60L).let(::listOf)
                 } else {
                     emptyList()
                 },
             )
         }
+        defaultCategories.forEach { category ->
+            testUtils.addCategory(
+                tagName = category.name,
+                color = colors.getOrNull(category.colorId),
+            )
+        }
         testUtils.addRecordTag(tagName = readTag, typeName = readType)
+        testUtils.addRecordTag(tagName = workTag1, typeName = workType)
+        testUtils.addRecordTag(tagName = workTag2, typeName = workType)
+        if (isMainTabComplex) {
+            testUtils.addActivityFilter(
+                name = mainFilter,
+                color = colors.getOrNull(1),
+                names = mainFilterTypes,
+                selected = true,
+            )
+
+            testUtils.addShortcut(readType, listOf(readTag))
+            testUtils.addShortcut(workType, listOf(workTag1))
+            testUtils.addShortcut(workType, listOf(workTag2))
+
+            testUtils.addSuggestion(readType, listOf("Sleep", "Work", "Tv"))
+        }
         runBlocking {
             val filteredInStatistics = listOf("Work", "Sleep", "Commute")
             recordTypeRepo.getAll()
@@ -147,6 +193,14 @@ class ScreenCaptureTest : BaseUiTest() {
         clickOnViewWithText(R.string.change_record_tag_field)
         clickOnRecyclerItem(R.id.rvChangeRecordCategories, withText(readTag))
         clickOnViewWithText(R.string.change_record_save)
+
+        // Main tab complex
+        if (isMainTabComplex) {
+            runBlocking {
+                prefsInteractor.setShowActivityFilters(true)
+                prefsInteractor.setShowCategoriesAsPredefinedFilters(true)
+            }
+        }
     }
 
     companion object {
@@ -156,6 +210,28 @@ class ScreenCaptureTest : BaseUiTest() {
             val colorId: Int,
             val goal: Int? = null, // Minutes
         )
+
+        private data class DefaultCategory(
+            val name: String,
+            val colorId: Int,
+        )
+
+        private val mainFilterTypes: List<String> by lazy {
+            listOf(
+                "Games",
+                "Tv",
+                "Exercise",
+                "Meditate",
+                "Read",
+                "Chores",
+                "Indoors",
+                "Outdoors",
+                "Cooking",
+                "Sleep",
+                "Work",
+                "Commute",
+            )
+        }
 
         private val defaultTypes: List<DefaultRecordType> by lazy {
             listOf(
@@ -183,6 +259,18 @@ class ScreenCaptureTest : BaseUiTest() {
                 DefaultRecordType(name = "Commute", icon = "ic_airport_shuttle_24px", colorId = 10),
                 DefaultRecordType(name = "Sleep", icon = "ic_airline_seat_individual_suite_24px", colorId = 10),
                 DefaultRecordType(name = "Work", icon = "ic_business_center_24px", colorId = 10, goal = 8 * 60),
+            )
+        }
+
+        private val defaultCategories: List<DefaultCategory> by lazy {
+            listOf(
+                // DefaultCategory(name = "Chores", colorId = 5),
+                // DefaultCategory(name = "Food", colorId = 7),
+                DefaultCategory(name = "Leisure", colorId = 1),
+                DefaultCategory(name = "Productive", colorId = 3),
+                // DefaultCategory(name = "Rest", colorId = 5),
+                // DefaultCategory(name = "Sleep", colorId = 10),
+                // DefaultCategory(name = "Work", colorId = 10),
             )
         }
     }
