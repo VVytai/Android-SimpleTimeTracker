@@ -656,6 +656,7 @@ csv फ़ाइल में कॉमा से अलग किए गए य
     <string name="imageGroupToggle">टॉगल</string>
 
     <!--  Shortcuts  -->
+    <string name="shortcut_navigation_timers">टाइमर</string>
     <string name="shortcut_navigation_records">अभिलेख</string>
     <string name="shortcut_navigation_statistics">आंकड़े</string>
     <string name="shortcut_navigation_settings">सेटिंग</string>

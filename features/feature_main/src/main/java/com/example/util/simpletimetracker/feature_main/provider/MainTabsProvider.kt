@@ -2,6 +2,7 @@ package com.example.util.simpletimetracker.feature_main.provider
 
 import androidx.annotation.DrawableRes
 import com.example.util.simpletimetracker.core.model.NavigationTab
+import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.core.utils.SHORTCUT_NAVIGATION_RECORDS
 import com.example.util.simpletimetracker.core.utils.SHORTCUT_NAVIGATION_SETTINGS
 import com.example.util.simpletimetracker.core.utils.SHORTCUT_NAVIGATION_STATISTICS
@@ -12,6 +13,7 @@ import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 class MainTabsProvider @Inject constructor(
+    private val resourceRepo: ResourceRepo,
     private val prefsInteractor: PrefsInteractor,
 ) {
 
@@ -33,21 +35,37 @@ class MainTabsProvider @Inject constructor(
             .let(::mapToIcon)
     }
 
+    fun mapPositionToDescription(position: Int): String? {
+        return position
+            .let(::mapPositionToTab)
+            .let(::mapToDescription)
+    }
+
     fun mapNavigationToPosition(value: String): Int? {
         return mapNavigationToTab(value)?.let(::mapTabToPosition)
     }
 
     @DrawableRes
-    fun mapToIcon(tab: NavigationTab?): Int {
-        if (tab == null) return R.drawable.unknown
-
+    private fun mapToIcon(tab: NavigationTab?): Int {
         return when (tab) {
             NavigationTab.RunningRecords -> R.drawable.tab_running_records
             NavigationTab.Records -> R.drawable.tab_records
             NavigationTab.Statistics -> R.drawable.tab_statistics
             NavigationTab.Settings -> R.drawable.tab_settings
             NavigationTab.Goals -> R.drawable.tab_goals
+            null -> R.drawable.unknown
         }
+    }
+
+    private fun mapToDescription(tab: NavigationTab?): String? {
+        return when (tab) {
+            NavigationTab.RunningRecords -> R.string.shortcut_navigation_timers
+            NavigationTab.Records -> R.string.shortcut_navigation_records
+            NavigationTab.Statistics -> R.string.shortcut_navigation_statistics
+            NavigationTab.Settings -> R.string.shortcut_navigation_settings
+            NavigationTab.Goals -> R.string.change_record_type_goal_time_hint
+            null -> return null
+        }.let(resourceRepo::getString)
     }
 
     private fun mapNavigationToTab(value: String): NavigationTab? {

@@ -656,6 +656,7 @@
     <string name="imageGroupToggle">تغییر وضع</string>
 
     <!--  Shortcuts  -->
+    <string name="shortcut_navigation_timers">تایمرها</string>
     <string name="shortcut_navigation_records">تاریخچه ها</string>
     <string name="shortcut_navigation_statistics">آمار ها</string>
     <string name="shortcut_navigation_settings">تنظیمات</string>

@@ -656,6 +656,7 @@ CSV dosyası virgülle ayrılmış şu sütunları içermelidir:<br/>
     <string name="imageGroupToggle">Durum</string>
 
     <!--  Shortcuts  -->
+    <string name="shortcut_navigation_timers">Zamanlayıcılar</string>
     <string name="shortcut_navigation_records">Kayıtlar</string>
     <string name="shortcut_navigation_statistics">İstatistikler</string>
     <string name="shortcut_navigation_settings">Ayarlar</string>

@@ -98,7 +98,10 @@ class MainFragment : BaseFragment<Binding>() {
         }
 
         TabLayoutMediator(mainTabs, mainPager) { tab, position ->
-            position.let(mainTabsProvider::mapPositionToIcon).let(tab::setIcon)
+            position.let(mainTabsProvider::mapPositionToIcon)
+                .let(tab::setIcon)
+            position.let(mainTabsProvider::mapPositionToDescription)
+                ?.let { tab.contentDescription = it }
             tab.icon?.colorFilter = if (position == mainPagePosition) {
                 selectedColorFilter
             } else {

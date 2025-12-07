@@ -656,6 +656,7 @@ Contoh:<br/>
     <string name="imageGroupToggle">Beralih</string>
 
     <!--  Shortcuts  -->
+    <string name="shortcut_navigation_timers">Timer</string>
     <string name="shortcut_navigation_records">Rekor</string>
     <string name="shortcut_navigation_statistics">Statistik</string>
     <string name="shortcut_navigation_settings">Pengaturan</string>

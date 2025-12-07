@@ -656,6 +656,7 @@ Examplu:<br/>
     <string name="imageGroupToggle">Comutări</string>
 
     <!--  Shortcuts  -->
+    <string name="shortcut_navigation_timers">Cronometre</string>
     <string name="shortcut_navigation_records">Înregistrări</string>
     <string name="shortcut_navigation_statistics">Statistică</string>
     <string name="shortcut_navigation_settings">Setări</string>

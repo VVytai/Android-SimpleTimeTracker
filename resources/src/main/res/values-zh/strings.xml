@@ -656,6 +656,7 @@ csv 文件必须包含以逗号分隔的这些列：<br/>
     <string name="imageGroupToggle">标签</string>
 
     <!--  Shortcuts  -->
+    <string name="shortcut_navigation_timers">计时器</string>
     <string name="shortcut_navigation_records">记录</string>
     <string name="shortcut_navigation_statistics">统计数据</string>
     <string name="shortcut_navigation_settings">设置</string>

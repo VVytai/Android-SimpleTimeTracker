@@ -656,6 +656,7 @@ CSV-файл должен содержать следующие столбцы, 
     <string name="imageGroupToggle">Переключатель</string>
 
     <!--  Shortcuts  -->
+    <string name="shortcut_navigation_timers">Таймеры</string>
     <string name="shortcut_navigation_records">Записи</string>
     <string name="shortcut_navigation_statistics">Статистика</string>
     <string name="shortcut_navigation_settings">Настройки</string>

@@ -656,6 +656,7 @@ Isibonelo:<br/>
     <string name="imageGroupToggle">Ukushintsha</string>
 
     <!--  Shortcuts  -->
+    <string name="shortcut_navigation_timers">Izibali sikhathi</string>
     <string name="shortcut_navigation_records">Amarekhodi</string>
     <string name="shortcut_navigation_statistics">Izibalo</string>
     <string name="shortcut_navigation_settings">Izilungiselelo</string>

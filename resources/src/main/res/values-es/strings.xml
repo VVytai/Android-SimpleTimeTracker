@@ -656,6 +656,7 @@ Ejemplo:<br/>
     <string name="imageGroupToggle">Conexiónes</string>
 
     <!--  Shortcuts  -->
+    <string name="shortcut_navigation_timers">Temporizadores</string>
     <string name="shortcut_navigation_records">Registros</string>
     <string name="shortcut_navigation_statistics">Estadísticas</string>
     <string name="shortcut_navigation_settings">Ajustes</string>

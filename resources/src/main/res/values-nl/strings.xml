@@ -656,6 +656,7 @@ Voorbeeld:<br/>
     <string name="imageGroupToggle">Wisselen</string>
 
     <!--  Shortcuts  -->
+    <string name="shortcut_navigation_timers">Timers</string>
     <string name="shortcut_navigation_records">Gegevens</string>
     <string name="shortcut_navigation_statistics">Statistieken</string>
     <string name="shortcut_navigation_settings">Instellingen</string>

@@ -656,6 +656,7 @@
     <string name="imageGroupToggle">מתג</string>
 
     <!--  Shortcuts  -->
+    <string name="shortcut_navigation_timers">טיימרים</string>
     <string name="shortcut_navigation_records">רשומות</string>
     <string name="shortcut_navigation_statistics">סטטיסטיקה</string>
     <string name="shortcut_navigation_settings">הגדרות</string>

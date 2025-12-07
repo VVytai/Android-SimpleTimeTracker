@@ -656,6 +656,7 @@
     <string name="imageGroupToggle">وصلة</string>
 
     <!--  Shortcuts  -->
+    <string name="shortcut_navigation_timers">المؤقتات</string>
     <string name="shortcut_navigation_records">المتتبعات</string>
     <string name="shortcut_navigation_statistics">اﻹحصائيات</string>
     <string name="shortcut_navigation_settings">اﻹعدادات</string>

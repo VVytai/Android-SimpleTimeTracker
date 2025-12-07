@@ -656,6 +656,7 @@ Ví dụ:<br/>
     <string name="imageGroupToggle">Chuyển đổi</string>
 
     <!--  Shortcuts  -->
+    <string name="shortcut_navigation_timers">Bộ hẹn giờ</string>
     <string name="shortcut_navigation_records">Bản ghi</string>
     <string name="shortcut_navigation_statistics">Thống kê</string>
     <string name="shortcut_navigation_settings">Thiết đặt</string>
