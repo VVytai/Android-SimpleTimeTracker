@@ -4,11 +4,13 @@ import android.content.res.ColorStateList
 import android.graphics.Typeface
 import android.util.TypedValue
 import androidx.core.view.ViewCompat
+import androidx.core.view.updatePadding
 import com.example.util.simpletimetracker.core.extension.getCoordinates
 import com.example.util.simpletimetracker.domain.base.Coordinates
 import com.example.util.simpletimetracker.feature_base_adapter.createRecyclerBindingAdapterDelegate
 import com.example.util.simpletimetracker.feature_views.extension.getThemedAttr
 import com.example.util.simpletimetracker.feature_statistics_detail.R
+import com.example.util.simpletimetracker.feature_views.extension.dpToPx
 import com.example.util.simpletimetracker.feature_views.extension.setOnClick
 import com.example.util.simpletimetracker.feature_views.extension.visible
 import com.example.util.simpletimetracker.feature_statistics_detail.databinding.StatisticsDetailCardInternalItemBinding as Binding
@@ -32,6 +34,15 @@ fun createStatisticsDetailCardInternalAdapterDelegate(
                 .setTextColor(root.context.getThemedAttr(R.attr.colorSecondary))
             tvStatisticsDetailCardValue.letterSpacing = -0.05f
         }
+
+        val paddingVertical = if (item.accented) 20.dpToPx() else 8.dpToPx()
+        val paddingHorizontal = 8.dpToPx()
+        root.updatePadding(
+            left = paddingHorizontal,
+            top = paddingVertical,
+            right = paddingHorizontal,
+            bottom = paddingVertical
+        )
 
         when (item.valueChange) {
             is ViewData.ValueChange.None -> {
