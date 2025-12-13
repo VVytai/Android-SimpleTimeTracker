@@ -44,6 +44,10 @@ class ScreenCaptureTest : BaseUiTest() {
         val isMainTabComplex = false
         val showGoals = true
         val showMainButtons = true
+        // false for series calendar.
+        val addAdditionalRecords = true
+        // true for series.
+        val addRecordsForStatsDetailSeries = false
 
         val colors = ColorMapper.getAvailableColors()
         val icons = iconImageMapper
@@ -172,15 +176,34 @@ class ScreenCaptureTest : BaseUiTest() {
         }.timeInMillis
         val additionalRecords = 550 - durationsMinutes.size
         val additionalRecordsDuration = TimeUnit.MINUTES.toMillis(30)
-        repeat(additionalRecords) {
-            testUtils.addRecord(guitarType, timeEnded - additionalRecordsDuration, timeEnded)
+        if (addAdditionalRecords) {
+            repeat(additionalRecords) {
+                testUtils.addRecord(guitarType, timeEnded - additionalRecordsDuration, timeEnded)
+            }
         }
         val desiredDuration = 495 * 60 + 25
         val additionalRecordDuration = desiredDuration -
             durationsMinutes.sum() -
             additionalRecords * 30
         val additionalRecordDurationMillis = TimeUnit.MINUTES.toMillis(additionalRecordDuration.toLong())
-        testUtils.addRecord(guitarType, timeEnded - additionalRecordDurationMillis, timeEnded)
+        if (addAdditionalRecords) {
+            testUtils.addRecord(guitarType, timeEnded - additionalRecordDurationMillis, timeEnded)
+        }
+        if (addRecordsForStatsDetailSeries) {
+            val timeEndedForSeries = calendar.apply {
+                timeInMillis = timeEnded
+                add(Calendar.DATE, 30)
+            }.timeInMillis
+            repeat(3) { it ->
+                val day = it.toLong()
+                val hourInMillis = TimeUnit.HOURS.toMillis(1)
+                testUtils.addRecord(
+                    guitarType,
+                    timeEndedForSeries - TimeUnit.DAYS.toMillis(day),
+                    timeEndedForSeries - TimeUnit.DAYS.toMillis(day) + hourInMillis,
+                )
+            }
+        }
 
         // Main tab
         val hour = TimeUnit.HOURS.toMillis(1)
