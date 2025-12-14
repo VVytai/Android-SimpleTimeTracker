@@ -64,7 +64,7 @@ class RecordsContainerViewModel @Inject constructor(
 
     fun initialize() {
         viewModelScope.launch {
-            dateSelectorViewModelDelegate.initialize()
+            dateSelectorViewModelDelegate.initialize(currentPosition)
         }
     }
 

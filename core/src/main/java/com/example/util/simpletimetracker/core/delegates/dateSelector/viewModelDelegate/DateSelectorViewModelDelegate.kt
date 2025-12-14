@@ -25,10 +25,9 @@ class DateSelectorViewModelDelegate @Inject constructor(
         this.parent = parent
     }
 
-    suspend fun initialize() {
+    suspend fun initialize(position: Int) {
         setup()
-        updateDatesViewData.set(Unit)
-        dateScrollPosition.set(0)
+        updatePosition(position)
     }
 
     suspend fun setup() {

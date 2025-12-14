@@ -116,7 +116,7 @@ class StatisticsDetailViewModel @Inject constructor(
         rangeDelegate.initialize(extra)
         filterDelegate.initialize(extra)
         viewModelScope.launch {
-            dateSelectorViewModelDelegate.initialize()
+            dateSelectorViewModelDelegate.initialize(rangeDelegate.provideRangePosition())
         }
     }
 
