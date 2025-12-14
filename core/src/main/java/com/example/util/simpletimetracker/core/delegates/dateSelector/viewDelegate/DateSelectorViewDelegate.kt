@@ -89,11 +89,12 @@ object DateSelectorViewDelegate {
         viewModel: DateSelectorViewModelDelegate,
         binding: DateSelectorLayoutBinding,
     ) = with(fragment) {
-        viewModel.dateScrollPosition.observe { position ->
+        viewModel.dateScrollPosition.observe { data ->
             doScrollToPosition(
                 viewHolder = viewHolder,
                 binding = binding,
-                shift = position,
+                shift = data.position,
+                animate = data.animate,
             )
         }
         viewModel.updateDatesViewData.observe {
@@ -164,22 +165,32 @@ object DateSelectorViewDelegate {
         viewHolder: ViewHolder,
         binding: DateSelectorLayoutBinding,
         shift: Int,
+        animate: Boolean,
     ) = with(binding) {
         val actualPosition = viewHolder.adapter.value.toPosition(shift)
+        val layoutManager = rvDatesContainer.layoutManager as? LinearLayoutManager ?: return@with
 
-        // To long to scroll with animation if scroll distance is long,
-        // in this case scrollToPosition closer, and than smoothScroll with animation.
-        rvDatesContainer.scrollToPosition(actualPosition)
+        if (animate) {
+            // To long to scroll with animation if scroll distance is long,
+            // in this case scrollToPosition closer, and than smoothScroll with animation.
+            rvDatesContainer.scrollToPosition(actualPosition)
 
-        rvDatesContainer.post {
-            rvDatesContainer.horizontalSmoothScrollWithOffset(
-                snapPreference = LinearSmoothScroller.SNAP_TO_END,
-                position = actualPosition,
-                calculateOffset = { recyclerView, view ->
-                    // center of the recycler.
-                    -recyclerView.width / 2 + view.width / 2
-                },
-            )
+            rvDatesContainer.post {
+                rvDatesContainer.horizontalSmoothScrollWithOffset(
+                    snapPreference = LinearSmoothScroller.SNAP_TO_END,
+                    position = actualPosition,
+                    calculateOffset = { recyclerView, view ->
+                        // center of the recycler.
+                        -recyclerView.width / 2 + view.width / 2
+                    },
+                )
+            }
+        } else {
+            rvDatesContainer.post {
+                val view = rvDatesContainer.children.firstOrNull() ?: return@post
+                val offset = rvDatesContainer.width / 2 - view.width / 2
+                layoutManager.scrollToPositionWithOffset(actualPosition, offset)
+            }
         }
     }
 

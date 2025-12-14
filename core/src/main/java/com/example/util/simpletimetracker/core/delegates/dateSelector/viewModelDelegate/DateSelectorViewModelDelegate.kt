@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.example.util.simpletimetracker.core.base.SingleLiveEvent
 import com.example.util.simpletimetracker.core.base.ViewModelDelegate
 import com.example.util.simpletimetracker.core.delegates.dateSelector.mapper.DateSelectorMapper
+import com.example.util.simpletimetracker.core.delegates.dateSelector.viewData.DateSelectorScrollViewData
 import com.example.util.simpletimetracker.core.extension.set
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.feature_base_adapter.InfiniteRecyclerAdapter
@@ -15,11 +16,13 @@ class DateSelectorViewModelDelegate @Inject constructor(
     private val prefsInteractor: PrefsInteractor,
 ) : ViewModelDelegate() {
 
-    val dateScrollPosition: LiveData<Int> = SingleLiveEvent<Int>()
+    val dateScrollPosition: LiveData<DateSelectorScrollViewData> =
+        SingleLiveEvent<DateSelectorScrollViewData>()
     val updateDatesViewData: LiveData<Unit> = SingleLiveEvent<Unit>()
     val borderShadowsVisibility: LiveData<Boolean> = MutableLiveData()
 
     private var parent: Parent? = null
+    private var animateScroll: Boolean = true
 
     fun attach(parent: Parent) {
         this.parent = parent
@@ -38,6 +41,7 @@ class DateSelectorViewModelDelegate @Inject constructor(
         if (parent?.currentPosition == item.position) {
             throttle { parent?.onDateClick() }.invoke()
         } else {
+            animateScroll = false
             parent?.updatePosition(item.position)
         }
     }
@@ -59,7 +63,9 @@ class DateSelectorViewModelDelegate @Inject constructor(
     fun updatePosition(shift: Int) {
         dataProvider.currentSelectedPosition = shift
         updateDatesViewData.set(Unit)
-        dateScrollPosition.set(shift)
+        val scrollData = DateSelectorScrollViewData(position = shift, animate = animateScroll)
+        animateScroll = true
+        dateScrollPosition.set(scrollData)
     }
 
     private suspend fun setupDatesSelector() {
