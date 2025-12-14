@@ -36,7 +36,7 @@ class DateSelectorViewModelDelegate @Inject constructor(
 
     fun onDateClick(item: InfiniteRecyclerAdapter.Data) {
         if (parent?.currentPosition == item.position) {
-            parent?.onDateClick()
+            throttle { parent?.onDateClick() }.invoke()
         } else {
             parent?.updatePosition(item.position)
         }

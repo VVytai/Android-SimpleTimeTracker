@@ -3,10 +3,13 @@ package com.example.util.simpletimetracker.core.base
 import com.example.util.simpletimetracker.core.extension.allowDiskRead
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 
-abstract class ViewModelDelegate : ScopeHolder {
+abstract class ViewModelDelegate : ScopeHolder, Throttler {
+
+    override var throttleJob: Job? = null
 
     val delegateScope = allowDiskRead {
         CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)

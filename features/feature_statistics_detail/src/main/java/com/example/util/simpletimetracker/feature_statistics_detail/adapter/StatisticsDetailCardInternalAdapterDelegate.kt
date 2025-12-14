@@ -41,7 +41,7 @@ fun createStatisticsDetailCardInternalAdapterDelegate(
             left = paddingHorizontal,
             top = paddingVertical,
             right = paddingHorizontal,
-            bottom = paddingVertical
+            bottom = paddingVertical,
         )
 
         when (item.valueChange) {
