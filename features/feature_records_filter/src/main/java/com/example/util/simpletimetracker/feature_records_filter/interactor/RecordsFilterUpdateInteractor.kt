@@ -515,11 +515,12 @@ class RecordsFilterUpdateInteractor @Inject constructor(
         typesToTags: List<RecordTypeToTag>,
     ): List<RecordsFilter> {
         val filters = currentFilters.toMutableList()
-        // Update tags according to selected activities
-        val newTypeIds: List<Long> = filters.getAllTypeIds(
-            recordTypes = recordTypes,
-            recordTypeCategories = recordTypeCategories,
-        )
+        // Update tags according to selected activities.
+        // If no activities selected - show all tags.
+        val newTypeIds: List<Long> = filters
+            .getAllTypeIds(recordTypes, recordTypeCategories)
+            .takeUnless { it.isEmpty() }
+            ?: recordTypes.map(RecordType::id)
         val tagIds = recordTags.map(RecordTag::id)
         val selectableTagIds = filterSelectableTagsInteractor.execute(
             tagIds = tagIds,
