@@ -247,7 +247,10 @@ class AddRunningRecordMediator @Inject constructor(
         prevRecords: List<Record>,
     ) {
         val prevRecord = getPrevRecordToMergeWith(params.typeId, prevRecords)
-        val record = if (prevRecord != null) {
+        val sameTags = prevRecord?.tags.orEmpty().sortedBy { it.tagId } == params.tags.sortedBy { it.tagId }
+        val shouldMerge = sameTags || params.tags.isEmpty()
+
+        val record = if (prevRecord != null && shouldMerge) {
             Record(
                 id = prevRecord.id, // Updates existing record.
                 typeId = params.typeId,
