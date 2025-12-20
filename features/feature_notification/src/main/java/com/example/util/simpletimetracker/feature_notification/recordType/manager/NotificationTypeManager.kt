@@ -73,7 +73,12 @@ class NotificationTypeManager @Inject constructor(
             recordTypeId = params.id,
         )
 
+        // TODO add manual notification grouping by adding setGroup() to all,
+        //  and showing separate notification with setGroupSummary(),
+        //  also can add setSortKey() which is breaking auto group now.
         val builder = NotificationCompat.Builder(context, NOTIFICATIONS_CHANNEL_ID)
+            .setContentTitle(params.text)
+            .setContentText(params.timeStarted)
             .setSmallIcon(R.drawable.ic_notification)
             .setContentIntent(contentIntent)
             .setOngoing(true)

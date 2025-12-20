@@ -66,6 +66,8 @@ class NotificationPomodoroManager @Inject constructor(
         )
 
         return NotificationCompat.Builder(context, NOTIFICATIONS_CHANNEL_ID)
+            .setContentTitle(params.title)
+            .setContentText(params.subtitle)
             .setSmallIcon(R.drawable.ic_notification)
             .setContentIntent(contentIntent)
             .setCustomContentView(notificationLayout)
