@@ -13,17 +13,11 @@
         android:src="@drawable/dialog_arrow"
         android:tint="?appContrastColor" />
 
-    <androidx.core.widget.NestedScrollView
+    <FrameLayout
+        android:id="@+id/containerRecordTagSelection"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
-        android:layout_weight="1">
-
-        <FrameLayout
-            android:id="@+id/containerRecordTagSelection"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-    </androidx.core.widget.NestedScrollView>
+        android:layout_weight="1" />
 
 </androidx.appcompat.widget.LinearLayoutCompat>

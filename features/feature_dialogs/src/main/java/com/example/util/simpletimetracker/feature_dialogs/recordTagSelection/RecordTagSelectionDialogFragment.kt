@@ -1,6 +1,5 @@
 package com.example.util.simpletimetracker.feature_dialogs.recordTagSelection
 
-import com.example.util.simpletimetracker.feature_dialogs.databinding.RecordTagSelectionDialogFragmentBinding as Binding
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -9,7 +8,7 @@ import androidx.fragment.app.commit
 import androidx.recyclerview.widget.RecyclerView
 import com.example.util.simpletimetracker.core.base.BaseBottomSheetFragment
 import com.example.util.simpletimetracker.core.dialog.OnTagSelectedListener
-import com.example.util.simpletimetracker.core.extension.blockContentScroll
+import com.example.util.simpletimetracker.core.extension.blockContentScrollByPosition
 import com.example.util.simpletimetracker.core.extension.setFullScreen
 import com.example.util.simpletimetracker.core.extension.setSkipCollapsed
 import com.example.util.simpletimetracker.core.manager.KeyboardVisibilityManager
@@ -19,6 +18,7 @@ import com.example.util.simpletimetracker.navigation.ScreenFactory
 import com.example.util.simpletimetracker.navigation.params.screen.RecordTagSelectionParams
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
+import com.example.util.simpletimetracker.feature_dialogs.databinding.RecordTagSelectionDialogFragmentBinding as Binding
 
 @AndroidEntryPoint
 class RecordTagSelectionDialogFragment :
@@ -41,10 +41,13 @@ class RecordTagSelectionDialogFragment :
 
     override fun initDialog() {
         setSkipCollapsed()
+        // Usual blockContentScroll doesn't work,
+        // also need to block here, because long comment input wouldn't scroll otherwise
+        // and would close the sheet instead.
         binding.containerRecordTagSelection.post {
             binding.root.descendants
                 .filterIsInstance<RecyclerView>().firstOrNull()
-                ?.let(::blockContentScroll)
+                ?.let(::blockContentScrollByPosition)
         }
     }
 

@@ -3,9 +3,11 @@ package com.example.util.simpletimetracker.core.extension
 import android.view.View
 import android.widget.FrameLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.util.simpletimetracker.core.R
 import com.example.util.simpletimetracker.feature_views.extension.addOnScrollListenerAdapter
+import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
@@ -44,5 +46,22 @@ fun BottomSheetDialogFragment.blockContentScroll(recyclerView: RecyclerView) {
         onScrollStateChanged = { _, newState ->
             if (newState == RecyclerView.SCROLL_STATE_IDLE) behavior?.isDraggable = true
         },
+    )
+}
+
+// Disable sheet swipe on content scroll to avoid accidentally closing the sheet when scrolling items.
+fun BottomSheetDialogFragment.blockContentScrollByPosition(recyclerView: RecyclerView) {
+    fun doBlock() {
+        val layoutManager = recyclerView.layoutManager
+        val firstPosition = when (layoutManager) {
+            is LinearLayoutManager -> layoutManager.findFirstCompletelyVisibleItemPosition()
+            is FlexboxLayoutManager -> layoutManager.findFirstCompletelyVisibleItemPosition()
+            else -> 0
+        }
+        behavior?.isDraggable = firstPosition == 0
+    }
+    recyclerView.addOnScrollListenerAdapter(
+        onScrolled = { _, _, _ -> doBlock() },
+        onScrollStateChanged = { _, _ -> doBlock() },
     )
 }
