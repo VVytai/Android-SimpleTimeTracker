@@ -1,12 +1,14 @@
 package com.example.util.simpletimetracker.feature_statistics.adapter
 
+import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.createRecyclerBindingAdapterDelegate
-import com.example.util.simpletimetracker.feature_views.extension.setOnClick
-import com.example.util.simpletimetracker.feature_statistics.databinding.ItemStatisticsInfoLayoutBinding as Binding
-import com.example.util.simpletimetracker.feature_statistics.viewData.StatisticsInfoViewData as ViewData
+import com.example.util.simpletimetracker.feature_base_adapter.statistics.StatisticsViewData
+import com.example.util.simpletimetracker.feature_base_adapter.statistics.bind
+import com.example.util.simpletimetracker.feature_base_adapter.databinding.ItemStatisticsLayoutBinding as Binding
+import com.example.util.simpletimetracker.feature_statistics.adapter.StatisticsInfoViewData as ViewData
 
 fun createStatisticsInfoAdapterDelegate(
-    onClick: () -> Unit,
+    onItemClick: ((StatisticsViewData, Map<Any, String>) -> Unit)?,
 ) = createRecyclerBindingAdapterDelegate<ViewData, Binding>(
     Binding::inflate,
 ) { binding, item, _ ->
@@ -14,9 +16,18 @@ fun createStatisticsInfoAdapterDelegate(
     with(binding) {
         item as ViewData
 
-        tvStatisticsInfoName.text = item.name
-        tvStatisticsInfoText.text = item.text
-
-        root.setOnClick(onClick)
+        viewStatisticsItem.bind(
+            item = item.data,
+            onItemClick = onItemClick,
+        )
     }
+}
+
+data class StatisticsInfoViewData(
+    val data: StatisticsViewData,
+) : ViewHolderType {
+
+    override fun getUniqueId(): Long = data.name.hashCode().toLong()
+
+    override fun isValidType(other: ViewHolderType): Boolean = other is ViewData
 }

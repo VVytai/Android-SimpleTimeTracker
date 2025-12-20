@@ -10,6 +10,10 @@ import com.example.util.simpletimetracker.feature_views.databinding.StatisticsVi
 import com.example.util.simpletimetracker.feature_views.extension.layoutInflater
 import com.example.util.simpletimetracker.feature_views.extension.visible
 import com.example.util.simpletimetracker.feature_views.viewData.RecordTypeIcon
+import androidx.core.content.withStyledAttributes
+import androidx.core.view.isGone
+import androidx.core.view.isInvisible
+import androidx.core.view.isVisible
 
 class StatisticsView @JvmOverloads constructor(
     context: Context,
@@ -58,7 +62,7 @@ class StatisticsView @JvmOverloads constructor(
         set(value) {
             field = value
             binding.tvStatisticsItemPercent.text = value
-            setDividerColor()
+            setPercentVisibility()
         }
 
     init {
@@ -80,8 +84,8 @@ class StatisticsView @JvmOverloads constructor(
         attrs: AttributeSet?,
         defStyleAttr: Int,
     ) {
-        context.obtainStyledAttributes(attrs, R.styleable.StatisticsView, defStyleAttr, 0)
-            .run {
+        context
+            .withStyledAttributes(attrs, R.styleable.StatisticsView, defStyleAttr, 0) {
                 if (hasValue(R.styleable.StatisticsView_itemName)) {
                     itemName = getString(R.styleable.StatisticsView_itemName).orEmpty()
                 }
@@ -111,16 +115,21 @@ class StatisticsView @JvmOverloads constructor(
                 if (hasValue(R.styleable.StatisticsView_itemPercent)) {
                     itemPercent = getString(R.styleable.StatisticsView_itemPercent).orEmpty()
                 }
-
-                recycle()
             }
     }
 
     private fun setDividerColor() {
-        if (itemPercent.isNotEmpty()) {
-            normalizeLightness(itemColor)
+        binding.dividerStatisticsPercent.setBackgroundColor(normalizeLightness(itemColor))
+    }
+
+    private fun setPercentVisibility() {
+        val isVisible = itemPercent.isNotEmpty()
+        binding.tvStatisticsItemPercent.isVisible = isVisible
+        binding.dividerStatisticsPercent.isVisible = isVisible
+        if (isVisible) {
+            binding.tvStatisticsItemPercentWidth.isInvisible = true
         } else {
-            itemColor
-        }.let(binding.dividerStatisticsPercent::setBackgroundColor)
+            binding.tvStatisticsItemPercentWidth.isGone = true
+        }
     }
 }

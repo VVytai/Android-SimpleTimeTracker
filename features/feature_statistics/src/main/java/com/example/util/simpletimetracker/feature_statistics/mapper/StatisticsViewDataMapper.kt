@@ -6,8 +6,10 @@ import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.empty.EmptyViewData
 import com.example.util.simpletimetracker.feature_base_adapter.hint.HintViewData
 import com.example.util.simpletimetracker.feature_base_adapter.hintBig.HintBigViewData
+import com.example.util.simpletimetracker.feature_base_adapter.statistics.StatisticsViewData
 import com.example.util.simpletimetracker.feature_statistics.R
-import com.example.util.simpletimetracker.feature_statistics.viewData.StatisticsInfoViewData
+import com.example.util.simpletimetracker.feature_statistics.adapter.StatisticsInfoViewData
+import com.example.util.simpletimetracker.feature_views.TransitionNames
 import com.example.util.simpletimetracker.feature_views.extension.setForegroundSpan
 import com.example.util.simpletimetracker.feature_views.extension.toSpannableString
 import javax.inject.Inject
@@ -16,11 +18,23 @@ class StatisticsViewDataMapper @Inject constructor(
     private val resourceRepo: ResourceRepo,
 ) {
 
-    fun mapStatisticsTotalTracked(totalTracked: String): ViewHolderType {
-        return StatisticsInfoViewData(
+    fun mapStatisticsTotalTracked(
+        shift: Int,
+        totalTracked: String,
+        isDarkTheme: Boolean,
+    ): ViewHolderType {
+        val id = "statistics_total_tracked".hashCode().toLong()
+        val transitionName = "${TransitionNames.STATISTICS_DETAIL}_shift${shift}_id${id}"
+        val data = StatisticsViewData(
+            id = id,
             name = resourceRepo.getString(R.string.statistics_total_tracked),
-            text = totalTracked,
+            duration = totalTracked,
+            percent = "",
+            color = resourceRepo.getThemedAttr(R.attr.appCardBackgroundColor, isDarkTheme),
+            icon = null,
+            transitionName = transitionName,
         )
+        return StatisticsInfoViewData(data)
     }
 
     fun mapToEmpty(): ViewHolderType {

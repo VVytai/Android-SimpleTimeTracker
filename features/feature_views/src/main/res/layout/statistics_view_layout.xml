@@ -52,6 +52,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/dividerStatisticsPercent"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_goneMarginEnd="12dp"
             tools:text="5h 23m" />
 
         <View

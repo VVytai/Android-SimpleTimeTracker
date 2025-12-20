@@ -113,9 +113,14 @@ class StatisticsViewModel @Inject constructor(
         )
     }
 
-    fun onTotalClicked() = viewModelScope.launch {
+    fun onTotalClicked(
+        item: StatisticsViewData,
+        sharedElements: Map<Any, String>,
+    ) = viewModelScope.launch {
         statisticsDetailTotalNavigator.execute(
             shift = getShift(),
+            item = item,
+            sharedElements = sharedElements,
         )
     }
 

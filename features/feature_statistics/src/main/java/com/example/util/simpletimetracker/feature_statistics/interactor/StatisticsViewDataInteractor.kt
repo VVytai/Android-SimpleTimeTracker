@@ -145,7 +145,13 @@ class StatisticsViewDataInteractor @Inject constructor(
             filteredIds = filteredIds,
             durationFormat = durationFormat,
             showSeconds = showSeconds,
-        ).let(statisticsViewDataMapper::mapStatisticsTotalTracked)
+        ).let {
+            statisticsViewDataMapper.mapStatisticsTotalTracked(
+                shift = shift,
+                totalTracked = it,
+                isDarkTheme = isDarkTheme,
+            )
+        }
         val showFirstEnterHint = when {
             // Show hint ony on current date.
             shift != 0 -> false
