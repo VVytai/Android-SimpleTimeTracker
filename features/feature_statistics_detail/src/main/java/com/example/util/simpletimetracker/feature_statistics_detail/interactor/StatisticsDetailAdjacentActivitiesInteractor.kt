@@ -69,7 +69,7 @@ class StatisticsDetailAdjacentActivitiesInteractor @Inject constructor(
                 statisticsDetailViewDataMapper.mapToPreview(
                     recordType = recordTypes[typeId] ?: return@mapIndexedNotNull null,
                     isDarkTheme = isDarkTheme,
-                    isFirst = false,
+                    showName = false,
                     isForComparison = false,
                 ).copy(name = "$correctedPercent%")
             }

@@ -12,6 +12,7 @@ import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.domain.base.DurationFormat
 import com.example.util.simpletimetracker.domain.base.MULTITASK_ITEM_ID
 import com.example.util.simpletimetracker.domain.base.OneShotValue
+import com.example.util.simpletimetracker.domain.base.STATISTICS_TOTAL_ITEM_ID
 import com.example.util.simpletimetracker.domain.base.UNTRACKED_ITEM_ID
 import com.example.util.simpletimetracker.domain.category.model.Category
 import com.example.util.simpletimetracker.domain.daysOfWeek.model.DayOfWeek
@@ -61,7 +62,7 @@ class StatisticsDetailViewDataMapper @Inject constructor(
     fun mapToPreview(
         recordType: RecordType,
         isDarkTheme: Boolean,
-        isFirst: Boolean,
+        showName: Boolean,
         isForComparison: Boolean,
     ): StatisticsDetailPreviewViewData {
         return StatisticsDetailPreviewViewData(
@@ -71,7 +72,7 @@ class StatisticsDetailViewDataMapper @Inject constructor(
             } else {
                 StatisticsDetailPreviewViewData.Type.FILTER
             },
-            name = recordType.name.takeIf { isFirst }.orEmpty(),
+            name = recordType.name.takeIf { showName }.orEmpty(),
             iconId = recordType.icon
                 .let(iconMapper::mapIcon),
             color = recordType.color
@@ -206,6 +207,23 @@ class StatisticsDetailViewDataMapper @Inject constructor(
             type = StatisticsDetailPreviewViewData.Type.FILTER,
             name = "",
             iconId = RecordTypeIcon.Image(R.drawable.unknown),
+            color = colorMapper.toUntrackedColor(isDarkTheme),
+        )
+    }
+
+    fun mapToTotalPreview(
+        isDarkTheme: Boolean,
+        isForComparison: Boolean,
+    ): StatisticsDetailPreviewViewData {
+        return StatisticsDetailPreviewViewData(
+            id = STATISTICS_TOTAL_ITEM_ID,
+            type = if (isForComparison) {
+                StatisticsDetailPreviewViewData.Type.COMPARISON
+            } else {
+                StatisticsDetailPreviewViewData.Type.FILTER
+            },
+            name = resourceRepo.getString(R.string.statistics_total_tracked),
+            iconId = null,
             color = colorMapper.toUntrackedColor(isDarkTheme),
         )
     }

@@ -50,11 +50,19 @@ class StatisticsDetailPreviewInteractor @Inject constructor(
 
     suspend fun getPreviewData(
         filterParams: List<RecordsFilter>,
+        total: Boolean,
         isExpanded: Boolean,
         isForComparison: Boolean,
     ): List<ViewHolderType> = withContext(Dispatchers.Default) {
         val isDarkTheme = prefsInteractor.getDarkMode()
         val previewType = getPreviewType(filterParams)
+
+        fun mapTotal(): List<ViewHolderType> {
+            return statisticsDetailViewDataMapper.mapToTotalPreview(
+                isDarkTheme = isDarkTheme,
+                isForComparison = isForComparison,
+            ).let(::listOf)
+        }
 
         suspend fun mapActivities(
             selectedIds: List<Long>,
@@ -65,7 +73,7 @@ class StatisticsDetailPreviewInteractor @Inject constructor(
                     statisticsDetailViewDataMapper.mapToPreview(
                         recordType = type,
                         isDarkTheme = isDarkTheme,
-                        isFirst = index == 0,
+                        showName = !total && index == 0,
                         isForComparison = isForComparison,
                     )
                 }
@@ -139,6 +147,8 @@ class StatisticsDetailPreviewInteractor @Inject constructor(
                 val selectedIds = records.map { it.typeIds }.flatten().distinct()
                 mapActivities(selectedIds)
             }
+        }.let {
+            if (total) mapTotal() + it else it
         }.let {
             if (it.size > MAX_PREVIEWS_COUNT && !isExpanded) {
                 val type = if (isForComparison) {
