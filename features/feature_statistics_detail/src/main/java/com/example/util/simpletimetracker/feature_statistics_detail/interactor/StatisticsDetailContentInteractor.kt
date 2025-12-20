@@ -52,9 +52,7 @@ class StatisticsDetailContentInteractor @Inject constructor(
         val result = mutableListOf<ViewHolderType>()
 
         fun getPreviewColor(): Int {
-            return previewViewData
-                ?.data?.color
-                ?: Color.BLACK
+            return previewViewData?.previewColor ?: Color.BLACK
         }
 
         fun getPreviewColorComparison(): Int {

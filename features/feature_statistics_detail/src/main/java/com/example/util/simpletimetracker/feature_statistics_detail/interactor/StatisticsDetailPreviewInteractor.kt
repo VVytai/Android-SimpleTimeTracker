@@ -73,7 +73,7 @@ class StatisticsDetailPreviewInteractor @Inject constructor(
                     statisticsDetailViewDataMapper.mapToPreview(
                         recordType = type,
                         isDarkTheme = isDarkTheme,
-                        showName = !total && index == 0,
+                        showName = !isForComparison && selectedIds.size == 1,
                         isForComparison = isForComparison,
                     )
                 }

@@ -279,6 +279,10 @@ class StatisticsDetailViewModel @Inject constructor(
         streaksDelegate.onStreaksCalendarClick(viewData, coordinates)
     }
 
+    fun onBackPressed() {
+        router.back()
+    }
+
     private fun onRecordsClick() {
         val finalFilters = filterDelegate.provideFilter()
             .plus(rangeDelegate.getDateFilter())

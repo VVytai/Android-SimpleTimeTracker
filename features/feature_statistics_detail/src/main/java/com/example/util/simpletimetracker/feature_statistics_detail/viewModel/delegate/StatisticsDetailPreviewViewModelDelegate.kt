@@ -4,16 +4,13 @@ import androidx.lifecycle.LiveData
 import com.example.util.simpletimetracker.core.base.ViewModelDelegate
 import com.example.util.simpletimetracker.core.extension.lazySuspend
 import com.example.util.simpletimetracker.core.extension.set
-import com.example.util.simpletimetracker.core.extension.toModel
-import com.example.util.simpletimetracker.domain.extension.orFalse
-import com.example.util.simpletimetracker.domain.record.model.RecordsFilter
+import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_statistics_detail.interactor.StatisticsDetailPreviewInteractor
 import com.example.util.simpletimetracker.feature_statistics_detail.interactor.StatisticsDetailTotalRecordsSelectedInteractor
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailPreview
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailPreviewCompositeViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailPreviewMoreViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailPreviewViewData
-import com.example.util.simpletimetracker.navigation.params.screen.RecordsFilterParam
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -65,9 +62,28 @@ class StatisticsDetailPreviewViewModelDelegate @Inject constructor(
             isExpanded = previewsComparisonExpanded,
             isForComparison = true,
         )
+        val showMainPreview = total || data.size == 1
+
+        val mainPreview: StatisticsDetailPreviewViewData?
+        val additionalData: List<ViewHolderType>
+        if (showMainPreview) {
+            mainPreview = data.firstOrNull() as? StatisticsDetailPreviewViewData
+            additionalData = data.drop(1)
+        } else {
+            mainPreview = null
+            additionalData = data
+        }
+
+        val previewColor = mainPreview?.color
+            ?: additionalData
+                .filterIsInstance<StatisticsDetailPreviewViewData>()
+                .firstOrNull()
+                ?.color
+
         return StatisticsDetailPreviewCompositeViewData(
-            data = data.firstOrNull() as? StatisticsDetailPreviewViewData,
-            additionalData = data.drop(1),
+            previewColor = previewColor,
+            mainPreview = mainPreview,
+            additionalData = additionalData,
             comparisonData = comparisonData,
         )
     }

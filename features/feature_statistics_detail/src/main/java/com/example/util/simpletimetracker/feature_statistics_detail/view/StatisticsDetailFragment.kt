@@ -3,6 +3,7 @@ package com.example.util.simpletimetracker.feature_statistics_detail.view
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.example.util.simpletimetracker.core.base.BaseFragment
@@ -12,6 +13,7 @@ import com.example.util.simpletimetracker.core.dialog.DateTimeDialogListener
 import com.example.util.simpletimetracker.core.dialog.DurationDialogListener
 import com.example.util.simpletimetracker.core.dialog.OptionsListDialogListener
 import com.example.util.simpletimetracker.core.dialog.RecordsFilterListener
+import com.example.util.simpletimetracker.core.extension.addOnBackPressedListener
 import com.example.util.simpletimetracker.core.extension.onItemSwiped
 import com.example.util.simpletimetracker.core.extension.setSharedTransitions
 import com.example.util.simpletimetracker.core.extension.toViewData
@@ -137,6 +139,11 @@ class StatisticsDetailFragment :
     }
 
     override fun initUx() = with(binding) {
+        addOnBackPressedListener {
+            // Force show preview otherwise shared transition would brake.
+            viewStatisticsDetailItem.isVisible = true
+            viewModel.onBackPressed()
+        }
         DateSelectorViewDelegate.initUx(
             fragment = this@StatisticsDetailFragment,
             binding = binding.containerDatesSelector,
@@ -207,20 +214,28 @@ class StatisticsDetailFragment :
         )
 
         StatisticsDetailPreviewCompositeViewData(
-            data = preview,
+            previewColor = preview.color,
+            mainPreview = preview,
             additionalData = emptyList(),
             comparisonData = emptyList(),
         ).let(::setPreviewViewData)
     }
 
     private fun setPreviewViewData(viewData: StatisticsDetailPreviewCompositeViewData?) = with(binding) {
-        val first = viewData?.data ?: return@with
+        val preview = viewData?.mainPreview
 
-        viewStatisticsDetailItem.itemName = first.name
-        viewStatisticsDetailItem.itemColor = first.color
-        if (first.iconId != null) {
+        if (preview == null) {
+            viewStatisticsDetailItem.isVisible = false
+            return@with
+        } else {
+            viewStatisticsDetailItem.isVisible = true
+        }
+
+        viewStatisticsDetailItem.itemName = preview.name
+        viewStatisticsDetailItem.itemColor = preview.color
+        if (preview.iconId != null) {
             viewStatisticsDetailItem.itemIconVisible = true
-            viewStatisticsDetailItem.itemIcon = first.iconId
+            viewStatisticsDetailItem.itemIcon = preview.iconId
         } else {
             viewStatisticsDetailItem.itemIconVisible = false
         }
