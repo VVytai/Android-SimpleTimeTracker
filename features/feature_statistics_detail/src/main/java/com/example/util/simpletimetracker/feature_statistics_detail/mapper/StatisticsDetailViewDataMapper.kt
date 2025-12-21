@@ -64,6 +64,7 @@ class StatisticsDetailViewDataMapper @Inject constructor(
         isDarkTheme: Boolean,
         showName: Boolean,
         isForComparison: Boolean,
+        isFiltered: Boolean,
     ): StatisticsDetailPreviewViewData {
         return StatisticsDetailPreviewViewData(
             id = recordType.id,
@@ -72,18 +73,25 @@ class StatisticsDetailViewDataMapper @Inject constructor(
             } else {
                 StatisticsDetailPreviewViewData.Type.FILTER
             },
+            dataType = StatisticsDetailPreviewViewData.DataType.ACTIVITY,
             name = recordType.name.takeIf { showName }.orEmpty(),
-            iconId = recordType.icon
-                .let(iconMapper::mapIcon),
-            color = recordType.color
-                .let { colorMapper.mapToColorInt(it, isDarkTheme) },
-        )
+            iconId = iconMapper.mapIcon(recordType.icon),
+            iconColor = colorMapper.toIconColor(isDarkTheme),
+            color = colorMapper.mapToColorInt(recordType.color, isDarkTheme),
+            isFiltered = isFiltered,
+        ).let {
+            mapFilteredState(
+                state = it,
+                isDarkTheme = isDarkTheme,
+            )
+        }
     }
 
     fun mapToCategorizedPreview(
         category: Category,
         isDarkTheme: Boolean,
         isForComparison: Boolean,
+        isFiltered: Boolean,
     ): StatisticsDetailPreviewViewData {
         return StatisticsDetailPreviewViewData(
             id = category.id,
@@ -92,16 +100,24 @@ class StatisticsDetailViewDataMapper @Inject constructor(
             } else {
                 StatisticsDetailPreviewViewData.Type.FILTER
             },
+            dataType = StatisticsDetailPreviewViewData.DataType.CATEGORY,
             name = category.name,
             iconId = null,
-            color = category.color
-                .let { colorMapper.mapToColorInt(it, isDarkTheme) },
-        )
+            iconColor = colorMapper.toIconColor(isDarkTheme),
+            color = colorMapper.mapToColorInt(category.color, isDarkTheme),
+            isFiltered = isFiltered,
+        ).let {
+            mapFilteredState(
+                state = it,
+                isDarkTheme = isDarkTheme,
+            )
+        }
     }
 
     fun mapToUncategorizedPreview(
         isDarkTheme: Boolean,
         isForComparison: Boolean,
+        isFiltered: Boolean,
     ): StatisticsDetailPreviewViewData {
         val item = categoryViewDataMapper.mapToUncategorizedItem(
             isDarkTheme = isDarkTheme,
@@ -115,10 +131,18 @@ class StatisticsDetailViewDataMapper @Inject constructor(
             } else {
                 StatisticsDetailPreviewViewData.Type.FILTER
             },
+            dataType = StatisticsDetailPreviewViewData.DataType.CATEGORY,
             name = item.name,
             iconId = RecordTypeIcon.Image(R.drawable.untagged),
+            iconColor = colorMapper.toIconColor(isDarkTheme),
             color = item.color,
-        )
+            isFiltered = isFiltered,
+        ).let {
+            mapFilteredState(
+                state = it,
+                isDarkTheme = isDarkTheme,
+            )
+        }
     }
 
     fun mapToTaggedPreview(
@@ -126,6 +150,7 @@ class StatisticsDetailViewDataMapper @Inject constructor(
         types: Map<Long, RecordType>,
         isDarkTheme: Boolean,
         isForComparison: Boolean,
+        isFiltered: Boolean,
     ): StatisticsDetailPreviewViewData {
         val icon = recordTagViewDataMapper.mapIcon(tag, types)
         val color = recordTagViewDataMapper.mapColor(tag, types)
@@ -137,15 +162,24 @@ class StatisticsDetailViewDataMapper @Inject constructor(
             } else {
                 StatisticsDetailPreviewViewData.Type.FILTER
             },
+            dataType = StatisticsDetailPreviewViewData.DataType.TAG,
             name = tag.name,
             iconId = icon?.let(iconMapper::mapIcon),
-            color = color.let { colorMapper.mapToColorInt(it, isDarkTheme) },
-        )
+            iconColor = colorMapper.toIconColor(isDarkTheme),
+            color = colorMapper.mapToColorInt(color, isDarkTheme),
+            isFiltered = isFiltered,
+        ).let {
+            mapFilteredState(
+                state = it,
+                isDarkTheme = isDarkTheme,
+            )
+        }
     }
 
     fun mapToUntaggedPreview(
         isDarkTheme: Boolean,
         isForComparison: Boolean,
+        isFiltered: Boolean,
     ): StatisticsDetailPreviewViewData {
         val item = categoryViewDataMapper.mapToUntaggedItem(
             isDarkTheme = isDarkTheme,
@@ -159,10 +193,18 @@ class StatisticsDetailViewDataMapper @Inject constructor(
             } else {
                 StatisticsDetailPreviewViewData.Type.FILTER
             },
+            dataType = StatisticsDetailPreviewViewData.DataType.TAG,
             name = item.name,
             iconId = item.icon,
+            iconColor = colorMapper.toIconColor(isDarkTheme),
             color = item.color,
-        )
+            isFiltered = isFiltered,
+        ).let {
+            mapFilteredState(
+                state = it,
+                isDarkTheme = isDarkTheme,
+            )
+        }
     }
 
     fun mapUntrackedPreview(
@@ -176,9 +218,12 @@ class StatisticsDetailViewDataMapper @Inject constructor(
             } else {
                 StatisticsDetailPreviewViewData.Type.FILTER
             },
+            dataType = StatisticsDetailPreviewViewData.DataType.OTHER,
             name = resourceRepo.getString(R.string.untracked_time_name),
             iconId = RecordTypeIcon.Image(R.drawable.unknown),
+            iconColor = colorMapper.toIconColor(isDarkTheme),
             color = colorMapper.toUntrackedColor(isDarkTheme),
+            isFiltered = false,
         )
     }
 
@@ -193,9 +238,12 @@ class StatisticsDetailViewDataMapper @Inject constructor(
             } else {
                 StatisticsDetailPreviewViewData.Type.FILTER
             },
+            dataType = StatisticsDetailPreviewViewData.DataType.OTHER,
             name = resourceRepo.getString(R.string.multitask_time_name),
             iconId = RecordTypeIcon.Image(R.drawable.multitask),
+            iconColor = colorMapper.toIconColor(isDarkTheme),
             color = colorMapper.toUntrackedColor(isDarkTheme),
+            isFiltered = false,
         )
     }
 
@@ -205,9 +253,12 @@ class StatisticsDetailViewDataMapper @Inject constructor(
         return StatisticsDetailPreviewViewData(
             id = 0,
             type = StatisticsDetailPreviewViewData.Type.FILTER,
+            dataType = StatisticsDetailPreviewViewData.DataType.OTHER,
             name = "",
             iconId = RecordTypeIcon.Image(R.drawable.unknown),
+            iconColor = colorMapper.toIconColor(isDarkTheme),
             color = colorMapper.toUntrackedColor(isDarkTheme),
+            isFiltered = false,
         )
     }
 
@@ -222,9 +273,12 @@ class StatisticsDetailViewDataMapper @Inject constructor(
             } else {
                 StatisticsDetailPreviewViewData.Type.FILTER
             },
+            dataType = StatisticsDetailPreviewViewData.DataType.OTHER,
             name = resourceRepo.getString(R.string.statistics_total_tracked),
             iconId = null,
+            iconColor = colorMapper.toIconColor(isDarkTheme),
             color = colorMapper.toUntrackedColor(isDarkTheme),
+            isFiltered = false,
         )
     }
 
@@ -517,7 +571,7 @@ class StatisticsDetailViewDataMapper @Inject constructor(
                 abs >= 100f -> String.format("%.1f", value)
                 abs >= 10f -> String.format("%.2f", value)
                 else -> String.format("%.3f", value)
-            }.toString().removeTrailingZeroes()
+            }.removeTrailingZeroes()
         }
 
         fun formatInterval(interval: Float): String {
@@ -869,6 +923,22 @@ class StatisticsDetailViewDataMapper @Inject constructor(
             ChartValueMode.TOTAL -> R.string.statistics_detail_total_duration
             ChartValueMode.AVERAGE -> R.string.statistics_detail_average_record
         }.let(resourceRepo::getString)
+    }
+
+    private fun mapFilteredState(
+        state: StatisticsDetailPreviewViewData,
+        isDarkTheme: Boolean,
+    ): StatisticsDetailPreviewViewData {
+        val isFiltered = state.isFiltered
+        return state.copy(
+            color = if (isFiltered) {
+                colorMapper.toFilteredColor(isDarkTheme)
+            } else {
+                state.color
+            },
+            iconColor = colorMapper.toIconColor(isDarkTheme = isDarkTheme, isFiltered = isFiltered),
+            iconAlpha = colorMapper.toIconAlpha(icon = state.iconId, isFiltered = isFiltered),
+        )
     }
 
     companion object {

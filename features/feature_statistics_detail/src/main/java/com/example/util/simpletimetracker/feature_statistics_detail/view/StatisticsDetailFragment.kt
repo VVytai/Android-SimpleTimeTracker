@@ -74,6 +74,7 @@ class StatisticsDetailFragment :
         BaseRecyclerAdapter(
             createStatisticsDetailPreviewsAdapterDelegate(
                 onClick = viewModel::onPreviewItemClick,
+                onLongClick = viewModel::onPreviewItemLongClick,
             ),
             createStatisticsDetailBarChartAdapterDelegate(
                 onBarClick = viewModel::onChartClick,
@@ -208,13 +209,17 @@ class StatisticsDetailFragment :
         val preview = StatisticsDetailPreviewViewData(
             id = 0L,
             type = StatisticsDetailPreviewViewData.Type.FILTER,
+            dataType = StatisticsDetailPreviewViewData.DataType.ACTIVITY,
             name = name,
             iconId = iconId?.toViewData(),
+            iconColor = null,
             color = color,
+            isFiltered = false,
         )
 
         StatisticsDetailPreviewCompositeViewData(
             previewColor = preview.color,
+            comparisonPreviewColor = null,
             mainPreview = preview,
             additionalData = emptyList(),
             comparisonData = emptyList(),

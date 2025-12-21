@@ -18,7 +18,7 @@ class GetTotalStatisticsFilterInteractor @Inject constructor(
 ) {
 
     suspend fun execute(
-        filterType: ChartFilterType
+        filterType: ChartFilterType,
     ): RecordsFilter {
         return when (filterType) {
             ChartFilterType.ACTIVITY -> {

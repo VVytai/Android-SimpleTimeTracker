@@ -17,6 +17,7 @@ import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
 
+// Separate view container for FLEX_START content.
 class StatisticsDetailPreviewsView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
@@ -30,13 +31,19 @@ class StatisticsDetailPreviewsView @JvmOverloads constructor(
     val adapter: BaseRecyclerAdapter by lazy {
         BaseRecyclerAdapter(
             createStatisticsPreviewCompareAdapterDelegate(),
-            createStatisticsPreviewMoreAdapterDelegate(::onItemClick),
-            createStatisticsPreviewAdapterDelegate(),
+            createStatisticsPreviewMoreAdapterDelegate(
+                onClick = ::onItemClick,
+            ),
+            createStatisticsPreviewAdapterDelegate(
+                onClick = ::onItemClick,
+                onLongClick = ::onItemLongClick,
+            ),
         )
     }
 
     private val binding = StatisticsDetailPreviewsViewLayoutBinding.inflate(layoutInflater, this)
     private var clickListener: (StatisticsDetailPreview) -> Unit = {}
+    private var longClickListener: (StatisticsDetailPreview) -> Unit = {}
 
     init {
         initRecycler()
@@ -45,6 +52,10 @@ class StatisticsDetailPreviewsView @JvmOverloads constructor(
 
     fun setClickListener(listener: (StatisticsDetailPreview) -> Unit) {
         clickListener = listener
+    }
+
+    fun setLongClickListener(listener: (StatisticsDetailPreview) -> Unit) {
+        longClickListener = listener
     }
 
     private fun initRecycler() {
@@ -62,15 +73,22 @@ class StatisticsDetailPreviewsView @JvmOverloads constructor(
         clickListener(item)
     }
 
+    private fun onItemLongClick(item: StatisticsDetailPreview) {
+        longClickListener(item)
+    }
+
     private fun initEditMode() {
         if (isInEditMode) {
             List(3) {
                 StatisticsDetailPreviewViewData(
                     id = it.toLong(),
                     type = StatisticsDetailPreviewViewData.Type.FILTER,
+                    dataType = StatisticsDetailPreviewViewData.DataType.OTHER,
                     name = it.toString(),
                     iconId = null,
+                    iconColor = null,
                     color = Color.BLACK,
+                    isFiltered = false,
                 )
             }.let(adapter::replace)
         }

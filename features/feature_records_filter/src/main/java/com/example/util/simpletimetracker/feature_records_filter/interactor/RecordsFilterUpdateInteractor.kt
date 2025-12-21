@@ -56,6 +56,7 @@ class RecordsFilterUpdateInteractor @Inject constructor(
     fun handleTypeClick(
         type: RecordFilterSelectionType,
         id: Long,
+        allowSameIdInSelectedFiltered: Boolean,
         currentFilters: List<RecordsFilter>,
         recordTypes: List<RecordType>,
         recordTypeCategories: List<RecordTypeCategory>,
@@ -85,6 +86,7 @@ class RecordsFilterUpdateInteractor @Inject constructor(
             type = type,
             currentFilters = filters,
             newIds = newIds,
+            allowSameIdInSelectedFiltered = allowSameIdInSelectedFiltered,
         ).let {
             checkTagFilterConsistency(
                 currentFilters = it,
@@ -99,6 +101,7 @@ class RecordsFilterUpdateInteractor @Inject constructor(
     fun handleCategoryClick(
         type: RecordFilterSelectionType,
         id: Long,
+        allowSameIdInSelectedFiltered: Boolean,
         currentFilters: List<RecordsFilter>,
         recordTypes: List<RecordType>,
         recordTypeCategories: List<RecordTypeCategory>,
@@ -120,6 +123,7 @@ class RecordsFilterUpdateInteractor @Inject constructor(
             type = type,
             currentFilters = filters,
             newItems = newItems,
+            allowSameIdInSelectedFiltered = allowSameIdInSelectedFiltered,
         ).let {
             checkTagFilterConsistency(
                 currentFilters = it,
@@ -135,6 +139,7 @@ class RecordsFilterUpdateInteractor @Inject constructor(
         type: RecordFilterSelectionType,
         currentFilters: List<RecordsFilter>,
         itemId: Long,
+        allowSameIdInSelectedFiltered: Boolean,
     ): List<RecordsFilter> {
         val filters = currentFilters.toMutableList()
         val currentTags = when (type) {
@@ -151,6 +156,7 @@ class RecordsFilterUpdateInteractor @Inject constructor(
             type = type,
             currentFilters = filters,
             newItems = newTags,
+            allowSameIdInSelectedFiltered = allowSameIdInSelectedFiltered,
         )
     }
 
@@ -438,6 +444,7 @@ class RecordsFilterUpdateInteractor @Inject constructor(
             type = type,
             currentFilters = currentFilters,
             newIds = newIds,
+            allowSameIdInSelectedFiltered = false,
         ).let {
             checkTagFilterConsistency(
                 currentFilters = it,
@@ -473,6 +480,7 @@ class RecordsFilterUpdateInteractor @Inject constructor(
             type = type,
             currentFilters = currentFilters,
             newItems = newItems,
+            allowSameIdInSelectedFiltered = false,
         ).let {
             checkTagFilterConsistency(
                 currentFilters = it,
@@ -504,6 +512,7 @@ class RecordsFilterUpdateInteractor @Inject constructor(
             type = type,
             currentFilters = currentFilters,
             newItems = newItems,
+            allowSameIdInSelectedFiltered = false,
         )
     }
 
@@ -555,16 +564,21 @@ class RecordsFilterUpdateInteractor @Inject constructor(
         type: RecordFilterSelectionType,
         currentFilters: List<RecordsFilter>,
         newIds: List<Long>,
+        allowSameIdInSelectedFiltered: Boolean,
     ): List<RecordsFilter> {
         val filters = currentFilters.toMutableList()
 
         val newFilter = when (type) {
             is RecordFilterSelectionType.Select -> RecordsFilter.Activity(
                 selected = newIds,
-                filtered = filters.getFilteredTypeIds().filter { it !in newIds },
+                filtered = filters.getFilteredTypeIds().filter {
+                    if (!allowSameIdInSelectedFiltered) it !in newIds else true
+                },
             )
             is RecordFilterSelectionType.Filter -> RecordsFilter.Activity(
-                selected = filters.getTypeIds().filter { it !in newIds },
+                selected = filters.getTypeIds().filter {
+                    if (!allowSameIdInSelectedFiltered) it !in newIds else true
+                },
                 filtered = newIds,
             )
         }
@@ -590,16 +604,21 @@ class RecordsFilterUpdateInteractor @Inject constructor(
         type: RecordFilterSelectionType,
         currentFilters: List<RecordsFilter>,
         newItems: List<RecordsFilter.CategoryItem>,
+        allowSameIdInSelectedFiltered: Boolean,
     ): List<RecordsFilter> {
         val filters = currentFilters.toMutableList()
 
         val newFilter = when (type) {
             is RecordFilterSelectionType.Select -> RecordsFilter.Category(
                 selected = newItems,
-                filtered = filters.getFilteredCategoryItems().filter { it !in newItems },
+                filtered = filters.getFilteredCategoryItems().filter {
+                    if (!allowSameIdInSelectedFiltered) it !in newItems else true
+                },
             )
             is RecordFilterSelectionType.Filter -> RecordsFilter.Category(
-                selected = filters.getCategoryItems().filter { it !in newItems },
+                selected = filters.getCategoryItems().filter {
+                    if (!allowSameIdInSelectedFiltered) it !in newItems else true
+                },
                 filtered = newItems,
             )
         }
@@ -625,16 +644,21 @@ class RecordsFilterUpdateInteractor @Inject constructor(
         type: RecordFilterSelectionType,
         currentFilters: List<RecordsFilter>,
         newItems: List<RecordsFilter.TagItem>,
+        allowSameIdInSelectedFiltered: Boolean,
     ): List<RecordsFilter> {
         val filters = currentFilters.toMutableList()
 
         val newFilter = when (type) {
             RecordFilterSelectionType.Select -> RecordsFilter.Tags(
                 selected = newItems,
-                filtered = filters.getFilteredTags().filter { it !in newItems },
+                filtered = filters.getFilteredTags().filter {
+                    if (!allowSameIdInSelectedFiltered) it !in newItems else true
+                },
             )
             RecordFilterSelectionType.Filter -> RecordsFilter.Tags(
-                selected = filters.getSelectedTags().filter { it !in newItems },
+                selected = filters.getSelectedTags().filter {
+                    if (!allowSameIdInSelectedFiltered) it !in newItems else true
+                },
                 filtered = newItems,
             )
         }

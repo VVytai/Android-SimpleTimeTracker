@@ -212,6 +212,11 @@ class StatisticsDetailViewModel @Inject constructor(
 
     fun onPreviewItemClick(item: StatisticsDetailPreview) {
         previewDelegate.onPreviewItemClick(item)
+        filterDelegate.onPreviewItemClick(item)
+    }
+
+    fun onPreviewItemLongClick(item: StatisticsDetailPreview) {
+        filterDelegate.onPreviewItemLongClick(item)
     }
 
     fun onChartClick(block: StatisticsDetailBlock, barId: Long?) {

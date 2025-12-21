@@ -21,7 +21,6 @@ import com.example.util.simpletimetracker.feature_statistics_detail.viewData.Sta
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailDataDistributionViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailGoalsCompositeViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailPreviewCompositeViewData
-import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailPreviewViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailStatsViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailStreaksViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailTagValuesCompositeViewData
@@ -56,12 +55,7 @@ class StatisticsDetailContentInteractor @Inject constructor(
         }
 
         fun getPreviewColorComparison(): Int {
-            return previewViewData
-                ?.comparisonData
-                ?.filterIsInstance<StatisticsDetailPreviewViewData>()
-                ?.firstOrNull()
-                ?.color
-                ?: Color.BLACK
+            return previewViewData?.comparisonPreviewColor ?: Color.BLACK
         }
 
         previewViewData?.let { viewData ->

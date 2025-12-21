@@ -77,11 +77,17 @@ class StatisticsDetailPreviewViewModelDelegate @Inject constructor(
         val previewColor = mainPreview?.color
             ?: additionalData
                 .filterIsInstance<StatisticsDetailPreviewViewData>()
-                .firstOrNull()
+                .firstOrNull { !it.isFiltered }
                 ?.color
+
+        val comparisonPreviewColor = comparisonData
+            .filterIsInstance<StatisticsDetailPreviewViewData>()
+            .firstOrNull { !it.isFiltered }
+            ?.color
 
         return StatisticsDetailPreviewCompositeViewData(
             previewColor = previewColor,
+            comparisonPreviewColor = comparisonPreviewColor,
             mainPreview = mainPreview,
             additionalData = additionalData,
             comparisonData = comparisonData,

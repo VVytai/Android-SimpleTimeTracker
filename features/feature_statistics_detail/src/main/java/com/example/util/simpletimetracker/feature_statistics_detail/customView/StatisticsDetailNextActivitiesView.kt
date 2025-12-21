@@ -57,9 +57,12 @@ class StatisticsDetailNextActivitiesView @JvmOverloads constructor(
                 StatisticsDetailPreviewViewData(
                     id = it.toLong(),
                     type = StatisticsDetailPreviewViewData.Type.FILTER,
+                    dataType = StatisticsDetailPreviewViewData.DataType.OTHER,
                     name = it.toString(),
                     iconId = null,
+                    iconColor = null,
                     color = Color.BLACK,
+                    isFiltered = false,
                 )
             }.let(adapter::replace)
         }

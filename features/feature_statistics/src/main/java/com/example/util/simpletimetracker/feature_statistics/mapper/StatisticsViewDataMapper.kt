@@ -24,7 +24,7 @@ class StatisticsViewDataMapper @Inject constructor(
         isDarkTheme: Boolean,
     ): ViewHolderType {
         val id = "statistics_total_tracked".hashCode().toLong()
-        val transitionName = "${TransitionNames.STATISTICS_DETAIL}_shift${shift}_id${id}"
+        val transitionName = "${TransitionNames.STATISTICS_DETAIL}_shift${shift}_id$id"
         val data = StatisticsViewData(
             id = id,
             name = resourceRepo.getString(R.string.statistics_total_tracked),

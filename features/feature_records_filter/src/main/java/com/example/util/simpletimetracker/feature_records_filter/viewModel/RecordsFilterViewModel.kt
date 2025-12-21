@@ -388,6 +388,7 @@ class RecordsFilterViewModel @Inject constructor(
         filters = recordsFilterUpdateInteractor.handleTypeClick(
             type = type,
             id = id,
+            allowSameIdInSelectedFiltered = false,
             currentFilters = filters,
             recordTypes = getTypesCache(),
             recordTypeCategories = getRecordTypeCategoriesCache(),
@@ -405,6 +406,7 @@ class RecordsFilterViewModel @Inject constructor(
                 RecordFilterSelectionType.Select
             },
             id = item.id,
+            allowSameIdInSelectedFiltered = false,
             currentFilters = filters,
             recordTypes = getTypesCache(),
             recordTypeCategories = getRecordTypeCategoriesCache(),
@@ -472,6 +474,7 @@ class RecordsFilterViewModel @Inject constructor(
             type = tagSelectionState,
             currentFilters = filters,
             itemId = item.id,
+            allowSameIdInSelectedFiltered = false,
         )
     }
 

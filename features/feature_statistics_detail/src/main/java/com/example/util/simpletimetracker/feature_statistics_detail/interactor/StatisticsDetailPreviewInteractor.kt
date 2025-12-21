@@ -10,6 +10,9 @@ import com.example.util.simpletimetracker.domain.record.extension.hasUntrackedFi
 import com.example.util.simpletimetracker.domain.category.interactor.CategoryInteractor
 import com.example.util.simpletimetracker.domain.category.model.Category
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
+import com.example.util.simpletimetracker.domain.record.extension.getFilteredCategoryItems
+import com.example.util.simpletimetracker.domain.record.extension.getFilteredTags
+import com.example.util.simpletimetracker.domain.record.extension.getFilteredTypeIds
 import com.example.util.simpletimetracker.domain.record.extension.hasSelectedActivityFilter
 import com.example.util.simpletimetracker.domain.record.extension.hasSelectedCategoryFilter
 import com.example.util.simpletimetracker.domain.recordTag.interactor.RecordTagInteractor
@@ -66,6 +69,7 @@ class StatisticsDetailPreviewInteractor @Inject constructor(
 
         suspend fun mapActivities(
             selectedIds: List<Long>,
+            filteredIds: List<Long>,
         ): List<ViewHolderType> {
             return recordTypeInteractor.getAll()
                 .filter { it.id in selectedIds }
@@ -75,6 +79,7 @@ class StatisticsDetailPreviewInteractor @Inject constructor(
                         isDarkTheme = isDarkTheme,
                         showName = !isForComparison && selectedIds.size == 1,
                         isForComparison = isForComparison,
+                        isFiltered = type.id in filteredIds,
                     )
                 }
         }
@@ -94,10 +99,12 @@ class StatisticsDetailPreviewInteractor @Inject constructor(
             }
             is PreviewType.Activities -> {
                 val selectedIds = filterParams.getTypeIds()
-                mapActivities(selectedIds)
+                val filteredIds = filterParams.getFilteredTypeIds()
+                mapActivities(selectedIds = selectedIds, filteredIds = filteredIds)
             }
             is PreviewType.Categories -> {
                 val selectedCategories = filterParams.getCategoryItems()
+                val filteredCategories = filterParams.getFilteredCategoryItems()
                 val categories = categoryInteractor.getAll().associateBy(Category::id)
                 selectedCategories.mapNotNull {
                     when (it) {
@@ -107,12 +114,14 @@ class StatisticsDetailPreviewInteractor @Inject constructor(
                                 category = category,
                                 isDarkTheme = isDarkTheme,
                                 isForComparison = isForComparison,
+                                isFiltered = it in filteredCategories,
                             )
                         }
                         is RecordsFilter.CategoryItem.Uncategorized -> {
                             statisticsDetailViewDataMapper.mapToUncategorizedPreview(
                                 isDarkTheme = isDarkTheme,
                                 isForComparison = isForComparison,
+                                isFiltered = it in filteredCategories,
                             )
                         }
                     }
@@ -120,6 +129,7 @@ class StatisticsDetailPreviewInteractor @Inject constructor(
             }
             is PreviewType.SelectedTags -> {
                 val selectedTags = filterParams.getSelectedTags()
+                val filteredTags = filterParams.getFilteredTags()
                 val types = recordTypeInteractor.getAll().associateBy(RecordType::id)
                 val tags = recordTagInteractor.getAll().associateBy(RecordTag::id)
                 selectedTags.mapNotNull {
@@ -131,12 +141,14 @@ class StatisticsDetailPreviewInteractor @Inject constructor(
                                 types = types,
                                 isDarkTheme = isDarkTheme,
                                 isForComparison = isForComparison,
+                                isFiltered = it in filteredTags,
                             )
                         }
                         is RecordsFilter.TagItem.Untagged -> {
                             statisticsDetailViewDataMapper.mapToUntaggedPreview(
                                 isDarkTheme = isDarkTheme,
                                 isForComparison = isForComparison,
+                                isFiltered = it in filteredTags,
                             )
                         }
                     }
@@ -145,7 +157,8 @@ class StatisticsDetailPreviewInteractor @Inject constructor(
             is PreviewType.ActivitiesFromRecords -> {
                 val records = recordFilterInteractor.getByFilter(filterParams)
                 val selectedIds = records.map { it.typeIds }.flatten().distinct()
-                mapActivities(selectedIds)
+                val filteredIds = filterParams.getFilteredTypeIds()
+                mapActivities(selectedIds = selectedIds, filteredIds = filteredIds)
             }
         }.let {
             if (total) mapTotal() + it else it

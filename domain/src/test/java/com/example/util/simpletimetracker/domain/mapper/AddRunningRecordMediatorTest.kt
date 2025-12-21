@@ -632,26 +632,6 @@ class AddRunningRecordMediatorTest {
         // Given
         `when`(prefsInteractor.getRetroactiveTrackingMode()).thenReturn(true)
         `when`(recordInteractor.getAllPrev(any())).thenReturn(emptyList())
-//        `when`(recordInteractor.getAllPrev(any())).thenReturn(
-//            listOf(
-//                Record(
-//                    id = 0L,
-//                    typeId = typeId2,
-//                    timeStarted = 0,
-//                    timeEnded = 0,
-//                    comment = "",
-//                    tags = emptyList(),
-//                ),
-//                Record(
-//                    id = 0L,
-//                    typeId = typeId3,
-//                    timeStarted = 0,
-//                    timeEnded = 0,
-//                    comment = "",
-//                    tags = emptyList(),
-//                ),
-//            ),
-//        )
 
         // When
         subject.startTimer(
@@ -725,7 +705,7 @@ class AddRunningRecordMediatorTest {
     }
 
     @Test
-    fun retroactiveMerge(): Unit = runBlocking {
+    fun retroactiveNoMerge(): Unit = runBlocking {
         // Given
         `when`(prefsInteractor.getRetroactiveTrackingMode()).thenReturn(true)
         `when`(recordInteractor.getAllPrev(any())).thenReturn(
@@ -756,9 +736,9 @@ class AddRunningRecordMediatorTest {
         verify(addRecordMediator).add(
             record = eq(
                 Record(
-                    id = 10L,
+                    id = 0L,
                     typeId = typeId,
-                    timeStarted = 1000,
+                    timeStarted = 2000,
                     timeEnded = currentTime,
                     comment = "comment2",
                     tags = listOf(tag(tagId2)),

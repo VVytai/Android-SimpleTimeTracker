@@ -11,6 +11,8 @@ import com.example.util.simpletimetracker.domain.record.model.RecordsFilter
 import com.example.util.simpletimetracker.feature_records_filter.api.RecordsFilterExcludeInteractor
 import com.example.util.simpletimetracker.feature_statistics_detail.R
 import com.example.util.simpletimetracker.feature_statistics_detail.model.DataDistributionMode
+import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailPreview
+import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailPreviewViewData
 import com.example.util.simpletimetracker.navigation.Router
 import com.example.util.simpletimetracker.navigation.params.screen.RecordsFilterParam
 import com.example.util.simpletimetracker.navigation.params.screen.RecordsFilterParams
@@ -105,6 +107,40 @@ class StatisticsDetailFilterViewModelDelegate @Inject constructor(
         onFiltersChanged()
     }
 
+    fun onPreviewItemClick(item: StatisticsDetailPreview) {
+        if (item !is StatisticsDetailPreviewViewData) return
+        delegateScope.launch {
+            val newFilter = recordsFilterExcludeInteractor.exclude(
+                id = item.id,
+                type = mapPreviewDataTypeToExcludeType(item.dataType) ?: return@launch,
+                currentFilters = when (item.type) {
+                    StatisticsDetailPreviewViewData.Type.FILTER -> filter
+                    StatisticsDetailPreviewViewData.Type.COMPARISON -> comparisonFilter
+                },
+            )
+            when (item.type) {
+                StatisticsDetailPreviewViewData.Type.FILTER -> filter = newFilter
+                StatisticsDetailPreviewViewData.Type.COMPARISON -> comparisonFilter = newFilter
+            }
+            onFiltersChanged()
+        }
+    }
+
+    fun onPreviewItemLongClick(item: StatisticsDetailPreview) {
+        if (item !is StatisticsDetailPreviewViewData) return
+        delegateScope.launch {
+            val newFilter = recordsFilterExcludeInteractor.excludeOther(
+                id = item.id,
+                type = mapPreviewDataTypeToExcludeType(item.dataType) ?: return@launch,
+            )
+            when (item.type) {
+                StatisticsDetailPreviewViewData.Type.FILTER -> filter = newFilter
+                StatisticsDetailPreviewViewData.Type.COMPARISON -> comparisonFilter = newFilter
+            }
+            onFiltersChanged()
+        }
+    }
+
     fun provideRecords(): List<RecordBase> {
         return records
     }
@@ -173,6 +209,21 @@ class StatisticsDetailFilterViewModelDelegate @Inject constructor(
         if (extra.transitionName.isEmpty() && firstLoad) {
             delay(300)
             firstLoad = false
+        }
+    }
+
+    private fun mapPreviewDataTypeToExcludeType(
+        data: StatisticsDetailPreviewViewData.DataType,
+    ): RecordsFilterExcludeInteractor.ExcludeType? {
+        return when (data) {
+            StatisticsDetailPreviewViewData.DataType.ACTIVITY ->
+                RecordsFilterExcludeInteractor.ExcludeType.Activity
+            StatisticsDetailPreviewViewData.DataType.CATEGORY ->
+                RecordsFilterExcludeInteractor.ExcludeType.Category
+            StatisticsDetailPreviewViewData.DataType.TAG ->
+                RecordsFilterExcludeInteractor.ExcludeType.Tag
+            StatisticsDetailPreviewViewData.DataType.OTHER ->
+                return null
         }
     }
 

@@ -71,6 +71,7 @@ class StatisticsDetailAdjacentActivitiesInteractor @Inject constructor(
                     isDarkTheme = isDarkTheme,
                     showName = false,
                     isForComparison = false,
+                    isFiltered = false,
                 ).copy(name = "$correctedPercent%")
             }
         }

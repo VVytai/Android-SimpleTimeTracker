@@ -8,6 +8,7 @@ import com.example.util.simpletimetracker.feature_statistics_detail.databinding.
 
 fun createStatisticsDetailPreviewsAdapterDelegate(
     onClick: (StatisticsDetailPreview) -> Unit,
+    onLongClick: (StatisticsDetailPreview) -> Unit,
 ) = createRecyclerBindingAdapterDelegate<ViewData, Binding>(
     Binding::inflate,
 ) { binding, item, _ ->
@@ -15,8 +16,9 @@ fun createStatisticsDetailPreviewsAdapterDelegate(
     with(binding) {
         item as ViewData
 
-        root.adapter.replaceFast(item.data)
+        root.adapter.replace(item.data)
         root.setClickListener(onClick)
+        root.setLongClickListener(onLongClick)
     }
 }
 
