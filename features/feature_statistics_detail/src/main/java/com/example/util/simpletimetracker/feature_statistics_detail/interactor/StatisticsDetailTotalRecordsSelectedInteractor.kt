@@ -1,6 +1,7 @@
 package com.example.util.simpletimetracker.feature_statistics_detail.interactor
 
 import com.example.util.simpletimetracker.core.interactor.GetTotalStatisticsFilterInteractor
+import com.example.util.simpletimetracker.domain.record.extension.getTypeIds
 import com.example.util.simpletimetracker.domain.record.model.RecordsFilter
 import com.example.util.simpletimetracker.domain.statistics.model.ChartFilterType
 import javax.inject.Inject
@@ -14,6 +15,8 @@ class StatisticsDetailTotalRecordsSelectedInteractor @Inject constructor(
     ): Boolean {
         if (currentFilter.size != 1) return false
         val onlyFilter = currentFilter.firstOrNull() ?: return false
+        // Don't show "total" if only one activity exists.
+        if (onlyFilter is RecordsFilter.Activity && currentFilter.getTypeIds().size == 1) return false
         val chartFilter = when (onlyFilter) {
             is RecordsFilter.Activity -> ChartFilterType.ACTIVITY
             is RecordsFilter.Category -> ChartFilterType.CATEGORY

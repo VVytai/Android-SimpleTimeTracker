@@ -1,5 +1,6 @@
 package com.example.util.simpletimetracker
 
+import android.view.View
 import androidx.test.espresso.Espresso.closeSoftKeyboard
 import androidx.test.espresso.Espresso.onData
 import androidx.test.espresso.Espresso.onView
@@ -58,6 +59,7 @@ import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.Matcher
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.util.Calendar
@@ -984,15 +986,21 @@ class SettingsTest : BaseUiTest() {
     fun durationFormat() {
         val name = "Test"
 
-        fun checkView(id: Int, text: String) {
-            checkViewIsDisplayed(allOf(withId(id), hasDescendant(withText(text)), isCompletelyDisplayed()))
+        fun checkView(matchers: Matcher<View>, text: String) {
+            checkViewIsDisplayed(allOf(matchers, hasDescendant(withText(text)), isCompletelyDisplayed()))
         }
 
         fun checkFormat(timeString: String) {
             NavUtils.openRecordsScreen()
-            checkView(baseR.id.viewRecordItem, timeString)
+            checkView(allOf(withId(baseR.id.viewRecordItem)), timeString)
             NavUtils.openStatisticsScreen()
-            checkView(baseR.id.viewStatisticsItem, timeString)
+            checkView(
+                allOf(
+                    hasDescendant(withText(name)),
+                    withId(baseR.id.viewStatisticsItem),
+                ),
+                timeString,
+            )
             tryAction { clickOnView(allOf(withText(name), isCompletelyDisplayed())) }
             checkViewIsDisplayed(
                 allOf(
@@ -2810,7 +2818,7 @@ class SettingsTest : BaseUiTest() {
 
         // Check search
         typeTextIntoView(R.id.etCommentItemField, "2")
-        Thread.sleep(500)
+        Thread.sleep(1000)
         checkType(name1, false)
         checkType(name2, true)
         checkType(name3, false)
@@ -2842,7 +2850,7 @@ class SettingsTest : BaseUiTest() {
 
         NavUtils.openRunningRecordsScreen()
         typeTextIntoView(R.id.etCommentItemField, "lowercase")
-        Thread.sleep(500)
+        Thread.sleep(1000)
         checkType(name1, false)
         checkType(name2, false)
         checkType(name3, false)

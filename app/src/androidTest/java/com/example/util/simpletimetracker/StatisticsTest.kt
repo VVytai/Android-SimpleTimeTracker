@@ -28,7 +28,6 @@ import org.junit.runner.RunWith
 import java.util.concurrent.TimeUnit
 import com.example.util.simpletimetracker.core.R as coreR
 import com.example.util.simpletimetracker.feature_base_adapter.R as baseR
-import com.example.util.simpletimetracker.feature_statistics.R as statisticsR
 
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
@@ -115,7 +114,7 @@ class StatisticsTest : BaseUiTest() {
         )
         checkViewIsDisplayed(
             allOf(
-                withId(statisticsR.id.tvStatisticsInfoText),
+                withId(R.id.tvStatisticsItemDuration),
                 withText("2$hourString 0$minuteString"),
             ),
         )
@@ -239,7 +238,7 @@ class StatisticsTest : BaseUiTest() {
         )
         checkViewIsDisplayed(
             allOf(
-                withId(statisticsR.id.tvStatisticsInfoText),
+                withId(R.id.tvStatisticsItemDuration),
                 withText("6$hourString 0$minuteString"),
             ),
         )
@@ -367,7 +366,7 @@ class StatisticsTest : BaseUiTest() {
         )
         checkViewIsDisplayed(
             allOf(
-                withId(statisticsR.id.tvStatisticsInfoText),
+                withId(R.id.tvStatisticsItemDuration),
                 withText("6$hourString 0$minuteString"),
             ),
         )
@@ -426,7 +425,7 @@ class StatisticsTest : BaseUiTest() {
         )
         checkViewIsDisplayed(
             allOf(
-                withId(statisticsR.id.layoutStatisticsInfoItem),
+                withId(R.id.viewStatisticsItem),
                 hasDescendant(withText(coreR.string.statistics_total_tracked)),
                 hasDescendant(withText("2$hourString 0$minuteString")),
                 isCompletelyDisplayed(),
@@ -451,7 +450,7 @@ class StatisticsTest : BaseUiTest() {
         )
         checkViewIsDisplayed(
             allOf(
-                withId(statisticsR.id.layoutStatisticsInfoItem),
+                withId(R.id.viewStatisticsItem),
                 hasDescendant(withText(coreR.string.statistics_total_tracked)),
                 hasDescendant(withText("0$minuteString")),
                 isCompletelyDisplayed(),
@@ -513,7 +512,7 @@ class StatisticsTest : BaseUiTest() {
         )
         checkViewIsDisplayed(
             allOf(
-                withId(statisticsR.id.tvStatisticsInfoText),
+                withId(R.id.tvStatisticsItemDuration),
                 withText("6$hourString 0$minuteString"),
             ),
         )
@@ -542,7 +541,7 @@ class StatisticsTest : BaseUiTest() {
         )
         checkViewIsDisplayed(
             allOf(
-                withId(statisticsR.id.layoutStatisticsInfoItem),
+                withId(R.id.viewStatisticsItem),
                 hasDescendant(withText(coreR.string.statistics_total_tracked)),
                 hasDescendant(withText("0$minuteString")),
                 isCompletelyDisplayed(),
@@ -604,7 +603,7 @@ class StatisticsTest : BaseUiTest() {
         )
         checkViewIsDisplayed(
             allOf(
-                withId(statisticsR.id.tvStatisticsInfoText),
+                withId(R.id.tvStatisticsItemDuration),
                 withText("6$hourString 0$minuteString"),
             ),
         )
@@ -633,7 +632,7 @@ class StatisticsTest : BaseUiTest() {
         )
         checkViewIsDisplayed(
             allOf(
-                withId(statisticsR.id.layoutStatisticsInfoItem),
+                withId(R.id.viewStatisticsItem),
                 hasDescendant(withText(coreR.string.statistics_total_tracked)),
                 hasDescendant(withText("0$minuteString")),
                 isCompletelyDisplayed(),

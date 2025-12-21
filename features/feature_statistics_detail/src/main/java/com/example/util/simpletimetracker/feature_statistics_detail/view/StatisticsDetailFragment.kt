@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.util.simpletimetracker.core.base.BaseFragment
 import com.example.util.simpletimetracker.core.delegates.dateSelector.viewDelegate.DateSelectorViewDelegate
@@ -21,6 +22,7 @@ import com.example.util.simpletimetracker.core.utils.InsetConfiguration
 import com.example.util.simpletimetracker.core.utils.fragmentArgumentDelegate
 import com.example.util.simpletimetracker.core.viewData.RangeSelectionOptionsListItem
 import com.example.util.simpletimetracker.domain.extension.orFalse
+import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.domain.record.model.Range
 import com.example.util.simpletimetracker.feature_base_adapter.BaseRecyclerAdapter
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
@@ -47,6 +49,7 @@ import com.example.util.simpletimetracker.feature_statistics_detail.viewData.Sta
 import com.example.util.simpletimetracker.feature_statistics_detail.viewModel.StatisticsDetailViewModel
 import com.example.util.simpletimetracker.feature_views.ColorUtils
 import com.example.util.simpletimetracker.feature_views.extension.getThemedAttr
+import com.example.util.simpletimetracker.feature_views.extension.postDelayed
 import com.example.util.simpletimetracker.navigation.params.screen.OptionsListParams
 import com.example.util.simpletimetracker.navigation.params.screen.RecordsFilterResultParams
 import com.example.util.simpletimetracker.navigation.params.screen.StatisticsDetailParams
@@ -233,7 +236,13 @@ class StatisticsDetailFragment :
             viewStatisticsDetailItem.isVisible = false
             return@with
         } else {
+            val firstItem = (rvStatisticsDetailContent.layoutManager as? LinearLayoutManager)
+                ?.findFirstCompletelyVisibleItemPosition().orZero()
             viewStatisticsDetailItem.isVisible = true
+            // If content is scrolled - prevent app bar from expanding on item visible.
+            if (firstItem > 1) {
+                appBarStatisticsDetail.setExpanded(false, false)
+            }
         }
 
         viewStatisticsDetailItem.itemName = preview.name
@@ -246,9 +255,13 @@ class StatisticsDetailFragment :
         }
     }
 
-    private fun scrollToTop() {
-        binding.appBarStatisticsDetail.setExpanded(true)
-        binding.rvStatisticsDetailContent.apply { post { smoothScrollToPosition(0) } }
+    private fun scrollToTop() = with(binding) {
+        rvStatisticsDetailContent.apply {
+            postDelayed(300) {
+                appBarStatisticsDetail.setExpanded(true)
+                scrollToPosition(0)
+            }
+        }
     }
 
     private fun initOnItemSwiped() = with(binding) {

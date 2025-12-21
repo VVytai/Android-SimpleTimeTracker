@@ -25,7 +25,7 @@ class StatisticsView @JvmOverloads constructor(
     defStyleAttr,
 ) {
 
-    private val binding = StatisticsViewLayoutBinding.inflate(layoutInflater, this)
+    val binding = StatisticsViewLayoutBinding.inflate(layoutInflater, this)
 
     var itemName: String = ""
         set(value) {

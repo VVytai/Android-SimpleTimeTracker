@@ -1,6 +1,7 @@
 package com.example.util.simpletimetracker
 
 import androidx.test.espresso.Espresso.pressBack
+import androidx.test.espresso.matcher.ViewMatchers.hasSibling
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -20,7 +21,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import com.example.util.simpletimetracker.core.R as coreR
 import com.example.util.simpletimetracker.feature_base_adapter.R as baseR
-import com.example.util.simpletimetracker.feature_statistics.R as statisticsR
 
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
@@ -49,7 +49,7 @@ class StatisticsFilterTest : BaseUiTest() {
         checkViewIsDisplayed(allOf(withText(name1), isCompletelyDisplayed()))
         checkViewIsDisplayed(allOf(withText(name2), isCompletelyDisplayed()))
         checkViewIsDisplayed(
-            allOf(withId(statisticsR.id.tvStatisticsInfoText), withText("2$hourString 0$minuteString")),
+            allOf(withId(R.id.tvStatisticsItemDuration), withText("2$hourString 0$minuteString")),
         )
 
         // Filter untracked
@@ -62,7 +62,7 @@ class StatisticsFilterTest : BaseUiTest() {
         checkViewIsDisplayed(allOf(withText(name1), isCompletelyDisplayed()))
         checkViewIsDisplayed(allOf(withText(name2), isCompletelyDisplayed()))
         checkViewIsDisplayed(
-            allOf(withId(statisticsR.id.tvStatisticsInfoText), withText("2$hourString 0$minuteString")),
+            allOf(withId(R.id.tvStatisticsItemDuration), withText("2$hourString 0$minuteString")),
         )
 
         // Filter activity
@@ -73,7 +73,11 @@ class StatisticsFilterTest : BaseUiTest() {
         checkViewDoesNotExist(allOf(withText(name1), isCompletelyDisplayed()))
         checkViewIsDisplayed(allOf(withText(name2), isCompletelyDisplayed()))
         checkViewIsDisplayed(
-            allOf(withId(statisticsR.id.tvStatisticsInfoText), withText("1$hourString 0$minuteString")),
+            allOf(
+                withId(R.id.tvStatisticsItemDuration),
+                hasSibling(withText(R.string.statistics_total_tracked)),
+                withText("1$hourString 0$minuteString"),
+            ),
         )
 
         // Filter all
@@ -83,7 +87,7 @@ class StatisticsFilterTest : BaseUiTest() {
         tryAction { checkViewDoesNotExist(allOf(withText(coreR.string.untracked_time_name), isCompletelyDisplayed())) }
         checkViewDoesNotExist(allOf(withText(name1), isCompletelyDisplayed()))
         checkViewDoesNotExist(allOf(withText(name2), isCompletelyDisplayed()))
-        checkViewDoesNotExist(allOf(withId(statisticsR.id.tvStatisticsInfoText), isCompletelyDisplayed()))
+        checkViewDoesNotExist(allOf(withId(R.id.tvStatisticsItemDuration), isCompletelyDisplayed()))
         checkViewIsDisplayed(allOf(withText(coreR.string.no_data), isCompletelyDisplayed()))
 
         // Show all
@@ -94,7 +98,7 @@ class StatisticsFilterTest : BaseUiTest() {
         checkViewIsDisplayed(allOf(withText(name1), isCompletelyDisplayed()))
         checkViewIsDisplayed(allOf(withText(name2), isCompletelyDisplayed()))
         checkViewIsDisplayed(
-            allOf(withId(statisticsR.id.tvStatisticsInfoText), withText("2$hourString 0$minuteString")),
+            allOf(withId(R.id.tvStatisticsItemDuration), withText("2$hourString 0$minuteString")),
         )
 
         // Hide all
@@ -104,7 +108,7 @@ class StatisticsFilterTest : BaseUiTest() {
         tryAction { checkViewDoesNotExist(allOf(withText(coreR.string.untracked_time_name), isCompletelyDisplayed())) }
         checkViewDoesNotExist(allOf(withText(name1), isCompletelyDisplayed()))
         checkViewDoesNotExist(allOf(withText(name2), isCompletelyDisplayed()))
-        checkViewDoesNotExist(allOf(withId(statisticsR.id.tvStatisticsInfoText), isCompletelyDisplayed()))
+        checkViewDoesNotExist(allOf(withId(R.id.tvStatisticsItemDuration), isCompletelyDisplayed()))
         checkViewIsDisplayed(allOf(withText(coreR.string.no_data), isCompletelyDisplayed()))
     }
 
@@ -139,7 +143,7 @@ class StatisticsFilterTest : BaseUiTest() {
         checkViewIsDisplayed(allOf(withText(name2), isCompletelyDisplayed()))
         checkViewIsDisplayed(allOf(withText(name3), isCompletelyDisplayed()))
         checkViewIsDisplayed(
-            allOf(withId(statisticsR.id.tvStatisticsInfoText), withText("3$hourString 0$minuteString")),
+            allOf(withId(R.id.tvStatisticsItemDuration), withText("3$hourString 0$minuteString")),
         )
 
         // Switch filter
@@ -153,7 +157,7 @@ class StatisticsFilterTest : BaseUiTest() {
         checkViewIsDisplayed(allOf(withText(tag2), isCompletelyDisplayed()))
         checkViewIsDisplayed(allOf(withText(coreR.string.uncategorized_time_name), isCompletelyDisplayed()))
         checkViewIsDisplayed(
-            allOf(withId(statisticsR.id.tvStatisticsInfoText), withText("3$hourString 0$minuteString")),
+            allOf(withId(R.id.tvStatisticsItemDuration), withText("3$hourString 0$minuteString")),
         )
 
         // Filter untracked
@@ -167,7 +171,7 @@ class StatisticsFilterTest : BaseUiTest() {
         checkViewIsDisplayed(allOf(withText(tag2), isCompletelyDisplayed()))
         checkViewIsDisplayed(allOf(withText(coreR.string.uncategorized_time_name), isCompletelyDisplayed()))
         checkViewIsDisplayed(
-            allOf(withId(statisticsR.id.tvStatisticsInfoText), withText("3$hourString 0$minuteString")),
+            allOf(withId(R.id.tvStatisticsItemDuration), withText("3$hourString 0$minuteString")),
         )
 
         // Filter uncategorized
@@ -181,7 +185,7 @@ class StatisticsFilterTest : BaseUiTest() {
         checkViewIsDisplayed(allOf(withText(tag2), isCompletelyDisplayed()))
         checkViewDoesNotExist(allOf(withText(coreR.string.uncategorized_time_name), isCompletelyDisplayed()))
         checkViewIsDisplayed(
-            allOf(withId(statisticsR.id.tvStatisticsInfoText), withText("2$hourString 0$minuteString")),
+            allOf(withId(R.id.tvStatisticsItemDuration), withText("2$hourString 0$minuteString")),
         )
 
         // Filter tag
@@ -191,7 +195,11 @@ class StatisticsFilterTest : BaseUiTest() {
         tryAction { checkViewDoesNotExist(allOf(withText(tag1), isCompletelyDisplayed())) }
         checkViewIsDisplayed(allOf(withText(tag2), isCompletelyDisplayed()))
         checkViewIsDisplayed(
-            allOf(withId(statisticsR.id.tvStatisticsInfoText), withText("1$hourString 0$minuteString")),
+            allOf(
+                withId(R.id.tvStatisticsItemDuration),
+                hasSibling(withText(R.string.statistics_total_tracked)),
+                withText("1$hourString 0$minuteString"),
+            ),
         )
 
         // Filter all
@@ -200,7 +208,7 @@ class StatisticsFilterTest : BaseUiTest() {
         pressBack()
         tryAction { checkViewDoesNotExist(allOf(withText(tag1), isCompletelyDisplayed())) }
         checkViewDoesNotExist(allOf(withText(tag2), isCompletelyDisplayed()))
-        checkViewDoesNotExist(allOf(withId(statisticsR.id.tvStatisticsInfoText), isCompletelyDisplayed()))
+        checkViewDoesNotExist(allOf(withId(R.id.tvStatisticsItemDuration), isCompletelyDisplayed()))
         checkViewIsDisplayed(allOf(withText(coreR.string.no_data), isCompletelyDisplayed()))
 
         // Show all
@@ -212,7 +220,7 @@ class StatisticsFilterTest : BaseUiTest() {
         checkViewIsDisplayed(allOf(withText(coreR.string.untracked_time_name), isCompletelyDisplayed()))
         checkViewIsDisplayed(allOf(withText(coreR.string.uncategorized_time_name), isCompletelyDisplayed()))
         checkViewIsDisplayed(
-            allOf(withId(statisticsR.id.tvStatisticsInfoText), withText("3$hourString 0$minuteString")),
+            allOf(withId(R.id.tvStatisticsItemDuration), withText("3$hourString 0$minuteString")),
         )
 
         // Hide all
@@ -223,7 +231,7 @@ class StatisticsFilterTest : BaseUiTest() {
         checkViewDoesNotExist(allOf(withText(tag2), isCompletelyDisplayed()))
         checkViewDoesNotExist(allOf(withText(coreR.string.untracked_time_name), isCompletelyDisplayed()))
         checkViewDoesNotExist(allOf(withText(coreR.string.uncategorized_time_name), isCompletelyDisplayed()))
-        checkViewDoesNotExist(allOf(withId(statisticsR.id.tvStatisticsInfoText), isCompletelyDisplayed()))
+        checkViewDoesNotExist(allOf(withId(R.id.tvStatisticsItemDuration), isCompletelyDisplayed()))
         checkViewIsDisplayed(allOf(withText(coreR.string.no_data), isCompletelyDisplayed()))
     }
 
@@ -258,7 +266,7 @@ class StatisticsFilterTest : BaseUiTest() {
         checkViewIsDisplayed(allOf(withText(name2), isCompletelyDisplayed()))
         checkViewIsDisplayed(allOf(withText(name3), isCompletelyDisplayed()))
         checkViewIsDisplayed(
-            allOf(withId(statisticsR.id.tvStatisticsInfoText), withText("3$hourString 0$minuteString")),
+            allOf(withId(R.id.tvStatisticsItemDuration), withText("3$hourString 0$minuteString")),
         )
 
         // Switch filter
@@ -272,7 +280,7 @@ class StatisticsFilterTest : BaseUiTest() {
         checkViewIsDisplayed(allOf(withText(tag2), isCompletelyDisplayed()))
         checkViewIsDisplayed(allOf(withText(coreR.string.change_record_untagged), isCompletelyDisplayed()))
         checkViewIsDisplayed(
-            allOf(withId(statisticsR.id.tvStatisticsInfoText), withText("3$hourString 0$minuteString")),
+            allOf(withId(R.id.tvStatisticsItemDuration), withText("3$hourString 0$minuteString")),
         )
 
         // Filter untracked
@@ -286,7 +294,7 @@ class StatisticsFilterTest : BaseUiTest() {
         checkViewIsDisplayed(allOf(withText(tag2), isCompletelyDisplayed()))
         checkViewIsDisplayed(allOf(withText(coreR.string.change_record_untagged), isCompletelyDisplayed()))
         checkViewIsDisplayed(
-            allOf(withId(statisticsR.id.tvStatisticsInfoText), withText("3$hourString 0$minuteString")),
+            allOf(withId(R.id.tvStatisticsItemDuration), withText("3$hourString 0$minuteString")),
         )
 
         // Filter untagged
@@ -300,7 +308,7 @@ class StatisticsFilterTest : BaseUiTest() {
         checkViewIsDisplayed(allOf(withText(tag2), isCompletelyDisplayed()))
         checkViewDoesNotExist(allOf(withText(coreR.string.change_record_untagged), isCompletelyDisplayed()))
         checkViewIsDisplayed(
-            allOf(withId(statisticsR.id.tvStatisticsInfoText), withText("2$hourString 0$minuteString")),
+            allOf(withId(R.id.tvStatisticsItemDuration), withText("2$hourString 0$minuteString")),
         )
 
         // Filter tag
@@ -310,7 +318,11 @@ class StatisticsFilterTest : BaseUiTest() {
         tryAction { checkViewDoesNotExist(allOf(withText(tag1), isCompletelyDisplayed())) }
         checkViewIsDisplayed(allOf(withText(tag2), isCompletelyDisplayed()))
         checkViewIsDisplayed(
-            allOf(withId(statisticsR.id.tvStatisticsInfoText), withText("1$hourString 0$minuteString")),
+            allOf(
+                withId(R.id.tvStatisticsItemDuration),
+                hasSibling(withText(R.string.statistics_total_tracked)),
+                withText("1$hourString 0$minuteString"),
+            ),
         )
 
         // Filter all
@@ -319,7 +331,7 @@ class StatisticsFilterTest : BaseUiTest() {
         pressBack()
         tryAction { checkViewDoesNotExist(allOf(withText(tag1), isCompletelyDisplayed())) }
         checkViewDoesNotExist(allOf(withText(tag2), isCompletelyDisplayed()))
-        checkViewDoesNotExist(allOf(withId(statisticsR.id.tvStatisticsInfoText), isCompletelyDisplayed()))
+        checkViewDoesNotExist(allOf(withId(R.id.tvStatisticsItemDuration), isCompletelyDisplayed()))
         checkViewIsDisplayed(allOf(withText(coreR.string.no_data), isCompletelyDisplayed()))
 
         // Show all
@@ -331,7 +343,7 @@ class StatisticsFilterTest : BaseUiTest() {
         checkViewIsDisplayed(allOf(withText(coreR.string.untracked_time_name), isCompletelyDisplayed()))
         checkViewIsDisplayed(allOf(withText(coreR.string.change_record_untagged), isCompletelyDisplayed()))
         checkViewIsDisplayed(
-            allOf(withId(statisticsR.id.tvStatisticsInfoText), withText("3$hourString 0$minuteString")),
+            allOf(withId(R.id.tvStatisticsItemDuration), withText("3$hourString 0$minuteString")),
         )
 
         // Hide all
@@ -342,7 +354,7 @@ class StatisticsFilterTest : BaseUiTest() {
         checkViewDoesNotExist(allOf(withText(tag2), isCompletelyDisplayed()))
         checkViewDoesNotExist(allOf(withText(coreR.string.untracked_time_name), isCompletelyDisplayed()))
         checkViewDoesNotExist(allOf(withText(coreR.string.change_record_untagged), isCompletelyDisplayed()))
-        checkViewDoesNotExist(allOf(withId(statisticsR.id.tvStatisticsInfoText), isCompletelyDisplayed()))
+        checkViewDoesNotExist(allOf(withId(R.id.tvStatisticsItemDuration), isCompletelyDisplayed()))
         checkViewIsDisplayed(allOf(withText(coreR.string.no_data), isCompletelyDisplayed()))
     }
 }

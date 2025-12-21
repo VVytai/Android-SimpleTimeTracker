@@ -82,6 +82,7 @@ class StatisticsDetailViewModel @Inject constructor(
     val previewViewData: LiveData<StatisticsDetailPreviewCompositeViewData?> by previewDelegate::viewData
 
     private lateinit var extra: StatisticsDetailParams
+    private var scrolledToTop: Boolean = false
 
     private val delegates: List<StatisticsDetailViewModelDelegate> = listOf(
         previewDelegate,
@@ -297,12 +298,11 @@ class StatisticsDetailViewModel @Inject constructor(
     }
 
     private fun checkTopScroll(
-        oldData: List<ViewHolderType>,
         newData: List<ViewHolderType>,
     ) {
-        val previewsWillBeShown = oldData.none { it is StatisticsDetailPreviewsViewData } &&
-            newData.any { it is StatisticsDetailPreviewsViewData }
-        if (previewsWillBeShown) {
+        val previewsWillBeShown = newData.any { it is StatisticsDetailPreviewsViewData }
+        if (previewsWillBeShown && !scrolledToTop) {
+            scrolledToTop = true
             scrollToTop.set(Unit)
         }
     }
@@ -322,10 +322,9 @@ class StatisticsDetailViewModel @Inject constructor(
     }
 
     private fun updateContent() {
-        val oldData = content.value.orEmpty()
         val data = loadContent()
         content.set(data)
-        checkTopScroll(oldData, data)
+        checkTopScroll(data)
     }
 
     // TODO move to delegates

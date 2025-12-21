@@ -243,6 +243,7 @@ object NavUtils {
         // Name
         typeTextIntoView(changeCategoryR.id.etChangeCategoryName, name)
         Thread.sleep(1000) // For keyboard to open.
+        closeSoftKeyboard()
 
         // Color
         if (color != null) {

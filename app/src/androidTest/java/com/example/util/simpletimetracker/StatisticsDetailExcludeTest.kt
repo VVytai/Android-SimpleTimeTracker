@@ -80,6 +80,7 @@ class StatisticsDetailExcludeTest : BaseUiTest() {
             allOf(
                 withId(baseR.id.viewRecordTypeItem),
                 hasDescendant(withText(name2)),
+                withTag(RecordTypeSuggestionViewData.TEST_TAG),
             ),
         )
         pressBack()
