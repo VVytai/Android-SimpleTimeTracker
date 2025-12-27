@@ -931,10 +931,9 @@ class RecordsFilterViewDataInteractor @Inject constructor(
         return result
     }
 
-    // TODO FILTER flatten databases?
     // TODO FILTER add to backup?
     // TODO FILTER handle activity/category/tag removal?
-    // TODO FILTER selectable filter on top, change text "Filter" to start icon.
+    // TODO FILTER selectable filter on top, change text "Filter" to star icon.
     // TODO FILTER add icons to activities/tags.
     // TODO FILTER order activities/categories/tags.
     suspend fun getFavouriteFiltersSelectionViewData(

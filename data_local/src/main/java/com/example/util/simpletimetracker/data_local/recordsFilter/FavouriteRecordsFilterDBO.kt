@@ -17,7 +17,7 @@ data class FavouriteRecordsFilterDBO(
         parentColumn = "id",
         entityColumn = "owner_id",
     )
-    val filters: List<FilterWithDataDBO>,
+    val filters: List<FilterDBO>,
 ) {
 
     @Entity(tableName = "favouriteRecordFilters")
@@ -25,35 +25,6 @@ data class FavouriteRecordsFilterDBO(
         @PrimaryKey(autoGenerate = true)
         @ColumnInfo(name = "id")
         val id: Long,
-    )
-
-    data class FilterWithDataDBO(
-        @Embedded
-        val filter: FilterDBO,
-
-        @Relation(
-            parentColumn = "id",
-            entityColumn = "filter_id",
-        )
-        val commonItems: List<CommonItemDBO>,
-
-        @Relation(
-            parentColumn = "id",
-            entityColumn = "filter_id",
-        )
-        val commentItems: List<CommentItemDBO>,
-
-        @Relation(
-            parentColumn = "id",
-            entityColumn = "filter_id",
-        )
-        val duplicationItems: List<DuplicationItemDBO>,
-
-        @Relation(
-            parentColumn = "id",
-            entityColumn = "filter_id",
-        )
-        val manuallyFilteredItems: List<ManuallyFilteredItemDBO>,
     )
 
     @Entity(
@@ -78,6 +49,25 @@ data class FavouriteRecordsFilterDBO(
         @ColumnInfo(name = "type")
         val type: Long,
 
+        // Longs stored in string comma separated
+        @ColumnInfo(name = "common_items_ids")
+        val commonItemsIds: String?,
+
+        // Ids stored in string comma separated
+        @ColumnInfo(name = "comment_items_ids")
+        val commentItemsIds: String?,
+
+        @ColumnInfo(name = "comment_items_text")
+        val commentItemsText: String?,
+
+        // Ids stored in string comma separated
+        @ColumnInfo(name = "duplication_items_ids")
+        val duplicationItemsIds: String?,
+
+        // Ids stored in string comma separated
+        @ColumnInfo(name = "manually_filtered_items_ids")
+        val manuallyFilteredItemsIds: String?,
+
         @Embedded(prefix = "range_")
         val range: RangeDBO?,
 
@@ -89,114 +79,6 @@ data class FavouriteRecordsFilterDBO(
          */
         @ColumnInfo(name = "daysOfWeek")
         val daysOfWeek: String?,
-    )
-
-    @Entity(
-        tableName = "favouriteRecordFiltersCommonItems",
-        foreignKeys = [
-            ForeignKey(
-                entity = FilterDBO::class,
-                parentColumns = ["id"],
-                childColumns = ["filter_id"],
-                onDelete = ForeignKey.CASCADE,
-            ),
-        ],
-    )
-    data class CommonItemDBO(
-        @PrimaryKey(autoGenerate = true)
-        @ColumnInfo(name = "id")
-        val id: Long,
-
-        @ColumnInfo(name = "filter_id")
-        val filterId: Long,
-
-        @ColumnInfo(name = "is_selected")
-        val isSelected: Boolean,
-
-        @ColumnInfo(name = "type")
-        val type: Long,
-
-        @ColumnInfo(name = "item_id")
-        val itemId: Long?,
-    )
-
-    @Entity(
-        tableName = "favouriteRecordFiltersCommentItems",
-        foreignKeys = [
-            ForeignKey(
-                entity = FilterDBO::class,
-                parentColumns = ["id"],
-                childColumns = ["filter_id"],
-                onDelete = ForeignKey.CASCADE,
-            ),
-        ],
-    )
-    data class CommentItemDBO(
-        @PrimaryKey(autoGenerate = true)
-        @ColumnInfo(name = "id")
-        val id: Long,
-
-        @ColumnInfo(name = "filter_id")
-        val filterId: Long,
-
-        @ColumnInfo(name = "type")
-        val type: Long,
-
-        @ColumnInfo(name = "text")
-        val text: String?,
-    )
-
-    @Entity(
-        tableName = "favouriteRecordFiltersDuplicationItems",
-        foreignKeys = [
-            ForeignKey(
-                entity = FilterDBO::class,
-                parentColumns = ["id"],
-                childColumns = ["filter_id"],
-                onDelete = ForeignKey.CASCADE,
-            ),
-        ],
-    )
-    data class DuplicationItemDBO(
-        @PrimaryKey(autoGenerate = true)
-        @ColumnInfo(name = "id")
-        val id: Long,
-
-        @ColumnInfo(name = "filter_id")
-        val filterId: Long,
-
-        @ColumnInfo(name = "type")
-        val type: Long,
-    )
-
-    @Entity(
-        tableName = "favouriteRecordFiltersManuallyFilteredItems",
-        foreignKeys = [
-            ForeignKey(
-                entity = FilterDBO::class,
-                parentColumns = ["id"],
-                childColumns = ["filter_id"],
-                onDelete = ForeignKey.CASCADE,
-            ),
-        ],
-    )
-    data class ManuallyFilteredItemDBO(
-        @PrimaryKey(autoGenerate = true)
-        @ColumnInfo(name = "id")
-        val id: Long,
-
-        @ColumnInfo(name = "filter_id")
-        val filterId: Long,
-
-        @ColumnInfo(name = "type")
-        val type: Long,
-
-        // Longs stored in string comma separated
-        @ColumnInfo(name = "item_ids")
-        val itemIds: String?,
-
-        @Embedded(prefix = "range_")
-        val range: RangeDBO?,
     )
 
     data class RangeDBO(

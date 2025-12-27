@@ -6,6 +6,7 @@ import android.text.SpannableStringBuilder
 import android.text.style.StyleSpan
 import androidx.core.text.buildSpannedString
 import com.example.util.simpletimetracker.core.mapper.ColorMapper
+import com.example.util.simpletimetracker.core.mapper.RecordTagViewDataMapper
 import com.example.util.simpletimetracker.core.mapper.TimeMapper
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.domain.category.model.Category
@@ -25,6 +26,7 @@ class RecordsFilterFavouriteViewDataMapper @Inject constructor(
     private val timeMapper: TimeMapper,
     private val colorMapper: ColorMapper,
     private val recordsFilterViewDataMapper: RecordsFilterViewDataMapper,
+    private val recordTagViewDataMapper: RecordTagViewDataMapper,
 ) {
 
     fun mapFilterName(
@@ -60,6 +62,7 @@ class RecordsFilterFavouriteViewDataMapper @Inject constructor(
             fun SpannableStringBuilder.appendSpace() {
                 repeat(times = 2, action = { append(" ") })
             }
+
             fun toColoredSpan(colorToText: Pair<Int, String>): CharSequence {
                 val span = TextViewRoundedSpans.MarkerSpan(colorToText.first)
                 return buildSpannedString {
@@ -104,7 +107,9 @@ class RecordsFilterFavouriteViewDataMapper @Inject constructor(
             val text: String
             when (item) {
                 is RecordsFilter.TagItem.Tagged -> {
-                    color = recordTypes[item.tagId]?.color?.mapColor() ?: unknownColor
+                    color = recordTags[item.tagId]
+                        ?.let { recordTagViewDataMapper.mapColor(it, recordTypes) }
+                        ?.mapColor() ?: unknownColor
                     text = recordTags[item.tagId]?.name ?: unknownText
                 }
                 is RecordsFilter.TagItem.Untagged -> {

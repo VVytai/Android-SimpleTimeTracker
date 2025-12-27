@@ -23,11 +23,7 @@ interface FavouriteRecordsFilterDao {
         val mainId = insertMain(data.main)
 
         data.filters.forEach { filter ->
-            val filterId = insertFilter(filter.filter.copy(ownerId = mainId))
-            insertItems(filter.commonItems.map { it.copy(filterId = filterId) })
-            insertCommentItems(filter.commentItems.map { it.copy(filterId = filterId) })
-            insertDuplicationItems(filter.duplicationItems.map { it.copy(filterId = filterId) })
-            insertManuallyFiltered(filter.manuallyFilteredItems.map { it.copy(filterId = filterId) })
+            insertFilter(filter.copy(ownerId = mainId))
         }
     }
 
@@ -35,19 +31,7 @@ interface FavouriteRecordsFilterDao {
     suspend fun insertMain(data: FavouriteRecordsFilterDBO.MainDBO): Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertFilter(data: FavouriteRecordsFilterDBO.FilterDBO): Long
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertItems(data: List<FavouriteRecordsFilterDBO.CommonItemDBO>)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertCommentItems(data: List<FavouriteRecordsFilterDBO.CommentItemDBO>)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertDuplicationItems(data: List<FavouriteRecordsFilterDBO.DuplicationItemDBO>)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertManuallyFiltered(data: List<FavouriteRecordsFilterDBO.ManuallyFilteredItemDBO>)
+    suspend fun insertFilter(data: FavouriteRecordsFilterDBO.FilterDBO)
 
     @Delete
     suspend fun delete(data: FavouriteRecordsFilterDBO.MainDBO)

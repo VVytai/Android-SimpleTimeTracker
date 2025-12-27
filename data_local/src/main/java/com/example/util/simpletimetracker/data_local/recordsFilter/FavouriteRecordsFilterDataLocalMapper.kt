@@ -20,14 +20,14 @@ class FavouriteRecordsFilterDataLocalMapper @Inject constructor(
         )
     }
 
-    private fun map(dbo: FavouriteRecordsFilterDBO.FilterWithDataDBO): RecordsFilter? {
-        val range = dbo.filter.range?.let {
+    private fun map(dbo: FavouriteRecordsFilterDBO.FilterDBO): RecordsFilter? {
+        val range = dbo.range?.let {
             Range(
                 timeStarted = it.rangeTimeStarted,
                 timeEnded = it.rangeTimeEnded,
             )
         }
-        val rangeLength = dbo.filter.rangeLength?.let { data ->
+        val rangeLength = dbo.rangeLength?.let { data ->
             when (data.rangeType) {
                 0L -> RangeLength.Day
                 1L -> RangeLength.Week
@@ -44,52 +44,66 @@ class FavouriteRecordsFilterDataLocalMapper @Inject constructor(
                 else -> null
             }
         }
-        val rangeLengthPosition = dbo.filter.rangeLength?.position?.toInt()
-        val daysOfWeek = dbo.filter.daysOfWeek
+        val rangeLengthPosition = dbo.rangeLength?.position?.toInt()
+        val daysOfWeek = dbo.daysOfWeek
             ?.let(daysOfWeekDataLocalMapper::mapDaysOfWeek)
             ?.toList()
-        val commentItems = dbo.commentItems.mapNotNull {
-            when (it.type) {
-                0L -> RecordsFilter.CommentItem.NoComment
-                1L -> RecordsFilter.CommentItem.AnyComment
-                2L -> RecordsFilter.CommentItem.Comment(it.text ?: return@mapNotNull null)
-                else -> return@mapNotNull null
+        val commentItems = dbo.commentItemsText
+            ?.let { listOf(RecordsFilter.CommentItem.Comment(it)) }
+            ?: dbo.commentItemsIds.orEmpty().split(SEPARATOR).mapNotNull {
+                when (it) {
+                    COMMENT_ITEM_NO_COMMENT -> RecordsFilter.CommentItem.NoComment
+                    COMMENT_ITEM_ANY_COMMENT -> RecordsFilter.CommentItem.AnyComment
+                    else -> null
+                }
+            }.takeIf { it.isNotEmpty() }
+        val duplicationItems = dbo.duplicationItemsIds.orEmpty().split(SEPARATOR).mapNotNull {
+            when (it) {
+                DUPLICATION_ITEM_SAME_ACTIVITY -> RecordsFilter.DuplicationsItem.SameActivity
+                DUPLICATION_ITEM_SAME_TIMES -> RecordsFilter.DuplicationsItem.SameTimes
+                else -> null
             }
         }.takeIf { it.isNotEmpty() }
-        val duplicationItems = dbo.duplicationItems.mapNotNull {
-            when (it.type) {
-                0L -> RecordsFilter.DuplicationsItem.SameActivity
-                1L -> RecordsFilter.DuplicationsItem.SameTimes
-                else -> return@mapNotNull null
+        val manuallyFilteredItems = dbo.manuallyFilteredItemsIds.orEmpty().split(GROUP_SEPARATOR).mapNotNull {
+            when {
+                it.startsWith(MANUALLY_ITEM_TRACKED) -> {
+                    val id = it.removePrefix(MANUALLY_ITEM_TRACKED)
+                        .toLongOrNull() ?: return@mapNotNull null
+                    RecordsFilter.ManuallyFilteredItem.Tracked(id)
+                }
+                it.startsWith(MANUALLY_ITEM_MULTITASK) -> {
+                    val ids = it.removePrefix(MANUALLY_ITEM_TRACKED)
+                        .split(SEPARATOR)
+                        .mapNotNull(String::toLongOrNull)
+                        .ifEmpty { return@mapNotNull null }
+                    RecordsFilter.ManuallyFilteredItem.Multitask(ids)
+                }
+                it.startsWith(MANUALLY_ITEM_UNTRACKED) -> {
+                    val rangeTimes = it.removePrefix(MANUALLY_ITEM_UNTRACKED)
+                        .split(SEPARATOR)
+                        .mapNotNull(String::toLongOrNull)
+                    val range = Range(
+                        timeStarted = rangeTimes.getOrNull(0) ?: return@mapNotNull null,
+                        timeEnded = rangeTimes.getOrNull(1) ?: return@mapNotNull null
+                    )
+                    RecordsFilter.ManuallyFilteredItem.Untracked(range)
+                }
+                else -> null
             }
         }.takeIf { it.isNotEmpty() }
-        val manuallyFilteredItems = dbo.manuallyFilteredItems.mapNotNull { data ->
-            val ids = data.itemIds
-                ?.split(',')
-                ?.mapNotNull(String::toLongOrNull)
-            val id = ids?.firstOrNull()
-            val range = data.range?.let {
-                Range(timeStarted = it.rangeTimeStarted, timeEnded = it.rangeTimeEnded)
-            }
-            when (data.type) {
-                0L -> RecordsFilter.ManuallyFilteredItem.Tracked(id ?: return@mapNotNull null)
-                1L -> RecordsFilter.ManuallyFilteredItem.Running(id ?: return@mapNotNull null)
-                2L -> RecordsFilter.ManuallyFilteredItem.Multitask(ids ?: return@mapNotNull null)
-                3L -> RecordsFilter.ManuallyFilteredItem.Untracked(range ?: return@mapNotNull null)
-                else -> return@mapNotNull null
-            }
-        }.takeIf { it.isNotEmpty() }
+        val commonItemsParts = dbo.commonItemsIds.orEmpty().split(GROUP_SEPARATOR)
+        val commonItems = commonItemsParts.getOrNull(0)?.split(SEPARATOR)?.map { true to it }.orEmpty() +
+                commonItemsParts.getOrNull(1)?.split(SEPARATOR)?.map { false to it }.orEmpty()
 
-        val filter = when (dbo.filter.type) {
+        val filter = when (dbo.type) {
             0L -> RecordsFilter.Untracked
             1L -> RecordsFilter.Multitask
             2L -> {
-                val selectedItems = dbo.commonItems
-                    .filter { it.type == 0L && it.isSelected }
-                    .mapNotNull { it.itemId }
-                val filteredItems = dbo.commonItems
-                    .filter { it.type == 0L && !it.isSelected }
-                    .mapNotNull { it.itemId }
+                val itemsMapped = commonItems.map { (selected, item) ->
+                    selected to item.toLongOrNull()
+                }
+                val selectedItems = itemsMapped.filter { it.first }.mapNotNull { it.second }
+                val filteredItems = itemsMapped.filter { !it.first }.mapNotNull { it.second }
 
                 if (selectedItems.isNotEmpty() || filteredItems.isNotEmpty()) {
                     RecordsFilter.Activity(selected = selectedItems, filtered = filteredItems)
@@ -98,22 +112,16 @@ class FavouriteRecordsFilterDataLocalMapper @Inject constructor(
                 }
             }
             3L -> {
-                val selectedCategorizedItems = dbo.commonItems
-                    .filter { it.type == 1L && it.isSelected }
-                    .mapNotNull { it.itemId }
-                    .map { RecordsFilter.CategoryItem.Categorized(it) }
-                val selectedUncategorizedItems = dbo.commonItems
-                    .filter { it.type == 2L && it.isSelected }
-                    .map { RecordsFilter.CategoryItem.Uncategorized }
-                val selectedItems = selectedCategorizedItems + selectedUncategorizedItems
-                val filteredCategorizedItems = dbo.commonItems
-                    .filter { it.type == 1L && !it.isSelected }
-                    .mapNotNull { it.itemId }
-                    .map { RecordsFilter.CategoryItem.Categorized(it) }
-                val filteredUncategorizedItems = dbo.commonItems
-                    .filter { it.type == 2L && !it.isSelected }
-                    .map { RecordsFilter.CategoryItem.Uncategorized }
-                val filteredItems = filteredCategorizedItems + filteredUncategorizedItems
+                val itemsMapped = commonItems.mapNotNull { (selected, item) ->
+                    selected to when (item) {
+                        COMMON_ITEM_UNCATEGORIZED -> RecordsFilter.CategoryItem.Uncategorized
+                        else -> RecordsFilter.CategoryItem.Categorized(
+                            item.toLongOrNull() ?: return@mapNotNull null,
+                        )
+                    }
+                }
+                val selectedItems = itemsMapped.filter { it.first }.map { it.second }
+                val filteredItems = itemsMapped.filter { !it.first }.map { it.second }
 
                 if (selectedItems.isNotEmpty() || filteredItems.isNotEmpty()) {
                     RecordsFilter.Category(selected = selectedItems, filtered = filteredItems)
@@ -122,22 +130,16 @@ class FavouriteRecordsFilterDataLocalMapper @Inject constructor(
                 }
             }
             4L -> {
-                val selectedTaggedItems = dbo.commonItems
-                    .filter { it.type == 3L && it.isSelected }
-                    .mapNotNull { it.itemId }
-                    .map { RecordsFilter.TagItem.Tagged(it) }
-                val selectedUntaggedItems = dbo.commonItems
-                    .filter { it.type == 4L && it.isSelected }
-                    .map { RecordsFilter.TagItem.Untagged }
-                val selectedItems = selectedTaggedItems + selectedUntaggedItems
-                val filteredTaggedItems = dbo.commonItems
-                    .filter { it.type == 3L && !it.isSelected }
-                    .mapNotNull { it.itemId }
-                    .map { RecordsFilter.TagItem.Tagged(it) }
-                val filteredUntaggedItems = dbo.commonItems
-                    .filter { it.type == 4L && !it.isSelected }
-                    .map { RecordsFilter.TagItem.Untagged }
-                val filteredItems = filteredTaggedItems + filteredUntaggedItems
+                val itemsMapped = commonItems.mapNotNull { (selected, item) ->
+                    selected to when (item) {
+                        COMMON_ITEM_UNTAGGED -> RecordsFilter.TagItem.Untagged
+                        else -> RecordsFilter.TagItem.Tagged(
+                            item.toLongOrNull() ?: return@mapNotNull null,
+                        )
+                    }
+                }
+                val selectedItems = itemsMapped.filter { it.first }.map { it.second }
+                val filteredItems = itemsMapped.filter { !it.first }.map { it.second }
 
                 if (selectedItems.isNotEmpty() || filteredItems.isNotEmpty()) {
                     RecordsFilter.Tags(selected = selectedItems, filtered = filteredItems)
@@ -167,7 +169,7 @@ class FavouriteRecordsFilterDataLocalMapper @Inject constructor(
         )
     }
 
-    private fun map(domain: RecordsFilter): FavouriteRecordsFilterDBO.FilterWithDataDBO {
+    private fun map(domain: RecordsFilter): FavouriteRecordsFilterDBO.FilterDBO {
         val range = when (domain) {
             is RecordsFilter.TimeOfDay -> domain.range
             is RecordsFilter.Duration -> domain.range
@@ -200,102 +202,85 @@ class FavouriteRecordsFilterDataLocalMapper @Inject constructor(
             )
         }
         val daysOfWeek = (domain as? RecordsFilter.DaysOfWeek)?.items?.toSet()
-        val items = when (domain) {
+        val commonItemsIds = when (domain) {
             is RecordsFilter.Activity -> {
-                val data = domain.selected.map { it to true } +
-                    domain.filtered.map { it to false }
-                data.map { (itemId, isSelected) ->
-                    FavouriteRecordsFilterDBO.CommonItemDBO(
-                        id = 0L,
-                        filterId = 0L,
-                        type = 0L,
-                        isSelected = isSelected,
-                        itemId = itemId,
-                    )
+                val items = domain.selected.map { true to it } +
+                        domain.filtered.map { false to it }
+                val itemsMapped = items.map { (selected, item) ->
+                    selected to item.toString()
                 }
+                String.format(
+                    "%s$GROUP_SEPARATOR%s",
+                    itemsMapped.filter { it.first }.joinToString(separator = SEPARATOR) { it.second },
+                    itemsMapped.filter { !it.first }.joinToString(separator = SEPARATOR) { it.second },
+                )
             }
             is RecordsFilter.Category -> {
-                val data = domain.selected.map { it to true } +
-                    domain.filtered.map { it to false }
-                data.map { (item, isSelected) ->
-                    FavouriteRecordsFilterDBO.CommonItemDBO(
-                        id = 0L,
-                        filterId = 0L,
-                        type = when (item) {
-                            is RecordsFilter.CategoryItem.Categorized -> 1L
-                            is RecordsFilter.CategoryItem.Uncategorized -> 2L
-                        },
-                        isSelected = isSelected,
-                        itemId = (item as? RecordsFilter.CategoryItem.Categorized)?.categoryId,
-                    )
+                val items = domain.selected.map { true to it } +
+                        domain.filtered.map { false to it }
+                val itemsMapped = items.map { (selected, item) ->
+                    selected to when (item) {
+                        is RecordsFilter.CategoryItem.Categorized -> item.categoryId.toString()
+                        is RecordsFilter.CategoryItem.Uncategorized -> COMMON_ITEM_UNCATEGORIZED
+                    }
                 }
+                String.format(
+                    "%s$GROUP_SEPARATOR%s",
+                    itemsMapped.filter { it.first }.joinToString(separator = SEPARATOR) { it.second },
+                    itemsMapped.filter { !it.first }.joinToString(separator = SEPARATOR) { it.second },
+                )
             }
             is RecordsFilter.Tags -> {
-                val data = domain.selected.map { it to true } +
-                    domain.filtered.map { it to false }
-                data.map { (item, isSelected) ->
-                    FavouriteRecordsFilterDBO.CommonItemDBO(
-                        id = 0L,
-                        filterId = 0L,
-                        type = when (item) {
-                            is RecordsFilter.TagItem.Tagged -> 3L
-                            is RecordsFilter.TagItem.Untagged -> 4L
-                        },
-                        isSelected = isSelected,
-                        itemId = (item as? RecordsFilter.TagItem.Tagged)?.tagId,
-                    )
+                val items = domain.selected.map { true to it } +
+                        domain.filtered.map { false to it }
+                val itemsMapped = items.map { (selected, item) ->
+                    selected to when (item) {
+                        is RecordsFilter.TagItem.Tagged -> item.tagId.toString()
+                        is RecordsFilter.TagItem.Untagged -> COMMON_ITEM_UNTAGGED
+                    }
+                }
+                String.format(
+                    "%s$GROUP_SEPARATOR%s",
+                    itemsMapped.filter { it.first }.joinToString(separator = SEPARATOR) { it.second },
+                    itemsMapped.filter { !it.first }.joinToString(separator = SEPARATOR) { it.second },
+                )
+            }
+            else -> null
+        }
+        val commentItemsIds = (domain as? RecordsFilter.Comment)?.items?.mapNotNull {
+            when (it) {
+                is RecordsFilter.CommentItem.NoComment -> COMMENT_ITEM_NO_COMMENT
+                is RecordsFilter.CommentItem.AnyComment -> COMMENT_ITEM_ANY_COMMENT
+                is RecordsFilter.CommentItem.Comment -> null // Stored separately.
+            }
+        }?.joinToString(separator = SEPARATOR)
+        // Currently only one comment filter is supported.
+        val commentItemsText = (domain as? RecordsFilter.Comment)?.items
+            ?.filterIsInstance<RecordsFilter.CommentItem.Comment>()
+            ?.firstOrNull()?.text
+        val duplicationItemsIds = (domain as? RecordsFilter.Duplications)?.items
+            ?.joinToString(separator = SEPARATOR) {
+                when (it) {
+                    is RecordsFilter.DuplicationsItem.SameActivity -> DUPLICATION_ITEM_SAME_ACTIVITY
+                    is RecordsFilter.DuplicationsItem.SameTimes -> DUPLICATION_ITEM_SAME_TIMES
                 }
             }
-            else -> emptyList()
-        }
-        val commentItems = (domain as? RecordsFilter.Comment)?.items?.map {
-            FavouriteRecordsFilterDBO.CommentItemDBO(
-                id = 0L,
-                filterId = 0L,
-                type = when (it) {
-                    is RecordsFilter.CommentItem.NoComment -> 0L
-                    is RecordsFilter.CommentItem.AnyComment -> 1L
-                    is RecordsFilter.CommentItem.Comment -> 2L
-                },
-                text = (it as? RecordsFilter.CommentItem.Comment)?.text,
-            )
-        }.orEmpty()
-        val duplicationItems = (domain as? RecordsFilter.Duplications)?.items?.map {
-            FavouriteRecordsFilterDBO.DuplicationItemDBO(
-                id = 0L,
-                filterId = 0L,
-                type = when (it) {
-                    is RecordsFilter.DuplicationsItem.SameActivity -> 0L
-                    is RecordsFilter.DuplicationsItem.SameTimes -> 1L
-                },
-            )
-        }.orEmpty()
-        val manuallyFilteredItems = (domain as? RecordsFilter.ManuallyFiltered)?.items?.map { data ->
-            FavouriteRecordsFilterDBO.ManuallyFilteredItemDBO(
-                id = 0L,
-                filterId = 0L,
-                type = when (data) {
-                    is RecordsFilter.ManuallyFilteredItem.Tracked -> 0L
-                    is RecordsFilter.ManuallyFilteredItem.Running -> 1L
-                    is RecordsFilter.ManuallyFilteredItem.Multitask -> 2L
-                    is RecordsFilter.ManuallyFilteredItem.Untracked -> 3L
-                },
-                itemIds = when (data) {
-                    is RecordsFilter.ManuallyFilteredItem.Tracked -> listOf(data.id)
-                    is RecordsFilter.ManuallyFilteredItem.Running -> listOf(data.id)
-                    is RecordsFilter.ManuallyFilteredItem.Multitask -> listOf(data.ids)
-                    is RecordsFilter.ManuallyFilteredItem.Untracked -> null
-                }?.joinToString(separator = ","),
-                range = (data as? RecordsFilter.ManuallyFilteredItem.Untracked)?.range?.let {
-                    FavouriteRecordsFilterDBO.RangeDBO(
-                        rangeTimeStarted = it.timeStarted,
-                        rangeTimeEnded = it.timeEnded,
-                    )
-                },
-            )
-        }.orEmpty()
+        val manuallyFilteredItemsIds = (domain as? RecordsFilter.ManuallyFiltered)?.items?.mapNotNull { data ->
+            when (data) {
+                is RecordsFilter.ManuallyFilteredItem.Tracked -> {
+                    MANUALLY_ITEM_TRACKED + data.id
+                }
+                is RecordsFilter.ManuallyFilteredItem.Running -> null
+                is RecordsFilter.ManuallyFilteredItem.Multitask -> {
+                    MANUALLY_ITEM_MULTITASK + data.ids.joinToString(separator = SEPARATOR)
+                }
+                is RecordsFilter.ManuallyFilteredItem.Untracked -> {
+                    MANUALLY_ITEM_UNTRACKED + data.range.timeStarted + SEPARATOR + data.range.timeEnded
+                }
+            }
+        }?.joinToString(separator = GROUP_SEPARATOR)
 
-        val filter = FavouriteRecordsFilterDBO.FilterDBO(
+        return FavouriteRecordsFilterDBO.FilterDBO(
             id = 0L,
             ownerId = 0L,
             type = when (domain) {
@@ -312,17 +297,29 @@ class FavouriteRecordsFilterDataLocalMapper @Inject constructor(
                 is RecordsFilter.Duration -> 10L
                 is RecordsFilter.Duplications -> 11L
             },
+            commonItemsIds = commonItemsIds,
+            commentItemsIds = commentItemsIds,
+            commentItemsText = commentItemsText,
+            duplicationItemsIds = duplicationItemsIds,
+            manuallyFilteredItemsIds = manuallyFilteredItemsIds,
             range = range,
             rangeLength = rangeLength,
             daysOfWeek = daysOfWeek?.let(daysOfWeekDataLocalMapper::mapDaysOfWeek),
         )
+    }
 
-        return FavouriteRecordsFilterDBO.FilterWithDataDBO(
-            filter = filter,
-            commonItems = items,
-            commentItems = commentItems,
-            duplicationItems = duplicationItems,
-            manuallyFilteredItems = manuallyFilteredItems,
-        )
+    companion object {
+        private const val SEPARATOR = ","
+        private const val GROUP_SEPARATOR = "|"
+
+        private const val COMMON_ITEM_UNCATEGORIZED = "UNCAT"
+        private const val COMMON_ITEM_UNTAGGED = "UNTAG"
+        private const val COMMENT_ITEM_NO_COMMENT = "NO"
+        private const val COMMENT_ITEM_ANY_COMMENT = "ANY"
+        private const val DUPLICATION_ITEM_SAME_ACTIVITY = "ACTIVITY"
+        private const val DUPLICATION_ITEM_SAME_TIMES = "TIMES"
+        private const val MANUALLY_ITEM_TRACKED = "TRACKED"
+        private const val MANUALLY_ITEM_MULTITASK = "MULTITASK"
+        private const val MANUALLY_ITEM_UNTRACKED = "UNTRACKED"
     }
 }

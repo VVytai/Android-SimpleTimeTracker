@@ -363,19 +363,7 @@ class AppDatabaseMigrations {
                     "CREATE TABLE IF NOT EXISTS `favouriteRecordFilters` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL)",
                 )
                 database.execSQL(
-                    "CREATE TABLE IF NOT EXISTS `favouriteRecordFilter` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `owner_id` INTEGER NOT NULL, `type` INTEGER NOT NULL, `daysOfWeek` TEXT, `range_time_started` INTEGER, `range_time_ended` INTEGER, `range_length_type` INTEGER, `range_length_last_days` INTEGER, `range_length_position` INTEGER, `range_length_custom_range_time_started` INTEGER, `range_length_custom_range_time_ended` INTEGER, FOREIGN KEY(`owner_id`) REFERENCES `favouriteRecordFilters`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
-                )
-                database.execSQL(
-                    "CREATE TABLE IF NOT EXISTS `favouriteRecordFiltersCommonItems` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `filter_id` INTEGER NOT NULL, `is_selected` INTEGER NOT NULL, `type` INTEGER NOT NULL, `item_id` INTEGER, FOREIGN KEY(`filter_id`) REFERENCES `favouriteRecordFilter`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
-                )
-                database.execSQL(
-                    "CREATE TABLE IF NOT EXISTS `favouriteRecordFiltersCommentItems` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `filter_id` INTEGER NOT NULL, `type` INTEGER NOT NULL, `text` TEXT, FOREIGN KEY(`filter_id`) REFERENCES `favouriteRecordFilter`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
-                )
-                database.execSQL(
-                    "CREATE TABLE IF NOT EXISTS `favouriteRecordFiltersDuplicationItems` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `filter_id` INTEGER NOT NULL, `type` INTEGER NOT NULL, FOREIGN KEY(`filter_id`) REFERENCES `favouriteRecordFilter`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
-                )
-                database.execSQL(
-                    "CREATE TABLE IF NOT EXISTS `favouriteRecordFiltersManuallyFilteredItems` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `filter_id` INTEGER NOT NULL, `type` INTEGER NOT NULL, `item_ids` TEXT, `range_time_started` INTEGER, `range_time_ended` INTEGER, FOREIGN KEY(`filter_id`) REFERENCES `favouriteRecordFilter`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+                    "CREATE TABLE IF NOT EXISTS `favouriteRecordFilter` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `owner_id` INTEGER NOT NULL, `type` INTEGER NOT NULL, `common_items_ids` TEXT, `comment_items_ids` TEXT, `comment_items_text` TEXT, `duplication_items_ids` TEXT, `manually_filtered_items_ids` TEXT, `daysOfWeek` TEXT, `range_time_started` INTEGER, `range_time_ended` INTEGER, `range_length_type` INTEGER, `range_length_last_days` INTEGER, `range_length_position` INTEGER, `range_length_custom_range_time_started` INTEGER, `range_length_custom_range_time_ended` INTEGER, FOREIGN KEY(`owner_id`) REFERENCES `favouriteRecordFilters`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
                 )
             }
         }
