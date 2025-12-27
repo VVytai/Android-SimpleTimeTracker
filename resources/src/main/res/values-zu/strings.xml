@@ -291,8 +291,11 @@ Lokhu kukuvumela ukuthi ubone isikhathi osichitha emisebenzini esebenzayo nezing
     <!--  Running records  -->
     <string name="running_records_types_empty">Ukuze uqale ukulandelela, engeza imisebenzi ngokuchofoza inkinobho ethi %s noma usebenzise izilungiselelo ezenzakalayo ngokuchofoza inkinobho ethi %s</string>
     <string name="running_records_empty">Chofoza umsebenzi ukuze uqale ukulandelela</string>
+    <string name="running_records_empty_inverted">Chofoza isikhathi eside emsebenzini ukuze uqale ukulandelela</string>
     <string name="running_records_has_timers">Chofoza ikhadi ukuze uyeke ukulandelela</string>
+    <string name="running_records_has_timers_inverted">Chofoza isikhathi eside ekhadini ukuze uyeke ukulandelela</string>
     <string name="running_records_empty_hint">Chofoza isikhathi eside ukuze uhlele</string>
+    <string name="running_records_empty_hint_inverted">Chofoza ukuze uhlele</string>
     <string name="running_records_add_type">Engeza</string>
     <string name="running_records_add_filter">Engeza isihlungi</string>
     <string name="running_records_add_default">Okuvamile</string>

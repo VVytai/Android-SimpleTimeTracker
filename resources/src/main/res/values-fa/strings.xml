@@ -291,8 +291,11 @@
     <!--  Running records  -->
     <string name="running_records_types_empty">برای شروع ردیابی، با کلیک بر روی دکمه %s فعالیت ها را اضافه کنید یا با کلیک بر روی دکمه %s از تنظیمات پیش فرض استفاده کنید</string>
     <string name="running_records_empty">فعالیت را برای شروع اندازه گیری لمس کنید</string>
+    <string name="running_records_empty_inverted">فعالیت را برای شروع اندازه‌گیری لمس کرده و نگه دارید</string>
     <string name="running_records_has_timers">برای توقف اندازه گیری  کارت را لمس کنید</string>
+    <string name="running_records_has_timers_inverted">برای توقف اندازه‌گیری کارت را لمس کرده و نگه دارید</string>
     <string name="running_records_empty_hint">برای ویرایش لمس کنید و نگه دارید</string>
+    <string name="running_records_empty_hint_inverted">برای ویرایش لمس کنید</string>
     <string name="running_records_add_type">اضافه کردن</string>
     <string name="running_records_add_filter">اضافه کردن فیلتر</string>
     <string name="running_records_add_default">پیش فرض</string>

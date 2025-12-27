@@ -291,8 +291,11 @@ Bu, genel olarak verimli ve verimsiz aktivitelere ne kadar zaman harcadığını
     <!--  Running records  -->
     <string name="running_records_types_empty">İzlemeye başlamak için %s düğmesine tıklayarak etkinlikler ekleyin veya %s düğmesine tıklayarak varsayılan ön ayarları kullanın</string>
     <string name="running_records_empty">Takip etmeye başlamak için bir aktiviteye tıklayın</string>
+    <string name="running_records_empty_inverted">Takip etmeye başlamak için bir aktiviteye uzun dokunun</string>
     <string name="running_records_has_timers">İzlemeyi durdurmak için karta tıklayın</string>
+    <string name="running_records_has_timers_inverted">İzlemeyi durdurmak için karta uzun dokunun</string>
     <string name="running_records_empty_hint">Düzenlemek için uzun dokunun</string>
+    <string name="running_records_empty_hint_inverted">Düzenlemek için tıklayın</string>
     <string name="running_records_add_type">Ekle</string>
     <string name="running_records_add_filter">Filtre ekle</string>
     <string name="running_records_add_default">Varsayılan</string>
