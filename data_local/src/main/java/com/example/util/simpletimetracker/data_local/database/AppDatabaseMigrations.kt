@@ -36,6 +36,7 @@ class AppDatabaseMigrations {
                 migration_25_26,
                 migration_26_27,
                 migration_27_28,
+                migration_28_29,
             )
 
         private val migration_1_2 = object : Migration(1, 2) {
@@ -352,6 +353,29 @@ class AppDatabaseMigrations {
                 )
                 database.execSQL(
                     "CREATE TABLE IF NOT EXISTS `recordShortcutToRecordTag` (`shortcut_id` INTEGER NOT NULL, `record_tag_id` INTEGER NOT NULL, `record_tag_numeric_value` REAL, PRIMARY KEY(`shortcut_id`, `record_tag_id`))",
+                )
+            }
+        }
+
+        private val migration_28_29 = object : Migration(28, 29) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL(
+                    "CREATE TABLE IF NOT EXISTS `favouriteRecordFilters` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL)",
+                )
+                database.execSQL(
+                    "CREATE TABLE IF NOT EXISTS `favouriteRecordFilter` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `owner_id` INTEGER NOT NULL, `type` INTEGER NOT NULL, `daysOfWeek` TEXT, `range_time_started` INTEGER, `range_time_ended` INTEGER, `range_length_type` INTEGER, `range_length_last_days` INTEGER, `range_length_position` INTEGER, `range_length_custom_range_time_started` INTEGER, `range_length_custom_range_time_ended` INTEGER, FOREIGN KEY(`owner_id`) REFERENCES `favouriteRecordFilters`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+                )
+                database.execSQL(
+                    "CREATE TABLE IF NOT EXISTS `favouriteRecordFiltersCommonItems` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `filter_id` INTEGER NOT NULL, `is_selected` INTEGER NOT NULL, `type` INTEGER NOT NULL, `item_id` INTEGER, FOREIGN KEY(`filter_id`) REFERENCES `favouriteRecordFilter`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+                )
+                database.execSQL(
+                    "CREATE TABLE IF NOT EXISTS `favouriteRecordFiltersCommentItems` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `filter_id` INTEGER NOT NULL, `type` INTEGER NOT NULL, `text` TEXT, FOREIGN KEY(`filter_id`) REFERENCES `favouriteRecordFilter`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+                )
+                database.execSQL(
+                    "CREATE TABLE IF NOT EXISTS `favouriteRecordFiltersDuplicationItems` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `filter_id` INTEGER NOT NULL, `type` INTEGER NOT NULL, FOREIGN KEY(`filter_id`) REFERENCES `favouriteRecordFilter`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+                )
+                database.execSQL(
+                    "CREATE TABLE IF NOT EXISTS `favouriteRecordFiltersManuallyFilteredItems` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `filter_id` INTEGER NOT NULL, `type` INTEGER NOT NULL, `item_ids` TEXT, `range_time_started` INTEGER, `range_time_ended` INTEGER, FOREIGN KEY(`filter_id`) REFERENCES `favouriteRecordFilter`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
                 )
             }
         }

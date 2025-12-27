@@ -615,6 +615,8 @@
     <string name="records_filter_duplications_same_activity">Така сама діяльність</string>
     <string name="records_filter_duplications_same_times">Тим часом</string>
     <string name="records_filter_duplications_manually_fitler">Фільтрувати дублікати</string>
+    <string name="records_filter_save_filter">Зберегти фільтр</string>
+    <string name="records_filter_filter_not_available">Недоступно</string>
 
     <!--  Pomodoro  -->
     <string name="pomodoro_state_focus">Фокус</string>

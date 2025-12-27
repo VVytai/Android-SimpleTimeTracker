@@ -615,6 +615,8 @@ Contoh:<br/>
     <string name="records_filter_duplications_same_activity">Aktivitas yang sama</string>
     <string name="records_filter_duplications_same_times">Waktu yang sama</string>
     <string name="records_filter_duplications_manually_fitler">Filter duplikat</string>
+    <string name="records_filter_save_filter">Simpan filter</string>
+    <string name="records_filter_filter_not_available">Tidak tersedia</string>
 
     <!--  Pomodoro  -->
     <string name="pomodoro_state_focus">Fokus</string>

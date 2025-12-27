@@ -615,6 +615,8 @@ csv फ़ाइल में कॉमा से अलग किए गए य
     <string name="records_filter_duplications_same_activity">वही गतिविधि</string>
     <string name="records_filter_duplications_same_times">उसी समय</string>
     <string name="records_filter_duplications_manually_fitler">डुप्लिकेट फ़िल्टर करें</string>
+    <string name="records_filter_save_filter">फ़िल्टर सहेजें</string>
+    <string name="records_filter_filter_not_available">उपलब्ध नहीं</string>
 
     <!--  Pomodoro  -->
     <string name="pomodoro_state_focus">फोकस</string>

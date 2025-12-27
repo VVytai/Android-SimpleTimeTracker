@@ -181,6 +181,7 @@ class StatisticsDetailFilterViewModelDelegate @Inject constructor(
                     untrackedSelectionAvailable = true,
                     multitaskSelectionAvailable = true,
                     duplicationsSelectionAvailable = false,
+                    favouriteSelectionAvailable = true,
                     addRunningRecords = true,
                 ),
                 filters = filters

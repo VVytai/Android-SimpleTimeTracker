@@ -42,6 +42,8 @@ import com.example.util.simpletimetracker.data_local.recordType.RecordTypeDBO
 import com.example.util.simpletimetracker.data_local.recordType.RecordTypeDao
 import com.example.util.simpletimetracker.data_local.recordType.RecordTypeGoalDBO
 import com.example.util.simpletimetracker.data_local.recordType.RecordTypeGoalDao
+import com.example.util.simpletimetracker.data_local.recordsFilter.FavouriteRecordsFilterDBO
+import com.example.util.simpletimetracker.data_local.recordsFilter.FavouriteRecordsFilterDao
 
 @Database(
     entities = [
@@ -65,8 +67,14 @@ import com.example.util.simpletimetracker.data_local.recordType.RecordTypeGoalDa
         ActivitySuggestionDBO::class,
         DurationSuggestionDBO::class,
         RecordShortcutDBO::class,
+        FavouriteRecordsFilterDBO.MainDBO::class,
+        FavouriteRecordsFilterDBO.FilterDBO::class,
+        FavouriteRecordsFilterDBO.CommonItemDBO::class,
+        FavouriteRecordsFilterDBO.CommentItemDBO::class,
+        FavouriteRecordsFilterDBO.DuplicationItemDBO::class,
+        FavouriteRecordsFilterDBO.ManuallyFilteredItemDBO::class,
     ],
-    version = 28,
+    version = 29,
     exportSchema = true,
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -110,6 +118,8 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun durationSuggestionDao(): DurationSuggestionDao
 
     abstract fun recordShortcutDao(): RecordShortcutDao
+
+    abstract fun favouriteRecordsFilterDao(): FavouriteRecordsFilterDao
 
     companion object {
         const val DATABASE_NAME = "simpleTimeTrackerDB"

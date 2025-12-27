@@ -214,7 +214,7 @@ fun RecordsFilterParam.ManuallyFilteredItem.toModel(): RecordsFilter.ManuallyFil
         is RecordsFilterParam.ManuallyFilteredItem.Running ->
             RecordsFilter.ManuallyFilteredItem.Running(id)
         is RecordsFilterParam.ManuallyFilteredItem.Untracked ->
-            RecordsFilter.ManuallyFilteredItem.Untracked(timeStartedTimestamp, timeEndedTimestamp)
+            RecordsFilter.ManuallyFilteredItem.Untracked(range.toModel())
         is RecordsFilterParam.ManuallyFilteredItem.Multitask ->
             RecordsFilter.ManuallyFilteredItem.Multitask(ids)
     }
@@ -227,7 +227,7 @@ fun RecordsFilter.ManuallyFilteredItem.toParams(): RecordsFilterParam.ManuallyFi
         is RecordsFilter.ManuallyFilteredItem.Running ->
             RecordsFilterParam.ManuallyFilteredItem.Running(id)
         is RecordsFilter.ManuallyFilteredItem.Untracked ->
-            RecordsFilterParam.ManuallyFilteredItem.Untracked(timeStartedTimestamp, timeEndedTimestamp)
+            RecordsFilterParam.ManuallyFilteredItem.Untracked(range.toParams())
         is RecordsFilter.ManuallyFilteredItem.Multitask ->
             RecordsFilterParam.ManuallyFilteredItem.Multitask(ids)
     }

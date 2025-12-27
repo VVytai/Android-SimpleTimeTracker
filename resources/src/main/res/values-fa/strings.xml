@@ -615,6 +615,8 @@
     <string name="records_filter_duplications_same_activity">همان فعالیت</string>
     <string name="records_filter_duplications_same_times">همان زمان</string>
     <string name="records_filter_duplications_manually_fitler">فیلترهای تکراری</string>
+    <string name="records_filter_save_filter">ذخیره فیلتر</string>
+    <string name="records_filter_filter_not_available">در دسترس نیست</string>
 
     <!--  Pomodoro  -->
     <string name="pomodoro_state_focus">تمرکز</string>

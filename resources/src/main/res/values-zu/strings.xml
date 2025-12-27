@@ -615,6 +615,8 @@ Isibonelo:<br/>
     <string name="records_filter_duplications_same_activity">Umsebenzi ofanayo</string>
     <string name="records_filter_duplications_same_times">Isikhathi esifanayo</string>
     <string name="records_filter_duplications_manually_fitler">Hlunga okuphindaphindayo</string>
+    <string name="records_filter_save_filter">Londoloza isihlungi</string>
+    <string name="records_filter_filter_not_available">Ayitholakali</string>
 
     <!--  Pomodoro  -->
     <string name="pomodoro_state_focus">Gxila</string>

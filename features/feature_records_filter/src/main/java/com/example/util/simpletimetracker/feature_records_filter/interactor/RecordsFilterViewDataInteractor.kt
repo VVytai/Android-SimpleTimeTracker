@@ -1,5 +1,6 @@
 package com.example.util.simpletimetracker.feature_records_filter.interactor
 
+import androidx.core.text.buildSpannedString
 import com.example.util.simpletimetracker.core.extension.setToStartOfDay
 import com.example.util.simpletimetracker.core.interactor.GetRunningRecordViewDataMediator
 import com.example.util.simpletimetracker.core.interactor.RecordFilterInteractor
@@ -16,6 +17,7 @@ import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.domain.base.UNTRACKED_ITEM_ID
 import com.example.util.simpletimetracker.domain.category.model.Category
 import com.example.util.simpletimetracker.domain.category.model.RecordTypeCategory
+import com.example.util.simpletimetracker.domain.extension.addBetweenEach
 import com.example.util.simpletimetracker.domain.extension.orEmpty
 import com.example.util.simpletimetracker.domain.extension.plus
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
@@ -47,6 +49,7 @@ import com.example.util.simpletimetracker.domain.record.extension.hasUntrackedFi
 import com.example.util.simpletimetracker.domain.record.extension.toManuallyFilteredItem
 import com.example.util.simpletimetracker.domain.record.interactor.RecordInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.RunningRecordInteractor
+import com.example.util.simpletimetracker.domain.record.model.FavouriteRecordsFilter
 import com.example.util.simpletimetracker.domain.record.model.MultitaskRecord
 import com.example.util.simpletimetracker.domain.record.model.Range
 import com.example.util.simpletimetracker.domain.record.model.Record
@@ -57,6 +60,7 @@ import com.example.util.simpletimetracker.domain.recordTag.model.RecordTag
 import com.example.util.simpletimetracker.domain.recordTag.model.RecordTypeToTag
 import com.example.util.simpletimetracker.domain.recordType.model.RecordType
 import com.example.util.simpletimetracker.domain.recordType.model.RecordTypeGoal
+import com.example.util.simpletimetracker.domain.recordsFilter.interactor.FavouriteRecordsFilterInteractor
 import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.category.CategoryViewData
@@ -68,9 +72,11 @@ import com.example.util.simpletimetracker.feature_base_adapter.hint.HintViewData
 import com.example.util.simpletimetracker.feature_base_adapter.recordFilter.FilterViewData
 import com.example.util.simpletimetracker.feature_base_adapter.recordType.RecordTypeViewData
 import com.example.util.simpletimetracker.feature_base_adapter.recordTypeSuggestion.RecordTypeSuggestionViewData
+import com.example.util.simpletimetracker.feature_base_adapter.recordsFilter.FavouriteRecordsFilterViewData
 import com.example.util.simpletimetracker.feature_records_filter.R
 import com.example.util.simpletimetracker.feature_records_filter.adapter.RecordsFilterButtonViewData
 import com.example.util.simpletimetracker.feature_records_filter.adapter.RecordsFilterRangeViewData
+import com.example.util.simpletimetracker.feature_records_filter.mapper.RecordsFilterFavouriteViewDataMapper
 import com.example.util.simpletimetracker.feature_records_filter.mapper.RecordsFilterViewDataMapper
 import com.example.util.simpletimetracker.feature_records_filter.model.RecordFilterActivitiesType
 import com.example.util.simpletimetracker.feature_records_filter.model.RecordFilterCommentType
@@ -105,13 +111,30 @@ class RecordsFilterViewDataInteractor @Inject constructor(
     private val recordViewDataMapper: RecordViewDataMapper,
     private val runningRecordViewDataMapper: RunningRecordViewDataMapper,
     private val multitaskRecordViewDataMapper: MultitaskRecordViewDataMapper,
+    private val recordsFilterFavouriteViewDataMapper: RecordsFilterFavouriteViewDataMapper,
     private val getRunningRecordViewDataMediator: GetRunningRecordViewDataMediator,
+    private val favouriteRecordsFilterInteractor: FavouriteRecordsFilterInteractor,
     private val dateDividerViewDataMapper: DateDividerViewDataMapper,
     private val dayOfWeekViewDataMapper: DayOfWeekViewDataMapper,
     private val colorMapper: ColorMapper,
     private val timeMapper: TimeMapper,
     private val resourceRepo: ResourceRepo,
 ) {
+
+    fun filterAvailableFilters(
+        extra: RecordsFilterParams,
+        filters: List<RecordsFilter>,
+    ): List<RecordsFilter> {
+        return filters.filter {
+            when (it) {
+                is RecordsFilter.Date -> extra.flags.dateSelectionAvailable
+                is RecordsFilter.Untracked -> extra.flags.untrackedSelectionAvailable
+                is RecordsFilter.Multitask -> extra.flags.multitaskSelectionAvailable
+                is RecordsFilter.Duplications -> extra.flags.duplicationsSelectionAvailable
+                else -> true
+            }
+        }
+    }
 
     fun getDefaultDateRange(): Range {
         val calendar = Calendar.getInstance()
@@ -332,12 +355,15 @@ class RecordsFilterViewDataInteractor @Inject constructor(
             RecordFilterType.Multitask.takeIf { extra.flags.multitaskSelectionAvailable && !hasUntracked },
             RecordFilterType.Duplications.takeIf { extra.flags.duplicationsSelectionAvailable },
             RecordFilterType.ManuallyFiltered.takeIf { filters.hasManuallyFiltered() },
-        )
+            RecordFilterType.Favourite.takeIf { extra.flags.favouriteSelectionAvailable },
+        ).sortedBy {
+            mapper.mapSortOrder(it)
+        }
 
         return@withContext availableFilters.mapIndexed { index, type ->
             val clazz = mapper.mapToClass(type)
             // Only one filter type.
-            val filter = filters.filterIsInstance(clazz).firstOrNull()
+            val filter = clazz?.let { filters.filterIsInstance(it) }?.firstOrNull()
             val enabled = filter != null
             val selected = (selectionState as? RecordsFilterSelectionState.Visible)
                 ?.type == type
@@ -534,6 +560,8 @@ class RecordsFilterViewDataInteractor @Inject constructor(
         val button = RecordsFilterButtonViewData(
             type = RecordsFilterButtonViewData.Type.FILTER_DUPLICATES,
             text = resourceRepo.getString(R.string.records_filter_duplications_manually_fitler),
+            backgroundColor = colorMapper.toActiveColor(isDarkTheme),
+            isEnabled = true,
         )
 
         result += EmptySpaceViewData(
@@ -707,6 +735,8 @@ class RecordsFilterViewDataInteractor @Inject constructor(
         val button = RecordsFilterButtonViewData(
             type = RecordsFilterButtonViewData.Type.INVERT_SELECTION,
             text = resourceRepo.getString(R.string.records_filter_invert_selection),
+            backgroundColor = colorMapper.toActiveColor(isDarkTheme),
+            isEnabled = true,
         )
 
         val manuallyFilteredTracked = manuallyFilteredItems
@@ -759,14 +789,14 @@ class RecordsFilterViewDataInteractor @Inject constructor(
                     }
                     is RecordsFilter.ManuallyFilteredItem.Untracked -> {
                         val mapped = recordViewDataMapper.mapToUntracked(
-                            timeStarted = item.timeStartedTimestamp,
-                            timeEnded = item.timeEndedTimestamp,
+                            timeStarted = item.range.timeStarted,
+                            timeEnded = item.range.timeEnded,
                             isDarkTheme = isDarkTheme,
                             useMilitaryTime = useMilitaryTime,
                             durationFormat = durationFormat,
                             showSeconds = showSeconds,
                         )
-                        item.timeStartedTimestamp to mapped
+                        item.range.timeStarted to mapped
                     }
                     is RecordsFilter.ManuallyFilteredItem.Running -> {
                         val record = manuallyFilteredRunningRecords[item.id]
@@ -897,6 +927,115 @@ class RecordsFilterViewDataInteractor @Inject constructor(
                 isDarkTheme = isDarkTheme,
             ),
         )
+
+        return result
+    }
+
+    // TODO FILTER flatten databases?
+    // TODO FILTER add to backup?
+    // TODO FILTER handle activity/category/tag removal?
+    // TODO FILTER selectable filter on top, change text "Filter" to start icon.
+    // TODO FILTER add icons to activities/tags.
+    // TODO FILTER order activities/categories/tags.
+    suspend fun getFavouriteFiltersSelectionViewData(
+        filters: List<RecordsFilter>,
+        extra: RecordsFilterParams,
+        isDeleteEnabled: Boolean,
+        recordTypes: Map<Long, RecordType>,
+        categories: Map<Long, Category>,
+        recordTags: Map<Long, RecordTag>,
+    ): List<ViewHolderType> {
+        val result: MutableList<ViewHolderType> = mutableListOf()
+        val isDarkTheme = prefsInteractor.getDarkMode()
+        val useMilitaryTime = prefsInteractor.getUseMilitaryTimeFormat()
+        val startOfDayShift = prefsInteractor.getStartOfDayShift()
+        val firstDayOfWeek = prefsInteractor.getFirstDayOfWeek()
+        val currentAvailableFilters = filterAvailableFilters(extra, filters)
+        val isSaveEnabled = currentAvailableFilters.isNotEmpty()
+        val filters = favouriteRecordsFilterInteractor.getAll()
+
+        fun mapActiveColor(isActive: Boolean): Int {
+            return if (isActive) {
+                colorMapper.toActiveColor(isDarkTheme)
+            } else {
+                colorMapper.toInactiveColor(isDarkTheme)
+            }
+        }
+
+        fun mapFilterText(filter: FavouriteRecordsFilter): CharSequence {
+            return filter.filter.sortedBy {
+                mapper.mapToViewData(it).let(mapper::mapSortOrder)
+            }.map {
+                recordsFilterFavouriteViewDataMapper.mapFilterName(
+                    filter = it,
+                    useMilitaryTime = useMilitaryTime,
+                    startOfDayShift = startOfDayShift,
+                    firstDayOfWeek = firstDayOfWeek,
+                    isDarkTheme = isDarkTheme,
+                    recordTypes = recordTypes,
+                    categories = categories,
+                    recordTags = recordTags,
+                )
+            }.addBetweenEach {
+                "\n"
+            }.let { texts ->
+                buildSpannedString { texts.forEach(::append) }
+            }
+        }
+
+        fun mapView(
+            isAvailable: Boolean,
+            filter: FavouriteRecordsFilter,
+        ): ViewHolderType {
+            return FavouriteRecordsFilterViewData(
+                id = filter.id,
+                text = mapFilterText(filter),
+                backgroundColor = mapActiveColor(isAvailable),
+                isEnabled = isAvailable || isDeleteEnabled,
+                isDeleteVisible = isDeleteEnabled,
+            )
+        }
+
+        result += RecordsFilterButtonViewData(
+            type = RecordsFilterButtonViewData.Type.SAVE_FAVOURITE,
+            text = resourceRepo.getString(R.string.records_filter_save_filter),
+            backgroundColor = mapActiveColor(isSaveEnabled),
+            isEnabled = isSaveEnabled,
+        )
+        if (filters.isNotEmpty()) {
+            result += RecordsFilterButtonViewData(
+                type = RecordsFilterButtonViewData.Type.DELETE_FAVOURITE,
+                text = resourceRepo.getString(R.string.archive_dialog_delete),
+                backgroundColor = mapActiveColor(isDeleteEnabled),
+                isEnabled = true,
+            )
+        }
+        val (availableFilters, unavailableFilters) = filters
+            .sortedByDescending { it.id } // Newest on top.
+            .partition { filter ->
+                filter.filter.size ==
+                    filterAvailableFilters(extra, filter.filter).size
+            }
+        result += availableFilters.map {
+            mapView(
+                isAvailable = true,
+                filter = it,
+            )
+        }
+        if (unavailableFilters.isNotEmpty()) {
+            result += DividerViewData(
+                id = "favourite_filters_unavailable_divider".hashCode().toLong(),
+            )
+            result += HintViewData(
+                text = resourceRepo.getString(R.string.records_filter_filter_not_available),
+            )
+            result += unavailableFilters.map {
+                mapView(
+                    isAvailable = false,
+                    filter = it,
+                )
+            }
+        }
 
         return result
     }

@@ -55,11 +55,8 @@ sealed interface RecordsFilter {
         data class Tracked(val id: Long) : ManuallyFilteredItem
         data class Running(val id: Long) : ManuallyFilteredItem
         data class Multitask(val ids: List<Long>) : ManuallyFilteredItem
-        data class Untracked(
-            val timeStartedTimestamp: Long,
-            val timeEndedTimestamp: Long,
-        ) : ManuallyFilteredItem {
-            private val id: Long = timeStartedTimestamp
+        data class Untracked(val range: Range) : ManuallyFilteredItem {
+            private val id: Long = range.timeStarted
             override fun equals(other: Any?): Boolean = (other as? Untracked)?.id == id
             override fun hashCode(): Int = id.hashCode()
         }

@@ -615,6 +615,8 @@ Examplu:<br/>
     <string name="records_filter_duplications_same_activity">Aceeași activitate</string>
     <string name="records_filter_duplications_same_times">Același timp</string>
     <string name="records_filter_duplications_manually_fitler">Filtrați duplicatele</string>
+    <string name="records_filter_save_filter">Salvează filtrul</string>
+    <string name="records_filter_filter_not_available">Indisponibil</string>
 
     <!--  Pomodoro  -->
     <string name="pomodoro_state_focus">Concentrare</string>

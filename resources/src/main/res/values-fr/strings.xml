@@ -615,6 +615,8 @@ Exemple:<br/>
     <string name="records_filter_duplications_same_activity">Même activité</string>
     <string name="records_filter_duplications_same_times">En même temps</string>
     <string name="records_filter_duplications_manually_fitler">Filtrer les doublons</string>
+    <string name="records_filter_save_filter">Enregistrer le filtre</string>
+    <string name="records_filter_filter_not_available">Non disponible</string>
 
     <!--  Pomodoro  -->
     <string name="pomodoro_state_focus">Concentration</string>

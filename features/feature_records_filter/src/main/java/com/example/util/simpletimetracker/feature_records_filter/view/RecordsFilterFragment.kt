@@ -13,6 +13,7 @@ import com.example.util.simpletimetracker.core.base.BaseBottomSheetFragment
 import com.example.util.simpletimetracker.core.dialog.DateTimeDialogListener
 import com.example.util.simpletimetracker.core.dialog.DurationDialogListener
 import com.example.util.simpletimetracker.core.dialog.RecordsFilterListener
+import com.example.util.simpletimetracker.core.dialog.StandardDialogListener
 import com.example.util.simpletimetracker.core.extension.blockContentScroll
 import com.example.util.simpletimetracker.core.extension.findListener
 import com.example.util.simpletimetracker.core.extension.hideKeyboard
@@ -37,6 +38,7 @@ import com.example.util.simpletimetracker.feature_base_adapter.commentField.crea
 import com.example.util.simpletimetracker.feature_base_adapter.dayOfWeek.createDayOfWeekAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.emptySpace.createEmptySpaceAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.recordTypeSuggestion.createRecordTypeSuggestionAdapterDelegate
+import com.example.util.simpletimetracker.feature_base_adapter.recordsFilter.createFavouriteRecordsFilterAdapterDelegate
 import com.example.util.simpletimetracker.feature_records_filter.adapter.createRecordsFilterRangeAdapterDelegate
 import com.example.util.simpletimetracker.feature_records_filter.model.RecordsFilterSelectedRecordsViewData
 import com.example.util.simpletimetracker.feature_records_filter.viewData.RecordTypeFilteredType
@@ -54,7 +56,8 @@ import com.example.util.simpletimetracker.feature_records_filter.databinding.Rec
 class RecordsFilterFragment :
     BaseBottomSheetFragment<Binding>(),
     DateTimeDialogListener,
-    DurationDialogListener {
+    DurationDialogListener,
+    StandardDialogListener {
 
     override val inflater: (LayoutInflater, ViewGroup?, Boolean) -> Binding =
         Binding::inflate
@@ -94,6 +97,7 @@ class RecordsFilterFragment :
             createMultitaskRecordAdapterDelegate(
                 onItemClick = viewModel::onMultitaskRecordClick,
             ),
+            createFavouriteRecordsFilterAdapterDelegate(viewModel::onFavouriteFilterClick),
             createDoubleButtonsAdapterDelegate(viewModel::onSelectionButtonClick),
             createCommentFieldAdapterDelegate(viewModel::onCommentChange),
             createRecordsFilterButtonAdapterDelegate(viewModel::onInnerFilterButtonClick),
@@ -177,6 +181,10 @@ class RecordsFilterFragment :
     override fun onDismiss(dialog: DialogInterface) {
         listener?.onFilterDismissed(params.tag)
         super.onDismiss(dialog)
+    }
+
+    override fun onPositiveClick(tag: String?, data: Any?) {
+        viewModel.onPositiveDialogClick(tag, data)
     }
 
     override fun onDateTimeSet(timestamp: Long, tag: String?) {

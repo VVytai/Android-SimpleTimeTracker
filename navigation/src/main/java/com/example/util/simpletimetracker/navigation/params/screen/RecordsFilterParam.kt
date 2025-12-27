@@ -85,10 +85,7 @@ sealed interface RecordsFilterParam : Parcelable {
         data class Running(val id: Long) : ManuallyFilteredItem
 
         @Parcelize
-        data class Untracked(
-            val timeStartedTimestamp: Long,
-            val timeEndedTimestamp: Long,
-        ) : ManuallyFilteredItem
+        data class Untracked(val range: RangeParams) : ManuallyFilteredItem
 
         @Parcelize
         data class Multitask(val ids: List<Long>) : ManuallyFilteredItem

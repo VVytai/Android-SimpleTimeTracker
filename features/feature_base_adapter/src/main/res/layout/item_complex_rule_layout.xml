@@ -100,6 +100,7 @@
             tools:itemCount="3"
             tools:listitem="@layout/item_complex_rule_element_title" />
 
+        <!-- Overlay on top of recycler for clicks -->
         <View
             android:id="@+id/viewComplexRuleItemConditionsClick"
             android:layout_width="0dp"

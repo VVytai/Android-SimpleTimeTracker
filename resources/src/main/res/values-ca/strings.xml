@@ -615,6 +615,8 @@ Exemple:<br/>
     <string name="records_filter_duplications_same_activity">La mateixa activitat</string>
     <string name="records_filter_duplications_same_times">El mateix temps</string>
     <string name="records_filter_duplications_manually_fitler">Filtra els duplicats</string>
+    <string name="records_filter_save_filter">Desa el filtre</string>
+    <string name="records_filter_filter_not_available">No disponible</string>
 
     <!--  Pomodoro  -->
     <string name="pomodoro_state_focus">Enfocament</string>

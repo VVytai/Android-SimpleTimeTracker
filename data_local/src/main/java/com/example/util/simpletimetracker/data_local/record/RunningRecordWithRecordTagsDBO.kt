@@ -10,7 +10,6 @@ data class RunningRecordWithRecordTagsDBO(
     @Relation(
         parentColumn = "id",
         entityColumn = "running_record_id",
-        entity = RunningRecordToRecordTagDBO::class,
     )
     val recordTags: List<RunningRecordToRecordTagDBO>,
 )

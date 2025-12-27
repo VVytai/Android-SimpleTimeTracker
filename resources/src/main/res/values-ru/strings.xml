@@ -615,6 +615,8 @@ CSV-файл должен содержать следующие столбцы, 
     <string name="records_filter_duplications_same_activity">Та же деятельность</string>
     <string name="records_filter_duplications_same_times">В то же время</string>
     <string name="records_filter_duplications_manually_fitler">Фильтровать дубликаты</string>
+    <string name="records_filter_save_filter">Сохранить фильтр</string>
+    <string name="records_filter_filter_not_available">Недоступно</string>
 
     <!--  Pomodoro  -->
     <string name="pomodoro_state_focus">Фокус</string>

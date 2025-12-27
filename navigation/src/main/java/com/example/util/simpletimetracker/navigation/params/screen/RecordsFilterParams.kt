@@ -18,6 +18,7 @@ data class RecordsFilterParams(
         val untrackedSelectionAvailable: Boolean,
         val multitaskSelectionAvailable: Boolean,
         val duplicationsSelectionAvailable: Boolean,
+        val favouriteSelectionAvailable: Boolean,
         val addRunningRecords: Boolean,
     ) : Parcelable
 
@@ -30,6 +31,7 @@ data class RecordsFilterParams(
                 untrackedSelectionAvailable = true,
                 multitaskSelectionAvailable = true,
                 duplicationsSelectionAvailable = true,
+                favouriteSelectionAvailable = true,
                 addRunningRecords = true,
             ),
             filters = emptyList(),

@@ -3,6 +3,7 @@ package com.example.util.simpletimetracker.data_local.complexRule
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.example.util.simpletimetracker.data_local.recordType.RecordTypeDBO
 
 @Entity(tableName = "complexRules")
 data class ComplexRuleDBO(
@@ -28,10 +29,9 @@ data class ComplexRuleDBO(
     @ColumnInfo(name = "conditionCurrentTypeIds")
     val conditionCurrentTypeIds: String,
 
-    // Stored as "0000000" string, where each number is a day,
-    // 0 - not selected, 1 - selected,
-    // starting from sunday.
-    // For example, "0111110" - only work days selected.
+    /**
+     * How data is stored - see [RecordTypeDBO].
+     */
     @ColumnInfo(name = "conditionDaysOfWeek")
     val conditionDaysOfWeek: String,
 )

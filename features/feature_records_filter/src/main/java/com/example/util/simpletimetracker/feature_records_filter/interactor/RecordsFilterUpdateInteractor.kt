@@ -401,7 +401,7 @@ class RecordsFilterUpdateInteractor @Inject constructor(
     ): List<RecordsFilter> {
         val filters = currentFilters.toMutableList()
         val filterClass = recordsFilterViewDataMapper.mapToClass(type)
-        filters.removeAll { filterClass.isInstance(it) }
+        filterClass?.let { filters.removeAll { filterClass.isInstance(it) } }
         when (type) {
             is RecordFilterType.Activity -> filters.removeAll { it is RecordsFilter.Category }
             is RecordFilterType.Category -> filters.removeAll { it is RecordsFilter.Activity }
@@ -676,7 +676,8 @@ class RecordsFilterUpdateInteractor @Inject constructor(
             is RecordViewData.Tracked ->
                 RecordsFilter.ManuallyFilteredItem.Tracked(this.id)
             is RecordViewData.Untracked ->
-                RecordsFilter.ManuallyFilteredItem.Untracked(this.timeStartedTimestamp, this.timeEndedTimestamp)
+                Range(this.timeStartedTimestamp, this.timeEndedTimestamp)
+                    .let { RecordsFilter.ManuallyFilteredItem.Untracked(it) }
             is RunningRecordViewData ->
                 RecordsFilter.ManuallyFilteredItem.Running(this.id)
             is MultitaskRecordViewData ->

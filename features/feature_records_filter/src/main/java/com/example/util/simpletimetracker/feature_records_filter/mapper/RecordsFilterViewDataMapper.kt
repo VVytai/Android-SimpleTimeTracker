@@ -5,22 +5,22 @@ import com.example.util.simpletimetracker.core.mapper.ColorMapper
 import com.example.util.simpletimetracker.core.mapper.RangeTitleMapper
 import com.example.util.simpletimetracker.core.mapper.TimeMapper
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
-import com.example.util.simpletimetracker.domain.record.extension.getCommentItems
-import com.example.util.simpletimetracker.domain.record.extension.getComments
-import com.example.util.simpletimetracker.domain.record.extension.hasAnyComment
-import com.example.util.simpletimetracker.domain.record.extension.hasNoComment
 import com.example.util.simpletimetracker.domain.daysOfWeek.model.DayOfWeek
 import com.example.util.simpletimetracker.domain.record.extension.getCategoryItems
+import com.example.util.simpletimetracker.domain.record.extension.getCommentItems
+import com.example.util.simpletimetracker.domain.record.extension.getComments
 import com.example.util.simpletimetracker.domain.record.extension.getDuplicationItems
 import com.example.util.simpletimetracker.domain.record.extension.getFilteredCategoryItems
 import com.example.util.simpletimetracker.domain.record.extension.getFilteredTags
 import com.example.util.simpletimetracker.domain.record.extension.getFilteredTypeIds
 import com.example.util.simpletimetracker.domain.record.extension.getSelectedTags
 import com.example.util.simpletimetracker.domain.record.extension.getTypeIds
+import com.example.util.simpletimetracker.domain.record.extension.hasAnyComment
+import com.example.util.simpletimetracker.domain.record.extension.hasNoComment
 import com.example.util.simpletimetracker.domain.record.extension.hasSameActivity
 import com.example.util.simpletimetracker.domain.record.extension.hasSameTimes
-import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
 import com.example.util.simpletimetracker.domain.record.model.RecordsFilter
+import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.buttonDouble.DoubleButtonsViewData
 import com.example.util.simpletimetracker.feature_base_adapter.recordFilter.FilterViewData
@@ -43,19 +43,9 @@ class RecordsFilterViewDataMapper @Inject constructor(
 ) {
 
     fun mapInitialFilter(
-        extra: RecordsFilterParams,
         filters: List<RecordsFilter>,
     ): RecordFilterType? {
-        return filters
-            .firstOrNull {
-                when (it) {
-                    is RecordsFilter.Date -> extra.flags.dateSelectionAvailable
-                    is RecordsFilter.Untracked -> extra.flags.untrackedSelectionAvailable
-                    is RecordsFilter.Multitask -> extra.flags.multitaskSelectionAvailable
-                    else -> true
-                }
-            }
-            ?.let(::mapToViewData)
+        return filters.firstOrNull()?.let(::mapToViewData)
     }
 
     fun mapRecordsCount(
@@ -90,6 +80,7 @@ class RecordsFilterViewDataMapper @Inject constructor(
             RecordFilterType.TimeOfDay -> R.string.date_time_dialog_time
             RecordFilterType.Duration -> R.string.records_all_sort_duration
             RecordFilterType.Duplications -> R.string.records_filter_duplications
+            RecordFilterType.Favourite -> R.string.change_record_favourite_comments_hint
         }.let(resourceRepo::getString)
     }
 
@@ -103,7 +94,23 @@ class RecordsFilterViewDataMapper @Inject constructor(
             .let(::mapToViewData)
             .let(::mapInactiveFilterName)
 
-        val filterValue = when (filter) {
+        val filterValue = mapFilterValue(
+            filter = filter,
+            useMilitaryTime = useMilitaryTime,
+            startOfDayShift = startOfDayShift,
+            firstDayOfWeek = firstDayOfWeek,
+        )
+
+        return mapFilterName(filterName = filterName, filterValue = filterValue)
+    }
+
+    fun mapFilterValue(
+        filter: RecordsFilter,
+        useMilitaryTime: Boolean,
+        startOfDayShift: Long,
+        firstDayOfWeek: DayOfWeek,
+    ): String {
+        return when (filter) {
             is RecordsFilter.Untracked,
             is RecordsFilter.Multitask,
             is RecordsFilter.Duplications,
@@ -174,8 +181,6 @@ class RecordsFilterViewDataMapper @Inject constructor(
                 "$start - $end"
             }
         }
-
-        return mapFilterName(filterName = filterName, filterValue = filterValue)
     }
 
     fun mapCommentFilter(
@@ -351,7 +356,7 @@ class RecordsFilterViewDataMapper @Inject constructor(
         )
     }
 
-    fun mapToClass(type: RecordFilterType): Class<out RecordsFilter> {
+    fun mapToClass(type: RecordFilterType): Class<out RecordsFilter>? {
         return when (type) {
             RecordFilterType.Untracked -> RecordsFilter.Untracked::class.java
             RecordFilterType.Multitask -> RecordsFilter.Multitask::class.java
@@ -365,6 +370,7 @@ class RecordsFilterViewDataMapper @Inject constructor(
             RecordFilterType.TimeOfDay -> RecordsFilter.TimeOfDay::class.java
             RecordFilterType.Duration -> RecordsFilter.Duration::class.java
             RecordFilterType.Duplications -> RecordsFilter.Duplications::class.java
+            RecordFilterType.Favourite -> null
         }
     }
 
@@ -407,6 +413,24 @@ class RecordsFilterViewDataMapper @Inject constructor(
         }
     }
 
+    fun mapSortOrder(type: RecordFilterType): Int {
+        return listOf(
+            RecordFilterType.Activity,
+            RecordFilterType.Category,
+            RecordFilterType.Tags,
+            RecordFilterType.Untracked,
+            RecordFilterType.Comment,
+            RecordFilterType.Date,
+            RecordFilterType.DaysOfWeek,
+            RecordFilterType.TimeOfDay,
+            RecordFilterType.Duration,
+            RecordFilterType.Multitask,
+            RecordFilterType.Duplications,
+            RecordFilterType.ManuallyFiltered,
+            RecordFilterType.Favourite,
+        ).indexOf(type)
+    }
+
     private fun mapFilterName(
         filterName: String,
         filterValue: String,
@@ -414,7 +438,7 @@ class RecordsFilterViewDataMapper @Inject constructor(
         return if (filterValue.isNotEmpty()) "$filterName ($filterValue)" else filterName
     }
 
-    private fun mapToViewData(filter: RecordsFilter): RecordFilterType {
+    fun mapToViewData(filter: RecordsFilter): RecordFilterType {
         return when (filter) {
             is RecordsFilter.Untracked -> RecordFilterType.Untracked
             is RecordsFilter.Multitask -> RecordFilterType.Multitask

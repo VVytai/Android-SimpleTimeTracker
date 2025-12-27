@@ -225,7 +225,7 @@ fun List<RecordsFilter.DuplicationsItem>.hasSameTimes(): Boolean {
 fun RecordBase.toManuallyFilteredItem(): RecordsFilter.ManuallyFilteredItem {
     return when (this) {
         is Record -> if (this.typeId == UNTRACKED_ITEM_ID) {
-            RecordsFilter.ManuallyFilteredItem.Untracked(this.timeStarted, this.timeEnded)
+            RecordsFilter.ManuallyFilteredItem.Untracked(Range(this.timeStarted, this.timeEnded))
         } else {
             RecordsFilter.ManuallyFilteredItem.Tracked(this.id)
         }

@@ -615,6 +615,8 @@ csv 文件必須包含以逗號分隔的這些列：<br/>
     <string name="records_filter_duplications_same_activity">相同的活動</string>
     <string name="records_filter_duplications_same_times">同一時間</string>
     <string name="records_filter_duplications_manually_fitler">過濾重複項</string>
+    <string name="records_filter_save_filter">儲存篩選器</string>
+    <string name="records_filter_filter_not_available">無法使用</string>
 
     <!--  Pomodoro  -->
     <string name="pomodoro_state_focus">焦點</string>

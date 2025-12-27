@@ -25,6 +25,7 @@ import com.example.util.simpletimetracker.data_local.file.CsvRepoImpl
 import com.example.util.simpletimetracker.data_local.file.IcsRepoImpl
 import com.example.util.simpletimetracker.data_local.recordShortcut.RecordShortcutRepoImpl
 import com.example.util.simpletimetracker.data_local.recordTag.RecordShortcutToRecordTagRepoImpl
+import com.example.util.simpletimetracker.data_local.recordsFilter.FavouriteRecordsFilterRepoImpl
 import com.example.util.simpletimetracker.data_local.sharing.SharingRepoImpl
 import com.example.util.simpletimetracker.domain.activityFilter.repo.ActivityFilterRepo
 import com.example.util.simpletimetracker.domain.activitySuggestion.repo.ActivitySuggestionRepo
@@ -51,6 +52,7 @@ import com.example.util.simpletimetracker.domain.backup.repo.IcsRepo
 import com.example.util.simpletimetracker.domain.durationSuggestion.repo.DurationSuggestionRepo
 import com.example.util.simpletimetracker.domain.recordShortcut.repo.RecordShortcutRepo
 import com.example.util.simpletimetracker.domain.recordTag.repo.RecordShortcutToRecordTagRepo
+import com.example.util.simpletimetracker.domain.recordsFilter.repo.FavouriteRecordsFilterRepo
 import com.example.util.simpletimetracker.domain.sharing.SharingRepo
 import dagger.Binds
 import dagger.Module
@@ -165,4 +167,8 @@ interface DataLocalModuleBinds {
     @Binds
     @Singleton
     fun bindRecordShortcutRepo(impl: RecordShortcutRepoImpl): RecordShortcutRepo
+
+    @Binds
+    @Singleton
+    fun bindFavouriteRecordsFilterRepo(impl: FavouriteRecordsFilterRepoImpl): FavouriteRecordsFilterRepo
 }

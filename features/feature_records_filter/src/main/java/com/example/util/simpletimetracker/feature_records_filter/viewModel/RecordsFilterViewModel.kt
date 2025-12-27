@@ -1,5 +1,6 @@
 package com.example.util.simpletimetracker.feature_records_filter.viewModel
 
+import android.os.Parcelable
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -8,6 +9,7 @@ import com.example.util.simpletimetracker.core.extension.set
 import com.example.util.simpletimetracker.core.extension.toModel
 import com.example.util.simpletimetracker.core.interactor.RecordFilterInteractor
 import com.example.util.simpletimetracker.core.mapper.TimeMapper
+import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.domain.base.ARCHIVED_BUTTON_ITEM_ID
 import com.example.util.simpletimetracker.domain.base.UNTRACKED_ITEM_ID
 import com.example.util.simpletimetracker.domain.category.interactor.CategoryInteractor
@@ -20,6 +22,7 @@ import com.example.util.simpletimetracker.domain.record.extension.getDate
 import com.example.util.simpletimetracker.domain.record.extension.getDuration
 import com.example.util.simpletimetracker.domain.record.extension.getTimeOfDay
 import com.example.util.simpletimetracker.domain.record.extension.hasManuallyFiltered
+import com.example.util.simpletimetracker.domain.record.model.FavouriteRecordsFilter
 import com.example.util.simpletimetracker.domain.record.model.Range
 import com.example.util.simpletimetracker.domain.record.model.RecordsFilter
 import com.example.util.simpletimetracker.domain.recordTag.interactor.RecordTagInteractor
@@ -30,7 +33,9 @@ import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTyp
 import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTypeInteractor
 import com.example.util.simpletimetracker.domain.recordType.model.RecordType
 import com.example.util.simpletimetracker.domain.recordType.model.RecordTypeGoal
+import com.example.util.simpletimetracker.domain.recordsFilter.interactor.FavouriteRecordsFilterInteractor
 import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
+import com.example.util.simpletimetracker.feature_base_adapter.R
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.buttonDouble.DoubleButtonsViewData
 import com.example.util.simpletimetracker.feature_base_adapter.category.CategoryViewData
@@ -40,6 +45,7 @@ import com.example.util.simpletimetracker.feature_base_adapter.multitaskRecord.M
 import com.example.util.simpletimetracker.feature_base_adapter.record.RecordViewData
 import com.example.util.simpletimetracker.feature_base_adapter.recordFilter.FilterViewData
 import com.example.util.simpletimetracker.feature_base_adapter.recordType.RecordTypeViewData
+import com.example.util.simpletimetracker.feature_base_adapter.recordsFilter.FavouriteRecordsFilterViewData
 import com.example.util.simpletimetracker.feature_base_adapter.runningRecord.RunningRecordViewData
 import com.example.util.simpletimetracker.feature_records_filter.adapter.RecordsFilterButtonViewData
 import com.example.util.simpletimetracker.feature_records_filter.adapter.RecordsFilterRangeViewData
@@ -64,14 +70,17 @@ import com.example.util.simpletimetracker.navigation.params.screen.DurationDialo
 import com.example.util.simpletimetracker.navigation.params.screen.RecordsFilterParam
 import com.example.util.simpletimetracker.navigation.params.screen.RecordsFilterParams
 import com.example.util.simpletimetracker.navigation.params.screen.RecordsFilterResultParams
+import com.example.util.simpletimetracker.navigation.params.screen.StandardDialogParams
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlinx.parcelize.Parcelize
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @HiltViewModel
 class RecordsFilterViewModel @Inject constructor(
+    private val resourceRepo: ResourceRepo,
     private val viewDataInteractor: RecordsFilterViewDataInteractor,
     private val recordsFilterViewDataMapper: RecordsFilterViewDataMapper,
     private val recordTypeInteractor: RecordTypeInteractor,
@@ -85,6 +94,7 @@ class RecordsFilterViewModel @Inject constructor(
     private val router: Router,
     private val recordsFilterUpdateInteractor: RecordsFilterUpdateInteractor,
     private val recordFilterInteractor: RecordFilterInteractor,
+    private val favouriteRecordsFilterInteractor: FavouriteRecordsFilterInteractor,
 ) : ViewModel() {
 
     private lateinit var extra: RecordsFilterParams
@@ -128,6 +138,7 @@ class RecordsFilterViewModel @Inject constructor(
     private var activitiesSelectionState: RecordFilterActivitiesType = RecordFilterActivitiesType.Activities
     private var isArchivedTypesShown: Boolean = false
     private var isArchivedTagsShown: Boolean = false
+    private var isDeleteFavouriteEnabled: Boolean = false
     private val defaultRange: Range by lazy { viewDataInteractor.getDefaultDateRange() }
     private val defaultDurationRange: Range by lazy { viewDataInteractor.getDefaultDurationRange() }
     private val defaultTimeOfDayRange: Range by lazy { viewDataInteractor.getDefaultTimeOfDayRange() }
@@ -148,7 +159,8 @@ class RecordsFilterViewModel @Inject constructor(
         this.extra = extra
         filters = extra.filters.map(RecordsFilterParam::toModel).toMutableList()
 
-        recordsFilterViewDataMapper.mapInitialFilter(extra, filters)
+        viewDataInteractor.filterAvailableFilters(extra, filters)
+            .let { recordsFilterViewDataMapper.mapInitialFilter(it) }
             ?.let(RecordsFilterSelectionState::Visible)
             ?.let(this::filterSelectionState::set)
     }
@@ -277,6 +289,12 @@ class RecordsFilterViewModel @Inject constructor(
         updateViewDataOnFiltersChanged()
     }
 
+    fun onPositiveDialogClick(tag: String?, data: Any?) {
+        when (tag) {
+            DELETE_FAVOURITE_DIALOG_TAG -> onFavouriteFilterDeleteClick(data)
+        }
+    }
+
     fun onDateTimeSet(timestamp: Long, tag: String?) = viewModelScope.launch {
         when (tag) {
             TIME_STARTED_TAG, TIME_ENDED_TAG -> handleDateSet(timestamp, tag)
@@ -357,12 +375,57 @@ class RecordsFilterViewModel @Inject constructor(
             RecordsFilterButtonViewData.Type.FILTER_DUPLICATES -> {
                 handleFilterDuplicates()
             }
+            RecordsFilterButtonViewData.Type.SAVE_FAVOURITE -> {
+                handleSaveFavourite()
+            }
+            RecordsFilterButtonViewData.Type.DELETE_FAVOURITE -> {
+                isDeleteFavouriteEnabled = !isDeleteFavouriteEnabled
+                updateFilterSelectionViewData()
+            }
         }
     }
 
     fun onDayOfWeekClick(viewData: DayOfWeekViewData) {
         handleDayOfWeekClick(viewData.dayOfWeek)
         updateViewDataOnFiltersChanged()
+    }
+
+    fun onFavouriteFilterClick(viewData: FavouriteRecordsFilterViewData) {
+        if (!viewData.isEnabled) return
+        if (isDeleteFavouriteEnabled) {
+            router.navigate(
+                StandardDialogParams(
+                    tag = DELETE_FAVOURITE_DIALOG_TAG,
+                    data = DeleteFavouriteFilterData(viewData.id),
+                    title = resourceRepo.getString(R.string.change_record_type_delete_alert),
+                    message = resourceRepo.getString(R.string.archive_deletion_alert),
+                    btnPositive = resourceRepo.getString(R.string.ok),
+                    btnNegative = resourceRepo.getString(R.string.cancel),
+                ),
+            )
+            return
+        }
+        viewModelScope.launch {
+            val newFilter = favouriteRecordsFilterInteractor.get(viewData.id)?.filter
+                ?: return@launch
+
+            val dateFilter = filters.getDate()
+            filters = if (!extra.flags.dateSelectionAvailable && dateFilter != null) {
+                // Restore date for statistics detail.
+                newFilter.plus(dateFilter)
+            } else {
+                newFilter
+            }
+            updateViewDataOnFiltersChanged()
+        }
+    }
+
+    private fun onFavouriteFilterDeleteClick(data: Any?) {
+        val data = data as? DeleteFavouriteFilterData ?: return
+        viewModelScope.launch {
+            favouriteRecordsFilterInteractor.remove(data.id)
+            updateFilterSelectionViewData()
+        }
     }
 
     private suspend fun onDateRangeClick(viewData: FilterViewData) {
@@ -521,6 +584,18 @@ class RecordsFilterViewModel @Inject constructor(
             checkManualFilterVisibility()
             updateViewDataOnFiltersChanged()
         }
+    }
+
+    private fun handleSaveFavourite() = viewModelScope.launch {
+        // Remove unavailable but present filters (mainly Date from statistics detail).
+        val availableFilters = viewDataInteractor.filterAvailableFilters(extra, filters)
+        if (availableFilters.isEmpty()) return@launch
+        val data = FavouriteRecordsFilter(
+            id = 0L, // Creates new record,
+            filter = availableFilters,
+        )
+        favouriteRecordsFilterInteractor.add(data)
+        updateFilterSelectionViewData()
     }
 
     private fun handleDayOfWeekClick(dayOfWeek: DayOfWeek) {
@@ -853,8 +928,23 @@ class RecordsFilterViewModel @Inject constructor(
                     filters = filters,
                 )
             }
+            RecordFilterType.Favourite -> {
+                viewDataInteractor.getFavouriteFiltersSelectionViewData(
+                    filters = filters,
+                    extra = extra,
+                    isDeleteEnabled = isDeleteFavouriteEnabled,
+                    recordTypes = getTypesCache().associateBy { it.id },
+                    categories = getCategoriesCache().associateBy { it.id },
+                    recordTags = getTagsCache().associateBy { it.id },
+                )
+            }
         }
     }
+
+    @Parcelize
+    private data class DeleteFavouriteFilterData(
+        val id: Long,
+    ) : Parcelable
 
     companion object {
         private const val TIME_STARTED_TAG = "records_filter_range_selection_time_started_tag"
@@ -863,5 +953,6 @@ class RecordsFilterViewModel @Inject constructor(
         private const val DURATION_TO_TAG = "records_filter_duration_selection_to_tag"
         private const val TIME_OF_DAY_FROM_TAG = "records_filter_time_of_day_selection_from_tag"
         private const val TIME_OF_DAY_TO_TAG = "records_filter_time_of_day_selection_to_tag"
+        private const val DELETE_FAVOURITE_DIALOG_TAG = "records_filter_delete_alert_dialog_tag"
     }
 }

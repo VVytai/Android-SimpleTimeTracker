@@ -615,6 +615,8 @@ CSV dosyası virgülle ayrılmış şu sütunları içermelidir:<br/>
     <string name="records_filter_duplications_same_activity">Aynı aktivite</string>
     <string name="records_filter_duplications_same_times">Aynı zaman</string>
     <string name="records_filter_duplications_manually_fitler">Kopyaları filtrele</string>
+    <string name="records_filter_save_filter">Filtreyi kaydet</string>
+    <string name="records_filter_filter_not_available">Kullanılamıyor</string>
 
     <!--  Pomodoro  -->
     <string name="pomodoro_state_focus">Odaklanma</string>

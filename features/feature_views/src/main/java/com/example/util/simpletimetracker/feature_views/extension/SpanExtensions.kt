@@ -25,18 +25,21 @@ fun String.toSpannableString(): SpannableString {
     return SpannableString(this)
 }
 
+fun SpannableString.setSpan(
+    start: Int = 0,
+    length: Int = this.length,
+    span: Any,
+): SpannableString {
+    setSpan(span, start, start + length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+    return this
+}
+
 fun SpannableString.setBackgroundSpan(
-    start: Int,
-    length: Int,
+    start: Int = 0,
+    length: Int = this.length,
     @ColorInt color: Int,
 ): SpannableString {
-    setSpan(
-        BackgroundColorSpan(color),
-        start,
-        start + length,
-        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE,
-    )
-    return this
+    return setSpan(start = start, length = length, span = BackgroundColorSpan(color))
 }
 
 fun SpannableString.setForegroundSpan(
@@ -44,13 +47,7 @@ fun SpannableString.setForegroundSpan(
     length: Int = this.length,
     @ColorInt color: Int,
 ): SpannableString {
-    setSpan(
-        ForegroundColorSpan(color),
-        start,
-        start + length,
-        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE,
-    )
-    return this
+    return setSpan(start = start, length = length, span = ForegroundColorSpan(color))
 }
 
 fun SpannableString.setClickableSpan(
@@ -58,13 +55,7 @@ fun SpannableString.setClickableSpan(
     length: Int,
     onClick: () -> Unit,
 ): SpannableString {
-    setSpan(
-        createClickableSpan(onClick),
-        start,
-        start + length,
-        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE,
-    )
-    return this
+    return setSpan(start = start, length = length, span = createClickableSpan(onClick))
 }
 
 fun SpannableString.setImageSpan(
@@ -82,13 +73,7 @@ fun SpannableString.setImageSpan(
     } else {
         ImageSpan(finalDrawable, DynamicDrawableSpan.ALIGN_BASELINE)
     }
-    setSpan(
-        span,
-        start,
-        start + length,
-        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE,
-    )
-    return this
+    return setSpan(start = start, length = length, span = span)
 }
 
 fun SpannableStringBuilder.image(

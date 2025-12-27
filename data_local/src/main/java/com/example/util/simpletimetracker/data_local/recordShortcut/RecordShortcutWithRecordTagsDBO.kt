@@ -10,7 +10,6 @@ data class RecordShortcutWithRecordTagsDBO(
     @Relation(
         parentColumn = "id",
         entityColumn = "shortcut_id",
-        entity = RecordShortcutToRecordTagDBO::class,
     )
     val recordTags: List<RecordShortcutToRecordTagDBO>,
 )

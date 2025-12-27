@@ -615,6 +615,8 @@ Ví dụ:<br/>
     <string name="records_filter_duplications_same_activity">Hoạt động tương tự</string>
     <string name="records_filter_duplications_same_times">Cùng thời gian</string>
     <string name="records_filter_duplications_manually_fitler">Lọc trùng lặp</string>
+    <string name="records_filter_save_filter">Lưu bộ lọc</string>
+    <string name="records_filter_filter_not_available">Không khả dụng</string>
 
     <!--  Pomodoro  -->
     <string name="pomodoro_state_focus">Tiêu điểm</string>

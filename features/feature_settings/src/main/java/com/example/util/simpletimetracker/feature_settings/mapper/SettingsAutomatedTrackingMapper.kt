@@ -8,7 +8,6 @@ import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import com.example.util.simpletimetracker.core.extension.fromHtml
 import com.example.util.simpletimetracker.core.manager.ClipboardManager
-import com.example.util.simpletimetracker.core.mapper.ColorMapper
 import com.example.util.simpletimetracker.core.provider.ApplicationDataProvider
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.core.utils.ACTION_EXTERNAL_ADD_RECORD
@@ -53,7 +52,6 @@ import javax.inject.Inject
 class SettingsAutomatedTrackingMapper @Inject constructor(
     private val resourceRepo: ResourceRepo,
     private val router: Router,
-    private val colorMapper: ColorMapper,
     private val clipboardManager: ClipboardManager,
     private val applicationDataProvider: ApplicationDataProvider,
 ) {
