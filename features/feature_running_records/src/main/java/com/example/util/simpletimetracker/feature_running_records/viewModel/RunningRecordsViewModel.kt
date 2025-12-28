@@ -361,7 +361,25 @@ class RunningRecordsViewModel @Inject constructor(
     }
 
     fun onShortcutClick(item: RecordShortcutViewData) = viewModelScope.launch {
-        val shortcut = recordShortcutInteractor.get(item.id) ?: return@launch
+        val startByLongClick = prefsInteractor.getStartTimerByLongClick()
+        if (!startByLongClick) {
+            onShortcutStart(item)
+        } else {
+            onShortcutEdit(item)
+        }
+    }
+
+    fun onShortcutLongClick(item: RecordShortcutViewData) = viewModelScope.launch {
+        val startByLongClick = prefsInteractor.getStartTimerByLongClick()
+        if (!startByLongClick) {
+            onShortcutEdit(item)
+        } else {
+            onShortcutStart(item)
+        }
+    }
+
+    private suspend fun onShortcutStart(item: RecordShortcutViewData) {
+        val shortcut = recordShortcutInteractor.get(item.id) ?: return
         recordActionRepeatMediator.execute(
             typeId = shortcut.typeId,
             comment = shortcut.comment,
@@ -370,7 +388,7 @@ class RunningRecordsViewModel @Inject constructor(
         updateRunningRecords()
     }
 
-    fun onShortcutLongClick(item: RecordShortcutViewData) {
+    private fun onShortcutEdit(item: RecordShortcutViewData) {
         router.navigate(
             StandardDialogParams(
                 tag = DELETE_SHORTCUT_ALERT_DIALOG_TAG,

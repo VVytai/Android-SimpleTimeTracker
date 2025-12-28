@@ -376,6 +376,7 @@
     <string name="settings_duration_format_proportional">비례</string>
     <string name="settings_show_seconds">초 표시</string>
     <string name="settings_keep_screen_on">화면 켠채로 유지</string>
+    <string name="settings_start_timer_by_long_click">길게 눌러 타이머 시작 및 중지</string>
     <string name="settings_change_card_size">활동 카드 크기 변경</string>
     <string name="settings_archive">보관</string>
     <string name="settings_data_edit">데이터 수정</string>

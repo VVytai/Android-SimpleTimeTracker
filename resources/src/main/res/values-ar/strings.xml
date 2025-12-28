@@ -376,6 +376,7 @@
     <string name="settings_duration_format_proportional">نسبي</string>
     <string name="settings_show_seconds">إظهار الثواني</string>
     <string name="settings_keep_screen_on">أبق الشاشة قيد التشغيل</string>
+    <string name="settings_start_timer_by_long_click">بدء وإيقاف المؤقتات بالضغط المطوّل</string>
     <string name="settings_change_card_size">تغيير حجم بطاقات اﻷنشظة</string>
     <string name="settings_archive">اﻷرشيف</string>
     <string name="settings_data_edit">تعديل البيانات</string>

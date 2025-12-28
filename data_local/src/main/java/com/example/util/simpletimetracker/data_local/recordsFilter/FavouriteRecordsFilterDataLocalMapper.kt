@@ -72,7 +72,7 @@ class FavouriteRecordsFilterDataLocalMapper @Inject constructor(
                     RecordsFilter.ManuallyFilteredItem.Tracked(id)
                 }
                 it.startsWith(MANUALLY_ITEM_MULTITASK) -> {
-                    val ids = it.removePrefix(MANUALLY_ITEM_TRACKED)
+                    val ids = it.removePrefix(MANUALLY_ITEM_MULTITASK)
                         .split(SEPARATOR)
                         .mapNotNull(String::toLongOrNull)
                         .ifEmpty { return@mapNotNull null }

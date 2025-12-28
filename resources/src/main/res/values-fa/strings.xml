@@ -376,6 +376,7 @@
     <string name="settings_duration_format_proportional">تناسبی</string>
     <string name="settings_show_seconds">نمایش ثانیه ها</string>
     <string name="settings_keep_screen_on">صفحه را روشن نگه دار</string>
+    <string name="settings_start_timer_by_long_click">شروع و توقف تایمرها با لمس طولانی</string>
     <string name="settings_change_card_size">سایز کارت فعالیت ها را تغییر دهید</string>
     <string name="settings_archive">بایگانی</string>
     <string name="settings_data_edit">ویرایش اطلاعات</string>
