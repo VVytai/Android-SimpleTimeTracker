@@ -136,7 +136,7 @@ class NotificationTypeBroadcastController @Inject constructor(
     }
 
     private fun safeLaunch(
-        block: suspend CoroutineScope.() -> Unit
+        block: suspend CoroutineScope.() -> Unit,
     ) {
         allowDiskRead { MainScope() }.launch(block = block)
     }
