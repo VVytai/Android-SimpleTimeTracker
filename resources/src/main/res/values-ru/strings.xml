@@ -377,6 +377,7 @@
     <string name="settings_show_seconds">Показать секунды</string>
     <string name="settings_keep_screen_on">Держать экран включенным</string>
     <string name="settings_customize_options_menu">Настроить меню с опциями</string>
+    <string name="settings_detailed_statistics">Подробная статистика</string>
     <string name="settings_start_timer_by_long_click">Запуск и остановка таймеров долгим нажатием</string>
     <string name="settings_change_card_size">Изменить размер карточки активности</string>
     <string name="settings_archive">Архив</string>

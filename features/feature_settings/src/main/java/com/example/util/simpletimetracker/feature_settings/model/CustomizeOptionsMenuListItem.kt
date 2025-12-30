@@ -10,4 +10,7 @@ sealed interface CustomizeOptionsMenuListItem : OptionsListParams.Item.Id {
 
     @Parcelize
     data object Statistics : CustomizeOptionsMenuListItem
+
+    @Parcelize
+    data object DetailedStatistics : CustomizeOptionsMenuListItem
 }

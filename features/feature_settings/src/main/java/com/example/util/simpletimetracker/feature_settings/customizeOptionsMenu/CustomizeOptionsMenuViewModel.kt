@@ -38,9 +38,10 @@ class CustomizeOptionsMenuViewModel @Inject constructor(
             is ContainerOptionsModel.Records -> {
                 recordsContainerUpdateInteractor.sendDateSelectorUpdate()
             }
-            is ContainerOptionsModel.Statistics -> {
-                // Updated on visible.
-            }
+            // Updated on visible.
+            is ContainerOptionsModel.Statistics -> Unit
+            // Updated on screen open.
+            is ContainerOptionsModel.DetailedStatistics -> Unit
         }
     }
 

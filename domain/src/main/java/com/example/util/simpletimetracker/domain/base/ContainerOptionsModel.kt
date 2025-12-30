@@ -17,4 +17,12 @@ sealed interface ContainerOptionsModel {
         data object SelectDate : Statistics
         data object SelectRange : Statistics
     }
+
+    sealed interface DetailedStatistics : ContainerOptionsModel {
+        data object Compare : DetailedStatistics
+        data object Filter : DetailedStatistics
+        data object SelectDate : DetailedStatistics
+        data object SelectRange : DetailedStatistics
+        data object BackToToday : DetailedStatistics
+    }
 }

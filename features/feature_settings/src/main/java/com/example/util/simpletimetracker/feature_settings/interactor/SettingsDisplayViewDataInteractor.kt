@@ -259,7 +259,6 @@ class SettingsDisplayViewDataInteractor @Inject constructor(
             result += mapOrderData(
                 CardOrderDialogParams.Type.Tag(prefsInteractor.getTagOrder()),
             )
-            // TODO OPTIONS add statistics detail
             result += SettingsTextViewData(
                 block = SettingsBlock.DisplayCustomizeOptionsMenu,
                 title = resourceRepo.getString(R.string.settings_customize_options_menu),

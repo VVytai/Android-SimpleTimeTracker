@@ -377,6 +377,7 @@ Acest lucru îți permite să vezi cât timp petreci în activități productive
     <string name="settings_show_seconds">Arată secunde</string>
     <string name="settings_keep_screen_on">Păstrează ecranul activ</string>
     <string name="settings_customize_options_menu">Personalizează meniul de opțiuni</string>
+    <string name="settings_detailed_statistics">Statistici detaliate</string>
     <string name="settings_start_timer_by_long_click">Pornește și oprește cronometrele prin apăsare lungă</string>
     <string name="settings_change_card_size">Modifică dimensiunea carților de activitate</string>
     <string name="settings_archive">Arhivă</string>

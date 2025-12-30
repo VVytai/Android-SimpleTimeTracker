@@ -377,6 +377,7 @@
     <string name="settings_show_seconds">顯示秒數</string>
     <string name="settings_keep_screen_on">保持螢幕長開</string>
     <string name="settings_customize_options_menu">自訂選項選單</string>
+    <string name="settings_detailed_statistics">詳細統計</string>
     <string name="settings_start_timer_by_long_click">長按以開始與停止計時器</string>
     <string name="settings_change_card_size">改變活動卡片尺寸</string>
     <string name="settings_archive">備存</string>

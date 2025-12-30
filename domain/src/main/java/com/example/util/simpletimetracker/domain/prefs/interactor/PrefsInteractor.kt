@@ -1052,6 +1052,11 @@ class PrefsInteractor @Inject constructor(
                 102 -> ContainerOptionsModel.Statistics.BackToToday
                 103 -> ContainerOptionsModel.Statistics.SelectDate
                 104 -> ContainerOptionsModel.Statistics.SelectRange
+                200 -> ContainerOptionsModel.DetailedStatistics.Compare
+                201 -> ContainerOptionsModel.DetailedStatistics.Filter
+                202 -> ContainerOptionsModel.DetailedStatistics.SelectDate
+                203 -> ContainerOptionsModel.DetailedStatistics.SelectRange
+                204 -> ContainerOptionsModel.DetailedStatistics.BackToToday
                 else -> null
             }
         }
@@ -1071,6 +1076,11 @@ class PrefsInteractor @Inject constructor(
                 is ContainerOptionsModel.Statistics.BackToToday -> 102
                 is ContainerOptionsModel.Statistics.SelectDate -> 103
                 is ContainerOptionsModel.Statistics.SelectRange -> 104
+                is ContainerOptionsModel.DetailedStatistics.Compare -> 200
+                is ContainerOptionsModel.DetailedStatistics.Filter -> 201
+                is ContainerOptionsModel.DetailedStatistics.SelectDate -> 202
+                is ContainerOptionsModel.DetailedStatistics.SelectRange -> 203
+                is ContainerOptionsModel.DetailedStatistics.BackToToday -> 204
             }.toString()
         }
         prefsRepo.hiddenContainerOptions = data.map(::map).toSet()

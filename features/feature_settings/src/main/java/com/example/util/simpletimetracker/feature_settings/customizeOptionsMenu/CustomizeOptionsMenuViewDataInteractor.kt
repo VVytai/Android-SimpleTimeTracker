@@ -9,6 +9,7 @@ import com.example.util.simpletimetracker.feature_records.api.RecordsContainerOp
 import com.example.util.simpletimetracker.feature_settings.views.SettingsCheckboxViewData
 import com.example.util.simpletimetracker.feature_settings.views.SettingsCheckboxWithIconViewData
 import com.example.util.simpletimetracker.feature_statistics.api.StatisticsContainerOptionsListMapper
+import com.example.util.simpletimetracker.feature_statistics_detail.api.StatisticsDetailOptionsListMapper
 import com.example.util.simpletimetracker.navigation.params.screen.CustomizeOptionsMenuDialogParams
 import javax.inject.Inject
 
@@ -18,6 +19,7 @@ class CustomizeOptionsMenuViewDataInteractor @Inject constructor(
     private val customizeOptionsMenuMapper: CustomizeOptionsMenuMapper,
     private val recordsContainerOptionsListMapper: RecordsContainerOptionsListMapper,
     private val statisticsContainerOptionsListMapper: StatisticsContainerOptionsListMapper,
+    private val statisticsDetailOptionsListMapper: StatisticsDetailOptionsListMapper,
 ) {
 
     suspend fun execute(
@@ -34,6 +36,8 @@ class CustomizeOptionsMenuViewDataInteractor @Inject constructor(
                 recordsContainerOptionsListMapper.map(filterHidden = false)
             is CustomizeOptionsMenuDialogParams.From.Statistics ->
                 statisticsContainerOptionsListMapper.map(filterHidden = false, RangeLength.Day)
+            is CustomizeOptionsMenuDialogParams.From.DetailedStatistics ->
+                statisticsDetailOptionsListMapper.map(filterHidden = false, RangeLength.Day)
         }
         result += items.mapIndexedNotNull { index, item ->
             val data = SettingsCheckboxViewData(

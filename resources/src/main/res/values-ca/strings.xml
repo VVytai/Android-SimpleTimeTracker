@@ -377,6 +377,7 @@ Això et permet veure quant de temps dediques a activitats productives versus no
     <string name="settings_show_seconds">Mostra segons</string>
     <string name="settings_keep_screen_on">Mantingues la pantalla encesa</string>
     <string name="settings_customize_options_menu">Personalitza el menú d\'opcions</string>
+    <string name="settings_detailed_statistics">Estadístiques detallades</string>
     <string name="settings_start_timer_by_long_click">Inicia i atura els temporitzadors amb una pulsació llarga</string>
     <string name="settings_change_card_size">Canvia la mida de la targeta d\'activitat</string>
     <string name="settings_archive">Arxiu</string>

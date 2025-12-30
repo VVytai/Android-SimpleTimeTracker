@@ -390,6 +390,11 @@ class SettingsMapper @Inject constructor(
                 text = resourceRepo.getString(R.string.shortcut_navigation_statistics),
                 icon = R.drawable.tab_statistics,
             ),
+            OptionsListParams.Item(
+                id = CustomizeOptionsMenuListItem.DetailedStatistics,
+                text = resourceRepo.getString(R.string.settings_detailed_statistics),
+                icon = R.drawable.tab_statistics,
+            ),
         )
     }
 

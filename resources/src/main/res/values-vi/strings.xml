@@ -376,7 +376,8 @@
     <string name="settings_duration_format_proportional">Tỷ lệ</string>
     <string name="settings_show_seconds">Hiện giây</string>
     <string name="settings_keep_screen_on">Giữ màn hình luôn bật</string>
-    <string name="settings_customize_options_menu">Tùy chỉnh меню tùy chọn</string>
+    <string name="settings_customize_options_menu">Tùy chỉnh menu tùy chọn</string>
+    <string name="settings_detailed_statistics">Thống kê chi tiết</string>
     <string name="settings_start_timer_by_long_click">Bắt đầu và dừng bộ đếm bằng cách nhấn giữ</string>
     <string name="settings_change_card_size">Thay đổi kích thước thẻ hoạt động</string>
     <string name="settings_archive">Lưu trữ</string>

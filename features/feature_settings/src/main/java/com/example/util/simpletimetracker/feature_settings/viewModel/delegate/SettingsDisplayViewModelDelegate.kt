@@ -356,8 +356,12 @@ class SettingsDisplayViewModelDelegate @Inject constructor(
         when (id) {
             is CustomizeOptionsMenuListItem -> {
                 val from = when (id) {
-                    is CustomizeOptionsMenuListItem.Records -> CustomizeOptionsMenuDialogParams.From.Records
-                    is CustomizeOptionsMenuListItem.Statistics -> CustomizeOptionsMenuDialogParams.From.Statistics
+                    is CustomizeOptionsMenuListItem.Records ->
+                        CustomizeOptionsMenuDialogParams.From.Records
+                    is CustomizeOptionsMenuListItem.Statistics ->
+                        CustomizeOptionsMenuDialogParams.From.Statistics
+                    is CustomizeOptionsMenuListItem.DetailedStatistics ->
+                        CustomizeOptionsMenuDialogParams.From.DetailedStatistics
                 }
                 router.navigate(CustomizeOptionsMenuDialogParams(from))
             }

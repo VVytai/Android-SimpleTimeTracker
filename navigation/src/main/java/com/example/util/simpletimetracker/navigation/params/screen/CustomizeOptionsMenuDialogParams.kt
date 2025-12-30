@@ -14,6 +14,9 @@ data class CustomizeOptionsMenuDialogParams(
 
         @Parcelize
         data object Statistics : From
+
+        @Parcelize
+        data object DetailedStatistics : From
     }
 
     companion object {

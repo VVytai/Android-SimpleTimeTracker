@@ -377,6 +377,7 @@ Dies ermöglicht es dir, zu sehen, wie viel Zeit du insgesamt für produktive ve
     <string name="settings_show_seconds">Sekunden anzeigen</string>
     <string name="settings_keep_screen_on">Bildschirm anlassen</string>
     <string name="settings_customize_options_menu">Optionsmenü anpassen</string>
+    <string name="settings_detailed_statistics">Detaillierte Statistiken</string>
     <string name="settings_start_timer_by_long_click">Timer durch langes Tippen starten und stoppen</string>
     <string name="settings_change_card_size">Aktivitätskartengröße ändern</string>
     <string name="settings_archive">Archiv</string>

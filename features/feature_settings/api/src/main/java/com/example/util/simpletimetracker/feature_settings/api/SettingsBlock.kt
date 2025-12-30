@@ -139,4 +139,10 @@ enum class SettingsBlock {
     CustomizeOptionsMenuStatisticsBackToToday,
     CustomizeOptionsMenuStatisticsSelectDate,
     CustomizeOptionsMenuStatisticsSelectRange,
+
+    CustomizeOptionsMenuDetailedStatisticsCompare,
+    CustomizeOptionsMenuDetailedStatisticsFilter,
+    CustomizeOptionsMenuDetailedStatisticsSelectDate,
+    CustomizeOptionsMenuDetailedStatisticsSelectRange,
+    CustomizeOptionsMenuDetailedStatisticsBackToToday,
 }

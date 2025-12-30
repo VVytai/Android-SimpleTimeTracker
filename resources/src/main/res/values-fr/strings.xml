@@ -377,6 +377,7 @@ Cela vous permet de voir combien de temps vous passez globalement sur des activi
     <string name="settings_show_seconds">Afficher les secondes</string>
     <string name="settings_keep_screen_on">Garder l\'écran allumé</string>
     <string name="settings_customize_options_menu">Personnaliser le menu des options</string>
+    <string name="settings_detailed_statistics">Statistiques détaillées</string>
     <string name="settings_start_timer_by_long_click">Démarrer et arrêter les minuteurs par appui long</string>
     <string name="settings_change_card_size">Modifier la taille des cartes d\'activité</string>
     <string name="settings_archive">Éléments archivés</string>
