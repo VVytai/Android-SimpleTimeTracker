@@ -10,7 +10,7 @@ sealed interface ContainerOptionsModel {
         data object SelectDate : Records
     }
 
-    sealed interface Statistics: ContainerOptionsModel {
+    sealed interface Statistics : ContainerOptionsModel {
         data object Filter : Statistics
         data object Share : Statistics
         data object BackToToday : Statistics

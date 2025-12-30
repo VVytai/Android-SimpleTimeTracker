@@ -19,8 +19,8 @@ dependencies {
     implementation(project(":core"))
     implementation(project(":feature_settings:api"))
     implementation(project(":feature_settings:views"))
-    implementation(project(":feature_records")) // TODO OPTIONS add api module
-    implementation(project(":feature_statistics")) // TODO OPTIONS add api module
+    implementation(project(":feature_records:api"))
+    implementation(project(":feature_statistics:api"))
     implementation(libs.google.dagger)
     ksp(libs.kapt.dagger)
 }

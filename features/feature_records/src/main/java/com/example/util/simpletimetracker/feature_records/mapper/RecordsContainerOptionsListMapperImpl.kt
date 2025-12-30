@@ -7,17 +7,18 @@ import com.example.util.simpletimetracker.domain.base.ContainerOptionsModel
 import com.example.util.simpletimetracker.domain.extension.plusAssign
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.feature_records.R
-import com.example.util.simpletimetracker.feature_records.model.RecordsContainerOptionsListItem
+import com.example.util.simpletimetracker.feature_records.api.RecordsContainerOptionsListMapper
+import com.example.util.simpletimetracker.feature_records.api.RecordsContainerOptionsListItem
 import com.example.util.simpletimetracker.navigation.params.screen.OptionsListParams
 import javax.inject.Inject
 
-class RecordsContainerOptionsListMapper @Inject constructor(
+class RecordsContainerOptionsListMapperImpl @Inject constructor(
     private val resourceRepo: ResourceRepo,
     private val prefsInteractor: PrefsInteractor,
     private val optionsListItemMapper: OptionsListItemMapper,
-) {
+) : RecordsContainerOptionsListMapper {
 
-    suspend fun map(
+    override suspend fun map(
         filterHidden: Boolean,
     ): List<OptionsListParams.Item> {
         val result = mutableListOf<OptionsListParams.Item>()
@@ -57,7 +58,7 @@ class RecordsContainerOptionsListMapper @Inject constructor(
         return result
     }
 
-    fun mapItemFromModel(model: ContainerOptionsModel.Records): RecordsContainerOptionsListItem {
+    override fun mapItemFromModel(model: ContainerOptionsModel.Records): RecordsContainerOptionsListItem {
         return when (model) {
             is ContainerOptionsModel.Records.CalendarView -> RecordsContainerOptionsListItem.CalendarView
             is ContainerOptionsModel.Records.Filter -> RecordsContainerOptionsListItem.Filter
@@ -67,7 +68,7 @@ class RecordsContainerOptionsListMapper @Inject constructor(
         }
     }
 
-    fun mapItemToModel(id: RecordsContainerOptionsListItem): ContainerOptionsModel {
+    override fun mapItemToModel(id: RecordsContainerOptionsListItem): ContainerOptionsModel {
         return when (id) {
             is RecordsContainerOptionsListItem.CalendarView -> ContainerOptionsModel.Records.CalendarView
             is RecordsContainerOptionsListItem.Filter -> ContainerOptionsModel.Records.Filter
@@ -77,7 +78,9 @@ class RecordsContainerOptionsListMapper @Inject constructor(
         }
     }
 
-    suspend fun <T> mapCommonItem(id: T): OptionsListParams.Item?
+    private suspend fun <T> mapCommonItem(
+        id: T,
+    ): OptionsListParams.Item?
         where T : CommonOptionsListItem, T : OptionsListParams.Item.Id {
         return optionsListItemMapper.mapCommonItem(
             id = id,

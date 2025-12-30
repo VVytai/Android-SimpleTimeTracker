@@ -2,7 +2,6 @@ package com.example.util.simpletimetracker.feature_statistics.viewModel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.util.simpletimetracker.core.base.BaseViewModel
 import com.example.util.simpletimetracker.core.delegates.dateSelector.mapper.DateSelectorMapper
@@ -19,8 +18,8 @@ import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteracto
 import com.example.util.simpletimetracker.domain.record.interactor.StatisticsUpdateInteractor
 import com.example.util.simpletimetracker.domain.record.model.Range
 import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
-import com.example.util.simpletimetracker.feature_statistics.mapper.StatisticsContainerOptionsListMapper
-import com.example.util.simpletimetracker.feature_statistics.model.StatisticsContainerOptionsListItem
+import com.example.util.simpletimetracker.feature_statistics.api.StatisticsContainerOptionsListItem
+import com.example.util.simpletimetracker.feature_statistics.api.StatisticsContainerOptionsListMapper
 import com.example.util.simpletimetracker.navigation.Router
 import com.example.util.simpletimetracker.navigation.params.screen.CustomRangeSelectionParams
 import com.example.util.simpletimetracker.navigation.params.screen.DateTimeDialogParams
@@ -247,8 +246,8 @@ class StatisticsContainerViewModel @Inject constructor(
                     optionsButton = dateSelectorViewModelDelegate.getOptionsButton(
                         options = statisticsContainerOptionsListMapper.map(
                             filterHidden = true,
-                            rangeLength = getRangeLength()
-                        )
+                            rangeLength = getRangeLength(),
+                        ),
                     ),
                     rangeLength = getRangeLength(),
                 )

@@ -2,22 +2,22 @@ package com.example.util.simpletimetracker.feature_statistics.mapper
 
 import com.example.util.simpletimetracker.core.mapper.OptionsListItemMapper
 import com.example.util.simpletimetracker.core.mapper.RangeViewDataMapper
-import com.example.util.simpletimetracker.core.viewData.CommonOptionsListItem
 import com.example.util.simpletimetracker.domain.base.ContainerOptionsModel
 import com.example.util.simpletimetracker.domain.extension.plusAssign
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
-import com.example.util.simpletimetracker.feature_statistics.model.StatisticsContainerOptionsListItem
+import com.example.util.simpletimetracker.feature_statistics.api.StatisticsContainerOptionsListMapper
+import com.example.util.simpletimetracker.feature_statistics.api.StatisticsContainerOptionsListItem
 import com.example.util.simpletimetracker.navigation.params.screen.OptionsListParams
 import javax.inject.Inject
 
-class StatisticsContainerOptionsListMapper @Inject constructor(
+class StatisticsContainerOptionsListMapperImpl @Inject constructor(
     private val prefsInteractor: PrefsInteractor,
     private val optionsListItemMapper: OptionsListItemMapper,
     private val rangeViewDataMapper: RangeViewDataMapper,
-) {
+) : StatisticsContainerOptionsListMapper {
 
-    suspend fun map(
+    override suspend fun map(
         filterHidden: Boolean,
         rangeLength: RangeLength,
     ): List<OptionsListParams.Item> {
@@ -63,7 +63,7 @@ class StatisticsContainerOptionsListMapper @Inject constructor(
         return result
     }
 
-    fun mapItemFromModel(model: ContainerOptionsModel.Statistics): OptionsListParams.Item.Id {
+    override fun mapItemFromModel(model: ContainerOptionsModel.Statistics): OptionsListParams.Item.Id {
         return when (model) {
             is ContainerOptionsModel.Statistics.Filter -> StatisticsContainerOptionsListItem.Filter
             is ContainerOptionsModel.Statistics.Share -> StatisticsContainerOptionsListItem.Share
@@ -73,7 +73,7 @@ class StatisticsContainerOptionsListMapper @Inject constructor(
         }
     }
 
-    fun mapItemToModel(id: StatisticsContainerOptionsListItem): ContainerOptionsModel? {
+    override fun mapItemToModel(id: StatisticsContainerOptionsListItem): ContainerOptionsModel? {
         return when (id) {
             is StatisticsContainerOptionsListItem.Filter -> ContainerOptionsModel.Statistics.Filter
             is StatisticsContainerOptionsListItem.Share -> ContainerOptionsModel.Statistics.Share

@@ -1,11 +1,11 @@
 package com.example.util.simpletimetracker.feature_settings.customizeOptionsMenu
 
 import com.example.util.simpletimetracker.domain.base.ContainerOptionsModel
-import com.example.util.simpletimetracker.feature_records.mapper.RecordsContainerOptionsListMapper
-import com.example.util.simpletimetracker.feature_records.model.RecordsContainerOptionsListItem
+import com.example.util.simpletimetracker.feature_records.api.RecordsContainerOptionsListItem
+import com.example.util.simpletimetracker.feature_records.api.RecordsContainerOptionsListMapper
 import com.example.util.simpletimetracker.feature_settings.api.SettingsBlock
-import com.example.util.simpletimetracker.feature_statistics.mapper.StatisticsContainerOptionsListMapper
-import com.example.util.simpletimetracker.feature_statistics.model.StatisticsContainerOptionsListItem
+import com.example.util.simpletimetracker.feature_statistics.api.StatisticsContainerOptionsListItem
+import com.example.util.simpletimetracker.feature_statistics.api.StatisticsContainerOptionsListMapper
 import com.example.util.simpletimetracker.navigation.params.screen.OptionsListParams
 import javax.inject.Inject
 

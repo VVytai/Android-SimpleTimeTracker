@@ -21,8 +21,8 @@ import com.example.util.simpletimetracker.domain.record.interactor.RecordsShareU
 import com.example.util.simpletimetracker.domain.record.interactor.RecordsUpdateInteractor
 import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
 import com.example.util.simpletimetracker.feature_records.R
-import com.example.util.simpletimetracker.feature_records.mapper.RecordsContainerOptionsListMapper
-import com.example.util.simpletimetracker.feature_records.model.RecordsContainerOptionsListItem
+import com.example.util.simpletimetracker.feature_records.api.RecordsContainerOptionsListMapper
+import com.example.util.simpletimetracker.feature_records.api.RecordsContainerOptionsListItem
 import com.example.util.simpletimetracker.feature_records.model.RecordsContainerPosition
 import com.example.util.simpletimetracker.navigation.Router
 import com.example.util.simpletimetracker.navigation.params.notification.SnackBarParams

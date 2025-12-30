@@ -9,7 +9,6 @@ import com.example.util.simpletimetracker.domain.daysOfWeek.model.DaysInCalendar
 import com.example.util.simpletimetracker.domain.statistics.extension.canBeSwiped
 import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
 import com.example.util.simpletimetracker.feature_base_adapter.InfiniteRecyclerAdapter
-import com.example.util.simpletimetracker.feature_base_adapter.R
 import com.example.util.simpletimetracker.feature_base_adapter.dateSelector.DateSelectorDayViewData
 import com.example.util.simpletimetracker.feature_base_adapter.dateSelector.DateSelectorRangeViewData
 import com.example.util.simpletimetracker.feature_base_adapter.dateSelector.DateSelectorSingleViewData

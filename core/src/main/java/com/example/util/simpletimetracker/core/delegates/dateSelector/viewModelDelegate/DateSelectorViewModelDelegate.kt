@@ -9,7 +9,6 @@ import com.example.util.simpletimetracker.core.delegates.dateSelector.viewData.D
 import com.example.util.simpletimetracker.core.delegates.dateSelector.viewData.DateSelectorScrollViewData
 import com.example.util.simpletimetracker.core.extension.set
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
-import com.example.util.simpletimetracker.domain.record.model.RecordsFilter
 import com.example.util.simpletimetracker.feature_base_adapter.InfiniteRecyclerAdapter
 import com.example.util.simpletimetracker.feature_base_adapter.R
 import com.example.util.simpletimetracker.navigation.params.screen.OptionsListParams
