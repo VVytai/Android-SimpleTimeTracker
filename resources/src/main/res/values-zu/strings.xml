@@ -376,6 +376,7 @@ Lokhu kukuvumela ukuthi ubone isikhathi osichitha emisebenzini esebenzayo nezing
     <string name="settings_duration_format_proportional">Okulinganiselayo</string>
     <string name="settings_show_seconds">Bonisa amasekhondi</string>
     <string name="settings_keep_screen_on">Gcina isikrini sivuliwe</string>
+    <string name="settings_customize_options_menu">Lungisa imenyu yezinketho</string>
     <string name="settings_start_timer_by_long_click">Qala futhi ume ama-timer ngokucindezela isikhathi eside</string>
     <string name="settings_change_card_size">Shintsha usayizi wekhadi lomsebenzi</string>
     <string name="settings_archive">Ifayili elingasebenzi</string>

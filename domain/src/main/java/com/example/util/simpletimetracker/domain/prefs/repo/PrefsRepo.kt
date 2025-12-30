@@ -200,6 +200,8 @@ interface PrefsRepo {
 
     var statisticsDetailStreakType: Int
 
+    var hiddenContainerOptions: Set<String>
+
     fun setWidget(widgetId: Int, recordType: Long)
 
     fun getWidget(widgetId: Int): Long

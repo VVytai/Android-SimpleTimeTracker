@@ -417,6 +417,9 @@ class StatisticsDetailViewModel @Inject constructor(
 
             override suspend fun getSetupData(): DateSelectorMapper.SetupData.Type {
                 return DateSelectorMapper.SetupData.Type.Statistics(
+                    optionsButton = dateSelectorViewModelDelegate.getOptionsButton(
+                        options = statisticsDetailOptionsListMapper.map(RangeLength.Day),
+                    ),
                     rangeLength = rangeDelegate.provideRangeLength(),
                 )
             }

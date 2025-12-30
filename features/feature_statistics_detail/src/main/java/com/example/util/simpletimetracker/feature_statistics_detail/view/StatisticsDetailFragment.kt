@@ -151,7 +151,6 @@ class StatisticsDetailFragment :
         DateSelectorViewDelegate.initUx(
             fragment = this@StatisticsDetailFragment,
             binding = binding.containerDatesSelector,
-            isAddButtonVisible = false,
             onRecordAddClick = {},
             onOptionsClick = viewModel::onOptionsClick,
             onOptionsLongClick = viewModel::onOptionsLongClick,

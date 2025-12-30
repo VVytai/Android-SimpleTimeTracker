@@ -376,6 +376,7 @@
     <string name="settings_duration_format_proportional">अनुपातिक</string>
     <string name="settings_show_seconds">सेकंड दिखाएँ</string>
     <string name="settings_keep_screen_on">स्क्रीन को चालू रखें</string>
+    <string name="settings_customize_options_menu">विकल्प मेनू को अनुकूलित करें</string>
     <string name="settings_start_timer_by_long_click">लंबे टैप से टाइमर शुरू और बंद करें</string>
     <string name="settings_change_card_size">गतिविधि कार्ड का आकार बदलें</string>
     <string name="settings_archive">संग्रहालय</string>

@@ -453,6 +453,10 @@ class PrefsRepoImpl @Inject constructor(
         KEY_STATISTICS_DETAIL_STREAK_TYPE, 0,
     )
 
+    override var hiddenContainerOptions: Set<String> by prefs.delegate(
+        KEY_HIDDEN_CONTAINER_OPTIONS, emptySet(),
+    )
+
     override fun setWidget(widgetId: Int, recordType: Long) {
         val key = KEY_WIDGET + widgetId
         logPrefsDataAccess("set $key")
@@ -735,6 +739,7 @@ class PrefsRepoImpl @Inject constructor(
         const val KEY_CARD_ORDER_MANUAL = "cardOrderManual"
         const val KEY_CATEGORY_ORDER_MANUAL = "categoryOrderManual"
         const val KEY_TAG_ORDER_MANUAL = "tagOrderManual"
+        const val KEY_HIDDEN_CONTAINER_OPTIONS = "hiddenContainerOptions"
 
         private const val KEY_AUTOMATIC_BACKUP_URI = "automaticBackupUri"
         private const val KEY_AUTOMATIC_BACKUP_ERROR = "automaticBackupError"

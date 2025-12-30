@@ -376,6 +376,7 @@
     <string name="settings_duration_format_proportional">比例</string>
     <string name="settings_show_seconds">显示秒数</string>
     <string name="settings_keep_screen_on">保持屏幕常亮</string>
+    <string name="settings_customize_options_menu">自定义选项菜单</string>
     <string name="settings_start_timer_by_long_click">长按开始和停止计时器</string>
     <string name="settings_change_card_size">更改活动卡片大小</string>
     <string name="settings_archive">归档</string>

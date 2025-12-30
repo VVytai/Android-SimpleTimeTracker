@@ -376,6 +376,7 @@ Esto te permite ver cuánto tiempo estás dedicando a actividades productivas fr
     <string name="settings_duration_format_proportional">Proporcional</string>
     <string name="settings_show_seconds">Mostrar segundos</string>
     <string name="settings_keep_screen_on">Mantener la pantalla encendida</string>
+    <string name="settings_customize_options_menu">Personalizar el menú de opciones</string>
     <string name="settings_start_timer_by_long_click">Iniciar y detener temporizadores con pulsación larga</string>
     <string name="settings_change_card_size">Cambiar el tamaño de la tarjeta de actividad</string>
     <string name="settings_archive">Archivar</string>

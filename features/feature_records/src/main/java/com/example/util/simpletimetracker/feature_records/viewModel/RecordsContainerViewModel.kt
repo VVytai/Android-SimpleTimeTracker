@@ -69,8 +69,12 @@ class RecordsContainerViewModel @Inject constructor(
     }
 
     fun onOptionsClick() = viewModelScope.launch {
-        val items = recordsContainerOptionsListMapper.map()
-        router.navigate(OptionsListParams(items))
+        val items = recordsContainerOptionsListMapper.map(filterHidden = true)
+        when {
+            items.isEmpty() -> return@launch
+            items.size == 1 -> items.firstOrNull()?.id?.let(::onOptionsItemClick)
+            else -> router.navigate(OptionsListParams(items))
+        }
     }
 
     fun onOptionsLongClick() {
@@ -271,6 +275,9 @@ class RecordsContainerViewModel @Inject constructor(
 
             override suspend fun getSetupData(): DateSelectorMapper.SetupData.Type {
                 return DateSelectorMapper.SetupData.Type.Records(
+                    optionsButton = dateSelectorViewModelDelegate.getOptionsButton(
+                        options = recordsContainerOptionsListMapper.map(filterHidden = true),
+                    ),
                     isCalendarView = prefsInteractor.getShowRecordsCalendar(),
                     daysInCalendar = prefsInteractor.getDaysInCalendar(),
                 )

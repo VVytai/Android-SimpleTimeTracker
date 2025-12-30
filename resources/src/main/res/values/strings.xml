@@ -376,6 +376,7 @@ This allows you to see how much time you\'re spending on productive versus unpro
     <string name="settings_duration_format_proportional">Proportional</string>
     <string name="settings_show_seconds">Show seconds</string>
     <string name="settings_keep_screen_on">Keep screen on</string>
+    <string name="settings_customize_options_menu">Customize options menu</string>
     <string name="settings_start_timer_by_long_click">Start and stop timers by long click</string>
     <string name="settings_change_card_size">Change activity card size</string>
     <string name="settings_archive">Archive</string>
