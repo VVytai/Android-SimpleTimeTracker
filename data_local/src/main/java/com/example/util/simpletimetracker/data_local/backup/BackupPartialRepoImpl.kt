@@ -298,7 +298,7 @@ class BackupPartialRepoImpl @Inject constructor(
         val favouriteIcon: MutableList<FavouriteIcon> = mutableListOf()
         val favouriteIconCurrent: List<FavouriteIcon> = favouriteIconRepo.getAll()
         val goals: MutableList<RecordTypeGoal> = mutableListOf()
-        val goalsCurrent: List<RecordTypeGoal> = recordTypeGoalRepo.getAllTypeGoals()
+        val goalsCurrent: List<RecordTypeGoal> = recordTypeGoalRepo.getAll()
         val rules: MutableList<ComplexRule> = mutableListOf()
         val rulesCurrent: List<ComplexRule> = complexRuleRepo.getAll()
         val activitySuggestions: MutableList<ActivitySuggestion> = mutableListOf()

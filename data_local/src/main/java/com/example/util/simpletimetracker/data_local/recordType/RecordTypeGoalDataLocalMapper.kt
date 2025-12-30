@@ -12,10 +12,10 @@ class RecordTypeGoalDataLocalMapper @Inject constructor(
     fun map(dbo: RecordTypeGoalDBO): RecordTypeGoal {
         return RecordTypeGoal(
             id = dbo.id,
-            idData = if (dbo.typeId != 0L) {
-                RecordTypeGoal.IdData.Type(dbo.typeId)
-            } else {
-                RecordTypeGoal.IdData.Category(dbo.categoryId)
+            idData = when (dbo.ownerType) {
+                0L -> RecordTypeGoal.IdData.Type(dbo.ownerId)
+                1L -> RecordTypeGoal.IdData.Category(dbo.ownerId)
+                else -> RecordTypeGoal.IdData.Type(dbo.ownerId)
             },
             range = when (dbo.range) {
                 0L -> RecordTypeGoal.Range.Session
@@ -41,7 +41,11 @@ class RecordTypeGoalDataLocalMapper @Inject constructor(
     fun map(domain: RecordTypeGoal): RecordTypeGoalDBO {
         return RecordTypeGoalDBO(
             id = domain.id,
-            typeId = (domain.idData as? RecordTypeGoal.IdData.Type)?.value.orZero(),
+            ownerId = domain.idData.value,
+            ownerType = when (domain.idData) {
+                is RecordTypeGoal.IdData.Type -> 0L
+                is RecordTypeGoal.IdData.Category -> 1L
+            },
             range = when (domain.range) {
                 is RecordTypeGoal.Range.Session -> 0L
                 is RecordTypeGoal.Range.Daily -> 1L
@@ -57,7 +61,6 @@ class RecordTypeGoalDataLocalMapper @Inject constructor(
                 is RecordTypeGoal.Subtype.Limit -> 1L
             },
             value = domain.type.value,
-            categoryId = (domain.idData as? RecordTypeGoal.IdData.Category)?.value.orZero(),
             daysOfWeek = daysOfWeekDataLocalMapper.mapDaysOfWeek(domain.daysOfWeek),
         )
     }

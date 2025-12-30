@@ -15,18 +15,18 @@ interface RecordTypeGoalDao {
     @Query("SELECT * FROM recordTypeGoals WHERE id = :id LIMIT 1")
     suspend fun get(id: Long): RecordTypeGoalDBO?
 
-    @Query("SELECT * FROM recordTypeGoals WHERE type_id != 0")
+    @Query("SELECT * FROM recordTypeGoals WHERE owner_type == 0")
     suspend fun getAllTypeGoals(): List<RecordTypeGoalDBO>
 
-    @Query("SELECT * FROM recordTypeGoals WHERE category_id != 0")
+    @Query("SELECT * FROM recordTypeGoals WHERE owner_type == 1")
     suspend fun getAllCategoryGoals(): List<RecordTypeGoalDBO>
 
     @Transaction
-    @Query("SELECT * FROM recordTypeGoals WHERE type_id = :typeId")
+    @Query("SELECT * FROM recordTypeGoals WHERE owner_type == 0 AND owner_id = :typeId")
     suspend fun getByType(typeId: Long): List<RecordTypeGoalDBO>
 
     @Transaction
-    @Query("SELECT * FROM recordTypeGoals WHERE category_id = :categoryId")
+    @Query("SELECT * FROM recordTypeGoals WHERE owner_type == 1 AND owner_id = :categoryId")
     suspend fun getByCategory(categoryId: Long): List<RecordTypeGoalDBO>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -35,10 +35,10 @@ interface RecordTypeGoalDao {
     @Query("DELETE FROM recordTypeGoals WHERE id = :id")
     suspend fun delete(id: Long)
 
-    @Query("DELETE FROM recordTypeGoals WHERE type_id = :typeId")
+    @Query("DELETE FROM recordTypeGoals WHERE owner_type == 0 AND owner_id = :typeId")
     suspend fun deleteByType(typeId: Long)
 
-    @Query("DELETE FROM recordTypeGoals WHERE category_id = :categoryId")
+    @Query("DELETE FROM recordTypeGoals WHERE owner_type == 1 AND owner_id = :categoryId")
     suspend fun deleteByCategory(categoryId: Long)
 
     @Query("DELETE FROM recordTypeGoals")
