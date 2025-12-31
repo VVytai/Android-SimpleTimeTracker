@@ -10,12 +10,13 @@ data class RecordTypeGoalDBO(
     @ColumnInfo(name = "id")
     val id: Long,
 
-    // typeId / categoryId
+    // typeId / categoryId / tagId
     @ColumnInfo(name = "owner_id")
     val ownerId: Long,
 
     // 0 - activity
     // 1 - category
+    // 2 - tag
     @ColumnInfo(name = "owner_type")
     val ownerType: Long,
 

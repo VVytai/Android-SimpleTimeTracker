@@ -552,11 +552,11 @@ class ChangeRecordTagViewModel @Inject constructor(
             valueSuffix = newValueSuffix,
         )
         val isDarkTheme = prefsInteractor.getDarkMode()
-        val type = recordTypeInteractor.get(newIconColorSource)
+        val types = recordTypeInteractor.getAll().associateBy { it.id }
 
         return categoryViewDataMapper.mapRecordTag(
             tag = tag,
-            type = type,
+            types = types,
             isDarkTheme = isDarkTheme,
         )
     }

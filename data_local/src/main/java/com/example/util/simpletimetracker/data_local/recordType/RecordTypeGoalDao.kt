@@ -29,6 +29,10 @@ interface RecordTypeGoalDao {
     @Query("SELECT * FROM recordTypeGoals WHERE owner_type == 1 AND owner_id = :categoryId")
     suspend fun getByCategory(categoryId: Long): List<RecordTypeGoalDBO>
 
+    @Transaction
+    @Query("SELECT * FROM recordTypeGoals WHERE owner_type == 2 AND owner_id = :tagId")
+    suspend fun getByTag(tagId: Long): List<RecordTypeGoalDBO>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(recordTypeGoal: RecordTypeGoalDBO): Long
 
@@ -40,6 +44,9 @@ interface RecordTypeGoalDao {
 
     @Query("DELETE FROM recordTypeGoals WHERE owner_type == 1 AND owner_id = :categoryId")
     suspend fun deleteByCategory(categoryId: Long)
+
+    @Query("DELETE FROM recordTypeGoals WHERE owner_type == 2 AND owner_id = :tagId")
+    suspend fun deleteByTag(tagId: Long)
 
     @Query("DELETE FROM recordTypeGoals")
     suspend fun clear()

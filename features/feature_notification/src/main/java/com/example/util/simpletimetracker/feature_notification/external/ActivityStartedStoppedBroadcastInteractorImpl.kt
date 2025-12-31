@@ -42,7 +42,7 @@ class ActivityStartedStoppedBroadcastInteractorImpl @Inject constructor(
     ) {
         if (!prefsInteractor.getAutomatedTrackingSendEvents()) return
 
-        val type = getActivity(typeId) ?: return
+        val type = recordTypeInteractor.get(typeId) ?: return
         sendBroadcast(
             actionString = EVENT_STARTED_ACTIVITY,
             activityName = type.name,
@@ -60,7 +60,7 @@ class ActivityStartedStoppedBroadcastInteractorImpl @Inject constructor(
     ) {
         if (!prefsInteractor.getAutomatedTrackingSendEvents()) return
 
-        val type = getActivity(typeId) ?: return
+        val type = recordTypeInteractor.get(typeId) ?: return
         sendBroadcast(
             actionString = EVENT_STOPPED_ACTIVITY,
             activityName = type.name,
@@ -78,14 +78,17 @@ class ActivityStartedStoppedBroadcastInteractorImpl @Inject constructor(
         if (!prefsInteractor.getAutomatedTrackingSendEvents()) return
 
         val type = (idData as? RecordTypeGoal.IdData.Type)?.value
-            ?.let { getActivity(it) }
+            ?.let { recordTypeInteractor.get(it) }
         val category = (idData as? RecordTypeGoal.IdData.Category)?.value
-            ?.let { getCategory(it) }
-        if (type == null && category == null) return
+            ?.let { categoryInteractor.get(it) }
+        val tag = (idData as? RecordTypeGoal.IdData.Tag)?.value
+            ?.let { recordTagInteractor.get(it) }
+        if (type == null && category == null && tag == null) return
 
         sendGoalBroadcast(
             activityName = type?.name.orEmpty(),
             categoryName = category?.name.orEmpty(),
+            tagName = tag?.name.orEmpty(),
             goalType = goalType,
             note = type?.note.orEmpty(),
             icon = type?.icon.orEmpty(),
@@ -114,6 +117,7 @@ class ActivityStartedStoppedBroadcastInteractorImpl @Inject constructor(
     private fun sendGoalBroadcast(
         activityName: String,
         categoryName: String,
+        tagName: String,
         goalType: RecordTypeGoal.Type?,
         note: String,
         icon: String,
@@ -129,23 +133,12 @@ class ActivityStartedStoppedBroadcastInteractorImpl @Inject constructor(
             action = EVENT_COMPLETED_GOAL
             if (activityName.isNotEmpty()) putExtra(EXTRA_ACTIVITY_NAME, activityName)
             if (categoryName.isNotEmpty()) putExtra(EXTRA_CATEGORY_NAME, categoryName)
+            if (tagName.isNotEmpty()) putExtra(EXTRA_RECORD_TAG_NAME, categoryName)
             if (extraGoalType.isNotEmpty()) putExtra(EXTRA_GOAL_TYPE, extraGoalType)
             if (goalValue != 0L) putExtra(EXTRA_GOAL_VALUE, goalValue)
             if (note.isNotEmpty()) putExtra(EXTRA_RECORD_TYPE_NOTE, note)
             if (icon.isNotEmpty()) putExtra(EXTRA_RECORD_TYPE_ICON, icon)
         }.let(context::sendBroadcast)
-    }
-
-    private suspend fun getActivity(
-        typeId: Long,
-    ): RecordType? {
-        return recordTypeInteractor.get(typeId)
-    }
-
-    private suspend fun getCategory(
-        categoryId: Long,
-    ): Category? {
-        return categoryInteractor.get(categoryId)
     }
 
     private suspend fun getTagNames(

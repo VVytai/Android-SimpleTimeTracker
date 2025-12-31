@@ -100,12 +100,16 @@ class NotificationReceiver : BroadcastReceiver() {
             }
             ACTION_GOAL_TIME_REMINDER_SESSION,
             ACTION_GOAL_TIME_REMINDER_CATEGORY_SESSION,
+            ACTION_GOAL_TIME_REMINDER_TAG_SESSION,
             ACTION_GOAL_TIME_REMINDER_DAILY,
             ACTION_GOAL_TIME_REMINDER_CATEGORY_DAILY,
+            ACTION_GOAL_TIME_REMINDER_TAG_DAILY,
             ACTION_GOAL_TIME_REMINDER_WEEKLY,
             ACTION_GOAL_TIME_REMINDER_CATEGORY_WEEKLY,
+            ACTION_GOAL_TIME_REMINDER_TAG_WEEKLY,
             ACTION_GOAL_TIME_REMINDER_MONTHLY,
             ACTION_GOAL_TIME_REMINDER_CATEGORY_MONTHLY,
+            ACTION_GOAL_TIME_REMINDER_TAG_MONTHLY,
             -> {
                 val typeId = intent.getLongExtra(EXTRA_GOAL_TIME_TYPE_ID, 0)
                 val categoryId = intent.getLongExtra(EXTRA_GOAL_TIME_CATEGORY_ID, 0)
@@ -117,15 +121,19 @@ class NotificationReceiver : BroadcastReceiver() {
                 val goalTimeType = when (action) {
                     ACTION_GOAL_TIME_REMINDER_SESSION,
                     ACTION_GOAL_TIME_REMINDER_CATEGORY_SESSION,
+                    ACTION_GOAL_TIME_REMINDER_TAG_SESSION,
                     -> RecordTypeGoal.Range.Session
                     ACTION_GOAL_TIME_REMINDER_DAILY,
                     ACTION_GOAL_TIME_REMINDER_CATEGORY_DAILY,
+                    ACTION_GOAL_TIME_REMINDER_TAG_DAILY,
                     -> RecordTypeGoal.Range.Daily
                     ACTION_GOAL_TIME_REMINDER_WEEKLY,
                     ACTION_GOAL_TIME_REMINDER_CATEGORY_WEEKLY,
+                    ACTION_GOAL_TIME_REMINDER_TAG_WEEKLY,
                     -> RecordTypeGoal.Range.Weekly
                     ACTION_GOAL_TIME_REMINDER_MONTHLY,
                     ACTION_GOAL_TIME_REMINDER_CATEGORY_MONTHLY,
+                    ACTION_GOAL_TIME_REMINDER_TAG_MONTHLY,
                     -> RecordTypeGoal.Range.Monthly
                     else -> RecordTypeGoal.Range.Session
                 }
@@ -334,18 +342,26 @@ class NotificationReceiver : BroadcastReceiver() {
             "com.razeeman.util.simpletimetracker.ACTION_GOAL_TIME_REMINDER"
         const val ACTION_GOAL_TIME_REMINDER_CATEGORY_SESSION =
             "com.razeeman.util.simpletimetracker.ACTION_GOAL_TIME_REMINDER_CATEGORY"
+        const val ACTION_GOAL_TIME_REMINDER_TAG_SESSION =
+            "com.razeeman.util.simpletimetracker.ACTION_GOAL_TIME_REMINDER_TAG"
         const val ACTION_GOAL_TIME_REMINDER_DAILY =
             "com.razeeman.util.simpletimetracker.ACTION_GOAL_TIME_REMINDER_DAILY"
         const val ACTION_GOAL_TIME_REMINDER_CATEGORY_DAILY =
             "com.razeeman.util.simpletimetracker.ACTION_GOAL_TIME_REMINDER_CATEGORY_DAILY"
+        const val ACTION_GOAL_TIME_REMINDER_TAG_DAILY =
+            "com.razeeman.util.simpletimetracker.ACTION_GOAL_TIME_REMINDER_TAG_DAILY"
         const val ACTION_GOAL_TIME_REMINDER_WEEKLY =
             "com.razeeman.util.simpletimetracker.ACTION_GOAL_TIME_REMINDER_WEEKLY"
         const val ACTION_GOAL_TIME_REMINDER_CATEGORY_WEEKLY =
             "com.razeeman.util.simpletimetracker.ACTION_GOAL_TIME_REMINDER_CATEGORY_WEEKLY"
+        const val ACTION_GOAL_TIME_REMINDER_TAG_WEEKLY =
+            "com.razeeman.util.simpletimetracker.ACTION_GOAL_TIME_REMINDER_TAG_WEEKLY"
         const val ACTION_GOAL_TIME_REMINDER_MONTHLY =
             "com.razeeman.util.simpletimetracker.ACTION_GOAL_TIME_REMINDER_MONTHLY"
         const val ACTION_GOAL_TIME_REMINDER_CATEGORY_MONTHLY =
             "com.razeeman.util.simpletimetracker.ACTION_GOAL_TIME_REMINDER_CATEGORY_MONTHLY"
+        const val ACTION_GOAL_TIME_REMINDER_TAG_MONTHLY =
+            "com.razeeman.util.simpletimetracker.ACTION_GOAL_TIME_REMINDER_TAG_MONTHLY"
         const val ACTION_GOAL_TIME_REMINDER_DAY_END =
             "com.razeeman.util.simpletimetracker.ACTION_GOAL_TIME_REMINDER_DAY_END"
         const val ACTION_GOAL_TIME_REMINDER_WEEK_END =

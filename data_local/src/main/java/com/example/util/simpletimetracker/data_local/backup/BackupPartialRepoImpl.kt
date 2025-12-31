@@ -212,6 +212,8 @@ class BackupPartialRepoImpl @Inject constructor(
                     ?.let(RecordTypeGoal.IdData::Type)
                 is RecordTypeGoal.IdData.Category -> originalCategoryIdToAddedId[idData.value]
                     ?.let(RecordTypeGoal.IdData::Category)
+                is RecordTypeGoal.IdData.Tag -> originalTagIdToAddedId[idData.value]
+                    ?.let(RecordTypeGoal.IdData::Tag)
             } ?: return@forEach
             goal.copy(
                 id = 0,
@@ -475,6 +477,8 @@ class BackupPartialRepoImpl @Inject constructor(
                     ?.let(RecordTypeGoal.IdData::Type)
                 is RecordTypeGoal.IdData.Category -> originalCategoryIdToExistingId[idData.value]
                     ?.let(RecordTypeGoal.IdData::Category)
+                is RecordTypeGoal.IdData.Tag -> originalTagIdToExistingId[idData.value]
+                    ?.let(RecordTypeGoal.IdData::Tag)
             } ?: return@mapNotNull null
             item.copy(
                 idData = newId,

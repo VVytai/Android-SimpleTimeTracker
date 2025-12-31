@@ -59,6 +59,13 @@ class RecordTypeGoalRepoImpl @Inject constructor(
         afterSourceAccess = { initializeCache() },
     )
 
+    override suspend fun getByTag(tagId: Long): List<RecordTypeGoal> = mutex.withLockedCache(
+        logMessage = "getByTag",
+        accessCache = { cache?.filter { it.isTag() && it.idData.value == tagId } },
+        accessSource = { dao.getByTag(tagId).map(mapper::map) },
+        afterSourceAccess = { initializeCache() },
+    )
+
     override suspend fun add(recordTypeGoal: RecordTypeGoal): Long = mutex.withLockedCache(
         logMessage = "add",
         accessSource = { dao.insert(recordTypeGoal.let(mapper::map)) },
@@ -85,6 +92,12 @@ class RecordTypeGoalRepoImpl @Inject constructor(
         afterSourceAccess = { cache = cache?.removeIf { it.isCategory() && it.idData.value == categoryId } },
     )
 
+    override suspend fun removeByTag(tagId: Long) = mutex.withLockedCache(
+        logMessage = "removeByTag",
+        accessSource = { dao.deleteByTag(tagId) },
+        afterSourceAccess = { cache = cache?.removeIf { it.isTag() && it.idData.value == tagId } },
+    )
+
     override suspend fun clear() = mutex.withLockedCache(
         logMessage = "clear",
         accessSource = { dao.clear() },
@@ -102,5 +115,9 @@ class RecordTypeGoalRepoImpl @Inject constructor(
 
     private fun RecordTypeGoal.isCategory(): Boolean {
         return idData is IdData.Category
+    }
+
+    private fun RecordTypeGoal.isTag(): Boolean {
+        return idData is IdData.Tag
     }
 }

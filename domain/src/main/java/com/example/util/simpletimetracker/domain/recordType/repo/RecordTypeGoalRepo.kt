@@ -16,6 +16,8 @@ interface RecordTypeGoalRepo {
 
     suspend fun getByCategory(categoryId: Long): List<RecordTypeGoal>
 
+    suspend fun getByTag(tagId: Long): List<RecordTypeGoal>
+
     suspend fun add(recordTypeGoal: RecordTypeGoal): Long
 
     suspend fun remove(id: Long)
@@ -23,6 +25,8 @@ interface RecordTypeGoalRepo {
     suspend fun removeByType(typeId: Long)
 
     suspend fun removeByCategory(categoryId: Long)
+
+    suspend fun removeByTag(tagId: Long)
 
     suspend fun clear()
 }

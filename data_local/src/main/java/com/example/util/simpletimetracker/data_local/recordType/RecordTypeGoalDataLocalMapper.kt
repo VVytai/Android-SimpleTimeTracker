@@ -15,6 +15,7 @@ class RecordTypeGoalDataLocalMapper @Inject constructor(
             idData = when (dbo.ownerType) {
                 0L -> RecordTypeGoal.IdData.Type(dbo.ownerId)
                 1L -> RecordTypeGoal.IdData.Category(dbo.ownerId)
+                2L -> RecordTypeGoal.IdData.Tag(dbo.ownerId)
                 else -> RecordTypeGoal.IdData.Type(dbo.ownerId)
             },
             range = when (dbo.range) {
@@ -45,6 +46,7 @@ class RecordTypeGoalDataLocalMapper @Inject constructor(
             ownerType = when (domain.idData) {
                 is RecordTypeGoal.IdData.Type -> 0L
                 is RecordTypeGoal.IdData.Category -> 1L
+                is RecordTypeGoal.IdData.Tag -> 2L
             },
             range = when (domain.range) {
                 is RecordTypeGoal.Range.Session -> 0L

@@ -616,6 +616,7 @@ class BackupRepoImpl @Inject constructor(
             (recordTypeGoal.idData as? RecordTypeGoal.IdData.Category)?.value.orZero(),
             daysOfWeekString,
             subtypeString,
+            // TODO GOAL
         )
     }
 
@@ -905,6 +906,7 @@ class BackupRepoImpl @Inject constructor(
 
         return RecordTypeGoal(
             id = parts.getOrNull(1)?.toLongOrNull().orZero(),
+            // TODO GOAL
             idData = if (typeId != 0L) {
                 RecordTypeGoal.IdData.Type(typeId)
             } else {
