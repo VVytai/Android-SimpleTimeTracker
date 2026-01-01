@@ -607,7 +607,7 @@ class BackupRepoImpl @Inject constructor(
             .mapDaysOfWeek(recordTypeGoal.daysOfWeek)
 
         return String.format(
-            "$ROW_RECORD_TYPE_GOAL\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n",
+            "$ROW_RECORD_TYPE_GOAL\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n",
             recordTypeGoal.id.toString(),
             (recordTypeGoal.idData as? RecordTypeGoal.IdData.Type)?.value.orZero(),
             rangeString,
@@ -616,7 +616,7 @@ class BackupRepoImpl @Inject constructor(
             (recordTypeGoal.idData as? RecordTypeGoal.IdData.Category)?.value.orZero(),
             daysOfWeekString,
             subtypeString,
-            // TODO GOAL
+            (recordTypeGoal.idData as? RecordTypeGoal.IdData.Tag)?.value.orZero(),
         )
     }
 
@@ -902,15 +902,15 @@ class BackupRepoImpl @Inject constructor(
     private fun recordTypeGoalFromBackupString(parts: List<String>): RecordTypeGoal {
         val typeId = parts.getOrNull(2)?.toLongOrNull().orZero()
         val categoryId = parts.getOrNull(6)?.toLongOrNull().orZero()
+        val tagId = parts.getOrNull(9)?.toLongOrNull().orZero()
         val daysOfWeekString = parts.getOrNull(7).orEmpty()
 
         return RecordTypeGoal(
             id = parts.getOrNull(1)?.toLongOrNull().orZero(),
-            // TODO GOAL
-            idData = if (typeId != 0L) {
-                RecordTypeGoal.IdData.Type(typeId)
-            } else {
-                RecordTypeGoal.IdData.Category(categoryId)
+            idData = when {
+                typeId != 0L -> RecordTypeGoal.IdData.Type(typeId)
+                categoryId != 0L -> RecordTypeGoal.IdData.Category(categoryId)
+                else -> RecordTypeGoal.IdData.Tag(tagId)
             },
             range = when (parts.getOrNull(3)?.toLongOrNull()) {
                 0L -> RecordTypeGoal.Range.Session

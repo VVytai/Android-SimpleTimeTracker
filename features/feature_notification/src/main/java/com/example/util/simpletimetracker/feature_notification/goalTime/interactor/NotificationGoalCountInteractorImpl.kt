@@ -32,7 +32,7 @@ class NotificationGoalCountInteractorImpl @Inject constructor(
     override suspend fun checkAndShow(typeId: Long) {
         checkAndShowType(typeId)
         checkAndShowCategory(typeId)
-        // TODO GOAL
+        // TODO TAG GOAL
     }
 
     private suspend fun checkAndShowType(typeId: Long) {
