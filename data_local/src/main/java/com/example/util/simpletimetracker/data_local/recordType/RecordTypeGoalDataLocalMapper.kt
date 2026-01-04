@@ -1,7 +1,6 @@
 package com.example.util.simpletimetracker.data_local.recordType
 
 import com.example.util.simpletimetracker.data_local.daysOfWeek.DaysOfWeekDataLocalMapper
-import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.domain.recordType.model.RecordTypeGoal
 import javax.inject.Inject
 

@@ -21,6 +21,10 @@ interface RecordTypeGoalDao {
     @Query("SELECT * FROM recordTypeGoals WHERE owner_type == 1")
     suspend fun getAllCategoryGoals(): List<RecordTypeGoalDBO>
 
+    // TODO TAG GOAL remove owner_type checking, should not depend on it.
+    @Query("SELECT * FROM recordTypeGoals WHERE owner_type == 2")
+    suspend fun getAllTagGoals(): List<RecordTypeGoalDBO>
+
     @Transaction
     @Query("SELECT * FROM recordTypeGoals WHERE owner_type == 0 AND owner_id = :typeId")
     suspend fun getByType(typeId: Long): List<RecordTypeGoalDBO>

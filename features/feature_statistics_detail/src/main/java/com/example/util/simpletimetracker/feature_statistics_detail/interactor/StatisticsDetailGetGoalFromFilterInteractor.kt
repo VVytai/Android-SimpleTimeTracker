@@ -1,7 +1,6 @@
 package com.example.util.simpletimetracker.feature_statistics_detail.interactor
 
 import com.example.util.simpletimetracker.domain.record.extension.getCategoryIds
-import com.example.util.simpletimetracker.domain.record.extension.getSelectedTags
 import com.example.util.simpletimetracker.domain.record.extension.getTagIds
 import com.example.util.simpletimetracker.domain.record.extension.getTypeIds
 import com.example.util.simpletimetracker.domain.record.extension.hasSelectedActivityFilter

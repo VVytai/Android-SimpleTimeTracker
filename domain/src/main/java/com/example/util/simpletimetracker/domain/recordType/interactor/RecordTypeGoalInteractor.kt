@@ -24,6 +24,10 @@ class RecordTypeGoalInteractor @Inject constructor(
         return repo.getAllCategoryGoals()
     }
 
+    suspend fun getAllTagGoals(): List<RecordTypeGoal> {
+        return repo.getAllTagGoals()
+    }
+
     suspend fun getByType(typeId: Long): List<RecordTypeGoal> {
         return repo.getByType(typeId)
     }
