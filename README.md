@@ -138,21 +138,22 @@
 
 
 ## Help for translators
-Here are few steps to translate the app in your language ...
+Here are few steps to **translate the app in your language** ...
+<br>_For app users: the best way to improve translation or to make app suggestions is to [open an issue](https://github.com/Razeeman/Android-SimpleTimeTracker/issues)._
 
 **A. Edit translation file**
 1. **Create a personal fork** of this project
-2. In your repo, **edit translation file** for your language (they are stored in [this folder: resources > src > main > res > values-xx ](https://github.com/Razeeman/Android-SimpleTimeTracker/tree/dev/resources/src/main/res)) + commit changes on your Dev branch.
-
+2. In your repo, **edit translation file** for your language (they are stored in [folder: resources > src > main > res > values-xx ](https://github.com/Razeeman/Android-SimpleTimeTracker/tree/dev/resources/src/main/res)) + commit changes on your Dev branch.
+<br>💡Tip: base your translation on the **official english translation [available here](https://github.com/Razeeman/Android-SimpleTimeTracker/blob/dev/resources/src/main/res/values/strings.xml)** and pay attention to **preserve the exact same number of lines between the 2 'strings.xml' files**.
 
 **B. (_option_) Build and test your changes using the app**
 
 In your repo:
-1. **Run the "Build" job**
-2. When the job ends, **get the APK** fille (see Artifact)
+1. **Run the "Build" job** on your 'Dev' branch
+2. When the job ends, **get the APK** file (see Artifact)
 3. **Copy the APK on your Android smartphone and install it** (requires to allow 'install app from unknown sources')
 Note: ignore error message at app launch ... app will work normaly😉
-4. Run the app and **check your translation** and re-start the process above to improve your translation ...
+4. Run the app, **check your translation** and re-start the process above to improve your translation ...
 
 
 **C. Create a pull reguest** to suggest adding your translation to the app
