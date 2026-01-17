@@ -15,6 +15,7 @@ import com.example.util.simpletimetracker.domain.notifications.interactor.Activi
 import com.example.util.simpletimetracker.domain.recordType.model.RecordTypeGoal
 import com.example.util.simpletimetracker.domain.recordType.model.RecordTypeGoal.Range
 import com.example.util.simpletimetracker.domain.record.model.RunningRecord
+import com.example.util.simpletimetracker.domain.recordType.extension.toRangeLength
 import com.example.util.simpletimetracker.feature_notification.goalTime.manager.NotificationGoalTimeManager
 import com.example.util.simpletimetracker.feature_notification.goalTime.scheduler.NotificationGoalTimeScheduler
 import javax.inject.Inject
@@ -33,6 +34,14 @@ import javax.inject.Inject
  * - remove category
  * - change type categories
  * - change category activities
+ *
+ * Tag goal can be changed:
+ * - add / change / remove running record
+ * - add / change / remove record
+ * - add / change / remove tag goal
+ * - remove tag
+ * - change record tags
+ * - change running record tags
  */
 class NotificationGoalTimeInteractorImpl @Inject constructor(
     private val recordTypeGoalInteractor: RecordTypeGoalInteractor,
@@ -207,11 +216,14 @@ class NotificationGoalTimeInteractorImpl @Inject constructor(
         }.value * 1000
 
         if (goal > 0) {
-            val current = when (goalRange) {
-                is Range.Session -> System.currentTimeMillis() - runningRecord.timeStarted
-                is Range.Daily -> getCurrentRecordsDurationInteractor.getDailyCurrent(runningRecord).duration
-                is Range.Weekly -> getCurrentRecordsDurationInteractor.getWeeklyCurrent(runningRecord).duration
-                is Range.Monthly -> getCurrentRecordsDurationInteractor.getMonthlyCurrent(runningRecord).duration
+            val current = if (goalRange is Range.Session) {
+                System.currentTimeMillis() - runningRecord.timeStarted
+            } else {
+                getCurrentRecordsDurationInteractor.getRangeCurrent(
+                    typeId = runningRecord.id,
+                    runningRecord = runningRecord,
+                    rangeLength = goalRange.toRangeLength() ?: return,
+                ).duration
             }
 
             if (goal > current) {
