@@ -90,10 +90,8 @@ class ArchiveFragment :
     }
 
     override fun initViewModel(): Unit = with(viewModel) {
-        viewData.observe {
-            archiveAdapter.replace(it.items)
-            binding.tvArchiveHint.isVisible = it.showHint
-        }
+        viewData.observe { archiveAdapter.replace(it.items) }
+        showHint.observe(binding.tvArchiveHint::isVisible::set)
         searchState.observe(::setSearchState)
     }
 

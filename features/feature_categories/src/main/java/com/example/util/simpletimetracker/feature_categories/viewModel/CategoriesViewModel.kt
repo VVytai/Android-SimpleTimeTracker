@@ -1,10 +1,10 @@
 package com.example.util.simpletimetracker.feature_categories.viewModel
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.util.simpletimetracker.core.base.BaseViewModel
 import com.example.util.simpletimetracker.core.extension.fromHtml
+import com.example.util.simpletimetracker.core.extension.lazySuspend
 import com.example.util.simpletimetracker.core.extension.set
 import com.example.util.simpletimetracker.core.extension.toParams
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
@@ -47,25 +47,15 @@ class CategoriesViewModel @Inject constructor(
     private val categoriesOptionsListMapper: CategoriesOptionsListMapper,
 ) : BaseViewModel() {
 
-    val categories: LiveData<CategoriesViewData> by lazy {
-        return@lazy MutableLiveData<CategoriesViewData>().let { initial ->
-            viewModelScope.launch {
-                initial.value = CategoriesViewData(
-                    items = listOf(LoaderViewData()),
-                    showHint = false,
-                )
-                updateCategories()
-            }
-            initial
-        }
+    val categories: LiveData<CategoriesViewData> by lazySuspend {
+        updateCategories()
+        CategoriesViewData(listOf(LoaderViewData()))
     }
-    val searchState: LiveData<CategoriesSearchState> by lazy {
-        return@lazy MutableLiveData<CategoriesSearchState>().let { initial ->
-            viewModelScope.launch {
-                initial.value = loadSearchState()
-            }
-            initial
-        }
+    val searchState: LiveData<CategoriesSearchState> by lazySuspend {
+        loadSearchState()
+    }
+    val showHint: LiveData<Boolean> by lazySuspend {
+        categoriesViewDataInteractor.getHintViewData()
     }
 
     private var navBarHeightDp: Int = 0
