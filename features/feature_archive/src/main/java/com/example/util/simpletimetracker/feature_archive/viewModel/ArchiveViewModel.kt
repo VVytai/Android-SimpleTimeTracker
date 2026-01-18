@@ -2,8 +2,8 @@ package com.example.util.simpletimetracker.feature_archive.viewModel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.util.simpletimetracker.core.base.BaseViewModel
 import com.example.util.simpletimetracker.core.extension.set
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.domain.recordTag.interactor.RecordTagInteractor
@@ -44,7 +44,7 @@ class ArchiveViewModel @Inject constructor(
     private val removeRecordTagMediator: RemoveRecordTagMediator,
     private val externalViewsInteractor: UpdateExternalViewsInteractor,
     private val archiveOptionsListMapper: ArchiveOptionsListMapper,
-) : ViewModel() {
+) : BaseViewModel() {
 
     val viewData: LiveData<ArchiveViewData> by lazy {
         return@lazy MutableLiveData<ArchiveViewData>().let { initial ->
@@ -53,7 +53,7 @@ class ArchiveViewModel @Inject constructor(
                     items = listOf(LoaderViewData()),
                     showHint = false,
                 )
-                initial.value = loadViewData()
+                updateViewData()
             }
             initial
         }
@@ -70,8 +70,9 @@ class ArchiveViewModel @Inject constructor(
     private var navBarHeightDp: Int = 0
     private var searchText: String = ""
     private var searchJob: Job? = null
+    private var loadJob: Job? = null
 
-    fun onChangeInsets(navBarHeight: Int) = viewModelScope.launch {
+    fun onChangeInsets(navBarHeight: Int) {
         if (navBarHeightDp != navBarHeight) {
             navBarHeightDp = navBarHeight
             updateViewData()
@@ -203,9 +204,13 @@ class ArchiveViewModel @Inject constructor(
         )
     }
 
-    private suspend fun updateViewData() {
-        val data = loadViewData()
-        viewData.set(data)
+    private fun updateViewData() {
+        loadJob?.cancel()
+        loadJob = viewModelScope.launch {
+            val data = loadViewData()
+            delayLoad()
+            viewData.set(data)
+        }
     }
 
     private suspend fun loadViewData(): ArchiveViewData {

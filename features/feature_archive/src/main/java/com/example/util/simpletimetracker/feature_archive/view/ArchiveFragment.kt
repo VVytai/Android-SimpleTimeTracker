@@ -61,6 +61,8 @@ class ArchiveFragment :
     }
 
     override fun initUi(): Unit = with(binding) {
+        postponeEnterTransition()
+
         rvArchiveList.apply {
             layoutManager = FlexboxLayoutManager(requireContext()).apply {
                 flexDirection = FlexDirection.ROW
@@ -74,6 +76,10 @@ class ArchiveFragment :
             val navBarHeight = it.getNavBarInsets().bottom.pxToDp()
             viewModel.onChangeInsets(navBarHeight = navBarHeight)
             setMargins(bottom = navBarHeight)
+        }
+
+        setOnPreDrawListener {
+            startPostponedEnterTransition()
         }
     }
 
