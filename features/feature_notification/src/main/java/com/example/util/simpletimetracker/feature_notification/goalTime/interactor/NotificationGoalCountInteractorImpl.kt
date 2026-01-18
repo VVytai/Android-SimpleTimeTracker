@@ -10,6 +10,7 @@ import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTyp
 import com.example.util.simpletimetracker.domain.record.interactor.RunningRecordInteractor
 import com.example.util.simpletimetracker.domain.category.model.RecordTypeCategory
 import com.example.util.simpletimetracker.domain.notifications.interactor.ActivityStartedStoppedBroadcastInteractor
+import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.domain.recordType.model.RecordTypeGoal
 import com.example.util.simpletimetracker.domain.recordType.model.RecordTypeGoal.Range
 import com.example.util.simpletimetracker.domain.recordType.model.RecordTypeGoal.Type
@@ -130,7 +131,7 @@ class NotificationGoalCountInteractorImpl @Inject constructor(
         typeId: Long,
         runningRecord: RunningRecord,
     ) {
-        val goal = filterGoalsFromRange<RecordTypeGoal.IdData.Type>(goalRange, goals).firstOrNull()
+        val goal = filterGoalsFromRange(goalRange, goals).firstOrNull()
         if (goal == null) return
 
         val current = getCurrentRecordsDurationInteractor.getRangeCurrent(
@@ -153,7 +154,7 @@ class NotificationGoalCountInteractorImpl @Inject constructor(
         runningRecords: List<RunningRecord>,
         categoriesWithThisType: Map<Long, List<Long>>,
     ) {
-        val rangeGoals = filterGoalsFromRange<RecordTypeGoal.IdData.Category>(goalRange, goals)
+        val rangeGoals = filterGoalsFromRange(goalRange, goals)
         if (rangeGoals.isEmpty()) return
 
         val allCurrents = getCurrentRecordsDurationInteractor.getAllCategoryCurrents(
@@ -179,10 +180,11 @@ class NotificationGoalCountInteractorImpl @Inject constructor(
         goals: List<RecordTypeGoal>,
         runningRecords: List<RunningRecord>,
     ) {
-        val rangeGoals = filterGoalsFromRange<RecordTypeGoal.IdData.Tag>(goalRange, goals)
+        val rangeGoals = filterGoalsFromRange(goalRange, goals)
         if (rangeGoals.isEmpty()) return
 
-        val allTags = runningRecords.flatMap { it.tags }.map { it.tagId }.distinct()
+        val allTags = runningRecords.flatMap(RunningRecord::tags)
+            .map(RecordBase.Tag::tagId).distinct()
         val allCurrents = getCurrentRecordsDurationInteractor.getAllTagCurrents(
             tagIds = allTags,
             runningRecords = runningRecords,
@@ -201,16 +203,11 @@ class NotificationGoalCountInteractorImpl @Inject constructor(
         }
     }
 
-    private inline fun <reified T : RecordTypeGoal.IdData> filterGoalsFromRange(
+    private fun filterGoalsFromRange(
         goalRange: Range,
         goals: List<RecordTypeGoal>,
     ): List<RecordTypeGoal> {
-        return goals.filter {
-            it.isCorrectRange(goalRange) &&
-                it.idData is T && // Probably not necessary.
-                it.type is Type.Count && // Probably not necessary.
-                it.value > 1
-        }
+        return goals.filter { it.isCorrectRange(goalRange) && it.value > 1 }
     }
 
     private fun RecordTypeGoal.isCorrectRange(range: Range): Boolean {
