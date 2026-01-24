@@ -326,7 +326,7 @@ Cela vous permet de voir combien de temps vous passez globalement sur des activi
     <string name="settings_ignore_short_untracked">Ignorer le temps court non suivi</string>
     <string name="settings_ignore_short_untracked_hint">Ne pas afficher le temps non suivi qui est plus court que le temps spécifié.</string>
     <string name="settings_untracked_range">Plage non suivie</string>
-    <string name="settings_untracked_range_hint">Ignorer le temps non suivi en dehors de la plage spécifiée.</string>
+    <string name="settings_untracked_range_hint">Afficher le temps non suivi uniquement dans la plage sélectionnée.</string>
     <string name="settings_show_records_calendar">Utiliser une vue calendrier pour la liste des enregistrements</string>
     <string name="settings_reverse_order_in_calendar">Inverser l\'ordre des enregistrements</string>
     <string name="settings_days_in_calendar">Jours dans le calendrier</string>
