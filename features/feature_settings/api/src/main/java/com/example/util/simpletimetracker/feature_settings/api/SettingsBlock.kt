@@ -102,6 +102,7 @@ enum class SettingsBlock {
     BackupCustomizedPartialSave,
     BackupCustomizedFullRestore,
     BackupCustomizedPartialRestore,
+    BackupCustomizedTriggerAutoBackup,
     BackupBottom,
 
     ExportTop,

@@ -494,6 +494,8 @@ Examplu:<br/>
     <string name="backup_options_full_restore_hint">Restabilește datele și setările. Necesită repornirea aplicației.</string>
     <string name="backup_options_partial_restore">Importă date din backup</string>
     <string name="backup_options_partial_restore_hint">Vă permite să alegeți ce date să importați. Datele curente nu se vor pierde.</string>
+    <string name="backup_options_trigger_auto_backup">Rulează backupul automat acum</string>
+    <string name="backup_options_trigger_auto_export">Rulează exportul automat acum</string>
 
     <!--  Partial restore  -->
     <string name="partial_restore_filter_hint">Selectați ce date vor fi importate din fișier.</string>

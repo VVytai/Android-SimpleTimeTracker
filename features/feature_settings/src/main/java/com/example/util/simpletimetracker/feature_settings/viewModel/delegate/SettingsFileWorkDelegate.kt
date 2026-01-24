@@ -478,7 +478,7 @@ class SettingsFileWorkDelegate @Inject constructor(
         showMessage(resourceRepo.getString(R.string.settings_file_create_error))
     }
 
-    private fun showMessage(
+    fun showMessage(
         string: String,
         shareUriString: String? = null,
     ) {

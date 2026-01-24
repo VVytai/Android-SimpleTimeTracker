@@ -494,6 +494,8 @@ CSV-файл должен содержать следующие столбцы, 
     <string name="backup_options_full_restore_hint">Восстанавливает данные и настройки. Требует перезапуска приложения.</string>
     <string name="backup_options_partial_restore">Импортировать данные из резервной копии</string>
     <string name="backup_options_partial_restore_hint">Позволяет выбрать, какие данные импортировать. Текущие данные не будут потеряны.</string>
+    <string name="backup_options_trigger_auto_backup">Запустить автоматическое резервное копирование сейчас</string>
+    <string name="backup_options_trigger_auto_export">Запустить автоматический экспорт сейчас</string>
 
     <!--  Partial restore  -->
     <string name="partial_restore_filter_hint">Выберите, какие данные будут импортированы из файла.</string>

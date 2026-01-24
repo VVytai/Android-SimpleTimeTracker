@@ -494,6 +494,8 @@ Contoh:<br/>
     <string name="backup_options_full_restore_hint">Mengembalikan data dan pengaturan. Memerlukan restart aplikasi.</string>
     <string name="backup_options_partial_restore">Impor data dari cadangan</string>
     <string name="backup_options_partial_restore_hint">Memungkinkan untuk memilih data mana yang akan diimpor. Data saat ini tidak akan hilang.</string>
+    <string name="backup_options_trigger_auto_backup">Jalankan pencadangan otomatis sekarang</string>
+    <string name="backup_options_trigger_auto_export">Jalankan ekspor otomatis sekarang</string>
 
     <!--  Partial restore  -->
     <string name="partial_restore_filter_hint">Pilih data mana yang akan diimpor dari file.</string>

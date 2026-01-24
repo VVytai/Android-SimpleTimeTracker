@@ -494,6 +494,8 @@ Voorbeeld:<br/>
     <string name="backup_options_full_restore_hint">Herstelt gegevens en instellingen. Vereist herstart van de app.</string>
     <string name="backup_options_partial_restore">Importeer gegevens uit een back-up</string>
     <string name="backup_options_partial_restore_hint">Hiermee kunt u kiezen welke gegevens u wilt importeren. Actuele gegevens gaan niet verloren.</string>
+    <string name="backup_options_trigger_auto_backup">Automatische back-up nu uitvoeren</string>
+    <string name="backup_options_trigger_auto_export">Automatische export nu uitvoeren</string>
 
     <!--  Partial restore  -->
     <string name="partial_restore_filter_hint">Selecteer welke gegevens uit het bestand worden geïmporteerd.</string>

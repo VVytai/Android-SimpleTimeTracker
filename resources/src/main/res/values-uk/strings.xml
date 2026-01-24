@@ -494,6 +494,8 @@
     <string name="backup_options_full_restore_hint">Відновлює дані та налаштування. Потрібен перезапуск програми.</string>
     <string name="backup_options_partial_restore">Імпорт даних із резервної копії</string>
     <string name="backup_options_partial_restore_hint">Дозволяє вибрати, які дані імпортувати. Поточні дані не будуть втрачені.</string>
+    <string name="backup_options_trigger_auto_backup">Запустити автоматичне резервне копіювання зараз</string>
+    <string name="backup_options_trigger_auto_export">Запустити автоматичний експорт зараз</string>
 
     <!--  Partial restore  -->
     <string name="partial_restore_filter_hint">Виберіть, які дані буде імпортовано з файлу.</string>

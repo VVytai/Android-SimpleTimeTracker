@@ -494,6 +494,8 @@ Exempel:<br/>
     <string name="backup_options_full_restore_hint">Återställer data och inställningar. Kräver omstart av appen.</string>
     <string name="backup_options_partial_restore">Importera data från backup</string>
     <string name="backup_options_partial_restore_hint">Tillåter att välja vilken data som ska importeras. Aktuell data kommer inte att gå förlorad.</string>
+    <string name="backup_options_trigger_auto_backup">Kör automatisk säkerhetskopiering nu</string>
+    <string name="backup_options_trigger_auto_export">Kör automatisk export nu</string>
 
     <!--  Partial restore  -->
     <string name="partial_restore_filter_hint">Välj vilken data som ska importeras från filen.</string>

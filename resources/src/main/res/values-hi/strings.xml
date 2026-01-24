@@ -494,6 +494,8 @@ csv फ़ाइल में कॉमा से अलग किए गए य
     <string name="backup_options_full_restore_hint">डेटा और सेटिंग्स पुनर्स्थापित करता है। ऐप पुनः आरंभ करने की आवश्यकता है.</string>
     <string name="backup_options_partial_restore">बैकअप से डेटा आयात करें</string>
     <string name="backup_options_partial_restore_hint">यह चुनने की अनुमति देता है कि कौन सा डेटा आयात करना है। वर्तमान डेटा नष्ट नहीं होगा.</string>
+    <string name="backup_options_trigger_auto_backup">स्वचालित बैकअप अभी चलाएँ</string>
+    <string name="backup_options_trigger_auto_export">स्वचालित निर्यात अभी चलाएँ</string>
 
     <!--  Partial restore  -->
     <string name="partial_restore_filter_hint">चुनें कि फ़ाइल से कौन सा डेटा आयात किया जाएगा।</string>

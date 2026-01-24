@@ -494,6 +494,8 @@ Isibonelo:<br/>
     <string name="backup_options_full_restore_hint">Buyisela idatha kanye namasethingi. Kudinga ukuthi uhlelo luqaliswe kabusha.</string>
     <string name="backup_options_partial_restore">Faka idatha esuka ku-backup</string>
     <string name="backup_options_partial_restore_hint">Kuvumela ukukhetha ukuthi yiziphi idatha okufanele zifakwe. Idatha yamanje ngeke ilahleke.</string>
+    <string name="backup_options_trigger_auto_backup">Qalisa isipele esizenzakalelayo manje</string>
+    <string name="backup_options_trigger_auto_export">Qalisa ukukhipha okuzenzakalelayo manje</string>
 
     <!--  Partial restore  -->
     <string name="partial_restore_filter_hint">Khetha ukuthi iyiphi idatha ezofakwa kufayela.</string>

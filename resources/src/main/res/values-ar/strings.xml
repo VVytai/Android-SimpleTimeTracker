@@ -494,6 +494,8 @@
     <string name="backup_options_full_restore_hint">يستعيد البيانات والإعدادات. يتطلب إعادة تشغيل التطبيق.</string>
     <string name="backup_options_partial_restore">استيراد البيانات من النسخة الاحتياطية</string>
     <string name="backup_options_partial_restore_hint">يسمح باختيار البيانات التي سيتم استيرادها. لن يتم فقدان البيانات الحالية.</string>
+    <string name="backup_options_trigger_auto_backup">تشغيل النسخ الاحتياطي التلقائي الآن</string>
+    <string name="backup_options_trigger_auto_export">تشغيل التصدير التلقائي الآن</string>
 
     <!--  Partial restore  -->
     <string name="partial_restore_filter_hint">حدد البيانات التي سيتم استيرادها من الملف.</string>

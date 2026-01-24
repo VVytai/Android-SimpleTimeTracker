@@ -494,6 +494,8 @@ Exemplo:<br/>
     <string name="backup_options_full_restore_hint">Restaura dados e configurações. Requer reinicialização do aplicativo.</string>
     <string name="backup_options_partial_restore">Importar dados do backup</string>
     <string name="backup_options_partial_restore_hint">Permite escolher quais dados importar. Os dados atuais não serão perdidos.</string>
+    <string name="backup_options_trigger_auto_backup">Executar cópia de segurança automática agora</string>
+    <string name="backup_options_trigger_auto_export">Executar exportação automática agora</string>
 
     <!--  Partial restore  -->
     <string name="partial_restore_filter_hint">Selecione quais dados serão importados do arquivo.</string>

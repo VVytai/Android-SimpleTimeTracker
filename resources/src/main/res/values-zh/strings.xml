@@ -494,6 +494,8 @@ csv 文件必须包含以逗号分隔的这些列：<br/>
     <string name="backup_options_full_restore_hint">恢复数据和设置需要重新启动应用程序</string>
     <string name="backup_options_partial_restore">从备份导入数据</string>
     <string name="backup_options_partial_restore_hint">允许选择要导入的数据，当前数据不会丢失</string>
+    <string name="backup_options_trigger_auto_backup">立即运行自动备份</string>
+    <string name="backup_options_trigger_auto_export">立即运行自动导出</string>
 
     <!--  Partial restore  -->
     <string name="partial_restore_filter_hint">选择将从文件中导入哪些数据</string>

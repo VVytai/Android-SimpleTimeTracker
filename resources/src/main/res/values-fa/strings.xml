@@ -494,6 +494,8 @@
     <string name="backup_options_full_restore_hint">داده ها و تنظیمات را بازیابی می کند. به راه اندازی مجدد برنامه نیاز دارد.</string>
     <string name="backup_options_partial_restore">داده ها را از پشتیبان وارد کنید</string>
     <string name="backup_options_partial_restore_hint">اجازه می دهد تا انتخاب کنید کدام داده را وارد کنید. داده های فعلی از بین نخواهند رفت.</string>
+    <string name="backup_options_trigger_auto_backup">اجرای پشتیبان‌گیری خودکار اکنون</string>
+    <string name="backup_options_trigger_auto_export">اجرای خروجی خودکار اکنون</string>
 
     <!--  Partial restore  -->
     <string name="partial_restore_filter_hint">انتخاب کنید کدام داده از فایل وارد شود.</string>

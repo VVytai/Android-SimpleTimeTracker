@@ -494,6 +494,8 @@ Exemple:<br/>
     <string name="backup_options_full_restore_hint">Restaura les dades i la configuració. Requereix el reinici de l\'aplicació.</string>
     <string name="backup_options_partial_restore">Importa dades des de la còpia de seguretat</string>
     <string name="backup_options_partial_restore_hint">Permet triar quines dades importar. Les dades actuals no es perdran.</string>
+    <string name="backup_options_trigger_auto_backup">Executa la còpia de seguretat automàtica ara</string>
+    <string name="backup_options_trigger_auto_export">Executa l\'exportació automàtica ara</string>
 
     <!--  Partial restore  -->
     <string name="partial_restore_filter_hint">Seleccioneu quines dades s\'importaran del fitxer.</string>

@@ -494,6 +494,8 @@ Ví dụ:<br/>
     <string name="backup_options_full_restore_hint">Khôi phục dữ liệu và cài đặt. Yêu cầu khởi động lại ứng dụng.</string>
     <string name="backup_options_partial_restore">Nhập dữ liệu từ bản sao lưu</string>
     <string name="backup_options_partial_restore_hint">Cho phép chọn dữ liệu cần nhập. Dữ liệu hiện tại sẽ không bị mất.</string>
+    <string name="backup_options_trigger_auto_backup">Chạy sao lưu tự động ngay bây giờ</string>
+    <string name="backup_options_trigger_auto_export">Chạy xuất tự động ngay bây giờ</string>
 
     <!--  Partial restore  -->
     <string name="partial_restore_filter_hint">Chọn dữ liệu nào sẽ được nhập từ tệp.</string>

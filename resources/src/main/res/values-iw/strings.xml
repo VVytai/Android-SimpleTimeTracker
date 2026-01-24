@@ -494,6 +494,8 @@
     <string name="backup_options_full_restore_hint">משחזר נתונים והגדרות. דורש הפעלה מחדש של האפליקציה.</string>
     <string name="backup_options_partial_restore">ייבא נתונים מגיבוי</string>
     <string name="backup_options_partial_restore_hint">מאפשר לבחור אילו נתונים לייבא. הנתונים הנוכחיים לא יאבדו.</string>
+    <string name="backup_options_trigger_auto_backup">הפעל גיבוי אוטומטי עכשיו</string>
+    <string name="backup_options_trigger_auto_export">הפעל ייצוא אוטומטי עכשיו</string>
 
     <!--  Partial restore  -->
     <string name="partial_restore_filter_hint">בחר אילו נתונים ייובאו מהקובץ.</string>
