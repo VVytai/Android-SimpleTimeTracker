@@ -116,6 +116,8 @@ enum class SettingsBlock {
     ExportSpreadsheetImport,
     ExportSpreadsheetImportHint,
     ExportIcs,
+    ExportCustomized,
+    ExportTriggerAutoBackup,
     ExportBottom,
 
     TranslatorsTop,

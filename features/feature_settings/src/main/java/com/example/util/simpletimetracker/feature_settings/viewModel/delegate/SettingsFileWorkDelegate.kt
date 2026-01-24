@@ -208,6 +208,13 @@ class SettingsFileWorkDelegate @Inject constructor(
         }
     }
 
+    fun onTriggerAutoExportClick() {
+        delegateScope.launch {
+            val result = automaticExportInteractor.export()
+            result?.message?.let(::showMessage)
+        }
+    }
+
     fun onRestoreClick(tag: String, params: BackupOptionsData.Restore) {
         restoreOptionsData = params
         router.navigate(
