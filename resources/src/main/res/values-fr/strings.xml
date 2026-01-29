@@ -46,10 +46,10 @@
     <string name="range_back_to_today">Aujourd\'hui</string>
 
     <plurals name="range_last">
-        <item quantity="zero">% dernier jour</item>
+        <!--        <item quantity="zero">%s dernier jour</item>-->
         <item quantity="one">%s dernier jour</item>
-        <item quantity="two">%s derniers jours</item>
-        <item quantity="few">%s derniers jours</item>
+        <!--        <item quantity="two">%s derniers jours</item>-->
+        <!--        <item quantity="few">%s derniers jours</item>-->
         <item quantity="many">%s derniers jours</item>
         <item quantity="other">%s derniers jours</item>
     </plurals>
@@ -194,7 +194,7 @@ Les <b>Étiquettes</b> permettent d\'ajouter plus de détails sur un enregistrem
     <string name="change_record_message_choose_name">Saisissez un nom</string>
     <string name="change_record_message_name_exist">Ce nom existe déjà</string>
     <string name="change_record_type_note_hint">Note</string>
-    <string name="change_record_type_categories_empty">Aucune catégorie modifiée</string>
+    <string name="change_record_type_categories_empty">Aucune catégorie définie</string>
     <string name="change_record_type_goal_time_disabled">Désactivé</string>
     <string name="change_record_type_goal_time_hint">Objectif</string>
     <string name="change_record_type_limit_time_hint">Limite</string>
@@ -289,7 +289,7 @@ Les <b>Étiquettes</b> permettent d\'ajouter plus de détails sur un enregistrem
     <string name="records_all_sort_duration">Par durée</string>
 
     <!--  Running records  -->
-    <string name="running_records_types_empty">Bienvenue. Pour commencer, ajoutez les activités que vous souhaitez enregistrer. Appuyez sur le bouton \'%s\' pour créer une activité personnalisée ou sur \'%s\' pour créer une activité à partir d\'un modèle.</string>
+    <string name="running_records_types_empty">Pour commencer, ajoutez les activités que vous souhaitez enregistrer. Appuyez sur le bouton \'%s\' pour créer une activité personnalisée ou sur \'%s\' pour créer une activité à partir d\'un modèle.</string>
     <string name="running_records_empty">Appuyez sur une activité pour démarrer l\'enregistrement</string>
     <string name="running_records_empty_inverted">Appuyez longuement sur une activité pour démarrer l\'enregistrement</string>
     <string name="running_records_has_timers">Appuyez sur l\'enregistrement pour l\'arrêter</string>
@@ -597,7 +597,7 @@ Exemple :<br/>
     <!--  Data edit  -->
     <string name="data_edit_hint">Ces modifications ne peuvent pas être annulées. Au-préalable, créez un fichier de sauvegarde.</string>
     <string name="data_edit_select_records">Sélectionnez des enregistrements</string>
-    <string name="data_edit_change_activity">Basculer</string>
+    <string name="data_edit_change_activity">Modifier l\'activité</string>
     <string name="data_edit_change_tag">Modifier les étiquettes</string>
     <string name="data_edit_change_activity_hint">Les étiquettes de l\'activité seront supprimées.</string>
     <string name="data_edit_change_comment">Modifier le commentaire</string>
@@ -666,8 +666,8 @@ Exemple :<br/>
     <string name="imageGroupToggle">Basculer</string>
 
     <!--  Shortcuts  -->
-    <string name="shortcut_navigation_timers">Gérer et chronométrer les activités</string>
-    <string name="shortcut_navigation_records">Historique des enregistrements</string>
+    <string name="shortcut_navigation_timers">Chronomètres</string>
+    <string name="shortcut_navigation_records">Enregistrements</string>
     <string name="shortcut_navigation_statistics">Statistiques</string>
     <string name="shortcut_navigation_settings">Paramètres</string>
 
