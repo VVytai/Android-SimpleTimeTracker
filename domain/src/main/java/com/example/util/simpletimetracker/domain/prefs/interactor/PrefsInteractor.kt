@@ -834,6 +834,14 @@ class PrefsInteractor @Inject constructor(
         prefsRepo.getGridWidget(widgetId)
     }
 
+    suspend fun setGridWidgetFilteredTypes(widgetId: Int, typeIds: Set<Long>) = withContext(Dispatchers.IO) {
+        prefsRepo.setGridWidgetFilteredTypes(widgetId, typeIds)
+    }
+
+    suspend fun getGridWidgetFilteredTypes(widgetId: Int): Set<Long> = withContext(Dispatchers.IO) {
+        prefsRepo.getGridWidgetFilteredTypes(widgetId)
+    }
+
     suspend fun removeGridWidget(widgetId: Int) = withContext(Dispatchers.IO) {
         prefsRepo.removeGridWidget(widgetId)
     }

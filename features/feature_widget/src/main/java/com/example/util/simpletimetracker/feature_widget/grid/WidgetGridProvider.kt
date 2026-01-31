@@ -51,7 +51,7 @@ class WidgetGridProvider : AppWidgetProvider() {
 
     override fun onDeleted(context: Context?, appWidgetIds: IntArray?) {
         allowDiskRead { MainScope() }.launch {
-            appWidgetIds?.forEach { prefsInteractor.removeWidget(it) }
+            appWidgetIds?.forEach { prefsInteractor.removeGridWidget(it) }
         }
     }
 

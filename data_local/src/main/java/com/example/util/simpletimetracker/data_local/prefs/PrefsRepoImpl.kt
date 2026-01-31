@@ -614,10 +614,25 @@ class PrefsRepoImpl @Inject constructor(
         return prefs.getInt(key, 0)
     }
 
+    override fun setGridWidgetFilteredTypes(widgetId: Int, typeIds: Set<Long>) {
+        val key = KEY_GRID_WIDGET_FILTERED_TYPES + widgetId
+        logPrefsDataAccess("setGridWidgetFilteredTypes $key")
+        prefs.edit { putStringSet(key, typeIds.map(Long::toString).toSet()) }
+    }
+
+    override fun getGridWidgetFilteredTypes(widgetId: Int): Set<Long> {
+        val key = KEY_GRID_WIDGET_FILTERED_TYPES + widgetId
+        logPrefsDataAccess("getGridWidgetFilteredTypes $key")
+        return prefs.getStringSet(key, emptySet())
+            ?.mapNotNull { it.toLongOrNull() }.orEmpty().toSet()
+    }
+
     override fun removeGridWidget(widgetId: Int) {
-        val key = KEY_GRID_WIDGET_PAGE + widgetId
-        logPrefsDataAccess("removeGridWidget $key")
-        prefs.edit { remove(key) }
+        logPrefsDataAccess("removeGridWidget $widgetId")
+        prefs.edit {
+            remove(KEY_GRID_WIDGET_PAGE + widgetId)
+            remove(KEY_GRID_WIDGET_FILTERED_TYPES + widgetId)
+        }
     }
 
     override fun clear() {
@@ -779,6 +794,7 @@ class PrefsRepoImpl @Inject constructor(
         private const val KEY_STATISTICS_WIDGET_FILTERING_TYPE = "statistics_widget_filtering_type_"
         private const val KEY_QUICK_SETTINGS_WIDGET_TYPE = "quick_settings_widget_type_"
         private const val KEY_GRID_WIDGET_PAGE = "grid_widget_page_"
+        private const val KEY_GRID_WIDGET_FILTERED_TYPES = "grid_widget_filtered_types_"
 
         // Removed
         private const val KEY_SORT_RECORD_TYPES_BY_COLOR = "sortRecordTypesByColor" // Boolean

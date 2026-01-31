@@ -226,6 +226,10 @@ interface PrefsRepo {
 
     fun getGridWidget(widgetId: Int): Int
 
+    fun setGridWidgetFilteredTypes(widgetId: Int, typeIds: Set<Long>)
+
+    fun getGridWidgetFilteredTypes(widgetId: Int): Set<Long>
+
     fun removeGridWidget(widgetId: Int)
 
     fun clear()

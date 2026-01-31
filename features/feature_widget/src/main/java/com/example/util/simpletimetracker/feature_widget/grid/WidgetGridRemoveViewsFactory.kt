@@ -69,7 +69,9 @@ class WidgetGridRemoveViewsFactory @Inject constructor(
         appWidgetManager: AppWidgetManager,
         appWidgetId: Int,
     ): RemoteViews {
-        val recordTypes = recordTypeInteractor.getAll().filter { !it.hidden }
+        val filteredTypeIds = prefsInteractor.getGridWidgetFilteredTypes(appWidgetId)
+        val recordTypes = recordTypeInteractor.getAll()
+            .filter { !it.hidden && it.id !in filteredTypeIds }
         val runningRecords = runningRecordInteractor.getAll()
         val isDarkTheme = prefsInteractor.getDarkMode()
         val backgroundTransparency = prefsInteractor.getWidgetBackgroundTransparencyPercent()
