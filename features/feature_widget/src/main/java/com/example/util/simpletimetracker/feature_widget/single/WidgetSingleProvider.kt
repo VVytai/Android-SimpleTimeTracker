@@ -6,34 +6,28 @@ import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.SystemClock
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RemoteViews
 import com.example.util.simpletimetracker.core.extension.allowDiskRead
 import com.example.util.simpletimetracker.core.extension.allowVmViolations
-import com.example.util.simpletimetracker.core.extension.toParams
 import com.example.util.simpletimetracker.core.interactor.CompleteTypesStateInteractor
 import com.example.util.simpletimetracker.core.interactor.FilterGoalsByDayOfWeekInteractor
 import com.example.util.simpletimetracker.core.interactor.GetCurrentRecordsDurationInteractor
-import com.example.util.simpletimetracker.core.interactor.RecordRepeatInteractor
 import com.example.util.simpletimetracker.core.mapper.ColorMapper
 import com.example.util.simpletimetracker.core.mapper.IconMapper
 import com.example.util.simpletimetracker.core.mapper.RecordTypeViewDataMapper
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.core.utils.PendingIntents
 import com.example.util.simpletimetracker.domain.base.REPEAT_BUTTON_ITEM_ID
-import com.example.util.simpletimetracker.domain.recordType.extension.getDaily
-import com.example.util.simpletimetracker.domain.record.interactor.AddRunningRecordMediator
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.RecordInteractor
+import com.example.util.simpletimetracker.domain.record.interactor.RunningRecordInteractor
+import com.example.util.simpletimetracker.domain.recordType.extension.getDaily
 import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTypeGoalInteractor
 import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTypeInteractor
-import com.example.util.simpletimetracker.domain.record.interactor.RemoveRunningRecordMediator
-import com.example.util.simpletimetracker.domain.record.interactor.RunningRecordInteractor
 import com.example.util.simpletimetracker.domain.widget.interactor.WidgetInteractor
-import com.example.util.simpletimetracker.domain.record.model.RecordDataSelectionDialogResult
 import com.example.util.simpletimetracker.feature_views.ColorUtils
 import com.example.util.simpletimetracker.feature_views.GoalCheckmarkView
 import com.example.util.simpletimetracker.feature_views.RecordTypeView
@@ -44,11 +38,11 @@ import com.example.util.simpletimetracker.feature_views.extension.pxToDp
 import com.example.util.simpletimetracker.feature_views.extension.setAllMargins
 import com.example.util.simpletimetracker.feature_views.viewData.RecordTypeIcon
 import com.example.util.simpletimetracker.feature_widget.R
+import com.example.util.simpletimetracker.feature_widget.common.WidgetTypeClickManager
 import com.example.util.simpletimetracker.feature_widget.common.WidgetViewsHolder
-import com.example.util.simpletimetracker.navigation.params.screen.RecordTagSelectionParams
+import com.example.util.simpletimetracker.feature_widget.utils.setRecordTypeTimers
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -56,10 +50,7 @@ import javax.inject.Inject
 class WidgetSingleProvider : AppWidgetProvider() {
 
     @Inject
-    lateinit var addRunningRecordMediator: AddRunningRecordMediator
-
-    @Inject
-    lateinit var removeRunningRecordMediator: RemoveRunningRecordMediator
+    lateinit var widgetTypeClickManager: WidgetTypeClickManager
 
     @Inject
     lateinit var runningRecordInteractor: RunningRecordInteractor
@@ -92,9 +83,6 @@ class WidgetSingleProvider : AppWidgetProvider() {
     lateinit var prefsInteractor: PrefsInteractor
 
     @Inject
-    lateinit var recordRepeatInteractor: RecordRepeatInteractor
-
-    @Inject
     lateinit var getCurrentRecordsDurationInteractor: GetCurrentRecordsDurationInteractor
 
     @Inject
@@ -113,9 +101,7 @@ class WidgetSingleProvider : AppWidgetProvider() {
     override fun onReceive(context: Context?, intent: Intent?) {
         typeIdsToUpdate = intent?.getLongArrayExtra(TYPE_IDS_EXTRA)?.toList().orEmpty()
         super.onReceive(context, intent)
-        if (intent?.action == ON_CLICK_ACTION) {
-            onClick(context, intent.getIntExtra(ARGS_WIDGET_ID, 0))
-        }
+        if (intent?.action == ON_CLICK_ACTION) onClick(context, intent)
     }
 
     override fun onUpdate(
@@ -231,24 +217,7 @@ class WidgetSingleProvider : AppWidgetProvider() {
             val bitmap = view.getBitmapFromView()
 
             val views = RemoteViews(context.packageName, R.layout.widget_layout)
-            when {
-                runningRecord != null -> {
-                    val timeStarted = runningRecord.timeStarted
-                    val base = System.currentTimeMillis() - timeStarted
-                    setChronometer(base, R.id.timerWidget, views, true)
-                    views.setViewVisibility(R.id.timerWidget2, View.GONE)
-                }
-                prevRecord != null -> {
-                    val base1 = System.currentTimeMillis() - prevRecord.timeEnded
-                    val base2 = prevRecord.timeEnded - prevRecord.timeStarted
-                    setChronometer(base1, R.id.timerWidget, views, true)
-                    setChronometer(base2, R.id.timerWidget2, views, false)
-                }
-                else -> {
-                    views.setViewVisibility(R.id.timerWidget, View.GONE)
-                    views.setViewVisibility(R.id.timerWidget2, View.GONE)
-                }
-            }
+            setRecordTypeTimers(runningRecord, prevRecord, views)
             views.setImageViewBitmap(R.id.ivWidgetBackground, bitmap)
             views.setOnClickPendingIntent(R.id.btnWidget, getPendingSelfIntent(context, appWidgetId))
 
@@ -318,17 +287,6 @@ class WidgetSingleProvider : AppWidgetProvider() {
         return view
     }
 
-    private fun setChronometer(
-        timestamp: Long,
-        chronometerId: Int,
-        views: RemoteViews,
-        started: Boolean,
-    ) {
-        val base = SystemClock.elapsedRealtime() - timestamp
-        views.setChronometer(chronometerId, base, null, started)
-        views.setViewVisibility(chronometerId, View.VISIBLE)
-    }
-
     private fun measureView(
         context: Context,
         options: Bundle,
@@ -348,6 +306,7 @@ class WidgetSingleProvider : AppWidgetProvider() {
                 .also { entireView = it }
         }
 
+        // TODO this can be removed?
         val entireView: View = this.entireView ?: inflate()
         entireView.measureExactly(width = width, height = height)
 
@@ -359,59 +318,16 @@ class WidgetSingleProvider : AppWidgetProvider() {
 
     private fun onClick(
         context: Context?,
-        widgetId: Int,
+        intent: Intent,
     ) {
         allowDiskRead { MainScope() }.launch {
-            val recordTypeId = prefsInteractor.getWidget(widgetId)
-
-            if (recordTypeId == REPEAT_BUTTON_ITEM_ID) {
-                recordRepeatInteractor.repeatExternal()
-                return@launch
-            }
-
-            val type = recordTypeInteractor.get(recordTypeId)
-
-            // If recordType removed - update widget and exit
-            if (type == null) {
-                widgetInteractor.updateSingleWidget(widgetId)
-                return@launch
-            }
-
-            if (type.defaultDuration > 0) {
-                completeTypesStateInteractor.widgetTypeIds += recordTypeId
-                widgetInteractor.updateSingleWidget(widgetId)
-                delay(1000)
-                completeTypesStateInteractor.widgetTypeIds -= recordTypeId
-                widgetInteractor.updateSingleWidget(widgetId)
-            }
-
-            val runningRecord = runningRecordInteractor.get(recordTypeId)
-            if (runningRecord != null) {
-                // Stop running record, add new record
-                removeRunningRecordMediator.removeWithRecordAdd(runningRecord)
-            } else {
-                // Start running record
-                addRunningRecordMediator.tryStartTimer(
-                    typeId = recordTypeId,
-                    onNeedToShowTagSelection = {
-                        showTagSelection(context, recordTypeId, it)
-                    },
-                )
-            }
+            val widgetId = intent.getIntExtra(ARGS_WIDGET_ID, 0)
+            widgetTypeClickManager.onClick(
+                context = context,
+                recordTypeId = prefsInteractor.getWidget(widgetId),
+                onWidgetUpdate = { widgetInteractor.updateSingleWidget(widgetId) }
+            )
         }
-    }
-
-    private fun showTagSelection(
-        context: Context?,
-        typeId: Long,
-        result: RecordDataSelectionDialogResult,
-    ) {
-        context ?: return
-
-        WidgetSingleTagSelectionActivity.getStartIntent(
-            context = context,
-            data = RecordTagSelectionParams(typeId, result.toParams()),
-        ).let(context::startActivity)
     }
 
     private fun getPendingSelfIntent(

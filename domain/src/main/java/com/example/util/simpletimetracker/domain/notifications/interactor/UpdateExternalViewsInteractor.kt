@@ -485,6 +485,8 @@ class UpdateExternalViewsInteractor @Inject constructor(
             }
             is Update.WidgetUniversal -> {
                 widgetInteractor.updateWidgets(WidgetType.UNIVERSAL)
+                // TODO WIDGET add goals and add more update sources
+                widgetInteractor.updateWidgets(WidgetType.GRID)
             }
             is Update.WidgetSingleTypes -> {
                 widgetInteractor.updateWidgets(WidgetType.RECORD_TYPE)

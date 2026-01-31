@@ -25,6 +25,7 @@ import com.example.util.simpletimetracker.feature_widget.universal.view.WidgetUn
 import com.example.util.simpletimetracker.feature_widget.universal.customView.WidgetUniversalView
 import com.example.util.simpletimetracker.feature_widget.universal.customView.WidgetUniversalViewData
 import com.example.util.simpletimetracker.feature_widget.universal.mapper.WidgetUniversalViewDataMapper
+import com.example.util.simpletimetracker.feature_widget.utils.setChronometer
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
@@ -165,21 +166,6 @@ class WidgetUniversalProvider : AppWidgetProvider() {
             WidgetUniversalView(ContextThemeWrapper(context, R.style.AppTheme))
         }.apply {
             setData(data)
-        }
-    }
-
-    private fun setChronometer(
-        timestamp: Long?,
-        chronometerId: Int,
-        views: RemoteViews,
-        started: Boolean,
-    ) {
-        if (timestamp != null) {
-            val base = SystemClock.elapsedRealtime() - timestamp
-            views.setChronometer(chronometerId, base, null, started)
-            views.setViewVisibility(chronometerId, View.VISIBLE)
-        } else {
-            views.setViewVisibility(chronometerId, View.GONE)
         }
     }
 

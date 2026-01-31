@@ -5,6 +5,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import com.example.util.simpletimetracker.domain.widget.model.WidgetType
+import com.example.util.simpletimetracker.feature_widget.grid.WidgetGridProvider
 import com.example.util.simpletimetracker.feature_widget.quickSettings.WidgetQuickSettingsProvider
 import com.example.util.simpletimetracker.feature_widget.single.WidgetSingleProvider
 import com.example.util.simpletimetracker.feature_widget.statistics.WidgetStatisticsChartProvider
@@ -18,6 +19,7 @@ class WidgetManager @Inject constructor(
     @ApplicationContext private val context: Context,
 ) {
 
+    // TODO WIDGET add update
     fun updateSingleWidget(widgetId: Int) {
         val intent = Intent(context, WidgetSingleProvider::class.java)
         intent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
@@ -58,6 +60,7 @@ class WidgetManager @Inject constructor(
         val providers = widgetsToUpdate.map { type ->
             when (type) {
                 WidgetType.RECORD_TYPE -> WidgetSingleProvider::class.java
+                WidgetType.GRID -> WidgetGridProvider::class.java
                 WidgetType.UNIVERSAL -> WidgetUniversalProvider::class.java
                 WidgetType.STATISTICS_CHART -> WidgetStatisticsChartProvider::class.java
                 WidgetType.QUICK_SETTINGS -> WidgetQuickSettingsProvider::class.java
