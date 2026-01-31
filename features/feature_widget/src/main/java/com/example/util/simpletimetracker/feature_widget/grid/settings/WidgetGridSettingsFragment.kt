@@ -1,6 +1,5 @@
 package com.example.util.simpletimetracker.feature_widget.grid.settings
 
-import android.appwidget.AppWidgetManager
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
@@ -11,6 +10,7 @@ import com.example.util.simpletimetracker.feature_base_adapter.empty.createEmpty
 import com.example.util.simpletimetracker.feature_base_adapter.loader.createLoaderAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.recordType.createRecordTypeAdapterDelegate
 import com.example.util.simpletimetracker.feature_views.extension.setOnClick
+import com.example.util.simpletimetracker.feature_widget.utils.getAppWidgetIdOrInvalid
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
@@ -61,12 +61,7 @@ class WidgetGridSettingsFragment : BaseFragment<Binding>() {
     }
 
     private fun getWidgetId(): Int {
-        return activity?.intent?.extras
-            ?.getInt(
-                AppWidgetManager.EXTRA_APPWIDGET_ID,
-                AppWidgetManager.INVALID_APPWIDGET_ID,
-            )
-            ?: AppWidgetManager.INVALID_APPWIDGET_ID
+        return activity?.intent.getAppWidgetIdOrInvalid()
     }
 
     private fun exit(widgetId: Int) {
