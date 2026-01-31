@@ -52,16 +52,24 @@ class WidgetGridSettingsFragment : BaseFragment<Binding>() {
         btnWidgetGridSettingsShowAll.setOnClick(viewModel::onShowAllClick)
         btnWidgetGridSettingsHideAll.setOnClick(viewModel::onHideAllClick)
         btnWidgetGridSettingsSave.setOnClick(throttle(viewModel::onSaveClick))
+        checkboxWidgetGridNewItems.setOnClick(throttle(viewModel::onDoNotIncludeNewItemsClick))
     }
 
     override fun initViewModel() = with(viewModel) {
         extra = WidgetGridSettingsExtra(getWidgetId())
         types.observe(recordTypesAdapter::replace)
+        doNotIncludeNewItems.observe(::setDoNotIncludeItemsState)
         handled.observe(::exit)
     }
 
     private fun getWidgetId(): Int {
         return activity?.intent.getAppWidgetIdOrInvalid()
+    }
+
+    private fun setDoNotIncludeItemsState(isChecked: Boolean) = with(binding) {
+        if (checkboxWidgetGridNewItems.isChecked != isChecked) {
+            checkboxWidgetGridNewItems.isChecked = isChecked
+        }
     }
 
     private fun exit(widgetId: Int) {

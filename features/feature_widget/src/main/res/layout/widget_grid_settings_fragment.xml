@@ -28,7 +28,27 @@
         android:layout_height="2dp"
         android:layout_marginBottom="4dp"
         android:background="?appDividerColor"
-        app:layout_constraintBottom_toTopOf="@id/btnWidgetGridSettingsShowAll" />
+        app:layout_constraintBottom_toTopOf="@id/tvWidgetGridNewItems" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvWidgetGridNewItems"
+        style="@style/SettingsText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/widget_statistics_ignore_new_items"
+        android:textStyle="normal"
+        app:layout_constraintBottom_toTopOf="@id/btnWidgetGridSettingsShowAll"
+        app:layout_constraintEnd_toStartOf="@id/checkboxWidgetGridNewItems"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatCheckBox
+        android:id="@+id/checkboxWidgetGridNewItems"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@id/tvWidgetGridNewItems"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tvWidgetGridNewItems" />
+
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnWidgetGridSettingsShowAll"
