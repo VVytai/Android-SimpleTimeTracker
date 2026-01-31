@@ -559,6 +559,7 @@ Contoh:<br/>
 
     <!--  Widget  -->
     <string name="widget_name">Kegiatan Tunggal</string>
+    <string name="widget_grid_name">Kisi</string>
     <string name="widget_universal_name">Sedunia</string>
     <string name="widget_statistics_chart_name">Bagan Statistik</string>
     <string name="widget_quick_settings_name">Pengaturan cepat</string>

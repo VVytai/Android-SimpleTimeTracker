@@ -14,5 +14,7 @@ interface WidgetInteractor {
 
     fun updateQuickSettingsWidget(widgetId: Int)
 
+    fun updateGridWidget(widgetId: Int)
+
     fun updateWidgets(type: WidgetType)
 }

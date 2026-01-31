@@ -559,6 +559,7 @@ csv 文件必須包含以逗號分隔的這些列：<br/>
 
     <!--  Widget  -->
     <string name="widget_name">單一活動</string>
+    <string name="widget_grid_name">網格</string>
     <string name="widget_universal_name">萬用</string>
     <string name="widget_statistics_chart_name">統計表</string>
     <string name="widget_quick_settings_name">快速設置</string>

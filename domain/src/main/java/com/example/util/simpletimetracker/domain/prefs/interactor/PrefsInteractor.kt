@@ -826,6 +826,18 @@ class PrefsInteractor @Inject constructor(
         prefsRepo.removeQuickSettingsWidget(widgetId)
     }
 
+    suspend fun setGridWidget(widgetId: Int, page: Int) = withContext(Dispatchers.IO) {
+        prefsRepo.setGridWidget(widgetId, page)
+    }
+
+    suspend fun getGridWidget(widgetId: Int): Int = withContext(Dispatchers.IO) {
+        prefsRepo.getGridWidget(widgetId)
+    }
+
+    suspend fun removeGridWidget(widgetId: Int) = withContext(Dispatchers.IO) {
+        prefsRepo.removeGridWidget(widgetId)
+    }
+
     suspend fun setCardOrderManual(cardsOrder: Map<Long, Long>) = withContext(Dispatchers.IO) {
         prefsRepo.cardOrderManual = mapOrderManual(cardsOrder)
     }

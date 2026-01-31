@@ -578,7 +578,7 @@ class PrefsRepoImpl @Inject constructor(
 
     override fun setQuickSettingsWidget(widgetId: Int, data: QuickSettingsWidgetType) {
         val key = KEY_QUICK_SETTINGS_WIDGET_TYPE + widgetId
-        logPrefsDataAccess("set $widgetId")
+        logPrefsDataAccess("setQuickSettingsWidget $widgetId")
         val type = when (data) {
             is QuickSettingsWidgetType.AllowMultitasking -> 0L
             is QuickSettingsWidgetType.ShowRecordTagSelection -> 1L
@@ -588,7 +588,7 @@ class PrefsRepoImpl @Inject constructor(
 
     override fun getQuickSettingsWidget(widgetId: Int): QuickSettingsWidgetType {
         val key = KEY_QUICK_SETTINGS_WIDGET_TYPE + widgetId
-        logPrefsDataAccess("get $key")
+        logPrefsDataAccess("getQuickSettingsWidget $key")
         return when (prefs.getLong(key, 0)) {
             0L -> QuickSettingsWidgetType.AllowMultitasking
             1L -> QuickSettingsWidgetType.ShowRecordTagSelection
@@ -598,7 +598,25 @@ class PrefsRepoImpl @Inject constructor(
 
     override fun removeQuickSettingsWidget(widgetId: Int) {
         val key = KEY_QUICK_SETTINGS_WIDGET_TYPE + widgetId
-        logPrefsDataAccess("remove $key")
+        logPrefsDataAccess("removeQuickSettingsWidget $key")
+        prefs.edit { remove(key) }
+    }
+
+    override fun setGridWidget(widgetId: Int, page: Int) {
+        val key = KEY_GRID_WIDGET_PAGE + widgetId
+        logPrefsDataAccess("setGridWidget $key")
+        prefs.edit { putInt(key, page) }
+    }
+
+    override fun getGridWidget(widgetId: Int): Int {
+        val key = KEY_GRID_WIDGET_PAGE + widgetId
+        logPrefsDataAccess("getGridWidget $key")
+        return prefs.getInt(key, 0)
+    }
+
+    override fun removeGridWidget(widgetId: Int) {
+        val key = KEY_GRID_WIDGET_PAGE + widgetId
+        logPrefsDataAccess("removeGridWidget $key")
         prefs.edit { remove(key) }
     }
 
@@ -760,6 +778,7 @@ class PrefsRepoImpl @Inject constructor(
         private const val KEY_STATISTICS_WIDGET_RANGE_LAST_DAYS = "statistics_widget_range_last_days_"
         private const val KEY_STATISTICS_WIDGET_FILTERING_TYPE = "statistics_widget_filtering_type_"
         private const val KEY_QUICK_SETTINGS_WIDGET_TYPE = "quick_settings_widget_type_"
+        private const val KEY_GRID_WIDGET_PAGE = "grid_widget_page_"
 
         // Removed
         private const val KEY_SORT_RECORD_TYPES_BY_COLOR = "sortRecordTypesByColor" // Boolean

@@ -38,6 +38,7 @@ class UpdateExternalViewsInteractor @Inject constructor(
             Update.WidgetSingleTypes.takeIf { getRetroactiveTrackingMode() }
                 ?: Update.WidgetSingleType(listOf(typeId)),
             Update.WidgetUniversal.takeIf { getRetroactiveTrackingMode() },
+            Update.WidgetGrid.takeIf { !fromArchive },
             Update.Wear.takeIf { !fromArchive || getRetroactiveTrackingMode() },
             Update.NotificationTypes.takeIf { !fromArchive },
             Update.NotificationWithControls.takeIf { !fromArchive },
@@ -49,6 +50,7 @@ class UpdateExternalViewsInteractor @Inject constructor(
             Update.NotificationTypes,
             Update.NotificationWithControls,
             Update.Wear,
+            Update.WidgetGrid,
         )
     }
 
@@ -61,6 +63,7 @@ class UpdateExternalViewsInteractor @Inject constructor(
             Update.GoalReschedule(listOf(typeId)), // Goals changed, or categories assigned changed.
             Update.WidgetSingleTypes,
             Update.WidgetUniversal,
+            Update.WidgetGrid,
             Update.WidgetStatistics,
             Update.Wear,
         )
@@ -70,6 +73,7 @@ class UpdateExternalViewsInteractor @Inject constructor(
         runUpdates(
             Update.NotificationTypes,
             Update.NotificationWithControls,
+            Update.WidgetGrid,
             Update.Wear,
         )
     }
@@ -116,6 +120,7 @@ class UpdateExternalViewsInteractor @Inject constructor(
             Update.GoalTagReschedule(fullTagIds).takeIf { fullTagIds.isNotEmpty() },
             Update.WidgetSingleTypes.takeIf { updateWidgets },
             Update.WidgetUniversal.takeIf { updateWidgets },
+            Update.WidgetGrid.takeIf { updateWidgets },
             Update.WidgetStatistics.takeIf { updateWidgets },
             Update.Wear.takeIf { updateWidgets },
         )
@@ -138,6 +143,7 @@ class UpdateExternalViewsInteractor @Inject constructor(
             Update.GoalTagReschedule(tagIds).takeIf { tagIds.isNotEmpty() },
             Update.WidgetSingleTypes,
             Update.WidgetUniversal,
+            Update.WidgetGrid,
             Update.WidgetStatistics,
             Update.Wear,
         )
@@ -156,6 +162,7 @@ class UpdateExternalViewsInteractor @Inject constructor(
             Update.WidgetSingleTypes.takeIf { getRetroactiveTrackingMode() }
                 ?: Update.WidgetSingleType(typeIds),
             Update.WidgetUniversal.takeIf { getRetroactiveTrackingMode() },
+            Update.WidgetGrid,
             Update.Wear.takeIf { getRetroactiveTrackingMode() },
         )
     }
@@ -174,6 +181,7 @@ class UpdateExternalViewsInteractor @Inject constructor(
             Update.WidgetSingleTypes.takeIf { getRetroactiveTrackingMode() }
                 ?: Update.WidgetSingleType(typeIds),
             Update.WidgetUniversal.takeIf { getRetroactiveTrackingMode() },
+            Update.WidgetGrid,
             Update.Wear.takeIf { getRetroactiveTrackingMode() },
         )
     }
@@ -268,6 +276,7 @@ class UpdateExternalViewsInteractor @Inject constructor(
             Update.WidgetSingleType(listOf(typeId)),
             Update.NotificationType(listOf(typeId)),
             Update.NotificationWithControls,
+            Update.WidgetGrid,
         )
     }
 
@@ -276,6 +285,7 @@ class UpdateExternalViewsInteractor @Inject constructor(
             Update.WidgetSingleTypes,
             Update.NotificationTypes,
             Update.NotificationWithControls,
+            Update.WidgetGrid,
         )
     }
 
@@ -283,6 +293,7 @@ class UpdateExternalViewsInteractor @Inject constructor(
         runUpdates(
             Update.NotificationTypes,
             Update.NotificationWithControls,
+            Update.WidgetGrid,
             Update.Wear,
         )
     }
@@ -293,6 +304,7 @@ class UpdateExternalViewsInteractor @Inject constructor(
             Update.WidgetSingleTypes,
             Update.NotificationTypes,
             Update.NotificationWithControls,
+            Update.WidgetGrid,
             Update.GoalReschedule(),
             Update.GoalTagReschedule(),
         )
@@ -304,6 +316,7 @@ class UpdateExternalViewsInteractor @Inject constructor(
             Update.WidgetSingleTypes,
             Update.NotificationTypes,
             Update.NotificationWithControls,
+            Update.WidgetGrid,
             Update.GoalReschedule(),
             Update.GoalTagReschedule(),
         )
@@ -381,6 +394,7 @@ class UpdateExternalViewsInteractor @Inject constructor(
         runUpdates(
             Update.WidgetSingleTypes,
             Update.WidgetUniversal,
+            Update.WidgetGrid,
             Update.NotificationWithControls,
             Update.Wear,
         )
@@ -391,6 +405,7 @@ class UpdateExternalViewsInteractor @Inject constructor(
         runUpdates(
             Update.WidgetSingleTypes,
             Update.WidgetUniversal,
+            Update.WidgetGrid,
             Update.WidgetStatistics,
             Update.WidgetQuickSettings,
         )
@@ -417,6 +432,7 @@ class UpdateExternalViewsInteractor @Inject constructor(
             Update.GoalTagReschedule(),
             Update.WidgetSingleTypes,
             Update.WidgetUniversal,
+            Update.WidgetGrid,
             Update.WidgetStatistics,
             Update.WidgetQuickSettings,
             Update.Wear,
@@ -431,6 +447,7 @@ class UpdateExternalViewsInteractor @Inject constructor(
             Update.GoalTagReschedule(),
             Update.WidgetStatistics,
             Update.WidgetSingleTypes,
+            Update.WidgetGrid,
         )
     }
 
@@ -438,6 +455,7 @@ class UpdateExternalViewsInteractor @Inject constructor(
         runUpdates(
             Update.NotificationTypes,
             Update.NotificationWithControls,
+            Update.WidgetGrid,
             Update.Wear,
         )
     }
@@ -449,6 +467,7 @@ class UpdateExternalViewsInteractor @Inject constructor(
             Update.NotificationWithControls,
             Update.WidgetSingleTypes,
             Update.WidgetUniversal,
+            Update.WidgetGrid,
             Update.WidgetStatistics,
             Update.WidgetQuickSettings,
             Update.Wear,
@@ -485,7 +504,8 @@ class UpdateExternalViewsInteractor @Inject constructor(
             }
             is Update.WidgetUniversal -> {
                 widgetInteractor.updateWidgets(WidgetType.UNIVERSAL)
-                // TODO WIDGET add goals and add more update sources
+            }
+            is Update.WidgetGrid -> {
                 widgetInteractor.updateWidgets(WidgetType.GRID)
             }
             is Update.WidgetSingleTypes -> {
@@ -529,6 +549,7 @@ class UpdateExternalViewsInteractor @Inject constructor(
         data object WidgetStatistics : Update
         data object WidgetQuickSettings : Update
         data object WidgetUniversal : Update
+        data object WidgetGrid : Update
         data object WidgetSingleTypes : Update
         data class WidgetSingleType(val typeIds: List<Long>) : Update
         data object Wear : Update

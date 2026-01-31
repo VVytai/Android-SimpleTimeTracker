@@ -559,6 +559,7 @@ csv फ़ाइल में कॉमा से अलग किए गए य
 
     <!--  Widget  -->
     <string name="widget_name">एकल गतिविधि</string>
+    <string name="widget_grid_name">ग्रिड</string>
     <string name="widget_universal_name">सार्वभौमिक</string>
     <string name="widget_statistics_chart_name">सांख्यिकी चार्ट</string>
     <string name="widget_quick_settings_name">त्वरित सेटिंग</string>

@@ -325,7 +325,7 @@ class WidgetSingleProvider : AppWidgetProvider() {
             widgetTypeClickManager.onClick(
                 context = context,
                 recordTypeId = prefsInteractor.getWidget(widgetId),
-                onWidgetUpdate = { widgetInteractor.updateSingleWidget(widgetId) }
+                onWidgetUpdate = { widgetInteractor.updateSingleWidget(widgetId) },
             )
         }
     }

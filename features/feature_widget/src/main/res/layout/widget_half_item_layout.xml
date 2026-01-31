@@ -3,9 +3,7 @@
     android:id="@+id/containerItemWidgets"
     android:layout_width="0dp"
     android:layout_height="match_parent"
-    android:layout_weight="1"
+    android:layout_weight="0.5"
     android:padding="@dimen/grid_widget_padding">
-
-    <!--  Items added programmatically  -->
 
 </RelativeLayout>

@@ -559,6 +559,7 @@
 
     <!--  Widget  -->
     <string name="widget_name">פעילות בודדת</string>
+    <string name="widget_grid_name">רשת</string>
     <string name="widget_universal_name">אוניברסלי</string>
     <string name="widget_statistics_chart_name">טבלת סטטיסטיקה</string>
     <string name="widget_quick_settings_name">הגדרות מהירות</string>

@@ -22,9 +22,11 @@ class WidgetViewsHolder @Inject constructor(
     private var recordTypeView: RecordTypeView? = null
     private var statisticsView: WidgetStatisticsChartView? = null
     private var statisticsRefreshView: IconView? = null
+    private var gridRecordTypeView: RecordTypeView? = null
 
     fun initialize() {
         getRecordTypeView(context)
+        getGridRecordTypeView(context)
         getStatisticsView(context)
         getStatisticsRefreshView(context)
     }
@@ -35,6 +37,15 @@ class WidgetViewsHolder @Inject constructor(
             RecordTypeView(ContextThemeWrapper(context, R.style.AppTheme))
         }
         recordTypeView = view
+        return view
+    }
+
+    fun getGridRecordTypeView(context: Context): RecordTypeView {
+        gridRecordTypeView?.let { return it }
+        val view = allowVmViolations {
+            RecordTypeView(ContextThemeWrapper(context, R.style.AppTheme))
+        }
+        gridRecordTypeView = view
         return view
     }
 

@@ -98,9 +98,6 @@
                 android:resource="@xml/widget_quick_settings_info" />
         </receiver>
 
-        <service android:name=".grid.WidgetGridRemoteViewsService"
-            android:permission="android.permission.BIND_REMOTEVIEWS" />
-
     </application>
 
 </manifest>

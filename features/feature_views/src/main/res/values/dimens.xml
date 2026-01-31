@@ -38,5 +38,8 @@
 
     <dimen name="widget_statistics_refresh_button_size">20dp</dimen>
 
+    <dimen name="widget_grid_controls_button_size">32dp</dimen>
+    <dimen name="widget_grid_controls_image_size">24dp</dimen>
+
     <dimen name="rounded_span_radius">99dp</dimen>
 </resources>

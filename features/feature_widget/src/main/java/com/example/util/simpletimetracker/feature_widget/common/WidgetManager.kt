@@ -19,7 +19,6 @@ class WidgetManager @Inject constructor(
     @ApplicationContext private val context: Context,
 ) {
 
-    // TODO WIDGET add update
     fun updateSingleWidget(widgetId: Int) {
         val intent = Intent(context, WidgetSingleProvider::class.java)
         intent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
@@ -52,10 +51,17 @@ class WidgetManager @Inject constructor(
         context.sendBroadcast(intent)
     }
 
+    fun updateGridWidget(widgetId: Int) {
+        val intent = Intent(context, WidgetGridProvider::class.java)
+        intent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, intArrayOf(widgetId))
+        context.sendBroadcast(intent)
+    }
+
     fun updateWidgets(types: List<WidgetType>) {
         val widgetsToUpdate = types
             .takeUnless { it.isEmpty() }
-            ?: WidgetType.values().toList()
+            ?: WidgetType.entries
 
         val providers = widgetsToUpdate.map { type ->
             when (type) {

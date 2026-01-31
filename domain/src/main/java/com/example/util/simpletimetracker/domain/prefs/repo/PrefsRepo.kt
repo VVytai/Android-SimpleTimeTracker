@@ -222,6 +222,12 @@ interface PrefsRepo {
 
     fun removeQuickSettingsWidget(widgetId: Int)
 
+    fun setGridWidget(widgetId: Int, page: Int)
+
+    fun getGridWidget(widgetId: Int): Int
+
+    fun removeGridWidget(widgetId: Int)
+
     fun clear()
     fun clearDefaultTypesHidden()
     fun clearRetroactiveMultitaskingHidden()
