@@ -202,7 +202,6 @@ class WidgetGridRemoveViewsFactory @Inject constructor(
 
     // TODO WIDGET:
     // TODO add settings activity to select number of cards
-    // TODO add settings to filter some activities
     // TODO add settings for padding between cards?
     // TODO add repeat
     private fun getView(

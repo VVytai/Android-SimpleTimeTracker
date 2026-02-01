@@ -43,6 +43,8 @@ class ComplexRuleProcessActionInteractor @Inject constructor(
             .filter { it.actionDisallowOnlyPrevious }
             .map { it.conditionCurrentTypeIds }
             .flatten().toSet()
+            .takeUnless { rulesThatDisallow.any { !it.actionDisallowOnlyPrevious } }
+            .orEmpty()
 
         val additionalTags = assignTagRules.map { it.actionAssignTagIds }
             .flatten().toSet()

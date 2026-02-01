@@ -48,7 +48,7 @@ class ComplexRulesViewDataInteractor @Inject constructor(
                 if (anyAction != null) {
                     val hint = complexRuleViewDataMapper.mapActionTitle(
                         action = anyAction,
-                        disallowOnlyPrevious = false
+                        disallowOnlyPrevious = false,
                     )
                     result += HintViewData(hint)
                 }
