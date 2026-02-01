@@ -95,6 +95,7 @@ class AddRunningRecordMediator @Inject constructor(
             // No need to check rules on merge.
             ComplexRuleProcessActionInteractor.Result(
                 isMultitaskingAllowed = ResultContainer.Undefined,
+                disallowOnlyPreviousTypeIds = emptySet(),
                 tagsIds = emptySet(),
             )
         } else {
@@ -110,6 +111,7 @@ class AddRunningRecordMediator @Inject constructor(
         processMultitasking(
             typeId = typeId,
             isMultitaskingAllowed = isMultitaskingAllowed,
+            disallowOnlyPreviousTypeIds = rulesResult.disallowOnlyPreviousTypeIds,
             splitTime = when (timeStarted) {
                 is StartTime.Current -> timeStarted.currentTimeStampMs
                 is StartTime.TakeCurrent -> currentTime
@@ -310,6 +312,7 @@ class AddRunningRecordMediator @Inject constructor(
         } else {
             ComplexRuleProcessActionInteractor.Result(
                 isMultitaskingAllowed = ResultContainer.Undefined,
+                disallowOnlyPreviousTypeIds = emptySet(),
                 tagsIds = emptySet(),
             )
         }
@@ -318,13 +321,22 @@ class AddRunningRecordMediator @Inject constructor(
     private suspend fun processMultitasking(
         typeId: Long,
         isMultitaskingAllowed: Boolean,
+        disallowOnlyPreviousTypeIds: Set<Long>,
         splitTime: Long,
     ) {
         // Stop running records if multitasking is disabled.
         if (!isMultitaskingAllowed) {
             // Widgets will update on adding.
-            runningRecordInteractor.getAll()
+            val runningRecords = runningRecordInteractor.getAll()
                 .filter { it.id != typeId }
+            val recordsToStop = if (disallowOnlyPreviousTypeIds.isNotEmpty()) {
+                runningRecords.filter { record ->
+                    record.typeIds.any { it in disallowOnlyPreviousTypeIds }
+                }
+            } else {
+                runningRecords
+            }
+            recordsToStop
                 .forEach {
                     removeRunningRecordMediator.removeWithRecordAdd(
                         runningRecord = it,
