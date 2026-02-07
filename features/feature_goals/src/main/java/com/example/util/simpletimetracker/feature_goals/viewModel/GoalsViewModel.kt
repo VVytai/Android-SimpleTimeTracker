@@ -79,7 +79,6 @@ class GoalsViewModel @Inject constructor(
         statisticsDetailNavigationInteractor.navigateByGoal(
             goalId = item.id,
             shift = 0, // TODO GOAL pass correct shift and range?
-            // TODO GOAL add tests
         )
     }
 
