@@ -12,12 +12,14 @@ import com.example.util.simpletimetracker.core.extension.shiftTimeStamp
 import com.example.util.simpletimetracker.core.interactor.StatisticsDetailNavigationInteractor
 import com.example.util.simpletimetracker.core.mapper.TimeMapper
 import com.example.util.simpletimetracker.core.model.NavigationTab
+import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
+import com.example.util.simpletimetracker.domain.recordType.extension.toRangeLength
+import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTypeGoalInteractor
+import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.loader.LoaderViewData
 import com.example.util.simpletimetracker.feature_base_adapter.statisticsGoal.StatisticsGoalViewData
 import com.example.util.simpletimetracker.feature_goals.interactor.GoalsViewDataInteractor
-import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
-import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
 import com.example.util.simpletimetracker.navigation.Router
 import com.example.util.simpletimetracker.navigation.params.screen.DateTimeDialogParams
 import com.example.util.simpletimetracker.navigation.params.screen.DateTimeDialogType
@@ -36,6 +38,7 @@ class GoalsViewModel @Inject constructor(
     private val router: Router,
     private val prefsInteractor: PrefsInteractor,
     private val timeMapper: TimeMapper,
+    private val recordTypeGoalInteractor: RecordTypeGoalInteractor,
     val dateSelectorViewModelDelegate: DateSelectorViewModelDelegate,
 ) : ViewModel() {
 
@@ -76,9 +79,19 @@ class GoalsViewModel @Inject constructor(
     }
 
     fun onGoalClick(item: StatisticsGoalViewData) = viewModelScope.launch {
+        val goal = recordTypeGoalInteractor.get(item.id) ?: return@launch
+        val rangeShift = if (prefsInteractor.getKeepStatisticsRange()) {
+            goalsViewDataInteractor.getRangeShift(
+                dayShift = currentShift,
+                goalRange = goal.range,
+            )
+        } else {
+            0
+        }
         statisticsDetailNavigationInteractor.navigateByGoal(
             goalId = item.id,
-            shift = 0, // TODO GOAL pass correct shift and range?
+            shift = rangeShift,
+            range = goal.range.toRangeLength() ?: return@launch,
         )
     }
 
