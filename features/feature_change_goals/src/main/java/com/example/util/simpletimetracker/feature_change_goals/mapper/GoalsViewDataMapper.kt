@@ -108,8 +108,8 @@ class GoalsViewDataMapper @Inject constructor(
         val position = goalTypeList.indexOf(goalViewData)
             .takeUnless { it == -1 }.orZero()
         val value = when (goal) {
-            is RecordTypeGoal.Type.Duration -> toDurationGoalText(goal.value.orZero())
-            is RecordTypeGoal.Type.Count -> goal.value.orZero().toString()
+            is RecordTypeGoal.Type.Duration -> toDurationGoalText(goal.value)
+            is RecordTypeGoal.Type.Count -> goal.value.takeUnless { it == 0L }?.toString().orEmpty()
         }
         val items = goalTypeList.map {
             when (it) {
