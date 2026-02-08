@@ -36,8 +36,8 @@ class TagsViewDataMapper @Inject constructor(
     fun mapState(
         tags: List<WearTag>,
         selectedTags: List<WearRecordTag>,
-        settings: WearSettings?,
         loadingState: TagsLoadingState,
+        multipleChoiceAvailable: Boolean,
     ): TagListState {
         val listState = if (tags.isEmpty()) {
             mapEmptyState()
@@ -45,8 +45,8 @@ class TagsViewDataMapper @Inject constructor(
             mapContentState(
                 tags = tags,
                 selectedTags = selectedTags,
-                settings = settings,
                 loadingState = loadingState,
+                multipleChoiceAvailable = multipleChoiceAvailable
             )
         }
 
@@ -60,15 +60,15 @@ class TagsViewDataMapper @Inject constructor(
     private fun mapContentState(
         tags: List<WearTag>,
         selectedTags: List<WearRecordTag>,
-        settings: WearSettings?,
         loadingState: TagsLoadingState,
+        multipleChoiceAvailable: Boolean,
     ): TagListState.Content {
         val selectedTagsMap = selectedTags.associateBy { it.tagId }
         val selectedTagIds = selectedTagsMap.keys
-        val mode = if (settings?.recordTagSelectionCloseAfterOne.orFalse()) {
-            TagChipState.TagSelectionMode.SINGLE
-        } else {
+        val mode = if (multipleChoiceAvailable) {
             TagChipState.TagSelectionMode.MULTI
+        } else {
+            TagChipState.TagSelectionMode.SINGLE
         }
 
         val items = tags.map {

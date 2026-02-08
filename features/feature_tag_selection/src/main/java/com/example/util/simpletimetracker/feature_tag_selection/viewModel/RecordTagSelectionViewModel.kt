@@ -3,18 +3,16 @@ package com.example.util.simpletimetracker.feature_tag_selection.viewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.example.util.simpletimetracker.core.ShouldCloseAfterOneTagInteractor
 import com.example.util.simpletimetracker.core.base.BaseViewModel
-import com.example.util.simpletimetracker.core.extension.lazySuspend
 import com.example.util.simpletimetracker.core.extension.set
 import com.example.util.simpletimetracker.core.interactor.RecordCommentSearchViewDataInteractor
-import com.example.util.simpletimetracker.core.interactor.ShouldCloseAfterOneTagInteractor
 import com.example.util.simpletimetracker.core.viewData.CommentFilterTypeViewData
 import com.example.util.simpletimetracker.domain.base.CurrentTimestampProvider
 import com.example.util.simpletimetracker.domain.base.suspendLazy
 import com.example.util.simpletimetracker.domain.extension.addOrRemove
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.AddRunningRecordMediator
-import com.example.util.simpletimetracker.domain.record.interactor.RecordInteractor
 import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.domain.recordTag.interactor.AddTagToTypeIfNotExistMediator
 import com.example.util.simpletimetracker.domain.recordTag.interactor.NeedTagValueSelectionInteractor
@@ -43,10 +41,9 @@ class RecordTagSelectionViewModel @Inject constructor(
     private val addTagToTypeIfNotExistMediator: AddTagToTypeIfNotExistMediator,
     private val needTagValueSelectionInteractor: NeedTagValueSelectionInteractor,
     private val recordTypeToDefaultTagInteractor: RecordTypeToDefaultTagInteractor,
-    private val recordInteractor: RecordInteractor,
+    private val shouldCloseAfterOneTagInteractor: ShouldCloseAfterOneTagInteractor,
     private val currentTimestampProvider: CurrentTimestampProvider,
     private val recordCommentSearchViewDataInteractor: RecordCommentSearchViewDataInteractor,
-    private val shouldCloseAfterOneTagInteractor: ShouldCloseAfterOneTagInteractor,
 ) : BaseViewModel() {
 
     lateinit var extra: RecordTagSelectionParams
@@ -166,7 +163,6 @@ class RecordTagSelectionViewModel @Inject constructor(
     }
 
     private suspend fun loadPreselectedTagIds(): Set<Long> = coroutineScope {
-        // TODO TAG add "close after one tag" exclusion check to wear
         // TODO TAG check retroactive mode?
         // TODO TAG ability to deselect preselected tags
         // TODO TAG multiple choice from notification
@@ -187,9 +183,13 @@ class RecordTagSelectionViewModel @Inject constructor(
         if (initialIds.isNotEmpty()) {
             newTags = initialIds.map { RecordBase.Tag(tagId = it, numericValue = null) }
         }
+        val shouldCloseAfterOne = shouldCloseAfterOneTagInteractor.execute(
+            typeId = extra.typeId,
+            closeAfterOne = prefsInteractor.getRecordTagSelectionCloseAfterOne(),
+            excludedActivities = prefsInteractor.getCloseAfterOneTagExcludeActivities().toSet(),
+        )
         // If there are preselected tags - ignore setting.
-        isMultipleChoiceAvailable = newTags.isNotEmpty() ||
-            !shouldCloseAfterOneTagInteractor.execute(extra.typeId)
+        isMultipleChoiceAvailable = newTags.isNotEmpty() || !shouldCloseAfterOne
         updateButtonVisibility()
         initialSelectedTagsLoaded = true
     }

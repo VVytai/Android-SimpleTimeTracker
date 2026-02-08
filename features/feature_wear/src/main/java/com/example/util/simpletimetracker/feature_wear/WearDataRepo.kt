@@ -226,6 +226,7 @@ class WearDataRepo @Inject constructor(
             apiVersion = applicationDataProvider.getWearApiVersion(),
             allowMultitasking = prefsInteractor.getAllowMultitasking(),
             recordTagSelectionCloseAfterOne = prefsInteractor.getRecordTagSelectionCloseAfterOne(),
+            closeAfterOneTagExcludeActivities = prefsInteractor.getCloseAfterOneTagExcludeActivities(),
             enableRepeatButton = prefsInteractor.getEnableRepeatButton(),
             retroactiveTrackingMode = prefsInteractor.getRetroactiveTrackingMode(),
             startOfDayShift = prefsInteractor.getStartOfDayShift(),

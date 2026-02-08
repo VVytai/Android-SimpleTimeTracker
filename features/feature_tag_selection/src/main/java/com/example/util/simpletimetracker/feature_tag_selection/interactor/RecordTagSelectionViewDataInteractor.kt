@@ -2,7 +2,6 @@ package com.example.util.simpletimetracker.feature_tag_selection.interactor
 
 import com.example.util.simpletimetracker.core.interactor.RecordCommentSearchViewDataInteractor
 import com.example.util.simpletimetracker.core.interactor.RecordTagViewDataInteractor
-import com.example.util.simpletimetracker.core.interactor.ShouldCloseAfterOneTagInteractor
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType

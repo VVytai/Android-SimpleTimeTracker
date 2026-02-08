@@ -98,6 +98,7 @@ class WearDataLocalMapper @Inject constructor() {
             apiVersion = dto.apiVersion,
             allowMultitasking = dto.allowMultitasking.orFalse(),
             recordTagSelectionCloseAfterOne = dto.recordTagSelectionCloseAfterOne.orFalse(),
+            closeAfterOneTagExcludeActivities = dto.closeAfterOneTagExcludeActivities.orEmpty().toSet(),
             enableRepeatButton = dto.enableRepeatButton.orFalse(),
             retroactiveTrackingMode = dto.retroactiveTrackingMode.orFalse(),
             startOfDayShift = dto.startOfDayShift.orZero(),

@@ -110,6 +110,8 @@ data class WearSettingsDTO(
     val allowMultitasking: Boolean?,
     @SerializedName("recordTagSelectionCloseAfterOne")
     val recordTagSelectionCloseAfterOne: Boolean?,
+    @SerializedName("closeAfterOneTagExcludeActivities")
+    val closeAfterOneTagExcludeActivities: List<Long>?,
     @SerializedName("enableRepeatButton")
     val enableRepeatButton: Boolean?,
     @SerializedName("retroactiveTrackingMode")
