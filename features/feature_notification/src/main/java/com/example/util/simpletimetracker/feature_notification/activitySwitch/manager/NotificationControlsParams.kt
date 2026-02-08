@@ -11,6 +11,7 @@ sealed interface NotificationControlsParams {
         val typesShift: Int,
         val tagsShift: Int,
         val controlIconColor: Int,
+        val isMultipleTagAvailable: Boolean,
         val selectedTypeId: Long?,
         val selectedTags: List<RecordBase.Tag> = emptyList(),
         val editingTagId: Long? = null,

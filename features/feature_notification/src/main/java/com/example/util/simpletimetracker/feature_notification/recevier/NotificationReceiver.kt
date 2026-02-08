@@ -49,6 +49,7 @@ import com.example.util.simpletimetracker.feature_notification.pomodoro.controll
 import com.example.util.simpletimetracker.feature_notification.recordType.controller.NotificationTypeBroadcastController
 import com.example.util.simpletimetracker.feature_notification.activitySwitch.manager.NotificationControlsManager.Companion.ARGS_EDITING_TAG_ID
 import com.example.util.simpletimetracker.feature_notification.activitySwitch.manager.NotificationControlsManager.Companion.ARGS_EDITING_TAG_VALUE_INPUT
+import com.example.util.simpletimetracker.feature_notification.activitySwitch.manager.NotificationControlsManager.Companion.ARGS_MULTIPLE_TAG_AVAILABLE
 import com.example.util.simpletimetracker.feature_notification.activitySwitch.manager.NotificationControlsManager.Companion.ARGS_SELECTED_TAGS
 import com.example.util.simpletimetracker.feature_notification.activitySwitch.manager.NotificationControlsManager.Companion.ARGS_SELECTED_TYPE_ID
 import com.example.util.simpletimetracker.feature_notification.activitySwitch.manager.NotificationControlsManager.Companion.ARGS_TAGS_SHIFT
@@ -273,6 +274,7 @@ class NotificationReceiver : BroadcastReceiver() {
                 val selectedTags = intent.getSelectedTags()
                 val editingTagId = intent.getEditingTagId()
                 val editingTagValueInput = intent.getEditingTagValueInput()
+                val isMultipleTagAvailable = intent.getBooleanExtra(ARGS_MULTIPLE_TAG_AVAILABLE, false)
                 typeController.onRequestUpdate(
                     from = from,
                     typeId = typeId,
@@ -282,6 +284,7 @@ class NotificationReceiver : BroadcastReceiver() {
                     editingTagValueInput = editingTagValueInput,
                     typesShift = typesShift,
                     tagsShift = tagsShift,
+                    isMultipleTagAvailable = isMultipleTagAvailable,
                 )
             }
             ACTION_NOTIFICATION_CONTROLS_TAG_CLICK -> {
@@ -294,6 +297,7 @@ class NotificationReceiver : BroadcastReceiver() {
                 val selectedTags = intent.getSelectedTags()
                 val editingTagId = intent.getEditingTagId()
                 val editingTagValueInput = intent.getEditingTagValueInput()
+                val isMultipleTagAvailable = intent.getBooleanExtra(ARGS_MULTIPLE_TAG_AVAILABLE, false)
                 typeController.onActionTagClick(
                     from = from,
                     typeId = typeId,
@@ -304,6 +308,7 @@ class NotificationReceiver : BroadcastReceiver() {
                     selectedTags = selectedTags,
                     editingTagId = editingTagId,
                     editingTagValueInput = editingTagValueInput,
+                    isMultipleTagAvailable = isMultipleTagAvailable,
                 )
             }
             ACTION_NOTIFICATION_CONTROLS_TAG_VALUE_SAVE -> {
@@ -315,6 +320,7 @@ class NotificationReceiver : BroadcastReceiver() {
                 val selectedTags = intent.getSelectedTags()
                 val editingTagId = intent.getEditingTagId() ?: return
                 val editingTagValueInput = intent.getEditingTagValueInput()
+                val isMultipleTagAvailable = intent.getBooleanExtra(ARGS_MULTIPLE_TAG_AVAILABLE, false)
                 typeController.onActionTagValueSave(
                     from = from,
                     typeId = typeId,
@@ -324,6 +330,7 @@ class NotificationReceiver : BroadcastReceiver() {
                     typesShift = typesShift,
                     tagsShift = tagsShift,
                     selectedTags = selectedTags,
+                    isMultipleTagAvailable = isMultipleTagAvailable,
                 )
             }
             ACTION_NOTIFICATION_TYPE_CANCEL -> {

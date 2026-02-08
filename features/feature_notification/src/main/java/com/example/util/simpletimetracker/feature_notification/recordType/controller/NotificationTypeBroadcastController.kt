@@ -59,6 +59,7 @@ class NotificationTypeBroadcastController @Inject constructor(
         selectedTags: List<RecordBase.Tag> = emptyList(),
         editingTagId: Long? = null,
         editingTagValueInput: String? = null,
+        isMultipleTagAvailable: Boolean,
     ) {
         safeLaunch {
             activityStartStopFromBroadcastInteractor.onActionTagClick(
@@ -73,6 +74,7 @@ class NotificationTypeBroadcastController @Inject constructor(
                 selectedTags = selectedTags,
                 editingTagId = editingTagId,
                 editingTagValueInput = editingTagValueInput,
+                isMultipleTagAvailable = isMultipleTagAvailable,
             )
         }
     }
@@ -86,6 +88,7 @@ class NotificationTypeBroadcastController @Inject constructor(
         typesShift: Int,
         tagsShift: Int,
         selectedTags: List<RecordBase.Tag> = emptyList(),
+        isMultipleTagAvailable: Boolean,
     ) {
         safeLaunch {
             activityStartStopFromBroadcastInteractor.onActionTagValueSave(
@@ -99,6 +102,7 @@ class NotificationTypeBroadcastController @Inject constructor(
                 typesShift = typesShift,
                 tagsShift = tagsShift,
                 selectedTags = selectedTags,
+                isMultipleTagAvailable = isMultipleTagAvailable,
             )
         }
     }
@@ -112,6 +116,7 @@ class NotificationTypeBroadcastController @Inject constructor(
         editingTagValueInput: String?,
         typesShift: Int,
         tagsShift: Int,
+        isMultipleTagAvailable: Boolean,
     ) {
         safeLaunch {
             activityStartStopFromBroadcastInteractor.onRequestUpdate(
@@ -125,6 +130,7 @@ class NotificationTypeBroadcastController @Inject constructor(
                 editingTagValueInput = editingTagValueInput,
                 typesShift = typesShift,
                 tagsShift = tagsShift,
+                isMultipleTagAvailable = isMultipleTagAvailable,
             )
         }
     }

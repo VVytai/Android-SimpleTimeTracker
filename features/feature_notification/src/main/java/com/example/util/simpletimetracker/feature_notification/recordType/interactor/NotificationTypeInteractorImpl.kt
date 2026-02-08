@@ -58,7 +58,7 @@ class NotificationTypeInteractorImpl @Inject constructor(
         selectedTags: List<RecordBase.Tag>,
         editingTagId: Long?,
         editingTagValueInput: String?,
-        showTagSaveButton: Boolean,
+        isMultipleTagAvailable: Boolean,
     ) {
         if (!prefsInteractor.getShowNotifications()) return
 
@@ -115,7 +115,7 @@ class NotificationTypeInteractorImpl @Inject constructor(
                 types = recordTypes.values.toList(),
                 suggestions = suggestions,
                 showRepeatButton = showRepeatButton,
-                showTagSaveButton = showTagSaveButton,
+                isMultipleTagAvailable = isMultipleTagAvailable,
                 typesShift = typesShift,
                 tagsShift = tagsShift,
                 selectedTypeId = selectedTypeId,
@@ -191,7 +191,7 @@ class NotificationTypeInteractorImpl @Inject constructor(
                 types = recordTypes.values.toList(),
                 suggestions = suggestions,
                 showRepeatButton = showRepeatButton,
-                showTagSaveButton = false,
+                isMultipleTagAvailable = false,
                 typesShift = 0,
                 tagsShift = 0,
                 selectedTypeId = null,

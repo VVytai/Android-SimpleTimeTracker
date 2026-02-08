@@ -160,8 +160,6 @@ class RecordTagSelectionViewModel @Inject constructor(
 
     // TODO TAG add check retroactive mode to loaded preselected tags?
     // TODO TAG ability to deselect preselected tags
-    // TODO TAG multiple choice from notification
-    // TODO TAG show preselected on notification
     private suspend fun initializeData() {
         if (initialDataLoaded) return
         val initialIds = loadPreselectedTagsInteractor.execute(extra.typeId)

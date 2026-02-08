@@ -1,6 +1,7 @@
 package com.example.util.simpletimetracker.feature_notification.recordType.interactor
 
 import com.example.util.simpletimetracker.core.ShouldCloseAfterOneTagInteractor
+import com.example.util.simpletimetracker.core.interactor.LoadPreselectedTagsInteractor
 import com.example.util.simpletimetracker.core.interactor.CompleteTypesStateInteractor
 import com.example.util.simpletimetracker.core.interactor.RecordRepeatInteractor
 import com.example.util.simpletimetracker.domain.base.REPEAT_BUTTON_ITEM_ID
@@ -33,6 +34,7 @@ class ActivityStartStopFromBroadcastInteractor @Inject constructor(
     private val completeTypesStateInteractor: CompleteTypesStateInteractor,
     private val needTagValueSelectionInteractor: NeedTagValueSelectionInteractor,
     private val prefsInteractor: PrefsInteractor,
+    private val loadPreselectedTagsInteractor: LoadPreselectedTagsInteractor,
     private val shouldCloseAfterOneTagInteractor: ShouldCloseAfterOneTagInteractor,
 ) {
 
@@ -66,14 +68,21 @@ class ActivityStartStopFromBroadcastInteractor @Inject constructor(
             updateNotificationSwitch = false,
             commentInputAvailable = false, // TODO open activity? Or RemoteInput?
         ) {
+            val preselectedTags = loadPreselectedTagsInteractor.execute(selectedTypeId)
+                .map { RecordBase.Tag(tagId = it, numericValue = null) }
+            val isMultipleTagAvailable = isMultipleTagChoiceAvailable(
+                selectedTypeId = selectedTypeId,
+                selectedTags = preselectedTags,
+            )
+
             // Update to show tag selection.
             update(
                 from = from,
                 typesShift = typesShift,
                 tagsShift = 0,
                 selectedTypeId = selectedTypeId,
-                showTagSaveButton = isMultipleChoiceAvailable(selectedTypeId),
-                selectedTags = emptyList(),
+                isMultipleTagAvailable = isMultipleTagAvailable,
+                selectedTags = preselectedTags,
                 editingTagId = null,
                 editingTagValueInput = null,
             )
@@ -101,9 +110,8 @@ class ActivityStartStopFromBroadcastInteractor @Inject constructor(
         editingTagId: Long? = null,
         editingTagValueInput: String? = null,
         tagsShift: Int = 0,
+        isMultipleTagAvailable: Boolean,
     ) {
-        val showSaveButton = isMultipleChoiceAvailable(selectedTypeId)
-
         if (tagId == APPLY_TAGS_ID) {
             startFromTagSelection(
                 from = from,
@@ -131,7 +139,7 @@ class ActivityStartStopFromBroadcastInteractor @Inject constructor(
                 typesShift = typesShift,
                 tagsShift = tagsShift,
                 selectedTypeId = selectedTypeId,
-                showTagSaveButton = showSaveButton,
+                isMultipleTagAvailable = isMultipleTagAvailable,
                 selectedTags = updatedTags,
                 editingTagId = null,
                 editingTagValueInput = null,
@@ -149,7 +157,7 @@ class ActivityStartStopFromBroadcastInteractor @Inject constructor(
                 typesShift = typesShift,
                 tagsShift = tagsShift,
                 selectedTypeId = selectedTypeId,
-                showTagSaveButton = showSaveButton,
+                isMultipleTagAvailable = isMultipleTagAvailable,
                 selectedTags = selectedTags,
                 editingTagId = tagId,
                 editingTagValueInput = getExistingTagValueInput(
@@ -174,6 +182,7 @@ class ActivityStartStopFromBroadcastInteractor @Inject constructor(
             editingTagValueInput = null,
             typesShift = typesShift,
             tagsShift = tagsShift,
+            isMultipleTagAvailable = isMultipleTagAvailable,
         )
     }
 
@@ -185,6 +194,7 @@ class ActivityStartStopFromBroadcastInteractor @Inject constructor(
         typesShift: Int,
         selectedTags: List<RecordBase.Tag> = emptyList(),
         tagsShift: Int = 0,
+        isMultipleTagAvailable: Boolean,
     ) {
         val actualTagValue = parseTagValueInput(tagValue)
         val updatedTags = selectedTags
@@ -200,6 +210,7 @@ class ActivityStartStopFromBroadcastInteractor @Inject constructor(
             editingTagValueInput = null,
             typesShift = typesShift,
             tagsShift = tagsShift,
+            isMultipleTagAvailable = isMultipleTagAvailable,
         )
     }
 
@@ -211,13 +222,14 @@ class ActivityStartStopFromBroadcastInteractor @Inject constructor(
         selectedTags: List<RecordBase.Tag>,
         editingTagId: Long?,
         editingTagValueInput: String?,
+        isMultipleTagAvailable: Boolean,
     ) {
         update(
             from = from,
             typesShift = typesShift,
             tagsShift = tagsShift,
             selectedTypeId = selectedTypeId,
-            showTagSaveButton = isMultipleChoiceAvailable(selectedTypeId),
+            isMultipleTagAvailable = isMultipleTagAvailable,
             selectedTags = selectedTags,
             editingTagId = editingTagId,
             editingTagValueInput = editingTagValueInput,
@@ -250,9 +262,9 @@ class ActivityStartStopFromBroadcastInteractor @Inject constructor(
         editingTagValueInput: String?,
         typesShift: Int,
         tagsShift: Int,
+        isMultipleTagAvailable: Boolean,
     ) {
-        val isMultipleChoiceAvailable = isMultipleChoiceAvailable(selectedTypeId)
-        if (editingTagId == null && !isMultipleChoiceAvailable) {
+        if (editingTagId == null && !isMultipleTagAvailable) {
             startFromTagSelection(
                 from = from,
                 selectedTypeId = selectedTypeId,
@@ -270,7 +282,7 @@ class ActivityStartStopFromBroadcastInteractor @Inject constructor(
             selectedTags = selectedTags,
             editingTagId = editingTagId,
             editingTagValueInput = editingTagValueInput,
-            showTagSaveButton = isMultipleChoiceAvailable,
+            isMultipleTagAvailable = isMultipleTagAvailable,
         )
     }
 
@@ -304,7 +316,7 @@ class ActivityStartStopFromBroadcastInteractor @Inject constructor(
             typesShift = typesShift,
             tagsShift = 0,
             selectedTypeId = 0L,
-            showTagSaveButton = false,
+            isMultipleTagAvailable = false,
             selectedTags = emptyList(),
             editingTagId = null,
             editingTagValueInput = null,
@@ -316,7 +328,7 @@ class ActivityStartStopFromBroadcastInteractor @Inject constructor(
         typesShift: Int,
         tagsShift: Int,
         selectedTypeId: Long,
-        showTagSaveButton: Boolean,
+        isMultipleTagAvailable: Boolean,
         selectedTags: List<RecordBase.Tag>,
         editingTagId: Long?,
         editingTagValueInput: String?,
@@ -333,7 +345,7 @@ class ActivityStartStopFromBroadcastInteractor @Inject constructor(
                     selectedTags = selectedTags,
                     editingTagId = editingTagId,
                     editingTagValueInput = editingTagValueInput,
-                    showTagSaveButton = showTagSaveButton,
+                    isMultipleTagAvailable = isMultipleTagAvailable,
                 )
             }
             is NotificationControlsManager.From.ActivitySwitch -> {
@@ -344,7 +356,7 @@ class ActivityStartStopFromBroadcastInteractor @Inject constructor(
                     selectedTags = selectedTags,
                     editingTagId = editingTagId,
                     editingTagValueInput = editingTagValueInput,
-                    showTagSaveButton = showTagSaveButton,
+                    isMultipleTagAvailable = isMultipleTagAvailable,
                 )
             }
         }
@@ -357,12 +369,15 @@ class ActivityStartStopFromBroadcastInteractor @Inject constructor(
             ?.toDoubleOrNull()
     }
 
-    private suspend fun isMultipleChoiceAvailable(selectedTypeId: Long): Boolean {
+    private suspend fun isMultipleTagChoiceAvailable(
+        selectedTypeId: Long,
+        selectedTags: List<RecordBase.Tag> = emptyList(),
+    ): Boolean {
         val shouldCloseAfterOne = shouldCloseAfterOneTagInteractor.execute(
             typeId = selectedTypeId,
             closeAfterOne = prefsInteractor.getRecordTagSelectionCloseAfterOne(),
             excludedActivities = prefsInteractor.getCloseAfterOneTagExcludeActivities().toSet(),
         )
-        return !shouldCloseAfterOne
+        return selectedTags.isNotEmpty() || !shouldCloseAfterOne
     }
 }

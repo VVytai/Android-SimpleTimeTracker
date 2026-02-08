@@ -12,7 +12,7 @@ interface NotificationTypeInteractor {
         selectedTags: List<RecordBase.Tag> = emptyList(),
         editingTagId: Long? = null,
         editingTagValueInput: String? = null,
-        showTagSaveButton: Boolean = false,
+        isMultipleTagAvailable: Boolean = false,
     )
 
     suspend fun checkAndHide(typeId: Long)

@@ -11,6 +11,6 @@ interface NotificationActivitySwitchInteractor {
         selectedTags: List<RecordBase.Tag> = emptyList(),
         editingTagId: Long? = null,
         editingTagValueInput: String? = null,
-        showTagSaveButton: Boolean = false,
+        isMultipleTagAvailable: Boolean = false,
     )
 }

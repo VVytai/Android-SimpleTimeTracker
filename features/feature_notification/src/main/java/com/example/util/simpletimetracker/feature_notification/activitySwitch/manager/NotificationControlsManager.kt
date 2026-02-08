@@ -125,6 +125,7 @@ class NotificationControlsManager @Inject constructor(
                     .ifNull { viewState.types.size - TYPES_LIST_SIZE }
                     .coerceAtLeast(0),
                 recordTagsShift = params.tagsShift,
+                isMultipleTagAvailable = params.isMultipleTagAvailable,
             ),
         )
 
@@ -169,6 +170,7 @@ class NotificationControlsManager @Inject constructor(
                     recordTypesShift = params.typesShift,
                     recordTagsShift = params.tagsShift,
                     selectedTypeId = data.id,
+                    isMultipleTagAvailable = params.isMultipleTagAvailable,
                 ),
             ).let {
                 addView(R.id.containerNotificationTypes, it)
@@ -214,6 +216,7 @@ class NotificationControlsManager @Inject constructor(
                     .takeUnless { it >= viewState.types.size }
                     .orZero(),
                 recordTagsShift = params.tagsShift,
+                isMultipleTagAvailable = params.isMultipleTagAvailable,
             ),
         )
     }
@@ -244,6 +247,7 @@ class NotificationControlsManager @Inject constructor(
                     .takeUnless { it < 0 }
                     .ifNull { viewState.tags.size - TAGS_LIST_SIZE }
                     .coerceAtLeast(0),
+                isMultipleTagAvailable = params.isMultipleTagAvailable,
             ),
         )
 
@@ -269,6 +273,7 @@ class NotificationControlsManager @Inject constructor(
                     recordTypesShift = params.typesShift,
                     recordTagsShift = params.tagsShift,
                     tagId = data.id,
+                    isMultipleTagAvailable = params.isMultipleTagAvailable,
                 ),
                 isSelected = data.isSelected,
             ).let {
@@ -314,6 +319,7 @@ class NotificationControlsManager @Inject constructor(
                 recordTagsShift = (params.tagsShift + TAGS_LIST_SIZE)
                     .takeUnless { it >= viewState.tags.size }
                     .orZero(),
+                isMultipleTagAvailable = params.isMultipleTagAvailable,
             ),
         )
     }
@@ -339,6 +345,7 @@ class NotificationControlsManager @Inject constructor(
                 selectedTags = params.selectedTags,
                 recordTypesShift = params.typesShift,
                 recordTagsShift = params.tagsShift,
+                isMultipleTagAvailable = params.isMultipleTagAvailable,
             ),
         )
 
@@ -381,6 +388,7 @@ class NotificationControlsManager @Inject constructor(
                     editingTagValueInput = newTagValueOnThisClick,
                     recordTypesShift = params.typesShift,
                     recordTagsShift = params.tagsShift,
+                    isMultipleTagAvailable = params.isMultipleTagAvailable,
                 ),
             ).let {
                 addView(containerId, it)
@@ -444,6 +452,7 @@ class NotificationControlsManager @Inject constructor(
                 editingTagValueInput = params.editingTagValueInput,
                 recordTypesShift = params.typesShift,
                 recordTagsShift = params.tagsShift,
+                isMultipleTagAvailable = params.isMultipleTagAvailable,
             ),
         )
 
@@ -466,6 +475,7 @@ class NotificationControlsManager @Inject constructor(
                     .takeUnless { it.isNullOrEmpty() },
                 recordTypesShift = params.typesShift,
                 recordTagsShift = params.tagsShift,
+                isMultipleTagAvailable = params.isMultipleTagAvailable,
             ),
         )
     }
@@ -544,6 +554,7 @@ class NotificationControlsManager @Inject constructor(
         recordTypesShift: Int? = null,
         recordTagsShift: Int? = null,
         tagId: Long? = null,
+        isMultipleTagAvailable: Boolean,
     ): PendingIntent {
         val intent = Intent(context, NotificationReceiver::class.java)
         intent.action = action
@@ -556,6 +567,7 @@ class NotificationControlsManager @Inject constructor(
         tagId?.let { intent.putExtra(ARGS_CLICKED_TAG_ID, it) }
         recordTypesShift.let { intent.putExtra(ARGS_TYPES_SHIFT, it) }
         recordTagsShift?.let { intent.putExtra(ARGS_TAGS_SHIFT, it) }
+        intent.putExtra(ARGS_MULTIPLE_TAG_AVAILABLE, isMultipleTagAvailable)
         return PendingIntent.getBroadcast(
             context,
             requestCode,
@@ -658,6 +670,7 @@ class NotificationControlsManager @Inject constructor(
         const val ARGS_CLICKED_TAG_ID = "clickedTagId"
         const val ARGS_TYPES_SHIFT = "typesShift"
         const val ARGS_TAGS_SHIFT = "tagsShift"
+        const val ARGS_MULTIPLE_TAG_AVAILABLE = "multipleTagAvailable"
 
         const val TYPES_LIST_SIZE = 6
         const val TAGS_LIST_SIZE = 4

@@ -51,7 +51,7 @@ class NotificationActivitySwitchInteractorImpl @Inject constructor(
         selectedTags: List<RecordBase.Tag>,
         editingTagId: Long?,
         editingTagValueInput: String?,
-        showTagSaveButton: Boolean,
+        isMultipleTagAvailable: Boolean,
     ) {
         val shouldShow = prefsInteractor.getShowNotifications() &&
             prefsInteractor.getShowNotificationEvenWithNoTimers() &&
@@ -65,7 +65,7 @@ class NotificationActivitySwitchInteractorImpl @Inject constructor(
                 selectedTags = selectedTags,
                 editingTagId = editingTagId,
                 editingTagValueInput = editingTagValueInput,
-                showTagSaveButton = showTagSaveButton,
+                isMultipleTagAvailable = isMultipleTagAvailable,
             )
         } else {
             cancel()
@@ -79,7 +79,7 @@ class NotificationActivitySwitchInteractorImpl @Inject constructor(
         selectedTags: List<RecordBase.Tag>,
         editingTagId: Long?,
         editingTagValueInput: String?,
-        showTagSaveButton: Boolean,
+        isMultipleTagAvailable: Boolean,
     ) {
         val isDarkTheme = prefsInteractor.getDarkMode()
         val showRepeatButton = prefsInteractor.getEnableRepeatButton()
@@ -178,7 +178,7 @@ class NotificationActivitySwitchInteractorImpl @Inject constructor(
             types = recordTypes.values.toList(),
             suggestions = suggestions,
             showRepeatButton = showRepeatButton,
-            showTagSaveButton = showTagSaveButton,
+            isMultipleTagAvailable = isMultipleTagAvailable,
             typesShift = typesShift,
             tagsShift = tagsShift,
             selectedTypeId = selectedTypeId,
