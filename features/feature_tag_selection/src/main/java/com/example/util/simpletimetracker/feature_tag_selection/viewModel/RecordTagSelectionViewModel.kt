@@ -6,17 +6,15 @@ import androidx.lifecycle.viewModelScope
 import com.example.util.simpletimetracker.core.ShouldCloseAfterOneTagInteractor
 import com.example.util.simpletimetracker.core.base.BaseViewModel
 import com.example.util.simpletimetracker.core.extension.set
+import com.example.util.simpletimetracker.core.interactor.LoadPreselectedTagsInteractor
 import com.example.util.simpletimetracker.core.interactor.RecordCommentSearchViewDataInteractor
 import com.example.util.simpletimetracker.core.viewData.CommentFilterTypeViewData
-import com.example.util.simpletimetracker.domain.base.CurrentTimestampProvider
-import com.example.util.simpletimetracker.domain.base.suspendLazy
 import com.example.util.simpletimetracker.domain.extension.addOrRemove
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.AddRunningRecordMediator
 import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.domain.recordTag.interactor.AddTagToTypeIfNotExistMediator
 import com.example.util.simpletimetracker.domain.recordTag.interactor.NeedTagValueSelectionInteractor
-import com.example.util.simpletimetracker.domain.recordTag.interactor.RecordTypeToDefaultTagInteractor
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.category.CategoryViewData
 import com.example.util.simpletimetracker.feature_base_adapter.loader.LoaderViewData
@@ -28,7 +26,6 @@ import com.example.util.simpletimetracker.navigation.params.screen.RecordTagSele
 import com.example.util.simpletimetracker.navigation.params.screen.RecordTagValueSelectionParams
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -40,9 +37,8 @@ class RecordTagSelectionViewModel @Inject constructor(
     private val prefsInteractor: PrefsInteractor,
     private val addTagToTypeIfNotExistMediator: AddTagToTypeIfNotExistMediator,
     private val needTagValueSelectionInteractor: NeedTagValueSelectionInteractor,
-    private val recordTypeToDefaultTagInteractor: RecordTypeToDefaultTagInteractor,
     private val shouldCloseAfterOneTagInteractor: ShouldCloseAfterOneTagInteractor,
-    private val currentTimestampProvider: CurrentTimestampProvider,
+    private val loadPreselectedTagsInteractor: LoadPreselectedTagsInteractor,
     private val recordCommentSearchViewDataInteractor: RecordCommentSearchViewDataInteractor,
 ) : BaseViewModel() {
 
@@ -63,7 +59,7 @@ class RecordTagSelectionViewModel @Inject constructor(
 
     private var newComment: String = ""
     private var newTags: List<RecordBase.Tag> = emptyList()
-    private var initialSelectedTagsLoaded: Boolean = false
+    private var initialDataLoaded: Boolean = false
     private var searchLoadJob: Job? = null
     private var isMultipleChoiceAvailable: Boolean = true
 
@@ -162,24 +158,13 @@ class RecordTagSelectionViewModel @Inject constructor(
         saveClicked.set(Unit)
     }
 
-    private suspend fun loadPreselectedTagIds(): Set<Long> = coroutineScope {
-        // TODO TAG check retroactive mode?
-        // TODO TAG ability to deselect preselected tags
-        // TODO TAG multiple choice from notification
-        // TODO TAG show preselected on wear and notification
-        val defaultTags = recordTypeToDefaultTagInteractor.getTags(extra.typeId)
-        val timeStarted = currentTimestampProvider.get()
-        val ruleTags = addRunningRecordMediator.processRules(
-            typeId = extra.typeId,
-            timeStarted = timeStarted,
-            prevRecords = suspendLazy { emptyList() },
-        ).tagsIds
-        defaultTags + ruleTags
-    }
-
-    private suspend fun initializePreselectedTags() {
-        if (initialSelectedTagsLoaded) return
-        val initialIds = loadPreselectedTagIds()
+    // TODO TAG add check retroactive mode to loaded preselected tags?
+    // TODO TAG ability to deselect preselected tags
+    // TODO TAG multiple choice from notification
+    // TODO TAG show preselected on notification
+    private suspend fun initializeData() {
+        if (initialDataLoaded) return
+        val initialIds = loadPreselectedTagsInteractor.execute(extra.typeId)
         if (initialIds.isNotEmpty()) {
             newTags = initialIds.map { RecordBase.Tag(tagId = it, numericValue = null) }
         }
@@ -191,7 +176,7 @@ class RecordTagSelectionViewModel @Inject constructor(
         // If there are preselected tags - ignore setting.
         isMultipleChoiceAvailable = newTags.isNotEmpty() || !shouldCloseAfterOne
         updateButtonVisibility()
-        initialSelectedTagsLoaded = true
+        initialDataLoaded = true
     }
 
     private fun updateButtonVisibility() {
@@ -222,7 +207,7 @@ class RecordTagSelectionViewModel @Inject constructor(
     private suspend fun loadViewData(
         fromCommentChange: Boolean,
     ): List<ViewHolderType> {
-        initializePreselectedTags()
+        initializeData()
 
         return viewDataInteractor.getViewData(
             extra = extra,

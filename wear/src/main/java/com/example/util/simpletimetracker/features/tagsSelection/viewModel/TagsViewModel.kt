@@ -123,12 +123,13 @@ class TagsViewModel @Inject constructor(
         if (settingsResult != null && tagsResult != null) {
             settings = settingsResult
             tags = tagsResult
+            selectedTags = tags.filter { it.preselected }.map { WearRecordTag(it.id, null) }
             val shouldCloseAfterOne = shouldCloseAfterOneTagInteractor.execute(
                 typeId = activityId,
                 closeAfterOne = settings?.recordTagSelectionCloseAfterOne.orFalse(),
                 excludedActivities = settings?.closeAfterOneTagExcludeActivities.orEmpty(),
             )
-            isMultipleChoiceAvailable = !shouldCloseAfterOne
+            isMultipleChoiceAvailable = selectedTags.isNotEmpty() || !shouldCloseAfterOne
             _state.value = mapState()
         } else {
             showError()
@@ -186,7 +187,7 @@ class TagsViewModel @Inject constructor(
             tags = tags,
             selectedTags = selectedTags,
             loadingState = loadingState,
-            multipleChoiceAvailable = isMultipleChoiceAvailable
+            multipleChoiceAvailable = isMultipleChoiceAvailable,
         )
     }
 

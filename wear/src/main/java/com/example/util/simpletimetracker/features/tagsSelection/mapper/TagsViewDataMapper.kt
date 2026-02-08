@@ -11,8 +11,6 @@ import com.example.util.simpletimetracker.R
 import com.example.util.simpletimetracker.core.ErrorStateMapper
 import com.example.util.simpletimetracker.core.mapper.RecordTagValueMapper
 import com.example.util.simpletimetracker.data.WearResourceRepo
-import com.example.util.simpletimetracker.domain.extension.orFalse
-import com.example.util.simpletimetracker.domain.model.WearSettings
 import com.example.util.simpletimetracker.domain.model.WearTag
 import com.example.util.simpletimetracker.domain.model.WearRecordTag
 import com.example.util.simpletimetracker.features.tagsSelection.screen.TagListState
@@ -46,7 +44,7 @@ class TagsViewDataMapper @Inject constructor(
                 tags = tags,
                 selectedTags = selectedTags,
                 loadingState = loadingState,
-                multipleChoiceAvailable = multipleChoiceAvailable
+                multipleChoiceAvailable = multipleChoiceAvailable,
             )
         }
 
