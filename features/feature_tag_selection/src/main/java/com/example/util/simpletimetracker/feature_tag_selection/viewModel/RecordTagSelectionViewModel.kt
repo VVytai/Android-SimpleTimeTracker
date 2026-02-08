@@ -7,6 +7,7 @@ import com.example.util.simpletimetracker.core.base.BaseViewModel
 import com.example.util.simpletimetracker.core.extension.lazySuspend
 import com.example.util.simpletimetracker.core.extension.set
 import com.example.util.simpletimetracker.core.interactor.RecordCommentSearchViewDataInteractor
+import com.example.util.simpletimetracker.core.interactor.ShouldCloseAfterOneTagInteractor
 import com.example.util.simpletimetracker.core.viewData.CommentFilterTypeViewData
 import com.example.util.simpletimetracker.domain.extension.addOrRemove
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
@@ -37,6 +38,7 @@ class RecordTagSelectionViewModel @Inject constructor(
     private val addTagToTypeIfNotExistMediator: AddTagToTypeIfNotExistMediator,
     private val needTagValueSelectionInteractor: NeedTagValueSelectionInteractor,
     private val recordCommentSearchViewDataInteractor: RecordCommentSearchViewDataInteractor,
+    private val shouldCloseAfterOneTagInteractor: ShouldCloseAfterOneTagInteractor,
 ) : BaseViewModel() {
 
     lateinit var extra: RecordTagSelectionParams
@@ -135,7 +137,7 @@ class RecordTagSelectionViewModel @Inject constructor(
     }
 
     private suspend fun onTagSelected() {
-        if (prefsInteractor.getRecordTagSelectionCloseAfterOne()) {
+        if (shouldCloseAfterOneTagInteractor.execute(extra.typeId)) {
             saveClicked()
         } else {
             updateViewData()
@@ -158,7 +160,7 @@ class RecordTagSelectionViewModel @Inject constructor(
     }
 
     private suspend fun loadButtonVisibility(): Boolean {
-        val closeAfterOneTag = prefsInteractor.getRecordTagSelectionCloseAfterOne()
+        val closeAfterOneTag = shouldCloseAfterOneTagInteractor.execute(extra.typeId)
         val showTags = RecordTagSelectionParams.Field.Tags in extra.fields
         val showCommentInput = RecordTagSelectionParams.Field.Comment in extra.fields
 

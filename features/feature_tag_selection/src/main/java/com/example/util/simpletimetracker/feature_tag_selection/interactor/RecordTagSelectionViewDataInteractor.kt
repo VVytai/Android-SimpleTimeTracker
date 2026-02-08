@@ -2,8 +2,8 @@ package com.example.util.simpletimetracker.feature_tag_selection.interactor
 
 import com.example.util.simpletimetracker.core.interactor.RecordCommentSearchViewDataInteractor
 import com.example.util.simpletimetracker.core.interactor.RecordTagViewDataInteractor
+import com.example.util.simpletimetracker.core.interactor.ShouldCloseAfterOneTagInteractor
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
-import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.commentField.CommentFieldViewData
@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 class RecordTagSelectionViewDataInteractor @Inject constructor(
     private val resourceRepo: ResourceRepo,
-    private val prefsInteractor: PrefsInteractor,
+    private val shouldCloseAfterOneTagInteractor: ShouldCloseAfterOneTagInteractor,
     private val recordTagViewDataInteractor: RecordTagViewDataInteractor,
     private val recordCommentSearchViewDataInteractor: RecordCommentSearchViewDataInteractor,
 ) {
@@ -28,7 +28,7 @@ class RecordTagSelectionViewDataInteractor @Inject constructor(
         fromCommentChange: Boolean,
     ): List<ViewHolderType> {
         val typeId = extra.typeId
-        val closeAfterOneTagSelected = prefsInteractor.getRecordTagSelectionCloseAfterOne()
+        val closeAfterOneTagSelected = shouldCloseAfterOneTagInteractor.execute(typeId)
         val shouldShowCommentSelection = RecordTagSelectionParams.Field.Comment in extra.fields
         val shouldShowTagSelection = RecordTagSelectionParams.Field.Tags in extra.fields
 
