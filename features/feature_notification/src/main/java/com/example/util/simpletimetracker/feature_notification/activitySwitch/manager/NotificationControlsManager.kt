@@ -11,6 +11,7 @@ import com.example.util.simpletimetracker.core.extension.allowVmViolations
 import com.example.util.simpletimetracker.core.utils.PendingIntents
 import com.example.util.simpletimetracker.domain.extension.ifNull
 import com.example.util.simpletimetracker.domain.extension.orZero
+import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.feature_notification.R
 import com.example.util.simpletimetracker.feature_notification.activitySwitch.mapper.NotificationControlsMapper
 import com.example.util.simpletimetracker.feature_notification.core.TAG_VALUE_DECIMAL_DELIMITER
@@ -32,8 +33,14 @@ class NotificationControlsManager @Inject constructor(
     private val iconView = allowVmViolations {
         NotificationIconView(ContextThemeWrapper(context, R.style.AppTheme))
     }
+    private val checkView = allowVmViolations {
+        GoalCheckmarkView(ContextThemeWrapper(context, R.style.AppTheme))
+    }
     private val iconSize by lazy {
         context.resources.getDimensionPixelSize(R.dimen.notification_icon_size)
+    }
+    private val checkSize by lazy {
+        context.resources.getDimensionPixelSize(R.dimen.notification_icon_half_size)
     }
 
     fun getControlsView(
@@ -110,10 +117,14 @@ class NotificationControlsManager @Inject constructor(
                 action = ACTION_NOTIFICATION_CONTROLS_TYPES_PREV,
                 requestCode = getRequestCode(from),
                 from = from,
+                selectedTags = params.selectedTags,
+                editingTagId = params.editingTagId,
+                editingTagValueInput = params.editingTagValueInput,
                 recordTypesShift = (params.typesShift - TYPES_LIST_SIZE)
                     .takeUnless { it < 0 }
                     .ifNull { viewState.types.size - TYPES_LIST_SIZE }
                     .coerceAtLeast(0),
+                recordTagsShift = params.tagsShift,
             ),
         )
 
@@ -152,7 +163,11 @@ class NotificationControlsManager @Inject constructor(
                         additionalInfo = RequestCode.AdditionalInfo.TypeId(data.id),
                     ),
                     from = from,
+                    selectedTags = params.selectedTags,
+                    editingTagId = params.editingTagId,
+                    editingTagValueInput = params.editingTagValueInput,
                     recordTypesShift = params.typesShift,
+                    recordTagsShift = params.tagsShift,
                     selectedTypeId = data.id,
                 ),
             ).let {
@@ -192,9 +207,13 @@ class NotificationControlsManager @Inject constructor(
                 action = ACTION_NOTIFICATION_CONTROLS_TYPES_NEXT,
                 requestCode = getRequestCode(from),
                 from = from,
+                selectedTags = params.selectedTags,
+                editingTagId = params.editingTagId,
+                editingTagValueInput = params.editingTagValueInput,
                 recordTypesShift = (params.typesShift + TYPES_LIST_SIZE)
                     .takeUnless { it >= viewState.types.size }
                     .orZero(),
+                recordTagsShift = params.tagsShift,
             ),
         )
     }
@@ -217,6 +236,9 @@ class NotificationControlsManager @Inject constructor(
                 requestCode = getRequestCode(from),
                 from = from,
                 selectedTypeId = params.selectedTypeId,
+                selectedTags = params.selectedTags,
+                editingTagId = params.editingTagId,
+                editingTagValueInput = params.editingTagValueInput,
                 recordTypesShift = params.typesShift,
                 recordTagsShift = (params.tagsShift - TAGS_LIST_SIZE)
                     .takeUnless { it < 0 }
@@ -241,9 +263,14 @@ class NotificationControlsManager @Inject constructor(
                     ),
                     from = from,
                     selectedTypeId = params.selectedTypeId,
-                    recordTagId = data.id,
+                    selectedTags = params.selectedTags,
+                    editingTagId = params.editingTagId,
+                    editingTagValueInput = params.editingTagValueInput,
                     recordTypesShift = params.typesShift,
+                    recordTagsShift = params.tagsShift,
+                    tagId = data.id,
                 ),
+                isSelected = data.isSelected,
             ).let {
                 addView(R.id.containerNotificationTags, it)
             }
@@ -280,6 +307,9 @@ class NotificationControlsManager @Inject constructor(
                 requestCode = getRequestCode(from),
                 from = from,
                 selectedTypeId = params.selectedTypeId,
+                selectedTags = params.selectedTags,
+                editingTagId = params.editingTagId,
+                editingTagValueInput = params.editingTagValueInput,
                 recordTypesShift = params.typesShift,
                 recordTagsShift = (params.tagsShift + TAGS_LIST_SIZE)
                     .takeUnless { it >= viewState.tags.size }
@@ -306,6 +336,7 @@ class NotificationControlsManager @Inject constructor(
                 requestCode = getRequestCode(from),
                 from = from,
                 selectedTypeId = params.selectedTypeId,
+                selectedTags = params.selectedTags,
                 recordTypesShift = params.typesShift,
                 recordTagsShift = params.tagsShift,
             ),
@@ -317,20 +348,20 @@ class NotificationControlsManager @Inject constructor(
             containerId: Int,
             data: NotificationControlsParams.TagValueControls.Present,
         ) {
+            val currentValue = params.editingTagValueInput.orEmpty()
             val newTagValueOnThisClick = when (data.type) {
                 is NotificationControlsParams.TagValueControls.Present.Type.Number -> {
-                    params.selectedTagValue.orEmpty().plus(data.type.number.toString())
+                    currentValue.plus(data.type.number.toString())
                 }
                 NotificationControlsParams.TagValueControls.Present.Type.PlusMinus -> {
-                    val current = params.selectedTagValue.orEmpty()
-                    if (current.startsWith(TAG_VALUE_MINUS_SIGN)) {
-                        current.removePrefix(TAG_VALUE_MINUS_SIGN.toString())
+                    if (currentValue.startsWith(TAG_VALUE_MINUS_SIGN)) {
+                        currentValue.removePrefix(TAG_VALUE_MINUS_SIGN.toString())
                     } else {
-                        TAG_VALUE_MINUS_SIGN + current
+                        TAG_VALUE_MINUS_SIGN + currentValue
                     }
                 }
                 NotificationControlsParams.TagValueControls.Present.Type.Dot -> {
-                    params.selectedTagValue.orEmpty().plus(TAG_VALUE_DECIMAL_DELIMITER)
+                    currentValue.plus(TAG_VALUE_DECIMAL_DELIMITER)
                 }
             }
             getTagControlView(
@@ -345,8 +376,9 @@ class NotificationControlsManager @Inject constructor(
                     ),
                     from = from,
                     selectedTypeId = params.selectedTypeId,
-                    recordTagId = params.selectedTagId,
-                    recordTagValue = newTagValueOnThisClick,
+                    selectedTags = params.selectedTags,
+                    editingTagId = params.editingTagId,
+                    editingTagValueInput = newTagValueOnThisClick,
                     recordTypesShift = params.typesShift,
                     recordTagsShift = params.tagsShift,
                 ),
@@ -407,9 +439,11 @@ class NotificationControlsManager @Inject constructor(
                 requestCode = getRequestCode(from),
                 from = from,
                 selectedTypeId = params.selectedTypeId,
-                recordTagId = params.selectedTagId,
-                recordTagValue = params.selectedTagValue,
+                selectedTags = params.selectedTags,
+                editingTagId = params.editingTagId,
+                editingTagValueInput = params.editingTagValueInput,
                 recordTypesShift = params.typesShift,
+                recordTagsShift = params.tagsShift,
             ),
         )
 
@@ -426,8 +460,9 @@ class NotificationControlsManager @Inject constructor(
                 requestCode = getRequestCode(from),
                 from = from,
                 selectedTypeId = params.selectedTypeId,
-                recordTagId = params.selectedTagId,
-                recordTagValue = params.selectedTagValue?.dropLast(1)
+                selectedTags = params.selectedTags,
+                editingTagId = params.editingTagId,
+                editingTagValueInput = params.editingTagValueInput?.dropLast(1)
                     .takeUnless { it.isNullOrEmpty() },
                 recordTypesShift = params.typesShift,
                 recordTagsShift = params.tagsShift,
@@ -466,7 +501,16 @@ class NotificationControlsManager @Inject constructor(
         text: String,
         color: Int?,
         intent: PendingIntent?,
+        isSelected: Boolean = false,
     ): RemoteViews {
+        val checkBitmap by lazy {
+            synchronized(checkView) {
+                checkView.apply {
+                    itemCheckState = GoalCheckmarkView.CheckState.GOAL_REACHED
+                    measureExactly(checkSize)
+                }.getBitmapFromView()
+            }
+        }
         return RemoteViews(context.packageName, R.layout.notification_tag_layout)
             .apply {
                 setTextViewText(R.id.tvNotificationTag, text)
@@ -475,6 +519,12 @@ class NotificationControlsManager @Inject constructor(
                     setInt(R.id.ivNotificationTag, "setColorFilter", color)
                 } else {
                     setViewVisibility(R.id.containerNotificationTag, View.INVISIBLE)
+                }
+                if (isSelected) {
+                    setViewVisibility(R.id.ivNotificationTagSelectionCheck, View.VISIBLE)
+                    setImageViewBitmap(R.id.ivNotificationTagSelectionCheck, checkBitmap)
+                } else {
+                    setViewVisibility(R.id.ivNotificationTagSelectionCheck, View.GONE)
                 }
                 if (intent != null) {
                     setOnClickPendingIntent(R.id.btnNotificationTag, intent)
@@ -488,18 +538,22 @@ class NotificationControlsManager @Inject constructor(
         requestCode: Int,
         from: From,
         selectedTypeId: Long? = null,
-        recordTagId: Long? = null,
-        recordTagValue: String? = null,
+        selectedTags: List<RecordBase.Tag> = emptyList(),
+        editingTagId: Long? = null,
+        editingTagValueInput: String? = null,
         recordTypesShift: Int? = null,
         recordTagsShift: Int? = null,
+        tagId: Long? = null,
     ): PendingIntent {
         val intent = Intent(context, NotificationReceiver::class.java)
         intent.action = action
         notificationControlsMapper.mapFromToExtra(from).let { intent.putExtra(ARGS_CONTROLS_FROM, it) }
         (from as? From.ActivityNotification)?.recordTypeId?.let { intent.putExtra(ARGS_TYPE_ID, it) }
         selectedTypeId?.let { intent.putExtra(ARGS_SELECTED_TYPE_ID, it) }
-        recordTagId?.let { intent.putExtra(ARGS_TAG_ID, it) }
-        recordTagValue?.let { intent.putExtra(ARGS_TAG_VALUE, it) }
+        intent.putExtra(ARGS_SELECTED_TAGS, serializeSelectedTags(selectedTags))
+        editingTagId?.let { intent.putExtra(ARGS_EDITING_TAG_ID, it) }
+        editingTagValueInput?.let { intent.putExtra(ARGS_EDITING_TAG_VALUE_INPUT, it) }
+        tagId?.let { intent.putExtra(ARGS_CLICKED_TAG_ID, it) }
         recordTypesShift.let { intent.putExtra(ARGS_TYPES_SHIFT, it) }
         recordTagsShift?.let { intent.putExtra(ARGS_TAGS_SHIFT, it) }
         return PendingIntent.getBroadcast(
@@ -508,6 +562,23 @@ class NotificationControlsManager @Inject constructor(
             intent,
             PendingIntents.getFlags(),
         )
+    }
+
+    private fun serializeSelectedTags(tags: List<RecordBase.Tag>): String {
+        if (tags.isEmpty()) return ""
+        return tags.joinToString(separator = ";") { tag ->
+            val valueText = tag.numericValue?.let(Double::toString).orEmpty()
+            "${tag.tagId}=$valueText"
+        }
+    }
+
+    private fun formatNumericValue(value: Double): String {
+        val longValue = value.toLong()
+        return if (longValue.toDouble() == value) {
+            longValue.toString()
+        } else {
+            value.toString()
+        }
     }
 
     private fun getIconBitmap(
@@ -581,12 +652,16 @@ class NotificationControlsManager @Inject constructor(
         const val ARGS_CONTROLS_FROM = "controlsFrom"
         const val ARGS_TYPE_ID = "typeId"
         const val ARGS_SELECTED_TYPE_ID = "selectedTypeId"
-        const val ARGS_TAG_ID = "tagId"
-        const val ARGS_TAG_VALUE = "tagValue"
+        const val ARGS_SELECTED_TAGS = "selectedTags"
+        const val ARGS_EDITING_TAG_ID = "editingTagId"
+        const val ARGS_EDITING_TAG_VALUE_INPUT = "editingTagValueInput"
+        const val ARGS_CLICKED_TAG_ID = "clickedTagId"
         const val ARGS_TYPES_SHIFT = "typesShift"
         const val ARGS_TAGS_SHIFT = "tagsShift"
 
         const val TYPES_LIST_SIZE = 6
         const val TAGS_LIST_SIZE = 4
+        const val UNTAGGED_TAG_ID = -1L
+        const val APPLY_TAGS_ID = -2L
     }
 }

@@ -3,6 +3,7 @@ package com.example.util.simpletimetracker.feature_notification.recordType.contr
 import com.example.util.simpletimetracker.core.extension.allowDiskRead
 import com.example.util.simpletimetracker.domain.notifications.interactor.NotificationActivitySwitchInteractor
 import com.example.util.simpletimetracker.domain.notifications.interactor.NotificationTypeInteractor
+import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.feature_notification.activitySwitch.mapper.NotificationControlsMapper
 import com.example.util.simpletimetracker.feature_notification.recordType.interactor.ActivityStartStopFromBroadcastInteractor
 import kotlinx.coroutines.CoroutineScope
@@ -54,6 +55,10 @@ class NotificationTypeBroadcastController @Inject constructor(
         selectedTypeId: Long,
         tagId: Long,
         typesShift: Int,
+        tagsShift: Int,
+        selectedTags: List<RecordBase.Tag> = emptyList(),
+        editingTagId: Long? = null,
+        editingTagValueInput: String? = null,
     ) {
         safeLaunch {
             activityStartStopFromBroadcastInteractor.onActionTagClick(
@@ -64,6 +69,10 @@ class NotificationTypeBroadcastController @Inject constructor(
                 selectedTypeId = selectedTypeId,
                 tagId = tagId,
                 typesShift = typesShift,
+                tagsShift = tagsShift,
+                selectedTags = selectedTags,
+                editingTagId = editingTagId,
+                editingTagValueInput = editingTagValueInput,
             )
         }
     }
@@ -75,6 +84,8 @@ class NotificationTypeBroadcastController @Inject constructor(
         tagId: Long,
         tagValue: String?,
         typesShift: Int,
+        tagsShift: Int,
+        selectedTags: List<RecordBase.Tag> = emptyList(),
     ) {
         safeLaunch {
             activityStartStopFromBroadcastInteractor.onActionTagValueSave(
@@ -86,6 +97,8 @@ class NotificationTypeBroadcastController @Inject constructor(
                 tagId = tagId,
                 tagValue = tagValue,
                 typesShift = typesShift,
+                tagsShift = tagsShift,
+                selectedTags = selectedTags,
             )
         }
     }
@@ -94,8 +107,9 @@ class NotificationTypeBroadcastController @Inject constructor(
         from: Int,
         typeId: Long,
         selectedTypeId: Long,
-        selectedTagId: Long,
-        selectedTagValue: String?,
+        selectedTags: List<RecordBase.Tag>,
+        editingTagId: Long?,
+        editingTagValueInput: String?,
         typesShift: Int,
         tagsShift: Int,
     ) {
@@ -106,8 +120,9 @@ class NotificationTypeBroadcastController @Inject constructor(
                     typeId,
                 ) ?: return@safeLaunch,
                 selectedTypeId = selectedTypeId,
-                selectedTagId = selectedTagId,
-                selectedTagValue = selectedTagValue,
+                selectedTags = selectedTags,
+                editingTagId = editingTagId,
+                editingTagValueInput = editingTagValueInput,
                 typesShift = typesShift,
                 tagsShift = tagsShift,
             )
