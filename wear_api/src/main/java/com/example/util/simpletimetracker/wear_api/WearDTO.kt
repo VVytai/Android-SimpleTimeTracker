@@ -107,17 +107,17 @@ data class WearSettingsDTO(
     @SerializedName("apiVersion")
     val apiVersion: String,
     @SerializedName("allowMultitasking")
-    val allowMultitasking: Boolean,
+    val allowMultitasking: Boolean?,
     @SerializedName("recordTagSelectionCloseAfterOne")
-    val recordTagSelectionCloseAfterOne: Boolean,
+    val recordTagSelectionCloseAfterOne: Boolean?,
     @SerializedName("enableRepeatButton")
-    val enableRepeatButton: Boolean,
+    val enableRepeatButton: Boolean?,
     @SerializedName("retroactiveTrackingMode")
-    val retroactiveTrackingMode: Boolean,
+    val retroactiveTrackingMode: Boolean?,
     @SerializedName("startOfDayShift")
-    val startOfDayShift: Long,
+    val startOfDayShift: Long?,
     @SerializedName("firstDayOfWeek")
-    val firstDayOfWeek: WearDayOfWeekDTO,
+    val firstDayOfWeek: WearDayOfWeekDTO?,
 ) : Parcelable
 
 @Parcelize

@@ -6,6 +6,8 @@
 package com.example.util.simpletimetracker.data
 
 import com.example.util.simpletimetracker.domain.daysOfWeek.model.DayOfWeek
+import com.example.util.simpletimetracker.domain.extension.orFalse
+import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.domain.model.WearActivity
 import com.example.util.simpletimetracker.domain.model.WearCurrentActivity
 import com.example.util.simpletimetracker.domain.model.WearCurrentState
@@ -94,12 +96,12 @@ class WearDataLocalMapper @Inject constructor() {
     fun map(dto: WearSettingsDTO): WearSettings {
         return WearSettings(
             apiVersion = dto.apiVersion,
-            allowMultitasking = dto.allowMultitasking,
-            recordTagSelectionCloseAfterOne = dto.recordTagSelectionCloseAfterOne,
-            enableRepeatButton = dto.enableRepeatButton,
-            retroactiveTrackingMode = dto.retroactiveTrackingMode,
-            startOfDayShift = dto.startOfDayShift,
-            firstDayOfWeek = map(dto.firstDayOfWeek),
+            allowMultitasking = dto.allowMultitasking.orFalse(),
+            recordTagSelectionCloseAfterOne = dto.recordTagSelectionCloseAfterOne.orFalse(),
+            enableRepeatButton = dto.enableRepeatButton.orFalse(),
+            retroactiveTrackingMode = dto.retroactiveTrackingMode.orFalse(),
+            startOfDayShift = dto.startOfDayShift.orZero(),
+            firstDayOfWeek = dto.firstDayOfWeek?.let(::map) ?: DayOfWeek.MONDAY,
         )
     }
 
