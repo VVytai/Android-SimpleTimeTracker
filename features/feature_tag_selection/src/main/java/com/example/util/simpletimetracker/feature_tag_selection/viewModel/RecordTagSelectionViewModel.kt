@@ -9,12 +9,16 @@ import com.example.util.simpletimetracker.core.extension.set
 import com.example.util.simpletimetracker.core.interactor.RecordCommentSearchViewDataInteractor
 import com.example.util.simpletimetracker.core.interactor.ShouldCloseAfterOneTagInteractor
 import com.example.util.simpletimetracker.core.viewData.CommentFilterTypeViewData
+import com.example.util.simpletimetracker.domain.base.CurrentTimestampProvider
+import com.example.util.simpletimetracker.domain.base.suspendLazy
 import com.example.util.simpletimetracker.domain.extension.addOrRemove
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.AddRunningRecordMediator
+import com.example.util.simpletimetracker.domain.record.interactor.RecordInteractor
 import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.domain.recordTag.interactor.AddTagToTypeIfNotExistMediator
 import com.example.util.simpletimetracker.domain.recordTag.interactor.NeedTagValueSelectionInteractor
+import com.example.util.simpletimetracker.domain.recordTag.interactor.RecordTypeToDefaultTagInteractor
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.category.CategoryViewData
 import com.example.util.simpletimetracker.feature_base_adapter.loader.LoaderViewData
@@ -26,6 +30,7 @@ import com.example.util.simpletimetracker.navigation.params.screen.RecordTagSele
 import com.example.util.simpletimetracker.navigation.params.screen.RecordTagValueSelectionParams
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -37,6 +42,9 @@ class RecordTagSelectionViewModel @Inject constructor(
     private val prefsInteractor: PrefsInteractor,
     private val addTagToTypeIfNotExistMediator: AddTagToTypeIfNotExistMediator,
     private val needTagValueSelectionInteractor: NeedTagValueSelectionInteractor,
+    private val recordTypeToDefaultTagInteractor: RecordTypeToDefaultTagInteractor,
+    private val recordInteractor: RecordInteractor,
+    private val currentTimestampProvider: CurrentTimestampProvider,
     private val recordCommentSearchViewDataInteractor: RecordCommentSearchViewDataInteractor,
     private val shouldCloseAfterOneTagInteractor: ShouldCloseAfterOneTagInteractor,
 ) : BaseViewModel() {
@@ -53,12 +61,14 @@ class RecordTagSelectionViewModel @Inject constructor(
             initial
         }
     }
-    val saveButtonVisibility: LiveData<Boolean> by lazySuspend { loadButtonVisibility() }
+    val saveButtonVisibility: LiveData<Boolean> = MutableLiveData()
     val saveClicked: LiveData<Unit> = MutableLiveData()
 
     private var newComment: String = ""
     private var newTags: List<RecordBase.Tag> = emptyList()
+    private var initialSelectedTagsLoaded: Boolean = false
     private var searchLoadJob: Job? = null
+    private var isMultipleChoiceAvailable: Boolean = true
 
     // Keep in mind that tags would be added to new types only if show all was selected before,
     // for optimisation reasons, to not call on every save.
@@ -137,11 +147,7 @@ class RecordTagSelectionViewModel @Inject constructor(
     }
 
     private suspend fun onTagSelected() {
-        if (shouldCloseAfterOneTagInteractor.execute(extra.typeId)) {
-            saveClicked()
-        } else {
-            updateViewData()
-        }
+        if (isMultipleChoiceAvailable) updateViewData() else saveClicked()
     }
 
     private suspend fun saveClicked() {
@@ -159,13 +165,45 @@ class RecordTagSelectionViewModel @Inject constructor(
         saveClicked.set(Unit)
     }
 
-    private suspend fun loadButtonVisibility(): Boolean {
-        val closeAfterOneTag = shouldCloseAfterOneTagInteractor.execute(extra.typeId)
+    private suspend fun loadPreselectedTagIds(): Set<Long> = coroutineScope {
+        // TODO TAG add "close after one tag" exclusion check to wear
+        // TODO TAG check retroactive mode?
+        // TODO TAG ability to deselect preselected tags
+        // TODO TAG multiple choice from notification
+        // TODO TAG show preselected on wear and notification
+        val defaultTags = recordTypeToDefaultTagInteractor.getTags(extra.typeId)
+        val timeStarted = currentTimestampProvider.get()
+        val ruleTags = addRunningRecordMediator.processRules(
+            typeId = extra.typeId,
+            timeStarted = timeStarted,
+            prevRecords = suspendLazy { emptyList() },
+        ).tagsIds
+        defaultTags + ruleTags
+    }
+
+    private suspend fun initializePreselectedTags() {
+        if (initialSelectedTagsLoaded) return
+        val initialIds = loadPreselectedTagIds()
+        if (initialIds.isNotEmpty()) {
+            newTags = initialIds.map { RecordBase.Tag(tagId = it, numericValue = null) }
+        }
+        // If there are preselected tags - ignore setting.
+        isMultipleChoiceAvailable = newTags.isNotEmpty() ||
+            !shouldCloseAfterOneTagInteractor.execute(extra.typeId)
+        updateButtonVisibility()
+        initialSelectedTagsLoaded = true
+    }
+
+    private fun updateButtonVisibility() {
+        saveButtonVisibility.set(loadButtonVisibility())
+    }
+
+    private fun loadButtonVisibility(): Boolean {
         val showTags = RecordTagSelectionParams.Field.Tags in extra.fields
         val showCommentInput = RecordTagSelectionParams.Field.Comment in extra.fields
 
         return when {
-            showTags -> !closeAfterOneTag
+            showTags -> isMultipleChoiceAvailable
             showCommentInput -> true
             else -> false
         }
@@ -184,10 +222,13 @@ class RecordTagSelectionViewModel @Inject constructor(
     private suspend fun loadViewData(
         fromCommentChange: Boolean,
     ): List<ViewHolderType> {
+        initializePreselectedTags()
+
         return viewDataInteractor.getViewData(
             extra = extra,
             selectedTags = newTags,
             showAllTags = showAllTags,
+            multipleChoiceAvailable = isMultipleChoiceAvailable,
             comment = newComment,
             fromCommentChange = fromCommentChange,
         )

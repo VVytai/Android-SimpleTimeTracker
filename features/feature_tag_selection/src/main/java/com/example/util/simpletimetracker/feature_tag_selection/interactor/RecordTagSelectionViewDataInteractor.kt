@@ -15,7 +15,6 @@ import javax.inject.Inject
 
 class RecordTagSelectionViewDataInteractor @Inject constructor(
     private val resourceRepo: ResourceRepo,
-    private val shouldCloseAfterOneTagInteractor: ShouldCloseAfterOneTagInteractor,
     private val recordTagViewDataInteractor: RecordTagViewDataInteractor,
     private val recordCommentSearchViewDataInteractor: RecordCommentSearchViewDataInteractor,
 ) {
@@ -24,11 +23,11 @@ class RecordTagSelectionViewDataInteractor @Inject constructor(
         extra: RecordTagSelectionParams,
         selectedTags: List<RecordBase.Tag>,
         showAllTags: Boolean,
+        multipleChoiceAvailable: Boolean,
         comment: String,
         fromCommentChange: Boolean,
     ): List<ViewHolderType> {
         val typeId = extra.typeId
-        val closeAfterOneTagSelected = shouldCloseAfterOneTagInteractor.execute(typeId)
         val shouldShowCommentSelection = RecordTagSelectionParams.Field.Comment in extra.fields
         val shouldShowTagSelection = RecordTagSelectionParams.Field.Tags in extra.fields
 
@@ -77,7 +76,7 @@ class RecordTagSelectionViewDataInteractor @Inject constructor(
                 selectedTags = selectedTags,
                 typeIds = listOf(typeId),
                 showAllTags = showAllTags,
-                multipleChoiceAvailable = !closeAfterOneTagSelected,
+                multipleChoiceAvailable = multipleChoiceAvailable,
                 showAddButton = false,
                 showArchived = false,
                 showUntaggedButton = true,

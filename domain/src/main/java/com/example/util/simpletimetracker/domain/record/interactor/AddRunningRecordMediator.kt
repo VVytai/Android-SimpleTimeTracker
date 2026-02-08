@@ -280,7 +280,7 @@ class AddRunningRecordMediator @Inject constructor(
         )
     }
 
-    private suspend fun processRules(
+    suspend fun processRules(
         typeId: Long,
         timeStarted: Long,
         prevRecords: SuspendLazy<List<Record>>,
