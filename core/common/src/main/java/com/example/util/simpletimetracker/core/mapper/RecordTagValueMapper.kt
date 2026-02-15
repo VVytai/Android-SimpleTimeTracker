@@ -2,22 +2,19 @@ package com.example.util.simpletimetracker.core.mapper
 
 import com.example.util.simpletimetracker.core.common.R
 import com.example.util.simpletimetracker.core.repo.BaseResourceRepo
+import com.example.util.simpletimetracker.domain.recordTag.RecordTagValueFormatMapper
 import javax.inject.Inject
 
 class RecordTagValueMapper @Inject constructor(
     private val resourceRepo: BaseResourceRepo,
+    private val recordTagValueFormatMapper: RecordTagValueFormatMapper,
 ) {
-
-    fun map(value: Double): String {
-        // TODO do better?
-        return value.toBigDecimal().stripTrailingZeros().toPlainString()
-    }
 
     fun mapTagValue(
         value: Double,
         valueSuffix: String,
     ): String {
-        val actualValue = map(value)
+        val actualValue = recordTagValueFormatMapper.map(value)
         return if (valueSuffix.isEmpty()) {
             actualValue
         } else {

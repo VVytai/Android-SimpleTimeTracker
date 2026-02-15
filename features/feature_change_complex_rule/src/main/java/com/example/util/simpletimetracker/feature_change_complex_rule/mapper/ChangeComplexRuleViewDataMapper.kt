@@ -3,6 +3,7 @@ package com.example.util.simpletimetracker.feature_change_complex_rule.mapper
 import com.example.util.simpletimetracker.core.R
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.domain.complexRule.model.ComplexRule
+import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.feature_change_complex_rule.adapter.ChangeComplexRuleActionViewData
 import javax.inject.Inject
 
@@ -38,7 +39,7 @@ class ChangeComplexRuleViewDataMapper @Inject constructor(
 
     fun mapActionTitle(
         action: ComplexRule.Action?,
-        assignTagIds: Set<Long>,
+        assignTagValues: List<RecordBase.Tag>,
     ): String {
         return when (action) {
             null -> {
@@ -52,7 +53,7 @@ class ChangeComplexRuleViewDataMapper @Inject constructor(
             }
             is ComplexRule.Action.AssignTag -> {
                 val title = resourceRepo.getString(R.string.change_complex_action_assign_tag)
-                val selectedTags = assignTagIds
+                val selectedTags = assignTagValues
                     .size
                     .takeIf { it != 0 }
                     ?.let { "($it)" }

@@ -196,8 +196,8 @@ class PartialRestoreViewModel @Inject constructor(
         // Check rules
         val rules = data.rules.mapNotNull { (id, item) ->
             val newData = item.data.copy(
-                actionAssignTagIds = item.data.actionAssignTagIds
-                    .filter { it in tags }.toSet(),
+                actionAssignTagValues = item.data.actionAssignTagValues
+                    .filter { it.tagId in tags },
                 conditionStartingTypeIds = item.data.conditionStartingTypeIds
                     .filter { it in typesIds }.toSet(),
                 conditionCurrentTypeIds = item.data.conditionCurrentTypeIds

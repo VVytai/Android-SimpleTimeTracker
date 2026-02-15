@@ -24,6 +24,10 @@ data class ComplexRuleDBO(
     @ColumnInfo(name = "actionSetTagIds")
     val actionSetTagIds: String,
 
+    // Stored as colon-separated tagId:value pairs for tags with values
+    @ColumnInfo(name = "actionSetTagValues")
+    val actionSetTagValues: String,
+
     // Longs stored in string comma separated
     @ColumnInfo(name = "conditionStartingTypeIds")
     val conditionStartingTypeIds: String,

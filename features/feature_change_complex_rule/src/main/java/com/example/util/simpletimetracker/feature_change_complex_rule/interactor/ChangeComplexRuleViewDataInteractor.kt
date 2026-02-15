@@ -7,6 +7,7 @@ import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTypeInteractor
 import com.example.util.simpletimetracker.domain.complexRule.model.ComplexRule
+import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.domain.daysOfWeek.model.DayOfWeek
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.dayOfWeek.DayOfWeekViewData
@@ -32,7 +33,7 @@ class ChangeComplexRuleViewDataInteractor @Inject constructor(
 
     fun getActionViewData(
         newActionType: ComplexRule.Action?,
-        newAssignTagIds: Set<Long>,
+        newAssignTagValues: List<RecordBase.Tag>,
     ): ChangeComplexRuleActionChooserViewData {
         val hint = HintViewData(resourceRepo.getString(R.string.change_complex_actions_hint))
         val items = listOf(
@@ -42,17 +43,23 @@ class ChangeComplexRuleViewDataInteractor @Inject constructor(
         ).map {
             ChangeComplexRuleActionViewData(
                 type = changeComplexRuleViewDataMapper.mapAction(it),
-                text = changeComplexRuleViewDataMapper.mapActionTitle(it, newAssignTagIds),
+                text = changeComplexRuleViewDataMapper.mapActionTitle(
+                    action = it,
+                    assignTagValues = if (it is ComplexRule.Action.AssignTag) newAssignTagValues else emptyList(),
+                ),
             )
         }
         val selectedCount = if (newActionType is ComplexRule.Action.AssignTag) {
-            newAssignTagIds.size
+            newAssignTagValues.size
         } else {
             0
         }
 
         return ChangeComplexRuleActionChooserViewData(
-            title = changeComplexRuleViewDataMapper.mapActionTitle(newActionType, newAssignTagIds),
+            title = changeComplexRuleViewDataMapper.mapActionTitle(
+                newActionType,
+                if (newActionType is ComplexRule.Action.AssignTag) newAssignTagValues else emptyList(),
+            ),
             selectedCount = selectedCount,
             viewData = listOf(hint) + items,
         )

@@ -3,6 +3,7 @@ package com.example.util.simpletimetracker.core.interactor
 import com.example.util.simpletimetracker.domain.base.CurrentTimestampProvider
 import com.example.util.simpletimetracker.domain.base.suspendLazy
 import com.example.util.simpletimetracker.domain.record.interactor.AddRunningRecordMediator
+import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.domain.recordTag.interactor.RecordTypeToDefaultTagInteractor
 import kotlinx.coroutines.coroutineScope
 import javax.inject.Inject
@@ -20,7 +21,7 @@ class LoadPreselectedTagsInteractor @Inject constructor(
             typeId = typeId,
             timeStarted = timeStarted,
             prevRecords = suspendLazy { emptyList() },
-        ).tagsIds
+        ).tags.map(RecordBase.Tag::tagId).toSet()
         defaultTags + ruleTags
     }
 }

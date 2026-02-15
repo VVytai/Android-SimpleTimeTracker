@@ -584,15 +584,6 @@ class NotificationControlsManager @Inject constructor(
         }
     }
 
-    private fun formatNumericValue(value: Double): String {
-        val longValue = value.toLong()
-        return if (longValue.toDouble() == value) {
-            longValue.toString()
-        } else {
-            value.toString()
-        }
-    }
-
     private fun getIconBitmap(
         icon: RecordTypeIcon,
         color: Int,

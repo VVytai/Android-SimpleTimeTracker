@@ -2,19 +2,27 @@ package com.example.util.simpletimetracker.data_local.complexRule
 
 import com.example.util.simpletimetracker.data_local.daysOfWeek.DaysOfWeekDataLocalMapper
 import com.example.util.simpletimetracker.domain.complexRule.model.ComplexRule
+import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import javax.inject.Inject
 
 class ComplexRuleDataLocalMapper @Inject constructor(
     private val daysOfWeekDataLocalMapper: DaysOfWeekDataLocalMapper,
+    private val complexRuleTagValuesMapper: ComplexRuleTagValuesMapper,
 ) {
 
     fun map(dbo: ComplexRuleDBO): ComplexRule {
+        val assignTagIds = mapIds(dbo.actionSetTagIds)
+        val assignTagValues = complexRuleTagValuesMapper.parse(dbo.actionSetTagValues)
+            .associateBy { it.tagId }
+
         return ComplexRule(
             id = dbo.id,
             disabled = dbo.disabled,
             action = mapActionType(dbo.action),
             actionDisallowOnlyPrevious = dbo.actionDisallowOnlyPrevious,
-            actionAssignTagIds = mapIds(dbo.actionSetTagIds),
+            actionAssignTagValues = assignTagIds.map {
+                RecordBase.Tag(tagId = it, numericValue = assignTagValues[it]?.numericValue)
+            },
             conditionStartingTypeIds = mapIds(dbo.conditionStartingTypeIds),
             conditionCurrentTypeIds = mapIds(dbo.conditionCurrentTypeIds),
             conditionDaysOfWeek = daysOfWeekDataLocalMapper
@@ -29,6 +37,7 @@ class ComplexRuleDataLocalMapper @Inject constructor(
             action = mapActionType(domain.action),
             actionDisallowOnlyPrevious = domain.actionDisallowOnlyPrevious,
             actionSetTagIds = mapIds(domain.actionAssignTagIds),
+            actionSetTagValues = complexRuleTagValuesMapper.serialize(domain.actionAssignTagValues),
             conditionStartingTypeIds = mapIds(domain.conditionStartingTypeIds),
             conditionCurrentTypeIds = mapIds(domain.conditionCurrentTypeIds),
             conditionDaysOfWeek = daysOfWeekDataLocalMapper

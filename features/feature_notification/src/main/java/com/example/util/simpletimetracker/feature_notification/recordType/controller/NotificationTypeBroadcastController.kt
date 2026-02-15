@@ -57,8 +57,6 @@ class NotificationTypeBroadcastController @Inject constructor(
         typesShift: Int,
         tagsShift: Int,
         selectedTags: List<RecordBase.Tag> = emptyList(),
-        editingTagId: Long? = null,
-        editingTagValueInput: String? = null,
         isMultipleTagAvailable: Boolean,
     ) {
         safeLaunch {
@@ -72,8 +70,6 @@ class NotificationTypeBroadcastController @Inject constructor(
                 typesShift = typesShift,
                 tagsShift = tagsShift,
                 selectedTags = selectedTags,
-                editingTagId = editingTagId,
-                editingTagValueInput = editingTagValueInput,
                 isMultipleTagAvailable = isMultipleTagAvailable,
             )
         }

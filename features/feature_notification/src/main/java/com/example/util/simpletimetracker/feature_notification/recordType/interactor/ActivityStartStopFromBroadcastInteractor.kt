@@ -107,8 +107,6 @@ class ActivityStartStopFromBroadcastInteractor @Inject constructor(
         tagId: Long,
         typesShift: Int,
         selectedTags: List<RecordBase.Tag> = emptyList(),
-        editingTagId: Long? = null,
-        editingTagValueInput: String? = null,
         tagsShift: Int = 0,
         isMultipleTagAvailable: Boolean,
     ) {
@@ -160,12 +158,7 @@ class ActivityStartStopFromBroadcastInteractor @Inject constructor(
                 isMultipleTagAvailable = isMultipleTagAvailable,
                 selectedTags = selectedTags,
                 editingTagId = tagId,
-                editingTagValueInput = getExistingTagValueInput(
-                    tagId = tagId,
-                    selectedTags = selectedTags,
-                    editingTagId = editingTagId,
-                    editingTagValueInput = editingTagValueInput,
-                ),
+                editingTagValueInput = null,
             )
             return
         }
@@ -286,27 +279,6 @@ class ActivityStartStopFromBroadcastInteractor @Inject constructor(
         )
     }
 
-    private fun getExistingTagValueInput(
-        tagId: Long,
-        selectedTags: List<RecordBase.Tag>,
-        editingTagId: Long?,
-        editingTagValueInput: String?,
-    ): String? {
-        if (editingTagId == tagId) {
-            return editingTagValueInput
-        }
-        return selectedTags
-            .firstOrNull { it.tagId == tagId }
-            ?.numericValue
-            ?.let(::formatTagValueInput)
-    }
-
-    private fun formatTagValueInput(value: Double?): String? {
-        return value
-            ?.toString()
-            ?.replace('.', TAG_VALUE_DECIMAL_DELIMITER)
-    }
-
     private suspend fun update(
         from: NotificationControlsManager.From,
         typesShift: Int,
@@ -363,6 +335,7 @@ class ActivityStartStopFromBroadcastInteractor @Inject constructor(
     }
 
     private fun parseTagValueInput(value: String?): Double? {
+        // toDoubleOrNull need a dot as a separator.
         return value
             ?.replace(TAG_VALUE_DECIMAL_DELIMITER, '.')
             ?.replace(TAG_VALUE_MINUS_SIGN, '-')

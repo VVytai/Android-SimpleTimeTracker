@@ -17,6 +17,7 @@ class ComplexRuleViewDataMapper @Inject constructor(
     private val colorMapper: ColorMapper,
     private val resourceRepo: ResourceRepo,
     private val recordTagViewDataMapper: RecordTagViewDataMapper,
+    private val recordTagValueMapper: RecordTagValueMapper,
 ) {
 
     fun mapRule(
@@ -99,9 +100,7 @@ class ComplexRuleViewDataMapper @Inject constructor(
             is ComplexRule.Action.DisallowMultitasking,
             -> emptyList()
             is ComplexRule.Action.AssignTag -> {
-                rule.actionAssignTagIds
-                    .sortedBy { tagsOrder.indexOf(it) }
-                    .mapNotNull { tagsMap[it] }
+                rule.actionAssignTagValues.sortedBy { tagsOrder.indexOf(it.tagId) }
             }
         }
         val result = mutableListOf<ViewHolderType>()
@@ -111,15 +110,22 @@ class ComplexRuleViewDataMapper @Inject constructor(
                 disallowOnlyPrevious = rule.actionDisallowOnlyPrevious,
             ),
         )
-        result += data.map {
+        result += data.mapNotNull { tagValue ->
+            val tag = tagsMap[tagValue.tagId] ?: return@mapNotNull null
             ListElementViewData(
-                text = it.name,
+                text = tagValue.numericValue?.let { value ->
+                    recordTagValueMapper.getNameWithValue(
+                        name = tag.name,
+                        value = value,
+                        valueSuffix = tag.valueSuffix,
+                    )
+                } ?: tag.name,
                 icon = recordTagViewDataMapper.mapIcon(
-                    tag = it,
+                    tag = tag,
                     types = typesMap,
                 )?.let(iconMapper::mapIcon),
                 color = colorMapper.mapToColorInt(
-                    color = it.color,
+                    color = tag.color,
                     isDarkTheme = isDarkTheme,
                 ),
             )

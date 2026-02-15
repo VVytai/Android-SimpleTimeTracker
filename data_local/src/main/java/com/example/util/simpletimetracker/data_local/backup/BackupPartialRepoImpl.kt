@@ -225,11 +225,11 @@ class BackupPartialRepoImpl @Inject constructor(
                 .mapNotNull { originalTypeIdToAddedId[it] }.toSet()
             val newCurrentTypeIds = rule.conditionCurrentTypeIds
                 .mapNotNull { originalTypeIdToAddedId[it] }.toSet()
-            val newAssignTagIds = rule.actionAssignTagIds
-                .mapNotNull { originalTagIdToAddedId[it] }.toSet()
+            val newAssignTagValues = rule.actionAssignTagValues
+                .mapNotNull { originalTagIdToAddedId[it.tagId]?.let { newId -> it.copy(tagId = newId) } }
             rule.copy(
                 id = 0,
-                actionAssignTagIds = newAssignTagIds,
+                actionAssignTagValues = newAssignTagValues,
                 conditionStartingTypeIds = newStartingTypeIds,
                 conditionCurrentTypeIds = newCurrentTypeIds,
             ).takeIf {
@@ -492,10 +492,10 @@ class BackupPartialRepoImpl @Inject constructor(
                 .mapNotNull { originalTypeIdToExistingId[it] }.toSet()
             val newCurrentTypeIds = item.conditionCurrentTypeIds
                 .mapNotNull { originalTypeIdToExistingId[it] }.toSet()
-            val newAssignTagIds = item.actionAssignTagIds
-                .mapNotNull { originalTagIdToExistingId[it] }.toSet()
+            val newAssignTagValues = item.actionAssignTagValues
+                .mapNotNull { originalTagIdToExistingId[it.tagId]?.let { newId -> it.copy(tagId = newId) } }
             item.copy(
-                actionAssignTagIds = newAssignTagIds,
+                actionAssignTagValues = newAssignTagValues,
                 conditionStartingTypeIds = newStartingTypeIds,
                 conditionCurrentTypeIds = newCurrentTypeIds,
             ).takeIf {

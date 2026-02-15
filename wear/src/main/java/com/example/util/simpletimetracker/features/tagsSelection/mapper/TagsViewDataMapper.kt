@@ -9,10 +9,10 @@ import androidx.annotation.StringRes
 import androidx.compose.ui.graphics.Color
 import com.example.util.simpletimetracker.R
 import com.example.util.simpletimetracker.core.ErrorStateMapper
-import com.example.util.simpletimetracker.core.mapper.RecordTagValueMapper
 import com.example.util.simpletimetracker.data.WearResourceRepo
 import com.example.util.simpletimetracker.domain.model.WearTag
 import com.example.util.simpletimetracker.domain.model.WearRecordTag
+import com.example.util.simpletimetracker.domain.recordTag.RecordTagValueFormatMapper
 import com.example.util.simpletimetracker.features.tagsSelection.screen.TagListState
 import com.example.util.simpletimetracker.features.tagsSelection.ui.TagChipState
 import com.example.util.simpletimetracker.features.tagsSelection.ui.TagSelectionButtonState
@@ -24,7 +24,7 @@ import javax.inject.Inject
 class TagsViewDataMapper @Inject constructor(
     private val resourceRepo: WearResourceRepo,
     private val errorStateMapper: ErrorStateMapper,
-    private val recordTagValueMapper: RecordTagValueMapper,
+    private val recordTagValueFormatMapper: RecordTagValueFormatMapper,
 ) {
 
     fun mapErrorState(): TagListState.Error {
@@ -78,7 +78,7 @@ class TagsViewDataMapper @Inject constructor(
                     id = it.id,
                     name = it.name,
                     value = selectedTagsMap[it.id]?.numericValue
-                        ?.let(recordTagValueMapper::map).orEmpty(),
+                        ?.let(recordTagValueFormatMapper::map).orEmpty(),
                     color = it.color,
                     checked = it.id in selectedTagIds,
                     mode = mode,

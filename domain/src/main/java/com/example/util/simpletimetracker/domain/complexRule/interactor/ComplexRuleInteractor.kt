@@ -63,14 +63,13 @@ class ComplexRuleInteractor @Inject constructor(
         getAll().filter {
             id in it.actionAssignTagIds
         }.forEach { rule ->
-            val newActionAssignTagIds = rule.actionAssignTagIds
-                .toMutableSet()
-                .apply { remove(id) }
+            val newActionAssignTagValues = rule.actionAssignTagValues
+                .filterNot { it.tagId == id }
             val newRule = rule.copy(
-                actionAssignTagIds = newActionAssignTagIds,
+                actionAssignTagValues = newActionAssignTagValues,
             )
             if (newRule.action is ComplexRule.Action.AssignTag &&
-                newActionAssignTagIds.isEmpty()
+                newActionAssignTagValues.isEmpty()
             ) {
                 remove(newRule.id)
             } else {

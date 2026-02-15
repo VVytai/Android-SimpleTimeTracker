@@ -70,7 +70,7 @@ import com.example.util.simpletimetracker.data_local.recordsFilter.FavouriteReco
         FavouriteRecordsFilterDBO.MainDBO::class,
         FavouriteRecordsFilterDBO.FilterDBO::class,
     ],
-    version = 31,
+    version = 32,
     exportSchema = true,
 )
 abstract class AppDatabase : RoomDatabase() {

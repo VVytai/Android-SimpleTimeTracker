@@ -94,7 +94,7 @@ class AddRunningRecordMediator @Inject constructor(
             ComplexRuleProcessActionInteractor.Result(
                 isMultitaskingAllowed = ResultContainer.Undefined,
                 disallowOnlyPreviousTypeIds = emptySet(),
-                tagsIds = emptySet(),
+                tags = emptyList(),
             )
         } else {
             processRules(
@@ -119,7 +119,7 @@ class AddRunningRecordMediator @Inject constructor(
         val actualTags = getAllTags(
             typeId = typeId,
             currentTags = tags,
-            tagIdsFromRules = rulesResult.tagsIds,
+            tagValuesFromRules = rulesResult.tags,
         )
         activityStartedStoppedBroadcastInteractor.onActionActivityStarted(
             typeId = typeId,
@@ -311,7 +311,7 @@ class AddRunningRecordMediator @Inject constructor(
             ComplexRuleProcessActionInteractor.Result(
                 isMultitaskingAllowed = ResultContainer.Undefined,
                 disallowOnlyPreviousTypeIds = emptySet(),
-                tagsIds = emptySet(),
+                tags = emptyList(),
             )
         }
     }
@@ -380,14 +380,24 @@ class AddRunningRecordMediator @Inject constructor(
     private suspend fun getAllTags(
         typeId: Long,
         currentTags: List<RecordBase.Tag>,
-        tagIdsFromRules: Set<Long>,
+        tagValuesFromRules: List<RecordBase.Tag>,
     ): List<RecordBase.Tag> {
         val defaultTags = recordTypeToDefaultTagInteractor.getTags(typeId)
-        // TODO TAG add tag value to default tags and rules?
-        val result = currentTags +
-            defaultTags.map { RecordBase.Tag(tagId = it, numericValue = null) } +
-            tagIdsFromRules.map { RecordBase.Tag(tagId = it, numericValue = null) }
-        return result.distinctBy { it.tagId }
+        val merged = linkedMapOf<Long, RecordBase.Tag>()
+
+        fun merge(tag: RecordBase.Tag) {
+            val existing = merged[tag.tagId]
+            // Tags with values takes precedence.
+            if (existing == null || (existing.numericValue == null && tag.numericValue != null)) {
+                merged[tag.tagId] = tag
+            }
+        }
+
+        currentTags.forEach(::merge)
+        defaultTags.map { RecordBase.Tag(tagId = it, numericValue = null) }.forEach(::merge)
+        tagValuesFromRules.forEach(::merge)
+
+        return merged.values.toList()
     }
 
     private suspend fun getPrevRecordToMergeWith(

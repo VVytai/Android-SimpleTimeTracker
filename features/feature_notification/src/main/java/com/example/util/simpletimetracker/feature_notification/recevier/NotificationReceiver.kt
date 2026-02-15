@@ -295,8 +295,6 @@ class NotificationReceiver : BroadcastReceiver() {
                 val tagsShift = intent.getIntExtra(ARGS_TAGS_SHIFT, 0)
                 val tagId = intent.getLongExtra(ARGS_CLICKED_TAG_ID, 0)
                 val selectedTags = intent.getSelectedTags()
-                val editingTagId = intent.getEditingTagId()
-                val editingTagValueInput = intent.getEditingTagValueInput()
                 val isMultipleTagAvailable = intent.getBooleanExtra(ARGS_MULTIPLE_TAG_AVAILABLE, false)
                 typeController.onActionTagClick(
                     from = from,
@@ -306,8 +304,6 @@ class NotificationReceiver : BroadcastReceiver() {
                     typesShift = typesShift,
                     tagsShift = tagsShift,
                     selectedTags = selectedTags,
-                    editingTagId = editingTagId,
-                    editingTagValueInput = editingTagValueInput,
                     isMultipleTagAvailable = isMultipleTagAvailable,
                 )
             }

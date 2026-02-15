@@ -39,6 +39,7 @@ class AppDatabaseMigrations {
                 migration_28_29,
                 migration_29_30,
                 migration_30_31,
+                migration_31_32,
             )
 
         private val migration_1_2 = object : Migration(1, 2) {
@@ -395,6 +396,14 @@ class AppDatabaseMigrations {
             override fun migrate(database: SupportSQLiteDatabase) {
                 database.execSQL(
                     "ALTER TABLE complexRules ADD COLUMN actionDisallowOnlyPrevious INTEGER NOT NULL DEFAULT 0",
+                )
+            }
+        }
+
+        private val migration_31_32 = object : Migration(31, 32) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL(
+                    "ALTER TABLE complexRules ADD COLUMN actionSetTagValues TEXT NOT NULL DEFAULT ''",
                 )
             }
         }

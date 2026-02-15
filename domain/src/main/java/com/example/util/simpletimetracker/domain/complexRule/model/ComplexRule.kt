@@ -1,13 +1,14 @@
 package com.example.util.simpletimetracker.domain.complexRule.model
 
 import com.example.util.simpletimetracker.domain.daysOfWeek.model.DayOfWeek
+import com.example.util.simpletimetracker.domain.record.model.RecordBase
 
 data class ComplexRule(
     val id: Long = 0L,
     val disabled: Boolean,
     val action: Action,
     val actionDisallowOnlyPrevious: Boolean,
-    val actionAssignTagIds: Set<Long>,
+    val actionAssignTagValues: List<RecordBase.Tag>,
     val conditionStartingTypeIds: Set<Long>,
     val conditionCurrentTypeIds: Set<Long>,
     val conditionDaysOfWeek: Set<DayOfWeek>,
@@ -32,8 +33,12 @@ data class ComplexRule(
             Condition.DaysOfWeek.takeIf { conditionDaysOfWeek.isNotEmpty() },
         )
 
-    val hasConditions: Boolean get() = conditions.isNotEmpty()
+    val hasConditions: Boolean
+        get() = conditions.isNotEmpty()
 
-    val hasActions: Boolean get() = action !is Action.AssignTag ||
-        actionAssignTagIds.isNotEmpty()
+    val actionAssignTagIds: Set<Long>
+        get() = actionAssignTagValues.map(RecordBase.Tag::tagId).toSet()
+
+    val hasActions: Boolean
+        get() = action !is Action.AssignTag || actionAssignTagValues.isNotEmpty()
 }

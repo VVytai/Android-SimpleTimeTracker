@@ -339,7 +339,8 @@ class TestUtils @Inject constructor(
             disabled = false,
             action = action,
             actionDisallowOnlyPrevious = actionDisallowOnlyPrevious,
-            actionAssignTagIds = assignTagIds,
+            actionAssignTagValues = assignTagIds
+                .map { RecordBase.Tag(tagId = it, numericValue = null) },
             conditionStartingTypeIds = getTypeIds(availableTypes, startingTypeNames),
             conditionCurrentTypeIds = getTypeIds(availableTypes, currentTypeNames),
             conditionDaysOfWeek = daysOfWeek.toSet(),

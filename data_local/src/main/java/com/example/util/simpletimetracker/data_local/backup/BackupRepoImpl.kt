@@ -6,6 +6,7 @@ import androidx.annotation.StringRes
 import androidx.core.net.toUri
 import com.example.util.simpletimetracker.core.R
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
+import com.example.util.simpletimetracker.data_local.complexRule.ComplexRuleTagValuesMapper
 import com.example.util.simpletimetracker.data_local.daysOfWeek.DaysOfWeekDataLocalMapper
 import com.example.util.simpletimetracker.data_local.recordsFilter.FavouriteRecordsFilterDBO
 import com.example.util.simpletimetracker.data_local.recordsFilter.FavouriteRecordsFilterDao
@@ -35,6 +36,7 @@ import com.example.util.simpletimetracker.domain.favourite.repo.FavouriteComment
 import com.example.util.simpletimetracker.domain.favourite.repo.FavouriteIconRepo
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.record.model.Record
+import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.domain.record.repo.RecordRepo
 import com.example.util.simpletimetracker.domain.recordShortcut.model.RecordShortcut
 import com.example.util.simpletimetracker.domain.recordShortcut.repo.RecordShortcutRepo
@@ -95,6 +97,7 @@ class BackupRepoImpl @Inject constructor(
     private val resourceRepo: ResourceRepo,
     private val daysOfWeekDataLocalMapper: DaysOfWeekDataLocalMapper,
     private val backupPrefsRepo: BackupPrefsRepo,
+    private val complexRuleTagValuesMapper: ComplexRuleTagValuesMapper,
 ) : BackupRepo {
 
     override suspend fun saveBackupFile(
@@ -630,9 +633,10 @@ class BackupRepoImpl @Inject constructor(
             .mapDaysOfWeek(complexRule.conditionDaysOfWeek)
         val disallowOnlyPreviousString = (if (complexRule.actionDisallowOnlyPrevious) 1 else 0)
             .toString()
+        val valuesString = complexRuleTagValuesMapper.serialize(complexRule.actionAssignTagValues)
 
         return String.format(
-            "$ROW_COMPLEX_RULE\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n",
+            "$ROW_COMPLEX_RULE\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n",
             complexRule.id.toString(),
             (if (complexRule.disabled) 1 else 0).toString(),
             actionString,
@@ -641,6 +645,7 @@ class BackupRepoImpl @Inject constructor(
             complexRule.conditionCurrentTypeIds.joinToString(separator = ","),
             daysOfWeekString,
             disallowOnlyPreviousString,
+            valuesString,
         )
     }
 
@@ -942,6 +947,11 @@ class BackupRepoImpl @Inject constructor(
     }
 
     private fun complexRuleFromBackupString(parts: List<String>): ComplexRule {
+        val assignTagIds = parts.getOrNull(4)?.split(",")
+            ?.mapNotNull { it.toLongOrNull() }.orEmpty().toSet()
+        val assignTagValues = complexRuleTagValuesMapper.parse(parts.getOrNull(9))
+            .associateBy { it.tagId }
+
         return ComplexRule(
             id = parts.getOrNull(1)?.toLongOrNull().orZero(),
             disabled = parts.getOrNull(2)?.toIntOrNull() == 1,
@@ -952,8 +962,9 @@ class BackupRepoImpl @Inject constructor(
                 else -> ComplexRule.Action.AllowMultitasking
             },
             actionDisallowOnlyPrevious = parts.getOrNull(8)?.toIntOrNull() == 1,
-            actionAssignTagIds = parts.getOrNull(4)?.split(",")
-                ?.mapNotNull { it.toLongOrNull() }.orEmpty().toSet(),
+            actionAssignTagValues = assignTagIds.map {
+                RecordBase.Tag(tagId = it, numericValue = assignTagValues[it]?.numericValue)
+            },
             conditionStartingTypeIds = parts.getOrNull(5)?.split(",")
                 ?.mapNotNull { it.toLongOrNull() }.orEmpty().toSet(),
             conditionCurrentTypeIds = parts.getOrNull(6)?.split(",")

@@ -4,6 +4,7 @@ import com.example.util.simpletimetracker.domain.daysOfWeek.interactor.GetCurren
 import com.example.util.simpletimetracker.domain.daysOfWeek.model.DayOfWeek
 import com.example.util.simpletimetracker.domain.base.ResultContainer
 import com.example.util.simpletimetracker.domain.complexRule.model.ComplexRule
+import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import javax.inject.Inject
 
 class ComplexRuleProcessActionInteractor @Inject constructor(
@@ -46,13 +47,19 @@ class ComplexRuleProcessActionInteractor @Inject constructor(
             .takeUnless { rulesThatDisallow.any { !it.actionDisallowOnlyPrevious } }
             .orEmpty()
 
-        val additionalTags = assignTagRules.map { it.actionAssignTagIds }
-            .flatten().toSet()
+        val additionalTags = linkedMapOf<Long, RecordBase.Tag>()
+        assignTagRules.flatMap { it.actionAssignTagValues }.forEach { tag ->
+            val existing = additionalTags[tag.tagId]
+            // Tags with values takes precedence.
+            if (existing == null || (existing.numericValue == null && tag.numericValue != null)) {
+                additionalTags[tag.tagId] = tag
+            }
+        }
 
         return Result(
             isMultitaskingAllowed = isMultitaskingAllowed,
             disallowOnlyPreviousTypeIds = disallowOnlyPreviousTypeIds,
-            tagsIds = additionalTags,
+            tags = additionalTags.values.toList(),
         )
     }
 
@@ -81,6 +88,6 @@ class ComplexRuleProcessActionInteractor @Inject constructor(
     data class Result(
         val isMultitaskingAllowed: ResultContainer<Boolean>,
         val disallowOnlyPreviousTypeIds: Set<Long>,
-        val tagsIds: Set<Long>,
+        val tags: List<RecordBase.Tag>,
     )
 }
