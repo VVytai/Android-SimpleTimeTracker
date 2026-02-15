@@ -4,24 +4,25 @@ import com.example.util.simpletimetracker.domain.base.CurrentTimestampProvider
 import com.example.util.simpletimetracker.domain.base.suspendLazy
 import com.example.util.simpletimetracker.domain.record.interactor.AddRunningRecordMediator
 import com.example.util.simpletimetracker.domain.record.model.RecordBase
-import com.example.util.simpletimetracker.domain.recordTag.interactor.RecordTypeToDefaultTagInteractor
 import kotlinx.coroutines.coroutineScope
 import javax.inject.Inject
 
 class LoadPreselectedTagsInteractor @Inject constructor(
     private val addRunningRecordMediator: AddRunningRecordMediator,
-    private val recordTypeToDefaultTagInteractor: RecordTypeToDefaultTagInteractor,
     private val currentTimestampProvider: CurrentTimestampProvider,
 ) {
 
-    suspend fun execute(typeId: Long) = coroutineScope {
-        val defaultTags = recordTypeToDefaultTagInteractor.getTags(typeId)
-        val timeStarted = currentTimestampProvider.get()
+    suspend fun execute(typeId: Long): List<RecordBase.Tag> = coroutineScope {
         val ruleTags = addRunningRecordMediator.processRules(
             typeId = typeId,
-            timeStarted = timeStarted,
+            timeStarted = currentTimestampProvider.get(),
             prevRecords = suspendLazy { emptyList() },
-        ).tags.map(RecordBase.Tag::tagId).toSet()
-        defaultTags + ruleTags
+        ).tags
+
+        addRunningRecordMediator.getAllTags(
+            typeId = typeId,
+            currentTags = emptyList(),
+            tagValuesFromRules = ruleTags,
+        )
     }
 }

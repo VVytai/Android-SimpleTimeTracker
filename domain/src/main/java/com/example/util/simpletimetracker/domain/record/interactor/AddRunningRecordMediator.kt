@@ -377,7 +377,7 @@ class AddRunningRecordMediator @Inject constructor(
         }
     }
 
-    private suspend fun getAllTags(
+    suspend fun getAllTags(
         typeId: Long,
         currentTags: List<RecordBase.Tag>,
         tagValuesFromRules: List<RecordBase.Tag>,

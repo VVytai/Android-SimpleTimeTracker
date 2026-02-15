@@ -102,6 +102,8 @@ data class WearTagDTO(
     val color: Long,
     @SerializedName("preselected")
     val preselected: Boolean,
+    @SerializedName("value")
+    val value: Double?,
 ) : Parcelable
 
 @Parcelize

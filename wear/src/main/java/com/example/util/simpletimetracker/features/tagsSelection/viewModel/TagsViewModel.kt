@@ -123,7 +123,9 @@ class TagsViewModel @Inject constructor(
         if (settingsResult != null && tagsResult != null) {
             settings = settingsResult
             tags = tagsResult
-            selectedTags = tags.filter { it.preselected }.map { WearRecordTag(it.id, null) }
+            selectedTags = tags.filter { it.preselected }.map {
+                WearRecordTag(tagId = it.id, numericValue = it.value)
+            }
             val shouldCloseAfterOne = shouldCloseAfterOneTagInteractor.execute(
                 typeId = activityId,
                 closeAfterOne = settings?.recordTagSelectionCloseAfterOne.orFalse(),

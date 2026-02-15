@@ -189,14 +189,15 @@ class WearDataRepo @Inject constructor(
 
     override suspend fun queryTagsForActivity(activityId: Long): List<WearTagDTO> {
         val types = recordTypeInteractor.getAll().associateBy { it.id }
-        val preselectedTagIds = loadPreselectedTagsInteractor.get().execute(activityId)
+        val preselectedTags = loadPreselectedTagsInteractor.get().execute(activityId)
+            .associateBy { it.tagId }
         return getSelectableTagsInteractor.execute(activityId)
             .filterNot { it.archived }
             .map {
                 wearDataLocalMapper.map(
                     recordTag = it,
                     types = types,
-                    preselectedTagIds = preselectedTagIds,
+                    preselectedTags = preselectedTags,
                 )
             }
     }

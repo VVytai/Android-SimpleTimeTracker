@@ -83,6 +83,7 @@ class WearDataLocalMapper @Inject constructor() {
             name = dto.name,
             color = dto.color,
             preselected = dto.preselected,
+            value = dto.value,
         )
     }
 

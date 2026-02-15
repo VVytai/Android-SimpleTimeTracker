@@ -162,10 +162,7 @@ class RecordTagSelectionViewModel @Inject constructor(
     // TODO TAG ability to deselect preselected tags
     private suspend fun initializeData() {
         if (initialDataLoaded) return
-        val initialIds = loadPreselectedTagsInteractor.execute(extra.typeId)
-        if (initialIds.isNotEmpty()) {
-            newTags = initialIds.map { RecordBase.Tag(tagId = it, numericValue = null) }
-        }
+        newTags = loadPreselectedTagsInteractor.execute(extra.typeId)
         val shouldCloseAfterOne = shouldCloseAfterOneTagInteractor.execute(
             typeId = extra.typeId,
             closeAfterOne = prefsInteractor.getRecordTagSelectionCloseAfterOne(),

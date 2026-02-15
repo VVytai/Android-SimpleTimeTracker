@@ -69,7 +69,6 @@ class ActivityStartStopFromBroadcastInteractor @Inject constructor(
             commentInputAvailable = false, // TODO open activity? Or RemoteInput?
         ) {
             val preselectedTags = loadPreselectedTagsInteractor.execute(selectedTypeId)
-                .map { RecordBase.Tag(tagId = it, numericValue = null) }
             val isMultipleTagAvailable = isMultipleTagChoiceAvailable(
                 selectedTypeId = selectedTypeId,
                 selectedTags = preselectedTags,
