@@ -325,22 +325,24 @@ class TestUtils @Inject constructor(
         action: ComplexRule.Action,
         actionDisallowOnlyPrevious: Boolean = false,
         assignTagNames: List<String> = emptyList(),
+        assignTagValues: Map<String, Double?> = emptyMap(),
         startingTypeNames: List<String> = emptyList(),
         currentTypeNames: List<String> = emptyList(),
         daysOfWeek: List<DayOfWeek> = emptyList(),
     ) = runBlocking {
         val availableTypes = recordTypeInteractor.getAll()
-        val assignTagIds = recordTagInteractor.getAll()
-            .filter { it.name in assignTagNames }
-            .map { it.id }
-            .toSet()
+        val tagsByName = recordTagInteractor.getAll().associateBy { it.name }
 
         val data = ComplexRule(
             disabled = false,
             action = action,
             actionDisallowOnlyPrevious = actionDisallowOnlyPrevious,
-            actionAssignTagValues = assignTagIds
-                .map { RecordBase.Tag(tagId = it, numericValue = null) },
+            actionAssignTagValues = assignTagNames.mapNotNull { name ->
+                RecordBase.Tag(
+                    tagId = tagsByName[name]?.id ?: return@mapNotNull null,
+                    numericValue = assignTagValues[name],
+                )
+            },
             conditionStartingTypeIds = getTypeIds(availableTypes, startingTypeNames),
             conditionCurrentTypeIds = getTypeIds(availableTypes, currentTypeNames),
             conditionDaysOfWeek = daysOfWeek.toSet(),

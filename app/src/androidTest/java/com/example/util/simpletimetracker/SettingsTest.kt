@@ -6,6 +6,7 @@ import androidx.test.espresso.Espresso.onData
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.action.ViewActions.scrollTo
+import androidx.test.espresso.assertion.PositionAssertions.isCompletelyAbove
 import androidx.test.espresso.contrib.PickerActions.setDate
 import androidx.test.espresso.contrib.PickerActions.setTime
 import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
@@ -23,6 +24,7 @@ import com.example.util.simpletimetracker.core.extension.setWeekToFirstDay
 import com.example.util.simpletimetracker.core.interactor.LanguageInteractor
 import com.example.util.simpletimetracker.domain.activityFilter.model.ActivityFilter
 import com.example.util.simpletimetracker.domain.base.DurationFormat
+import com.example.util.simpletimetracker.domain.complexRule.model.ComplexRule
 import com.example.util.simpletimetracker.domain.daysOfWeek.model.DayOfWeek
 import com.example.util.simpletimetracker.domain.extension.padDuration
 import com.example.util.simpletimetracker.domain.language.AppLanguage
@@ -1739,6 +1741,61 @@ class SettingsTest : BaseUiTest() {
         NavUtils.openRunningRecordsScreen()
         clickOnViewWithText(name)
         tryAction { clickOnView(allOf(isDescendantOfA(withId(baseR.id.viewRunningRecordItem)), withText(name))) }
+    }
+
+    @Test
+    fun showRecordTagSelectionPreselectedTags() {
+        val typeName = "PreselectType"
+        val defaultTag = "DefaultTag"
+        val ruleTag = "RuleTag"
+        val ruleTagValue = 1.2
+        val generalTag = "GeneralTag"
+        val fullTagName = "$ruleTag (1.2)"
+        val fullName = "$typeName - $defaultTag, $fullTagName"
+
+        runBlocking { prefsInteractor.setShowRecordTagSelection(true) }
+        testUtils.addActivity(typeName)
+        testUtils.addRecordTag(
+            tagName = defaultTag,
+            typeName = typeName,
+            defaultTypes = listOf(typeName),
+        )
+        testUtils.addRecordTag(
+            tagName = generalTag,
+        )
+        testUtils.addRecordTag(
+            tagName = ruleTag,
+            typeName = typeName,
+            hasTagValue = true,
+        )
+        testUtils.addComplexRule(
+            action = ComplexRule.Action.AssignTag,
+            startingTypeNames = listOf(typeName),
+            assignTagNames = listOf(ruleTag),
+            assignTagValues = mapOf(ruleTag to ruleTagValue),
+        )
+
+        Thread.sleep(1000)
+
+        // Check preselected
+        tryAction { clickOnViewWithText(typeName) }
+        checkViewIsDisplayed(withText(coreR.string.something_selected))
+        checkViewIsDisplayed(withText(fullTagName))
+        onView(withText(defaultTag))
+            .check(isCompletelyAbove(withText(generalTag)))
+        onView(withText(fullTagName))
+            .check(isCompletelyAbove(withText(generalTag)))
+
+        // Save
+        clickOnViewWithText(coreR.string.duration_dialog_save)
+        tryAction {
+            checkViewIsDisplayed(
+                allOf(
+                    withId(baseR.id.viewRunningRecordItem),
+                    hasDescendant(withText(fullName)),
+                ),
+            )
+        }
     }
 
     @Test
