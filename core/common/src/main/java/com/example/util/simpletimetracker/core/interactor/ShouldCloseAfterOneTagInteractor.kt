@@ -1,4 +1,4 @@
-package com.example.util.simpletimetracker.core
+package com.example.util.simpletimetracker.core.interactor
 
 import javax.inject.Inject
 

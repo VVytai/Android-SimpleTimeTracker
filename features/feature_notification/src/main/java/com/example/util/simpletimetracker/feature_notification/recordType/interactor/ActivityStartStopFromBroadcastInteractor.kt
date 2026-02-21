@@ -1,7 +1,7 @@
 package com.example.util.simpletimetracker.feature_notification.recordType.interactor
 
-import com.example.util.simpletimetracker.core.ShouldCloseAfterOneTagInteractor
 import com.example.util.simpletimetracker.core.interactor.CompleteTypesStateInteractor
+import com.example.util.simpletimetracker.core.interactor.IsMultipleTagChoiceAvailableInteractor
 import com.example.util.simpletimetracker.core.interactor.RecordRepeatInteractor
 import com.example.util.simpletimetracker.domain.base.REPEAT_BUTTON_ITEM_ID
 import com.example.util.simpletimetracker.domain.extension.orZero
@@ -33,7 +33,7 @@ class ActivityStartStopFromBroadcastInteractor @Inject constructor(
     private val completeTypesStateInteractor: CompleteTypesStateInteractor,
     private val needTagValueSelectionInteractor: NeedTagValueSelectionInteractor,
     private val prefsInteractor: PrefsInteractor,
-    private val shouldCloseAfterOneTagInteractor: ShouldCloseAfterOneTagInteractor,
+    private val isMultipleTagChoiceAvailableInteractor: IsMultipleTagChoiceAvailableInteractor,
 ) {
 
     suspend fun onActionActivityStop(
@@ -288,13 +288,6 @@ class ActivityStartStopFromBroadcastInteractor @Inject constructor(
         )
     }
 
-    private suspend fun cancelRequiredValueSelection(
-        from: NotificationControlsManager.From,
-        typesShift: Int,
-    ) {
-        update(from, typesShift)
-    }
-
     private suspend fun update(
         from: NotificationControlsManager.From,
         typesShift: Int,
@@ -366,11 +359,11 @@ class ActivityStartStopFromBroadcastInteractor @Inject constructor(
         selectedTypeId: Long,
         selectedTags: List<RecordBase.Tag> = emptyList(),
     ): Boolean {
-        val shouldCloseAfterOne = shouldCloseAfterOneTagInteractor.execute(
+        return isMultipleTagChoiceAvailableInteractor.execute(
             typeId = selectedTypeId,
+            hasPreselectedTags = selectedTags.isNotEmpty(),
             closeAfterOne = prefsInteractor.getRecordTagSelectionCloseAfterOne(),
             excludedActivities = prefsInteractor.getCloseAfterOneTagExcludeActivities().toSet(),
         )
-        return selectedTags.isNotEmpty() || !shouldCloseAfterOne
     }
 }

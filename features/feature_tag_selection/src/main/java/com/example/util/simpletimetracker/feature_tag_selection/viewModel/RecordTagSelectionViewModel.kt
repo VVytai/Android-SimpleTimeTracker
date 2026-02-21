@@ -3,10 +3,10 @@ package com.example.util.simpletimetracker.feature_tag_selection.viewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.example.util.simpletimetracker.core.ShouldCloseAfterOneTagInteractor
 import com.example.util.simpletimetracker.core.base.BaseViewModel
 import com.example.util.simpletimetracker.core.extension.set
 import com.example.util.simpletimetracker.core.extension.toModel
+import com.example.util.simpletimetracker.core.interactor.IsMultipleTagChoiceAvailableInteractor
 import com.example.util.simpletimetracker.core.interactor.RecordCommentSearchViewDataInteractor
 import com.example.util.simpletimetracker.core.viewData.CommentFilterTypeViewData
 import com.example.util.simpletimetracker.domain.extension.addOrRemove
@@ -41,7 +41,7 @@ class RecordTagSelectionViewModel @Inject constructor(
     private val recordTagInteractor: RecordTagInteractor,
     private val addTagToTypeIfNotExistMediator: AddTagToTypeIfNotExistMediator,
     private val needTagValueSelectionInteractor: NeedTagValueSelectionInteractor,
-    private val shouldCloseAfterOneTagInteractor: ShouldCloseAfterOneTagInteractor,
+    private val isMultipleTagChoiceAvailableInteractor: IsMultipleTagChoiceAvailableInteractor,
     private val recordCommentSearchViewDataInteractor: RecordCommentSearchViewDataInteractor,
 ) : BaseViewModel() {
 
@@ -172,15 +172,12 @@ class RecordTagSelectionViewModel @Inject constructor(
     private suspend fun initializeData() {
         if (initialDataLoaded) return
         newTags = extra.preselectedTags.map(RecordTagParam::toModel)
-        val shouldCloseAfterOne = shouldCloseAfterOneTagInteractor.execute(
+        isMultipleChoiceAvailable = isMultipleTagChoiceAvailableInteractor.execute(
             typeId = extra.typeId,
+            hasPreselectedTags = newTags.isNotEmpty(),
             closeAfterOne = prefsInteractor.getRecordTagSelectionCloseAfterOne(),
             excludedActivities = prefsInteractor.getCloseAfterOneTagExcludeActivities().toSet(),
         )
-        // If there are preselected tags - ignore setting.
-        isMultipleChoiceAvailable = newTags.isNotEmpty() ||
-            !shouldCloseAfterOne ||
-            extra.requiredValueSelectionTagIds.isNotEmpty()
         updateButtonVisibility()
         initialDataLoaded = true
         startRequiredTagValueSelectionIfNeeded()
@@ -230,7 +227,6 @@ class RecordTagSelectionViewModel @Inject constructor(
         return newTags.any { it.tagId == tagId && it.numericValue == null }
     }
 
-    // TODO VALUE TAG add to wear
     // TODO VALUE TAG don't show tag selection dialog, show value dialog directly
     // TODO VALUE TAG add check retroactive mode to loaded preselected tags?
     private suspend fun startRequiredTagValueSelectionIfNeeded() {

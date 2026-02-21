@@ -7,7 +7,7 @@ package com.example.util.simpletimetracker.features.tagsSelection.viewModel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.util.simpletimetracker.core.ShouldCloseAfterOneTagInteractor
+import com.example.util.simpletimetracker.core.interactor.IsMultipleTagChoiceAvailableInteractor
 import com.example.util.simpletimetracker.data.WearDataRepo
 import com.example.util.simpletimetracker.domain.extension.orFalse
 import com.example.util.simpletimetracker.domain.extension.removeIf
@@ -22,6 +22,7 @@ import com.example.util.simpletimetracker.features.tagsSelection.screen.TagListS
 import com.example.util.simpletimetracker.features.tagsSelection.ui.TagsLoadingState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -37,7 +38,7 @@ class TagsViewModel @Inject constructor(
     private val startActivityMediator: StartActivityMediator,
     private val tagsViewDataMapper: TagsViewDataMapper,
     private val tagValueSelectedInteractor: TagValueSelectedInteractor,
-    private val shouldCloseAfterOneTagInteractor: ShouldCloseAfterOneTagInteractor,
+    private val isMultipleTagChoiceAvailableInteractor: IsMultipleTagChoiceAvailableInteractor,
     private val wearTagSelectionDataInteractor: WearTagSelectionDataInteractor,
 ) : ViewModel() {
 
@@ -56,6 +57,7 @@ class TagsViewModel @Inject constructor(
     private var selectedTags: List<WearRecordTag> = emptyList()
     private var settings: WearSettings? = null
     private var isMultipleChoiceAvailable: Boolean = true
+    private var requiredValueSelectionTagIds: List<Long> = emptyList()
 
     // TODO switch to savedStateHandle
     fun init(activityId: Long) {
@@ -125,14 +127,17 @@ class TagsViewModel @Inject constructor(
         if (settingsResult != null && tagsResult != null) {
             settings = settingsResult
             tags = tagsResult
-            selectedTags = wearTagSelectionDataInteractor.data[activityId]?.preselectedTags.orEmpty()
-            val shouldCloseAfterOne = shouldCloseAfterOneTagInteractor.execute(
+            val selectionResult = wearTagSelectionDataInteractor.data[activityId]
+            selectedTags = selectionResult?.preselectedTags.orEmpty()
+            requiredValueSelectionTagIds = selectionResult?.requiredTagValueSelectionTagIds.orEmpty()
+            isMultipleChoiceAvailable = isMultipleTagChoiceAvailableInteractor.execute(
                 typeId = activityId,
+                hasPreselectedTags = selectedTags.isNotEmpty(),
                 closeAfterOne = settings?.recordTagSelectionCloseAfterOne.orFalse(),
                 excludedActivities = settings?.closeAfterOneTagExcludeActivities.orEmpty(),
             )
-            isMultipleChoiceAvailable = selectedTags.isNotEmpty() || !shouldCloseAfterOne
             _state.value = mapState()
+            startRequiredTagValueSelectionIfNeeded()
         } else {
             showError()
         }
@@ -156,7 +161,9 @@ class TagsViewModel @Inject constructor(
     ) = viewModelScope.launch {
         val tagId = result.tagId
         val value = result.value
-        selectedTags = selectedTags + WearRecordTag(tagId = tagId, numericValue = value)
+        selectedTags = selectedTags.filter { it.tagId != tagId } +
+            WearRecordTag(tagId = tagId, numericValue = value)
+        startRequiredTagValueSelectionIfNeeded()
         onTagSelected(tagId)
     }
 
@@ -164,6 +171,14 @@ class TagsViewModel @Inject constructor(
         loadingState: TagsLoadingState,
     ) {
         val activityId = this@TagsViewModel.activityId ?: return
+
+        val hasRequiredTagValueSelectionPending = requiredValueSelectionTagIds
+            .any(::isRequiredTagValueSelectionMissingValue)
+
+        if (hasRequiredTagValueSelectionPending) {
+            startRequiredTagValueSelectionIfNeeded()
+            return
+        }
 
         _state.value = mapState(loadingState)
 
@@ -180,6 +195,19 @@ class TagsViewModel @Inject constructor(
 
     private fun showError() {
         _state.value = tagsViewDataMapper.mapErrorState()
+    }
+
+    private fun isRequiredTagValueSelectionMissingValue(tagId: Long): Boolean {
+        return selectedTags.any { it.tagId == tagId && it.numericValue == null }
+    }
+
+    private suspend fun startRequiredTagValueSelectionIfNeeded(): Boolean {
+        val nextRequiredTagId = requiredValueSelectionTagIds
+            .firstOrNull { isRequiredTagValueSelectionMissingValue(it) }
+            ?: return false
+        delay(300)
+        openTagValueSelection(nextRequiredTagId)
+        return true
     }
 
     private fun mapState(
