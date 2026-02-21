@@ -1,5 +1,6 @@
 package com.example.util.simpletimetracker.domain.complexRule.interactor
 
+import com.example.util.simpletimetracker.domain.base.ResultContainer
 import com.example.util.simpletimetracker.domain.complexRule.model.ComplexRule
 import com.example.util.simpletimetracker.domain.daysOfWeek.interactor.GetCurrentDayInteractor
 import com.example.util.simpletimetracker.domain.daysOfWeek.model.DayOfWeek
@@ -33,6 +34,7 @@ class ComplexRuleProcessActionInteractorTest {
 
     @Test
     fun mergesSelectOnStart(): Unit = runBlocking {
+        // Given
         val rule1 = assignTagRule(
             actionAssignTagValues = listOf(tag(10L, numericValue = null)),
             actionAssignTagValueOnStartIds = setOf(10L),
@@ -41,52 +43,167 @@ class ComplexRuleProcessActionInteractorTest {
             actionAssignTagValues = listOf(tag(20L, numericValue = null)),
             actionAssignTagValueOnStartIds = setOf(20L),
         )
-
         `when`(complexRuleInteractor.getAll()).thenReturn(listOf(rule1, rule2))
 
+        // When
         val result = subject.processRules(
             timeStarted = 0L,
             startingTypeId = startingTypeId,
             currentTypeIds = currentTypeIds,
         )
 
+        // Then
         assertEquals(setOf(10L, 20L), result.tagIdsToSelectValueOnStart)
     }
 
     @Test
     fun dropsSelectOnStartWhenNumericExists(): Unit = runBlocking {
+        // Given
         val rule = assignTagRule(
             actionAssignTagValues = listOf(tag(30L, numericValue = 3.5)),
             actionAssignTagValueOnStartIds = setOf(30L),
         )
-
         `when`(complexRuleInteractor.getAll()).thenReturn(listOf(rule))
 
+        // When
         val result = subject.processRules(
             timeStarted = 0L,
             startingTypeId = startingTypeId,
             currentTypeIds = currentTypeIds,
         )
 
+        // Then
         assertEquals(emptySet<Long>(), result.tagIdsToSelectValueOnStart)
     }
 
     @Test
     fun ignoresSelectOnStartWithoutMergedTag(): Unit = runBlocking {
+        // Given
         val rule = assignTagRule(
             actionAssignTagValues = listOf(tag(40L, numericValue = null)),
             actionAssignTagValueOnStartIds = setOf(40L, 99L),
         )
-
         `when`(complexRuleInteractor.getAll()).thenReturn(listOf(rule))
 
+        // When
         val result = subject.processRules(
             timeStarted = 0L,
             startingTypeId = startingTypeId,
             currentTypeIds = currentTypeIds,
         )
 
+        // Then
         assertEquals(setOf(40L), result.tagIdsToSelectValueOnStart)
+    }
+
+    @Test
+    fun mergesAssignedTags(): Unit = runBlocking {
+        // Given
+        val rule1 = assignTagRule(
+            actionAssignTagValues = listOf(tag(50L, numericValue = null)),
+            actionAssignTagValueOnStartIds = emptySet(),
+        )
+        val rule2 = assignTagRule(
+            actionAssignTagValues = listOf(tag(60L, numericValue = null)),
+            actionAssignTagValueOnStartIds = emptySet(),
+        )
+        `when`(complexRuleInteractor.getAll()).thenReturn(listOf(rule1, rule2))
+
+        // When
+        val result = subject.processRules(
+            timeStarted = 0L,
+            startingTypeId = startingTypeId,
+            currentTypeIds = currentTypeIds,
+        )
+
+        // Then
+        assertEquals(
+            listOf(tag(50L, numericValue = null), tag(60L, numericValue = null)),
+            result.tags,
+        )
+    }
+
+    @Test
+    fun numericValuesOverrideEarlierNull(): Unit = runBlocking {
+        // Given
+        val ruleWithNull = assignTagRule(
+            actionAssignTagValues = listOf(tag(70L, numericValue = null)),
+            actionAssignTagValueOnStartIds = emptySet(),
+        )
+        val ruleWithNumeric = assignTagRule(
+            actionAssignTagValues = listOf(tag(70L, numericValue = 9.0)),
+            actionAssignTagValueOnStartIds = emptySet(),
+        )
+        val ruleWithLateNull = assignTagRule(
+            actionAssignTagValues = listOf(tag(70L, numericValue = null)),
+            actionAssignTagValueOnStartIds = emptySet(),
+        )
+        `when`(complexRuleInteractor.getAll()).thenReturn(listOf(ruleWithNull, ruleWithNumeric, ruleWithLateNull))
+
+        // When
+        val result = subject.processRules(
+            timeStarted = 0L,
+            startingTypeId = startingTypeId,
+            currentTypeIds = currentTypeIds,
+        )
+
+        // Then
+        assertEquals(listOf(tag(70L, numericValue = 9.0)), result.tags)
+    }
+
+    @Test
+    fun allowsMultitaskingWhenAllowRuleExistsEvenWithDisallow(): Unit = runBlocking {
+        // Given
+        val disallowRule = multitaskingRule(ComplexRule.Action.DisallowMultitasking)
+        val allowRule = multitaskingRule(ComplexRule.Action.AllowMultitasking)
+        `when`(complexRuleInteractor.getAll()).thenReturn(listOf(disallowRule, allowRule))
+
+        // When
+        val result = subject.processRules(
+            timeStarted = 0L,
+            startingTypeId = startingTypeId,
+            currentTypeIds = currentTypeIds,
+        )
+
+        // Then
+        assertEquals(ResultContainer.Defined(true), result.isMultitaskingAllowed)
+    }
+
+    @Test
+    fun disallowsMultitaskingWhenOnlyDisallowRulesRun(): Unit = runBlocking {
+        // Given
+        val rule = multitaskingRule(ComplexRule.Action.DisallowMultitasking)
+        `when`(complexRuleInteractor.getAll()).thenReturn(listOf(rule))
+
+        // When
+        val result = subject.processRules(
+            timeStarted = 0L,
+            startingTypeId = startingTypeId,
+            currentTypeIds = currentTypeIds,
+        )
+
+        // Then
+        assertEquals(ResultContainer.Defined(false), result.isMultitaskingAllowed)
+    }
+
+    @Test
+    fun leavesMultitaskingUndefinedWhenNoAllowOrDisallowRules(): Unit = runBlocking {
+        // Given
+        val rule = assignTagRule(
+            actionAssignTagValues = listOf(tag(80L, numericValue = null)),
+            actionAssignTagValueOnStartIds = emptySet(),
+        )
+        `when`(complexRuleInteractor.getAll()).thenReturn(listOf(rule))
+
+        // When
+        val result = subject.processRules(
+            timeStarted = 0L,
+            startingTypeId = startingTypeId,
+            currentTypeIds = currentTypeIds,
+        )
+
+        // Then
+        assertEquals(ResultContainer.Undefined, result.isMultitaskingAllowed)
     }
 
     private fun assignTagRule(
@@ -111,5 +228,19 @@ class ComplexRuleProcessActionInteractorTest {
         numericValue: Double?,
     ): RecordBase.Tag {
         return RecordBase.Tag(tagId = tagId, numericValue = numericValue)
+    }
+
+    private fun multitaskingRule(action: ComplexRule.Action): ComplexRule {
+        return ComplexRule(
+            id = 0L,
+            disabled = false,
+            action = action,
+            actionDisallowOnlyPrevious = false,
+            actionAssignTagValues = emptyList(),
+            actionAssignTagValueOnStartIds = emptySet(),
+            conditionStartingTypeIds = setOf(startingTypeId),
+            conditionCurrentTypeIds = currentTypeIds,
+            conditionDaysOfWeek = setOf(currentDay),
+        )
     }
 }
