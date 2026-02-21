@@ -50,6 +50,7 @@ import com.example.util.simpletimetracker.feature_notification.recordType.contro
 import com.example.util.simpletimetracker.feature_notification.activitySwitch.manager.NotificationControlsManager.Companion.ARGS_EDITING_TAG_ID
 import com.example.util.simpletimetracker.feature_notification.activitySwitch.manager.NotificationControlsManager.Companion.ARGS_EDITING_TAG_VALUE_INPUT
 import com.example.util.simpletimetracker.feature_notification.activitySwitch.manager.NotificationControlsManager.Companion.ARGS_MULTIPLE_TAG_AVAILABLE
+import com.example.util.simpletimetracker.feature_notification.activitySwitch.manager.NotificationControlsManager.Companion.ARGS_REQUIRED_VALUE_SELECTION_TAGS
 import com.example.util.simpletimetracker.feature_notification.activitySwitch.manager.NotificationControlsManager.Companion.ARGS_SELECTED_TAGS
 import com.example.util.simpletimetracker.feature_notification.activitySwitch.manager.NotificationControlsManager.Companion.ARGS_SELECTED_TYPE_ID
 import com.example.util.simpletimetracker.feature_notification.activitySwitch.manager.NotificationControlsManager.Companion.ARGS_TAGS_SHIFT
@@ -275,6 +276,7 @@ class NotificationReceiver : BroadcastReceiver() {
                 val editingTagId = intent.getEditingTagId()
                 val editingTagValueInput = intent.getEditingTagValueInput()
                 val isMultipleTagAvailable = intent.getBooleanExtra(ARGS_MULTIPLE_TAG_AVAILABLE, false)
+                val requiredValueSelectionTagIds = intent.getRequiredValueSelectionTagIds()
                 typeController.onRequestUpdate(
                     from = from,
                     typeId = typeId,
@@ -285,6 +287,7 @@ class NotificationReceiver : BroadcastReceiver() {
                     typesShift = typesShift,
                     tagsShift = tagsShift,
                     isMultipleTagAvailable = isMultipleTagAvailable,
+                    requiredValueSelectionTagIds = requiredValueSelectionTagIds,
                 )
             }
             ACTION_NOTIFICATION_CONTROLS_TAG_CLICK -> {
@@ -296,6 +299,7 @@ class NotificationReceiver : BroadcastReceiver() {
                 val tagId = intent.getLongExtra(ARGS_CLICKED_TAG_ID, 0)
                 val selectedTags = intent.getSelectedTags()
                 val isMultipleTagAvailable = intent.getBooleanExtra(ARGS_MULTIPLE_TAG_AVAILABLE, false)
+                val requiredValueSelectionTagIds = intent.getRequiredValueSelectionTagIds()
                 typeController.onActionTagClick(
                     from = from,
                     typeId = typeId,
@@ -305,6 +309,7 @@ class NotificationReceiver : BroadcastReceiver() {
                     tagsShift = tagsShift,
                     selectedTags = selectedTags,
                     isMultipleTagAvailable = isMultipleTagAvailable,
+                    requiredValueSelectionTagIds = requiredValueSelectionTagIds,
                 )
             }
             ACTION_NOTIFICATION_CONTROLS_TAG_VALUE_SAVE -> {
@@ -317,6 +322,7 @@ class NotificationReceiver : BroadcastReceiver() {
                 val editingTagId = intent.getEditingTagId() ?: return
                 val editingTagValueInput = intent.getEditingTagValueInput()
                 val isMultipleTagAvailable = intent.getBooleanExtra(ARGS_MULTIPLE_TAG_AVAILABLE, false)
+                val requiredValueSelectionTagIds = intent.getRequiredValueSelectionTagIds()
                 typeController.onActionTagValueSave(
                     from = from,
                     typeId = typeId,
@@ -327,6 +333,7 @@ class NotificationReceiver : BroadcastReceiver() {
                     tagsShift = tagsShift,
                     selectedTags = selectedTags,
                     isMultipleTagAvailable = isMultipleTagAvailable,
+                    requiredValueSelectionTagIds = requiredValueSelectionTagIds,
                 )
             }
             ACTION_NOTIFICATION_TYPE_CANCEL -> {
@@ -382,6 +389,10 @@ class NotificationReceiver : BroadcastReceiver() {
     private fun Intent.getEditingTagValueInput(): String? {
         if (!hasExtra(ARGS_EDITING_TAG_VALUE_INPUT)) return null
         return getStringExtra(ARGS_EDITING_TAG_VALUE_INPUT)
+    }
+
+    private fun Intent.getRequiredValueSelectionTagIds(): List<Long> {
+        return getLongArrayExtra(ARGS_REQUIRED_VALUE_SELECTION_TAGS)?.toList().orEmpty()
     }
 
     private fun String.splitTagNames(): List<String> {

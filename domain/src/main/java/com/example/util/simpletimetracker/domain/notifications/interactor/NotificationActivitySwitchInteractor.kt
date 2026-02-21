@@ -12,5 +12,6 @@ interface NotificationActivitySwitchInteractor {
         editingTagId: Long? = null,
         editingTagValueInput: String? = null,
         isMultipleTagAvailable: Boolean = false,
+        requiredValueSelectionTagIds: List<Long> = emptyList(),
     )
 }

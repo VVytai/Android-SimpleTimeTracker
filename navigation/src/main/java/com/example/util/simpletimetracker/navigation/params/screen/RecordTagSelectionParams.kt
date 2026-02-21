@@ -8,7 +8,7 @@ data class RecordTagSelectionParams(
     val typeId: Long,
     val fields: List<FieldParam>,
     val preselectedTags: List<RecordTagParam>,
-    val requiredTagValueSelectionTagIds: List<Long>,
+    val requiredValueSelectionTagIds: List<Long>,
 ) : Parcelable, ScreenParams {
 
     sealed interface FieldParam : Parcelable {
@@ -24,7 +24,7 @@ data class RecordTagSelectionParams(
             typeId = 0L,
             fields = emptyList(),
             preselectedTags = emptyList(),
-            requiredTagValueSelectionTagIds = emptyList(),
+            requiredValueSelectionTagIds = emptyList(),
         )
     }
 }

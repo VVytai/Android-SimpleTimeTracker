@@ -13,9 +13,10 @@ sealed interface NotificationControlsParams {
         val controlIconColor: Int,
         val isMultipleTagAvailable: Boolean,
         val selectedTypeId: Long?,
-        val selectedTags: List<RecordBase.Tag> = emptyList(),
-        val editingTagId: Long? = null,
-        val editingTagValueInput: String? = null,
+        val selectedTags: List<RecordBase.Tag>,
+        val requiredValueSelectionTagIds: List<Long>,
+        val editingTagId: Long?,
+        val editingTagValueInput: String?,
         val viewState: ViewState,
     ) : NotificationControlsParams
 

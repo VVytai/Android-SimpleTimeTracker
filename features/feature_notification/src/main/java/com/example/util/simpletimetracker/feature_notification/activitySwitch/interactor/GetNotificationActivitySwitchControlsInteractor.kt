@@ -51,6 +51,7 @@ class GetNotificationActivitySwitchControlsInteractor @Inject constructor(
         selectedTags: List<RecordBase.Tag>,
         editingTagId: Long?,
         editingTagValueInput: String?,
+        requiredValueSelectionTagIds: List<Long>,
         goals: Map<Long, List<RecordTypeGoal>>,
         allDailyCurrents: Map<Long, GetCurrentRecordsDurationInteractor.Result>,
     ): NotificationControlsParams {
@@ -58,8 +59,7 @@ class GetNotificationActivitySwitchControlsInteractor @Inject constructor(
             mapTagSelectionViewState(
                 isDarkTheme = isDarkTheme,
                 currentValueString = editingTagValueInput,
-                valueSuffix = recordTagInteractor.get(editingTagId)
-                    ?.valueSuffix.orEmpty(),
+                editingTag = recordTagInteractor.get(editingTagId),
             )
         } else {
             mapTypesViewState(
@@ -84,6 +84,7 @@ class GetNotificationActivitySwitchControlsInteractor @Inject constructor(
             isMultipleTagAvailable = isMultipleTagAvailable,
             selectedTypeId = selectedTypeId,
             selectedTags = selectedTags,
+            requiredValueSelectionTagIds = requiredValueSelectionTagIds,
             editingTagId = editingTagId,
             editingTagValueInput = editingTagValueInput,
             viewState = viewState,
@@ -199,11 +200,16 @@ class GetNotificationActivitySwitchControlsInteractor @Inject constructor(
     private fun mapTagSelectionViewState(
         isDarkTheme: Boolean,
         currentValueString: String?,
-        valueSuffix: String,
+        editingTag: RecordTag?,
     ): NotificationControlsParams.ViewState {
+        val valueSuffix = editingTag?.valueSuffix.orEmpty()
         val hint = when {
             currentValueString.isNullOrEmpty() -> {
-                resourceRepo.getString(R.string.change_record_type_value_selection_hint)
+                resourceRepo.getString(
+                    R.string.separator_template,
+                    resourceRepo.getString(R.string.change_record_type_value_selection_hint),
+                    "(${editingTag?.name.orEmpty()})",
+                )
             }
             valueSuffix.isEmpty() -> {
                 currentValueString

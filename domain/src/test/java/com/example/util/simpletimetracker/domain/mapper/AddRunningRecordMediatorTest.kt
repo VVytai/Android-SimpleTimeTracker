@@ -21,6 +21,7 @@ import com.example.util.simpletimetracker.domain.recordType.model.RecordType
 import com.example.util.simpletimetracker.domain.base.ResultContainer
 import com.example.util.simpletimetracker.domain.record.model.RunningRecord
 import com.example.util.simpletimetracker.domain.base.CurrentTimestampProvider
+import com.example.util.simpletimetracker.domain.record.interactor.ProcessRulesInteractor
 import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
@@ -53,6 +54,12 @@ class AddRunningRecordMediatorTest {
     private val updateExternalViewsInteractor: UpdateExternalViewsInteractor = mock()
     private val currentTimestampProvider: CurrentTimestampProvider = mock()
 
+    private val processRulesInteractor = ProcessRulesInteractor(
+        runningRecordInteractor = runningRecordInteractor,
+        complexRuleProcessActionInteractor = complexRuleProcessActionInteractor,
+        recordTypeToDefaultTagInteractor = recordTypeToDefaultTagInteractor,
+    )
+
     private val subject = AddRunningRecordMediator(
         prefsInteractor = prefsInteractor,
         removeRunningRecordMediator = removeRunningRecordMediator,
@@ -60,12 +67,11 @@ class AddRunningRecordMediatorTest {
         runningRecordInteractor = runningRecordInteractor,
         recordTypeInteractor = recordTypeInteractor,
         addRecordMediator = addRecordMediator,
-        recordTypeToDefaultTagInteractor = recordTypeToDefaultTagInteractor,
         notificationGoalCountInteractor = notificationGoalCountInteractor,
         activityStartedStoppedBroadcastInteractor = activityStartedStoppedBroadcastInteractor,
         shouldShowRecordDataSelectionInteractor = shouldShowRecordDataSelectionInteractor,
         pomodoroStartInteractor = pomodoroStartInteractor,
-        complexRuleProcessActionInteractor = complexRuleProcessActionInteractor,
+        processRulesInteractor = processRulesInteractor,
         updateExternalViewsInteractor = updateExternalViewsInteractor,
         currentTimestampProvider = currentTimestampProvider,
     ).let(::spy)
@@ -139,7 +145,7 @@ class AddRunningRecordMediatorTest {
 
         `when`(runningRecordInteractor.get(typeId)).thenReturn(null)
         `when`(shouldShowRecordDataSelectionInteractor.execute(any(), any())).thenReturn(
-            RecordDataSelectionDialogResult(emptyList()),
+            RecordDataSelectionDialogResult(emptyList(), emptyList(), emptyList()),
         )
         subject.tryStartTimer(
             typeId = typeId,
@@ -169,6 +175,8 @@ class AddRunningRecordMediatorTest {
                 RecordDataSelectionDialogResult.Field.Tags,
                 RecordDataSelectionDialogResult.Field.Comment,
             ),
+            emptyList(),
+            emptyList(),
         )
 
         `when`(runningRecordInteractor.get(typeId)).thenReturn(null)
@@ -202,10 +210,15 @@ class AddRunningRecordMediatorTest {
             tags = emptyList(),
             tagIdsToSelectValueOnStart = setOf(tagId2),
         )
+        val expected = RecordDataSelectionDialogResult(
+            fields = listOf(RecordDataSelectionDialogResult.Field.Tags),
+            preselectedTags = emptyList(),
+            requiredValueSelectionTagIds = listOf(tagId2),
+        )
 
         `when`(runningRecordInteractor.get(typeId)).thenReturn(null)
         `when`(shouldShowRecordDataSelectionInteractor.execute(any(), any())).thenReturn(
-            RecordDataSelectionDialogResult(emptyList()),
+            expected,
         )
         `when`(complexRuleProcessActionInteractor.hasRules()).thenReturn(true)
         `when`(complexRuleProcessActionInteractor.processRules(any(), any(), any())).thenReturn(
@@ -219,10 +232,6 @@ class AddRunningRecordMediatorTest {
             onNeedToShowTagSelection = { tagSelectionResult.invoke(it) },
         )
 
-        val expected = RecordDataSelectionDialogResult(
-            fields = listOf(RecordDataSelectionDialogResult.Field.Tags),
-            requiredTagValueSelectionTagIds = listOf(tagId2),
-        )
         verify(tagSelectionResult).invoke(eq(expected))
         verify(subject, never()).startTimer(
             typeId = any(),
@@ -242,7 +251,7 @@ class AddRunningRecordMediatorTest {
 
         `when`(runningRecordInteractor.get(typeId)).thenReturn(null)
         `when`(shouldShowRecordDataSelectionInteractor.execute(any(), any())).thenReturn(
-            RecordDataSelectionDialogResult(emptyList()),
+            RecordDataSelectionDialogResult(emptyList(), emptyList(), emptyList()),
         )
         subject.tryStartTimer(
             typeId = typeId,

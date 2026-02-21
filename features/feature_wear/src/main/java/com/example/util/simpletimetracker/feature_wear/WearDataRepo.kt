@@ -213,7 +213,7 @@ class WearDataRepo @Inject constructor(
                     numericValue = it.numericValue,
                 )
             },
-            requiredTagValueSelectionTagIds = result.requiredTagValueSelectionTagIds,
+            requiredTagValueSelectionTagIds = result.requiredValueSelectionTagIds,
         )
     }
 

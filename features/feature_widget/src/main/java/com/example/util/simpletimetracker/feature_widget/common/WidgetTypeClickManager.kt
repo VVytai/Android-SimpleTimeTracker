@@ -12,7 +12,6 @@ import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.domain.record.model.RecordDataSelectionDialogResult
 import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTypeInteractor
 import com.example.util.simpletimetracker.feature_widget.single.WidgetSingleTagSelectionActivity
-import com.example.util.simpletimetracker.navigation.params.screen.RecordTagParam
 import com.example.util.simpletimetracker.navigation.params.screen.RecordTagSelectionParams
 import kotlinx.coroutines.delay
 import javax.inject.Inject
@@ -80,7 +79,7 @@ class WidgetTypeClickManager @Inject constructor(
                 typeId = typeId,
                 fields = result.fields.toParams(),
                 preselectedTags = result.preselectedTags.map(RecordBase.Tag::toParams),
-                requiredTagValueSelectionTagIds = result.requiredTagValueSelectionTagIds,
+                requiredValueSelectionTagIds = result.requiredValueSelectionTagIds,
             ),
         ).let(context::startActivity)
     }

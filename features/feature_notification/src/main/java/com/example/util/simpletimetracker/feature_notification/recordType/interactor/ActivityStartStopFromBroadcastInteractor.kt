@@ -67,6 +67,7 @@ class ActivityStartStopFromBroadcastInteractor @Inject constructor(
             commentInputAvailable = false, // TODO open activity? Or RemoteInput?
         ) {
             val preselectedTags = it.preselectedTags
+            val requiredValueSelectionTagIds = it.requiredValueSelectionTagIds
             val isMultipleTagAvailable = isMultipleTagChoiceAvailable(
                 selectedTypeId = selectedTypeId,
                 selectedTags = preselectedTags,
@@ -80,8 +81,9 @@ class ActivityStartStopFromBroadcastInteractor @Inject constructor(
                 selectedTypeId = selectedTypeId,
                 isMultipleTagAvailable = isMultipleTagAvailable,
                 selectedTags = preselectedTags,
-                editingTagId = null,
+                editingTagId = requiredValueSelectionTagIds.firstOrNull(),
                 editingTagValueInput = null,
+                requiredValueSelectionTagIds = requiredValueSelectionTagIds.drop(1),
             )
         }
         if (started) {
@@ -103,9 +105,10 @@ class ActivityStartStopFromBroadcastInteractor @Inject constructor(
         selectedTypeId: Long,
         tagId: Long,
         typesShift: Int,
-        selectedTags: List<RecordBase.Tag> = emptyList(),
-        tagsShift: Int = 0,
+        selectedTags: List<RecordBase.Tag>,
+        tagsShift: Int,
         isMultipleTagAvailable: Boolean,
+        requiredValueSelectionTagIds: List<Long>,
     ) {
         if (tagId == APPLY_TAGS_ID) {
             startFromTagSelection(
@@ -138,6 +141,7 @@ class ActivityStartStopFromBroadcastInteractor @Inject constructor(
                 selectedTags = updatedTags,
                 editingTagId = null,
                 editingTagValueInput = null,
+                requiredValueSelectionTagIds = requiredValueSelectionTagIds,
             )
             return
         }
@@ -156,6 +160,7 @@ class ActivityStartStopFromBroadcastInteractor @Inject constructor(
                 selectedTags = selectedTags,
                 editingTagId = tagId,
                 editingTagValueInput = null,
+                requiredValueSelectionTagIds = requiredValueSelectionTagIds,
             )
             return
         }
@@ -173,6 +178,7 @@ class ActivityStartStopFromBroadcastInteractor @Inject constructor(
             typesShift = typesShift,
             tagsShift = tagsShift,
             isMultipleTagAvailable = isMultipleTagAvailable,
+            requiredValueSelectionTagIds = requiredValueSelectionTagIds,
         )
     }
 
@@ -182,25 +188,26 @@ class ActivityStartStopFromBroadcastInteractor @Inject constructor(
         tagId: Long,
         tagValue: String?,
         typesShift: Int,
-        selectedTags: List<RecordBase.Tag> = emptyList(),
-        tagsShift: Int = 0,
+        selectedTags: List<RecordBase.Tag>,
+        tagsShift: Int,
         isMultipleTagAvailable: Boolean,
+        requiredValueSelectionTagIds: List<Long>,
     ) {
-        val actualTagValue = parseTagValueInput(tagValue)
         val updatedTags = selectedTags
             .filterNot { it.tagId == tagId } + RecordBase.Tag(
             tagId = tagId,
-            numericValue = actualTagValue,
+            numericValue = parseTagValueInput(tagValue),
         )
         maybeStartWithSelectedTags(
             from = from,
             selectedTypeId = selectedTypeId,
             selectedTags = updatedTags,
-            editingTagId = null,
+            editingTagId = requiredValueSelectionTagIds.firstOrNull(),
             editingTagValueInput = null,
             typesShift = typesShift,
             tagsShift = tagsShift,
             isMultipleTagAvailable = isMultipleTagAvailable,
+            requiredValueSelectionTagIds = requiredValueSelectionTagIds.drop(1),
         )
     }
 
@@ -213,6 +220,7 @@ class ActivityStartStopFromBroadcastInteractor @Inject constructor(
         editingTagId: Long?,
         editingTagValueInput: String?,
         isMultipleTagAvailable: Boolean,
+        requiredValueSelectionTagIds: List<Long>,
     ) {
         update(
             from = from,
@@ -223,6 +231,7 @@ class ActivityStartStopFromBroadcastInteractor @Inject constructor(
             selectedTags = selectedTags,
             editingTagId = editingTagId,
             editingTagValueInput = editingTagValueInput,
+            requiredValueSelectionTagIds = requiredValueSelectionTagIds,
         )
     }
 
@@ -254,6 +263,7 @@ class ActivityStartStopFromBroadcastInteractor @Inject constructor(
         typesShift: Int,
         tagsShift: Int,
         isMultipleTagAvailable: Boolean,
+        requiredValueSelectionTagIds: List<Long>,
     ) {
         if (editingTagId == null && !isMultipleTagAvailable) {
             startFromTagSelection(
@@ -274,7 +284,15 @@ class ActivityStartStopFromBroadcastInteractor @Inject constructor(
             editingTagId = editingTagId,
             editingTagValueInput = editingTagValueInput,
             isMultipleTagAvailable = isMultipleTagAvailable,
+            requiredValueSelectionTagIds = requiredValueSelectionTagIds,
         )
+    }
+
+    private suspend fun cancelRequiredValueSelection(
+        from: NotificationControlsManager.From,
+        typesShift: Int,
+    ) {
+        update(from, typesShift)
     }
 
     private suspend fun update(
@@ -290,6 +308,7 @@ class ActivityStartStopFromBroadcastInteractor @Inject constructor(
             selectedTags = emptyList(),
             editingTagId = null,
             editingTagValueInput = null,
+            requiredValueSelectionTagIds = emptyList(),
         )
     }
 
@@ -302,6 +321,7 @@ class ActivityStartStopFromBroadcastInteractor @Inject constructor(
         selectedTags: List<RecordBase.Tag>,
         editingTagId: Long?,
         editingTagValueInput: String?,
+        requiredValueSelectionTagIds: List<Long>,
     ) {
         when (from) {
             is NotificationControlsManager.From.ActivityNotification -> {
@@ -316,6 +336,7 @@ class ActivityStartStopFromBroadcastInteractor @Inject constructor(
                     editingTagId = editingTagId,
                     editingTagValueInput = editingTagValueInput,
                     isMultipleTagAvailable = isMultipleTagAvailable,
+                    requiredValueSelectionTagIds = requiredValueSelectionTagIds,
                 )
             }
             is NotificationControlsManager.From.ActivitySwitch -> {
@@ -327,6 +348,7 @@ class ActivityStartStopFromBroadcastInteractor @Inject constructor(
                     editingTagId = editingTagId,
                     editingTagValueInput = editingTagValueInput,
                     isMultipleTagAvailable = isMultipleTagAvailable,
+                    requiredValueSelectionTagIds = requiredValueSelectionTagIds,
                 )
             }
         }

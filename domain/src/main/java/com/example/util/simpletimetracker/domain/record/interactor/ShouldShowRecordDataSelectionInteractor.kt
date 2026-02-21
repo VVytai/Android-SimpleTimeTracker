@@ -39,10 +39,10 @@ class ShouldShowRecordDataSelectionInteractor @Inject constructor(
             prevRecords = suspendLazy { recordInteractor.getAllPrev(currentTime) },
             retroactiveTrackingMode = prefsInteractor.getRetroactiveTrackingMode(),
         )
-        val requiredTagValueSelectionTagIds = filterNumericTagValueSelectionTagIds(
+        val requiredValueSelectionTagIds = filterNumericTagValueSelectionTagIds(
             tagIds = rulesResult.tagIdsToSelectValueOnStart,
         )
-        if (requiredTagValueSelectionTagIds.isNotEmpty()) {
+        if (requiredValueSelectionTagIds.isNotEmpty()) {
             // Force tag selection dialog if any tags need value.
             fields += RecordDataSelectionDialogResult.Field.Tags
         }
@@ -55,7 +55,7 @@ class ShouldShowRecordDataSelectionInteractor @Inject constructor(
         return RecordDataSelectionDialogResult(
             fields = fields.toList(),
             preselectedTags = allTags,
-            requiredTagValueSelectionTagIds = requiredTagValueSelectionTagIds
+            requiredValueSelectionTagIds = requiredValueSelectionTagIds,
         )
     }
 

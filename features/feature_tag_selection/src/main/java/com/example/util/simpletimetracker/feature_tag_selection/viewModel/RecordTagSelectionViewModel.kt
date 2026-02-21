@@ -146,7 +146,7 @@ class RecordTagSelectionViewModel @Inject constructor(
     }
 
     private suspend fun saveClicked() {
-        val hasRequiredTagValueSelectionPending = extra.requiredTagValueSelectionTagIds
+        val hasRequiredTagValueSelectionPending = extra.requiredValueSelectionTagIds
             .any(::isRequiredTagValueSelectionMissingValue)
 
         if (hasRequiredTagValueSelectionPending) {
@@ -180,7 +180,7 @@ class RecordTagSelectionViewModel @Inject constructor(
         // If there are preselected tags - ignore setting.
         isMultipleChoiceAvailable = newTags.isNotEmpty() ||
             !shouldCloseAfterOne ||
-            extra.requiredTagValueSelectionTagIds.isNotEmpty()
+            extra.requiredValueSelectionTagIds.isNotEmpty()
         updateButtonVisibility()
         initialDataLoaded = true
         startRequiredTagValueSelectionIfNeeded()
@@ -227,16 +227,15 @@ class RecordTagSelectionViewModel @Inject constructor(
     }
 
     private fun isRequiredTagValueSelectionMissingValue(tagId: Long): Boolean {
-        return newTags.none { it.tagId == tagId && it.numericValue != null }
+        return newTags.any { it.tagId == tagId && it.numericValue == null }
     }
 
-    // TODO VALUE TAG add to notifications
     // TODO VALUE TAG add to wear
     // TODO VALUE TAG don't show tag selection dialog, show value dialog directly
     // TODO VALUE TAG add tests
     // TODO VALUE TAG add check retroactive mode to loaded preselected tags?
     private suspend fun startRequiredTagValueSelectionIfNeeded() {
-        val nextRequiredTagId = extra.requiredTagValueSelectionTagIds
+        val nextRequiredTagId = extra.requiredValueSelectionTagIds
             .firstOrNull { isRequiredTagValueSelectionMissingValue(it) }
             ?: return
         delay(300)

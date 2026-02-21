@@ -126,6 +126,7 @@ class NotificationControlsManager @Inject constructor(
                     .coerceAtLeast(0),
                 recordTagsShift = params.tagsShift,
                 isMultipleTagAvailable = params.isMultipleTagAvailable,
+                requiredValueSelectionTagIds = params.requiredValueSelectionTagIds,
             ),
         )
 
@@ -171,6 +172,7 @@ class NotificationControlsManager @Inject constructor(
                     recordTagsShift = params.tagsShift,
                     selectedTypeId = data.id,
                     isMultipleTagAvailable = params.isMultipleTagAvailable,
+                    requiredValueSelectionTagIds = params.requiredValueSelectionTagIds,
                 ),
             ).let {
                 addView(R.id.containerNotificationTypes, it)
@@ -217,6 +219,7 @@ class NotificationControlsManager @Inject constructor(
                     .orZero(),
                 recordTagsShift = params.tagsShift,
                 isMultipleTagAvailable = params.isMultipleTagAvailable,
+                requiredValueSelectionTagIds = params.requiredValueSelectionTagIds,
             ),
         )
     }
@@ -248,6 +251,7 @@ class NotificationControlsManager @Inject constructor(
                     .ifNull { viewState.tags.size - TAGS_LIST_SIZE }
                     .coerceAtLeast(0),
                 isMultipleTagAvailable = params.isMultipleTagAvailable,
+                requiredValueSelectionTagIds = params.requiredValueSelectionTagIds,
             ),
         )
 
@@ -274,6 +278,7 @@ class NotificationControlsManager @Inject constructor(
                     recordTagsShift = params.tagsShift,
                     tagId = data.id,
                     isMultipleTagAvailable = params.isMultipleTagAvailable,
+                    requiredValueSelectionTagIds = params.requiredValueSelectionTagIds,
                 ),
                 isSelected = data.isSelected,
             ).let {
@@ -320,6 +325,7 @@ class NotificationControlsManager @Inject constructor(
                     .takeUnless { it >= viewState.tags.size }
                     .orZero(),
                 isMultipleTagAvailable = params.isMultipleTagAvailable,
+                requiredValueSelectionTagIds = params.requiredValueSelectionTagIds,
             ),
         )
     }
@@ -346,6 +352,7 @@ class NotificationControlsManager @Inject constructor(
                 recordTypesShift = params.typesShift,
                 recordTagsShift = params.tagsShift,
                 isMultipleTagAvailable = params.isMultipleTagAvailable,
+                requiredValueSelectionTagIds = params.requiredValueSelectionTagIds,
             ),
         )
 
@@ -389,6 +396,7 @@ class NotificationControlsManager @Inject constructor(
                     recordTypesShift = params.typesShift,
                     recordTagsShift = params.tagsShift,
                     isMultipleTagAvailable = params.isMultipleTagAvailable,
+                    requiredValueSelectionTagIds = params.requiredValueSelectionTagIds,
                 ),
             ).let {
                 addView(containerId, it)
@@ -453,6 +461,7 @@ class NotificationControlsManager @Inject constructor(
                 recordTypesShift = params.typesShift,
                 recordTagsShift = params.tagsShift,
                 isMultipleTagAvailable = params.isMultipleTagAvailable,
+                requiredValueSelectionTagIds = params.requiredValueSelectionTagIds,
             ),
         )
 
@@ -476,6 +485,7 @@ class NotificationControlsManager @Inject constructor(
                 recordTypesShift = params.typesShift,
                 recordTagsShift = params.tagsShift,
                 isMultipleTagAvailable = params.isMultipleTagAvailable,
+                requiredValueSelectionTagIds = params.requiredValueSelectionTagIds,
             ),
         )
     }
@@ -555,6 +565,7 @@ class NotificationControlsManager @Inject constructor(
         recordTagsShift: Int? = null,
         tagId: Long? = null,
         isMultipleTagAvailable: Boolean,
+        requiredValueSelectionTagIds: List<Long> = emptyList(),
     ): PendingIntent {
         val intent = Intent(context, NotificationReceiver::class.java)
         intent.action = action
@@ -567,6 +578,7 @@ class NotificationControlsManager @Inject constructor(
         tagId?.let { intent.putExtra(ARGS_CLICKED_TAG_ID, it) }
         recordTypesShift.let { intent.putExtra(ARGS_TYPES_SHIFT, it) }
         recordTagsShift?.let { intent.putExtra(ARGS_TAGS_SHIFT, it) }
+        intent.putExtra(ARGS_REQUIRED_VALUE_SELECTION_TAGS, requiredValueSelectionTagIds.toLongArray())
         intent.putExtra(ARGS_MULTIPLE_TAG_AVAILABLE, isMultipleTagAvailable)
         return PendingIntent.getBroadcast(
             context,
@@ -658,6 +670,7 @@ class NotificationControlsManager @Inject constructor(
         const val ARGS_SELECTED_TAGS = "selectedTags"
         const val ARGS_EDITING_TAG_ID = "editingTagId"
         const val ARGS_EDITING_TAG_VALUE_INPUT = "editingTagValueInput"
+        const val ARGS_REQUIRED_VALUE_SELECTION_TAGS = "requiredTagSelectionTags"
         const val ARGS_CLICKED_TAG_ID = "clickedTagId"
         const val ARGS_TYPES_SHIFT = "typesShift"
         const val ARGS_TAGS_SHIFT = "tagsShift"

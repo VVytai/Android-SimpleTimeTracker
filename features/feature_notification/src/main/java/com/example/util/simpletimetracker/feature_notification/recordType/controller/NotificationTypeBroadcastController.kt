@@ -56,8 +56,9 @@ class NotificationTypeBroadcastController @Inject constructor(
         tagId: Long,
         typesShift: Int,
         tagsShift: Int,
-        selectedTags: List<RecordBase.Tag> = emptyList(),
+        selectedTags: List<RecordBase.Tag>,
         isMultipleTagAvailable: Boolean,
+        requiredValueSelectionTagIds: List<Long>,
     ) {
         safeLaunch {
             activityStartStopFromBroadcastInteractor.onActionTagClick(
@@ -71,6 +72,7 @@ class NotificationTypeBroadcastController @Inject constructor(
                 tagsShift = tagsShift,
                 selectedTags = selectedTags,
                 isMultipleTagAvailable = isMultipleTagAvailable,
+                requiredValueSelectionTagIds = requiredValueSelectionTagIds,
             )
         }
     }
@@ -83,8 +85,9 @@ class NotificationTypeBroadcastController @Inject constructor(
         tagValue: String?,
         typesShift: Int,
         tagsShift: Int,
-        selectedTags: List<RecordBase.Tag> = emptyList(),
+        selectedTags: List<RecordBase.Tag>,
         isMultipleTagAvailable: Boolean,
+        requiredValueSelectionTagIds: List<Long>,
     ) {
         safeLaunch {
             activityStartStopFromBroadcastInteractor.onActionTagValueSave(
@@ -99,6 +102,7 @@ class NotificationTypeBroadcastController @Inject constructor(
                 tagsShift = tagsShift,
                 selectedTags = selectedTags,
                 isMultipleTagAvailable = isMultipleTagAvailable,
+                requiredValueSelectionTagIds = requiredValueSelectionTagIds,
             )
         }
     }
@@ -113,12 +117,13 @@ class NotificationTypeBroadcastController @Inject constructor(
         typesShift: Int,
         tagsShift: Int,
         isMultipleTagAvailable: Boolean,
+        requiredValueSelectionTagIds: List<Long>,
     ) {
         safeLaunch {
             activityStartStopFromBroadcastInteractor.onRequestUpdate(
                 from = notificationControlsMapper.mapExtraToFrom(
                     extra = from,
-                    typeId,
+                    recordTypeId = typeId,
                 ) ?: return@safeLaunch,
                 selectedTypeId = selectedTypeId,
                 selectedTags = selectedTags,
@@ -127,6 +132,7 @@ class NotificationTypeBroadcastController @Inject constructor(
                 typesShift = typesShift,
                 tagsShift = tagsShift,
                 isMultipleTagAvailable = isMultipleTagAvailable,
+                requiredValueSelectionTagIds = requiredValueSelectionTagIds,
             )
         }
     }

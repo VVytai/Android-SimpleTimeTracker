@@ -44,7 +44,6 @@ import com.example.util.simpletimetracker.feature_base_adapter.recordTypeSpecial
 import com.example.util.simpletimetracker.feature_widget.universal.mapper.WidgetUniversalViewDataMapper
 import com.example.util.simpletimetracker.feature_widget.universal.viewData.WidgetUniversalButtonViewData
 import com.example.util.simpletimetracker.navigation.Router
-import com.example.util.simpletimetracker.navigation.params.screen.RecordTagParam
 import com.example.util.simpletimetracker.navigation.params.screen.RecordTagSelectionParams
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -206,7 +205,7 @@ class WidgetUniversalViewModel @Inject constructor(
                 typeId = typeId,
                 fields = result.fields.toParams(),
                 preselectedTags = result.preselectedTags.map(RecordBase.Tag::toParams),
-                requiredTagValueSelectionTagIds = result.requiredTagValueSelectionTagIds,
+                requiredValueSelectionTagIds = result.requiredValueSelectionTagIds,
             ),
         )
     }

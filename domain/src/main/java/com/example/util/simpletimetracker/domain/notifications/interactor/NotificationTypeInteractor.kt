@@ -13,6 +13,7 @@ interface NotificationTypeInteractor {
         editingTagId: Long? = null,
         editingTagValueInput: String? = null,
         isMultipleTagAvailable: Boolean = false,
+        requiredValueSelectionTagIds: List<Long> = emptyList(),
     )
 
     suspend fun checkAndHide(typeId: Long)

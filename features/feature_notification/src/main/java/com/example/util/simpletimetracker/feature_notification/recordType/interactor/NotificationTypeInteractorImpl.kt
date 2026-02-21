@@ -59,6 +59,7 @@ class NotificationTypeInteractorImpl @Inject constructor(
         editingTagId: Long?,
         editingTagValueInput: String?,
         isMultipleTagAvailable: Boolean,
+        requiredValueSelectionTagIds: List<Long>,
     ) {
         if (!prefsInteractor.getShowNotifications()) return
 
@@ -122,6 +123,7 @@ class NotificationTypeInteractorImpl @Inject constructor(
                 selectedTags = selectedTags,
                 editingTagId = editingTagId,
                 editingTagValueInput = editingTagValueInput,
+                requiredValueSelectionTagIds = requiredValueSelectionTagIds,
                 goals = goals,
                 allDailyCurrents = allDailyCurrents,
             )
@@ -198,6 +200,7 @@ class NotificationTypeInteractorImpl @Inject constructor(
                 selectedTags = emptyList(),
                 editingTagId = null,
                 editingTagValueInput = null,
+                requiredValueSelectionTagIds = emptyList(),
                 goals = goals,
                 allDailyCurrents = allDailyCurrents,
             )

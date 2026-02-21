@@ -48,7 +48,6 @@ import com.example.util.simpletimetracker.navigation.params.screen.ChangeRunning
 import com.example.util.simpletimetracker.navigation.params.screen.ChangeRunningRecordParams
 import com.example.util.simpletimetracker.navigation.params.screen.DefaultTypesSelectionDialogParams
 import com.example.util.simpletimetracker.navigation.params.screen.PomodoroParams
-import com.example.util.simpletimetracker.navigation.params.screen.RecordTagParam
 import com.example.util.simpletimetracker.navigation.params.screen.RecordTagSelectionParams
 import com.example.util.simpletimetracker.navigation.params.screen.StandardDialogParams
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -480,7 +479,7 @@ class RunningRecordsViewModel @Inject constructor(
                 typeId = typeId,
                 fields = result.fields.toParams(),
                 preselectedTags = result.preselectedTags.map(RecordBase.Tag::toParams),
-                requiredTagValueSelectionTagIds = result.requiredTagValueSelectionTagIds,
+                requiredValueSelectionTagIds = result.requiredValueSelectionTagIds,
             ),
         )
     }
