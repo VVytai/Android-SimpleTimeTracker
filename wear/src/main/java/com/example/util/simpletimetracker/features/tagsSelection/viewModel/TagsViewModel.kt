@@ -11,6 +11,7 @@ import com.example.util.simpletimetracker.core.ShouldCloseAfterOneTagInteractor
 import com.example.util.simpletimetracker.data.WearDataRepo
 import com.example.util.simpletimetracker.domain.extension.orFalse
 import com.example.util.simpletimetracker.domain.extension.removeIf
+import com.example.util.simpletimetracker.domain.interactor.WearTagSelectionDataInteractor
 import com.example.util.simpletimetracker.domain.mediator.StartActivityMediator
 import com.example.util.simpletimetracker.domain.model.WearRecordTag
 import com.example.util.simpletimetracker.domain.model.WearSettings
@@ -37,6 +38,7 @@ class TagsViewModel @Inject constructor(
     private val tagsViewDataMapper: TagsViewDataMapper,
     private val tagValueSelectedInteractor: TagValueSelectedInteractor,
     private val shouldCloseAfterOneTagInteractor: ShouldCloseAfterOneTagInteractor,
+    private val wearTagSelectionDataInteractor: WearTagSelectionDataInteractor,
 ) : ViewModel() {
 
     val state: StateFlow<TagListState> get() = _state.asStateFlow()
@@ -123,9 +125,7 @@ class TagsViewModel @Inject constructor(
         if (settingsResult != null && tagsResult != null) {
             settings = settingsResult
             tags = tagsResult
-            selectedTags = tags.filter { it.preselected }.map {
-                WearRecordTag(tagId = it.id, numericValue = it.value)
-            }
+            selectedTags = wearTagSelectionDataInteractor.data[activityId]?.preselectedTags.orEmpty()
             val shouldCloseAfterOne = shouldCloseAfterOneTagInteractor.execute(
                 typeId = activityId,
                 closeAfterOne = settings?.recordTagSelectionCloseAfterOne.orFalse(),

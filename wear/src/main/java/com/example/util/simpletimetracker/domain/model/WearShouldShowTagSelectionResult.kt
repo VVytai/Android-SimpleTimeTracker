@@ -5,8 +5,8 @@
  */
 package com.example.util.simpletimetracker.domain.model
 
-data class WearTag(
-    val id: Long,
-    val name: String,
-    val color: Long,
+data class WearShouldShowTagSelectionResult(
+    val shouldShow: Boolean,
+    val preselectedTags: List<WearRecordTag>,
+    val requiredTagValueSelectionTagIds: List<Long>,
 )

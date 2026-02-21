@@ -124,10 +124,10 @@ class TypesSelectionDialogFragment :
 
     private fun onDataSelected(result: TypesSelectionResult) {
         listener?.onDataSelected(
-            extra.tag,
-            result.dataIds,
-            result.tagValues,
-            result.selectValueOnStartTagIds,
+            tag = extra.tag,
+            dataIds = result.dataIds,
+            tagValues = result.tagValues,
+            selectValueOnStartTagIds = result.selectValueOnStartTagIds,
         )
         dismiss()
     }

@@ -8,6 +8,6 @@ interface TypesSelectionDialogListener {
         tag: String?,
         dataIds: List<Long>,
         tagValues: List<RecordBase.Tag>,
-        selectValueOnStartTagIds: List<Long> = emptyList(),
+        selectValueOnStartTagIds: List<Long>,
     )
 }

@@ -22,6 +22,7 @@ import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteracto
 import com.example.util.simpletimetracker.domain.record.interactor.AddRunningRecordMediator
 import com.example.util.simpletimetracker.domain.record.interactor.RemoveRunningRecordMediator
 import com.example.util.simpletimetracker.domain.record.interactor.RunningRecordInteractor
+import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.domain.record.model.RecordDataSelectionDialogResult
 import com.example.util.simpletimetracker.domain.record.model.RunningRecord
 import com.example.util.simpletimetracker.domain.recordAction.interactor.RecordActionRepeatMediator
@@ -43,6 +44,7 @@ import com.example.util.simpletimetracker.feature_base_adapter.recordTypeSpecial
 import com.example.util.simpletimetracker.feature_widget.universal.mapper.WidgetUniversalViewDataMapper
 import com.example.util.simpletimetracker.feature_widget.universal.viewData.WidgetUniversalButtonViewData
 import com.example.util.simpletimetracker.navigation.Router
+import com.example.util.simpletimetracker.navigation.params.screen.RecordTagParam
 import com.example.util.simpletimetracker.navigation.params.screen.RecordTagSelectionParams
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -199,12 +201,12 @@ class WidgetUniversalViewModel @Inject constructor(
         typeId: Long,
         result: RecordDataSelectionDialogResult,
     ) {
-        val params = result.toParams()
         router.navigate(
             RecordTagSelectionParams(
                 typeId = typeId,
-                fields = params.fields,
-                requiredTagValueSelectionTagIds = params.requiredTagValueSelectionTagIds,
+                fields = result.fields.toParams(),
+                preselectedTags = result.preselectedTags.map(RecordBase.Tag::toParams),
+                requiredTagValueSelectionTagIds = result.requiredTagValueSelectionTagIds,
             ),
         )
     }

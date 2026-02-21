@@ -22,6 +22,7 @@ import com.example.util.simpletimetracker.domain.record.interactor.AddRunningRec
 import com.example.util.simpletimetracker.domain.record.interactor.RemoveRunningRecordMediator
 import com.example.util.simpletimetracker.domain.record.interactor.RunningRecordInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.UpdateRunningRecordsInteractor
+import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.domain.record.model.RecordDataSelectionDialogResult
 import com.example.util.simpletimetracker.domain.recordAction.interactor.RecordActionRepeatMediator
 import com.example.util.simpletimetracker.domain.recordShortcut.interactor.RecordShortcutInteractor
@@ -47,6 +48,7 @@ import com.example.util.simpletimetracker.navigation.params.screen.ChangeRunning
 import com.example.util.simpletimetracker.navigation.params.screen.ChangeRunningRecordParams
 import com.example.util.simpletimetracker.navigation.params.screen.DefaultTypesSelectionDialogParams
 import com.example.util.simpletimetracker.navigation.params.screen.PomodoroParams
+import com.example.util.simpletimetracker.navigation.params.screen.RecordTagParam
 import com.example.util.simpletimetracker.navigation.params.screen.RecordTagSelectionParams
 import com.example.util.simpletimetracker.navigation.params.screen.StandardDialogParams
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -473,12 +475,12 @@ class RunningRecordsViewModel @Inject constructor(
         typeId: Long,
         result: RecordDataSelectionDialogResult,
     ) {
-        val params = result.toParams()
         router.navigate(
             RecordTagSelectionParams(
                 typeId = typeId,
-                fields = params.fields,
-                requiredTagValueSelectionTagIds = params.requiredTagValueSelectionTagIds,
+                fields = result.fields.toParams(),
+                preselectedTags = result.preselectedTags.map(RecordBase.Tag::toParams),
+                requiredTagValueSelectionTagIds = result.requiredTagValueSelectionTagIds,
             ),
         )
     }

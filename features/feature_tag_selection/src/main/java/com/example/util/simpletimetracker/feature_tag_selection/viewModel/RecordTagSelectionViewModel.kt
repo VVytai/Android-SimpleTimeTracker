@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.util.simpletimetracker.core.ShouldCloseAfterOneTagInteractor
 import com.example.util.simpletimetracker.core.base.BaseViewModel
 import com.example.util.simpletimetracker.core.extension.set
-import com.example.util.simpletimetracker.core.interactor.LoadPreselectedTagsInteractor
+import com.example.util.simpletimetracker.core.extension.toModel
 import com.example.util.simpletimetracker.core.interactor.RecordCommentSearchViewDataInteractor
 import com.example.util.simpletimetracker.core.viewData.CommentFilterTypeViewData
 import com.example.util.simpletimetracker.domain.extension.addOrRemove
@@ -23,6 +23,7 @@ import com.example.util.simpletimetracker.feature_base_adapter.recordComment.Rec
 import com.example.util.simpletimetracker.feature_base_adapter.recordFilter.FilterViewData
 import com.example.util.simpletimetracker.feature_tag_selection.interactor.RecordTagSelectionViewDataInteractor
 import com.example.util.simpletimetracker.navigation.Router
+import com.example.util.simpletimetracker.navigation.params.screen.RecordTagParam
 import com.example.util.simpletimetracker.navigation.params.screen.RecordTagSelectionParams
 import com.example.util.simpletimetracker.navigation.params.screen.RecordTagValueSelectionParams
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -41,7 +42,6 @@ class RecordTagSelectionViewModel @Inject constructor(
     private val addTagToTypeIfNotExistMediator: AddTagToTypeIfNotExistMediator,
     private val needTagValueSelectionInteractor: NeedTagValueSelectionInteractor,
     private val shouldCloseAfterOneTagInteractor: ShouldCloseAfterOneTagInteractor,
-    private val loadPreselectedTagsInteractor: LoadPreselectedTagsInteractor,
     private val recordCommentSearchViewDataInteractor: RecordCommentSearchViewDataInteractor,
 ) : BaseViewModel() {
 
@@ -169,10 +169,9 @@ class RecordTagSelectionViewModel @Inject constructor(
         saveClicked.set(Unit)
     }
 
-    // TODO TAG add check retroactive mode to loaded preselected tags?
     private suspend fun initializeData() {
         if (initialDataLoaded) return
-        newTags = loadPreselectedTagsInteractor.execute(extra.typeId)
+        newTags = extra.preselectedTags.map(RecordTagParam::toModel)
         val shouldCloseAfterOne = shouldCloseAfterOneTagInteractor.execute(
             typeId = extra.typeId,
             closeAfterOne = prefsInteractor.getRecordTagSelectionCloseAfterOne(),
@@ -192,8 +191,8 @@ class RecordTagSelectionViewModel @Inject constructor(
     }
 
     private fun loadButtonVisibility(): Boolean {
-        val showTags = RecordTagSelectionParams.Field.Tags in extra.fields
-        val showCommentInput = RecordTagSelectionParams.Field.Comment in extra.fields
+        val showTags = RecordTagSelectionParams.FieldParam.Tags in extra.fields
+        val showCommentInput = RecordTagSelectionParams.FieldParam.Comment in extra.fields
 
         return when {
             showTags -> isMultipleChoiceAvailable
@@ -235,6 +234,7 @@ class RecordTagSelectionViewModel @Inject constructor(
     // TODO VALUE TAG add to wear
     // TODO VALUE TAG don't show tag selection dialog, show value dialog directly
     // TODO VALUE TAG add tests
+    // TODO VALUE TAG add check retroactive mode to loaded preselected tags?
     private suspend fun startRequiredTagValueSelectionIfNeeded() {
         val nextRequiredTagId = extra.requiredTagValueSelectionTagIds
             .firstOrNull { isRequiredTagValueSelectionMissingValue(it) }

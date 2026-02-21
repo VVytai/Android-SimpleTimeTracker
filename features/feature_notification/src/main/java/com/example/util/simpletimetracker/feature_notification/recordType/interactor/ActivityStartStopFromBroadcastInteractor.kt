@@ -1,7 +1,6 @@
 package com.example.util.simpletimetracker.feature_notification.recordType.interactor
 
 import com.example.util.simpletimetracker.core.ShouldCloseAfterOneTagInteractor
-import com.example.util.simpletimetracker.core.interactor.LoadPreselectedTagsInteractor
 import com.example.util.simpletimetracker.core.interactor.CompleteTypesStateInteractor
 import com.example.util.simpletimetracker.core.interactor.RecordRepeatInteractor
 import com.example.util.simpletimetracker.domain.base.REPEAT_BUTTON_ITEM_ID
@@ -34,7 +33,6 @@ class ActivityStartStopFromBroadcastInteractor @Inject constructor(
     private val completeTypesStateInteractor: CompleteTypesStateInteractor,
     private val needTagValueSelectionInteractor: NeedTagValueSelectionInteractor,
     private val prefsInteractor: PrefsInteractor,
-    private val loadPreselectedTagsInteractor: LoadPreselectedTagsInteractor,
     private val shouldCloseAfterOneTagInteractor: ShouldCloseAfterOneTagInteractor,
 ) {
 
@@ -68,7 +66,7 @@ class ActivityStartStopFromBroadcastInteractor @Inject constructor(
             updateNotificationSwitch = false,
             commentInputAvailable = false, // TODO open activity? Or RemoteInput?
         ) {
-            val preselectedTags = loadPreselectedTagsInteractor.execute(selectedTypeId)
+            val preselectedTags = it.preselectedTags
             val isMultipleTagAvailable = isMultipleTagChoiceAvailable(
                 selectedTypeId = selectedTypeId,
                 selectedTags = preselectedTags,

@@ -1,26 +1,19 @@
 package com.example.util.simpletimetracker.domain.record.interactor
 
-import com.example.util.simpletimetracker.domain.notifications.interactor.ActivityStartedStoppedBroadcastInteractor
-import com.example.util.simpletimetracker.domain.complexRule.interactor.ComplexRuleProcessActionInteractor
-import com.example.util.simpletimetracker.domain.notifications.interactor.NotificationGoalCountInteractor
-import com.example.util.simpletimetracker.domain.pomodoro.interactor.PomodoroStartInteractor
-import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
-import com.example.util.simpletimetracker.domain.recordTag.interactor.RecordTagInteractor
-import com.example.util.simpletimetracker.domain.recordTag.model.RecordTagValueType
-import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTypeInteractor
-import com.example.util.simpletimetracker.domain.recordTag.interactor.RecordTypeToDefaultTagInteractor
-import com.example.util.simpletimetracker.domain.notifications.interactor.UpdateExternalViewsInteractor
-import com.example.util.simpletimetracker.domain.recordType.model.RecordType
-import com.example.util.simpletimetracker.domain.base.ResultContainer
 import com.example.util.simpletimetracker.domain.base.CurrentTimestampProvider
 import com.example.util.simpletimetracker.domain.base.SuspendLazy
 import com.example.util.simpletimetracker.domain.base.suspendLazy
+import com.example.util.simpletimetracker.domain.notifications.interactor.ActivityStartedStoppedBroadcastInteractor
+import com.example.util.simpletimetracker.domain.notifications.interactor.NotificationGoalCountInteractor
+import com.example.util.simpletimetracker.domain.notifications.interactor.UpdateExternalViewsInteractor
+import com.example.util.simpletimetracker.domain.pomodoro.interactor.PomodoroStartInteractor
+import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.record.model.Record
 import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.domain.record.model.RecordDataSelectionDialogResult
 import com.example.util.simpletimetracker.domain.record.model.RunningRecord
-import com.example.util.simpletimetracker.domain.recordTag.model.RecordTag
-import kotlinx.coroutines.coroutineScope
+import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTypeInteractor
+import com.example.util.simpletimetracker.domain.recordType.model.RecordType
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -29,15 +22,13 @@ class AddRunningRecordMediator @Inject constructor(
     private val removeRunningRecordMediator: RemoveRunningRecordMediator,
     private val recordInteractor: RecordInteractor,
     private val runningRecordInteractor: RunningRecordInteractor,
-    private val recordTagInteractor: RecordTagInteractor,
     private val recordTypeInteractor: RecordTypeInteractor,
     private val addRecordMediator: AddRecordMediator,
-    private val recordTypeToDefaultTagInteractor: RecordTypeToDefaultTagInteractor,
     private val notificationGoalCountInteractor: NotificationGoalCountInteractor,
     private val activityStartedStoppedBroadcastInteractor: ActivityStartedStoppedBroadcastInteractor,
     private val shouldShowRecordDataSelectionInteractor: ShouldShowRecordDataSelectionInteractor,
     private val pomodoroStartInteractor: PomodoroStartInteractor,
-    private val complexRuleProcessActionInteractor: ComplexRuleProcessActionInteractor,
+    private val processRulesInteractor: ProcessRulesInteractor,
     private val updateExternalViewsInteractor: UpdateExternalViewsInteractor,
     private val currentTimestampProvider: CurrentTimestampProvider,
 ) {
@@ -50,42 +41,17 @@ class AddRunningRecordMediator @Inject constructor(
         updateNotificationSwitch: Boolean = true,
         commentInputAvailable: Boolean = true,
         onNeedToShowTagSelection: suspend (RecordDataSelectionDialogResult) -> Unit,
-    ): Boolean = coroutineScope {
+    ): Boolean {
         // Already running
-        if (runningRecordInteractor.get(typeId) != null) return@coroutineScope false
+        if (runningRecordInteractor.get(typeId) != null) return false
 
         val shouldShowTagSelectionResult = shouldShowRecordDataSelectionInteractor.execute(
             typeId = typeId,
             commentInputAvailable = commentInputAvailable,
         )
-        val currentTime = currentTimestampProvider.get()
-        val prevRecords = suspendLazy { recordInteractor.getAllPrev(currentTime) }
-        val rulesResult = getRulesResultForStart(
-            typeId = typeId,
-            timeStarted = currentTime,
-            prevRecords = prevRecords,
-            retroactiveTrackingMode = prefsInteractor.getRetroactiveTrackingMode(),
-        )
-        val requiredTagValueSelectionTagIds = filterNumericTagValueSelectionTagIds(
-            tagIds = rulesResult.tagIdsToSelectValueOnStart,
-        )
-        val dialogFields = shouldShowTagSelectionResult.fields.toMutableList()
-        if (requiredTagValueSelectionTagIds.isNotEmpty() &&
-            dialogFields.none { it is RecordDataSelectionDialogResult.Field.Tags }
-        ) {
-            // Force tag selection dialog if any tags need value.
-            dialogFields += RecordDataSelectionDialogResult.Field.Tags
-        }
-        val needsSelection = dialogFields.isNotEmpty() ||
-            requiredTagValueSelectionTagIds.isNotEmpty()
 
-        return@coroutineScope if (needsSelection) {
-            onNeedToShowTagSelection(
-                RecordDataSelectionDialogResult(
-                    fields = dialogFields,
-                    requiredTagValueSelectionTagIds = requiredTagValueSelectionTagIds,
-                ),
-            )
+        return if (shouldShowTagSelectionResult.fields.isNotEmpty()) {
+            onNeedToShowTagSelection(shouldShowTagSelectionResult)
             false
         } else {
             startTimer(
@@ -106,7 +72,7 @@ class AddRunningRecordMediator @Inject constructor(
         updateNotificationSwitch: Boolean = true,
         checkDefaultDuration: Boolean = true,
         useSelectedTags: Boolean = false,
-    ) = coroutineScope {
+    ) {
         val currentTime = currentTimestampProvider.get()
         val actualTimeStarted = when (timeStarted) {
             is StartTime.Current -> timeStarted.currentTimeStampMs
@@ -117,7 +83,7 @@ class AddRunningRecordMediator @Inject constructor(
         val actualPrevRecords = suspendLazy {
             recordInteractor.getAllPrev(actualTimeStarted)
         }
-        val rulesResult = getRulesResultForStart(
+        val rulesResult = processRulesInteractor.getRulesResultForStart(
             typeId = typeId,
             timeStarted = actualTimeStarted,
             prevRecords = actualPrevRecords,
@@ -139,7 +105,7 @@ class AddRunningRecordMediator @Inject constructor(
         val actualTags = if (useSelectedTags) {
             tags
         } else {
-            getAllTags(
+            processRulesInteractor.getAllTags(
                 typeId = typeId,
                 currentTags = tags,
                 tagValuesFromRules = rulesResult.tags,
@@ -271,7 +237,7 @@ class AddRunningRecordMediator @Inject constructor(
         params: StartParams,
         prevRecords: SuspendLazy<List<Record>>,
     ) {
-        val prevRecord = getPrevRecordToMergeWith(params.typeId, prevRecords)
+        val prevRecord = processRulesInteractor.getPrevRecordToMergeWith(params.typeId, prevRecords)
         val sameTags = prevRecord?.tags.orEmpty().sortedBy { it.tagId } == params.tags.sortedBy { it.tagId }
         val shouldMerge = sameTags || params.tags.isEmpty()
 
@@ -302,68 +268,6 @@ class AddRunningRecordMediator @Inject constructor(
             record = record,
             updateNotificationSwitch = params.updateNotificationSwitch,
         )
-    }
-
-    suspend fun processRules(
-        typeId: Long,
-        timeStarted: Long,
-        prevRecords: SuspendLazy<List<Record>>,
-    ): ComplexRuleProcessActionInteractor.Result {
-        // If no rules - no need to check them.
-        return if (complexRuleProcessActionInteractor.hasRules()) {
-            val currentRecords = runningRecordInteractor.getAll()
-            val hasAnyRunningTimersOnTimeStarted = currentRecords.any {
-                it.timeStarted <= timeStarted
-            }
-            val takeCurrentRecords = currentRecords.isNotEmpty() &&
-                hasAnyRunningTimersOnTimeStarted
-
-            // If no current records - check closest previous.
-            val records = if (takeCurrentRecords) currentRecords else prevRecords()
-
-            val currentTypeIds = records
-                .map { it.typeIds }
-                .flatten()
-                .toSet()
-
-            complexRuleProcessActionInteractor.processRules(
-                timeStarted = timeStarted,
-                startingTypeId = typeId,
-                currentTypeIds = currentTypeIds,
-            )
-        } else {
-            ComplexRuleProcessActionInteractor.Result(
-                isMultitaskingAllowed = ResultContainer.Undefined,
-                disallowOnlyPreviousTypeIds = emptySet(),
-                tags = emptyList(),
-                tagIdsToSelectValueOnStart = emptySet(),
-            )
-        }
-    }
-
-    private suspend fun getRulesResultForStart(
-        typeId: Long,
-        timeStarted: Long,
-        prevRecords: SuspendLazy<List<Record>>,
-        retroactiveTrackingMode: Boolean,
-    ): ComplexRuleProcessActionInteractor.Result {
-        return if (
-            retroactiveTrackingMode &&
-            getPrevRecordToMergeWith(typeId, prevRecords) != null
-        ) {
-            ComplexRuleProcessActionInteractor.Result(
-                isMultitaskingAllowed = ResultContainer.Undefined,
-                disallowOnlyPreviousTypeIds = emptySet(),
-                tags = emptyList(),
-                tagIdsToSelectValueOnStart = emptySet(),
-            )
-        } else {
-            processRules(
-                typeId = typeId,
-                timeStarted = timeStarted,
-                prevRecords = prevRecords,
-            )
-        }
     }
 
     private suspend fun processMultitasking(
@@ -403,7 +307,7 @@ class AddRunningRecordMediator @Inject constructor(
         if (!params.isMultitaskingAllowed) return
 
         val recordTypesMap = recordTypeInteractor.getAll().associateBy(RecordType::id)
-        val mergedRecord = getPrevRecordToMergeWith(params.typeId, prevRecords)
+        val mergedRecord = processRulesInteractor.getPrevRecordToMergeWith(params.typeId, prevRecords)
 
         // Extend prev records to current time.
         prevRecords().filter {
@@ -425,42 +329,6 @@ class AddRunningRecordMediator @Inject constructor(
                 tagIds = it.map(Record::tags).flatten().map(RecordBase.Tag::tagId).distinct(),
             )
         }
-    }
-
-    suspend fun getAllTags(
-        typeId: Long,
-        currentTags: List<RecordBase.Tag>,
-        tagValuesFromRules: List<RecordBase.Tag>,
-    ): List<RecordBase.Tag> {
-        val defaultTags = recordTypeToDefaultTagInteractor.getTags(typeId)
-        val merged = linkedMapOf<Long, RecordBase.Tag>()
-
-        fun merge(tag: RecordBase.Tag) {
-            val existing = merged[tag.tagId]
-            // Tags with values takes precedence.
-            if (existing == null || (existing.numericValue == null && tag.numericValue != null)) {
-                merged[tag.tagId] = tag
-            }
-        }
-
-        currentTags.forEach(::merge)
-        defaultTags.map { RecordBase.Tag(tagId = it, numericValue = null) }.forEach(::merge)
-        tagValuesFromRules.forEach(::merge)
-
-        return merged.values.toList()
-    }
-
-    private suspend fun filterNumericTagValueSelectionTagIds(tagIds: Set<Long>): List<Long> {
-        if (tagIds.isEmpty()) return emptyList()
-        val tags = recordTagInteractor.getAll().associateBy(RecordTag::id)
-        return tagIds.filter { tags[it]?.valueType == RecordTagValueType.NUMERIC }
-    }
-
-    private suspend fun getPrevRecordToMergeWith(
-        typeId: Long,
-        prevRecords: SuspendLazy<List<Record>>,
-    ): Record? {
-        return prevRecords().firstOrNull { it.typeId == typeId }
     }
 
     private data class StartParams(

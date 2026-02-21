@@ -7,12 +7,14 @@ package com.example.util.simpletimetracker.domain.mediator
 
 import com.example.util.simpletimetracker.data.WearDataRepo
 import com.example.util.simpletimetracker.data.WearRPCException
+import com.example.util.simpletimetracker.domain.interactor.WearTagSelectionDataInteractor
 import com.example.util.simpletimetracker.domain.model.WearRecordRepeatResult
 import com.example.util.simpletimetracker.domain.model.WearRecordTag
 import javax.inject.Inject
 
 class StartActivityMediator @Inject constructor(
     private val wearDataRepo: WearDataRepo,
+    private val wearTagSelectionDataInteractor: WearTagSelectionDataInteractor,
 ) {
 
     suspend fun requestStart(
@@ -25,8 +27,9 @@ class StartActivityMediator @Inject constructor(
         val shouldShowTagSelection = wearDataRepo.loadShouldShowTagSelection(activityId)
             .getOrNull() ?: return Result.failure(WearRPCException)
 
-        return if (shouldShowTagSelection) {
+        return if (shouldShowTagSelection.shouldShow) {
             onProgressChanged(false)
+            wearTagSelectionDataInteractor.data[activityId] = shouldShowTagSelection
             onRequestTagSelection()
             Result.success(Unit)
         } else {

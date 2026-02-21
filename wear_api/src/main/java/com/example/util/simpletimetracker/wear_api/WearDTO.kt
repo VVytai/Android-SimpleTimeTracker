@@ -100,10 +100,6 @@ data class WearTagDTO(
     val name: String,
     @SerializedName("color")
     val color: Long,
-    @SerializedName("preselected")
-    val preselected: Boolean,
-    @SerializedName("value")
-    val value: Double?,
 ) : Parcelable
 
 @Parcelize
@@ -165,7 +161,20 @@ data class WearShouldShowTagSelectionRequest(
 data class WearShouldShowTagSelectionResponse(
     @SerializedName("shouldShow")
     val shouldShow: Boolean,
-) : Parcelable
+    @SerializedName("tags")
+    val preselectedTags: List<Tag>,
+    @SerializedName("requiredTagValueSelectionTagIds")
+    val requiredTagValueSelectionTagIds: List<Long>,
+) : Parcelable {
+
+    @Parcelize
+    data class Tag(
+        @SerializedName("tagId")
+        val tagId: Long,
+        @SerializedName("numericValue")
+        val numericValue: Double?,
+    ) : Parcelable
+}
 
 @Parcelize
 data class WearShouldShowTagValueSelectionRequest(

@@ -3,15 +3,17 @@ package com.example.util.simpletimetracker.core.extension
 import com.example.util.simpletimetracker.core.mapper.TimeMapper
 import com.example.util.simpletimetracker.core.viewData.ChangeRecordDateTimeState
 import com.example.util.simpletimetracker.domain.record.model.Range
-import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
+import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.domain.record.model.RecordDataSelectionDialogResult
 import com.example.util.simpletimetracker.domain.record.model.RecordsFilter
+import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
 import com.example.util.simpletimetracker.feature_base_adapter.runningRecord.GoalTimeViewData
 import com.example.util.simpletimetracker.feature_views.viewData.RecordTypeIcon
 import com.example.util.simpletimetracker.navigation.params.screen.ChangeRecordDateTimeStateParams
 import com.example.util.simpletimetracker.navigation.params.screen.ChangeRunningRecordParams
 import com.example.util.simpletimetracker.navigation.params.screen.RangeLengthParams
 import com.example.util.simpletimetracker.navigation.params.screen.RangeParams
+import com.example.util.simpletimetracker.navigation.params.screen.RecordTagParam
 import com.example.util.simpletimetracker.navigation.params.screen.RecordTagSelectionParams
 import com.example.util.simpletimetracker.navigation.params.screen.RecordTypeIconParams
 import com.example.util.simpletimetracker.navigation.params.screen.RecordsFilterParam
@@ -280,19 +282,25 @@ fun RangeLength.toParams(): RangeLengthParams {
     }
 }
 
-fun RecordDataSelectionDialogResult.toParams(): RecordTagSelectionFields {
-    return RecordTagSelectionFields(
-        fields = fields.map {
-            when (it) {
-                is RecordDataSelectionDialogResult.Field.Tags -> RecordTagSelectionParams.Field.Tags
-                is RecordDataSelectionDialogResult.Field.Comment -> RecordTagSelectionParams.Field.Comment
-            }
-        },
-        requiredTagValueSelectionTagIds = requiredTagValueSelectionTagIds,
+fun List<RecordDataSelectionDialogResult.Field>.toParams(): List<RecordTagSelectionParams.FieldParam> {
+    return this.map {
+        when (it) {
+            is RecordDataSelectionDialogResult.Field.Tags -> RecordTagSelectionParams.FieldParam.Tags
+            is RecordDataSelectionDialogResult.Field.Comment -> RecordTagSelectionParams.FieldParam.Comment
+        }
+    }
+}
+
+fun RecordTagParam.toModel(): RecordBase.Tag {
+    return RecordBase.Tag(
+        tagId = tagId,
+        numericValue = numericValue,
     )
 }
 
-data class RecordTagSelectionFields(
-    val fields: List<RecordTagSelectionParams.Field>,
-    val requiredTagValueSelectionTagIds: List<Long>,
-)
+fun RecordBase.Tag.toParams(): RecordTagParam {
+    return RecordTagParam(
+        tagId = tagId,
+        numericValue = numericValue,
+    )
+}

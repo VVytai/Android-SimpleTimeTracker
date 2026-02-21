@@ -5,7 +5,6 @@
  */
 package com.example.util.simpletimetracker.feature_wear
 
-import com.example.util.simpletimetracker.core.interactor.LoadPreselectedTagsInteractor
 import com.example.util.simpletimetracker.core.interactor.RecordRepeatInteractor
 import com.example.util.simpletimetracker.core.interactor.StatisticsMediator
 import com.example.util.simpletimetracker.core.mapper.TimeMapper
@@ -64,7 +63,6 @@ class WearDataRepo @Inject constructor(
     private val addRunningRecordMediator: Lazy<AddRunningRecordMediator>,
     private val recordRepeatInteractor: Lazy<RecordRepeatInteractor>,
     private val updateExternalViewsInteractor: Lazy<UpdateExternalViewsInteractor>,
-    private val loadPreselectedTagsInteractor: Lazy<LoadPreselectedTagsInteractor>,
     private val router: Router,
     private val timeMapper: TimeMapper,
     private val widgetInteractor: WidgetInteractor,
@@ -190,15 +188,12 @@ class WearDataRepo @Inject constructor(
 
     override suspend fun queryTagsForActivity(activityId: Long): List<WearTagDTO> {
         val types = recordTypeInteractor.getAll().associateBy { it.id }
-        val preselectedTags = loadPreselectedTagsInteractor.get().execute(activityId)
-            .associateBy { it.tagId }
         return getSelectableTagsInteractor.execute(activityId)
             .filterNot { it.archived }
             .map {
                 wearDataLocalMapper.map(
                     recordTag = it,
                     types = types,
-                    preselectedTags = preselectedTags,
                 )
             }
     }
@@ -212,6 +207,13 @@ class WearDataRepo @Inject constructor(
         )
         return WearShouldShowTagSelectionResponse(
             shouldShow = RecordDataSelectionDialogResult.Field.Tags in result.fields,
+            preselectedTags = result.preselectedTags.map {
+                WearShouldShowTagSelectionResponse.Tag(
+                    tagId = it.tagId,
+                    numericValue = it.numericValue,
+                )
+            },
+            requiredTagValueSelectionTagIds = result.requiredTagValueSelectionTagIds,
         )
     }
 

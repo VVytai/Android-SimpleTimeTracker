@@ -13,8 +13,10 @@ import com.example.util.simpletimetracker.domain.model.WearCurrentActivity
 import com.example.util.simpletimetracker.domain.model.WearCurrentState
 import com.example.util.simpletimetracker.domain.model.WearLastRecord
 import com.example.util.simpletimetracker.domain.model.WearRecordRepeatResult
+import com.example.util.simpletimetracker.domain.model.WearRecordTag
 import com.example.util.simpletimetracker.domain.model.WearSetSettings
 import com.example.util.simpletimetracker.domain.model.WearSettings
+import com.example.util.simpletimetracker.domain.model.WearShouldShowTagSelectionResult
 import com.example.util.simpletimetracker.domain.model.WearStatistics
 import com.example.util.simpletimetracker.domain.model.WearTag
 import com.example.util.simpletimetracker.domain.statistics.model.ChartFilterType
@@ -27,6 +29,7 @@ import com.example.util.simpletimetracker.wear_api.WearLastRecordDTO
 import com.example.util.simpletimetracker.wear_api.WearRecordRepeatResponse
 import com.example.util.simpletimetracker.wear_api.WearSetSettingsRequest
 import com.example.util.simpletimetracker.wear_api.WearSettingsDTO
+import com.example.util.simpletimetracker.wear_api.WearShouldShowTagSelectionResponse
 import com.example.util.simpletimetracker.wear_api.WearStatisticsDTO
 import com.example.util.simpletimetracker.wear_api.WearTagDTO
 import javax.inject.Inject
@@ -82,8 +85,6 @@ class WearDataLocalMapper @Inject constructor() {
             id = dto.id,
             name = dto.name,
             color = dto.color,
-            preselected = dto.preselected,
-            value = dto.value,
         )
     }
 
@@ -145,5 +146,18 @@ class WearDataLocalMapper @Inject constructor() {
             WearDayOfWeekDTO.FRIDAY -> DayOfWeek.FRIDAY
             WearDayOfWeekDTO.SATURDAY -> DayOfWeek.SATURDAY
         }
+    }
+
+    fun map(dto: WearShouldShowTagSelectionResponse): WearShouldShowTagSelectionResult {
+        return WearShouldShowTagSelectionResult(
+            shouldShow = dto.shouldShow,
+            preselectedTags = dto.preselectedTags.map {
+                WearRecordTag(
+                    tagId = it.tagId,
+                    numericValue = it.numericValue,
+                )
+            },
+            requiredTagValueSelectionTagIds = dto.requiredTagValueSelectionTagIds,
+        )
     }
 }

@@ -1,11 +1,10 @@
 package com.example.util.simpletimetracker.domain.base
 
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
-fun <T> CoroutineScope.suspendLazy(
-    initializer: suspend CoroutineScope.() -> T,
+fun <T> suspendLazy(
+    initializer: suspend () -> T,
 ) = object : SuspendLazy<T> {
     private val mutex = Mutex()
     private var value: T? = null

@@ -27,8 +27,8 @@ class RecordTagSelectionViewDataInteractor @Inject constructor(
         fromCommentChange: Boolean,
     ): List<ViewHolderType> {
         val typeId = extra.typeId
-        val shouldShowCommentSelection = RecordTagSelectionParams.Field.Comment in extra.fields
-        val shouldShowTagSelection = RecordTagSelectionParams.Field.Tags in extra.fields
+        val shouldShowCommentSelection = RecordTagSelectionParams.FieldParam.Comment in extra.fields
+        val shouldShowTagSelection = RecordTagSelectionParams.FieldParam.Tags in extra.fields
 
         val result: MutableList<ViewHolderType> = mutableListOf()
 
