@@ -230,6 +230,8 @@ Lokhu kukuvumela ukuthi ubone isikhathi osichitha emisebenzini esebenzayo nezing
     <string name="change_complex_rule_removed">Umthetho ususiwe</string>
     <string name="change_complex_rule_choose_action">Khetha isenzo</string>
     <string name="change_complex_rule_choose_condition">Khetha izimo</string>
+    <string name="change_complex_tag_value_dialog_message">Khetha ukuthi usethe nini inani</string>
+    <string name="change_complex_tag_value_set_later">Ekuqaleni</string>
 
     <!--  Activity suggestions  -->
     <string name="activity_suggestions_hint">Khombisa iziphakamiso zomsebenzi olandelayo ngokuya ngomsebenzi wamanje noma owedlule</string>

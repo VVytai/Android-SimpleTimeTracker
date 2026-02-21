@@ -101,8 +101,13 @@ class RecordQuickActionsDialogFragment :
         tag: String?,
         dataIds: List<Long>,
         tagValues: List<RecordBase.Tag>,
+        selectValueOnStartTagIds: List<Long>,
     ) {
-        viewModel.onTypesSelected(tag, dataIds, tagValues)
+        viewModel.onTypesSelected(
+            tag = tag,
+            dataIds = dataIds,
+            tagValues = tagValues,
+        )
     }
 
     override fun onDateTimeSet(timestamp: Long, tag: String?) {

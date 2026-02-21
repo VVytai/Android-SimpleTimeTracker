@@ -230,6 +230,8 @@
     <string name="change_complex_rule_removed">Đã xóa quy tắc</string>
     <string name="change_complex_rule_choose_action">Chọn hành động</string>
     <string name="change_complex_rule_choose_condition">Chọn điều kiện</string>
+    <string name="change_complex_tag_value_dialog_message">Chọn thời điểm đặt giá trị</string>
+    <string name="change_complex_tag_value_set_later">Khi bắt đầu</string>
 
     <!--  Activity suggestions  -->
     <string name="activity_suggestions_hint">Hiển thị các gợi ý cho hoạt động tiếp theo dựa trên hoạt động hiện tại hoặc hoạt động cuối cùng</string>

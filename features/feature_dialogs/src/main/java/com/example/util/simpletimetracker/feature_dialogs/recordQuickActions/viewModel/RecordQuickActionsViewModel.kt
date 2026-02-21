@@ -283,6 +283,7 @@ class RecordQuickActionsViewModel @Inject constructor(
             type = TypesSelectionDialogParams.Type.Activity,
             selectedTypeIds = emptyList(),
             selectedTagValues = emptyList(),
+            selectedTagValueOnStart = emptyList(),
             isMultiSelectAvailable = false,
             idsShouldBeVisible = emptyList(),
             showHints = false,
@@ -319,6 +320,7 @@ class RecordQuickActionsViewModel @Inject constructor(
                     numericValue = it.numericValue,
                 )
             },
+            selectedTagValueOnStart = emptyList(),
             isMultiSelectAvailable = true,
             idsShouldBeVisible = selectedTypeIds,
             showHints = true,

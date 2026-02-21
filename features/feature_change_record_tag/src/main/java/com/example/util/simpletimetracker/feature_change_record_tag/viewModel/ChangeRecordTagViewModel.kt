@@ -236,6 +236,7 @@ class ChangeRecordTagViewModel @Inject constructor(
             type = TypesSelectionDialogParams.Type.Activity,
             selectedTypeIds = listOf(newIconColorSource),
             selectedTagValues = emptyList(),
+            selectedTagValueOnStart = emptyList(),
             isMultiSelectAvailable = false,
             idsShouldBeVisible = listOf(newIconColorSource),
             showHints = true,

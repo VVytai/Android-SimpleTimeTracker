@@ -95,6 +95,7 @@ class ComplexRuleViewDataMapper @Inject constructor(
         tagsOrder: List<Long>,
     ): List<ViewHolderType> {
         val action = rule.action
+        val actionAssignTagValueOnStartIds = rule.actionAssignTagValueOnStartIds.toList()
         val data = when (action) {
             is ComplexRule.Action.AllowMultitasking,
             is ComplexRule.Action.DisallowMultitasking,
@@ -112,20 +113,24 @@ class ComplexRuleViewDataMapper @Inject constructor(
         )
         result += data.mapNotNull { tagValue ->
             val tag = tagsMap[tagValue.tagId] ?: return@mapNotNull null
+            val text = recordTagValueMapper.getName(
+                tagId = tagValue.tagId,
+                name = tag.name,
+                value = tagValue.numericValue,
+                valueSuffix = tag.valueSuffix,
+                valueOnStartIds = actionAssignTagValueOnStartIds,
+            )
             ListElementViewData(
-                text = tagValue.numericValue?.let { value ->
-                    recordTagValueMapper.getNameWithValue(
-                        name = tag.name,
-                        value = value,
-                        valueSuffix = tag.valueSuffix,
-                    )
-                } ?: tag.name,
+                text = text,
                 icon = recordTagViewDataMapper.mapIcon(
                     tag = tag,
                     types = typesMap,
                 )?.let(iconMapper::mapIcon),
                 color = colorMapper.mapToColorInt(
-                    color = tag.color,
+                    color = recordTagViewDataMapper.mapColor(
+                        tag = tag,
+                        types = typesMap,
+                    ),
                     isDarkTheme = isDarkTheme,
                 ),
             )

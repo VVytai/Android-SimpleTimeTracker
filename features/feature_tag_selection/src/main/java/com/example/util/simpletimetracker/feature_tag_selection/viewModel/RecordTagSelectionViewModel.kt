@@ -15,6 +15,7 @@ import com.example.util.simpletimetracker.domain.record.interactor.AddRunningRec
 import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.domain.recordTag.interactor.AddTagToTypeIfNotExistMediator
 import com.example.util.simpletimetracker.domain.recordTag.interactor.NeedTagValueSelectionInteractor
+import com.example.util.simpletimetracker.domain.recordTag.interactor.RecordTagInteractor
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.category.CategoryViewData
 import com.example.util.simpletimetracker.feature_base_adapter.loader.LoaderViewData
@@ -26,6 +27,7 @@ import com.example.util.simpletimetracker.navigation.params.screen.RecordTagSele
 import com.example.util.simpletimetracker.navigation.params.screen.RecordTagValueSelectionParams
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -35,6 +37,7 @@ class RecordTagSelectionViewModel @Inject constructor(
     private val viewDataInteractor: RecordTagSelectionViewDataInteractor,
     private val addRunningRecordMediator: AddRunningRecordMediator,
     private val prefsInteractor: PrefsInteractor,
+    private val recordTagInteractor: RecordTagInteractor,
     private val addTagToTypeIfNotExistMediator: AddTagToTypeIfNotExistMediator,
     private val needTagValueSelectionInteractor: NeedTagValueSelectionInteractor,
     private val shouldCloseAfterOneTagInteractor: ShouldCloseAfterOneTagInteractor,
@@ -76,10 +79,7 @@ class RecordTagSelectionViewModel @Inject constructor(
                         clickedTagId = item.id,
                     )
                     if (needValueSelection) {
-                        RecordTagValueSelectionParams(
-                            tag = RECORD_TAG_SELECTION_TAG_VALUE_SELECTION,
-                            tagId = item.id,
-                        ).let(router::navigate)
+                        requestTagValueSelection(item.id, item.name)
                     } else {
                         newTags = newTags.addOrRemove(item.id)
                         onTagSelected()
@@ -100,7 +100,9 @@ class RecordTagSelectionViewModel @Inject constructor(
     ) {
         if (params.tag != RECORD_TAG_SELECTION_TAG_VALUE_SELECTION) return
         viewModelScope.launch {
-            newTags = newTags + RecordBase.Tag(tagId = params.tagId, numericValue = value)
+            newTags = newTags.filter { it.tagId != params.tagId } +
+                RecordBase.Tag(tagId = params.tagId, numericValue = value)
+            startRequiredTagValueSelectionIfNeeded()
             onTagSelected()
         }
     }
@@ -144,6 +146,14 @@ class RecordTagSelectionViewModel @Inject constructor(
     }
 
     private suspend fun saveClicked() {
+        val hasRequiredTagValueSelectionPending = extra.requiredTagValueSelectionTagIds
+            .any(::isRequiredTagValueSelectionMissingValue)
+
+        if (hasRequiredTagValueSelectionPending) {
+            updateViewData()
+            startRequiredTagValueSelectionIfNeeded()
+            return
+        }
         addRunningRecordMediator.startTimer(
             typeId = extra.typeId,
             tags = newTags,
@@ -169,9 +179,12 @@ class RecordTagSelectionViewModel @Inject constructor(
             excludedActivities = prefsInteractor.getCloseAfterOneTagExcludeActivities().toSet(),
         )
         // If there are preselected tags - ignore setting.
-        isMultipleChoiceAvailable = newTags.isNotEmpty() || !shouldCloseAfterOne
+        isMultipleChoiceAvailable = newTags.isNotEmpty() ||
+            !shouldCloseAfterOne ||
+            extra.requiredTagValueSelectionTagIds.isNotEmpty()
         updateButtonVisibility()
         initialDataLoaded = true
+        startRequiredTagValueSelectionIfNeeded()
     }
 
     private fun updateButtonVisibility() {
@@ -212,6 +225,36 @@ class RecordTagSelectionViewModel @Inject constructor(
             comment = newComment,
             fromCommentChange = fromCommentChange,
         )
+    }
+
+    private fun isRequiredTagValueSelectionMissingValue(tagId: Long): Boolean {
+        return newTags.none { it.tagId == tagId && it.numericValue != null }
+    }
+
+    // TODO VALUE TAG add to notifications
+    // TODO VALUE TAG add to wear
+    // TODO VALUE TAG don't show tag selection dialog, show value dialog directly
+    // TODO VALUE TAG add tests
+    private suspend fun startRequiredTagValueSelectionIfNeeded() {
+        val nextRequiredTagId = extra.requiredTagValueSelectionTagIds
+            .firstOrNull { isRequiredTagValueSelectionMissingValue(it) }
+            ?: return
+        delay(300)
+        requestTagValueSelection(
+            tagId = nextRequiredTagId,
+            tagName = recordTagInteractor.get(nextRequiredTagId)?.name,
+        )
+    }
+
+    private fun requestTagValueSelection(
+        tagId: Long,
+        tagName: String?,
+    ) {
+        RecordTagValueSelectionParams(
+            tag = RECORD_TAG_SELECTION_TAG_VALUE_SELECTION,
+            title = tagName,
+            tagId = tagId,
+        ).let(router::navigate)
     }
 
     companion object {

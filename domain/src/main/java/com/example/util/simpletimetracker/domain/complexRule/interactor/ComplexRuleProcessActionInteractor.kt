@@ -48,11 +48,24 @@ class ComplexRuleProcessActionInteractor @Inject constructor(
             .orEmpty()
 
         val additionalTags = linkedMapOf<Long, RecordBase.Tag>()
-        assignTagRules.flatMap { it.actionAssignTagValues }.forEach { tag ->
-            val existing = additionalTags[tag.tagId]
-            // Tags with values takes precedence.
-            if (existing == null || (existing.numericValue == null && tag.numericValue != null)) {
-                additionalTags[tag.tagId] = tag
+        val laterTagIds = mutableSetOf<Long>()
+        assignTagRules.forEach { rule ->
+            laterTagIds.addAll(rule.actionAssignTagValueOnStartIds)
+            rule.actionAssignTagValues.forEach { tag ->
+                val existing = additionalTags[tag.tagId]
+                // Tags with values takes precedence.
+                if (existing == null || (existing.numericValue == null && tag.numericValue != null)) {
+                    additionalTags[tag.tagId] = tag
+                }
+            }
+        }
+
+        val filteredLaterTagIds = laterTagIds
+            .filter { it in additionalTags.keys }
+            .toMutableSet()
+        additionalTags.values.forEach { tag ->
+            if (tag.numericValue != null) {
+                filteredLaterTagIds.remove(tag.tagId)
             }
         }
 
@@ -60,6 +73,7 @@ class ComplexRuleProcessActionInteractor @Inject constructor(
             isMultitaskingAllowed = isMultitaskingAllowed,
             disallowOnlyPreviousTypeIds = disallowOnlyPreviousTypeIds,
             tags = additionalTags.values.toList(),
+            tagIdsToSelectValueOnStart = filteredLaterTagIds,
         )
     }
 
@@ -89,5 +103,6 @@ class ComplexRuleProcessActionInteractor @Inject constructor(
         val isMultitaskingAllowed: ResultContainer<Boolean>,
         val disallowOnlyPreviousTypeIds: Set<Long>,
         val tags: List<RecordBase.Tag>,
+        val tagIdsToSelectValueOnStart: Set<Long>,
     )
 }

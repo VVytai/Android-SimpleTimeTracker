@@ -12,8 +12,11 @@ class ComplexRuleDataLocalMapper @Inject constructor(
 
     fun map(dbo: ComplexRuleDBO): ComplexRule {
         val assignTagIds = mapIds(dbo.actionSetTagIds)
-        val assignTagValues = complexRuleTagValuesMapper.parse(dbo.actionSetTagValues)
-            .associateBy { it.tagId }
+        val parsedValues = complexRuleTagValuesMapper.parse(dbo.actionSetTagValues)
+        val assignTagValues = parsedValues.tagsWithValues.associateBy { it.tagId }
+        val assignTagValueOnStartIds = assignTagIds
+            .filter { parsedValues.tagIdsToSelectValueOnStart.contains(it) }
+            .toSet()
 
         return ComplexRule(
             id = dbo.id,
@@ -23,6 +26,7 @@ class ComplexRuleDataLocalMapper @Inject constructor(
             actionAssignTagValues = assignTagIds.map {
                 RecordBase.Tag(tagId = it, numericValue = assignTagValues[it]?.numericValue)
             },
+            actionAssignTagValueOnStartIds = assignTagValueOnStartIds,
             conditionStartingTypeIds = mapIds(dbo.conditionStartingTypeIds),
             conditionCurrentTypeIds = mapIds(dbo.conditionCurrentTypeIds),
             conditionDaysOfWeek = daysOfWeekDataLocalMapper
@@ -37,7 +41,10 @@ class ComplexRuleDataLocalMapper @Inject constructor(
             action = mapActionType(domain.action),
             actionDisallowOnlyPrevious = domain.actionDisallowOnlyPrevious,
             actionSetTagIds = mapIds(domain.actionAssignTagIds),
-            actionSetTagValues = complexRuleTagValuesMapper.serialize(domain.actionAssignTagValues),
+            actionSetTagValues = complexRuleTagValuesMapper.serialize(
+                data = domain.actionAssignTagValues,
+                tagIdsToSelectValueOnStart = domain.actionAssignTagValueOnStartIds,
+            ),
             conditionStartingTypeIds = mapIds(domain.conditionStartingTypeIds),
             conditionCurrentTypeIds = mapIds(domain.conditionCurrentTypeIds),
             conditionDaysOfWeek = daysOfWeekDataLocalMapper

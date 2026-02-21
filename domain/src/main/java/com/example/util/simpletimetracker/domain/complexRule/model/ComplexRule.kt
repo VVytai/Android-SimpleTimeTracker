@@ -9,6 +9,7 @@ data class ComplexRule(
     val action: Action,
     val actionDisallowOnlyPrevious: Boolean,
     val actionAssignTagValues: List<RecordBase.Tag>,
+    val actionAssignTagValueOnStartIds: Set<Long>,
     val conditionStartingTypeIds: Set<Long>,
     val conditionCurrentTypeIds: Set<Long>,
     val conditionDaysOfWeek: Set<DayOfWeek>,

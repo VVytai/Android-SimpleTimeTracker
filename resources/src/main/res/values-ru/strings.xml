@@ -230,6 +230,8 @@
     <string name="change_complex_rule_removed">Правило удалено</string>
     <string name="change_complex_rule_choose_action">Выберите действие</string>
     <string name="change_complex_rule_choose_condition">Выберите условия</string>
+    <string name="change_complex_tag_value_dialog_message">Выберите, когда задать значение</string>
+    <string name="change_complex_tag_value_set_later">При запуске</string>
 
     <!--  Activity suggestions  -->
     <string name="activity_suggestions_hint">Показывает предложения для следующего действия на основе текущего или последнего действия</string>

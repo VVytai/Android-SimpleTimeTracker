@@ -59,6 +59,9 @@ class RecordTagValueSelectionDialogFragment : BaseBottomSheetFragment<Binding>()
     }
 
     override fun initUi() {
+        binding.tvRecordTagValueSelection.text = params.title
+            ?: getString(R.string.change_record_type_value_type_field)
+
         binding.rvRecordTagValueSelectionList.apply {
             layoutManager = FlexboxLayoutManager(requireContext()).apply {
                 flexDirection = FlexDirection.ROW

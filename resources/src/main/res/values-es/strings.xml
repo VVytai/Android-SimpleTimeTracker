@@ -230,6 +230,8 @@ Esto te permite ver cuánto tiempo estás dedicando a actividades productivas fr
     <string name="change_complex_rule_removed">Regla eliminada</string>
     <string name="change_complex_rule_choose_action">Elige Acción</string>
     <string name="change_complex_rule_choose_condition">Elige condiciones</string>
+    <string name="change_complex_tag_value_dialog_message">Elige cuándo establecer el valor</string>
+    <string name="change_complex_tag_value_set_later">Al iniciar</string>
 
     <!--  Activity suggestions  -->
     <string name="activity_suggestions_hint">Muestra sugerencias para la próxima actividad en función de la actividad actual o la última</string>

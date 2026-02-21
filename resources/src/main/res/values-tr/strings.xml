@@ -230,6 +230,8 @@ Bu, genel olarak verimli ve verimsiz aktivitelere ne kadar zaman harcadığını
     <string name="change_complex_rule_removed">Kural kaldırıldı</string>
     <string name="change_complex_rule_choose_action">Eylem seçin</string>
     <string name="change_complex_rule_choose_condition">Koşulları seçin</string>
+    <string name="change_complex_tag_value_dialog_message">Değerin ne zaman ayarlanacağını seçin</string>
+    <string name="change_complex_tag_value_set_later">Başlangıçta</string>
 
     <!--  Activity suggestions  -->
     <string name="activity_suggestions_hint">Mevcut veya son aktiviteye göre bir sonraki aktivite için öneriler gösterir</string>

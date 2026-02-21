@@ -171,6 +171,7 @@ class CategoriesViewModel @Inject constructor(
             type = TypesSelectionDialogParams.Type.Activity,
             selectedTypeIds = selectedTypeIds,
             selectedTagValues = emptyList(),
+            selectedTagValueOnStart = emptyList(),
             isMultiSelectAvailable = true,
             idsShouldBeVisible = archivedTypeIds,
             showHints = true,

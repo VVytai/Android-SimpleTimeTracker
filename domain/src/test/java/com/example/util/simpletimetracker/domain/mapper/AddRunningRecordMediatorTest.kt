@@ -111,6 +111,7 @@ class AddRunningRecordMediatorTest {
             `when`(recordTypeToDefaultTagInteractor.getTags(typeId)).thenReturn(emptySet())
             `when`(recordTypeInteractor.get(typeId)).thenReturn(type)
             `when`(runningRecordInteractor.getAll()).thenReturn(emptyList())
+            `when`(recordInteractor.getAllPrev(any())).thenReturn(emptyList())
         }
     }
 
@@ -180,6 +181,49 @@ class AddRunningRecordMediatorTest {
         )
         verify(shouldShowRecordDataSelectionInteractor).execute(typeId, true)
         verify(tagSelectionResult).invoke(eq(result))
+        verify(subject, never()).startTimer(
+            typeId = any(),
+            tags = any(),
+            comment = any(),
+            timeStarted = any(),
+            updateNotificationSwitch = any(),
+            checkDefaultDuration = any(),
+            useSelectedTags = any(),
+        )
+    }
+
+    @Test
+    fun tryStartTimerRequiresTagValueSelection(): Unit = runBlocking {
+        // Given
+        val tagSelectionResult: ((RecordDataSelectionDialogResult) -> Unit) = mock()
+        val rulesResult = ComplexRuleProcessActionInteractor.Result(
+            isMultitaskingAllowed = ResultContainer.Undefined,
+            disallowOnlyPreviousTypeIds = emptySet(),
+            tags = emptyList(),
+            tagIdsToSelectValueOnStart = setOf(tagId2),
+        )
+
+        `when`(runningRecordInteractor.get(typeId)).thenReturn(null)
+        `when`(shouldShowRecordDataSelectionInteractor.execute(any(), any())).thenReturn(
+            RecordDataSelectionDialogResult(emptyList()),
+        )
+        `when`(complexRuleProcessActionInteractor.hasRules()).thenReturn(true)
+        `when`(complexRuleProcessActionInteractor.processRules(any(), any(), any())).thenReturn(
+            rulesResult,
+        )
+
+        subject.tryStartTimer(
+            typeId = typeId,
+            updateNotificationSwitch = true,
+            commentInputAvailable = true,
+            onNeedToShowTagSelection = { tagSelectionResult.invoke(it) },
+        )
+
+        val expected = RecordDataSelectionDialogResult(
+            fields = listOf(RecordDataSelectionDialogResult.Field.Tags),
+            requiredTagValueSelectionTagIds = listOf(tagId2),
+        )
+        verify(tagSelectionResult).invoke(eq(expected))
         verify(subject, never()).startTimer(
             typeId = any(),
             tags = any(),
@@ -393,6 +437,7 @@ class AddRunningRecordMediatorTest {
                 isMultitaskingAllowed = ResultContainer.Defined(true),
                 disallowOnlyPreviousTypeIds = emptySet(),
                 tags = emptyList(),
+                tagIdsToSelectValueOnStart = emptySet(),
             ),
         )
 
@@ -431,6 +476,7 @@ class AddRunningRecordMediatorTest {
                 isMultitaskingAllowed = ResultContainer.Defined(false),
                 disallowOnlyPreviousTypeIds = emptySet(),
                 tags = emptyList(),
+                tagIdsToSelectValueOnStart = emptySet(),
             ),
         )
 
@@ -469,6 +515,7 @@ class AddRunningRecordMediatorTest {
                 isMultitaskingAllowed = ResultContainer.Defined(false),
                 disallowOnlyPreviousTypeIds = setOf(typeId2),
                 tags = emptyList(),
+                tagIdsToSelectValueOnStart = emptySet(),
             ),
         )
 
@@ -512,6 +559,7 @@ class AddRunningRecordMediatorTest {
                 isMultitaskingAllowed = ResultContainer.Undefined,
                 disallowOnlyPreviousTypeIds = emptySet(),
                 tags = listOf(tag(tagId2)),
+                tagIdsToSelectValueOnStart = emptySet(),
             ),
         )
 
@@ -551,6 +599,7 @@ class AddRunningRecordMediatorTest {
                 isMultitaskingAllowed = ResultContainer.Undefined,
                 disallowOnlyPreviousTypeIds = emptySet(),
                 tags = listOf(tag(tagId2, 3.5)),
+                tagIdsToSelectValueOnStart = emptySet(),
             ),
         )
 
@@ -585,6 +634,7 @@ class AddRunningRecordMediatorTest {
                 isMultitaskingAllowed = ResultContainer.Undefined,
                 disallowOnlyPreviousTypeIds = emptySet(),
                 tags = listOf(tag(tagId, 2.0)),
+                tagIdsToSelectValueOnStart = emptySet(),
             ),
         )
 
@@ -639,6 +689,7 @@ class AddRunningRecordMediatorTest {
                 isMultitaskingAllowed = ResultContainer.Undefined,
                 disallowOnlyPreviousTypeIds = emptySet(),
                 tags = emptyList(),
+                tagIdsToSelectValueOnStart = emptySet(),
             ),
         )
 
@@ -691,6 +742,7 @@ class AddRunningRecordMediatorTest {
                 isMultitaskingAllowed = ResultContainer.Undefined,
                 disallowOnlyPreviousTypeIds = emptySet(),
                 tags = emptyList(),
+                tagIdsToSelectValueOnStart = emptySet(),
             ),
         )
 

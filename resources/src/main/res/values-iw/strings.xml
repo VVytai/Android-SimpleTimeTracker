@@ -230,6 +230,8 @@
     <string name="change_complex_rule_removed">כלל הוסר</string>
     <string name="change_complex_rule_choose_action">בחר פעולה</string>
     <string name="change_complex_rule_choose_condition">בחר תנאים</string>
+    <string name="change_complex_tag_value_dialog_message">בחר מתי להגדיר את הערך</string>
+    <string name="change_complex_tag_value_set_later">בהתחלה</string>
 
     <!--  Activity suggestions  -->
     <string name="activity_suggestions_hint">מציג הצעות לפעילות הבאה על סמך הפעילות הנוכחית או האחרונה</string>

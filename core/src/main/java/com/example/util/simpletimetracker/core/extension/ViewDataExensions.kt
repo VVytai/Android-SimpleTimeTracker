@@ -280,11 +280,19 @@ fun RangeLength.toParams(): RangeLengthParams {
     }
 }
 
-fun RecordDataSelectionDialogResult.toParams(): List<RecordTagSelectionParams.Field> {
-    return fields.map {
-        when (it) {
-            is RecordDataSelectionDialogResult.Field.Tags -> RecordTagSelectionParams.Field.Tags
-            is RecordDataSelectionDialogResult.Field.Comment -> RecordTagSelectionParams.Field.Comment
-        }
-    }
+fun RecordDataSelectionDialogResult.toParams(): RecordTagSelectionFields {
+    return RecordTagSelectionFields(
+        fields = fields.map {
+            when (it) {
+                is RecordDataSelectionDialogResult.Field.Tags -> RecordTagSelectionParams.Field.Tags
+                is RecordDataSelectionDialogResult.Field.Comment -> RecordTagSelectionParams.Field.Comment
+            }
+        },
+        requiredTagValueSelectionTagIds = requiredTagValueSelectionTagIds,
+    )
 }
+
+data class RecordTagSelectionFields(
+    val fields: List<RecordTagSelectionParams.Field>,
+    val requiredTagValueSelectionTagIds: List<Long>,
+)

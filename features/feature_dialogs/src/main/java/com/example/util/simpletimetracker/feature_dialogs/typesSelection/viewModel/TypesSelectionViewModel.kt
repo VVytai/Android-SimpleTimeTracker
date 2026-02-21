@@ -7,7 +7,10 @@ import androidx.lifecycle.viewModelScope
 import com.example.util.simpletimetracker.core.extension.set
 import com.example.util.simpletimetracker.domain.extension.addOrRemove
 import com.example.util.simpletimetracker.domain.record.model.RecordBase
+import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.domain.recordTag.interactor.NeedTagValueSelectionInteractor
+import com.example.util.simpletimetracker.domain.recordTag.model.RecordTag
+import com.example.util.simpletimetracker.domain.recordTag.model.RecordTagValueType
 import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTypeInteractor
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.category.CategoryViewData
@@ -16,17 +19,22 @@ import com.example.util.simpletimetracker.feature_base_adapter.recordType.Record
 import com.example.util.simpletimetracker.feature_dialogs.typesSelection.interactor.TypesSelectionViewDataInteractor
 import com.example.util.simpletimetracker.feature_dialogs.typesSelection.model.TypesSelectionCacheHolder
 import com.example.util.simpletimetracker.feature_dialogs.typesSelection.model.TypesSelectionResult
+import com.example.util.simpletimetracker.resources.R
+import com.example.util.simpletimetracker.feature_dialogs.typesSelection.model.TagValueModeSelectionData
 import com.example.util.simpletimetracker.feature_dialogs.typesSelection.viewData.TypesSelectionDialogViewData
 import com.example.util.simpletimetracker.navigation.Router
 import com.example.util.simpletimetracker.navigation.params.screen.RecordTagValueSelectionParams
 import com.example.util.simpletimetracker.navigation.params.screen.TypesSelectionDialogParams
+import com.example.util.simpletimetracker.navigation.params.screen.StandardDialogParams
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class TypesSelectionViewModel @Inject constructor(
     private val router: Router,
+    private val resourceRepo: ResourceRepo,
     private val recordTypeInteractor: RecordTypeInteractor,
     private val typesSelectionViewDataInteractor: TypesSelectionViewDataInteractor,
     private val needTagValueSelectionInteractor: NeedTagValueSelectionInteractor,
@@ -54,6 +62,7 @@ class TypesSelectionViewModel @Inject constructor(
 
     private var dataIdsSelected: List<Long> = emptyList()
     private var tagValuesSelected: List<RecordBase.Tag> = emptyList()
+    private var tagValueOnStartIds: List<Long> = emptyList()
 
     fun onRecordTypeClick(item: RecordTypeViewData) {
         if (extra.isMultiSelectAvailable) {
@@ -63,6 +72,7 @@ class TypesSelectionViewModel @Inject constructor(
             val result = TypesSelectionResult(
                 dataIds = listOf(item.id),
                 tagValues = emptyList(),
+                selectValueOnStartTagIds = tagValueOnStartIds.toList(),
             )
             onDataSelected.set(result)
         }
@@ -72,25 +82,32 @@ class TypesSelectionViewModel @Inject constructor(
         val clickedTag = viewDataCache
             .firstOrNull { it.id == item.id }
             as? TypesSelectionCacheHolder.Tag
+        val clickedTagData = clickedTag?.data
+        val isSelected = item.id in dataIdsSelected
+
+        if (!isSelected && shouldShowTagValueModeChooser(clickedTagData)) {
+            openTagValueModeChooser(item.id)
+            return
+        }
+
         val needValueSelection = extra.allowTagValueSelection &&
             needTagValueSelectionInteractor.execute(
                 selectedTagIds = dataIdsSelected,
-                clickedTag = clickedTag?.data,
+                clickedTag = clickedTagData,
             )
 
         if (needValueSelection) {
-            RecordTagValueSelectionParams(
-                tag = CHANGE_RECORD_TAG_VALUE_SELECTION,
-                tagId = item.id,
-            ).let(router::navigate)
+            requestTagValueSelection(item.id)
         } else if (extra.isMultiSelectAvailable) {
             dataIdsSelected = dataIdsSelected.addOrRemove(item.id)
             tagValuesSelected = tagValuesSelected.filter { it.tagId in dataIdsSelected }
+            tagValueOnStartIds = tagValueOnStartIds.filter { it in dataIdsSelected }
             updateViewData()
         } else {
             val result = TypesSelectionResult(
                 dataIds = listOf(item.id),
                 tagValues = emptyList(),
+                selectValueOnStartTagIds = tagValueOnStartIds,
             )
             onDataSelected.set(result)
         }
@@ -115,10 +132,21 @@ class TypesSelectionViewModel @Inject constructor(
                 val result = TypesSelectionResult(
                     dataIds = listOf(id),
                     tagValues = listOf(tag),
+                    selectValueOnStartTagIds = tagValueOnStartIds,
                 )
                 onDataSelected.set(result)
             }
         }
+    }
+
+    fun onPositiveClick(tag: String?, data: Any?) {
+        if (tag != TAG_VALUE_MODE_DIALOG) return
+        onTagValueModeSelected(data, setNow = true)
+    }
+
+    fun onNegativeClick(tag: String?, data: Any?) {
+        if (tag != TAG_VALUE_MODE_DIALOG) return
+        onTagValueModeSelected(data, setNow = false)
     }
 
     fun onShowAllClick() {
@@ -128,7 +156,52 @@ class TypesSelectionViewModel @Inject constructor(
 
     fun onHideAllClick() {
         dataIdsSelected = emptyList()
+        tagValuesSelected = emptyList()
+        tagValueOnStartIds = emptyList()
         updateViewData()
+    }
+
+    private fun onTagValueModeSelected(data: Any?, setNow: Boolean) = viewModelScope.launch {
+        val tagId = (data as? TagValueModeSelectionData)?.tagId ?: return@launch
+
+        if (setNow) {
+            // Wait for dialog to close.
+            delay(300)
+            requestTagValueSelection(tagId)
+        } else if (extra.isMultiSelectAvailable) {
+            dataIdsSelected = dataIdsSelected.toMutableList().apply { add(tagId) }
+            tagValueOnStartIds = tagValueOnStartIds + tagId
+            updateViewData()
+        } else {
+            val result = TypesSelectionResult(
+                dataIds = listOf(tagId),
+                tagValues = emptyList(),
+                selectValueOnStartTagIds = listOf(tagId),
+            )
+            onDataSelected.set(result)
+        }
+    }
+
+    private fun requestTagValueSelection(tagId: Long) {
+        RecordTagValueSelectionParams(
+            tag = CHANGE_RECORD_TAG_VALUE_SELECTION,
+            tagId = tagId,
+        ).let(router::navigate)
+    }
+
+    private fun openTagValueModeChooser(tagId: Long) {
+        StandardDialogParams(
+            tag = TAG_VALUE_MODE_DIALOG,
+            data = TagValueModeSelectionData(tagId = tagId),
+            message = resourceRepo.getString(R.string.change_complex_tag_value_dialog_message),
+            btnPositive = resourceRepo.getString(R.string.time_now),
+            btnNegative = resourceRepo.getString(R.string.change_complex_tag_value_set_later),
+        ).let(router::navigate)
+    }
+
+    private fun shouldShowTagValueModeChooser(clickedTag: RecordTag?): Boolean {
+        return extra.allowSelectTagValueOnStart &&
+            clickedTag?.valueType == RecordTagValueType.NUMERIC
     }
 
     fun onSaveClick() {
@@ -137,6 +210,7 @@ class TypesSelectionViewModel @Inject constructor(
             val result = TypesSelectionResult(
                 dataIds = dataIdsSelected,
                 tagValues = tagValuesSelected,
+                selectValueOnStartTagIds = tagValueOnStartIds.toList(),
             )
             onDataSelected.set(result)
         }
@@ -177,6 +251,9 @@ class TypesSelectionViewModel @Inject constructor(
                         numericValue = it.numericValue,
                     )
                 }
+            tagValueOnStartIds = extra
+                .selectedTagValueOnStart
+                .filter { it in dataIdsSelected }
             initialized = true
         }
 
@@ -185,11 +262,13 @@ class TypesSelectionViewModel @Inject constructor(
             types = types,
             dataIdsSelected = dataIdsSelected,
             tagValuesSelected = tagValuesSelected,
+            tagValueOnStartIds = tagValueOnStartIds,
             viewDataCache = viewDataCache,
         )
     }
 
     companion object {
         private const val CHANGE_RECORD_TAG_VALUE_SELECTION = "TYPES_SELECTION_TAG_VALUE_SELECTION"
+        private const val TAG_VALUE_MODE_DIALOG = "TYPES_SELECTION_TAG_VALUE_MODE_DIALOG"
     }
 }

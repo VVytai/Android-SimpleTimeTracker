@@ -343,6 +343,7 @@ class TestUtils @Inject constructor(
                     numericValue = assignTagValues[name],
                 )
             },
+            actionAssignTagValueOnStartIds = emptySet(),
             conditionStartingTypeIds = getTypeIds(availableTypes, startingTypeNames),
             conditionCurrentTypeIds = getTypeIds(availableTypes, currentTypeNames),
             conditionDaysOfWeek = daysOfWeek.toSet(),

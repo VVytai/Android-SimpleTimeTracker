@@ -230,6 +230,8 @@ Les <b>Étiquettes</b> permettent d\'ajouter plus de détails sur un enregistrem
     <string name="change_complex_rule_removed">Règle supprimée</string>
     <string name="change_complex_rule_choose_action">Sélectionnez une action</string>
     <string name="change_complex_rule_choose_condition">Indiquez les conditions</string>
+    <string name="change_complex_tag_value_dialog_message">Choisissez quand définir la valeur</string>
+    <string name="change_complex_tag_value_set_later">Au démarrage</string>
 
     <!--  Activity suggestions  -->
     <string name="activity_suggestions_hint">Suggèrer les prochaines activités en fonction de l\'enregistrement en cours ou de l\'enregistrement précédent</string>

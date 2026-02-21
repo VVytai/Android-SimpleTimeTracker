@@ -337,6 +337,7 @@ class SettingsDisplayViewModelDelegate @Inject constructor(
             type = TypesSelectionDialogParams.Type.Activity,
             selectedTypeIds = prefsInteractor.getAutostartPomodoroActivities(),
             selectedTagValues = emptyList(),
+            selectedTagValueOnStart = emptyList(),
             isMultiSelectAvailable = true,
             idsShouldBeVisible = emptyList(),
             showHints = true,

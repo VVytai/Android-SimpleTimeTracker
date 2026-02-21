@@ -119,6 +119,7 @@ class CategoryViewDataMapper @Inject constructor(
         types: Map<Long, RecordType>,
         isDarkTheme: Boolean,
         isFiltered: Boolean = false,
+        valueOnStartIds: List<Long> = emptyList(),
     ): CategoryViewData.Record {
         val viewData = mapRecordTag(
             tag = tag,
@@ -126,17 +127,14 @@ class CategoryViewDataMapper @Inject constructor(
             isDarkTheme = isDarkTheme,
             isFiltered = isFiltered,
         )
-        val value = tagData?.numericValue
-        return if (value != null) {
-            val newName = recordTagValueMapper.getNameWithValue(
-                name = viewData.name,
-                value = value,
-                valueSuffix = tag.valueSuffix,
-            )
-            return viewData.copy(name = newName)
-        } else {
-            viewData
-        }
+        val newName = recordTagValueMapper.getName(
+            tagId = tag.id,
+            name = tag.name,
+            value = tagData?.numericValue,
+            valueSuffix = tag.valueSuffix,
+            valueOnStartIds = valueOnStartIds,
+        )
+        return viewData.copy(name = newName)
     }
 
     fun groupToTagGroups(

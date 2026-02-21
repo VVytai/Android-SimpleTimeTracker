@@ -30,4 +30,26 @@ class RecordTagValueMapper @Inject constructor(
         val tagValue = mapTagValue(value, valueSuffix)
         return resourceRepo.getString(R.string.separator_template, name, "($tagValue)")
     }
+
+    fun getName(
+        tagId: Long,
+        name: String,
+        value: Double?,
+        valueSuffix: String,
+        valueOnStartIds: List<Long>,
+    ): String {
+        return when {
+            value != null -> getNameWithValue(
+                name = name,
+                value = value,
+                valueSuffix = valueSuffix,
+            )
+            tagId in valueOnStartIds -> resourceRepo.getString(
+                R.string.separator_template,
+                name,
+                "(${resourceRepo.getString(R.string.change_complex_tag_value_set_later)})",
+            )
+            else -> name
+        }
+    }
 }

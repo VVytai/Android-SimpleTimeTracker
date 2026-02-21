@@ -15,10 +15,11 @@
         android:tint="?appContrastColor" />
 
     <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvRecordTagValueSelection"
         style="@style/DialogTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/change_record_type_value_type_field" />
+        tools:text="Value" />
 
     <com.example.util.simpletimetracker.feature_views.DividerFullView
         android:layout_width="match_parent"

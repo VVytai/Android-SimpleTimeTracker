@@ -230,6 +230,8 @@ Isto permite-lhe ver quanto tempo está a gastar em atividades produtivas versus
     <string name="change_complex_rule_removed">Regra removida</string>
     <string name="change_complex_rule_choose_action">Escolher ação</string>
     <string name="change_complex_rule_choose_condition">Escolher condições</string>
+    <string name="change_complex_tag_value_dialog_message">Escolha quando definir o valor</string>
+    <string name="change_complex_tag_value_set_later">Ao iniciar</string>
 
     <!--  Activity suggestions  -->
     <string name="activity_suggestions_hint">Mostra sugestões para a atividade seguinte com base na atividade atual ou na última</string>

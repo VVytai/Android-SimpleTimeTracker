@@ -633,7 +633,10 @@ class BackupRepoImpl @Inject constructor(
             .mapDaysOfWeek(complexRule.conditionDaysOfWeek)
         val disallowOnlyPreviousString = (if (complexRule.actionDisallowOnlyPrevious) 1 else 0)
             .toString()
-        val valuesString = complexRuleTagValuesMapper.serialize(complexRule.actionAssignTagValues)
+        val valuesString = complexRuleTagValuesMapper.serialize(
+            data = complexRule.actionAssignTagValues,
+            tagIdsToSelectValueOnStart = complexRule.actionAssignTagValueOnStartIds,
+        )
 
         return String.format(
             "$ROW_COMPLEX_RULE\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n",
@@ -949,8 +952,11 @@ class BackupRepoImpl @Inject constructor(
     private fun complexRuleFromBackupString(parts: List<String>): ComplexRule {
         val assignTagIds = parts.getOrNull(4)?.split(",")
             ?.mapNotNull { it.toLongOrNull() }.orEmpty().toSet()
-        val assignTagValues = complexRuleTagValuesMapper.parse(parts.getOrNull(9))
-            .associateBy { it.tagId }
+        val parsedTagValues = complexRuleTagValuesMapper.parse(parts.getOrNull(9))
+        val assignTagValues = parsedTagValues.tagsWithValues.associateBy { it.tagId }
+        val assignTagValueOnStartIds = assignTagIds
+            .filter { parsedTagValues.tagIdsToSelectValueOnStart.contains(it) }
+            .toSet()
 
         return ComplexRule(
             id = parts.getOrNull(1)?.toLongOrNull().orZero(),
@@ -965,6 +971,7 @@ class BackupRepoImpl @Inject constructor(
             actionAssignTagValues = assignTagIds.map {
                 RecordBase.Tag(tagId = it, numericValue = assignTagValues[it]?.numericValue)
             },
+            actionAssignTagValueOnStartIds = assignTagValueOnStartIds,
             conditionStartingTypeIds = parts.getOrNull(5)?.split(",")
                 ?.mapNotNull { it.toLongOrNull() }.orEmpty().toSet(),
             conditionCurrentTypeIds = parts.getOrNull(6)?.split(",")

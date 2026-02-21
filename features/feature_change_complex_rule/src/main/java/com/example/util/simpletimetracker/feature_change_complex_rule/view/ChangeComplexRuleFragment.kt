@@ -149,8 +149,14 @@ class ChangeComplexRuleFragment :
         tag: String?,
         dataIds: List<Long>,
         tagValues: List<RecordBase.Tag>,
+        selectValueOnStartTagIds: List<Long>,
     ) {
-        viewModel.onDataSelected(dataIds, tagValues, tag)
+        viewModel.onDataSelected(
+            dataIds = dataIds,
+            tagValues = tagValues,
+            tag = tag,
+            selectValueOnStartTagIds = selectValueOnStartTagIds,
+        )
     }
 
     private fun updateChooserState(

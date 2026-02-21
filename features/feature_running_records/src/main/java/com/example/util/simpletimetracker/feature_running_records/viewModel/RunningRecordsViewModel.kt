@@ -473,7 +473,14 @@ class RunningRecordsViewModel @Inject constructor(
         typeId: Long,
         result: RecordDataSelectionDialogResult,
     ) {
-        router.navigate(RecordTagSelectionParams(typeId, result.toParams()))
+        val params = result.toParams()
+        router.navigate(
+            RecordTagSelectionParams(
+                typeId = typeId,
+                fields = params.fields,
+                requiredTagValueSelectionTagIds = params.requiredTagValueSelectionTagIds,
+            ),
+        )
     }
 
     private fun checkForRetroActiveMultitaskHint() = viewModelScope.launch {

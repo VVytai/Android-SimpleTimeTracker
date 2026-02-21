@@ -230,6 +230,8 @@
     <string name="change_complex_rule_removed">규칙이 삭제되었습니다.</string>
     <string name="change_complex_rule_choose_action">작업 선택</string>
     <string name="change_complex_rule_choose_condition">조건을 선택하세요</string>
+    <string name="change_complex_tag_value_dialog_message">값을 설정할 시점을 선택하세요</string>
+    <string name="change_complex_tag_value_set_later">시작 시</string>
 
     <!--  Activity suggestions  -->
     <string name="activity_suggestions_hint">현재 또는 마지막 활동을 기반으로 다음 활동에 대한 제안을 표시합니다.</string>

@@ -230,6 +230,8 @@
     <string name="change_complex_rule_removed">ルールが削除されました</string>
     <string name="change_complex_rule_choose_action">アクションを選択してください</string>
     <string name="change_complex_rule_choose_condition">条件を選択してください</string>
+    <string name="change_complex_tag_value_dialog_message">値を設定するタイミングを選択</string>
+    <string name="change_complex_tag_value_set_later">開始時</string>
 
     <!--  Activity suggestions  -->
     <string name="activity_suggestions_hint">現在のアクティビティまたは最後のアクティビティに基づいて次のアクティビティの提案を表示します</string>

@@ -230,6 +230,8 @@ I <b>tag</b> ti permettono di aggiungere maggiori dettagli a un\'attività speci
     <string name="change_complex_rule_removed">Regola rimossa</string>
     <string name="change_complex_rule_choose_action">Scegli un\'azione</string>
     <string name="change_complex_rule_choose_condition">Scegli le condizioni</string>
+    <string name="change_complex_tag_value_dialog_message">Scegli quando impostare il valore</string>
+    <string name="change_complex_tag_value_set_later">All\'avvio</string>
 
     <!--  Activity suggestions  -->
     <string name="activity_suggestions_hint">Mostra suggerimenti per l\'attività successiva in base all\'attività corrente o all\'ultima attività</string>

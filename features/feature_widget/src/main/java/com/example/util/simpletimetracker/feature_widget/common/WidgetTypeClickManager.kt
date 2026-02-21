@@ -72,9 +72,14 @@ class WidgetTypeClickManager @Inject constructor(
     ) {
         context ?: return
 
+        val params = result.toParams()
         WidgetSingleTagSelectionActivity.getStartIntent(
             context = context,
-            data = RecordTagSelectionParams(typeId, result.toParams()),
+            data = RecordTagSelectionParams(
+                typeId = typeId,
+                fields = params.fields,
+                requiredTagValueSelectionTagIds = params.requiredTagValueSelectionTagIds,
+            ),
         ).let(context::startActivity)
     }
 }

@@ -230,6 +230,8 @@
     <string name="change_complex_rule_removed">नियम हटा दिया गया</string>
     <string name="change_complex_rule_choose_action">कार्रवाई का चयन</string>
     <string name="change_complex_rule_choose_condition">शर्तें चुनें</string>
+    <string name="change_complex_tag_value_dialog_message">मान कब सेट करना है चुनें</string>
+    <string name="change_complex_tag_value_set_later">शुरुआत पर</string>
 
     <!--  Activity suggestions  -->
     <string name="activity_suggestions_hint">वर्तमान या पिछली गतिविधि के आधार पर अगली गतिविधि के लिए सुझाव दिखाता है</string>

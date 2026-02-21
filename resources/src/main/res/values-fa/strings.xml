@@ -230,6 +230,8 @@
     <string name="change_complex_rule_removed">قانون حذف شد</string>
     <string name="change_complex_rule_choose_action">اقدام را انتخاب کنید</string>
     <string name="change_complex_rule_choose_condition">شرایط را انتخاب کنید</string>
+    <string name="change_complex_tag_value_dialog_message">انتخاب کنید چه زمانی مقدار تنظیم شود</string>
+    <string name="change_complex_tag_value_set_later">در شروع</string>
 
     <!--  Activity suggestions  -->
     <string name="activity_suggestions_hint">پیشنهاداتی را برای فعالیت بعدی بر اساس فعالیت فعلی یا آخرین نشان می دهد</string>

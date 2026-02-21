@@ -230,6 +230,8 @@
     <string name="change_complex_rule_removed">规则已删除</string>
     <string name="change_complex_rule_choose_action">选择操作</string>
     <string name="change_complex_rule_choose_condition">选择条件</string>
+    <string name="change_complex_tag_value_dialog_message">选择何时设置数值</string>
+    <string name="change_complex_tag_value_set_later">开始时</string>
 
     <!--  Activity suggestions  -->
     <string name="activity_suggestions_hint">根据当前或上一个活动显示下一个活动的建议</string>

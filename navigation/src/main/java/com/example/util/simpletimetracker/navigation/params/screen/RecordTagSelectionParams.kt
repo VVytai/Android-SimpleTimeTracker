@@ -7,6 +7,7 @@ import kotlinx.parcelize.Parcelize
 data class RecordTagSelectionParams(
     val typeId: Long,
     val fields: List<Field>,
+    val requiredTagValueSelectionTagIds: List<Long> = emptyList(),
 ) : Parcelable, ScreenParams {
 
     sealed interface Field : Parcelable {
@@ -21,6 +22,7 @@ data class RecordTagSelectionParams(
         val Empty = RecordTagSelectionParams(
             typeId = 0L,
             fields = emptyList(),
+            requiredTagValueSelectionTagIds = emptyList(),
         )
     }
 }

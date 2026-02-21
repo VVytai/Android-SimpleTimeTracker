@@ -230,6 +230,8 @@ Ini memungkinkan Anda melihat berapa banyak waktu yang dihabiskan untuk aktivita
     <string name="change_complex_rule_removed">Aturan dihapus</string>
     <string name="change_complex_rule_choose_action">Pilih tindakan</string>
     <string name="change_complex_rule_choose_condition">Pilih kondisi</string>
+    <string name="change_complex_tag_value_dialog_message">Pilih kapan menetapkan nilai</string>
+    <string name="change_complex_tag_value_set_later">Saat mulai</string>
 
     <!--  Activity suggestions  -->
     <string name="activity_suggestions_hint">Menampilkan saran untuk aktivitas berikutnya berdasarkan aktivitas saat ini atau terakhir</string>

@@ -230,6 +230,8 @@ Pozwala to zobaczyć, ile czasu spędzasz na produktywnych i nieproduktywnych ak
     <string name="change_complex_rule_removed">Reguła usunięta</string>
     <string name="change_complex_rule_choose_action">Wybrać działanie</string>
     <string name="change_complex_rule_choose_condition">Wybierz warunki</string>
+    <string name="change_complex_tag_value_dialog_message">Wybierz, kiedy ustawić wartość</string>
+    <string name="change_complex_tag_value_set_later">Przy starcie</string>
 
     <!--  Activity suggestions  -->
     <string name="activity_suggestions_hint">Pokazuje sugestie dotyczące następnej aktywności na podstawie bieżącej lub ostatniej aktywności</string>

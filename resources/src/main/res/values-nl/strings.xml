@@ -230,6 +230,8 @@ Dit stelt je in staat om te zien hoeveel tijd je in totaal besteedt aan producti
     <string name="change_complex_rule_removed">Regel verwijderd</string>
     <string name="change_complex_rule_choose_action">Kies actie</string>
     <string name="change_complex_rule_choose_condition">Kies voorwaarden</string>
+    <string name="change_complex_tag_value_dialog_message">Kies wanneer de waarde wordt ingesteld</string>
+    <string name="change_complex_tag_value_set_later">Bij start</string>
 
     <!--  Activity suggestions  -->
     <string name="activity_suggestions_hint">Geeft suggesties voor de volgende activiteit op basis van de huidige of laatste activiteit</string>

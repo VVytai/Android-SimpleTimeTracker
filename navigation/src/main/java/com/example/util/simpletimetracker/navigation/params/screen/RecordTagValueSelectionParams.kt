@@ -6,6 +6,7 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class RecordTagValueSelectionParams(
     val tag: String? = null,
+    val title: String? = null,
     val tagId: Long,
 ) : Parcelable, ScreenParams {
 

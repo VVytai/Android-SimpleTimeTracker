@@ -230,6 +230,8 @@ Això et permet veure quant de temps dediques a activitats productives versus no
     <string name="change_complex_rule_removed">Regla eliminada</string>
     <string name="change_complex_rule_choose_action">Trieu l\'acció</string>
     <string name="change_complex_rule_choose_condition">Trieu condicions</string>
+    <string name="change_complex_tag_value_dialog_message">Tria quan establir el valor</string>
+    <string name="change_complex_tag_value_set_later">A l\'inici</string>
 
     <!--  Activity suggestions  -->
     <string name="activity_suggestions_hint">Mostra suggeriments per a la següent activitat basats en l\'activitat actual o darrera</string>

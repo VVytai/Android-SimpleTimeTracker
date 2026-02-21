@@ -63,6 +63,7 @@ class ChangeComplexRuleViewModel @Inject constructor(
     private var newAction: ComplexRule.Action? = null
     private var newAssignTagValues: List<RecordBase.Tag> = emptyList()
     private var originalAssignTagValues: List<RecordBase.Tag> = emptyList()
+    private var newAssignTagValueOnStartIds: Set<Long> = emptySet()
     private var newStartingTypeIds: Set<Long> = emptySet()
     private var originalStartingTypeIds: Set<Long> = emptySet()
     private var newCurrentTypeIds: Set<Long> = emptySet()
@@ -102,12 +103,14 @@ class ChangeComplexRuleViewModel @Inject constructor(
         when (item.type) {
             ChangeComplexRuleActionViewData.Type.AllowMultitasking -> {
                 newAssignTagValues = emptyList()
+                newAssignTagValueOnStartIds = emptySet()
                 newAction = changeComplexRuleViewDataMapper.mapAction(item.type)
                 updateActionViewData()
                 onActionTypeChooserClick()
             }
             ChangeComplexRuleActionViewData.Type.DisallowMultitasking -> {
                 newAssignTagValues = emptyList()
+                newAssignTagValueOnStartIds = emptySet()
                 newAction = changeComplexRuleViewDataMapper.mapAction(item.type)
                 updateActionViewData()
                 onActionTypeChooserClick()
@@ -120,12 +123,17 @@ class ChangeComplexRuleViewModel @Inject constructor(
                     type = TypesSelectionDialogParams.Type.Tag.All,
                     selectedTypeIds = newAssignTagValues.map(RecordBase.Tag::tagId),
                     selectedTagValues = newAssignTagValues.map {
-                        TypesSelectionDialogParams.TagData(it.tagId, it.numericValue)
+                        TypesSelectionDialogParams.TagData(
+                            tagId = it.tagId,
+                            numericValue = it.numericValue,
+                        )
                     },
+                    selectedTagValueOnStart = newAssignTagValueOnStartIds.toList(),
                     isMultiSelectAvailable = true,
                     idsShouldBeVisible = originalAssignTagValues.map(RecordBase.Tag::tagId),
                     showHints = true,
                     allowTagValueSelection = true,
+                    allowSelectTagValueOnStart = true,
                 ).let(router::navigate)
             }
         }
@@ -151,7 +159,12 @@ class ChangeComplexRuleViewModel @Inject constructor(
         updateDisallowOnlyPreviousState()
     }
 
-    fun onDataSelected(dataIds: List<Long>, tagValues: List<RecordBase.Tag>, tag: String?) {
+    fun onDataSelected(
+        dataIds: List<Long>,
+        tagValues: List<RecordBase.Tag>,
+        tag: String?,
+        selectValueOnStartTagIds: List<Long>,
+    ) {
         when (tag) {
             RECORD_TAG_SELECTION_DIALOG_TAG -> {
                 if (dataIds.isNotEmpty()) {
@@ -163,9 +176,11 @@ class ChangeComplexRuleViewModel @Inject constructor(
                             numericValue = tagValuesMap[it]?.numericValue,
                         )
                     }
+                    newAssignTagValueOnStartIds = selectValueOnStartTagIds.toSet()
                 } else {
                     newAction = ComplexRule.Action.AllowMultitasking
                     newAssignTagValues = emptyList()
+                    newAssignTagValueOnStartIds = emptySet()
                 }
                 updateActionViewData()
                 onActionTypeChooserClick()
@@ -225,6 +240,7 @@ class ChangeComplexRuleViewModel @Inject constructor(
             action = action,
             actionDisallowOnlyPrevious = newDisallowOnlyPrevious,
             actionAssignTagValues = newAssignTagValues,
+            actionAssignTagValueOnStartIds = newAssignTagValueOnStartIds,
             conditionStartingTypeIds = newStartingTypeIds,
             conditionCurrentTypeIds = newCurrentTypeIds,
             conditionDaysOfWeek = newDaysOfWeek,
@@ -259,6 +275,7 @@ class ChangeComplexRuleViewModel @Inject constructor(
         newAction = rule.action
         newAssignTagValues = rule.actionAssignTagValues
         originalAssignTagValues = rule.actionAssignTagValues
+        newAssignTagValueOnStartIds = rule.actionAssignTagValueOnStartIds
         newStartingTypeIds = rule.conditionStartingTypeIds
         originalStartingTypeIds = rule.conditionStartingTypeIds
         newCurrentTypeIds = rule.conditionCurrentTypeIds

@@ -230,6 +230,8 @@ Dies ermöglicht es dir, zu sehen, wie viel Zeit du insgesamt für produktive ve
     <string name="change_complex_rule_removed">Regel entfernt</string>
     <string name="change_complex_rule_choose_action">Aktion wählen</string>
     <string name="change_complex_rule_choose_condition">Wählen Sie Bedingungen</string>
+    <string name="change_complex_tag_value_dialog_message">Wähle, wann der Wert festgelegt wird</string>
+    <string name="change_complex_tag_value_set_later">Beim Start</string>
 
     <!--  Activity suggestions  -->
     <string name="activity_suggestions_hint">Zeigt Vorschläge für die nächste Aktivität basierend auf der aktuellen oder letzten Aktivität</string>

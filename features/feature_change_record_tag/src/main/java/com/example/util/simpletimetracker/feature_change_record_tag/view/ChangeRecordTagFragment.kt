@@ -350,6 +350,7 @@ class ChangeRecordTagFragment :
         tag: String?,
         dataIds: List<Long>,
         tagValues: List<RecordBase.Tag>,
+        selectValueOnStartTagIds: List<Long>,
     ) {
         viewModel.onTypesSelected(dataIds, tag)
     }

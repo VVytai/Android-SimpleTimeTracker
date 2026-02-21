@@ -230,6 +230,8 @@
     <string name="change_complex_rule_removed">تمت إزالة القاعدة</string>
     <string name="change_complex_rule_choose_action">اختر الإجراء</string>
     <string name="change_complex_rule_choose_condition">اختر الشروط</string>
+    <string name="change_complex_tag_value_dialog_message">اختر وقت تعيين القيمة</string>
+    <string name="change_complex_tag_value_set_later">عند البدء</string>
 
     <!--  Activity suggestions  -->
     <string name="activity_suggestions_hint">يعرض اقتراحات للنشاط التالي استنادًا إلى النشاط الحالي أو الأخير</string>

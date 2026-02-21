@@ -230,6 +230,8 @@ Detta gör att du kan se hur mycket tid du spenderar på produktiva kontra icke-
     <string name="change_complex_rule_removed">Regel borttagen</string>
     <string name="change_complex_rule_choose_action">Välj åtgärd</string>
     <string name="change_complex_rule_choose_condition">Välj villkor</string>
+    <string name="change_complex_tag_value_dialog_message">Välj när värdet ska anges</string>
+    <string name="change_complex_tag_value_set_later">Vid start</string>
 
     <!--  Activity suggestions  -->
     <string name="activity_suggestions_hint">Visar förslag för nästa aktivitet baserat på aktuell eller senaste aktivitet</string>

@@ -230,6 +230,8 @@ Acest lucru îți permite să vezi cât timp petreci în activități productive
     <string name="change_complex_rule_removed">Regulă stearsă</string>
     <string name="change_complex_rule_choose_action">Alege ațiunea</string>
     <string name="change_complex_rule_choose_condition">Alege condițiile</string>
+    <string name="change_complex_tag_value_dialog_message">Alege când să setezi valoarea</string>
+    <string name="change_complex_tag_value_set_later">La pornire</string>
 
     <!--  Activity suggestions  -->
     <string name="activity_suggestions_hint">Afișează sugestii pentru următoarea activitate pe baza activității curente sau ultimei</string>
