@@ -32,6 +32,25 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+// No tag selection dialog:
+// - start right away with preselected tags
+// Tag selection dialog:
+// - show preselected
+// - can deselect preselected
+// - multi choice
+// - value selection is added to preselected tags
+// - value selection is queued
+// Close after one (no preselected):
+// - close after one selected
+// - no multi choice
+// - value selection queue is not possible because they are added to preselected
+// Close after one (have preselected):
+// - close after one not working (?)
+// - show preselected (?)
+// - can deselect preselected (?)
+// - multi choice is forced
+// - value selection is added to preselected tags
+// - value selection is queued (?)
 @HiltViewModel
 class RecordTagSelectionViewModel @Inject constructor(
     private val router: Router,
@@ -146,14 +165,6 @@ class RecordTagSelectionViewModel @Inject constructor(
     }
 
     private suspend fun saveClicked() {
-        val hasRequiredTagValueSelectionPending = extra.requiredValueSelectionTagIds
-            .any(::isRequiredTagValueSelectionMissingValue)
-
-        if (hasRequiredTagValueSelectionPending) {
-            updateViewData()
-            startRequiredTagValueSelectionIfNeeded()
-            return
-        }
         addRunningRecordMediator.startTimer(
             typeId = extra.typeId,
             tags = newTags,

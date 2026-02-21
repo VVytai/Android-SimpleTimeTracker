@@ -619,6 +619,52 @@ class ComplexRulesTest : BaseUiTest() {
     }
 
     @Test
+    fun assignTagValueOnStart() {
+        val typeName = "typeName"
+        val tagName = "onStartTag"
+
+        // Add data
+        runBlocking { prefsInteractor.setAllowMultitasking(false) }
+        testUtils.addActivity(typeName)
+        testUtils.addRecordTag(
+            tagName = tagName,
+            typeName = typeName,
+            hasTagValue = true,
+        )
+
+        // Create rule
+        NavUtils.openSettingsScreen()
+        NavUtils.openSettingsAdditional()
+        NavUtils.openComplexRules()
+        clickOnViewWithText(R.string.running_records_add_type)
+        clickOnViewWithText(R.string.change_complex_rule_choose_action)
+        clickOnViewWithText(R.string.change_complex_action_assign_tag)
+        clickOnViewWithText(tagName)
+        clickOnViewWithText(R.string.change_complex_tag_value_set_later)
+        clickOnViewWithId(dialogsR.id.btnTypesSelectionSave)
+        clickOnViewWithText(R.string.change_complex_starting_activity)
+        clickOnViewWithText(typeName)
+        clickOnViewWithText(R.string.change_activity_filter_save)
+
+        // Check rule
+        val onStartLabel = getString(R.string.change_complex_tag_value_set_later)
+        val expectedTagName = "$tagName ($onStartLabel)"
+        checkViewIsDisplayed(
+            allOf(
+                withId(complexRulesR.id.containerComplexRuleItem),
+                hasDescendant(withText(expectedTagName)),
+            ),
+        )
+        pressBack()
+
+        // Check tag value selection
+        NavUtils.openRunningRecordsScreen()
+        clickOnViewWithText(typeName)
+        checkViewIsDisplayed(withId(dialogsR.id.tvRecordTagValueSelection))
+        checkViewIsDisplayed(withId(dialogsR.id.btnRecordTagSelectionSave))
+    }
+
+    @Test
     fun archiveAndRemoveData() {
         val typeName1 = "typeName1"
         val typeName2 = "typeName2"

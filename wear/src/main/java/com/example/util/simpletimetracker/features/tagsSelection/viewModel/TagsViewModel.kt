@@ -172,14 +172,6 @@ class TagsViewModel @Inject constructor(
     ) {
         val activityId = this@TagsViewModel.activityId ?: return
 
-        val hasRequiredTagValueSelectionPending = requiredValueSelectionTagIds
-            .any(::isRequiredTagValueSelectionMissingValue)
-
-        if (hasRequiredTagValueSelectionPending) {
-            startRequiredTagValueSelectionIfNeeded()
-            return
-        }
-
         _state.value = mapState(loadingState)
 
         val result = startActivityMediator.start(
