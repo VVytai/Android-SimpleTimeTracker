@@ -155,6 +155,7 @@ class AddRunningRecordMediatorTest {
             timeStarted = eq(AddRunningRecordMediator.StartTime.TakeCurrent),
             updateNotificationSwitch = eq(true),
             checkDefaultDuration = eq(true),
+            useSelectedTags = eq(false),
         )
     }
 
@@ -186,6 +187,7 @@ class AddRunningRecordMediatorTest {
             timeStarted = any(),
             updateNotificationSwitch = any(),
             checkDefaultDuration = any(),
+            useSelectedTags = any(),
         )
     }
 
@@ -213,6 +215,7 @@ class AddRunningRecordMediatorTest {
             timeStarted = eq(AddRunningRecordMediator.StartTime.TakeCurrent),
             updateNotificationSwitch = eq(false),
             checkDefaultDuration = eq(true),
+            useSelectedTags = eq(false),
         )
     }
 
@@ -264,6 +267,36 @@ class AddRunningRecordMediatorTest {
         )
         verify(notificationGoalCountInteractor).checkAndShow(typeId)
         verify(pomodoroStartInteractor).checkAndStart(typeId)
+    }
+
+    @Test
+    fun startTimerUseSelectedTags(): Unit = runBlocking {
+        val selectedTags = listOf(tag(tagId2, 2.5))
+
+        subject.startTimer(
+            typeId = typeId,
+            tags = selectedTags,
+            comment = "comment",
+            timeStarted = AddRunningRecordMediator.StartTime.TakeCurrent,
+            updateNotificationSwitch = true,
+            checkDefaultDuration = true,
+            useSelectedTags = true,
+        )
+
+        verify(recordTypeToDefaultTagInteractor, never()).getTags(any())
+        verify(activityStartedStoppedBroadcastInteractor).onActionActivityStarted(
+            typeId = typeId,
+            tagIds = selectedTags.map { it.tagId },
+            comment = "comment",
+        )
+        verify(runningRecordInteractor).add(
+            RunningRecord(
+                id = typeId,
+                timeStarted = currentTime,
+                comment = "comment",
+                tags = selectedTags,
+            ),
+        )
     }
 
     @Test

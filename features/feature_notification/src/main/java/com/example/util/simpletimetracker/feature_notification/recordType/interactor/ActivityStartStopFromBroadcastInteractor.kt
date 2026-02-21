@@ -243,6 +243,7 @@ class ActivityStartStopFromBroadcastInteractor @Inject constructor(
             typeId = selectedTypeId,
             comment = "",
             tags = selectedTags,
+            useSelectedTags = true,
         )
     }
 

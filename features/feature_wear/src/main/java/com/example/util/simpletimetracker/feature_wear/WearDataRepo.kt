@@ -170,6 +170,7 @@ class WearDataRepo @Inject constructor(
                 )
             },
             comment = "",
+            useSelectedTags = true,
         )
         if (recordTypeInteractor.get(typeId)?.defaultDuration.orZero() > 0) {
             updateExternalViewsInteractor.get().onInstantRecordAdd()

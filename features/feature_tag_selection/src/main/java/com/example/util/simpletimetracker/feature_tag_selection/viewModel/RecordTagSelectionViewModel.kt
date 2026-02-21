@@ -148,6 +148,7 @@ class RecordTagSelectionViewModel @Inject constructor(
             typeId = extra.typeId,
             tags = newTags,
             comment = newComment,
+            useSelectedTags = true,
         )
         if (showAllTags) {
             addTagToTypeIfNotExistMediator.execute(
@@ -159,7 +160,6 @@ class RecordTagSelectionViewModel @Inject constructor(
     }
 
     // TODO TAG add check retroactive mode to loaded preselected tags?
-    // TODO TAG ability to deselect preselected tags
     private suspend fun initializeData() {
         if (initialDataLoaded) return
         newTags = loadPreselectedTagsInteractor.execute(extra.typeId)

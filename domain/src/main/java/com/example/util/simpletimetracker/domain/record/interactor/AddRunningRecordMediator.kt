@@ -75,6 +75,7 @@ class AddRunningRecordMediator @Inject constructor(
         timeStarted: StartTime = StartTime.TakeCurrent,
         updateNotificationSwitch: Boolean = true,
         checkDefaultDuration: Boolean = true,
+        useSelectedTags: Boolean = false,
     ) = coroutineScope {
         val currentTime = currentTimestampProvider.get()
         val actualTimeStarted = when (timeStarted) {
@@ -116,11 +117,15 @@ class AddRunningRecordMediator @Inject constructor(
                 is StartTime.Timestamp -> currentTime
             },
         )
-        val actualTags = getAllTags(
-            typeId = typeId,
-            currentTags = tags,
-            tagValuesFromRules = rulesResult.tags,
-        )
+        val actualTags = if (useSelectedTags) {
+            tags
+        } else {
+            getAllTags(
+                typeId = typeId,
+                currentTags = tags,
+                tagValuesFromRules = rulesResult.tags,
+            )
+        }
         activityStartedStoppedBroadcastInteractor.onActionActivityStarted(
             typeId = typeId,
             tagIds = actualTags.map { it.tagId },
