@@ -10,6 +10,7 @@ import com.example.util.simpletimetracker.core.interactor.StatisticsMediator
 import com.example.util.simpletimetracker.core.mapper.TimeMapper
 import com.example.util.simpletimetracker.core.provider.ApplicationDataProvider
 import com.example.util.simpletimetracker.domain.activitySuggestion.interactor.GetCurrentActivitySuggestionsInteractor
+import com.example.util.simpletimetracker.domain.extension.orFalse
 import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.domain.notifications.interactor.UpdateExternalViewsInteractor
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
@@ -168,7 +169,7 @@ class WearDataRepo @Inject constructor(
                 )
             },
             comment = "",
-            useSelectedTags = true,
+            useSelectedTags = request.useSelectedTags.orFalse(),
         )
         if (recordTypeInteractor.get(typeId)?.defaultDuration.orZero() > 0) {
             updateExternalViewsInteractor.get().onInstantRecordAdd()

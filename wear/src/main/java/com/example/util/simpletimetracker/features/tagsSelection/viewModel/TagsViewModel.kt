@@ -185,6 +185,7 @@ class TagsViewModel @Inject constructor(
         val result = startActivityMediator.start(
             activityId = activityId,
             tags = selectedTags,
+            useSelectedTags = true,
         )
         if (result.isFailure) {
             showError()

@@ -134,6 +134,8 @@ data class WearStartActivityRequest(
     val id: Long?,
     @SerializedName("tags")
     val tags: List<Tag?>?,
+    @SerializedName("useSelectedTags")
+    val useSelectedTags: Boolean?,
 ) : Parcelable {
 
     @Parcelize

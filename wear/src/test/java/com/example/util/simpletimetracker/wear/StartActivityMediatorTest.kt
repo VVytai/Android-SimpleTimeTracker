@@ -59,7 +59,11 @@ class StartActivityMediatorTest {
         )
 
         // Then
-        Mockito.verify(wearDataRepo).startActivity(sampleActivity.id, emptyList())
+        Mockito.verify(wearDataRepo).startActivity(
+            id = sampleActivity.id,
+            tags = emptyList(),
+            useSelectedTags = false,
+        )
         assertEquals(false, onRequestTagSelectionCalled)
         assertEquals(true, onProgressChanged)
     }
@@ -85,7 +89,11 @@ class StartActivityMediatorTest {
         )
 
         // Then
-        Mockito.verify(wearDataRepo, Mockito.never()).startActivity(sampleActivity.id, emptyList())
+        Mockito.verify(wearDataRepo, Mockito.never()).startActivity(
+            id = sampleActivity.id,
+            tags = emptyList(),
+            useSelectedTags = false,
+        )
         assertEquals(true, onRequestTagSelectionCalled)
         assertEquals(false, onProgressChanged)
     }

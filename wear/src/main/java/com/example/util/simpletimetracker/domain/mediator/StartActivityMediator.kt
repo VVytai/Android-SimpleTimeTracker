@@ -33,15 +33,24 @@ class StartActivityMediator @Inject constructor(
             onRequestTagSelection()
             Result.success(Unit)
         } else {
-            start(activityId, emptyList())
+            start(
+                activityId = activityId,
+                tags = emptyList(),
+                useSelectedTags = false,
+            )
         }
     }
 
     suspend fun start(
         activityId: Long,
         tags: List<WearRecordTag>,
+        useSelectedTags: Boolean,
     ): Result<Unit> {
-        return wearDataRepo.startActivity(activityId, tags)
+        return wearDataRepo.startActivity(
+            id = activityId,
+            tags = tags,
+            useSelectedTags = useSelectedTags,
+        )
     }
 
     suspend fun stop(currentId: Long): Result<Unit> {

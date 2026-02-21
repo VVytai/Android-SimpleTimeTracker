@@ -115,7 +115,11 @@ class WearDataRepo @Inject constructor(
         }
     }
 
-    suspend fun startActivity(id: Long, tags: List<WearRecordTag>): Result<Unit> = mutex.withLock {
+    suspend fun startActivity(
+        id: Long,
+        tags: List<WearRecordTag>,
+        useSelectedTags: Boolean,
+    ): Result<Unit> = mutex.withLock {
         return runCatching {
             val request = WearStartActivityRequest(
                 id = id,
@@ -125,6 +129,7 @@ class WearDataRepo @Inject constructor(
                         numericValue = it.numericValue,
                     )
                 },
+                useSelectedTags = useSelectedTags,
             )
             wearRPCClient.startActivity(request)
         }
