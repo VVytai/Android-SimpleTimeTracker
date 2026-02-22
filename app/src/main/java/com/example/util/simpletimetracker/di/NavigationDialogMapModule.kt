@@ -22,6 +22,7 @@ import com.example.util.simpletimetracker.feature_records_filter.view.RecordsFil
 import com.example.util.simpletimetracker.feature_settings.customizeOptionsMenu.CustomizeOptionsMenuDialogFragment
 import com.example.util.simpletimetracker.feature_settings.partialRestoreSelection.model.PartialRestoreSelectionDialogParams
 import com.example.util.simpletimetracker.feature_settings.partialRestoreSelection.view.PartialRestoreSelectionFragment
+import com.example.util.simpletimetracker.feature_statistics_detail.settings.view.StatisticsTagValuesSettingsDialogFragment
 import com.example.util.simpletimetracker.navigation.NavigationData
 import com.example.util.simpletimetracker.navigation.bundleCreator.BundleCreator
 import com.example.util.simpletimetracker.navigation.bundleCreator.bundleCreatorDelegate
@@ -51,6 +52,7 @@ import com.example.util.simpletimetracker.navigation.params.screen.RecordQuickAc
 import com.example.util.simpletimetracker.navigation.params.screen.RecordTagSelectionParams
 import com.example.util.simpletimetracker.navigation.params.screen.RecordTagValueSelectionParams
 import com.example.util.simpletimetracker.navigation.params.screen.RecordsFilterParams
+import com.example.util.simpletimetracker.navigation.params.screen.StatisticsTagValuesSettingsParams
 import com.example.util.simpletimetracker.navigation.params.screen.StandardDialogParams
 import com.example.util.simpletimetracker.navigation.params.screen.TypesSelectionDialogParams
 import dagger.Module
@@ -300,6 +302,16 @@ class NavigationDialogMapModule {
         return NavigationData(
             R.id.action_to_pomodoroSettingsFragment,
             BundleCreator.empty(),
+        )
+    }
+
+    @IntoMap
+    @Provides
+    @ScreenKey(StatisticsTagValuesSettingsParams::class)
+    fun statisticsTagValuesSettings(): NavigationData {
+        return NavigationData(
+            R.id.action_to_statisticsTagValuesSettingsDialogFragment,
+            bundleCreatorDelegate(StatisticsTagValuesSettingsDialogFragment::createBundle),
         )
     }
 

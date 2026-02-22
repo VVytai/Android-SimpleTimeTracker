@@ -44,6 +44,7 @@ import com.example.util.simpletimetracker.feature_statistics_detail.adapter.crea
 import com.example.util.simpletimetracker.feature_statistics_detail.adapter.createStatisticsDetailSeriesCalendarAdapterDelegate
 import com.example.util.simpletimetracker.feature_statistics_detail.adapter.createStatisticsDetailSeriesChartAdapterDelegate
 import com.example.util.simpletimetracker.feature_statistics_detail.api.StatisticsDetailOptionsListItem
+import com.example.util.simpletimetracker.feature_statistics_detail.settings.dialog.StatisticsTagValuesSettingsDialogListener
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailPreviewCompositeViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailPreviewViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.viewModel.StatisticsDetailViewModel
@@ -63,7 +64,8 @@ class StatisticsDetailFragment :
     DurationDialogListener,
     CustomRangeSelectionDialogListener,
     RecordsFilterListener,
-    OptionsListDialogListener {
+    OptionsListDialogListener,
+    StatisticsTagValuesSettingsDialogListener {
 
     override val inflater: (LayoutInflater, ViewGroup?, Boolean) -> Binding =
         Binding::inflate
@@ -204,6 +206,12 @@ class StatisticsDetailFragment :
                 viewModel.onRangeSelected(id)
             }
         }
+    }
+
+    override fun onStatisticsTagValuesSettingsChanged(
+        result: StatisticsTagValuesSettingsDialogListener.Result,
+    ) {
+        viewModel.onTagValuesSettingsChanged(result)
     }
 
     private fun setPreview() = params.preview?.run {

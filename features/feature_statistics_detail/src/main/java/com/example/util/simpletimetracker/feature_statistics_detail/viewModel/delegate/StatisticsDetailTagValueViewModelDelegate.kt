@@ -4,20 +4,23 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.util.simpletimetracker.core.base.ViewModelDelegate
 import com.example.util.simpletimetracker.core.extension.set
-import com.example.util.simpletimetracker.domain.extension.flip
 import com.example.util.simpletimetracker.feature_base_adapter.buttonsRow.view.ButtonsRowViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.interactor.StatisticsDetailTagValueInteractor
+import com.example.util.simpletimetracker.feature_statistics_detail.mapper.toParams
 import com.example.util.simpletimetracker.feature_statistics_detail.model.ChartGrouping
 import com.example.util.simpletimetracker.feature_statistics_detail.model.ChartLength
 import com.example.util.simpletimetracker.feature_statistics_detail.model.ChartValueMode
+import com.example.util.simpletimetracker.feature_statistics_detail.settings.dialog.StatisticsTagValuesSettingsDialogListener
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailChartLengthViewData
-import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailChartValueModeViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailGroupingViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailTagValuesCompositeViewData
+import com.example.util.simpletimetracker.navigation.Router
+import com.example.util.simpletimetracker.navigation.params.screen.StatisticsTagValuesSettingsParams
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class StatisticsDetailTagValueViewModelDelegate @Inject constructor(
+    private val router: Router,
     private val tagValueInteractor: StatisticsDetailTagValueInteractor,
 ) : StatisticsDetailViewModelDelegate, ViewModelDelegate() {
 
@@ -47,15 +50,19 @@ class StatisticsDetailTagValueViewModelDelegate @Inject constructor(
         updateViewData()
     }
 
-    fun onChartTagValueModeClick(viewData: ButtonsRowViewData) {
-        if (viewData !is StatisticsDetailChartValueModeViewData) return
-        this.chartValueMode = viewData.chartValueMode
+    fun onTagValuesSettingsChanged(result: StatisticsTagValuesSettingsDialogListener.Result) {
+        chartValueMode = result.mode
+        multiplyDuration = result.multiplyDuration
         updateViewData()
     }
 
-    fun onMultiplyDurationClick() {
-        multiplyDuration = multiplyDuration.flip()
-        updateViewData()
+    fun onTagValuesSettingsClick() {
+        router.navigate(
+            StatisticsTagValuesSettingsParams(
+                mode = chartValueMode.toParams(),
+                multiplyDuration = multiplyDuration,
+            ),
+        )
     }
 
     fun updateViewData() = delegateScope.launch {

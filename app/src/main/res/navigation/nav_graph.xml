@@ -70,6 +70,14 @@
         app:popExitAnim="@anim/slide_out_right" />
 
     <action
+        android:id="@+id/action_to_statisticsTagValuesSettingsDialogFragment"
+        app:destination="@id/statisticsTagValuesSettingsDialogFragment"
+        app:enterAnim="@anim/slide_in_right"
+        app:exitAnim="@anim/slide_out_left"
+        app:popEnterAnim="@anim/slide_in_left"
+        app:popExitAnim="@anim/slide_out_right" />
+
+    <action
         android:id="@+id/action_to_changeComplexRuleFragment"
         app:destination="@id/changeComplexRuleFragment"
         app:enterAnim="@anim/slide_in_right"
@@ -354,6 +362,10 @@
         android:name="com.example.util.simpletimetracker.feature_pomodoro.settings.view.PomodoroSettingsDialogFragment"
         android:label="PomodoroSettingsFragment"
         tools:layout="@layout/pomodoro_settings_fragment" />
+    <dialog
+        android:id="@+id/statisticsTagValuesSettingsDialogFragment"
+        android:name="com.example.util.simpletimetracker.feature_statistics_detail.settings.view.StatisticsTagValuesSettingsDialogFragment"
+        android:label="StatisticsTagValuesSettingsDialogFragment" />
     <dialog
         android:id="@+id/recordQuickActionsDialogFragment"
         android:name="com.example.util.simpletimetracker.feature_dialogs.recordQuickActions.view.RecordQuickActionsDialogFragment"

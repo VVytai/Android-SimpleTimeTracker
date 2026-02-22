@@ -27,6 +27,7 @@ import com.example.util.simpletimetracker.feature_statistics_detail.customView.S
 import com.example.util.simpletimetracker.feature_statistics_detail.interactor.StatisticsDetailContentInteractor
 import com.example.util.simpletimetracker.feature_statistics_detail.model.DataDistributionMode
 import com.example.util.simpletimetracker.feature_statistics_detail.api.StatisticsDetailOptionsListItem
+import com.example.util.simpletimetracker.feature_statistics_detail.settings.dialog.StatisticsTagValuesSettingsDialogListener
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailCardInternalViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailClickablePopup
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailClickableTracked
@@ -155,8 +156,6 @@ class StatisticsDetailViewModel @Inject constructor(
                 tagValueDelegate.onChartGroupingClick(viewData)
             StatisticsDetailBlock.TagValuesChartLength ->
                 tagValueDelegate.onChartLengthClick(viewData)
-            StatisticsDetailBlock.TagValuesChartMode ->
-                tagValueDelegate.onChartTagValueModeClick(viewData)
             StatisticsDetailBlock.SeriesGoal ->
                 streaksDelegate.onStreaksGoalClick(viewData)
             StatisticsDetailBlock.SeriesType ->
@@ -179,8 +178,8 @@ class StatisticsDetailViewModel @Inject constructor(
                 chartDelegate.onSplitByActivityClick()
             StatisticsDetailBlock.ChartSplitByActivitySort ->
                 chartDelegate.onSplitByActivitySortClick()
-            StatisticsDetailBlock.TagValuesMultiplyDuration ->
-                tagValueDelegate.onMultiplyDurationClick()
+            StatisticsDetailBlock.TagValuesSettings ->
+                onTagValuesSettingsClick()
             else -> {
                 // Do nothing
             }
@@ -283,6 +282,16 @@ class StatisticsDetailViewModel @Inject constructor(
 
     fun onCountSet(count: Long, tag: String?) = viewModelScope.launch {
         rangeDelegate.onCountSet(count, tag)
+    }
+
+    fun onTagValuesSettingsClick() {
+        tagValueDelegate.onTagValuesSettingsClick()
+    }
+
+    fun onTagValuesSettingsChanged(
+        result: StatisticsTagValuesSettingsDialogListener.Result,
+    ) {
+        tagValueDelegate.onTagValuesSettingsChanged(result)
     }
 
     fun onStreaksCalendarClick(

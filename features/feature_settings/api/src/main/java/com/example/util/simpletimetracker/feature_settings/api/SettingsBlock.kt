@@ -152,4 +152,7 @@ enum class SettingsBlock {
     CustomizeOptionsMenuDetailedStatisticsSelectDate,
     CustomizeOptionsMenuDetailedStatisticsSelectRange,
     CustomizeOptionsMenuDetailedStatisticsBackToToday,
+
+    StatisticsTagValuesChartValueMode,
+    StatisticsTagValuesMultiplyDuration,
 }

@@ -18,6 +18,8 @@ android {
 dependencies {
     implementation(project(":core"))
     implementation(project(":feature_statistics_detail:api"))
+    implementation(project(":feature_settings:api"))
+    implementation(project(":feature_settings:views"))
     implementation(project(":feature_records_filter:api"))
     implementation(libs.google.dagger)
     ksp(libs.kapt.dagger)

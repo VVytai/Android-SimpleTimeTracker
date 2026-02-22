@@ -3,6 +3,7 @@ package com.example.util.simpletimetracker
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.espresso.Espresso.pressBack
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.util.simpletimetracker.domain.statistics.model.ChartFilterType
 import com.example.util.simpletimetracker.feature_statistics_detail.adapter.StatisticsDetailBlock
@@ -235,22 +236,25 @@ class StatisticsDetailTagValueTest : BaseUiTest() {
     }
 
     private fun clickOnChartMode(withTextId: Int) {
-        scrollStatDetailRecyclerToTag(StatisticsDetailBlock.TagValuesChartMode)
-        clickOnView(
-            allOf(
-                isDescendantOfA(withTag(StatisticsDetailBlock.TagValuesChartMode)),
-                withText(withTextId),
-            ),
-        )
+        clickOnTagValuesSettings()
+        clickOnSettingsSelectorBesideText(R.string.statistics_detail_tag_values_hint)
+        clickOnViewWithText(withTextId)
+        pressBack()
     }
 
     @Suppress("SameParameterValue")
     private fun clickOnMultiplyDuration(withTextId: Int) {
-        scrollStatDetailRecyclerToTag(StatisticsDetailBlock.TagValuesMultiplyDuration)
+        clickOnTagValuesSettings()
+        clickOnSettingsCheckboxBesideText(withTextId)
+        pressBack()
+    }
+
+    private fun clickOnTagValuesSettings() {
+        scrollStatDetailRecyclerToTag(StatisticsDetailBlock.TagValuesSettings)
         clickOnView(
             allOf(
-                isDescendantOfA(withTag(StatisticsDetailBlock.TagValuesMultiplyDuration)),
-                withText(withTextId),
+                isDescendantOfA(withTag(StatisticsDetailBlock.TagValuesSettings)),
+                withText(R.string.shortcut_navigation_settings),
             ),
         )
     }
