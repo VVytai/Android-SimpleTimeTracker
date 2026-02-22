@@ -552,6 +552,7 @@ Exemplo:<br/>
     <string name="statistics_detail_goals_deficit">Déficit</string>
     <string name="statistics_detail_tag_values_hint">Valores da tag</string>
     <string name="statistics_detail_tag_values_multiply_duration">Multiplicar pela duração</string>
+    <string name="statistics_detail_tag_values_fill_empty_periods">Preencher períodos vazios com dados anteriores</string>
 
     <plurals name="statistics_detail_times_tracked">
         <!--        <item quantity="zero">Registros</item>-->

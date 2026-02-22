@@ -776,6 +776,8 @@ class BarChartView @JvmOverloads constructor(
 
     data class ViewData(
         val id: Long,
+        // Value to Color.
+        // For empty durations will be listOf(0), for empty tag values will be emptyList().
         val value: List<Pair<Float, Int>>,
         val legend: String,
         val selectedBarLegend: String = legend,

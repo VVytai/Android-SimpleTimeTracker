@@ -29,6 +29,7 @@ class StatisticsDetailTagValueInteractor @Inject constructor(
     private val statisticsDetailTagValuesViewDataMapper: StatisticsDetailTagValuesViewDataMapper,
     private val recordTypeInteractor: RecordTypeInteractor,
     private val recordTagInteractor: RecordTagInteractor,
+    private val fillEmptyBarsWithPreviousValueInteractor: FillEmptyBarsWithPreviousValueInteractor,
 ) {
 
     // TODO compare?
@@ -39,6 +40,7 @@ class StatisticsDetailTagValueInteractor @Inject constructor(
         currentChartLength: ChartLength,
         currentChartValueMode: ChartValueMode,
         multiplyDuration: Boolean,
+        fillEmptyPeriods: Boolean,
         rangeLength: RangeLength,
         rangePosition: Int,
     ): StatisticsDetailTagValuesCompositeViewData = withContext(Dispatchers.Default) {
@@ -98,10 +100,20 @@ class StatisticsDetailTagValueInteractor @Inject constructor(
             multiplyDuration = multiplyDuration,
             splitSortMode = ChartSplitSortMode.ACTIVITY_ORDER,
         )
+        val preparedPrevData = if (fillEmptyPeriods) {
+            fillEmptyBarsWithPreviousValueInteractor.invoke(prevData, null)
+        } else {
+            prevData
+        }
+        val preparedData = if (fillEmptyPeriods) {
+            fillEmptyBarsWithPreviousValueInteractor.invoke(data, preparedPrevData)
+        } else {
+            data
+        }
 
         val chartViewData = statisticsDetailTagValuesViewDataMapper.mapTagValueChartViewData(
-            data = data,
-            prevData = prevData,
+            data = preparedData,
+            prevData = preparedPrevData,
             rangeLength = rangeLength,
             availableChartGroupings = compositeData.availableChartGroupings,
             appliedChartGrouping = compositeData.appliedChartGrouping,

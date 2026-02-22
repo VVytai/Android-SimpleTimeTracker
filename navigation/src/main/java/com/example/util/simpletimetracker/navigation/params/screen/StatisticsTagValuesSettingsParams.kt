@@ -9,6 +9,7 @@ data class StatisticsTagValuesSettingsParams(
     val tagId: Long,
     val chartValueMode: ChartValueMode,
     val multiplyDuration: Boolean,
+    val fillEmptyPeriods: Boolean,
 ) : Parcelable, ScreenParams {
 
     companion object {
@@ -16,6 +17,7 @@ data class StatisticsTagValuesSettingsParams(
             tagId = 0,
             chartValueMode = ChartValueMode.TOTAL,
             multiplyDuration = false,
+            fillEmptyPeriods = false,
         )
     }
 }

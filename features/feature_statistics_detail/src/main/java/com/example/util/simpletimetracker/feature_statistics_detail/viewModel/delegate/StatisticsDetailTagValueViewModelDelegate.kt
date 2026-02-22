@@ -62,6 +62,7 @@ class StatisticsDetailTagValueViewModelDelegate @Inject constructor(
                 tagId = loadedTagSettings.tagId,
                 chartValueMode = loadedTagSettings.chartValueMode,
                 multiplyDuration = loadedTagSettings.multiplyDuration,
+                fillEmptyPeriods = loadedTagSettings.fillEmptyPeriods,
             ),
         )
     }
@@ -94,6 +95,7 @@ class StatisticsDetailTagValueViewModelDelegate @Inject constructor(
             currentChartLength = chartLength,
             currentChartValueMode = settings.chartValueMode,
             multiplyDuration = settings.multiplyDuration,
+            fillEmptyPeriods = settings.fillEmptyPeriods,
             rangeLength = parent.rangeLength,
             rangePosition = parent.rangePosition,
         )

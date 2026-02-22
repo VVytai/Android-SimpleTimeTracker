@@ -33,6 +33,7 @@ class StatisticsTagValuesSettingsViewModel @Inject constructor(
             tagId = params.tagId,
             chartValueMode = params.chartValueMode,
             multiplyDuration = params.multiplyDuration,
+            fillEmptyPeriods = params.fillEmptyPeriods,
         )
         initialized = true
     }
@@ -53,6 +54,9 @@ class StatisticsTagValuesSettingsViewModel @Inject constructor(
             }
             SettingsBlock.StatisticsTagValuesMultiplyDuration -> {
                 newSettings.copy(multiplyDuration = !newSettings.multiplyDuration)
+            }
+            SettingsBlock.StatisticsTagValuesFillEmptyPeriods -> {
+                newSettings.copy(fillEmptyPeriods = !newSettings.fillEmptyPeriods)
             }
             else -> return // Do nothing.
         }

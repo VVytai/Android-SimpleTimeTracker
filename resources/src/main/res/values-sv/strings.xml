@@ -552,6 +552,7 @@ Exempel:<br/>
     <string name="statistics_detail_goals_deficit">Underskott</string>
     <string name="statistics_detail_tag_values_hint">Taggvärden</string>
     <string name="statistics_detail_tag_values_multiply_duration">Multiplicera med varaktighet</string>
+    <string name="statistics_detail_tag_values_fill_empty_periods">Fyll tomma perioder med tidigare data</string>
 
     <plurals name="statistics_detail_times_tracked">
         <!--        <item quantity="zero">händelser</item>-->

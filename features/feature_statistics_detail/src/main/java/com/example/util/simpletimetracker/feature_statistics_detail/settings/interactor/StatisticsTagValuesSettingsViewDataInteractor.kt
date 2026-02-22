@@ -30,6 +30,13 @@ class StatisticsTagValuesSettingsViewDataInteractor @Inject constructor(
                 title = resourceRepo.getString(R.string.statistics_detail_tag_values_multiply_duration),
                 subtitle = "",
                 isChecked = settings.multiplyDuration,
+                backgroundIsVisible = false,
+            ),
+            SettingsCheckboxViewData(
+                block = SettingsBlock.StatisticsTagValuesFillEmptyPeriods,
+                title = resourceRepo.getString(R.string.statistics_detail_tag_values_fill_empty_periods),
+                subtitle = "",
+                isChecked = settings.fillEmptyPeriods,
                 dividerIsVisible = false,
                 backgroundIsVisible = false,
             ),

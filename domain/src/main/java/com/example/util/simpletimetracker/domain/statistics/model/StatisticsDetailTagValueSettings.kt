@@ -4,6 +4,7 @@ data class StatisticsDetailTagValueSettings(
     val tagId: Long,
     val chartValueMode: ChartValueMode,
     val multiplyDuration: Boolean,
+    val fillEmptyPeriods: Boolean,
 ) {
 
     companion object {
@@ -12,6 +13,7 @@ data class StatisticsDetailTagValueSettings(
                 tagId = tagId,
                 chartValueMode = ChartValueMode.TOTAL,
                 multiplyDuration = false,
+                fillEmptyPeriods = false,
             )
         }
     }
