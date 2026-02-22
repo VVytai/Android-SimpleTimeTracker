@@ -16,7 +16,9 @@ import com.example.util.simpletimetracker.domain.record.model.RepeatButtonType
 import com.example.util.simpletimetracker.domain.recordTag.model.CardTagOrder
 import com.example.util.simpletimetracker.domain.recordType.model.CardOrder
 import com.example.util.simpletimetracker.domain.statistics.model.ChartFilterType
+import com.example.util.simpletimetracker.domain.statistics.model.ChartValueMode
 import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
+import com.example.util.simpletimetracker.domain.statistics.model.StatisticsDetailTagValueSettings
 import com.example.util.simpletimetracker.domain.statistics.model.StatisticsStreaksType
 import com.example.util.simpletimetracker.domain.widget.model.GridWidgetData
 import com.example.util.simpletimetracker.domain.widget.model.StatisticsWidgetData
@@ -199,6 +201,24 @@ class PrefsInteractor @Inject constructor(
 
     suspend fun getStatisticsDetailLastDays(): Int = withContext(Dispatchers.IO) {
         prefsRepo.statisticsDetailRangeLastDays
+    }
+
+    suspend fun getStatisticsDetailTagValueSettings(
+        tagId: Long,
+    ): StatisticsDetailTagValueSettings = withContext(Dispatchers.IO) {
+        prefsRepo.statisticsDetailTagValueSettings
+            .let(::mapStatisticsDetailTagValueSettings)[tagId]
+            ?: StatisticsDetailTagValueSettings.getDefault(tagId)
+    }
+
+    suspend fun setStatisticsDetailTagValueSettings(
+        value: StatisticsDetailTagValueSettings,
+    ) = withContext(Dispatchers.IO) {
+        val settings = prefsRepo.statisticsDetailTagValueSettings
+            .let(::mapStatisticsDetailTagValueSettings)
+            .toMutableMap().apply { put(value.tagId, value) }
+            .let { serializeStatisticsDetailTagValueSettings(it.values) }
+        prefsRepo.statisticsDetailTagValueSettings = settings
     }
 
     suspend fun getFileExportRange(): RangeLength = withContext(Dispatchers.IO) {
@@ -1262,7 +1282,50 @@ class PrefsInteractor @Inject constructor(
             ?: emptyMap()
     }
 
+    private fun mapStatisticsDetailTagValueSettings(
+        set: Set<String>?,
+    ): Map<Long, StatisticsDetailTagValueSettings> {
+        return set?.mapNotNull { string ->
+            string.split(STATISTICS_DETAIL_TAG_VALUE_DELIMITER).let { parts ->
+                val tagId = parts.getOrNull(0)?.toLongOrNull() ?: return@mapNotNull null
+                val modeInt = parts.getOrNull(1)?.toIntOrNull().orZero()
+                val multiplyInt = parts.getOrNull(2)?.toIntOrNull().orZero()
+                val chartValueMode = when (modeInt) {
+                    0 -> ChartValueMode.TOTAL
+                    1 -> ChartValueMode.AVERAGE
+                    else -> ChartValueMode.TOTAL
+                }
+                val multiplyDuration = multiplyInt == 1
+                tagId to StatisticsDetailTagValueSettings(
+                    tagId = tagId,
+                    chartValueMode = chartValueMode,
+                    multiplyDuration = multiplyDuration,
+                )
+            }
+        }?.toMap().orEmpty()
+    }
+
+    private fun serializeStatisticsDetailTagValueSettings(
+        values: Collection<StatisticsDetailTagValueSettings>,
+    ): Set<String> {
+        return values.map { settings ->
+            buildString {
+                append(settings.tagId)
+                append(STATISTICS_DETAIL_TAG_VALUE_DELIMITER)
+                append(
+                    when (settings.chartValueMode) {
+                        ChartValueMode.TOTAL -> 0
+                        ChartValueMode.AVERAGE -> 1
+                    },
+                )
+                append(STATISTICS_DETAIL_TAG_VALUE_DELIMITER)
+                append(if (settings.multiplyDuration) 1 else 0)
+            }
+        }.toSet()
+    }
+
     companion object {
         private const val CARDS_ORDER_DELIMITER = "_"
+        private const val STATISTICS_DETAIL_TAG_VALUE_DELIMITER = "_"
     }
 }

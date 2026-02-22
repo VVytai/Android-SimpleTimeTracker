@@ -1,7 +1,7 @@
 package com.example.util.simpletimetracker.feature_statistics_detail.viewData
 
 import com.example.util.simpletimetracker.feature_base_adapter.buttonsRow.view.ButtonsRowViewData
-import com.example.util.simpletimetracker.feature_statistics_detail.model.ChartValueMode
+import com.example.util.simpletimetracker.domain.statistics.model.ChartValueMode
 
 data class StatisticsDetailChartValueModeViewData(
     val chartValueMode: ChartValueMode,

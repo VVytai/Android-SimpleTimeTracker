@@ -6,11 +6,10 @@ import com.example.util.simpletimetracker.core.base.BaseViewModel
 import com.example.util.simpletimetracker.core.base.SingleLiveEvent
 import com.example.util.simpletimetracker.core.extension.lazySuspend
 import com.example.util.simpletimetracker.core.extension.set
+import com.example.util.simpletimetracker.domain.statistics.model.ChartValueMode
+import com.example.util.simpletimetracker.domain.statistics.model.StatisticsDetailTagValueSettings
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_settings.api.SettingsBlock
-import com.example.util.simpletimetracker.feature_statistics_detail.model.ChartValueMode
-import com.example.util.simpletimetracker.feature_statistics_detail.mapper.toDomain
-import com.example.util.simpletimetracker.feature_statistics_detail.settings.dialog.StatisticsTagValuesSettingsDialogListener
 import com.example.util.simpletimetracker.feature_statistics_detail.settings.interactor.StatisticsTagValuesSettingsViewDataInteractor
 import com.example.util.simpletimetracker.navigation.params.screen.StatisticsTagValuesSettingsParams
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,16 +22,18 @@ class StatisticsTagValuesSettingsViewModel @Inject constructor(
 ) : BaseViewModel() {
 
     val content: LiveData<List<ViewHolderType>> by lazySuspend { loadContent() }
-    val settingsChanged: LiveData<StatisticsTagValuesSettingsDialogListener.Result> = SingleLiveEvent()
+    val settingsChanged: LiveData<StatisticsDetailTagValueSettings> = SingleLiveEvent()
 
-    private var chartValueMode: ChartValueMode = ChartValueMode.TOTAL
-    private var multiplyDuration: Boolean = false
     private var initialized: Boolean = false
+    private var newSettings = StatisticsDetailTagValueSettings.getDefault()
 
     fun initialize(params: StatisticsTagValuesSettingsParams) {
         if (initialized) return
-        chartValueMode = params.mode.toDomain()
-        multiplyDuration = params.multiplyDuration
+        newSettings = StatisticsDetailTagValueSettings(
+            tagId = params.tagId,
+            chartValueMode = params.chartValueMode,
+            multiplyDuration = params.multiplyDuration,
+        )
         initialized = true
     }
 
@@ -41,31 +42,25 @@ class StatisticsTagValuesSettingsViewModel @Inject constructor(
     }
 
     fun onBlockClicked(block: SettingsBlock) {
-        when (block) {
+        newSettings = when (block) {
             SettingsBlock.StatisticsTagValuesChartValueMode -> {
-                chartValueMode = when (chartValueMode) {
-                    ChartValueMode.TOTAL -> ChartValueMode.AVERAGE
-                    ChartValueMode.AVERAGE -> ChartValueMode.TOTAL
-                }
-                onSettingsChanged()
+                newSettings.copy(
+                    chartValueMode = when (newSettings.chartValueMode) {
+                        ChartValueMode.TOTAL -> ChartValueMode.AVERAGE
+                        ChartValueMode.AVERAGE -> ChartValueMode.TOTAL
+                    },
+                )
             }
             SettingsBlock.StatisticsTagValuesMultiplyDuration -> {
-                multiplyDuration = !multiplyDuration
-                onSettingsChanged()
+                newSettings.copy(multiplyDuration = !newSettings.multiplyDuration)
             }
-            else -> {
-                // Do nothing.
-            }
+            else -> return // Do nothing.
         }
+        onSettingsChanged()
     }
 
     private fun onSettingsChanged() {
-        settingsChanged.set(
-            StatisticsTagValuesSettingsDialogListener.Result(
-                mode = chartValueMode,
-                multiplyDuration = multiplyDuration,
-            ),
-        )
+        settingsChanged.set(newSettings)
         updateContent()
     }
 
@@ -74,9 +69,6 @@ class StatisticsTagValuesSettingsViewModel @Inject constructor(
     }
 
     private fun loadContent(): List<ViewHolderType> {
-        return viewDataInteractor.execute(
-            chartValueMode = chartValueMode,
-            multiplyDuration = multiplyDuration,
-        )
+        return viewDataInteractor.execute(newSettings)
     }
 }

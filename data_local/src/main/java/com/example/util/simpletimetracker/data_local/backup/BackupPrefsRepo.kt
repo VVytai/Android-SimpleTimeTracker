@@ -76,6 +76,7 @@ import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Compani
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_STATISTICS_DETAIL_RANGE_CUSTOM_END
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_STATISTICS_DETAIL_RANGE_CUSTOM_START
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_STATISTICS_DETAIL_RANGE_LAST_DAYS
+import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_STATISTICS_DETAIL_TAG_VALUE_SETTINGS
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_STATISTICS_DETAIL_STREAK_TYPE
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_STATISTICS_RANGE
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_STATISTICS_RANGE_CUSTOM_END
@@ -172,6 +173,7 @@ class BackupPrefsRepo @Inject constructor(
             PrefsProcessor(KEY_STATISTICS_DETAIL_RANGE_CUSTOM_START, ::statisticsDetailRangeCustomStart),
             PrefsProcessor(KEY_STATISTICS_DETAIL_RANGE_CUSTOM_END, ::statisticsDetailRangeCustomEnd),
             PrefsProcessor(KEY_STATISTICS_DETAIL_RANGE_LAST_DAYS, ::statisticsDetailRangeLastDays),
+            PrefsProcessor(KEY_STATISTICS_DETAIL_TAG_VALUE_SETTINGS, ::statisticsDetailTagValueSettings),
             PrefsProcessor(KEY_FILE_EXPORT_RANGE, ::fileExportRange),
             PrefsProcessor(KEY_FILE_EXPORT_RANGE_CUSTOM_START, ::fileExportRangeCustomStart),
             PrefsProcessor(KEY_FILE_EXPORT_RANGE_CUSTOM_END, ::fileExportRangeCustomEnd),

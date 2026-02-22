@@ -17,7 +17,7 @@ import com.example.util.simpletimetracker.feature_statistics_detail.model.ChartB
 import com.example.util.simpletimetracker.feature_statistics_detail.model.ChartGrouping
 import com.example.util.simpletimetracker.feature_statistics_detail.model.ChartLength
 import com.example.util.simpletimetracker.feature_statistics_detail.model.ChartMode
-import com.example.util.simpletimetracker.feature_statistics_detail.model.ChartValueMode
+import com.example.util.simpletimetracker.domain.statistics.model.ChartValueMode
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailCardInternalViewData
 import javax.inject.Inject
 

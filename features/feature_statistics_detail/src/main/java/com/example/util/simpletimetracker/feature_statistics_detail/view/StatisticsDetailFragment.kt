@@ -24,6 +24,7 @@ import com.example.util.simpletimetracker.core.viewData.RangeSelectionOptionsLis
 import com.example.util.simpletimetracker.domain.extension.orFalse
 import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.domain.record.model.Range
+import com.example.util.simpletimetracker.domain.statistics.model.StatisticsDetailTagValueSettings
 import com.example.util.simpletimetracker.feature_base_adapter.BaseRecyclerAdapter
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.buttonsRow.createButtonsRowAdapterDelegate
@@ -208,9 +209,7 @@ class StatisticsDetailFragment :
         }
     }
 
-    override fun onStatisticsTagValuesSettingsChanged(
-        result: StatisticsTagValuesSettingsDialogListener.Result,
-    ) {
+    override fun onStatisticsTagValuesSettingsChanged(result: StatisticsDetailTagValueSettings) {
         viewModel.onTagValuesSettingsChanged(result)
     }
 

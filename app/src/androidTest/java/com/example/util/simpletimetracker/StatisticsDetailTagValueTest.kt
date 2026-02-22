@@ -237,8 +237,11 @@ class StatisticsDetailTagValueTest : BaseUiTest() {
 
     private fun clickOnChartMode(withTextId: Int) {
         clickOnTagValuesSettings()
-        clickOnSettingsSelectorBesideText(R.string.statistics_detail_tag_values_hint)
-        clickOnViewWithText(withTextId)
+        try {
+            checkViewIsDisplayed(withText(withTextId))
+        } catch (_: Exception) {
+            clickOnSettingsSelectorBesideText(R.string.statistics_detail_tag_values_hint)
+        }
         pressBack()
     }
 

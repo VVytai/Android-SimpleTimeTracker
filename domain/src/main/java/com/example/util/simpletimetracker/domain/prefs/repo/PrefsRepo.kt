@@ -35,6 +35,8 @@ interface PrefsRepo {
     var statisticsDetailRangeCustomEnd: Long
     var statisticsDetailRangeLastDays: Int
 
+    var statisticsDetailTagValueSettings: Set<String>
+
     var fileExportRange: Int
     var fileExportRangeCustomStart: Long
     var fileExportRangeCustomEnd: Long

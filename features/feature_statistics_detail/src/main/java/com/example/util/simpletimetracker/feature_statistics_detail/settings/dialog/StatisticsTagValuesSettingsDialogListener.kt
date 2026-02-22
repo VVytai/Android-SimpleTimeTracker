@@ -1,13 +1,8 @@
 package com.example.util.simpletimetracker.feature_statistics_detail.settings.dialog
 
-import com.example.util.simpletimetracker.feature_statistics_detail.model.ChartValueMode
+import com.example.util.simpletimetracker.domain.statistics.model.StatisticsDetailTagValueSettings
 
 interface StatisticsTagValuesSettingsDialogListener {
 
-    fun onStatisticsTagValuesSettingsChanged(result: Result)
-
-    data class Result(
-        val mode: ChartValueMode,
-        val multiplyDuration: Boolean,
-    )
+    fun onStatisticsTagValuesSettingsChanged(result: StatisticsDetailTagValueSettings)
 }

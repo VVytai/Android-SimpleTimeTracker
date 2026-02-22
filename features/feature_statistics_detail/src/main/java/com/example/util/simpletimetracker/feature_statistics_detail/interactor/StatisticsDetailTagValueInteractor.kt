@@ -16,7 +16,7 @@ import com.example.util.simpletimetracker.feature_statistics_detail.model.ChartG
 import com.example.util.simpletimetracker.feature_statistics_detail.model.ChartLength
 import com.example.util.simpletimetracker.feature_statistics_detail.model.ChartMode
 import com.example.util.simpletimetracker.feature_statistics_detail.model.ChartSplitSortMode
-import com.example.util.simpletimetracker.feature_statistics_detail.model.ChartValueMode
+import com.example.util.simpletimetracker.domain.statistics.model.ChartValueMode
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailTagValuesCompositeViewData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -33,8 +33,8 @@ class StatisticsDetailTagValueInteractor @Inject constructor(
 
     // TODO compare?
     suspend fun getViewData(
+        valuedTag: RecordTag,
         records: List<RecordBase>,
-        filter: List<RecordsFilter>,
         currentChartGrouping: ChartGrouping,
         currentChartLength: ChartLength,
         currentChartValueMode: ChartValueMode,
@@ -42,14 +42,6 @@ class StatisticsDetailTagValueInteractor @Inject constructor(
         rangeLength: RangeLength,
         rangePosition: Int,
     ): StatisticsDetailTagValuesCompositeViewData = withContext(Dispatchers.Default) {
-        val tags = recordTagInteractor.getAll()
-        val valuedTag = getSingleSelectedTagWithValue(filter, tags)
-            ?: return@withContext StatisticsDetailTagValuesCompositeViewData(
-                viewData = emptyList(),
-                appliedChartGrouping = currentChartGrouping,
-                appliedChartLength = currentChartLength,
-            )
-
         val firstDayOfWeek = prefsInteractor.getFirstDayOfWeek()
         val startOfDayShift = prefsInteractor.getStartOfDayShift()
         val durationFormat = prefsInteractor.getDurationFormat()
@@ -128,6 +120,13 @@ class StatisticsDetailTagValueInteractor @Inject constructor(
             appliedChartGrouping = compositeData.appliedChartGrouping,
             appliedChartLength = compositeData.appliedChartLength,
         )
+    }
+
+    suspend fun getSelectedTagWithValueId(
+        filter: List<RecordsFilter>,
+    ): RecordTag? = withContext(Dispatchers.Default) {
+        val tags = recordTagInteractor.getAll()
+        getSingleSelectedTagWithValue(filter, tags)
     }
 
     private fun getSingleSelectedTagWithValue(

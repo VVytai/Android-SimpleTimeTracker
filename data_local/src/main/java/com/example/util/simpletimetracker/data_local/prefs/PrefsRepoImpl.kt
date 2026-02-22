@@ -83,6 +83,10 @@ class PrefsRepoImpl @Inject constructor(
         KEY_TAG_ORDER_MANUAL, emptySet(),
     )
 
+    override var statisticsDetailTagValueSettings: Set<String> by prefs.delegate(
+        KEY_STATISTICS_DETAIL_TAG_VALUE_SETTINGS, emptySet(),
+    )
+
     override var statisticsRange: Int by prefs.delegate(
         KEY_STATISTICS_RANGE, 0,
     )
@@ -723,6 +727,7 @@ class PrefsRepoImpl @Inject constructor(
         const val KEY_STATISTICS_DETAIL_RANGE_CUSTOM_START = "statisticsDetailRangeCustomStart"
         const val KEY_STATISTICS_DETAIL_RANGE_CUSTOM_END = "statisticsDetailRangeCustomEnd"
         const val KEY_STATISTICS_DETAIL_RANGE_LAST_DAYS = "statisticsDetailRangeLastDays"
+        const val KEY_STATISTICS_DETAIL_TAG_VALUE_SETTINGS = "statisticsDetailTagValueSettings"
         const val KEY_FILE_EXPORT_RANGE = "fileExportRange"
         const val KEY_FILE_EXPORT_RANGE_CUSTOM_START = "fileExportRangeCustomStart"
         const val KEY_FILE_EXPORT_RANGE_CUSTOM_END = "fileExportRangeCustomEnd"

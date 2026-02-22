@@ -4,13 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.util.simpletimetracker.core.base.ViewModelDelegate
 import com.example.util.simpletimetracker.core.extension.set
+import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
+import com.example.util.simpletimetracker.domain.statistics.model.StatisticsDetailTagValueSettings
 import com.example.util.simpletimetracker.feature_base_adapter.buttonsRow.view.ButtonsRowViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.interactor.StatisticsDetailTagValueInteractor
-import com.example.util.simpletimetracker.feature_statistics_detail.mapper.toParams
 import com.example.util.simpletimetracker.feature_statistics_detail.model.ChartGrouping
 import com.example.util.simpletimetracker.feature_statistics_detail.model.ChartLength
-import com.example.util.simpletimetracker.feature_statistics_detail.model.ChartValueMode
-import com.example.util.simpletimetracker.feature_statistics_detail.settings.dialog.StatisticsTagValuesSettingsDialogListener
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailChartLengthViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailGroupingViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailTagValuesCompositeViewData
@@ -22,6 +21,7 @@ import javax.inject.Inject
 class StatisticsDetailTagValueViewModelDelegate @Inject constructor(
     private val router: Router,
     private val tagValueInteractor: StatisticsDetailTagValueInteractor,
+    private val prefsInteractor: PrefsInteractor,
 ) : StatisticsDetailViewModelDelegate, ViewModelDelegate() {
 
     val viewData: LiveData<StatisticsDetailTagValuesCompositeViewData> by lazy {
@@ -31,8 +31,7 @@ class StatisticsDetailTagValueViewModelDelegate @Inject constructor(
     private var parent: StatisticsDetailViewModelDelegate.Parent? = null
     private var chartGrouping: ChartGrouping = ChartGrouping.DAILY
     private var chartLength: ChartLength = ChartLength.TEN
-    private var chartValueMode: ChartValueMode = ChartValueMode.TOTAL
-    private var multiplyDuration: Boolean = false
+    private var loadedTagSettings = StatisticsDetailTagValueSettings.getDefault()
 
     override fun attach(parent: StatisticsDetailViewModelDelegate.Parent) {
         this.parent = parent
@@ -50,17 +49,19 @@ class StatisticsDetailTagValueViewModelDelegate @Inject constructor(
         updateViewData()
     }
 
-    fun onTagValuesSettingsChanged(result: StatisticsTagValuesSettingsDialogListener.Result) {
-        chartValueMode = result.mode
-        multiplyDuration = result.multiplyDuration
+    fun onTagValuesSettingsChanged(
+        result: StatisticsDetailTagValueSettings,
+    ) = delegateScope.launch {
+        saveSettingsForSelectedTag(result)
         updateViewData()
     }
 
     fun onTagValuesSettingsClick() {
         router.navigate(
             StatisticsTagValuesSettingsParams(
-                mode = chartValueMode.toParams(),
-                multiplyDuration = multiplyDuration,
+                tagId = loadedTagSettings.tagId,
+                chartValueMode = loadedTagSettings.chartValueMode,
+                multiplyDuration = loadedTagSettings.multiplyDuration,
             ),
         )
     }
@@ -75,15 +76,41 @@ class StatisticsDetailTagValueViewModelDelegate @Inject constructor(
 
     private suspend fun loadViewData(): StatisticsDetailTagValuesCompositeViewData? {
         val parent = parent ?: return null
+        val valuedTag = tagValueInteractor.getSelectedTagWithValueId(parent.filter)
+        if (valuedTag == null) {
+            // Clears data with empty list if switched to other filter.
+            return StatisticsDetailTagValuesCompositeViewData(
+                viewData = emptyList(),
+                appliedChartGrouping = chartGrouping,
+                appliedChartLength = chartLength,
+            )
+        }
+        val settings = getSettingsForCurrentTag(valuedTag.id)
+
         return tagValueInteractor.getViewData(
+            valuedTag = valuedTag,
             records = parent.records,
-            filter = parent.filter,
             currentChartGrouping = chartGrouping,
             currentChartLength = chartLength,
-            currentChartValueMode = chartValueMode,
-            multiplyDuration = multiplyDuration,
+            currentChartValueMode = settings.chartValueMode,
+            multiplyDuration = settings.multiplyDuration,
             rangeLength = parent.rangeLength,
             rangePosition = parent.rangePosition,
         )
+    }
+
+    private suspend fun getSettingsForCurrentTag(
+        tagId: Long,
+    ): StatisticsDetailTagValueSettings {
+        if (loadedTagSettings.tagId == tagId) return loadedTagSettings
+        loadedTagSettings = prefsInteractor.getStatisticsDetailTagValueSettings(tagId)
+        return loadedTagSettings
+    }
+
+    private suspend fun saveSettingsForSelectedTag(
+        result: StatisticsDetailTagValueSettings,
+    ) {
+        prefsInteractor.setStatisticsDetailTagValueSettings(result)
+        loadedTagSettings = result
     }
 }

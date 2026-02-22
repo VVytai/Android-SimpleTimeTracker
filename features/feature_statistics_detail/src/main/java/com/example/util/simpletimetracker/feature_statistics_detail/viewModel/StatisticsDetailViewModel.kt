@@ -16,6 +16,7 @@ import com.example.util.simpletimetracker.domain.record.model.Range
 import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.domain.record.model.RecordsFilter
 import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
+import com.example.util.simpletimetracker.domain.statistics.model.StatisticsDetailTagValueSettings
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.buttonsRow.ButtonsRowItemViewData
 import com.example.util.simpletimetracker.feature_base_adapter.buttonsRow.view.ButtonsRowViewData
@@ -27,7 +28,6 @@ import com.example.util.simpletimetracker.feature_statistics_detail.customView.S
 import com.example.util.simpletimetracker.feature_statistics_detail.interactor.StatisticsDetailContentInteractor
 import com.example.util.simpletimetracker.feature_statistics_detail.model.DataDistributionMode
 import com.example.util.simpletimetracker.feature_statistics_detail.api.StatisticsDetailOptionsListItem
-import com.example.util.simpletimetracker.feature_statistics_detail.settings.dialog.StatisticsTagValuesSettingsDialogListener
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailCardInternalViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailClickablePopup
 import com.example.util.simpletimetracker.feature_statistics_detail.viewData.StatisticsDetailClickableTracked
@@ -288,9 +288,7 @@ class StatisticsDetailViewModel @Inject constructor(
         tagValueDelegate.onTagValuesSettingsClick()
     }
 
-    fun onTagValuesSettingsChanged(
-        result: StatisticsTagValuesSettingsDialogListener.Result,
-    ) {
+    fun onTagValuesSettingsChanged(result: StatisticsDetailTagValueSettings) {
         tagValueDelegate.onTagValuesSettingsChanged(result)
     }
 

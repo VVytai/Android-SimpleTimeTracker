@@ -6,7 +6,8 @@ import com.example.util.simpletimetracker.feature_settings.api.SettingsBlock
 import com.example.util.simpletimetracker.feature_settings.views.SettingsCheckboxViewData
 import com.example.util.simpletimetracker.feature_settings.views.SettingsSelectorViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.R
-import com.example.util.simpletimetracker.feature_statistics_detail.model.ChartValueMode
+import com.example.util.simpletimetracker.domain.statistics.model.ChartValueMode
+import com.example.util.simpletimetracker.domain.statistics.model.StatisticsDetailTagValueSettings
 import javax.inject.Inject
 
 class StatisticsTagValuesSettingsViewDataInteractor @Inject constructor(
@@ -14,22 +15,21 @@ class StatisticsTagValuesSettingsViewDataInteractor @Inject constructor(
 ) {
 
     fun execute(
-        chartValueMode: ChartValueMode,
-        multiplyDuration: Boolean,
+        settings: StatisticsDetailTagValueSettings,
     ): List<ViewHolderType> {
         return listOf(
             SettingsSelectorViewData(
                 block = SettingsBlock.StatisticsTagValuesChartValueMode,
                 title = resourceRepo.getString(R.string.statistics_detail_tag_values_hint),
                 subtitle = "",
-                selectedValue = mapChartValueMode(chartValueMode),
+                selectedValue = mapChartValueMode(settings.chartValueMode),
                 backgroundIsVisible = false,
             ),
             SettingsCheckboxViewData(
                 block = SettingsBlock.StatisticsTagValuesMultiplyDuration,
                 title = resourceRepo.getString(R.string.statistics_detail_tag_values_multiply_duration),
                 subtitle = "",
-                isChecked = multiplyDuration,
+                isChecked = settings.multiplyDuration,
                 dividerIsVisible = false,
                 backgroundIsVisible = false,
             ),
