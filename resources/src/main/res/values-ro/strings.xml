@@ -15,6 +15,7 @@
     <string name="record_tag_hint_short">Etichete</string>
     <string name="nothing_selected">Nimic selectat</string>
     <string name="something_selected">Selectat:</string>
+    <string name="something_preselected">Preselectat:</string>
     <string name="select_all">Selectează toate</string>
     <string name="select_nothing">Nu selecta nimic</string>
     <string name="no_data">Nu există informații</string>

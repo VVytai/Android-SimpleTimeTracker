@@ -93,12 +93,18 @@ class RecordTagSelectionViewModel @Inject constructor(
         viewModelScope.launch {
             when (item) {
                 is CategoryViewData.Record.Tagged -> {
+                    val wasSelectedBefore = newTags.any { it.tagId == item.id }
                     val needValueSelection = needTagValueSelectionInteractor.execute(
                         selectedTagIds = newTags.map { it.tagId },
                         clickedTagId = item.id,
                     )
                     if (needValueSelection) {
                         requestTagValueSelection(item.id, item.name)
+                    } else if (wasSelectedBefore &&
+                        !isMultipleChoiceAvailable &&
+                        extra.preselectedTags.any { it.tagId == item.id }
+                    ) {
+                        // Disallow deselection for preselected tags.
                     } else {
                         newTags = newTags.addOrRemove(item.id)
                         onTagSelected()
@@ -122,7 +128,12 @@ class RecordTagSelectionViewModel @Inject constructor(
             newTags = newTags.filter { it.tagId != params.tagId } +
                 RecordBase.Tag(tagId = params.tagId, numericValue = value)
             startRequiredTagValueSelectionIfNeeded()
-            onTagSelected()
+            if (params.tagId in extra.requiredValueSelectionTagIds) {
+                // Ignore "close after one" if tag requires value.
+                updateViewData()
+            } else {
+                onTagSelected()
+            }
         }
     }
 
@@ -185,7 +196,6 @@ class RecordTagSelectionViewModel @Inject constructor(
         newTags = extra.preselectedTags.map(RecordTagParam::toModel)
         isMultipleChoiceAvailable = isMultipleTagChoiceAvailableInteractor.execute(
             typeId = extra.typeId,
-            hasPreselectedTags = newTags.isNotEmpty(),
             closeAfterOne = prefsInteractor.getRecordTagSelectionCloseAfterOne(),
             excludedActivities = prefsInteractor.getCloseAfterOneTagExcludeActivities().toSet(),
         )
@@ -203,7 +213,7 @@ class RecordTagSelectionViewModel @Inject constructor(
         val showCommentInput = RecordTagSelectionParams.FieldParam.Comment in extra.fields
 
         return when {
-            showTags -> isMultipleChoiceAvailable
+            showTags -> isMultipleChoiceAvailable || extra.preselectedTags.isNotEmpty()
             showCommentInput -> true
             else -> false
         }

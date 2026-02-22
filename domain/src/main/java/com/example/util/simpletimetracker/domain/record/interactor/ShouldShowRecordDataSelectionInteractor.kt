@@ -92,6 +92,8 @@ class ShouldShowRecordDataSelectionInteractor @Inject constructor(
     private suspend fun filterNumericTagValueSelectionTagIds(tagIds: Set<Long>): List<Long> {
         if (tagIds.isEmpty()) return emptyList()
         val tags = recordTagInteractor.getAll().associateBy(RecordTag::id)
-        return tagIds.filter { tags[it]?.valueType == RecordTagValueType.NUMERIC }
+        return tagIds.filter {
+            tags[it]?.valueType == RecordTagValueType.NUMERIC && tags[it]?.archived == false
+        }
     }
 }

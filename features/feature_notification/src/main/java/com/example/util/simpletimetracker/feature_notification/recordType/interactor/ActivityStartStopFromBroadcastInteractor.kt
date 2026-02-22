@@ -5,15 +5,15 @@ import com.example.util.simpletimetracker.core.interactor.IsMultipleTagChoiceAva
 import com.example.util.simpletimetracker.core.interactor.RecordRepeatInteractor
 import com.example.util.simpletimetracker.domain.base.REPEAT_BUTTON_ITEM_ID
 import com.example.util.simpletimetracker.domain.extension.orZero
-import com.example.util.simpletimetracker.domain.record.interactor.AddRunningRecordMediator
 import com.example.util.simpletimetracker.domain.notifications.interactor.NotificationActivitySwitchInteractor
 import com.example.util.simpletimetracker.domain.notifications.interactor.NotificationTypeInteractor
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
-import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTypeInteractor
+import com.example.util.simpletimetracker.domain.record.interactor.AddRunningRecordMediator
 import com.example.util.simpletimetracker.domain.record.interactor.RemoveRunningRecordMediator
 import com.example.util.simpletimetracker.domain.record.interactor.RunningRecordInteractor
 import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.domain.recordTag.interactor.NeedTagValueSelectionInteractor
+import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTypeInteractor
 import com.example.util.simpletimetracker.feature_notification.activitySwitch.manager.NotificationControlsManager
 import com.example.util.simpletimetracker.feature_notification.activitySwitch.manager.NotificationControlsManager.Companion.APPLY_TAGS_ID
 import com.example.util.simpletimetracker.feature_notification.activitySwitch.manager.NotificationControlsManager.Companion.UNTAGGED_TAG_ID
@@ -70,7 +70,6 @@ class ActivityStartStopFromBroadcastInteractor @Inject constructor(
             val requiredValueSelectionTagIds = it.requiredValueSelectionTagIds
             val isMultipleTagAvailable = isMultipleTagChoiceAvailable(
                 selectedTypeId = selectedTypeId,
-                selectedTags = preselectedTags,
             )
 
             // Update to show tag selection.
@@ -81,9 +80,11 @@ class ActivityStartStopFromBroadcastInteractor @Inject constructor(
                 selectedTypeId = selectedTypeId,
                 isMultipleTagAvailable = isMultipleTagAvailable,
                 selectedTags = preselectedTags,
-                editingTagId = requiredValueSelectionTagIds.firstOrNull(),
+                editingTagId = requiredValueSelectionTagIds.firstOrNull { id ->
+                    isRequiredTagValueSelectionMissingValue(preselectedTags, id)
+                },
                 editingTagValueInput = null,
-                requiredValueSelectionTagIds = requiredValueSelectionTagIds.drop(1),
+                requiredValueSelectionTagIds = requiredValueSelectionTagIds,
             )
         }
         if (started) {
@@ -120,12 +121,31 @@ class ActivityStartStopFromBroadcastInteractor @Inject constructor(
             return
         }
         if (tagId == UNTAGGED_TAG_ID) {
-            startFromTagSelection(
-                from = from,
-                selectedTypeId = selectedTypeId,
-                selectedTags = emptyList(),
-                typesShift = typesShift,
-            )
+            if (isMultipleTagAvailable) {
+                update(
+                    from = from,
+                    typesShift = typesShift,
+                    tagsShift = tagsShift,
+                    selectedTypeId = selectedTypeId,
+                    isMultipleTagAvailable = true,
+                    selectedTags = emptyList(), // Reset tags.
+                    editingTagId = null,
+                    editingTagValueInput = null,
+                    requiredValueSelectionTagIds = requiredValueSelectionTagIds,
+                )
+            } else {
+                startFromTagSelection(
+                    from = from,
+                    selectedTypeId = selectedTypeId,
+                    selectedTags = emptyList(),
+                    typesShift = typesShift,
+                )
+            }
+            return
+        }
+
+        if (!isMultipleTagAvailable && selectedTags.any { it.tagId == tagId }) {
+            // Disallow deselection for preselected tags.
             return
         }
 
@@ -165,7 +185,8 @@ class ActivityStartStopFromBroadcastInteractor @Inject constructor(
             return
         }
 
-        val updatedTags = selectedTags + RecordBase.Tag(
+        val updatedTags = selectedTags
+            .filterNot { it.tagId == tagId } + RecordBase.Tag(
             tagId = tagId,
             numericValue = null,
         )
@@ -198,17 +219,35 @@ class ActivityStartStopFromBroadcastInteractor @Inject constructor(
             tagId = tagId,
             numericValue = parseTagValueInput(tagValue),
         )
-        maybeStartWithSelectedTags(
-            from = from,
-            selectedTypeId = selectedTypeId,
-            selectedTags = updatedTags,
-            editingTagId = requiredValueSelectionTagIds.firstOrNull(),
-            editingTagValueInput = null,
-            typesShift = typesShift,
-            tagsShift = tagsShift,
-            isMultipleTagAvailable = isMultipleTagAvailable,
-            requiredValueSelectionTagIds = requiredValueSelectionTagIds.drop(1),
-        )
+        val nextRequiredTagId = requiredValueSelectionTagIds.firstOrNull { id ->
+            isRequiredTagValueSelectionMissingValue(updatedTags, id)
+        }
+        if (tagId in requiredValueSelectionTagIds) {
+            // Ignore "close after one" if tag requires value.
+            update(
+                from = from,
+                typesShift = typesShift,
+                tagsShift = tagsShift,
+                selectedTypeId = selectedTypeId,
+                selectedTags = updatedTags,
+                editingTagId = nextRequiredTagId,
+                editingTagValueInput = null,
+                isMultipleTagAvailable = isMultipleTagAvailable,
+                requiredValueSelectionTagIds = requiredValueSelectionTagIds,
+            )
+        } else {
+            maybeStartWithSelectedTags(
+                from = from,
+                selectedTypeId = selectedTypeId,
+                selectedTags = updatedTags,
+                editingTagId = nextRequiredTagId,
+                editingTagValueInput = null,
+                typesShift = typesShift,
+                tagsShift = tagsShift,
+                isMultipleTagAvailable = isMultipleTagAvailable,
+                requiredValueSelectionTagIds = requiredValueSelectionTagIds,
+            )
+        }
     }
 
     suspend fun onRequestUpdate(
@@ -357,13 +396,18 @@ class ActivityStartStopFromBroadcastInteractor @Inject constructor(
 
     private suspend fun isMultipleTagChoiceAvailable(
         selectedTypeId: Long,
-        selectedTags: List<RecordBase.Tag> = emptyList(),
     ): Boolean {
         return isMultipleTagChoiceAvailableInteractor.execute(
             typeId = selectedTypeId,
-            hasPreselectedTags = selectedTags.isNotEmpty(),
             closeAfterOne = prefsInteractor.getRecordTagSelectionCloseAfterOne(),
             excludedActivities = prefsInteractor.getCloseAfterOneTagExcludeActivities().toSet(),
         )
+    }
+
+    private fun isRequiredTagValueSelectionMissingValue(
+        newTags: List<RecordBase.Tag>,
+        tagId: Long,
+    ): Boolean {
+        return newTags.any { it.tagId == tagId && it.numericValue == null }
     }
 }

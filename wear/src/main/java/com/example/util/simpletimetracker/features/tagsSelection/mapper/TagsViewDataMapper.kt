@@ -16,6 +16,7 @@ import com.example.util.simpletimetracker.domain.recordTag.RecordTagValueFormatM
 import com.example.util.simpletimetracker.features.tagsSelection.screen.TagListState
 import com.example.util.simpletimetracker.features.tagsSelection.ui.TagChipState
 import com.example.util.simpletimetracker.features.tagsSelection.ui.TagSelectionButtonState
+import com.example.util.simpletimetracker.features.tagsSelection.ui.TagSelectionHintState
 import com.example.util.simpletimetracker.features.tagsSelection.ui.TagsLoadingState
 import com.example.util.simpletimetracker.presentation.theme.ColorActive
 import com.example.util.simpletimetracker.presentation.theme.ColorInactive
@@ -69,39 +70,40 @@ class TagsViewDataMapper @Inject constructor(
             TagChipState.TagSelectionMode.SINGLE
         }
 
-        val items = tags.map {
-            val isLoading = (loadingState as? TagsLoadingState.LoadingTag)
-                ?.tagId == it.id
-
-            TagListState.Item.Tag(
-                tag = TagChipState(
-                    id = it.id,
-                    name = it.name,
-                    value = selectedTagsMap[it.id]?.numericValue
-                        ?.let(recordTagValueFormatMapper::map).orEmpty(),
-                    color = it.color,
-                    checked = it.id in selectedTagIds,
-                    mode = mode,
-                    isLoading = isLoading,
-                ),
+        val tagItems = tags.map {
+            it.id to mapTag(
+                tag = it,
+                loadingState = loadingState,
+                selectedTagsMap = selectedTagsMap,
+                selectedTagIds = selectedTagIds,
+                mode = mode,
             )
+        }
+        val items = mutableListOf<TagListState.Item>()
+        if (multipleChoiceAvailable) {
+            items += tagItems.map { it.second }
+        } else {
+            val selected = tagItems.filter { it.first in selectedTagIds }.map { it.second }
+            val available = tagItems.filter { it.first !in selectedTagIds }.map { it.second }
+            if (selectedTags.isNotEmpty()) {
+                val hintData = TagSelectionHintState(resourceRepo.getString(R.string.something_preselected))
+                items += TagListState.Item.Hint(hintData)
+            }
+            items += selected
+            if (selected.isNotEmpty() && available.isNotEmpty()) {
+                items += TagListState.Item.Divider
+            }
+            items += available
         }
 
         val buttons = mutableListOf<TagListState.Item>()
-        if (mode == TagChipState.TagSelectionMode.SINGLE) {
-            buttons += mapButton(
-                textResId = R.string.change_record_untagged,
-                color = ColorInactive,
-                buttonType = TagListState.Item.ButtonType.Untagged,
-                loadingState = loadingState,
-            )
-        } else {
-            buttons += mapButton(
-                textResId = R.string.change_record_untagged,
-                color = ColorInactive,
-                buttonType = TagListState.Item.ButtonType.Untagged,
-                loadingState = loadingState,
-            )
+        buttons += mapButton(
+            textResId = R.string.change_record_untagged,
+            color = ColorInactive,
+            buttonType = TagListState.Item.ButtonType.Untagged,
+            loadingState = loadingState,
+        )
+        if (multipleChoiceAvailable || selectedTags.isNotEmpty()) {
             buttons += mapButton(
                 textResId = R.string.duration_dialog_save,
                 color = ColorActive,
@@ -112,6 +114,30 @@ class TagsViewDataMapper @Inject constructor(
 
         return TagListState.Content(
             items = items + buttons,
+        )
+    }
+
+    private fun mapTag(
+        tag: WearTag,
+        loadingState: TagsLoadingState,
+        selectedTagsMap: Map<Long, WearRecordTag>,
+        selectedTagIds: Set<Long>,
+        mode: TagChipState.TagSelectionMode,
+    ): TagListState.Item.Tag {
+        val isLoading = (loadingState as? TagsLoadingState.LoadingTag)
+            ?.tagId == tag.id
+
+        return TagListState.Item.Tag(
+            tag = TagChipState(
+                id = tag.id,
+                name = tag.name,
+                value = selectedTagsMap[tag.id]?.numericValue
+                    ?.let(recordTagValueFormatMapper::map).orEmpty(),
+                color = tag.color,
+                checked = tag.id in selectedTagIds,
+                mode = mode,
+                isLoading = isLoading,
+            ),
         )
     }
 

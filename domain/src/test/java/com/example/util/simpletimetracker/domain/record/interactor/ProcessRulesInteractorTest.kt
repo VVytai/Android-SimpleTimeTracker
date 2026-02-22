@@ -4,33 +4,34 @@ import com.example.util.simpletimetracker.domain.base.ResultContainer
 import com.example.util.simpletimetracker.domain.base.suspendLazy
 import com.example.util.simpletimetracker.domain.complexRule.interactor.ComplexRuleProcessActionInteractor
 import com.example.util.simpletimetracker.domain.record.model.Record
-import com.example.util.simpletimetracker.domain.record.model.RecordBase
+import com.example.util.simpletimetracker.domain.recordTag.interactor.RecordTagInteractor
 import com.example.util.simpletimetracker.domain.recordTag.interactor.RecordTypeToDefaultTagInteractor
+import com.example.util.simpletimetracker.domain.utils.recordTag
+import com.example.util.simpletimetracker.domain.utils.tag
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertSame
 import org.junit.Test
+import org.mockito.Mockito
 import org.mockito.kotlin.any
+import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
-import org.mockito.kotlin.mock
 
 internal class ProcessRulesInteractorTest {
 
+    private val recordTagInteractor: RecordTagInteractor = Mockito.mock()
     private val runningRecordInteractor: RunningRecordInteractor = mock()
     private val complexRuleProcessActionInteractor: ComplexRuleProcessActionInteractor = mock()
     private val recordTypeToDefaultTagInteractor: RecordTypeToDefaultTagInteractor = mock()
 
     private val subject = ProcessRulesInteractor(
+        recordTagInteractor = recordTagInteractor,
         runningRecordInteractor = runningRecordInteractor,
         complexRuleProcessActionInteractor = complexRuleProcessActionInteractor,
         recordTypeToDefaultTagInteractor = recordTypeToDefaultTagInteractor,
     )
-
-    private fun tag(tagId: Long, numericValue: Double? = null): RecordBase.Tag {
-        return RecordBase.Tag(tagId = tagId, numericValue = numericValue)
-    }
 
     private fun recordWithType(typeId: Long): Record {
         return Record(
@@ -118,7 +119,12 @@ internal class ProcessRulesInteractorTest {
         val currentTags = listOf(tag(1L, 10.0))
         val tagValuesFromRules = listOf(tag(2L, 5.0), tag(4L, 7.0))
 
-        whenever(recordTypeToDefaultTagInteractor.getTags(typeId)).thenReturn(setOf(1L, 2L, 3L))
+        whenever(recordTagInteractor.getAll()).thenReturn(
+            listOf(recordTag(1L), recordTag(2L), recordTag(3L), recordTag(4L)),
+        )
+        whenever(recordTypeToDefaultTagInteractor.getTags(typeId)).thenReturn(
+            setOf(1L, 2L, 3L),
+        )
 
         // When
         val result = subject.getAllTags(typeId, currentTags, tagValuesFromRules)

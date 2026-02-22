@@ -5,11 +5,14 @@ import com.example.util.simpletimetracker.domain.base.SuspendLazy
 import com.example.util.simpletimetracker.domain.complexRule.interactor.ComplexRuleProcessActionInteractor
 import com.example.util.simpletimetracker.domain.record.model.Record
 import com.example.util.simpletimetracker.domain.record.model.RecordBase
+import com.example.util.simpletimetracker.domain.recordTag.interactor.RecordTagInteractor
 import com.example.util.simpletimetracker.domain.recordTag.interactor.RecordTypeToDefaultTagInteractor
+import com.example.util.simpletimetracker.domain.recordTag.model.RecordTag
 import javax.inject.Inject
 import kotlin.collections.forEach
 
 class ProcessRulesInteractor @Inject constructor(
+    private val recordTagInteractor: RecordTagInteractor,
     private val runningRecordInteractor: RunningRecordInteractor,
     private val complexRuleProcessActionInteractor: ComplexRuleProcessActionInteractor,
     private val recordTypeToDefaultTagInteractor: RecordTypeToDefaultTagInteractor,
@@ -46,8 +49,14 @@ class ProcessRulesInteractor @Inject constructor(
         currentTags: List<RecordBase.Tag>,
         tagValuesFromRules: List<RecordBase.Tag>,
     ): List<RecordBase.Tag> {
+        val allTags = recordTagInteractor.getAll().associateBy(RecordTag::id)
         val defaultTags = recordTypeToDefaultTagInteractor.getTags(typeId)
+            .map { RecordBase.Tag(tagId = it, numericValue = null) }
         val merged = linkedMapOf<Long, RecordBase.Tag>()
+
+        fun List<RecordBase.Tag>.filter(): List<RecordBase.Tag> {
+            return this.filter { allTags[it.tagId]?.archived == false }
+        }
 
         fun merge(tag: RecordBase.Tag) {
             val existing = merged[tag.tagId]
@@ -57,9 +66,9 @@ class ProcessRulesInteractor @Inject constructor(
             }
         }
 
-        currentTags.forEach(::merge)
-        defaultTags.map { RecordBase.Tag(tagId = it, numericValue = null) }.forEach(::merge)
-        tagValuesFromRules.forEach(::merge)
+        currentTags.filter().forEach(::merge)
+        defaultTags.filter().forEach(::merge)
+        tagValuesFromRules.filter().forEach(::merge)
 
         return merged.values.toList()
     }

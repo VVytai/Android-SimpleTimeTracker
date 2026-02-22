@@ -22,7 +22,10 @@ import com.example.util.simpletimetracker.features.tagsSelection.ui.TagChip
 import com.example.util.simpletimetracker.features.tagsSelection.ui.TagChipState
 import com.example.util.simpletimetracker.features.tagsSelection.ui.TagSelectionButton
 import com.example.util.simpletimetracker.features.tagsSelection.ui.TagSelectionButtonState
+import com.example.util.simpletimetracker.features.tagsSelection.ui.TagSelectionHint
+import com.example.util.simpletimetracker.features.tagsSelection.ui.TagSelectionHintState
 import com.example.util.simpletimetracker.presentation.layout.ScaffoldedScrollingColumn
+import com.example.util.simpletimetracker.presentation.ui.Divider
 import com.example.util.simpletimetracker.presentation.ui.ErrorState
 import com.example.util.simpletimetracker.presentation.ui.renderError
 import com.example.util.simpletimetracker.utils.getString
@@ -51,6 +54,12 @@ sealed interface TagListState {
         data class Button(
             val data: TagSelectionButtonState,
         ) : Item
+
+        data class Hint(
+            val data: TagSelectionHintState,
+        ) : Item
+
+        data object Divider : Item
 
         sealed interface ButtonType {
             object Complete : ButtonType
@@ -127,6 +136,14 @@ private fun ScalingLazyListScope.renderContentState(
                     state = itemState.data,
                     onClick = onButtonClick,
                 )
+            }
+            is TagListState.Item.Hint -> item {
+                TagSelectionHint(
+                    state = itemState.data,
+                )
+            }
+            is TagListState.Item.Divider -> item {
+                Divider()
             }
         }
     }
@@ -213,6 +230,43 @@ private fun MultiSelectMode() {
                         color = 0xFF123456,
                         checked = false,
                         mode = TagChipState.TagSelectionMode.MULTI,
+                    ),
+                ),
+            ),
+        ),
+    )
+}
+
+@Preview(device = WearDevices.LARGE_ROUND)
+@Composable
+private fun Preselected() {
+    TagList(
+        state = TagListState.Content(
+            items = listOf(
+                TagListState.Item.Hint(
+                    data = TagSelectionHintState(
+                        text = "Preselected",
+                    ),
+                ),
+                TagListState.Item.Tag(
+                    tag = TagChipState(
+                        id = 123,
+                        name = "Sleep",
+                        value = "123.1",
+                        color = 0xFF123456,
+                        checked = true,
+                        mode = TagChipState.TagSelectionMode.SINGLE,
+                    ),
+                ),
+                TagListState.Item.Divider,
+                TagListState.Item.Tag(
+                    tag = TagChipState(
+                        id = 124,
+                        name = "Personal",
+                        value = "",
+                        color = 0xFF123456,
+                        checked = false,
+                        mode = TagChipState.TagSelectionMode.SINGLE,
                     ),
                 ),
             ),

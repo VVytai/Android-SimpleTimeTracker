@@ -10,12 +10,14 @@ import com.example.util.simpletimetracker.domain.notifications.interactor.Update
 import com.example.util.simpletimetracker.domain.pomodoro.interactor.PomodoroStartInteractor
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.record.model.Record
-import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.domain.record.model.RecordDataSelectionDialogResult
 import com.example.util.simpletimetracker.domain.record.model.RunningRecord
+import com.example.util.simpletimetracker.domain.recordTag.interactor.RecordTagInteractor
 import com.example.util.simpletimetracker.domain.recordTag.interactor.RecordTypeToDefaultTagInteractor
 import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTypeInteractor
 import com.example.util.simpletimetracker.domain.recordType.model.RecordType
+import com.example.util.simpletimetracker.domain.utils.recordTag
+import com.example.util.simpletimetracker.domain.utils.tag
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
@@ -35,6 +37,7 @@ class AddRunningRecordMediatorTest {
     private val prefsInteractor: PrefsInteractor = mock()
     private val removeRunningRecordMediator: RemoveRunningRecordMediator = mock()
     private val recordInteractor: RecordInteractor = mock()
+    private val recordTagInteractor: RecordTagInteractor = mock()
     private val runningRecordInteractor: RunningRecordInteractor = mock()
     private val recordTypeInteractor: RecordTypeInteractor = mock()
     private val addRecordMediator: AddRecordMediator = mock()
@@ -48,6 +51,7 @@ class AddRunningRecordMediatorTest {
     private val currentTimestampProvider: CurrentTimestampProvider = mock()
 
     private val processRulesInteractor = ProcessRulesInteractor(
+        recordTagInteractor = recordTagInteractor,
         runningRecordInteractor = runningRecordInteractor,
         complexRuleProcessActionInteractor = complexRuleProcessActionInteractor,
         recordTypeToDefaultTagInteractor = recordTypeToDefaultTagInteractor,
@@ -111,6 +115,7 @@ class AddRunningRecordMediatorTest {
             `when`(recordTypeInteractor.get(typeId)).thenReturn(type)
             `when`(runningRecordInteractor.getAll()).thenReturn(emptyList())
             `when`(recordInteractor.getAllPrev(any())).thenReturn(emptyList())
+            `when`(recordTagInteractor.getAll()).thenReturn(emptyList())
         }
     }
 
@@ -119,14 +124,17 @@ class AddRunningRecordMediatorTest {
         // Given
         val tagSelectionResult: ((RecordDataSelectionDialogResult) -> Unit) = mock()
 
-        // Already tracking
         `when`(runningRecordInteractor.get(typeId)).thenReturn(runningRecords[0])
+
+        // When
         subject.tryStartTimer(
             typeId = typeId,
             updateNotificationSwitch = true,
             commentInputAvailable = true,
             onNeedToShowTagSelection = { tagSelectionResult.invoke(it) },
         )
+
+        // Then
         verify(shouldShowRecordDataSelectionInteractor, never()).execute(any(), any())
         verify(tagSelectionResult, never()).invoke(any())
     }
@@ -140,12 +148,16 @@ class AddRunningRecordMediatorTest {
         `when`(shouldShowRecordDataSelectionInteractor.execute(any(), any())).thenReturn(
             RecordDataSelectionDialogResult(emptyList(), emptyList(), emptyList()),
         )
+
+        // When
         subject.tryStartTimer(
             typeId = typeId,
             updateNotificationSwitch = true,
             commentInputAvailable = true,
             onNeedToShowTagSelection = { tagSelectionResult.invoke(it) },
         )
+
+        // Then
         verify(shouldShowRecordDataSelectionInteractor).execute(typeId, true)
         verify(tagSelectionResult, never()).invoke(any())
         verify(subject).startTimer(
@@ -174,12 +186,16 @@ class AddRunningRecordMediatorTest {
 
         `when`(runningRecordInteractor.get(typeId)).thenReturn(null)
         `when`(shouldShowRecordDataSelectionInteractor.execute(any(), any())).thenReturn(result)
+
+        // When
         subject.tryStartTimer(
             typeId = typeId,
             updateNotificationSwitch = true,
             commentInputAvailable = true,
             onNeedToShowTagSelection = { tagSelectionResult.invoke(it) },
         )
+
+        // Then
         verify(shouldShowRecordDataSelectionInteractor).execute(typeId, true)
         verify(tagSelectionResult).invoke(eq(result))
         verify(subject, never()).startTimer(
@@ -218,6 +234,7 @@ class AddRunningRecordMediatorTest {
             rulesResult,
         )
 
+        // When
         subject.tryStartTimer(
             typeId = typeId,
             updateNotificationSwitch = true,
@@ -225,6 +242,7 @@ class AddRunningRecordMediatorTest {
             onNeedToShowTagSelection = { tagSelectionResult.invoke(it) },
         )
 
+        // Then
         verify(tagSelectionResult).invoke(eq(expected))
         verify(subject, never()).startTimer(
             typeId = any(),
@@ -246,12 +264,16 @@ class AddRunningRecordMediatorTest {
         `when`(shouldShowRecordDataSelectionInteractor.execute(any(), any())).thenReturn(
             RecordDataSelectionDialogResult(emptyList(), emptyList(), emptyList()),
         )
+
+        // When
         subject.tryStartTimer(
             typeId = typeId,
             updateNotificationSwitch = false,
             commentInputAvailable = false,
             onNeedToShowTagSelection = { tagSelectionResult.invoke(it) },
         )
+
+        // Then
         verify(shouldShowRecordDataSelectionInteractor).execute(typeId, false)
         verify(tagSelectionResult, never()).invoke(any())
         verify(subject).startTimer(
@@ -295,6 +317,9 @@ class AddRunningRecordMediatorTest {
 
     @Test
     fun startTimerAdditional() = runBlocking {
+        // Given
+        `when`(recordTagInteractor.getAll()).thenReturn(listOf(recordTag(tagId)))
+
         // When
         subject.startTimer(
             typeId = 1,
@@ -317,8 +342,11 @@ class AddRunningRecordMediatorTest {
 
     @Test
     fun startTimerUseSelectedTags(): Unit = runBlocking {
+        // Given
         val selectedTags = listOf(tag(tagId2, 2.5))
+        `when`(recordTagInteractor.getAll()).thenReturn(listOf(recordTag(tagId2)))
 
+        // When
         subject.startTimer(
             typeId = typeId,
             tags = selectedTags,
@@ -329,6 +357,7 @@ class AddRunningRecordMediatorTest {
             useSelectedTags = true,
         )
 
+        // Then
         verify(recordTypeToDefaultTagInteractor, never()).getTags(any())
         verify(activityStartedStoppedBroadcastInteractor).onActionActivityStarted(
             typeId = typeId,
@@ -405,6 +434,7 @@ class AddRunningRecordMediatorTest {
     @Test
     fun defaultTag(): Unit = runBlocking {
         // Given
+        `when`(recordTagInteractor.getAll()).thenReturn(listOf(recordTag(tagId), recordTag(tagId2)))
         `when`(recordTypeToDefaultTagInteractor.getTags(typeId)).thenReturn(setOf(tagId2))
 
         // When
@@ -554,6 +584,9 @@ class AddRunningRecordMediatorTest {
     @Test
     fun rulesTags(): Unit = runBlocking {
         // Given
+        `when`(recordTagInteractor.getAll()).thenReturn(
+            listOf(recordTag(tagId), recordTag(tagId2)),
+        )
         `when`(complexRuleProcessActionInteractor.hasRules()).thenReturn(true)
         `when`(runningRecordInteractor.getAll()).thenReturn(runningRecords)
         `when`(complexRuleProcessActionInteractor.processRules(any(), any(), any())).thenReturn(
@@ -594,6 +627,9 @@ class AddRunningRecordMediatorTest {
     @Test
     fun rulesAssignTagValueFromRules(): Unit = runBlocking {
         // Given
+        `when`(recordTagInteractor.getAll()).thenReturn(
+            listOf(recordTag(tagId), recordTag(tagId2)),
+        )
         `when`(complexRuleProcessActionInteractor.hasRules()).thenReturn(true)
         `when`(runningRecordInteractor.getAll()).thenReturn(runningRecords)
         `when`(complexRuleProcessActionInteractor.processRules(any(), any(), any())).thenReturn(
@@ -629,6 +665,7 @@ class AddRunningRecordMediatorTest {
     @Test
     fun ruleTagValueOverridesCurrentNull(): Unit = runBlocking {
         // Given
+        `when`(recordTagInteractor.getAll()).thenReturn(listOf(recordTag(tagId)))
         `when`(complexRuleProcessActionInteractor.hasRules()).thenReturn(true)
         `when`(runningRecordInteractor.getAll()).thenReturn(runningRecords)
         `when`(complexRuleProcessActionInteractor.processRules(any(), any(), any())).thenReturn(
@@ -769,6 +806,7 @@ class AddRunningRecordMediatorTest {
     @Test
     fun defaultDuration(): Unit = runBlocking {
         // Given
+        `when`(recordTagInteractor.getAll()).thenReturn(listOf(recordTag(tagId)))
         `when`(recordTypeInteractor.get(typeId)).thenReturn(
             type.copy(defaultDuration = 1),
         )
@@ -803,6 +841,7 @@ class AddRunningRecordMediatorTest {
     @Test
     fun defaultDurationWithCheckDisabled(): Unit = runBlocking {
         // Given
+        `when`(recordTagInteractor.getAll()).thenReturn(listOf(recordTag(tagId)))
         `when`(recordTypeInteractor.get(typeId)).thenReturn(
             type.copy(defaultDuration = 1),
         )
@@ -835,6 +874,7 @@ class AddRunningRecordMediatorTest {
     @Test
     fun retroactiveNoPrev(): Unit = runBlocking {
         // Given
+        `when`(recordTagInteractor.getAll()).thenReturn(listOf(recordTag(tagId)))
         `when`(prefsInteractor.getRetroactiveTrackingMode()).thenReturn(true)
         `when`(recordInteractor.getAllPrev(any())).thenReturn(emptyList())
 
@@ -868,6 +908,7 @@ class AddRunningRecordMediatorTest {
     @Test
     fun retroactive(): Unit = runBlocking {
         // Given
+        `when`(recordTagInteractor.getAll()).thenReturn(listOf(recordTag(tagId)))
         `when`(prefsInteractor.getRetroactiveTrackingMode()).thenReturn(true)
         `when`(recordInteractor.getAllPrev(any())).thenReturn(
             listOf(
@@ -912,6 +953,7 @@ class AddRunningRecordMediatorTest {
     @Test
     fun retroactiveNoMerge(): Unit = runBlocking {
         // Given
+        `when`(recordTagInteractor.getAll()).thenReturn(listOf(recordTag(tagId), recordTag(tagId2)))
         `when`(prefsInteractor.getRetroactiveTrackingMode()).thenReturn(true)
         `when`(recordInteractor.getAllPrev(any())).thenReturn(
             listOf(
@@ -1000,6 +1042,7 @@ class AddRunningRecordMediatorTest {
     @Test
     fun retroactiveDefaultDuration(): Unit = runBlocking {
         // Given
+        `when`(recordTagInteractor.getAll()).thenReturn(listOf(recordTag(tagId2)))
         `when`(prefsInteractor.getRetroactiveTrackingMode()).thenReturn(true)
         `when`(recordInteractor.getAllPrev(any())).thenReturn(
             listOf(
@@ -1047,6 +1090,7 @@ class AddRunningRecordMediatorTest {
     @Test
     fun retroactiveMultitasking(): Unit = runBlocking {
         // Given
+        `when`(recordTagInteractor.getAll()).thenReturn(listOf(recordTag(tagId), recordTag(tagId2)))
         `when`(prefsInteractor.getRetroactiveTrackingMode()).thenReturn(true)
         `when`(prefsInteractor.getAllowMultitasking()).thenReturn(true)
         `when`(recordInteractor.getAllPrev(any())).thenReturn(
@@ -1199,9 +1243,5 @@ class AddRunningRecordMediatorTest {
             ),
             updateNotificationSwitch = eq(true),
         )
-    }
-
-    private fun tag(id: Long, value: Double? = null): RecordBase.Tag {
-        return RecordBase.Tag(id, value)
     }
 }

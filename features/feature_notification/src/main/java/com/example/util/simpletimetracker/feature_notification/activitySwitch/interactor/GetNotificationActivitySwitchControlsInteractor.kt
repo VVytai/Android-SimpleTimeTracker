@@ -68,7 +68,7 @@ class GetNotificationActivitySwitchControlsInteractor @Inject constructor(
                 types = types,
                 suggestions = suggestions,
                 showRepeatButton = showRepeatButton,
-                showTagSaveButton = isMultipleTagAvailable,
+                isMultipleTagAvailable = isMultipleTagAvailable,
                 typesShift = typesShift,
                 selectedTypeId = selectedTypeId,
                 selectedTags = selectedTags,
@@ -97,23 +97,30 @@ class GetNotificationActivitySwitchControlsInteractor @Inject constructor(
         types: List<RecordType>,
         suggestions: List<RecordType>,
         showRepeatButton: Boolean,
-        showTagSaveButton: Boolean,
+        isMultipleTagAvailable: Boolean,
         typesShift: Int,
         selectedTypeId: Long?,
         selectedTags: List<RecordBase.Tag>,
         goals: Map<Long, List<RecordTypeGoal>>,
         allDailyCurrents: Map<Long, GetCurrentRecordsDurationInteractor.Result>,
     ): NotificationControlsParams.ViewState {
+        val showTagSaveButton = isMultipleTagAvailable || selectedTags.isNotEmpty()
+        val typesMap = types.associateBy { it.id }
+        val selectedTagsMap = selectedTags.associateBy { it.tagId }
+        val selectedTagsIds = selectedTagsMap.keys
+
+        fun splitBySelected(data: List<RecordTag>): List<RecordTag> {
+            return data.partition { it.id in selectedTagsIds }.let { it.first + it.second }
+        }
+
         val tags = if (selectedTypeId != null && selectedTypeId != 0L) {
             getSelectableTagsInteractor.execute(selectedTypeId)
                 .filterNot { it.archived }
         } else {
             emptyList()
+        }.let {
+            if (isMultipleTagAvailable) it else splitBySelected(it)
         }
-
-        val typesMap = types.associateBy { it.id }
-
-        val selectedTagsMap = selectedTags.associateBy { it.tagId }
 
         val suggestionsViewData = suggestions.map { type ->
             mapType(
@@ -148,7 +155,6 @@ class GetNotificationActivitySwitchControlsInteractor @Inject constructor(
             }
 
         val tagsViewData = tags
-            .filter { !it.archived }
             .map { tag ->
                 mapTag(
                     tag = tag,

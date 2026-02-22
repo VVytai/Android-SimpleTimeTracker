@@ -8,7 +8,6 @@ class IsMultipleTagChoiceAvailableInteractor @Inject constructor(
 
     fun execute(
         typeId: Long,
-        hasPreselectedTags: Boolean,
         closeAfterOne: Boolean,
         excludedActivities: Set<Long>,
     ): Boolean {
@@ -17,7 +16,6 @@ class IsMultipleTagChoiceAvailableInteractor @Inject constructor(
             closeAfterOne = closeAfterOne,
             excludedActivities = excludedActivities,
         )
-        // If there are preselected tags - ignore setting.
-        return hasPreselectedTags || !shouldCloseAfterOne
+        return !shouldCloseAfterOne
     }
 }

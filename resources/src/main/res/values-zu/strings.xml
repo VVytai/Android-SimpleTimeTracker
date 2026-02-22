@@ -15,6 +15,7 @@
     <string name="record_tag_hint_short">Amathegi</string>
     <string name="nothing_selected">Akukho okukhethiwe</string>
     <string name="something_selected">Okukhethiwe:</string>
+    <string name="something_preselected">Okukhethwe kusengaphambili:</string>
     <string name="select_all">Khetha konke</string>
     <string name="select_nothing">Khetha lutho</string>
     <string name="no_data">Ayikho imininingo</string>

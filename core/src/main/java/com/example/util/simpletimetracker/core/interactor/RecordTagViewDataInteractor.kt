@@ -75,6 +75,10 @@ class RecordTagViewDataInteractor @Inject constructor(
                 viewData += commonViewDataMapper.mapSelectedHint(
                     isEmpty = selected.isEmpty(),
                 )
+            } else if (selected.isNotEmpty()) {
+                viewData += InfoViewData(
+                    text = resourceRepo.getString(R.string.something_preselected),
+                )
             }
 
             viewData += selected.map {
@@ -86,7 +90,10 @@ class RecordTagViewDataInteractor @Inject constructor(
                 )
             }
 
-            if (multipleChoiceAvailable && available.isNotEmpty()) {
+            if (
+                (multipleChoiceAvailable && available.isNotEmpty()) ||
+                (!multipleChoiceAvailable && selected.isNotEmpty() && available.isNotEmpty())
+            ) {
                 viewData += DividerViewData("divider_available".hashCode().toLong())
             }
 
@@ -138,7 +145,10 @@ class RecordTagViewDataInteractor @Inject constructor(
             }
 
             if (buttonsViewData.isNotEmpty()) {
-                if (multipleChoiceAvailable || availableFromOtherActivities.isNotEmpty()) {
+                if (multipleChoiceAvailable ||
+                    selected.isNotEmpty() ||
+                    availableFromOtherActivities.isNotEmpty()
+                ) {
                     viewData += DividerViewData("divider_buttons".hashCode().toLong())
                 }
                 viewData += buttonsViewData
