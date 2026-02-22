@@ -55,6 +55,7 @@ class StatisticsView @JvmOverloads constructor(
     var itemDuration: String = ""
         set(value) {
             binding.tvStatisticsItemDuration.text = value
+            binding.tvStatisticsItemDuration.isVisible = value.isNotEmpty()
             field = value
         }
 

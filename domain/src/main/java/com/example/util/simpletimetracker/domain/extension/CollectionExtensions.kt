@@ -56,13 +56,20 @@ inline fun <T> List<T>.replaceWith(new: T, crossinline filter: (T) -> Boolean): 
 }
 
 fun <T> List<T>.addBetweenEach(
-    spacingProducer: (index: Int) -> T,
+    spacingProducer: (index: Int) -> T?,
 ): List<T> {
-    val result = mutableListOf<T>()
+    return this.addBetweenEach(map = { it }, spacingProducer = { index, _, _ -> spacingProducer(index) })
+}
+
+fun <IN, OUT> List<IN>.addBetweenEach(
+    map: (IN) -> OUT,
+    spacingProducer: (index: Int, currentItem: IN, nextItem: IN?) -> OUT?,
+): List<OUT> {
+    val result = mutableListOf<OUT>()
     this.forEachIndexed { index, item ->
-        result += item
+        result += map(item)
         if (index != this.lastIndex) {
-            result += spacingProducer(index)
+            result += spacingProducer(index, item, this.getOrNull(index + 1))
         }
     }
     return result

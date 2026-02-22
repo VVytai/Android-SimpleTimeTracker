@@ -4,6 +4,7 @@ import com.example.util.simpletimetracker.core.R
 import com.example.util.simpletimetracker.core.mapper.CategoryViewDataMapper
 import com.example.util.simpletimetracker.core.mapper.CommonViewDataMapper
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
+import com.example.util.simpletimetracker.domain.extension.addBetweenEach
 import com.example.util.simpletimetracker.domain.extension.plusAssign
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.record.model.RecordBase
@@ -34,6 +35,7 @@ class RecordTagViewDataInteractor @Inject constructor(
         showAllTags: Boolean,
         multipleChoiceAvailable: Boolean,
         showAddButton: Boolean,
+        showHint: Boolean,
         showArchived: Boolean,
         showUntaggedButton: Boolean,
         showAllTagsButton: Boolean,
@@ -44,135 +46,149 @@ class RecordTagViewDataInteractor @Inject constructor(
 
         val isDarkTheme = prefsInteractor.getDarkMode()
         val allTags = recordTagInteractor.getAll().filterArchived()
+
+        if (allTags.isEmpty()) {
+            return mapEmpty(
+                showAddButton = showAddButton,
+                isDarkTheme = isDarkTheme,
+            )
+        }
+
         val recordTags = getSelectableTagsInteractor.execute(*typeIds.toLongArray()).filterArchived()
         val recordTagIds = recordTags.map { it.id }
         val tagsFromOtherActivities = allTags.filter { it.id !in recordTagIds }
         val hasMoreTags = tagsFromOtherActivities.isNotEmpty()
         val types = recordTypeInteractor.getAll().associateBy { it.id }
 
-        return if (allTags.isNotEmpty()) {
-            val selectedTagsMap = selectedTags.associateBy { it.tagId }
-            val selectedTagIds = selectedTagsMap.keys
-            val selected = allTags.filter { it.id in selectedTagIds }
-            val available = recordTags.filter { it.id !in selectedTagIds }
-            val availableFromOtherActivities = if (showAllTags) {
-                tagsFromOtherActivities.filter { it.id !in selectedTagIds }
-            } else {
-                emptyList()
+        val selectedTagsMap = selectedTags.associateBy { it.tagId }
+        val selectedTagIds = selectedTagsMap.keys
+        val selected = allTags.filter { it.id in selectedTagIds }
+        val available = recordTags.filter { it.id !in selectedTagIds }
+        val availableFromOtherActivities = if (showAllTags) {
+            tagsFromOtherActivities.filter { it.id !in selectedTagIds }
+        } else {
+            emptyList()
+        }
+
+        // Hint
+        val hintViewData = if (showHint) {
+            listOf(categoryViewDataMapper.mapToRecordTagHint())
+        } else {
+            emptyList()
+        }
+
+        // Selected
+        val selectedViewData = mutableListOf<ViewHolderType>()
+        if (multipleChoiceAvailable) {
+            selectedViewData += commonViewDataMapper.mapSelectedHint(
+                isEmpty = selected.isEmpty(),
+            )
+        } else if (selected.isNotEmpty()) {
+            selectedViewData += InfoViewData(
+                text = resourceRepo.getString(R.string.something_preselected),
+            )
+        }
+        selectedViewData += selected.map {
+            categoryViewDataMapper.mapRecordTagWithValue(
+                tag = it,
+                tagData = selectedTagsMap[it.id],
+                types = types,
+                isDarkTheme = isDarkTheme,
+            )
+        }
+
+        // Available
+        val availableViewData = mutableListOf<ViewHolderType>()
+        categoryViewDataMapper.groupToTagGroups(available).forEach { (groupName, tags) ->
+            if (groupName.isNotEmpty()) {
+                availableViewData += InfoViewData(text = groupName)
             }
 
-            val viewData = mutableListOf<ViewHolderType>()
-            val buttonsViewData = mutableListOf<ViewHolderType>()
-
-            if (showAddButton) {
-                viewData += listOf(
-                    categoryViewDataMapper.mapToRecordTagHint(),
-                    DividerViewData("divider_hint".hashCode().toLong()),
-                )
-            }
-
-            if (multipleChoiceAvailable) {
-                viewData += commonViewDataMapper.mapSelectedHint(
-                    isEmpty = selected.isEmpty(),
-                )
-            } else if (selected.isNotEmpty()) {
-                viewData += InfoViewData(
-                    text = resourceRepo.getString(R.string.something_preselected),
-                )
-            }
-
-            viewData += selected.map {
-                categoryViewDataMapper.mapRecordTagWithValue(
+            availableViewData += tags.map {
+                categoryViewDataMapper.mapRecordTag(
                     tag = it,
-                    tagData = selectedTagsMap[it.id],
                     types = types,
                     isDarkTheme = isDarkTheme,
                 )
             }
+        }
 
-            if (
-                (multipleChoiceAvailable && available.isNotEmpty()) ||
-                (!multipleChoiceAvailable && selected.isNotEmpty() && available.isNotEmpty())
-            ) {
-                viewData += DividerViewData("divider_available".hashCode().toLong())
-            }
-
-            categoryViewDataMapper.groupToTagGroups(available).forEach { (groupName, tags) ->
-                if (groupName.isNotEmpty()) {
-                    viewData += InfoViewData(text = groupName)
-                }
-
-                viewData += tags.map {
-                    categoryViewDataMapper.mapRecordTag(
-                        tag = it,
-                        types = types,
-                        isDarkTheme = isDarkTheme,
-                    )
-                }
-            }
-
-            if (availableFromOtherActivities.isNotEmpty()) {
-                viewData += DividerViewData("divider_from_other".hashCode().toLong())
-
-                viewData += HintViewData(
-                    text = resourceRepo.getString(R.string.change_record_tag_from_other_activity),
-                )
-
-                viewData += availableFromOtherActivities.map {
-                    categoryViewDataMapper.mapRecordTag(
-                        tag = it,
-                        types = types,
-                        isDarkTheme = isDarkTheme,
-                    )
-                }
-            }
-
-            if (showUntaggedButton) {
-                buttonsViewData += categoryViewDataMapper.mapToUntaggedItem(
-                    isDarkTheme = isDarkTheme,
-                    isFiltered = false,
-                )
-            }
-
-            if (showAllTagsButton && !showAllTags && hasMoreTags) {
-                buttonsViewData += categoryViewDataMapper.mapToRecordTagShowAllItem(
-                    isDarkTheme = isDarkTheme,
-                )
-            }
-
-            if (showAddButton) {
-                buttonsViewData += categoryViewDataMapper.mapToRecordTagAddItem(isDarkTheme)
-            }
-
-            if (buttonsViewData.isNotEmpty()) {
-                if (multipleChoiceAvailable ||
-                    selected.isNotEmpty() ||
-                    availableFromOtherActivities.isNotEmpty()
-                ) {
-                    viewData += DividerViewData("divider_buttons".hashCode().toLong())
-                }
-                viewData += buttonsViewData
-            }
-
-            Result(
-                selectedCount = selected.size,
-                data = viewData,
+        // From other
+        val availableFromOtherViewData = mutableListOf<ViewHolderType>()
+        if (availableFromOtherActivities.isNotEmpty()) {
+            availableFromOtherViewData += HintViewData(
+                text = resourceRepo.getString(R.string.change_record_tag_from_other_activity),
             )
-        } else {
-            val viewData = mutableListOf<ViewHolderType>()
-            viewData += if (showAddButton && recordTagInteractor.isEmpty()) {
-                categoryViewDataMapper.mapToTagsFirstHint()
-            } else {
-                categoryViewDataMapper.mapToRecordTagsEmpty()
+
+            availableFromOtherViewData += availableFromOtherActivities.map {
+                categoryViewDataMapper.mapRecordTag(
+                    tag = it,
+                    types = types,
+                    isDarkTheme = isDarkTheme,
+                )
             }
-            if (showAddButton) {
-                viewData += categoryViewDataMapper.mapToRecordTagAddItem(isDarkTheme)
-            }
-            Result(
-                selectedCount = 0,
-                data = viewData,
+        }
+
+        // Buttons
+        val buttonsViewData = mutableListOf<ViewHolderType>()
+        if (showUntaggedButton) {
+            buttonsViewData += categoryViewDataMapper.mapToUntaggedItem(
+                isDarkTheme = isDarkTheme,
+                isFiltered = false,
             )
         }
+        if (showAllTagsButton && !showAllTags && hasMoreTags) {
+            buttonsViewData += categoryViewDataMapper.mapToRecordTagShowAllItem(
+                isDarkTheme = isDarkTheme,
+            )
+        }
+        if (showAddButton) {
+            buttonsViewData += categoryViewDataMapper.mapToRecordTagAddItem(isDarkTheme)
+        }
+
+        // All
+        val viewData = listOf(
+            hintViewData to true,
+            selectedViewData to true,
+            availableViewData to true,
+            availableFromOtherViewData to true,
+            buttonsViewData to (multipleChoiceAvailable || availableFromOtherViewData.isNotEmpty()),
+        ).filter {
+            it.first.isNotEmpty()
+        }.addBetweenEach(
+            map = { it.first },
+            spacingProducer = { index, _, second ->
+                if (second?.second == true) {
+                    listOf(DividerViewData("divider_$index".hashCode().toLong()))
+                } else {
+                    null
+                }
+            },
+        ).flatten()
+
+        return Result(
+            selectedCount = selected.size,
+            data = viewData,
+        )
+    }
+
+    private suspend fun mapEmpty(
+        showAddButton: Boolean,
+        isDarkTheme: Boolean,
+    ): Result {
+        val viewData = mutableListOf<ViewHolderType>()
+        viewData += if (showAddButton && recordTagInteractor.isEmpty()) {
+            categoryViewDataMapper.mapToTagsFirstHint()
+        } else {
+            categoryViewDataMapper.mapToRecordTagsEmpty()
+        }
+        if (showAddButton) {
+            viewData += categoryViewDataMapper.mapToRecordTagAddItem(isDarkTheme)
+        }
+        return Result(
+            selectedCount = 0,
+            data = viewData,
+        )
     }
 
     data class Result(
