@@ -41,7 +41,6 @@ import com.example.util.simpletimetracker.navigation.params.screen.ChangeRunning
 import com.example.util.simpletimetracker.navigation.params.screen.ChangeTagData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -248,8 +247,8 @@ class ChangeRunningRecordViewModel @Inject constructor(
     }
 
     private fun startUpdate() {
+        timerJob?.cancel()
         timerJob = viewModelScope.launch {
-            timerJob?.cancelAndJoin()
             while (isActive) {
                 updatePreview()
                 // Update split preview only if it is visible
@@ -262,9 +261,7 @@ class ChangeRunningRecordViewModel @Inject constructor(
     }
 
     private fun stopUpdate() {
-        viewModelScope.launch {
-            timerJob?.cancelAndJoin()
-        }
+        timerJob?.cancel()
     }
 
     companion object {

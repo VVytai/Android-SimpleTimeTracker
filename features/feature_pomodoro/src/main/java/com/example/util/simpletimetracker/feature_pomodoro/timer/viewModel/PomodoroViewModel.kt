@@ -20,7 +20,6 @@ import com.example.util.simpletimetracker.navigation.Router
 import com.example.util.simpletimetracker.navigation.params.screen.PomodoroSettingsParams
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -96,8 +95,8 @@ class PomodoroViewModel @Inject constructor(
     }
 
     private fun startUpdate() {
+        timerJob?.cancel()
         timerJob = viewModelScope.launch {
-            timerJob?.cancelAndJoin()
             while (isActive) {
                 updateButtonState()
                 updateTimerState()
@@ -107,9 +106,7 @@ class PomodoroViewModel @Inject constructor(
     }
 
     private fun stopUpdate() {
-        viewModelScope.launch {
-            timerJob?.cancelAndJoin()
-        }
+        timerJob?.cancel()
     }
 
     private suspend fun updateButtonState() {

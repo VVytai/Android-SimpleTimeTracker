@@ -38,7 +38,6 @@ import com.example.util.simpletimetracker.navigation.params.screen.ChangeRunning
 import com.example.util.simpletimetracker.navigation.params.screen.RecordQuickActionsParams
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -221,11 +220,7 @@ class RecordsViewModel @Inject constructor(
 
     fun onVisible() {
         isVisible = true
-        if (shift == 0) {
-            startUpdate()
-        } else {
-            updateRecords()
-        }
+        startUpdate()
     }
 
     fun onHidden() {
@@ -349,8 +344,12 @@ class RecordsViewModel @Inject constructor(
     }
 
     private fun startUpdate() {
+        timerJob?.cancel()
+        if (shift != 0) {
+            updateRecords()
+            return
+        }
         timerJob = viewModelScope.launch {
-            timerJob?.cancelAndJoin()
             while (isActive) {
                 updateRecords()
                 delay(TIMER_UPDATE)
@@ -359,9 +358,7 @@ class RecordsViewModel @Inject constructor(
     }
 
     private fun stopUpdate() {
-        viewModelScope.launch {
-            timerJob?.cancelAndJoin()
-        }
+        timerJob?.cancel()
     }
 
     companion object {

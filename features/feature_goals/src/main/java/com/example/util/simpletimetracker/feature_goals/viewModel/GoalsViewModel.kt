@@ -25,7 +25,6 @@ import com.example.util.simpletimetracker.navigation.params.screen.DateTimeDialo
 import com.example.util.simpletimetracker.navigation.params.screen.DateTimeDialogType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -140,8 +139,8 @@ class GoalsViewModel @Inject constructor(
     }
 
     private fun startUpdate() {
+        timerJob?.cancel()
         timerJob = viewModelScope.launch {
-            timerJob?.cancelAndJoin()
             while (isActive) {
                 updateStatistics()
                 delay(TIMER_UPDATE)
@@ -150,9 +149,7 @@ class GoalsViewModel @Inject constructor(
     }
 
     private fun stopUpdate() {
-        viewModelScope.launch {
-            timerJob?.cancelAndJoin()
-        }
+        timerJob?.cancel()
     }
 
     private fun updatePosition(newPosition: Int) {

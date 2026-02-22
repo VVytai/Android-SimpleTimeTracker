@@ -25,7 +25,6 @@ import com.example.util.simpletimetracker.navigation.Router
 import com.example.util.simpletimetracker.navigation.params.screen.ChartFilterDialogParams
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -66,11 +65,7 @@ class StatisticsViewModel @Inject constructor(
 
     fun onVisible() {
         isVisible = true
-        if (shift == 0) {
-            startUpdate()
-        } else {
-            updateStatistics()
-        }
+        startUpdate()
         updateAnimateChartParticles()
     }
 
@@ -221,8 +216,12 @@ class StatisticsViewModel @Inject constructor(
     }
 
     private fun startUpdate() {
+        timerJob?.cancel()
+        if (shift != 0) {
+            updateStatistics()
+            return
+        }
         timerJob = viewModelScope.launch {
-            timerJob?.cancelAndJoin()
             while (isActive) {
                 updateStatistics()
                 delay(TIMER_UPDATE)
@@ -231,9 +230,7 @@ class StatisticsViewModel @Inject constructor(
     }
 
     private fun stopUpdate() {
-        viewModelScope.launch {
-            timerJob?.cancelAndJoin()
-        }
+        timerJob?.cancel()
     }
 
     companion object {
