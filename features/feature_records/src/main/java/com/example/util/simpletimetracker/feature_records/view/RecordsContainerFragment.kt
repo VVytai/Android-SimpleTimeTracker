@@ -65,6 +65,7 @@ class RecordsContainerFragment :
             )
             offscreenPageLimit = 1
             isUserInputEnabled = false
+            setCurrentItem(RecordsContainerAdapter.FIRST, false)
         }
         DateSelectorViewDelegate.initUi(
             fragment = this@RecordsContainerFragment,
@@ -72,7 +73,6 @@ class RecordsContainerFragment :
             viewModel = viewModel.dateSelectorViewModelDelegate,
             binding = containerDatesSelector,
         )
-        viewModel.initialize()
     }
 
     override fun initUx() {
@@ -101,6 +101,7 @@ class RecordsContainerFragment :
             viewModel = viewModel.dateSelectorViewModelDelegate,
             binding = binding.containerDatesSelector,
         )
+        viewModel.initialize()
     }
 
     override fun onDateTimeSet(timestamp: Long, tag: String?) {

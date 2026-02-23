@@ -58,6 +58,7 @@ class StatisticsContainerFragment :
             )
             offscreenPageLimit = 1
             isUserInputEnabled = false
+            setCurrentItem(StatisticsContainerAdapter.FIRST, false)
         }
         DateSelectorViewDelegate.initUi(
             fragment = this@StatisticsContainerFragment,
@@ -65,7 +66,6 @@ class StatisticsContainerFragment :
             viewModel = viewModel.dateSelectorViewModelDelegate,
             binding = containerDatesSelector,
         )
-        viewModel.initialize()
     }
 
     override fun initUx() {
@@ -102,6 +102,7 @@ class StatisticsContainerFragment :
             viewModel = viewModel.dateSelectorViewModelDelegate,
             binding = binding.containerDatesSelector,
         )
+        viewModel.initialize()
     }
 
     override fun onResume() {
