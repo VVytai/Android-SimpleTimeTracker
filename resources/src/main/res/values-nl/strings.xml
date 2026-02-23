@@ -553,6 +553,7 @@ Voorbeeld:<br/>
     <string name="statistics_detail_tag_values_hint">Tagwaarden</string>
     <string name="statistics_detail_tag_values_multiply_duration">Vermenigvuldig met duur</string>
     <string name="statistics_detail_tag_values_fill_empty_periods">Lege periodes vullen met vorige gegevens</string>
+    <string name="statistics_detail_tag_values_zoom_y_axis">Y-as zoomen</string>
 
     <plurals name="statistics_detail_times_tracked">
         <!--        <item quantity="zero">Gegevens</item>-->

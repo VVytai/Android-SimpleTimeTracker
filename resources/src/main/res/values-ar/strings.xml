@@ -553,6 +553,7 @@
     <string name="statistics_detail_tag_values_hint">قيم الوسوم</string>
     <string name="statistics_detail_tag_values_multiply_duration">اضرب بالمدة</string>
     <string name="statistics_detail_tag_values_fill_empty_periods">املأ الفترات الفارغة بالبيانات السابقة</string>
+    <string name="statistics_detail_tag_values_zoom_y_axis">تكبير محور Y</string>
 
     <plurals name="statistics_detail_times_tracked">
         <item quantity="zero">تتبع</item>

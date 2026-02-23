@@ -553,6 +553,7 @@
     <string name="statistics_detail_tag_values_hint">مقادیر برچسب</string>
     <string name="statistics_detail_tag_values_multiply_duration">ضرب در مدت‌زمان</string>
     <string name="statistics_detail_tag_values_fill_empty_periods">پر کردن دوره‌های خالی با داده‌های قبلی</string>
+    <string name="statistics_detail_tag_values_zoom_y_axis">بزرگ‌نمایی محور Y</string>
 
     <plurals name="statistics_detail_times_tracked">
         <!--        <item quantity="zero">بدون تاریخچه</item>-->

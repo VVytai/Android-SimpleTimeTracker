@@ -553,6 +553,7 @@ Isibonelo:<br/>
     <string name="statistics_detail_tag_values_hint">Amanani ethegi</string>
     <string name="statistics_detail_tag_values_multiply_duration">Phindaphinda isikhathi</string>
     <string name="statistics_detail_tag_values_fill_empty_periods">Gcwalisa izikhathi ezingenalutho ngedatha yangaphambilini</string>
+    <string name="statistics_detail_tag_values_zoom_y_axis">Sondeza i-eksisi engu-Y</string>
 
     <plurals name="statistics_detail_times_tracked">
         <!--        <item quantity="zero">Amarekhodi</item>-->

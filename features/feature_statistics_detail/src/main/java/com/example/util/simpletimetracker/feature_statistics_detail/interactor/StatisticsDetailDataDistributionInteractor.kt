@@ -304,6 +304,7 @@ class StatisticsDetailDataDistributionInteractor @Inject constructor(
             showSelectedBarOnStart = false,
             selectedBarPosition = selectedBarPosition,
             goalValue = 0f,
+            yAxisZoomed = false,
             useSingleColor = true,
             drawRoundCaps = true,
             animate = OneShotValue(animate),

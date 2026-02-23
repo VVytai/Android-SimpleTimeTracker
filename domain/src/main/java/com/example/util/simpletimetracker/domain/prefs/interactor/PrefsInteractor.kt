@@ -1291,18 +1291,18 @@ class PrefsInteractor @Inject constructor(
                 val modeInt = parts.getOrNull(1)?.toIntOrNull().orZero()
                 val multiplyInt = parts.getOrNull(2)?.toIntOrNull().orZero()
                 val fillInt = parts.getOrNull(3)?.toIntOrNull().orZero()
+                val zoomInt = parts.getOrNull(4)?.toIntOrNull().orZero()
                 val chartValueMode = when (modeInt) {
                     0 -> ChartValueMode.TOTAL
                     1 -> ChartValueMode.AVERAGE
                     else -> ChartValueMode.TOTAL
                 }
-                val multiplyDuration = multiplyInt == 1
-                val fillEmptyPeriods = fillInt == 1
                 tagId to StatisticsDetailTagValueSettings(
                     tagId = tagId,
                     chartValueMode = chartValueMode,
-                    multiplyDuration = multiplyDuration,
-                    fillEmptyPeriods = fillEmptyPeriods,
+                    multiplyDuration = multiplyInt == 1,
+                    fillEmptyPeriods = fillInt == 1,
+                    yAxisZoomed = zoomInt == 1,
                 )
             }
         }?.toMap().orEmpty()
@@ -1325,6 +1325,8 @@ class PrefsInteractor @Inject constructor(
                 append(if (settings.multiplyDuration) 1 else 0)
                 append(STATISTICS_DETAIL_TAG_VALUE_DELIMITER)
                 append(if (settings.fillEmptyPeriods) 1 else 0)
+                append(STATISTICS_DETAIL_TAG_VALUE_DELIMITER)
+                append(if (settings.yAxisZoomed) 1 else 0)
             }
         }.toSet()
     }

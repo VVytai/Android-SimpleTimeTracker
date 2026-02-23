@@ -553,6 +553,7 @@ Beispiel:<br/>
     <string name="statistics_detail_tag_values_hint">Tag-Werte</string>
     <string name="statistics_detail_tag_values_multiply_duration">Mit Dauer multiplizieren</string>
     <string name="statistics_detail_tag_values_fill_empty_periods">Leere Zeiträume mit vorherigen Daten füllen</string>
+    <string name="statistics_detail_tag_values_zoom_y_axis">Y-Achse zoomen</string>
 
     <plurals name="statistics_detail_times_tracked">
         <!--        <item quantity="zero">keine Einträge</item>-->

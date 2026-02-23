@@ -41,6 +41,7 @@ class StatisticsDetailTagValueInteractor @Inject constructor(
         currentChartValueMode: ChartValueMode,
         multiplyDuration: Boolean,
         fillEmptyPeriods: Boolean,
+        yAxisZoomed: Boolean,
         rangeLength: RangeLength,
         rangePosition: Int,
     ): StatisticsDetailTagValuesCompositeViewData = withContext(Dispatchers.Default) {
@@ -121,6 +122,7 @@ class StatisticsDetailTagValueInteractor @Inject constructor(
             appliedChartLength = compositeData.appliedChartLength,
             chartMode = chartMode,
             chartValueMode = currentChartValueMode,
+            yAxisZoomed = yAxisZoomed,
             valueSuffix = valuedTag.valueSuffix,
             durationFormat = durationFormat,
             showSeconds = showSeconds,

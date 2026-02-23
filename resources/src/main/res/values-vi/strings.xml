@@ -553,6 +553,7 @@ Ví dụ:<br/>
     <string name="statistics_detail_tag_values_hint">Giá trị thẻ</string>
     <string name="statistics_detail_tag_values_multiply_duration">Nhân với thời lượng</string>
     <string name="statistics_detail_tag_values_fill_empty_periods">Điền các kỳ trống bằng dữ liệu trước đó</string>
+    <string name="statistics_detail_tag_values_zoom_y_axis">Phóng to trục Y</string>
 
     <plurals name="statistics_detail_times_tracked">
         <!--        <item quantity="zero">Bản ghi</item>-->

@@ -28,6 +28,7 @@ fun createStatisticsDetailBarChartAdapterDelegate(
             selectedBarPosition = viewData.selectedBarPosition,
             animate = viewData.animate.getValue().orFalse(),
         )
+        setYAxisZoomed(viewData.yAxisZoomed)
         setLegendTextSuffix(viewData.legendSuffix)
         shouldAddLegendToSelectedBar(viewData.addLegendToSelectedBar)
         shouldDrawHorizontalLegends(viewData.shouldDrawHorizontalLegends)

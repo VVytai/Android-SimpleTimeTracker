@@ -5,6 +5,7 @@ data class StatisticsDetailTagValueSettings(
     val chartValueMode: ChartValueMode,
     val multiplyDuration: Boolean,
     val fillEmptyPeriods: Boolean,
+    val yAxisZoomed: Boolean,
 ) {
 
     companion object {
@@ -14,6 +15,7 @@ data class StatisticsDetailTagValueSettings(
                 chartValueMode = ChartValueMode.TOTAL,
                 multiplyDuration = false,
                 fillEmptyPeriods = false,
+                yAxisZoomed = false,
             )
         }
     }

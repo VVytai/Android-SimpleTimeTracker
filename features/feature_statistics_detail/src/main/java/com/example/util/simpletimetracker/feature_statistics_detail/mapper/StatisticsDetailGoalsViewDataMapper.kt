@@ -123,6 +123,7 @@ class StatisticsDetailGoalsViewDataMapper @Inject constructor(
             goal = 0, // Don't show goal on goal graph.
             rangeLength = rangeLength,
             chartMode = chartMode,
+            yAxisZoomed = false,
             showSelectedBarOnStart = true,
             useSingleColor = false,
             drawRoundCaps = true,

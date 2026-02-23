@@ -553,6 +553,7 @@
     <string name="statistics_detail_tag_values_hint">ערכי תג</string>
     <string name="statistics_detail_tag_values_multiply_duration">הכפל במשך הזמן</string>
     <string name="statistics_detail_tag_values_fill_empty_periods">מלא תקופות ריקות בנתונים קודמים</string>
+    <string name="statistics_detail_tag_values_zoom_y_axis">הגדלת ציר Y</string>
 
     <plurals name="statistics_detail_times_tracked">
         <!--        <item quantity="zero">רשומות</item>-->

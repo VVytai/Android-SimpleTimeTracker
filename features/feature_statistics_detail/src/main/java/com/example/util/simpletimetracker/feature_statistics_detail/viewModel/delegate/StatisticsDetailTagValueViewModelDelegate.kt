@@ -63,6 +63,7 @@ class StatisticsDetailTagValueViewModelDelegate @Inject constructor(
                 chartValueMode = loadedTagSettings.chartValueMode,
                 multiplyDuration = loadedTagSettings.multiplyDuration,
                 fillEmptyPeriods = loadedTagSettings.fillEmptyPeriods,
+                yAxisZoomed = loadedTagSettings.yAxisZoomed,
             ),
         )
     }
@@ -93,9 +94,11 @@ class StatisticsDetailTagValueViewModelDelegate @Inject constructor(
             records = parent.records,
             currentChartGrouping = chartGrouping,
             currentChartLength = chartLength,
+            // TODO pass settings instead of params
             currentChartValueMode = settings.chartValueMode,
             multiplyDuration = settings.multiplyDuration,
             fillEmptyPeriods = settings.fillEmptyPeriods,
+            yAxisZoomed = settings.yAxisZoomed,
             rangeLength = parent.rangeLength,
             rangePosition = parent.rangePosition,
         )

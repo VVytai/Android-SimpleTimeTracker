@@ -553,6 +553,7 @@ Exemple:<br/>
     <string name="statistics_detail_tag_values_hint">Valors de l\'etiqueta</string>
     <string name="statistics_detail_tag_values_multiply_duration">Multiplica per la durada</string>
     <string name="statistics_detail_tag_values_fill_empty_periods">Omple els períodes buits amb les dades anteriors</string>
+    <string name="statistics_detail_tag_values_zoom_y_axis">Amplia l\'eix Y</string>
 
     <plurals name="statistics_detail_times_tracked">
         <!--        <item quantity="zero">Enregistraments</item>-->

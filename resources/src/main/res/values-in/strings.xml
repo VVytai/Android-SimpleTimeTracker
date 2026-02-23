@@ -553,6 +553,7 @@ Contoh:<br/>
     <string name="statistics_detail_tag_values_hint">Nilai tag</string>
     <string name="statistics_detail_tag_values_multiply_duration">Kalikan dengan durasi</string>
     <string name="statistics_detail_tag_values_fill_empty_periods">Isi periode kosong dengan data sebelumnya</string>
+    <string name="statistics_detail_tag_values_zoom_y_axis">Perbesar sumbu Y</string>
 
     <plurals name="statistics_detail_times_tracked">
         <!--        <item quantity="zero">Rekor</item>-->

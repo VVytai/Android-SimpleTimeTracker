@@ -34,6 +34,7 @@ class StatisticsTagValuesSettingsViewModel @Inject constructor(
             chartValueMode = params.chartValueMode,
             multiplyDuration = params.multiplyDuration,
             fillEmptyPeriods = params.fillEmptyPeriods,
+            yAxisZoomed = params.yAxisZoomed,
         )
         initialized = true
     }
@@ -57,6 +58,9 @@ class StatisticsTagValuesSettingsViewModel @Inject constructor(
             }
             SettingsBlock.StatisticsTagValuesFillEmptyPeriods -> {
                 newSettings.copy(fillEmptyPeriods = !newSettings.fillEmptyPeriods)
+            }
+            SettingsBlock.StatisticsTagValuesZoomYAxis -> {
+                newSettings.copy(yAxisZoomed = !newSettings.yAxisZoomed)
             }
             else -> return // Do nothing.
         }

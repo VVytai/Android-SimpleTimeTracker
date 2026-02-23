@@ -12,6 +12,7 @@ data class StatisticsDetailChartViewData(
     val showSelectedBarOnStart: Boolean,
     val selectedBarPosition: Int?,
     val goalValue: Float,
+    val yAxisZoomed: Boolean,
     val useSingleColor: Boolean,
     val drawRoundCaps: Boolean,
     val animate: OneShotValue<Boolean>,

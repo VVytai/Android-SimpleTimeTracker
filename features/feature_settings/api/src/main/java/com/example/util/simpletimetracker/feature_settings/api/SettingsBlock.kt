@@ -156,4 +156,5 @@ enum class SettingsBlock {
     StatisticsTagValuesChartValueMode,
     StatisticsTagValuesMultiplyDuration,
     StatisticsTagValuesFillEmptyPeriods,
+    StatisticsTagValuesZoomYAxis,
 }

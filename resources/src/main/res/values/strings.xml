@@ -553,6 +553,7 @@ Example:<br/>
     <string name="statistics_detail_tag_values_hint">Tag values</string>
     <string name="statistics_detail_tag_values_multiply_duration">Multiply by duration</string>
     <string name="statistics_detail_tag_values_fill_empty_periods">Fill empty periods with previous data</string>
+    <string name="statistics_detail_tag_values_zoom_y_axis">Zoom Y axis</string>
 
     <plurals name="statistics_detail_times_tracked">
         <item quantity="zero">Records</item>

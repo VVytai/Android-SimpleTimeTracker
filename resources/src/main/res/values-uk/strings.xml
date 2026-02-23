@@ -553,6 +553,7 @@
     <string name="statistics_detail_tag_values_hint">Значення тегів</string>
     <string name="statistics_detail_tag_values_multiply_duration">Помножити на тривалість</string>
     <string name="statistics_detail_tag_values_fill_empty_periods">Заповнювати порожні періоди попередніми даними</string>
+    <string name="statistics_detail_tag_values_zoom_y_axis">Масштабувати вісь Y</string>
 
     <plurals name="statistics_detail_times_tracked">
         <!--        <item quantity="zero">Записів</item>-->

@@ -36,6 +36,7 @@ class StatisticsDetailTagValuesViewDataMapper @Inject constructor(
         appliedChartLength: ChartLength,
         chartMode: ChartMode.TAG_VALUE,
         chartValueMode: ChartValueMode,
+        yAxisZoomed: Boolean,
         valueSuffix: String,
         durationFormat: DurationFormat,
         showSeconds: Boolean,
@@ -48,6 +49,7 @@ class StatisticsDetailTagValuesViewDataMapper @Inject constructor(
             goal = 0, // Don't show goal.
             rangeLength = rangeLength,
             chartMode = chartMode,
+            yAxisZoomed = yAxisZoomed,
             showSelectedBarOnStart = true,
             useSingleColor = true,
             drawRoundCaps = true,

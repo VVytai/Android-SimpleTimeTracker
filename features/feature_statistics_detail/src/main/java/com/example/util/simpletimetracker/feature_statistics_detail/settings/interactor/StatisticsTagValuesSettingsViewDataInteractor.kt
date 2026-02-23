@@ -37,6 +37,13 @@ class StatisticsTagValuesSettingsViewDataInteractor @Inject constructor(
                 title = resourceRepo.getString(R.string.statistics_detail_tag_values_fill_empty_periods),
                 subtitle = "",
                 isChecked = settings.fillEmptyPeriods,
+                backgroundIsVisible = false,
+            ),
+            SettingsCheckboxViewData(
+                block = SettingsBlock.StatisticsTagValuesZoomYAxis,
+                title = resourceRepo.getString(R.string.statistics_detail_tag_values_zoom_y_axis),
+                subtitle = "",
+                isChecked = settings.yAxisZoomed,
                 dividerIsVisible = false,
                 backgroundIsVisible = false,
             ),
