@@ -104,6 +104,7 @@
     <string name="categories_record_hint">Tetapkan label yang berbeda ke rekaman untuk membedakannya</string>
     <string name="categories_add_category">Tambahkan kategori</string>
     <string name="categories_add_record_tag">Tambahkan label rekaman</string>
+    <string name="categories_show_relations">Tampilkan hubungan</string>
     <string name="categories_and_tags_hint"><![CDATA[
 <b>Kategori</b> membantu Anda mengelompokkan aktivitas yang berhubungan. Contohnya:<br><br>
 • Kategori <custom-color-3>Produktif</custom-color-3> bisa mencakup <custom-color-3>Membaca</custom-color-3> dan <custom-color-3>Gym</custom-color-3>.<br><br>
@@ -124,6 +125,7 @@ Ini memungkinkan Anda melihat berapa banyak waktu yang dihabiskan untuk aktivita
     <!--  Change record tag  -->
     <string name="change_record_tag_archived">Label diarsipkan</string>
     <string name="change_record_tag_default_hint">Ditugaskan secara default</string>
+    <string name="change_record_tag_type_general">Umum</string>
     <string name="change_record_tag_type_general_hint">Dapat ditugaskan ke catatan aktivitas apa pun</string>
     <string name="change_record_tag_type_typed_hint">Hanya dapat ditetapkan ke catatan aktivitas tertentu</string>
     <string name="change_record_tag_select_activity_hint">Ambil warna dan ikon dari aktivitas</string>

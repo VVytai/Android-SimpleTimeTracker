@@ -104,6 +104,7 @@
     <string name="categories_record_hint">Ge händelser olika taggar för att skilja dem åt</string>
     <string name="categories_add_category">Lägg till kategori</string>
     <string name="categories_add_record_tag">Lägg till händelsetagg</string>
+    <string name="categories_show_relations">Visa relationer</string>
     <string name="categories_and_tags_hint"><![CDATA[
 <b>Kategorier</b> hjälper dig att gruppera relaterade aktiviteter. Till exempel:<br><br>
 • Kategorin <custom-color-3>Produktiv</custom-color-3> kan inkludera <custom-color-3>Läsning</custom-color-3> och <custom-color-3>Gym</custom-color-3>.<br><br>
@@ -124,6 +125,7 @@ Detta gör att du kan se hur mycket tid du spenderar på produktiva kontra icke-
     <!--  Change record tag  -->
     <string name="change_record_tag_archived">Tagg arkiverad</string>
     <string name="change_record_tag_default_hint">Tilldelad som standard</string>
+    <string name="change_record_tag_type_general">Allmän</string>
     <string name="change_record_tag_type_general_hint">Kan tilldelas händelse oavsett aktivitetstyp</string>
     <string name="change_record_tag_type_typed_hint">Kan endast tilldelas händelse av särskild aktivitet</string>
     <string name="change_record_tag_select_activity_hint">Ta färg och ikon från aktivitet</string>

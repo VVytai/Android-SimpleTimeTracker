@@ -104,6 +104,7 @@
     <string name="categories_record_hint">Atribua tags diferentes aos registros para diferenciá-los</string>
     <string name="categories_add_category">Adicionar categoria</string>
     <string name="categories_add_record_tag">Adicionar tag de registro</string>
+    <string name="categories_show_relations">Mostrar relações</string>
     <string name="categories_and_tags_hint"><![CDATA[
 <b>Categorias</b> ajudam a agrupar atividades relacionadas. Por exemplo:<br><br>
 • A categoria <custom-color-3>Produtiva</custom-color-3> pode incluir <custom-color-3>Leitura</custom-color-3> e <custom-color-3>Academia</custom-color-3>.<br><br>
@@ -124,6 +125,7 @@ Isso permite ver quanto tempo você está gastando em atividades produtivas vers
     <!--  Change record tag  -->
     <string name="change_record_tag_archived">Tag arquivada</string>
     <string name="change_record_tag_default_hint">Atribuído por padrão</string>
+    <string name="change_record_tag_type_general">Comum</string>
     <string name="change_record_tag_type_general_hint">Pode ser atribuída a registros de qualquer atividade</string>
     <string name="change_record_tag_type_typed_hint">Só pode ser atribuída a registros de uma atividade específica</string>
     <string name="change_record_tag_select_activity_hint">Pegue a cor e o ícone da atividade</string>

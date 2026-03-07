@@ -104,6 +104,7 @@
     <string name="categories_record_hint">Atribuiți diferite etichete înregistrărilor pentru a le diferenția</string>
     <string name="categories_add_category">Adaugă categorie</string>
     <string name="categories_add_record_tag">Adaugă etichetă</string>
+    <string name="categories_show_relations">Afișează relațiile</string>
     <string name="categories_and_tags_hint"><![CDATA[
 <b>Categoriile</b> te ajută să grupezi activități înrudite. De exemplu:<br><br>
 • Categoria <custom-color-3>Productivă</custom-color-3> poate include <custom-color-3>Citit</custom-color-3> și <custom-color-3>Sală de sport</custom-color-3>.<br><br>
@@ -124,6 +125,7 @@ Acest lucru îți permite să vezi cât timp petreci în activități productive
     <!--  Change record tag  -->
     <string name="change_record_tag_archived">Etichetă arhivată</string>
     <string name="change_record_tag_default_hint">Atribuit implicit</string>
+    <string name="change_record_tag_type_general">Comun</string>
     <string name="change_record_tag_type_general_hint">Poate fi atribuit înregistrărilor oricărei activități</string>
     <string name="change_record_tag_type_typed_hint">Poate fi atribuit înregistrărilor unei activități specifice</string>
     <string name="change_record_tag_select_activity_hint">Luați culoarea și pictograma din activitate</string>

@@ -104,6 +104,7 @@
     <string name="categories_record_hint">Призначте різні теги записам, щоб розрізняти їх</string>
     <string name="categories_add_category">Додати категорію</string>
     <string name="categories_add_record_tag">Додати тег запису</string>
+    <string name="categories_show_relations">Показати зв\'язки</string>
     <string name="categories_and_tags_hint"><![CDATA[
 <b>Категорії</b> допомагають групувати пов’язані активності. Наприклад:<br><br>
 • Категорія <custom-color-3>Продуктивність</custom-color-3> може включати <custom-color-3>Читання</custom-color-3> та <custom-color-3>Спортзал</custom-color-3>.<br><br>
@@ -124,6 +125,7 @@
     <!--  Change record tag  -->
     <string name="change_record_tag_archived">Тег переміщено до архіву</string>
     <string name="change_record_tag_default_hint">Призначено за замовчуванням</string>
+    <string name="change_record_tag_type_general">Загальний</string>
     <string name="change_record_tag_type_general_hint">Може бути призначено записам будь-якої актівності</string>
     <string name="change_record_tag_type_typed_hint">Можна призначити лише записам певної активності</string>
     <string name="change_record_tag_select_activity_hint">Взяти колір та іконку з активності</string>

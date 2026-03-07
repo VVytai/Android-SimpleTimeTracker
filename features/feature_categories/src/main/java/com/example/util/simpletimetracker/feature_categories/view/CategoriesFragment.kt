@@ -21,7 +21,10 @@ import com.example.util.simpletimetracker.feature_base_adapter.divider.createDiv
 import com.example.util.simpletimetracker.feature_base_adapter.emptySpace.createEmptySpaceAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.hint.createHintAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.loader.createLoaderAdapterDelegate
+import com.example.util.simpletimetracker.feature_base_adapter.recordTypeRelation.createActivitySuggestionListAdapterDelegate
+import com.example.util.simpletimetracker.feature_categories.adapter.createCategoriesRelationSpecialAdapterDelegate
 import com.example.util.simpletimetracker.feature_categories.viewData.CategoriesSearchState
+import com.example.util.simpletimetracker.feature_categories.viewData.CategoriesViewData
 import com.example.util.simpletimetracker.feature_categories.viewModel.CategoriesViewModel
 import com.example.util.simpletimetracker.feature_views.extension.pxToDp
 import com.example.util.simpletimetracker.feature_views.extension.setMargins
@@ -58,6 +61,8 @@ class CategoriesFragment :
             createHintAdapterDelegate(),
             createCategoryAdapterDelegate(onClickWithTransition = throttle(viewModel::onCategoryClick)),
             createCategoryAddAdapterDelegate(throttle(viewModel::onAddCategoryClick)),
+            createActivitySuggestionListAdapterDelegate(),
+            createCategoriesRelationSpecialAdapterDelegate(),
         )
     }
 
@@ -91,7 +96,7 @@ class CategoriesFragment :
     }
 
     override fun initViewModel(): Unit = with(viewModel) {
-        categories.observe { categoriesAdapter.replace(it.items) }
+        categories.observe(::setState)
         showHint.observe(binding.tvCategoriesEditHint::isVisible::set)
         searchState.observe(::setSearchState)
     }
@@ -123,6 +128,17 @@ class CategoriesFragment :
         selectValueOnStartTagIds: List<Long>,
     ) {
         viewModel.onDataSelected(dataIds, tag)
+    }
+
+    private fun setState(
+        state: CategoriesViewData,
+    ) = with(binding) {
+        categoriesAdapter.replace(state.items)
+        val layoutManager = (rvCategoriesList.layoutManager as? FlexboxLayoutManager)
+        val justifyContent = if (state.centerContent) JustifyContent.CENTER else JustifyContent.FLEX_START
+        if (layoutManager?.justifyContent != justifyContent) {
+            layoutManager?.justifyContent = justifyContent
+        }
     }
 
     private fun setSearchState(

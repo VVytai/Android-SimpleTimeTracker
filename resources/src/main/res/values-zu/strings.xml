@@ -104,6 +104,7 @@
     <string name="categories_record_hint">Nikeza amathegi ahlukene kumarekhodi ukuze uhlukanise</string>
     <string name="categories_add_category">Engeza isigaba</string>
     <string name="categories_add_record_tag">Engeza ithegi yerekhodi</string>
+    <string name="categories_show_relations">Bonisa ubudlelwano</string>
     <string name="categories_and_tags_hint"><![CDATA[
 <b>Izigaba</b> zikusiza ukuthi uhlele imisebenzi ehlobene. Isibonelo:<br><br>
 • Isigaba <custom-color-3>Esisebenzayo</custom-color-3> singabandakanya <custom-color-3>Ukufunda</custom-color-3> kanye ne <custom-color-3>Ijimu</custom-color-3>.<br><br>
@@ -124,6 +125,7 @@ Lokhu kukuvumela ukuthi ubone isikhathi osichitha emisebenzini esebenzayo nezing
     <!--  Change record tag  -->
     <string name="change_record_tag_archived">Ithegi ifakwe kwifayela</string>
     <string name="change_record_tag_default_hint">Inikezwe ngokuzenzakalelayo</string>
+    <string name="change_record_tag_type_general">Okuvamile</string>
     <string name="change_record_tag_type_general_hint">Inganikwa kumarekhodi anoma yimuphi umsebenzi</string>
     <string name="change_record_tag_type_typed_hint">Inganikwa kumarekhodi womsebenzi othile kuphela</string>
     <string name="change_record_tag_select_activity_hint">Thatha umbala nesithonjana kumsebenzi</string>

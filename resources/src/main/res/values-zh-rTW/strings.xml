@@ -104,6 +104,7 @@
     <string name="categories_record_hint">指派不同標記來記錄它們不同之處</string>
     <string name="categories_add_category">新增分類</string>
     <string name="categories_add_record_tag">新增紀錄標記</string>
+    <string name="categories_show_relations">顯示關聯</string>
     <string name="categories_and_tags_hint"><![CDATA[
 <b>分類</b>可以幫助你將相關的活動分組。例如：<br><br>
 • <custom-color-3>高效</custom-color-3>分類可能包括<custom-color-3>閱讀</custom-color-3>和<custom-color-3>健身</custom-color-3>。<br><br>
@@ -124,6 +125,7 @@
     <!--  Change record tag  -->
     <string name="change_record_tag_archived">標記已歸檔</string>
     <string name="change_record_tag_default_hint">預設分配</string>
+    <string name="change_record_tag_type_general">通用</string>
     <string name="change_record_tag_type_general_hint">已能指派任何活動給紀錄</string>
     <string name="change_record_tag_type_typed_hint">只能指派給指定活動的紀錄</string>
     <string name="change_record_tag_select_activity_hint">從活動中獲取顏色和圖標</string>

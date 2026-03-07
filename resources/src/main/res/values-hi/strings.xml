@@ -104,6 +104,7 @@
     <string name="categories_record_hint">उनके बीच अंतर करने के लिए रिकॉर्ड के लिए अलग -अलग टैग असाइन करें</string>
     <string name="categories_add_category">कैटेगरी जोड़े</string>
     <string name="categories_add_record_tag">रिकॉर्ड टैग जोड़ें</string>
+    <string name="categories_show_relations">संबंध दिखाएँ</string>
     <string name="categories_and_tags_hint"><![CDATA[
 <b>श्रेणियाँ</b> आपको संबंधित गतिविधियों को समूहित करने में मदद करती हैं। उदाहरण के लिए:<br><br>
 • <custom-color-3>उत्पादक</custom-color-3> श्रेणी में <custom-color-3>पढ़ाई</custom-color-3> और <custom-color-3>जिम</custom-color-3> शामिल हो सकते हैं।<br><br>
@@ -124,6 +125,7 @@
     <!--  Change record tag  -->
     <string name="change_record_tag_archived">टैग संग्रहीत</string>
     <string name="change_record_tag_default_hint">डिफ़ॉल्ट रूप से असाइन किया गया</string>
+    <string name="change_record_tag_type_general">सामान्य</string>
     <string name="change_record_tag_type_general_hint">किसी भी गतिविधि के रिकॉर्ड को सौंपा जा सकता है</string>
     <string name="change_record_tag_type_typed_hint">केवल एक विशिष्ट गतिविधि के रिकॉर्ड को सौंपा जा सकता है</string>
     <string name="change_record_tag_select_activity_hint">गतिविधि से रंग और आइकन लें</string>

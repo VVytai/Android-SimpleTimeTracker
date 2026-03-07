@@ -104,6 +104,7 @@
     <string name="categories_record_hint">Assegna diverse etichette alle registrazioni per differenziarle tra loro</string>
     <string name="categories_add_category">Aggiungi categoria</string>
     <string name="categories_add_record_tag">Aggiungi etichetta alla registrazione</string>
+    <string name="categories_show_relations">Mostra relazioni</string>
     <string name="categories_and_tags_hint"><![CDATA[
 Le <b>categorie</b> ti aiutano a raggruppare attività correlate. Ad esempio:<br><br>
 • La categoria <custom-color-3>Produttiva</custom-color-3> potrebbe includere <custom-color-3>Lettura</custom-color-3> e <custom-color-3>Palestra</custom-color-3>.<br><br>
@@ -124,6 +125,7 @@ I <b>tag</b> ti permettono di aggiungere maggiori dettagli a un\'attività speci
     <!--  Change record tag  -->
     <string name="change_record_tag_archived">Etichetta archiviata</string>
     <string name="change_record_tag_default_hint">Assegnato per impostazione predefinita</string>
+    <string name="change_record_tag_type_general">Comune</string>
     <string name="change_record_tag_type_general_hint">Può essere assegnato a registrazioni di qualunque attività</string>
     <string name="change_record_tag_type_typed_hint">Può essere assegnato solo a registrazioni di una specifica attività</string>
     <string name="change_record_tag_select_activity_hint">Prendi il colore e l\'icona dall\'attività</string>

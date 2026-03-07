@@ -104,6 +104,7 @@
     <string name="categories_record_hint">Assign different tags to records to differentiate between them</string>
     <string name="categories_add_category">Add category</string>
     <string name="categories_add_record_tag">Add record tag</string>
+    <string name="categories_show_relations">Show relations</string>
     <string name="categories_and_tags_hint"><![CDATA[
 <b>Categories</b> help you group related activities. For example:<br><br>
 • The <custom-color-3>Productive</custom-color-3> category might include <custom-color-3>Reading</custom-color-3> and <custom-color-3>Gym</custom-color-3>.<br><br>
@@ -124,6 +125,7 @@ This allows you to see how much time you\'re spending on productive versus unpro
     <!--  Change record tag  -->
     <string name="change_record_tag_archived">Tag archived</string>
     <string name="change_record_tag_default_hint">Assigned by default</string>
+    <string name="change_record_tag_type_general">Common</string>
     <string name="change_record_tag_type_general_hint">Can be assigned to records of any activity</string>
     <string name="change_record_tag_type_typed_hint">Can only be assigned to records of a specific activity</string>
     <string name="change_record_tag_select_activity_hint">Take color and icon from activity</string>

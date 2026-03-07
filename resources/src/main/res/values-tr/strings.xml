@@ -104,6 +104,7 @@
     <string name="categories_record_hint">Aralarında ayrım yapabilmek için kayıtlara farklı etiketler atayın</string>
     <string name="categories_add_category">Kategori ekle</string>
     <string name="categories_add_record_tag">Kayıt etiketi ekle</string>
+    <string name="categories_show_relations">İlişkileri göster</string>
     <string name="categories_and_tags_hint"><![CDATA[
 <b>Kategoriler</b>, ilgili aktiviteleri gruplamanıza yardımcı olur. Örneğin:<br><br>
 • <custom-color-3>Verimli</custom-color-3> kategorisi, <custom-color-3>Okuma</custom-color-3> ve <custom-color-3>Spor Salonu</custom-color-3> gibi aktiviteleri içerebilir.<br><br>
@@ -124,6 +125,7 @@ Bu, genel olarak verimli ve verimsiz aktivitelere ne kadar zaman harcadığını
     <!--  Change record tag  -->
     <string name="change_record_tag_archived">Etiket arşivlendi</string>
     <string name="change_record_tag_default_hint">Varsayılan olarak atandı</string>
+    <string name="change_record_tag_type_general">Genel</string>
     <string name="change_record_tag_type_general_hint">Herhangi bir aktivitenin kayıtlarına atanabilir</string>
     <string name="change_record_tag_type_typed_hint">Sadece seçilen aktivitenin kayıtlarına atanabilir</string>
     <string name="change_record_tag_select_activity_hint">Etkinlikten renk ve simge alın</string>

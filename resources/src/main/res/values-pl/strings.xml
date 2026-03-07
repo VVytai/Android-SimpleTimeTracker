@@ -104,6 +104,7 @@
     <string name="categories_record_hint">Przypisz różne tagi do zapisów, aby je rozróżnić</string>
     <string name="categories_add_category">Dodaj kategorię</string>
     <string name="categories_add_record_tag">Dodaj tag dla aktywności</string>
+    <string name="categories_show_relations">Pokaż powiązania</string>
     <string name="categories_and_tags_hint"><![CDATA[
 <b>Kategorie</b> pomagają Ci grupować powiązane ze sobą aktywności. Na przykład:<br><br>
 • Kategoria <custom-color-3>Produktywna</custom-color-3> może obejmować <custom-color-3>Czytanie</custom-color-3> i <custom-color-3>Siłownię</custom-color-3>.<br><br>
@@ -124,6 +125,7 @@ Pozwala to zobaczyć, ile czasu spędzasz na produktywnych i nieproduktywnych ak
     <!--  Change record tag  -->
     <string name="change_record_tag_archived">Tag zarchiwizowany</string>
     <string name="change_record_tag_default_hint">Przypisany domyślnie</string>
+    <string name="change_record_tag_type_general">Wspólny</string>
     <string name="change_record_tag_type_general_hint">Można przypisać do zapisów dowolnej aktywności</string>
     <string name="change_record_tag_type_typed_hint">Można je przypisać wyłącznie do zapisów określonej aktywności</string>
     <string name="change_record_tag_select_activity_hint">Przypisz kolor i ikonę z aktywności</string>

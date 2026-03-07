@@ -11,11 +11,11 @@ import com.example.util.simpletimetracker.feature_base_adapter.button.ButtonView
 import com.example.util.simpletimetracker.feature_base_adapter.divider.DividerViewData
 import com.example.util.simpletimetracker.feature_base_adapter.emptySpace.EmptySpaceViewData
 import com.example.util.simpletimetracker.feature_base_adapter.hint.HintViewData
+import com.example.util.simpletimetracker.feature_base_adapter.recordTypeRelation.ActivitySuggestionListViewData
 import com.example.util.simpletimetracker.feature_base_adapter.recordTypeSpecial.RunningRecordTypeSpecialViewData
 import com.example.util.simpletimetracker.feature_suggestions.viewData.ActivitySuggestionsButtonViewData
 import com.example.util.simpletimetracker.feature_suggestions.R
 import com.example.util.simpletimetracker.feature_suggestions.adapter.ActivitySuggestionSpecialViewData
-import com.example.util.simpletimetracker.feature_suggestions.adapter.ActivitySuggestionListViewData
 import com.example.util.simpletimetracker.feature_views.viewData.RecordTypeIcon
 import javax.inject.Inject
 

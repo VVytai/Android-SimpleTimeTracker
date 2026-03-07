@@ -53,7 +53,7 @@ object SuggestionsTestUtils {
         )
     }
 
-    private fun suggestionMatcher(
+    fun suggestionMatcher(
         textMatcher: Matcher<View>,
         tag: Any?,
     ): Matcher<View> {

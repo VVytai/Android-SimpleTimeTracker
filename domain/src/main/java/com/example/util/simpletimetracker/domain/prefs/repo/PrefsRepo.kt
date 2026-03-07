@@ -190,6 +190,7 @@ interface PrefsRepo {
     var isNavBarAtTheBottom: Boolean
 
     var isCategoriesSearchEnabled: Boolean
+    var isCategoriesRelationsEnabled: Boolean
 
     var isArchiveSearchEnabled: Boolean
 

@@ -104,6 +104,7 @@
     <string name="categories_record_hint">같은 활동의 기록을 태그로 구분할 수 있습니다</string>
     <string name="categories_add_category">카테고리 추가</string>
     <string name="categories_add_record_tag">기록 태그 추가</string>
+    <string name="categories_show_relations">관계 표시</string>
     <string name="categories_and_tags_hint"><![CDATA[
 <b>카테고리</b>는 관련된 활동을 그룹화하는 데 도움이 됩니다. 예를 들어:<br><br>
 • <custom-color-3>생산적</custom-color-3> 카테고리에는 <custom-color-3>독서</custom-color-3>와 <custom-color-3>체육관</custom-color-3>이 포함될 수 있습니다.<br><br>
@@ -124,6 +125,7 @@
     <!--  Change record tag  -->
     <string name="change_record_tag_archived">태그 보관됨</string>
     <string name="change_record_tag_default_hint">기본적으로 할당됨</string>
+    <string name="change_record_tag_type_general">공통</string>
     <string name="change_record_tag_type_general_hint">어떤 활동에도 추가할 수 있습니다</string>
     <string name="change_record_tag_type_typed_hint">특정 활동에만 추가할 수 있습니다</string>
     <string name="change_record_tag_select_activity_hint">활동에서 색상과 아이콘 가져오기</string>

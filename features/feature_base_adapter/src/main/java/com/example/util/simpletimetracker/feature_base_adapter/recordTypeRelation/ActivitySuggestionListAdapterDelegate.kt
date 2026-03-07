@@ -1,12 +1,12 @@
-package com.example.util.simpletimetracker.feature_suggestions.adapter
+package com.example.util.simpletimetracker.feature_base_adapter.recordTypeRelation
 
 import androidx.annotation.ColorInt
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.createRecyclerBindingAdapterDelegate
 import com.example.util.simpletimetracker.feature_views.extension.visible
 import com.example.util.simpletimetracker.feature_views.viewData.RecordTypeIcon
-import com.example.util.simpletimetracker.feature_suggestions.adapter.ActivitySuggestionListViewData as ViewData
-import com.example.util.simpletimetracker.feature_suggestions.databinding.ItemActivitySuggestionListLayoutBinding as Binding
+import com.example.util.simpletimetracker.feature_base_adapter.recordTypeRelation.ActivitySuggestionListViewData as ViewData
+import com.example.util.simpletimetracker.feature_base_adapter.databinding.ItemActivitySuggestionListLayoutBinding as Binding
 
 fun createActivitySuggestionListAdapterDelegate() = createRecyclerBindingAdapterDelegate<ViewData, Binding>(
     Binding::inflate,

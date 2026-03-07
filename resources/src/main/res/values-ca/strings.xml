@@ -104,6 +104,7 @@
     <string name="categories_record_hint">Assigneu diferents etiquetes als enregistraments per diferenciar-los</string>
     <string name="categories_add_category">Afegeix categoria</string>
     <string name="categories_add_record_tag">Afegeix etiqueta d\'enregistrament</string>
+    <string name="categories_show_relations">Mostra les relacions</string>
     <string name="categories_and_tags_hint"><![CDATA[
 <b>Categories</b> t\'ajuden a agrupar activitats relacionades. Per exemple:<br><br>
 • La categoria <custom-color-3>Productiva</custom-color-3> podria incloure <custom-color-3>Llegir</custom-color-3> i <custom-color-3>Gimnàs</custom-color-3>.<br><br>
@@ -124,6 +125,7 @@ Això et permet veure quant de temps dediques a activitats productives versus no
     <!--  Change record tag  -->
     <string name="change_record_tag_archived">Etiqueta arxivada</string>
     <string name="change_record_tag_default_hint">Assignat per defecte</string>
+    <string name="change_record_tag_type_general">Comú</string>
     <string name="change_record_tag_type_general_hint">Pot ser assignat a enregistraments de qualsevol activitat</string>
     <string name="change_record_tag_type_typed_hint">Només pot ser assignat a enregistraments d\'una activitat específica</string>
     <string name="change_record_tag_select_activity_hint">Preneu color i icona de l\'activitat</string>

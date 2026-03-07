@@ -164,7 +164,7 @@ class WidgetUniversal : BaseUiTest() {
         clickOnViewWithText(typeName)
         checkViewIsDisplayed(withText(tagName))
         clickOnViewWithText(tagName)
-        checkViewIsDisplayed(withText(R.string.change_record_type_value_type_field))
+        checkViewIsDisplayed(allOf(withId(R.id.tvRecordTagValueSelection), withText(tagName)))
         typeTextIntoView(R.id.etCommentItemField, tagValue)
         closeSoftKeyboard()
         clickOnViewWithText(R.string.duration_dialog_save)

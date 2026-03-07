@@ -600,6 +600,8 @@ class ComplexRulesTest : BaseUiTest() {
         clickOnViewWithText(R.string.change_complex_rule_choose_action)
         clickOnViewWithText(R.string.change_complex_action_assign_tag)
         clickOnViewWithText(tagName)
+        clickOnViewWithText(R.string.time_now)
+        Thread.sleep(500)
         typeTextIntoView(R.id.etCommentItemField, tagValueText)
         closeSoftKeyboard()
         clickOnViewWithId(dialogsR.id.btnRecordTagSelectionSave)

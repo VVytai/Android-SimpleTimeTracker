@@ -12,9 +12,9 @@ import com.example.util.simpletimetracker.domain.notifications.interactor.Update
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.button.ButtonViewData
 import com.example.util.simpletimetracker.feature_base_adapter.loader.LoaderViewData
+import com.example.util.simpletimetracker.feature_base_adapter.recordTypeRelation.ActivitySuggestionListViewData
 import com.example.util.simpletimetracker.feature_suggestions.viewData.ActivitySuggestionsButtonViewData
 import com.example.util.simpletimetracker.feature_suggestions.R
-import com.example.util.simpletimetracker.feature_suggestions.adapter.ActivitySuggestionListViewData
 import com.example.util.simpletimetracker.feature_suggestions.adapter.ActivitySuggestionSpecialViewData
 import com.example.util.simpletimetracker.feature_suggestions.interactor.ActivitySuggestionsCalculateInteractor
 import com.example.util.simpletimetracker.feature_suggestions.interactor.ActivitySuggestionsViewDataInteractor

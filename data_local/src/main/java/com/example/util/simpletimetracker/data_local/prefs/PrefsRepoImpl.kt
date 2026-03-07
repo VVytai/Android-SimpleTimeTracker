@@ -435,6 +435,10 @@ class PrefsRepoImpl @Inject constructor(
         KEY_IS_CATEGORIES_SEARCH_ENABLED, false,
     )
 
+    override var isCategoriesRelationsEnabled: Boolean by prefs.delegate(
+        KEY_IS_CATEGORIES_RELATIONS_ENABLED, false,
+    )
+
     override var isArchiveSearchEnabled: Boolean by prefs.delegate(
         KEY_IS_ARCHIVE_SEARCH_ENABLED, false,
     )
@@ -797,6 +801,7 @@ class PrefsRepoImpl @Inject constructor(
         const val KEY_DEFAULT_TYPES_HIDDEN = "defaultTypesHidden"
         const val KEY_IS_NAV_BAR_AT_THE_BOTTOM = "isNavBarAtTheBottom"
         const val KEY_IS_CATEGORIES_SEARCH_ENABLED = "isCategoriesSearchEnabled"
+        const val KEY_IS_CATEGORIES_RELATIONS_ENABLED = "isCategoriesRelationsEnabled"
         const val KEY_IS_ARCHIVE_SEARCH_ENABLED = "isArchiveSearchEnabled"
         const val KEY_HIDDEN_COMMENT_FILTERS = "hiddenCommentFilters"
         const val KEY_DURATION_SUGGESTIONS_WAS_PREPOPULATED = "durationSuggestionsWasPrepopulated"

@@ -104,6 +104,7 @@
     <string name="categories_record_hint">Назначьте разные теги записям, чтобы различать их</string>
     <string name="categories_add_category">Добавить категорию</string>
     <string name="categories_add_record_tag">Добавить тег записи</string>
+    <string name="categories_show_relations">Показать связи</string>
     <string name="categories_and_tags_hint"><![CDATA[
 <b>Категории</b> помогают вам группировать связанные активности. Например:<br><br>
 • Категория <custom-color-3>Продуктивное</custom-color-3> может включать <custom-color-3>Чтение</custom-color-3> и <custom-color-3>Тренажерный зал</custom-color-3>.<br><br>
@@ -124,6 +125,7 @@
     <!--  Change record tag  -->
     <string name="change_record_tag_archived">Тег перемещен в архив</string>
     <string name="change_record_tag_default_hint">Назначено по умолчанию</string>
+    <string name="change_record_tag_type_general">Общий</string>
     <string name="change_record_tag_type_general_hint">Может быть назначен записям любой активности</string>
     <string name="change_record_tag_type_typed_hint">Может быть назначен только записям определенной активности</string>
     <string name="change_record_tag_select_activity_hint">Взять цвет и иконку из активности</string>

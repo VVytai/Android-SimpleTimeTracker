@@ -104,6 +104,7 @@
     <string name="categories_record_hint">Wijs verschillende labels toe aan records om ze te onderscheiden</string>
     <string name="categories_add_category">Categorie toevoegen</string>
     <string name="categories_add_record_tag">Recordtag toevoegen</string>
+    <string name="categories_show_relations">Relaties tonen</string>
     <string name="categories_and_tags_hint"><![CDATA[
 <b>Categorieën</b> helpen je om gerelateerde activiteiten te groeperen. Bijvoorbeeld:<br><br>
 • De <custom-color-3>Productieve</custom-color-3> categorie kan <custom-color-3>Lezen</custom-color-3> en <custom-color-3>Sportschool</custom-color-3> bevatten.<br><br>
@@ -124,6 +125,7 @@ Dit stelt je in staat om te zien hoeveel tijd je in totaal besteedt aan producti
     <!--  Change record tag  -->
     <string name="change_record_tag_archived">Label gearchiveerd</string>
     <string name="change_record_tag_default_hint">Standaard toegewezen</string>
+    <string name="change_record_tag_type_general">Algemeen</string>
     <string name="change_record_tag_type_general_hint">Kan worden toegewezen aan opname van elke activiteit</string>
     <string name="change_record_tag_type_typed_hint">Kan alleen aan records van een specifieke activiteit worden toegewezen</string>
     <string name="change_record_tag_select_activity_hint">Neem kleur en icoon uit activiteit</string>

@@ -104,6 +104,7 @@
     <string name="categories_record_hint">عين وسوم مختلفة للتمييز بين المتتبعات</string>
     <string name="categories_add_category">إضافة تصنيف</string>
     <string name="categories_add_record_tag">إضافة وسم التتبع</string>
+    <string name="categories_show_relations">عرض العلاقات</string>
     <string name="categories_and_tags_hint"><![CDATA[
 <b>الفئات</b> تساعدك على تجميع الأنشطة ذات الصلة. على سبيل المثال:<br><br>
 • قد تتضمن فئة <custom-color-3>الإنتاجية</custom-color-3> أنشطة مثل <custom-color-3>القراءة</custom-color-3> و<custom-color-3>الصالة الرياضية</custom-color-3>.<br><br>
@@ -124,6 +125,7 @@
     <!--  Change record tag  -->
     <string name="change_record_tag_archived">تم أرشفة الوسم</string>
     <string name="change_record_tag_default_hint">تم تعيينه بشكل افتراضي</string>
+    <string name="change_record_tag_type_general">مشترك</string>
     <string name="change_record_tag_type_general_hint">يمكن تعيينه إلى متتبعات أي نشاط</string>
     <string name="change_record_tag_type_typed_hint">لا يمكن تعيينه إلا لمتتبعات نشاط معين</string>
     <string name="change_record_tag_select_activity_hint">خذ اللون والرمز من النشاط</string>

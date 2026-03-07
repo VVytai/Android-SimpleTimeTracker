@@ -104,6 +104,7 @@
     <string name="categories_record_hint">为活动分配不同的标签，进行细致地区分</string>
     <string name="categories_add_category">添加分类</string>
     <string name="categories_add_record_tag">添加记录标签</string>
+    <string name="categories_show_relations">显示关联</string>
     <string name="categories_and_tags_hint"><![CDATA[
 <b>分类</b>可以帮助你将相关的活动进行分组。例如：<br><br>
 • <custom-color-3>高效</custom-color-3>分类可以包括<custom-color-3>阅读</custom-color-3>和<custom-color-3>健身</custom-color-3>。<br><br>
@@ -124,6 +125,7 @@
     <!--  Change record tag  -->
     <string name="change_record_tag_archived">标签已归档</string>
     <string name="change_record_tag_default_hint">预设分配</string>
+    <string name="change_record_tag_type_general">通用</string>
     <string name="change_record_tag_type_general_hint">可分配给任何活动的标签</string>
     <string name="change_record_tag_type_typed_hint">只可分配给特定活动的标签</string>
     <string name="change_record_tag_select_activity_hint">从活动中获取颜色和图标</string>

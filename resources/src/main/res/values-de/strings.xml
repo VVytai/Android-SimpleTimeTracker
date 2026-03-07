@@ -104,6 +104,7 @@
     <string name="categories_record_hint">Ordne den Datensätzen verschiedene Tags zu, um sie zu unterscheiden</string>
     <string name="categories_add_category">Kategorie hinzufügen</string>
     <string name="categories_add_record_tag">Datensatz-Tag hinzufügen</string>
+    <string name="categories_show_relations">Beziehungen anzeigen</string>
     <string name="categories_and_tags_hint"><![CDATA[
 <b>Kategorien</b> helfen dir, verwandte Aktivitäten zu gruppieren. Zum Beispiel:<br><br>
 • Die Kategorie <custom-color-3>Produktiv</custom-color-3> könnte <custom-color-3>Lesen</custom-color-3> und <custom-color-3>Fitnessstudio</custom-color-3> umfassen.<br><br>
@@ -124,6 +125,7 @@ Dies ermöglicht es dir, zu sehen, wie viel Zeit du insgesamt für produktive ve
     <!--  Change record tag  -->
     <string name="change_record_tag_archived">Tag archiviert</string>
     <string name="change_record_tag_default_hint">Standardmäßig zugewiesen</string>
+    <string name="change_record_tag_type_general">Allgemein</string>
     <string name="change_record_tag_type_general_hint">Kann Aufzeichnungen beliebiger Aktivitäten zugewiesen werden</string>
     <string name="change_record_tag_type_typed_hint">Kann nur Datensätzen einer bestimmten Aktivität zugeordnet werden</string>
     <string name="change_record_tag_select_activity_hint">Übernehmen Sie Farbe und Symbol aus der Aktivität</string>

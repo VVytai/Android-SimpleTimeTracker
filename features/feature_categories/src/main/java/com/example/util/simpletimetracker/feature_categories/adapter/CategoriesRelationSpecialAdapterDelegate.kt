@@ -1,16 +1,13 @@
-package com.example.util.simpletimetracker.feature_suggestions.adapter
+package com.example.util.simpletimetracker.feature_categories.adapter
 
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.createRecyclerBindingAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.recordTypeRelation.ActivitySuggestionListViewData
 import com.example.util.simpletimetracker.feature_base_adapter.recordTypeRelation.activitySuggestionListAdapterBindDelegate
-import com.example.util.simpletimetracker.feature_views.extension.setOnClickWith
-import com.example.util.simpletimetracker.feature_suggestions.adapter.ActivitySuggestionSpecialViewData as ViewData
+import com.example.util.simpletimetracker.feature_categories.adapter.CategoriesRelationSpecialViewData as ViewData
 import com.example.util.simpletimetracker.feature_base_adapter.databinding.ItemActivitySuggestionListLayoutBinding as Binding
 
-fun createActivitySuggestionSpecialAdapterDelegate(
-    onItemClick: ((ViewData) -> Unit),
-) = createRecyclerBindingAdapterDelegate<ViewData, Binding>(
+fun createCategoriesRelationSpecialAdapterDelegate() = createRecyclerBindingAdapterDelegate<ViewData, Binding>(
     Binding::inflate,
 ) { binding, item, _ ->
 
@@ -22,12 +19,10 @@ fun createActivitySuggestionSpecialAdapterDelegate(
             item = item.data,
             binding = this,
         )
-
-        root.setOnClickWith(item, onItemClick)
     }
 }
 
-data class ActivitySuggestionSpecialViewData(
+data class CategoriesRelationSpecialViewData(
     val id: Id,
     val data: ActivitySuggestionListViewData,
 ) : ViewHolderType {
@@ -42,7 +37,10 @@ data class ActivitySuggestionSpecialViewData(
     )
 
     sealed interface Type {
-        data object Add : Type
-        data object Calculate : Type
+        data object CategoriesEmpty : Type
+        data object TagCommon : Type
+        data object TagDefaultHint : Type
+        data class TagDefault(val id: Long) : Type
+        data object TagRecordsCount : Type
     }
 }

@@ -104,6 +104,7 @@
     <string name="categories_record_hint">計測記録に異なるタグを付与し、計測記録を区別することが可能です</string>
     <string name="categories_add_category">カテゴリを追加</string>
     <string name="categories_add_record_tag">計測タグを追加</string>
+    <string name="categories_show_relations">関連を表示</string>
     <string name="categories_and_tags_hint"><![CDATA[
 <b>カテゴリ</b>は、関連するアクティビティをグループ化するのに役立ちます。例えば：<br><br>
 • <custom-color-3>生産的</custom-color-3>カテゴリには、<custom-color-3>読書</custom-color-3>や<custom-color-3>ジム</custom-color-3>が含まれるかもしれません。<br><br>
@@ -124,6 +125,7 @@
     <!--  Change record tag  -->
     <string name="change_record_tag_archived">タグをアーカイブ</string>
     <string name="change_record_tag_default_hint">デフォルトで割り当てられる</string>
+    <string name="change_record_tag_type_general">共通</string>
     <string name="change_record_tag_type_general_hint">あらゆるアクティビティに割り当てることができます</string>
     <string name="change_record_tag_type_typed_hint">特定のアクティビティのみに割り当てることができます</string>
     <string name="change_record_tag_select_activity_hint">アクティビティから色とアイコンを取得する</string>

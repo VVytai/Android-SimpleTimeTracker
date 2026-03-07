@@ -104,6 +104,7 @@
     <string name="categories_record_hint">הקצה תגיות שונות לרשומות כדי להבדיל ביניהן</string>
     <string name="categories_add_category">הוסף קטגוריה</string>
     <string name="categories_add_record_tag">הוסף תגית רשומה</string>
+    <string name="categories_show_relations">הצג קשרים</string>
     <string name="categories_and_tags_hint"><![CDATA[
 <b>קטגוריות</b> עוזרות לך לקבץ פעילויות קשורות. לדוגמה:<br><br>
 • קטגוריית <custom-color-3>פרודוקטיבי</custom-color-3> עשויה לכלול <custom-color-3>קריאה</custom-color-3> ו<custom-color-3>חדר כושר</custom-color-3>.<br><br>
@@ -124,6 +125,7 @@
     <!--  Change record tag  -->
     <string name="change_record_tag_archived">תגית הועברה לארכיון</string>
     <string name="change_record_tag_default_hint">מוקצה כברירת מחדל</string>
+    <string name="change_record_tag_type_general">כללי</string>
     <string name="change_record_tag_type_general_hint">ניתן להקצות לרשומות של כל פעילות</string>
     <string name="change_record_tag_type_typed_hint">ניתן רק להקצות לרשומות של פעילות ספציפית</string>
     <string name="change_record_tag_select_activity_hint">קח צבע וסמל מפעילות</string>

@@ -13,5 +13,8 @@ sealed interface CategoriesOptionsListItem : OptionsListParams.Item.Id {
     data object EnabledSearch : CategoriesOptionsListItem, CommonOptionsListItem.EnabledSearch
 
     @Parcelize
+    data object ShowRelations : CategoriesOptionsListItem
+
+    @Parcelize
     data object Help : CategoriesOptionsListItem
 }

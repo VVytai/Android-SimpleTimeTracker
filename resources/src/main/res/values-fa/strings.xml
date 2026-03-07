@@ -104,6 +104,7 @@
     <string name="categories_record_hint">برچسب های مختلف را به تاریخچه ها اختصاص دهید تا آنها را از هم تفکیک کنید</string>
     <string name="categories_add_category">افزودن دسته بندی</string>
     <string name="categories_add_record_tag">افزودن برچسب تاریخچه</string>
+    <string name="categories_show_relations">نمایش روابط</string>
     <string name="categories_and_tags_hint"><![CDATA[
 <b>دسته‌بندی‌ها</b> به شما کمک می‌کنند فعالیت‌های مرتبط را گروه‌بندی کنید. برای مثال:<br><br>
 • دسته <custom-color-3>سودمند</custom-color-3> می‌تواند شامل <custom-color-3>مطالعه</custom-color-3> و <custom-color-3>باشگاه</custom-color-3> باشد.<br><br>
@@ -124,6 +125,7 @@
     <!--  Change record tag  -->
     <string name="change_record_tag_archived">برچسب بایگانی شد</string>
     <string name="change_record_tag_default_hint">به طور پیش فرض اختصاص داده شده است</string>
+    <string name="change_record_tag_type_general">مشترک</string>
     <string name="change_record_tag_type_general_hint">می تواند به تاریخچه هر فعالیتی اضافه شود</string>
     <string name="change_record_tag_type_typed_hint">می تواند به تاریخچه های یک فعالیت خاص اصافه شود</string>
     <string name="change_record_tag_select_activity_hint">رنگ و نماد را از فعالیت بگیرید</string>

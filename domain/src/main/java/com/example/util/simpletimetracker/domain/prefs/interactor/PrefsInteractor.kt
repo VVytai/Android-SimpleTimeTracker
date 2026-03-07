@@ -1012,6 +1012,14 @@ class PrefsInteractor @Inject constructor(
         prefsRepo.isCategoriesSearchEnabled = value
     }
 
+    suspend fun getIsCategoriesRelationsEnabled(): Boolean = withContext(Dispatchers.IO) {
+        prefsRepo.isCategoriesRelationsEnabled
+    }
+
+    suspend fun setIsCategoriesRelationsEnabled(value: Boolean) = withContext(Dispatchers.IO) {
+        prefsRepo.isCategoriesRelationsEnabled = value
+    }
+
     suspend fun getIsArchiveSearchEnabled(): Boolean = withContext(Dispatchers.IO) {
         prefsRepo.isArchiveSearchEnabled
     }

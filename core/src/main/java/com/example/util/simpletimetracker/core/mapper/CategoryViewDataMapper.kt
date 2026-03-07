@@ -232,12 +232,12 @@ class CategoryViewDataMapper @Inject constructor(
         )
     }
 
-    fun mapToCategoryHint(): ViewHolderType = HintViewData(
+    fun mapToCategoryHint(): HintViewData = HintViewData(
         text = R.string.categories_record_type_hint
             .let(resourceRepo::getString),
     )
 
-    fun mapToRecordTagHint(): ViewHolderType = HintViewData(
+    fun mapToRecordTagHint(): HintViewData = HintViewData(
         text = R.string.categories_record_hint
             .let(resourceRepo::getString),
     )
