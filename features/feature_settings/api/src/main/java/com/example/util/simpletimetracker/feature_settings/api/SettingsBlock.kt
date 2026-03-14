@@ -90,6 +90,7 @@ enum class SettingsBlock {
     AdditionalDataEdit,
     AdditionalComplexRules,
     AdditionalActivitySuggestions,
+    AdditionalShortcuts,
     AdditionalBottom,
 
     BackupTop,

@@ -202,6 +202,11 @@ class SettingsAdditionalViewDataInteractor @Inject constructor(
                 block = SettingsBlock.AdditionalActivitySuggestions,
                 title = resourceRepo.getString(R.string.settings_activity_suggestions),
                 subtitle = "",
+            )
+            result += SettingsTextViewData(
+                block = SettingsBlock.AdditionalShortcuts,
+                title = resourceRepo.getString(R.string.change_record_shortcut),
+                subtitle = "",
                 dividerIsVisible = false,
             )
         }

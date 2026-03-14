@@ -14,6 +14,7 @@ import com.example.util.simpletimetracker.navigation.NavigationData
 import com.example.util.simpletimetracker.navigation.bundleCreator.BundleCreator
 import com.example.util.simpletimetracker.navigation.bundleCreator.bundleCreatorDelegate
 import com.example.util.simpletimetracker.navigation.params.screen.ActivitySuggestionsParams
+import com.example.util.simpletimetracker.navigation.params.screen.ShortcutsParams
 import com.example.util.simpletimetracker.navigation.params.screen.ArchiveParams
 import com.example.util.simpletimetracker.navigation.params.screen.CategoriesParams
 import com.example.util.simpletimetracker.navigation.params.screen.ChangeActivityFilterParams
@@ -169,6 +170,16 @@ class NavigationScreenMapModule {
     fun activitySuggestions(): NavigationData {
         return NavigationData(
             R.id.action_to_activitySuggestionsFragment,
+            BundleCreator.empty(),
+        )
+    }
+
+    @IntoMap
+    @Provides
+    @ScreenKey(ShortcutsParams::class)
+    fun shortcuts(): NavigationData {
+        return NavigationData(
+            R.id.action_to_shortcutsFragment,
             BundleCreator.empty(),
         )
     }
