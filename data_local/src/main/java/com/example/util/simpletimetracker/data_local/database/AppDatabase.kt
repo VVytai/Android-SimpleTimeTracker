@@ -20,6 +20,8 @@ import com.example.util.simpletimetracker.data_local.favourite.FavouriteCommentD
 import com.example.util.simpletimetracker.data_local.favourite.FavouriteCommentDao
 import com.example.util.simpletimetracker.data_local.favourite.FavouriteIconDBO
 import com.example.util.simpletimetracker.data_local.favourite.FavouriteIconDao
+import com.example.util.simpletimetracker.data_local.favourite.RecordTypeToFavouriteCommentDBO
+import com.example.util.simpletimetracker.data_local.favourite.RecordTypeToFavouriteCommentDao
 import com.example.util.simpletimetracker.data_local.record.RecordDBO
 import com.example.util.simpletimetracker.data_local.record.RecordDao
 import com.example.util.simpletimetracker.data_local.record.RunningRecordDBO
@@ -60,6 +62,7 @@ import com.example.util.simpletimetracker.data_local.recordsFilter.FavouriteReco
         RecordTypeToDefaultTagDBO::class,
         ActivityFilterDBO::class,
         FavouriteCommentDBO::class,
+        RecordTypeToFavouriteCommentDBO::class,
         RecordTypeGoalDBO::class,
         FavouriteIconDBO::class,
         ComplexRuleDBO::class,
@@ -102,6 +105,8 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun activitySuggestionDao(): ActivitySuggestionDao
 
     abstract fun favouriteCommentDao(): FavouriteCommentDao
+
+    abstract fun recordTypeToFavouriteCommentDao(): RecordTypeToFavouriteCommentDao
 
     abstract fun recordTypeGoalDao(): RecordTypeGoalDao
 

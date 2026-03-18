@@ -41,6 +41,7 @@ class AppDatabaseMigrations {
                 migration_30_31,
                 migration_31_32,
                 migration_32_33,
+                migration_33_34,
             )
 
         private val migration_1_2 = object : Migration(1, 2) {
@@ -416,6 +417,14 @@ class AppDatabaseMigrations {
                 )
                 database.execSQL(
                     "ALTER TABLE recordShortcuts ADD COLUMN setting_action INTEGER NOT NULL DEFAULT 0",
+                )
+            }
+        }
+
+        private val migration_33_34 = object : Migration(33, 34) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL(
+                    "CREATE TABLE IF NOT EXISTS `recordTypeToFavouriteComment` (`record_type_id` INTEGER NOT NULL, `comment_id` INTEGER NOT NULL, PRIMARY KEY(`record_type_id`, `comment_id`))",
                 )
             }
         }

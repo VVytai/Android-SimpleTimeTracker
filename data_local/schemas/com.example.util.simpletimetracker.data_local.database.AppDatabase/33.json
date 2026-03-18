@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 33,
-    "identityHash": "5c9e418319a4bd7703fb8f8212bd3147",
+    "identityHash": "e1df3e7105f19d9115ffdfc7fd1d124a",
     "entities": [
       {
         "tableName": "records",
@@ -547,6 +547,33 @@
         "foreignKeys": []
       },
       {
+        "tableName": "recordTypeToFavouriteComment",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`record_type_id` INTEGER NOT NULL, `comment_id` INTEGER NOT NULL, PRIMARY KEY(`record_type_id`, `comment_id`))",
+        "fields": [
+          {
+            "fieldPath": "recordTypeId",
+            "columnName": "record_type_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "commentId",
+            "columnName": "comment_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "record_type_id",
+            "comment_id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
         "tableName": "recordTypeGoals",
         "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `owner_id` INTEGER NOT NULL, `owner_type` INTEGER NOT NULL, `range` INTEGER NOT NULL, `type` INTEGER NOT NULL, `goalType` INTEGER NOT NULL, `value` INTEGER NOT NULL, `days_of_week` TEXT NOT NULL)",
         "fields": [
@@ -788,7 +815,7 @@
       },
       {
         "tableName": "recordShortcuts",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `type_id` INTEGER NOT NULL, `comment` TEXT NOT NULL, `target_type` INTEGER NOT NULL, `setting_action` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `type_id` INTEGER NOT NULL, `comment` TEXT NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -806,18 +833,6 @@
             "fieldPath": "comment",
             "columnName": "comment",
             "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "targetType",
-            "columnName": "target_type",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "settingAction",
-            "columnName": "setting_action",
-            "affinity": "INTEGER",
             "notNull": true
           }
         ],
@@ -976,7 +991,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '5c9e418319a4bd7703fb8f8212bd3147')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e1df3e7105f19d9115ffdfc7fd1d124a')"
     ]
   }
 }
