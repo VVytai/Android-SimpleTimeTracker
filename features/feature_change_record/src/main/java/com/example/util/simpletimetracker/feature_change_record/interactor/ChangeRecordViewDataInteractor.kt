@@ -47,6 +47,47 @@ class ChangeRecordViewDataInteractor @Inject constructor(
         )
     }
 
+    // TODO replace fav to text button?
+    suspend fun getCommentsViewData(
+        comment: String,
+        typeId: Long,
+        fromCommentChange: Boolean,
+    ): List<ViewHolderType> {
+        val items = mutableListOf<ViewHolderType>()
+        val isDarkTheme = prefsInteractor.getDarkMode()
+
+        val favouriteComment = favouriteCommentInteractor.get(comment)
+        val isFavourite = if (favouriteComment == null) false else {
+            val (included, excluded) = recordTypeToFavouriteCommentInteractor.getAll()
+                .partition { it.recordTypeId == typeId }
+            val includedComments = included.map { it.commentId }
+            val excludedComments = excluded.map { it.commentId }
+            (
+                includedComments.contains(favouriteComment.id) ||
+                !excludedComments.contains(favouriteComment.id)
+            )
+        }
+
+        ChangeRecordCommentFieldViewData(
+            // Only one at the time.
+            id = 1L,
+            // Do not update text if update coming from typing.
+            text = if (fromCommentChange) null else comment,
+            iconColor = if (isFavourite) {
+                resourceRepo.getColor(R.color.colorSecondary)
+            } else {
+                colorMapper.toInactiveColor(isDarkTheme)
+            },
+        ).let(items::add)
+
+        items += recordCommentSearchViewDataInteractor.getViewData(
+            comment = comment,
+            typeId = typeId,
+        )
+
+        return items
+    }
+
     fun getTimeAdjustmentItems(
         dateTimeFieldState: ChangeRecordDateTimeFieldsState.State,
     ): List<ViewHolderType> {
