@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import com.example.util.simpletimetracker.core.base.ViewModelDelegate
 import com.example.util.simpletimetracker.core.extension.lazySuspend
 import com.example.util.simpletimetracker.core.extension.set
+import com.example.util.simpletimetracker.core.interactor.OnSettingsShortcutClickInteractor
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.domain.extension.flip
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
@@ -36,8 +37,7 @@ class SettingsAdditionalViewModelDelegate @Inject constructor(
     private val settingsMapper: SettingsMapper,
     private val settingsAutomatedTrackingMapper: SettingsAutomatedTrackingMapper,
     private val settingsAdditionalViewDataInteractor: SettingsAdditionalViewDataInteractor,
-    private val runningRecordInteractor: RunningRecordInteractor,
-    private val removeRunningRecordMediator: RemoveRunningRecordMediator,
+    private val onSettingsShortcutClickInteractor: OnSettingsShortcutClickInteractor,
     private val externalViewsInteractor: UpdateExternalViewsInteractor,
     private val recordsContainerUpdateInteractor: RecordsContainerUpdateInteractor,
 ) : ViewModelDelegate() {
@@ -172,11 +172,7 @@ class SettingsAdditionalViewModelDelegate @Inject constructor(
             val newValue = !prefsInteractor.getRetroactiveTrackingMode()
             prefsInteractor.setRetroactiveTrackingMode(newValue)
             parent?.updateContent()
-            runningRecordInteractor.getAll().forEach {
-                removeRunningRecordMediator.removeWithRecordAdd(it)
-            }
-            // TODO do not update widgets if there was running records?
-            externalViewsInteractor.onRetroactiveTrackingModeChange()
+            onSettingsShortcutClickInteractor.onRetroactiveTrackingModeChange()
         }
     }
 

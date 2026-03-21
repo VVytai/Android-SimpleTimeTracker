@@ -30,13 +30,13 @@ class ShortcutsViewDataInteractor @Inject constructor(
         val shortcuts = recordShortcutInteractor.getAll()
 
         val content = shortcuts.mapNotNull { shortcut ->
-            val recordType = recordTypesMap[shortcut.typeId] ?: return@mapNotNull null
             recordShortcutViewDataMapper.map(
                 shortcut = shortcut,
-                recordType = recordType,
-                recordTags = recordTags,
+                typesMap = recordTypesMap,
+                tags = recordTags,
                 isDarkTheme = isDarkTheme,
                 isFiltered = false,
+                isEnabled = false,
             )
         }
 

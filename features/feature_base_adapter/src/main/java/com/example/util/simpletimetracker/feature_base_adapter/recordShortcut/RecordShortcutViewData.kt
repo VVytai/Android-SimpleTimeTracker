@@ -5,6 +5,7 @@ import com.example.util.simpletimetracker.feature_base_adapter.category.Category
 
 data class RecordShortcutViewData(
     val id: Long,
+    val hint: String,
     val data: CategoryViewData.Record,
 ) : ViewHolderType {
 

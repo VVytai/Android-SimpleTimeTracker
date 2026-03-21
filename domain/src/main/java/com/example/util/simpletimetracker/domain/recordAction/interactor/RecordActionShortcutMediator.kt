@@ -16,9 +16,24 @@ class RecordActionShortcutMediator @Inject constructor(
     ) {
         RecordShortcut(
             id = 0L, // Creates new record.
-            typeId = typeId,
-            comment = comment,
-            tags = tagIds,
+            target = RecordShortcut.Target.Record(
+                typeId = typeId,
+                comment = comment,
+                tags = tagIds,
+            ),
+        ).let {
+            recordShortcutInteractor.add(it)
+        }
+    }
+
+    suspend fun execute(
+        action: RecordShortcut.SettingAction,
+    ) {
+        RecordShortcut(
+            id = 0L, // Creates new record.
+            target = RecordShortcut.Target.Setting(
+                action = action,
+            ),
         ).let {
             recordShortcutInteractor.add(it)
         }

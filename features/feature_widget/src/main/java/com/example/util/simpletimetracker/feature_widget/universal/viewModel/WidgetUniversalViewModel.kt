@@ -11,6 +11,7 @@ import com.example.util.simpletimetracker.core.interactor.ActivityFilterViewData
 import com.example.util.simpletimetracker.core.interactor.ActivitySuggestionViewDataInteractor
 import com.example.util.simpletimetracker.core.interactor.FilterGoalsByDayOfWeekInteractor
 import com.example.util.simpletimetracker.core.interactor.GetCurrentRecordsDurationInteractor
+import com.example.util.simpletimetracker.core.interactor.OnSettingsShortcutClickInteractor
 import com.example.util.simpletimetracker.core.interactor.RecordRepeatInteractor
 import com.example.util.simpletimetracker.core.interactor.RecordsShortcutsViewDataInteractor
 import com.example.util.simpletimetracker.core.mapper.RecordTypeViewDataMapper
@@ -27,6 +28,7 @@ import com.example.util.simpletimetracker.domain.record.model.RecordDataSelectio
 import com.example.util.simpletimetracker.domain.record.model.RunningRecord
 import com.example.util.simpletimetracker.domain.recordAction.interactor.RecordActionRepeatMediator
 import com.example.util.simpletimetracker.domain.recordShortcut.interactor.RecordShortcutInteractor
+import com.example.util.simpletimetracker.domain.recordShortcut.model.RecordShortcut
 import com.example.util.simpletimetracker.domain.recordTag.interactor.RecordTagInteractor
 import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTypeGoalInteractor
 import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTypeInteractor
@@ -72,6 +74,7 @@ class WidgetUniversalViewModel @Inject constructor(
     private val activitySuggestionViewDataInteractor: ActivitySuggestionViewDataInteractor,
     private val recordsShortcutsViewDataInteractor: RecordsShortcutsViewDataInteractor,
     private val recordActionRepeatMediator: RecordActionRepeatMediator,
+    private val onSettingsShortcutClickInteractor: OnSettingsShortcutClickInteractor,
 ) : ViewModel() {
 
     val recordTypes: LiveData<List<ViewHolderType>> by lazy {
@@ -164,11 +167,18 @@ class WidgetUniversalViewModel @Inject constructor(
 
     fun onShortcutClick(item: RecordShortcutViewData) = viewModelScope.launch {
         val shortcut = recordShortcutInteractor.get(item.id) ?: return@launch
-        recordActionRepeatMediator.execute(
-            typeId = shortcut.typeId,
-            comment = shortcut.comment,
-            tags = shortcut.tags,
-        )
+        when (val target = shortcut.target) {
+            is RecordShortcut.Target.Record -> {
+                recordActionRepeatMediator.execute(
+                    typeId = target.typeId,
+                    comment = target.comment,
+                    tags = target.tags,
+                )
+            }
+            is RecordShortcut.Target.Setting -> {
+                onSettingsShortcutClickInteractor.execute(target.action)
+            }
+        }
         updateRecordTypesViewData()
         exit.set(Unit)
     }

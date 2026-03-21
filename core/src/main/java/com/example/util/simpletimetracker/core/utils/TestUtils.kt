@@ -383,14 +383,16 @@ class TestUtils @Inject constructor(
             .map { it.id }
 
         val data = RecordShortcut(
-            typeId = type.id,
-            comment = comment,
-            tags = tagIds.map {
-                RecordBase.Tag(
-                    tagId = it,
-                    numericValue = null,
-                )
-            },
+            target = RecordShortcut.Target.Record(
+                typeId = type.id,
+                comment = comment,
+                tags = tagIds.map {
+                    RecordBase.Tag(
+                        tagId = it,
+                        numericValue = null,
+                    )
+                },
+            ),
         )
 
         recordShortcutInteractor.add(data)

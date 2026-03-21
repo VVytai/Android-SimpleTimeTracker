@@ -8,6 +8,7 @@ import com.example.util.simpletimetracker.core.R
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.data_local.complexRule.ComplexRuleTagValuesMapper
 import com.example.util.simpletimetracker.data_local.daysOfWeek.DaysOfWeekDataLocalMapper
+import com.example.util.simpletimetracker.data_local.recordShortcut.RecordShortcutDataLocalMapper
 import com.example.util.simpletimetracker.data_local.recordsFilter.FavouriteRecordsFilterDBO
 import com.example.util.simpletimetracker.data_local.recordsFilter.FavouriteRecordsFilterDao
 import com.example.util.simpletimetracker.domain.activityFilter.model.ActivityFilter
@@ -98,6 +99,7 @@ class BackupRepoImpl @Inject constructor(
     private val daysOfWeekDataLocalMapper: DaysOfWeekDataLocalMapper,
     private val backupPrefsRepo: BackupPrefsRepo,
     private val complexRuleTagValuesMapper: ComplexRuleTagValuesMapper,
+    private val recordShortcutDataLocalMapper: RecordShortcutDataLocalMapper,
 ) : BackupRepo {
 
     override suspend fun saveBackupFile(
@@ -468,11 +470,22 @@ class BackupRepoImpl @Inject constructor(
     }
 
     private fun toBackupString(recordShortcut: RecordShortcut): String {
+        val recordTarget = recordShortcut.target as? RecordShortcut.Target.Record
+        val settingTarget = recordShortcut.target as? RecordShortcut.Target.Setting
+        val targetType = when (recordShortcut.target) {
+            is RecordShortcut.Target.Record -> 0L
+            is RecordShortcut.Target.Setting -> 1L
+        }
+
         return String.format(
-            "$ROW_RECORD_SHORTCUT\t%s\t%s\t%s\n",
+            "$ROW_RECORD_SHORTCUT\t%s\t%s\t%s\t%s\t%s\n",
             recordShortcut.id.toString(),
-            recordShortcut.typeId.toString(),
-            recordShortcut.comment.cleanTabs().replaceNewline(),
+            recordTarget?.typeId.orZero().toString(),
+            recordTarget?.comment.orEmpty().cleanTabs().replaceNewline(),
+            targetType.toString(),
+            settingTarget?.action
+                ?.let(recordShortcutDataLocalMapper::mapSettingAction)
+                .orZero().toString(),
         )
     }
 
@@ -783,11 +796,26 @@ class BackupRepoImpl @Inject constructor(
     }
 
     private fun recordShortcutFromBackupString(parts: List<String>): RecordShortcut {
+        val typeId = parts.getOrNull(2)?.toLongOrNull() ?: 1L
+        val comment = parts.getOrNull(3)?.restoreNewline().orEmpty()
+        val targetType = parts.getOrNull(4)?.toLongOrNull()
+        val settingAction = parts.getOrNull(5)?.toLongOrNull()
+            .let(recordShortcutDataLocalMapper::mapSettingAction)
+        val target = if (targetType == 1L) {
+            RecordShortcut.Target.Setting(
+                action = settingAction,
+            )
+        } else {
+            RecordShortcut.Target.Record(
+                typeId = typeId,
+                comment = comment,
+                tags = emptyList(), // Stored separately.
+            )
+        }
+
         return RecordShortcut(
             id = parts.getOrNull(1)?.toLongOrNull().orZero(),
-            typeId = parts.getOrNull(2)?.toLongOrNull() ?: 1L,
-            comment = parts.getOrNull(3)?.restoreNewline().orEmpty(),
-            tags = emptyList(), // Stored separately.
+            target = target,
         )
     }
 

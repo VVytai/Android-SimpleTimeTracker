@@ -99,7 +99,12 @@ class ActivityFilterViewDataInteractor @Inject constructor(
         return applyFilter(
             list = list,
             filter = filter,
-            predicate = { data, typeIds -> data.typeId in typeIds },
+            predicate = { data, typeIds ->
+                when (val target = data.target) {
+                    is RecordShortcut.Target.Record -> target.typeId in typeIds
+                    is RecordShortcut.Target.Setting -> true
+                }
+            },
         )
     }
 

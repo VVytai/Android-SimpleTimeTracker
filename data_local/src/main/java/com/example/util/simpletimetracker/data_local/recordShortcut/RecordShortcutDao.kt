@@ -14,7 +14,7 @@ interface RecordShortcutDao {
     suspend fun getAll(): List<RecordShortcutWithRecordTagsDBO>
 
     @Transaction
-    @Query("SELECT * FROM recordShortcuts WHERE type_id IN (:typesIds)")
+    @Query("SELECT * FROM recordShortcuts WHERE target_type = 0 AND type_id IN (:typesIds)")
     suspend fun getByType(typesIds: List<Long>): List<RecordShortcutWithRecordTagsDBO>
 
     @Transaction
@@ -27,7 +27,7 @@ interface RecordShortcutDao {
     @Query("DELETE FROM recordShortcuts WHERE id = :id")
     suspend fun delete(id: Long)
 
-    @Query("DELETE FROM recordShortcuts WHERE type_id = :typeId")
+    @Query("DELETE FROM recordShortcuts WHERE target_type = 0 AND type_id = :typeId")
     suspend fun deleteByType(typeId: Long)
 
     @Query("DELETE FROM recordShortcuts")

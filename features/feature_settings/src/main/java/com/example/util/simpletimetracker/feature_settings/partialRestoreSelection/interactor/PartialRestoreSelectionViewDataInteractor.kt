@@ -155,10 +155,11 @@ class PartialRestoreSelectionViewDataInteractor @Inject constructor(
                 data.recordShortcuts.values.getNotExistingValues().mapNotNull {
                     recordShortcutViewDataMapper.map(
                         shortcut = it,
-                        recordType = typesMap[it.typeId] ?: return@mapNotNull null,
-                        recordTags = tags,
+                        typesMap = typesMap,
+                        tags = tags,
                         isDarkTheme = isDarkTheme,
                         isFiltered = it.id in dataIdsFiltered,
+                        isEnabled = false,
                     )
                 }
             }

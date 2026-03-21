@@ -4,6 +4,7 @@ import com.example.util.simpletimetracker.core.mapper.RecordShortcutViewDataMapp
 import com.example.util.simpletimetracker.domain.extension.search
 import com.example.util.simpletimetracker.domain.record.model.RunningRecord
 import com.example.util.simpletimetracker.domain.recordShortcut.interactor.RecordShortcutInteractor
+import com.example.util.simpletimetracker.domain.recordShortcut.model.RecordShortcut
 import com.example.util.simpletimetracker.domain.recordTag.model.RecordTag
 import com.example.util.simpletimetracker.domain.recordType.model.RecordType
 import com.example.util.simpletimetracker.feature_base_adapter.recordShortcut.RecordShortcutViewData
@@ -12,6 +13,7 @@ import javax.inject.Inject
 class RecordsShortcutsViewDataInteractor @Inject constructor(
     private val recordShortcutInteractor: RecordShortcutInteractor,
     private val recordShortcutViewDataMapper: RecordShortcutViewDataMapper,
+    private val isSettingShortcutEnabledInteractor: IsSettingShortcutEnabledInteractor,
     private val activityFilterViewDataInteractor: ActivityFilterViewDataInteractor,
 ) {
 
@@ -32,17 +34,29 @@ class RecordsShortcutsViewDataInteractor @Inject constructor(
         return shortcuts.let {
             activityFilterViewDataInteractor.applyFilterToShortcuts(it, filter)
         }.mapNotNull { shortcut ->
-            val isRunning = runningRecordsProcessed.any { runningRecord ->
-                runningRecord.id == shortcut.typeId &&
-                    runningRecord.comment == shortcut.comment &&
-                    runningRecord.tags == shortcut.tags.sortedBy { it.tagId }
+            val isFiltered = when (val target = shortcut.target) {
+                is RecordShortcut.Target.Record -> {
+                    runningRecordsProcessed.any { runningRecord ->
+                        runningRecord.id == target.typeId &&
+                            runningRecord.comment == target.comment &&
+                            runningRecord.tags == target.tags.sortedBy { it.tagId }
+                    }
+                }
+                is RecordShortcut.Target.Setting -> false
+            }
+            val isEnabled = when (val target = shortcut.target) {
+                is RecordShortcut.Target.Record -> false
+                is RecordShortcut.Target.Setting -> {
+                    isSettingShortcutEnabledInteractor.execute(target)
+                }
             }
             recordShortcutViewDataMapper.map(
                 shortcut = shortcut,
-                recordType = recordTypesMap[shortcut.typeId] ?: return@mapNotNull null,
-                recordTags = recordTags,
+                typesMap = recordTypesMap,
+                tags = recordTags,
                 isDarkTheme = isDarkTheme,
-                isFiltered = isRunning,
+                isFiltered = isFiltered,
+                isEnabled = isEnabled,
             )
         }.search(
             text = searchText,

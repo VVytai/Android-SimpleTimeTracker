@@ -15,4 +15,10 @@ data class RecordShortcutDBO(
 
     @ColumnInfo(name = "comment")
     val comment: String,
+
+    @ColumnInfo(name = "target_type")
+    val targetType: Long,
+
+    @ColumnInfo(name = "setting_action")
+    val settingAction: Long,
 )

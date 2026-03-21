@@ -108,11 +108,17 @@ class BackupPartialRepoImpl @Inject constructor(
         }
         params.data.recordShortcuts.values.getNotExistingValues().forEach { recordShortcut ->
             val originalId = recordShortcut.id
-            val newTypeId = originalTypeIdToAddedId[recordShortcut.typeId]
-                ?: return@forEach
+            val newTarget = when (val target = recordShortcut.target) {
+                is RecordShortcut.Target.Record -> {
+                    val newTypeId = originalTypeIdToAddedId[target.typeId]
+                        ?: return@forEach
+                    target.copy(typeId = newTypeId)
+                }
+                is RecordShortcut.Target.Setting -> target
+            }
             val addedId = recordShortcut.copy(
                 id = 0,
-                typeId = newTypeId,
+                target = newTarget,
             ).let { recordShortcutRepo.add(it) }
             originalRecordShortcutIdToAddedId[originalId] = addedId
         }
@@ -276,7 +282,13 @@ class BackupPartialRepoImpl @Inject constructor(
             .map { it.copy(tags = emptyList()) }
         val recordShortcuts: MutableList<RecordShortcut> = mutableListOf()
         val recordShortcutsCurrent: List<RecordShortcut> = recordShortcutRepo.getAll()
-            .map { it.copy(tags = emptyList()) }
+            .map {
+                val target = when (val value = it.target) {
+                    is RecordShortcut.Target.Record -> value.copy(tags = emptyList())
+                    is RecordShortcut.Target.Setting -> value
+                }
+                it.copy(target = target)
+            }
         val categories: MutableList<Category> = mutableListOf()
         val categoriesCurrent: List<Category> = categoryRepo.getAll()
         val typeToCategory: MutableList<RecordTypeCategory> = mutableListOf()
@@ -359,9 +371,14 @@ class BackupPartialRepoImpl @Inject constructor(
         }
 
         val (newRecordShortcuts, originalRecordShortcutIdToExistingId) = recordShortcuts.mapNotNull { item ->
-            val newTypeId = originalTypeIdToExistingId[item.typeId]
-                ?: return@mapNotNull null
-            item.copy(typeId = newTypeId)
+            when (val target = item.target) {
+                is RecordShortcut.Target.Record -> {
+                    val newTypeId = originalTypeIdToExistingId[target.typeId]
+                        ?: return@mapNotNull null
+                    item.copy(target = target.copy(typeId = newTypeId))
+                }
+                is RecordShortcut.Target.Setting -> item
+            }
         }.let {
             mapToHolder(it, recordShortcutsCurrent)
         }
@@ -542,14 +559,20 @@ class BackupPartialRepoImpl @Inject constructor(
         }
         val newRecordShortcutsWithTags = newRecordShortcuts.map { record ->
             val thisTags = newRecordShortcutToTagMap[record.data.id].orEmpty().map { it.data }
-            val newData = record.data.copy(
-                tags = thisTags.map {
-                    RecordBase.Tag(
-                        tagId = it.recordTagId,
-                        numericValue = it.recordTagNumericValue,
-                    )
-                },
-            )
+            val target = record.data.target
+            val newData = if (target is RecordShortcut.Target.Record) {
+                val newTarget = target.copy(
+                    tags = thisTags.map {
+                        RecordBase.Tag(
+                            tagId = it.recordTagId,
+                            numericValue = it.recordTagNumericValue,
+                        )
+                    },
+                )
+                record.data.copy(target = newTarget)
+            } else {
+                record.data
+            }
             record.copy(data = newData)
         }
 

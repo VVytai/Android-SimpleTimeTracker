@@ -28,12 +28,22 @@ class RecordShortcutInteractor @Inject constructor(
 
     suspend fun add(recordShortcut: RecordShortcut) {
         val addedId = repo.add(recordShortcut)
-        updateTags(addedId, recordShortcut.tags)
+        when (val target = recordShortcut.target) {
+            is RecordShortcut.Target.Record -> updateTags(addedId, target.tags)
+            is RecordShortcut.Target.Setting -> Unit
+        }
     }
 
     suspend fun remove(id: Long) {
         recordShortcutToRecordTagRepo.removeAllByShortcutId(id)
         repo.remove(id)
+    }
+
+    fun getSettingsOrder(): List<RecordShortcut.SettingAction> {
+        return listOf(
+            RecordShortcut.SettingAction.Multitasking,
+            RecordShortcut.SettingAction.RetroactiveMode,
+        )
     }
 
     private suspend fun updateTags(
@@ -51,7 +61,25 @@ class RecordShortcutInteractor @Inject constructor(
         val orderMap = order
             .mapIndexed { index, recordType -> recordType.id to index }
             .toMap()
+        val settingsOrder = getSettingsOrder()
+            .mapIndexed { index, action -> action to index }
+            .toMap()
 
-        return data.sortedBy { orderMap[it.typeId].orZero() }
+        return data.sortedWith(
+            compareBy(
+                {
+                    when (it.target) {
+                        is RecordShortcut.Target.Record -> 0
+                        is RecordShortcut.Target.Setting -> 1
+                    }
+                },
+                {
+                    when (val target = it.target) {
+                        is RecordShortcut.Target.Record -> orderMap[target.typeId].orZero()
+                        is RecordShortcut.Target.Setting -> settingsOrder[target.action]
+                    }
+                },
+            ),
+        )
     }
 }

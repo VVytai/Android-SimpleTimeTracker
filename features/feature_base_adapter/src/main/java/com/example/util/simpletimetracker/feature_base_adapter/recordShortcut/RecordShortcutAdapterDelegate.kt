@@ -16,6 +16,8 @@ fun createRecordShortcutAdapterDelegate(
     with(binding.viewRecordShortcutItem) {
         item as ViewData
 
+        binding.tvRecordShortcutItemHint.text = item.hint
+
         itemColor = item.data.color
         itemName = item.data.name
         itemIconColor = item.data.iconColor
