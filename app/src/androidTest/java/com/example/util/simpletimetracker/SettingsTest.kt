@@ -1146,7 +1146,7 @@ class SettingsTest : BaseUiTest() {
                 hasDescendant(withText(name)),
             ),
         )
-        clickOnView(withText(R.string.cancel))
+        pressBack()
         clickOnView(
             allOf(
                 withId(R.id.viewRecordShortcutItem),
@@ -1238,7 +1238,7 @@ class SettingsTest : BaseUiTest() {
                 hasDescendant(withText(name)),
             ),
         )
-        clickOnView(withText(R.string.cancel))
+        pressBack()
         longClickOnView(
             allOf(
                 withId(R.id.viewRecordShortcutItem),

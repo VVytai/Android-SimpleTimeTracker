@@ -10,6 +10,7 @@ import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.empty.EmptyViewData
 import com.example.util.simpletimetracker.feature_base_adapter.emptySpace.EmptySpaceViewData
 import com.example.util.simpletimetracker.feature_shortcuts.R
+import com.example.util.simpletimetracker.feature_shortcuts.mapper.ShortcutsViewDataMapper
 import javax.inject.Inject
 
 class ShortcutsViewDataInteractor @Inject constructor(
@@ -19,6 +20,7 @@ class ShortcutsViewDataInteractor @Inject constructor(
     private val recordTagInteractor: RecordTagInteractor,
     private val recordShortcutInteractor: RecordShortcutInteractor,
     private val recordShortcutViewDataMapper: RecordShortcutViewDataMapper,
+    private val shortcutsViewDataMapper: ShortcutsViewDataMapper,
 ) {
 
     suspend fun getViewData(
@@ -29,7 +31,9 @@ class ShortcutsViewDataInteractor @Inject constructor(
         val recordTags = recordTagInteractor.getAll()
         val shortcuts = recordShortcutInteractor.getAll()
 
-        val content = shortcuts.mapNotNull { shortcut ->
+        val addItem = listOf(shortcutsViewDataMapper.mapAddItem(isDarkTheme))
+
+        val content = shortcuts.map { shortcut ->
             recordShortcutViewDataMapper.map(
                 shortcut = shortcut,
                 typesMap = recordTypesMap,
@@ -38,9 +42,7 @@ class ShortcutsViewDataInteractor @Inject constructor(
                 isFiltered = false,
                 isEnabled = false,
             )
-        }
-
-        val result = content.ifEmpty { mapEmptyData() }
+        }.ifEmpty { mapEmptyData() }
 
         val bottomSpace = EmptySpaceViewData(
             id = "shortcuts_nav_bar_space".hashCode().toLong(),
@@ -48,7 +50,7 @@ class ShortcutsViewDataInteractor @Inject constructor(
             wrapBefore = true,
         )
 
-        return result + bottomSpace
+        return addItem + content + bottomSpace
     }
 
     private fun mapEmptyData(): List<ViewHolderType> {

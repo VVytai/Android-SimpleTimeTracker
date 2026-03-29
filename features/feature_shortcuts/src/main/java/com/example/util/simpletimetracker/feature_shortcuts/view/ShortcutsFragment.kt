@@ -8,6 +8,7 @@ import com.example.util.simpletimetracker.core.utils.InsetConfiguration
 import com.example.util.simpletimetracker.core.utils.doOnApplyWindowInsetsListener
 import com.example.util.simpletimetracker.core.utils.getNavBarInsets
 import com.example.util.simpletimetracker.feature_base_adapter.BaseRecyclerAdapter
+import com.example.util.simpletimetracker.feature_base_adapter.button.createButtonAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.empty.createEmptyAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.emptySpace.createEmptySpaceAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.loader.createLoaderAdapterDelegate
@@ -37,8 +38,11 @@ class ShortcutsFragment : BaseFragment<Binding>() {
             createEmptySpaceAdapterDelegate(),
             createLoaderAdapterDelegate(),
             createEmptyAdapterDelegate(),
+            createButtonAdapterDelegate(
+                onClick = throttle(viewModel::onItemButtonClick),
+            ),
             createRecordShortcutAdapterDelegate(
-                onItemClick = {},
+                onClickWithTransition = throttle(viewModel::onShortcutClick),
             ),
         )
     }

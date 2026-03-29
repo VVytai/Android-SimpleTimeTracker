@@ -9,6 +9,7 @@ import com.example.util.simpletimetracker.core.delegates.colorSelection.ColorSel
 import com.example.util.simpletimetracker.core.delegates.colorSelection.ColorSelectionViewModelDelegateImpl
 import com.example.util.simpletimetracker.core.delegates.iconSelection.viewModelDelegate.IconSelectionViewModelDelegate
 import com.example.util.simpletimetracker.core.delegates.iconSelection.viewModelDelegate.IconSelectionViewModelDelegateImpl
+import com.example.util.simpletimetracker.core.extension.lazySuspend
 import com.example.util.simpletimetracker.core.extension.set
 import com.example.util.simpletimetracker.core.extension.trimIfNotBlank
 import com.example.util.simpletimetracker.core.interactor.SnackBarMessageNavigationInteractor
@@ -76,50 +77,28 @@ class ChangeRecordTypeViewModel @Inject constructor(
 
     lateinit var extra: ChangeRecordTypeParams
 
-    val recordType: LiveData<RecordTypeViewData> by lazy {
-        return@lazy MutableLiveData<RecordTypeViewData>().let { initial ->
-            viewModelScope.launch {
-                initializeRecordTypeData()
-                initial.value = loadRecordPreviewViewData()
-            }
-            initial
-        }
+    val recordType: LiveData<RecordTypeViewData> by lazySuspend {
+        initializeRecordTypeData()
+        loadRecordPreviewViewData()
     }
-    val categories: LiveData<ChangeRecordTypeCategoriesViewData> by lazy {
-        return@lazy MutableLiveData<ChangeRecordTypeCategoriesViewData>().let { initial ->
-            viewModelScope.launch {
-                initializeSelectedCategories()
-                initial.value = loadCategoriesViewData()
-            }
-            initial
-        }
+    val categories: LiveData<ChangeRecordTypeCategoriesViewData> by lazySuspend {
+        initializeSelectedCategories()
+        loadCategoriesViewData()
     }
-    val chooserState: LiveData<ChangeRecordTypeFieldsState> by lazy {
-        return@lazy MutableLiveData<ChangeRecordTypeFieldsState>(
-            ChangeRecordTypeFieldsState(
-                chooserState = ViewChooserStateDelegate.States(
-                    current = ChangeRecordTypeChooserState.Closed,
-                    previous = ChangeRecordTypeChooserState.Closed,
-                ),
-                additionalFieldsVisible = false,
+    val chooserState: LiveData<ChangeRecordTypeFieldsState> by lazySuspend {
+        ChangeRecordTypeFieldsState(
+            chooserState = ViewChooserStateDelegate.States(
+                current = ChangeRecordTypeChooserState.Closed,
+                previous = ChangeRecordTypeChooserState.Closed,
             ),
+            additionalFieldsVisible = false,
         ).also { viewModelScope.launch { initializeChooserState() } }
     }
-    val additionalState: LiveData<ChangeRecordTypeAdditionalState> by lazy {
-        return@lazy MutableLiveData<ChangeRecordTypeAdditionalState>().let { initial ->
-            viewModelScope.launch {
-                initial.value = loadAdditionalState()
-            }
-            initial
-        }
+    val additionalState: LiveData<ChangeRecordTypeAdditionalState> by lazySuspend {
+        loadAdditionalState()
     }
-    val noteState: LiveData<String> by lazy {
-        return@lazy MutableLiveData<String>().let { initial ->
-            viewModelScope.launch {
-                initial.value = loadNoteState()
-            }
-            initial
-        }
+    val noteState: LiveData<String> by lazySuspend {
+        loadNoteState()
     }
     val archiveButtonEnabled: LiveData<Boolean> = MutableLiveData(true)
     val deleteButtonEnabled: LiveData<Boolean> = MutableLiveData(true)

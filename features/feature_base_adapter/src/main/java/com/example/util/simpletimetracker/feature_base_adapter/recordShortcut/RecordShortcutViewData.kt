@@ -6,7 +6,7 @@ import com.example.util.simpletimetracker.feature_base_adapter.category.Category
 data class RecordShortcutViewData(
     val id: Long,
     val hint: String,
-    val data: CategoryViewData.Record,
+    val data: CategoryViewData.Record.Tagged,
 ) : ViewHolderType {
 
     override fun getUniqueId(): Long = id

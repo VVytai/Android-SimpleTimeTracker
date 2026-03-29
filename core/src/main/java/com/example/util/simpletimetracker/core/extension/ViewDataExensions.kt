@@ -7,10 +7,12 @@ import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.domain.record.model.RecordDataSelectionDialogResult
 import com.example.util.simpletimetracker.domain.record.model.RecordsFilter
 import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
+import com.example.util.simpletimetracker.feature_base_adapter.recordShortcut.RecordShortcutViewData
 import com.example.util.simpletimetracker.feature_base_adapter.runningRecord.GoalTimeViewData
 import com.example.util.simpletimetracker.feature_views.viewData.RecordTypeIcon
 import com.example.util.simpletimetracker.navigation.params.screen.ChangeRecordDateTimeStateParams
 import com.example.util.simpletimetracker.navigation.params.screen.ChangeRunningRecordParams
+import com.example.util.simpletimetracker.navigation.params.screen.ChangeShortcutParams
 import com.example.util.simpletimetracker.navigation.params.screen.RangeLengthParams
 import com.example.util.simpletimetracker.navigation.params.screen.RangeParams
 import com.example.util.simpletimetracker.navigation.params.screen.RecordTagParam
@@ -302,5 +304,15 @@ fun RecordBase.Tag.toParams(): RecordTagParam {
     return RecordTagParam(
         tagId = tagId,
         numericValue = numericValue,
+    )
+}
+
+fun RecordShortcutViewData.toPreview(): ChangeShortcutParams.Preview {
+    return ChangeShortcutParams.Preview(
+        name = data.name,
+        color = data.color,
+        icon = data.icon?.toParams(),
+        iconColor = data.iconColor,
+        iconAlpha = data.iconAlpha,
     )
 }

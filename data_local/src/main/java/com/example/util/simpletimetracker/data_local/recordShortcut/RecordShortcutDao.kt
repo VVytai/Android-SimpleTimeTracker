@@ -24,6 +24,9 @@ interface RecordShortcutDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(record: RecordShortcutDBO): Long
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun update(record: RecordShortcutDBO)
+
     @Query("DELETE FROM recordShortcuts WHERE id = :id")
     suspend fun delete(id: Long)
 

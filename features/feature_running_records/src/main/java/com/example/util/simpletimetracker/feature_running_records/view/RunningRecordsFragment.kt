@@ -92,8 +92,8 @@ class RunningRecordsFragment :
                 onItemLongClick = throttle(viewModel::onRecordLongClick),
             ),
             createRecordShortcutAdapterDelegate(
-                onItemClick = viewModel::onShortcutClick,
-                onItemLongClick = viewModel::onShortcutLongClick,
+                onClickWithTransition = throttle(viewModel::onShortcutClick),
+                onLongClickWithTransition = throttle(viewModel::onShortcutLongClick),
             ),
             createRunningRecordTypeSpecialAdapterDelegate(
                 onItemClick = throttle(viewModel::onSpecialRecordTypeClick),
@@ -173,7 +173,7 @@ class RunningRecordsFragment :
     }
 
     override fun onPositiveClick(tag: String?, data: Any?) {
-        viewModel.onPositiveClick(tag, data)
+        viewModel.onPositiveClick(tag)
     }
 
     private fun resetScreen() = with(binding) {

@@ -2,7 +2,6 @@ package com.example.util.simpletimetracker.core.mapper
 
 import com.example.util.simpletimetracker.core.R
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
-import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.domain.recordShortcut.model.RecordShortcut
 import com.example.util.simpletimetracker.domain.recordTag.model.RecordTag
@@ -26,13 +25,13 @@ class RecordShortcutViewDataMapper @Inject constructor(
         isDarkTheme: Boolean,
         isFiltered: Boolean,
         isEnabled: Boolean,
-    ): RecordShortcutViewData? {
+    ): RecordShortcutViewData {
         return when (val target = shortcut.target) {
             is RecordShortcut.Target.Record -> {
                 mapRecord(
                     id = shortcut.id,
                     shortcut = target,
-                    recordType = typesMap[target.typeId] ?: return null,
+                    recordType = typesMap[target.typeId],
                     recordTags = tags,
                     isDarkTheme = isDarkTheme,
                     isFiltered = isFiltered,
@@ -50,20 +49,35 @@ class RecordShortcutViewDataMapper @Inject constructor(
         }
     }
 
+    fun mapActionTitle(action: RecordShortcut.SettingAction): String {
+        return when (action) {
+            RecordShortcut.SettingAction.Multitasking -> R.string.settings_allow_multitasking
+            RecordShortcut.SettingAction.RetroactiveMode -> R.string.settings_retroactive_tracking_mode
+        }.let(resourceRepo::getString)
+    }
+
     private fun mapRecord(
         id: Long,
         shortcut: RecordShortcut.Target.Record,
-        recordType: RecordType,
+        recordType: RecordType?,
         recordTags: List<RecordTag>,
         isDarkTheme: Boolean,
         isFiltered: Boolean,
     ): RecordShortcutViewData {
         val tagIds = shortcut.tags.map(RecordBase.Tag::tagId)
 
-        val icon = iconMapper.mapIcon(recordType.icon)
+        val icon = recordType?.icon?.let(iconMapper::mapIcon)
+
+        val color = recordType?.color?.let {
+            colorMapper.toFilteredColor(
+                color = it,
+                isDarkTheme = isDarkTheme,
+                isFiltered = isFiltered,
+            )
+        } ?: colorMapper.toUntrackedColor(isDarkTheme)
 
         val name = listOf(
-            recordType.name,
+            recordType?.name.orEmpty(),
             recordTagFullNameMapper.getFullName(
                 tags = recordTags.filter { it.id in tagIds },
                 tagData = shortcut.tags,
@@ -81,11 +95,7 @@ class RecordShortcutViewDataMapper @Inject constructor(
                 isDarkTheme = isDarkTheme,
                 isFiltered = isFiltered,
             ),
-            color = colorMapper.toFilteredColor(
-                color = recordType.color,
-                isDarkTheme = isDarkTheme,
-                isFiltered = isFiltered,
-            ),
+            color = color,
             icon = icon,
             iconAlpha = colorMapper.toIconAlpha(icon, isFiltered),
             // TODO show tag with alpha color like in record
@@ -112,10 +122,7 @@ class RecordShortcutViewDataMapper @Inject constructor(
 
         val data = CategoryViewData.Record.Tagged(
             id = id,
-            name = when (shortcut.action) {
-                RecordShortcut.SettingAction.Multitasking -> R.string.settings_allow_multitasking
-                RecordShortcut.SettingAction.RetroactiveMode -> R.string.settings_retroactive_tracking_mode
-            }.let(resourceRepo::getString),
+            name = mapActionTitle(shortcut.action),
             iconColor = colorMapper.toIconColor(
                 isDarkTheme = isDarkTheme,
                 isFiltered = isFiltered,

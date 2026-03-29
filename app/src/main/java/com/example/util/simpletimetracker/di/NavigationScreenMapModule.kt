@@ -8,6 +8,7 @@ import com.example.util.simpletimetracker.feature_change_record.view.ChangeRecor
 import com.example.util.simpletimetracker.feature_change_record_tag.view.ChangeRecordTagFragment
 import com.example.util.simpletimetracker.feature_change_record_type.view.ChangeRecordTypeFragment
 import com.example.util.simpletimetracker.feature_change_running_record.view.ChangeRunningRecordFragment
+import com.example.util.simpletimetracker.feature_change_shortcut.view.ChangeShortcutFragment
 import com.example.util.simpletimetracker.feature_records_all.view.RecordsAllFragment
 import com.example.util.simpletimetracker.feature_statistics_detail.view.StatisticsDetailFragment
 import com.example.util.simpletimetracker.navigation.NavigationData
@@ -29,6 +30,7 @@ import com.example.util.simpletimetracker.navigation.params.screen.ChangeRecordT
 import com.example.util.simpletimetracker.navigation.params.screen.ChangeRecordTypeParams
 import com.example.util.simpletimetracker.navigation.params.screen.ChangeRunningRecordFromMainParams
 import com.example.util.simpletimetracker.navigation.params.screen.ChangeRunningRecordFromRecordsAllParams
+import com.example.util.simpletimetracker.navigation.params.screen.ChangeShortcutParams
 import com.example.util.simpletimetracker.navigation.params.screen.ComplexRulesParams
 import com.example.util.simpletimetracker.navigation.params.screen.DataEditParams
 import com.example.util.simpletimetracker.navigation.params.screen.PomodoroParams
@@ -161,6 +163,26 @@ class NavigationScreenMapModule {
         return NavigationData(
             R.id.action_to_complexRulesFragment,
             BundleCreator.empty(),
+        )
+    }
+
+    @IntoMap
+    @Provides
+    @ScreenKey(ChangeShortcutParams.Change::class)
+    fun changeShortcutChange(): NavigationData {
+        return NavigationData(
+            R.id.action_to_changeShortcutFragment,
+            bundleCreatorDelegate(ChangeShortcutFragment::createBundle),
+        )
+    }
+
+    @IntoMap
+    @Provides
+    @ScreenKey(ChangeShortcutParams.New::class)
+    fun changeShortcutNew(): NavigationData {
+        return NavigationData(
+            R.id.action_to_changeShortcutFragment,
+            bundleCreatorDelegate(ChangeShortcutFragment::createBundle),
         )
     }
 

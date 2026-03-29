@@ -6,7 +6,6 @@ import com.example.util.simpletimetracker.core.extension.set
 import com.example.util.simpletimetracker.core.interactor.LanguageInteractor
 import com.example.util.simpletimetracker.core.interactor.OnSettingsShortcutClickInteractor
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
-import com.example.util.simpletimetracker.domain.notifications.interactor.UpdateExternalViewsInteractor
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_settings.api.SettingsBlock
 import com.example.util.simpletimetracker.feature_settings.interactor.SettingsMainViewDataInteractor

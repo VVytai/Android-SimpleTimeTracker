@@ -8,8 +8,6 @@ import com.example.util.simpletimetracker.core.interactor.OnSettingsShortcutClic
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.domain.extension.flip
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
-import com.example.util.simpletimetracker.domain.record.interactor.RemoveRunningRecordMediator
-import com.example.util.simpletimetracker.domain.record.interactor.RunningRecordInteractor
 import com.example.util.simpletimetracker.domain.notifications.interactor.UpdateExternalViewsInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.RecordsContainerUpdateInteractor
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType

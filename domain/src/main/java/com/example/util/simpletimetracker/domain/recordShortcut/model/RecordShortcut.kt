@@ -8,15 +8,26 @@ data class RecordShortcut(
 ) {
 
     sealed interface Target {
+        val mode: TargetMode
+
         data class Record(
             val typeId: Long,
             val comment: String,
             val tags: List<RecordBase.Tag>,
-        ) : Target
+        ) : Target {
+            override val mode: TargetMode = TargetMode.Record
+        }
 
         data class Setting(
             val action: SettingAction,
-        ) : Target
+        ) : Target {
+            override val mode: TargetMode = TargetMode.Setting
+        }
+    }
+
+    enum class TargetMode {
+        Record,
+        Setting,
     }
 
     enum class SettingAction {

@@ -1,12 +1,12 @@
 package com.example.util.simpletimetracker.feature_running_records.viewModel
 
-import android.os.Parcelable
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.util.simpletimetracker.core.base.BaseViewModel
 import com.example.util.simpletimetracker.core.base.SingleLiveEvent
 import com.example.util.simpletimetracker.core.extension.set
+import com.example.util.simpletimetracker.core.extension.toPreview
 import com.example.util.simpletimetracker.core.extension.toParams
 import com.example.util.simpletimetracker.core.interactor.GetChangeRecordNavigationParamsInteractor
 import com.example.util.simpletimetracker.core.interactor.OnSettingsShortcutClickInteractor
@@ -48,6 +48,7 @@ import com.example.util.simpletimetracker.navigation.params.screen.ChangeRecordP
 import com.example.util.simpletimetracker.navigation.params.screen.ChangeRecordTypeParams
 import com.example.util.simpletimetracker.navigation.params.screen.ChangeRunningRecordFromMainParams
 import com.example.util.simpletimetracker.navigation.params.screen.ChangeRunningRecordParams
+import com.example.util.simpletimetracker.navigation.params.screen.ChangeShortcutParams
 import com.example.util.simpletimetracker.navigation.params.screen.DefaultTypesSelectionDialogParams
 import com.example.util.simpletimetracker.navigation.params.screen.PomodoroParams
 import com.example.util.simpletimetracker.navigation.params.screen.RecordTagSelectionParams
@@ -57,7 +58,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import kotlinx.parcelize.Parcelize
 import javax.inject.Inject
 
 @HiltViewModel
@@ -368,19 +368,25 @@ class RunningRecordsViewModel @Inject constructor(
         }
     }
 
-    fun onShortcutClick(item: RecordShortcutViewData) = viewModelScope.launch {
+    fun onShortcutClick(
+        item: RecordShortcutViewData,
+        sharedElements: Pair<Any, String>?,
+    ) = viewModelScope.launch {
         val startByLongClick = prefsInteractor.getStartTimerByLongClick()
         if (!startByLongClick) {
             onShortcutStart(item)
         } else {
-            onShortcutEdit(item)
+            onShortcutEdit(item, sharedElements)
         }
     }
 
-    fun onShortcutLongClick(item: RecordShortcutViewData) = viewModelScope.launch {
+    fun onShortcutLongClick(
+        item: RecordShortcutViewData,
+        sharedElements: Pair<Any, String>?,
+    ) = viewModelScope.launch {
         val startByLongClick = prefsInteractor.getStartTimerByLongClick()
         if (!startByLongClick) {
-            onShortcutEdit(item)
+            onShortcutEdit(item, sharedElements)
         } else {
             onShortcutStart(item)
         }
@@ -403,16 +409,17 @@ class RunningRecordsViewModel @Inject constructor(
         updateRunningRecords()
     }
 
-    private fun onShortcutEdit(item: RecordShortcutViewData) {
+    private fun onShortcutEdit(
+        item: RecordShortcutViewData,
+        sharedElements: Pair<Any, String>?,
+    ) {
         router.navigate(
-            StandardDialogParams(
-                tag = DELETE_SHORTCUT_ALERT_DIALOG_TAG,
-                data = DeleteShortcutAlertDialogData(item.id),
-                title = resourceRepo.getString(R.string.change_record_type_delete_alert),
-                message = resourceRepo.getString(R.string.archive_deletion_alert),
-                btnPositive = resourceRepo.getString(R.string.ok),
-                btnNegative = resourceRepo.getString(R.string.cancel),
+            data = ChangeShortcutParams.Change(
+                id = item.id,
+                transitionName = sharedElements?.second.orEmpty(),
+                preview = item.toPreview(),
             ),
+            sharedElements = sharedElements?.let { mapOf(it) },
         )
     }
 
@@ -454,14 +461,10 @@ class RunningRecordsViewModel @Inject constructor(
         }
     }
 
-    fun onPositiveClick(tag: String?, data: Any?) = viewModelScope.launch {
+    fun onPositiveClick(tag: String?) = viewModelScope.launch {
         when (tag) {
             RETRO_MULTITASKING_HINT_TAG -> {
                 prefsInteractor.setRetroactiveMultitaskingHintWasHidden(true)
-            }
-            DELETE_SHORTCUT_ALERT_DIALOG_TAG -> {
-                val shortcutId = (data as? DeleteShortcutAlertDialogData)?.shortcutId ?: return@launch
-                deleteShortcut(shortcutId)
             }
         }
     }
@@ -507,11 +510,6 @@ class RunningRecordsViewModel @Inject constructor(
                 ),
             )
         }
-    }
-
-    private suspend fun deleteShortcut(shortcutId: Long) {
-        recordShortcutInteractor.remove(shortcutId)
-        updateRunningRecords()
     }
 
     private fun subscribeToUpdates() {
@@ -568,15 +566,9 @@ class RunningRecordsViewModel @Inject constructor(
         timerJob?.cancel()
     }
 
-    @Parcelize
-    private data class DeleteShortcutAlertDialogData(
-        val shortcutId: Long,
-    ) : Parcelable
-
     companion object {
         private const val TIMER_UPDATE_MS = 1000L
         private const val COMPLETE_TYPE_ANIMATION_MS = 1000L
         private const val RETRO_MULTITASKING_HINT_TAG = "RETRO_MULTITASKING_HINT_TAG"
-        private const val DELETE_SHORTCUT_ALERT_DIALOG_TAG = "DELETE_SHORTCUT_ALERT_DIALOG_TAG"
     }
 }

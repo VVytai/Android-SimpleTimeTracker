@@ -27,6 +27,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayingAtLeast
 import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
+import com.example.util.simpletimetracker.domain.extension.orZero
 import com.google.android.material.tabs.TabLayout
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
@@ -236,7 +237,7 @@ fun scrollToBottom(): ViewAction = object : ViewAction {
     override fun perform(uiController: UiController?, view: View?) {
         val recyclerView = view as RecyclerView
         val itemCount = recyclerView.adapter?.itemCount
-        val position = itemCount?.minus(1) ?: 0
+        val position = itemCount?.minus(1).orZero()
         recyclerView.scrollToPosition(position)
         uiController?.loopMainThreadUntilIdle()
     }

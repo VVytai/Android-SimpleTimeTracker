@@ -42,6 +42,12 @@ class RecordShortcutRepoImpl @Inject constructor(
         afterSourceAccess = { clearCache() },
     )
 
+    override suspend fun update(recordShortcut: RecordShortcut) = mutex.withLockedCache(
+        logMessage = "update",
+        accessSource = { dao.update(recordShortcut.let(mapper::map)) },
+        afterSourceAccess = { clearCache() },
+    )
+
     override suspend fun remove(id: Long) = mutex.withLockedCache(
         logMessage = "remove",
         accessSource = { dao.delete(id) },

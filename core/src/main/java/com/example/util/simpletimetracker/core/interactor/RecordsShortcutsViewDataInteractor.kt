@@ -33,7 +33,7 @@ class RecordsShortcutsViewDataInteractor @Inject constructor(
 
         return shortcuts.let {
             activityFilterViewDataInteractor.applyFilterToShortcuts(it, filter)
-        }.mapNotNull { shortcut ->
+        }.map { shortcut ->
             val isFiltered = when (val target = shortcut.target) {
                 is RecordShortcut.Target.Record -> {
                     runningRecordsProcessed.any { runningRecord ->

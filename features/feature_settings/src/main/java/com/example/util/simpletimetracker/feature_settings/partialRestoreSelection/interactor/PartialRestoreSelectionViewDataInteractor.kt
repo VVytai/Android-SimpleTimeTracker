@@ -152,7 +152,7 @@ class PartialRestoreSelectionViewDataInteractor @Inject constructor(
             is PartialRestoreFilterType.RecordShortcuts -> {
                 val typesMap = data.types.mapValues { it.value.data }
                 val tags = data.tags.values.map { it.data }
-                data.recordShortcuts.values.getNotExistingValues().mapNotNull {
+                data.recordShortcuts.values.getNotExistingValues().map {
                     recordShortcutViewDataMapper.map(
                         shortcut = it,
                         typesMap = typesMap,

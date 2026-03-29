@@ -116,6 +116,7 @@
     │   ├── feature_change_record_tag         # Edit tag screen.
     │   ├── feature_change_record_type        # Edit type screen.
     │   ├── feature_change_running_record     # Edit timer screen.
+    │   ├── feature_change_shortcut           # Edit shortcut screen.
     │   ├── feature_complex_rules             # Screen for complex rules list.
     │   ├── feature_date_edit                 # Data edit screen.
     │   ├── feature_dialogs                   # Dialogs.

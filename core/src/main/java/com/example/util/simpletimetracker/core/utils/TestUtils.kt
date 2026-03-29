@@ -398,6 +398,16 @@ class TestUtils @Inject constructor(
         recordShortcutInteractor.add(data)
     }
 
+    fun addSettingShortcut(
+        action: RecordShortcut.SettingAction,
+    ) = runBlocking {
+        val data = RecordShortcut(
+            target = RecordShortcut.Target.Setting(action = action),
+        )
+
+        recordShortcutInteractor.add(data)
+    }
+
     suspend fun getRunningRecords(): List<RunningRecord> {
         return runningRecordInteractor.getAll()
     }

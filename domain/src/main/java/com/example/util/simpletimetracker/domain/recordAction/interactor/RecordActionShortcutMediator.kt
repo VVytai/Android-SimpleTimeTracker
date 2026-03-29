@@ -27,13 +27,11 @@ class RecordActionShortcutMediator @Inject constructor(
     }
 
     suspend fun execute(
-        action: RecordShortcut.SettingAction,
+        target: RecordShortcut.Target,
     ) {
         RecordShortcut(
             id = 0L, // Creates new record.
-            target = RecordShortcut.Target.Setting(
-                action = action,
-            ),
+            target = target,
         ).let {
             recordShortcutInteractor.add(it)
         }

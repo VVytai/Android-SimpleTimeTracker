@@ -34,6 +34,14 @@ class RecordShortcutInteractor @Inject constructor(
         }
     }
 
+    suspend fun update(recordShortcut: RecordShortcut) {
+        repo.update(recordShortcut)
+        when (val target = recordShortcut.target) {
+            is RecordShortcut.Target.Record -> updateTags(recordShortcut.id, target.tags)
+            is RecordShortcut.Target.Setting -> recordShortcutToRecordTagRepo.removeAllByShortcutId(recordShortcut.id)
+        }
+    }
+
     suspend fun remove(id: Long) {
         recordShortcutToRecordTagRepo.removeAllByShortcutId(id)
         repo.remove(id)

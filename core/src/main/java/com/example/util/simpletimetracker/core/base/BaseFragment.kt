@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.viewbinding.ViewBinding
+import com.example.util.simpletimetracker.core.extension.observeOnce
 import com.example.util.simpletimetracker.core.utils.InsetConfiguration
 import com.example.util.simpletimetracker.core.utils.applyNavBarInsets
 import kotlinx.coroutines.CoroutineScope
@@ -113,5 +114,11 @@ abstract class BaseFragment<T : ViewBinding> : Fragment(), Throttler {
         crossinline onChanged: (T) -> Unit,
     ) {
         observe(viewLifecycleOwner) { onChanged(it) }
+    }
+
+    inline fun <T> LiveData<T>.observeOnce(
+        crossinline onChanged: (T) -> Unit,
+    ) {
+        observeOnce(viewLifecycleOwner) { onChanged(it) }
     }
 }

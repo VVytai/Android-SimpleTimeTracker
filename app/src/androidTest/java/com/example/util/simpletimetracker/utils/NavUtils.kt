@@ -115,6 +115,12 @@ object NavUtils {
         Thread.sleep(1000)
     }
 
+    fun openShortcutsScreen() {
+        scrollSettingsRecyclerToText(coreR.string.change_record_shortcut)
+        clickOnSettingsRecyclerText(coreR.string.change_record_shortcut)
+        Thread.sleep(1000)
+    }
+
     fun openCardSizeScreen() {
         scrollSettingsRecyclerToText(coreR.string.settings_change_card_size)
         clickOnSettingsRecyclerText(coreR.string.settings_change_card_size)

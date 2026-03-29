@@ -12,6 +12,8 @@ interface RecordShortcutRepo {
 
     suspend fun add(recordShortcut: RecordShortcut): Long
 
+    suspend fun update(recordShortcut: RecordShortcut)
+
     suspend fun remove(id: Long)
 
     suspend fun removeByType(typeId: Long)

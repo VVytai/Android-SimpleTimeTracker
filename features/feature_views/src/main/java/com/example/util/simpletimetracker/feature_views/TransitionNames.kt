@@ -11,4 +11,5 @@ object TransitionNames {
     const val CATEGORY = "category_transition_name"
     const val RECORD_TAG = "record_tag_transition_name"
     const val ACTIVITY_FILTER = "activity_filter_transition_name"
+    const val RECORD_SHORTCUT = "record_shortcut_transition_name"
 }
