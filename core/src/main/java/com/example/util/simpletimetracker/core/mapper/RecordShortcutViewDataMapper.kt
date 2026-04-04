@@ -53,6 +53,9 @@ class RecordShortcutViewDataMapper @Inject constructor(
         return when (action) {
             RecordShortcut.SettingAction.Multitasking -> R.string.settings_allow_multitasking
             RecordShortcut.SettingAction.RetroactiveMode -> R.string.settings_retroactive_tracking_mode
+            RecordShortcut.SettingAction.Categories -> R.string.categories_title
+            RecordShortcut.SettingAction.Archive -> R.string.settings_archive
+            RecordShortcut.SettingAction.DataEdit -> R.string.settings_data_edit
         }.let(resourceRepo::getString)
     }
 

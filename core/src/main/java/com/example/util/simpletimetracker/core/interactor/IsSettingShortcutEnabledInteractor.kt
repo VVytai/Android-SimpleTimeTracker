@@ -18,6 +18,10 @@ class IsSettingShortcutEnabledInteractor @Inject constructor(
             RecordShortcut.SettingAction.RetroactiveMode -> {
                 prefsInteractor.getRetroactiveTrackingMode()
             }
+            RecordShortcut.SettingAction.Categories,
+            RecordShortcut.SettingAction.Archive,
+            RecordShortcut.SettingAction.DataEdit,
+            -> false
         }
     }
 }

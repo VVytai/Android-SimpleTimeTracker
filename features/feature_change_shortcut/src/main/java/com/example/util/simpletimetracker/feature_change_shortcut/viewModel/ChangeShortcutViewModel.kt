@@ -200,7 +200,6 @@ class ChangeShortcutViewModel @Inject constructor(
 
     // TODO move tag to delegates
     // TODO add ShortcutView and replace preview with it, so hint would be visible
-    // TODO add more settings
     fun onSaveClick() {
         val target = buildTarget() ?: return
         saveButtonEnabled.set(false)

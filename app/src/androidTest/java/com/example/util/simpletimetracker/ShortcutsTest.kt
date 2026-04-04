@@ -159,24 +159,67 @@ class ShortcutsTest : BaseUiTest() {
     @Test
     fun changeSetting() {
         val name = "name"
-        val settingShortcutName = getString(coreR.string.settings_retroactive_tracking_mode)
+        val multitaskingShortcutName = getString(coreR.string.settings_allow_multitasking)
+        val retroactiveSettingShortcutName = getString(coreR.string.settings_retroactive_tracking_mode)
+        val categoriesShortcutName = getString(coreR.string.categories_title)
+        val archiveShortcutName = getString(coreR.string.settings_archive)
+        val dataEditShortcutName = getString(coreR.string.settings_data_edit)
 
         // Add data
+        runBlocking {
+            prefsInteractor.setAllowMultitasking(false)
+            prefsInteractor.setRetroactiveMultitaskingHintWasHidden(true)
+        }
         testUtils.addActivity(name)
+        testUtils.addSettingShortcut(RecordShortcut.SettingAction.Multitasking)
         testUtils.addSettingShortcut(RecordShortcut.SettingAction.RetroactiveMode)
+        testUtils.addSettingShortcut(RecordShortcut.SettingAction.Categories)
+        testUtils.addSettingShortcut(RecordShortcut.SettingAction.Archive)
+        testUtils.addSettingShortcut(RecordShortcut.SettingAction.DataEdit)
         Thread.sleep(1000)
 
         // Check shortcuts
         tryAction {
-            checkSettingShortcut(name = settingShortcutName, isEnabled = false)
+            checkSettingShortcut(name = multitaskingShortcutName, isEnabled = false)
+            checkSettingShortcut(name = retroactiveSettingShortcutName, isEnabled = false)
+            checkSettingShortcut(name = categoriesShortcutName, isEnabled = false)
+            checkSettingShortcut(name = archiveShortcutName, isEnabled = false)
+            checkSettingShortcut(name = dataEditShortcutName, isEnabled = false)
         }
 
-        // Start
-        clickOnViewWithText(settingShortcutName)
-        checkSettingShortcut(name = settingShortcutName, isEnabled = true)
+        // Multitasking
+        clickOnView(allOf(withText(multitaskingShortcutName), isCompletelyDisplayed()))
+        Thread.sleep(500) // Because of throttling
+        checkSettingShortcut(name = multitaskingShortcutName, isEnabled = true)
+
+        // Retroactive
+        clickOnView(allOf(withText(retroactiveSettingShortcutName), isCompletelyDisplayed()))
+        Thread.sleep(500) // Because of throttling
+        checkSettingShortcut(name = retroactiveSettingShortcutName, isEnabled = true)
         tryAction {
             checkViewIsDisplayed(withText(R.string.retroactive_tracking_mode_hint))
         }
+
+        // Categories
+        clickOnView(allOf(withText(categoriesShortcutName), isCompletelyDisplayed()))
+        tryAction {
+            checkViewIsDisplayed(withText(coreR.string.categories_record_type_hint))
+        }
+        pressBack()
+
+        // Archive
+        clickOnView(allOf(withText(archiveShortcutName), isCompletelyDisplayed()))
+        tryAction {
+            checkViewIsDisplayed(withText(coreR.string.archive_empty))
+        }
+        pressBack()
+
+        // Data edit
+        clickOnView(allOf(withText(dataEditShortcutName), isCompletelyDisplayed()))
+        tryAction {
+            checkViewIsDisplayed(withText(coreR.string.data_edit_select_records))
+        }
+        pressBack()
     }
 
     @Suppress("SameParameterValue")

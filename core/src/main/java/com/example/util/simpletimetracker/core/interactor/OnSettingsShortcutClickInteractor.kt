@@ -5,9 +5,14 @@ import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteracto
 import com.example.util.simpletimetracker.domain.record.interactor.RemoveRunningRecordMediator
 import com.example.util.simpletimetracker.domain.record.interactor.RunningRecordInteractor
 import com.example.util.simpletimetracker.domain.recordShortcut.model.RecordShortcut
+import com.example.util.simpletimetracker.navigation.Router
+import com.example.util.simpletimetracker.navigation.params.screen.ArchiveParams
+import com.example.util.simpletimetracker.navigation.params.screen.CategoriesParams
+import com.example.util.simpletimetracker.navigation.params.screen.DataEditParams
 import javax.inject.Inject
 
 class OnSettingsShortcutClickInteractor @Inject constructor(
+    private val router: Router,
     private val prefsInteractor: PrefsInteractor,
     private val runningRecordInteractor: RunningRecordInteractor,
     private val removeRunningRecordMediator: RemoveRunningRecordMediator,
@@ -25,6 +30,15 @@ class OnSettingsShortcutClickInteractor @Inject constructor(
                 val newValue = !prefsInteractor.getRetroactiveTrackingMode()
                 prefsInteractor.setRetroactiveTrackingMode(newValue)
                 onRetroactiveTrackingModeChange()
+            }
+            RecordShortcut.SettingAction.Categories -> {
+                router.navigate(CategoriesParams)
+            }
+            RecordShortcut.SettingAction.Archive -> {
+                router.navigate(ArchiveParams)
+            }
+            RecordShortcut.SettingAction.DataEdit -> {
+                router.navigate(DataEditParams)
             }
         }
     }

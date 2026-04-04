@@ -57,6 +57,9 @@ class RecordShortcutDataLocalMapper @Inject constructor() {
         return when (dbo) {
             0L -> RecordShortcut.SettingAction.Multitasking
             1L -> RecordShortcut.SettingAction.RetroactiveMode
+            2L -> RecordShortcut.SettingAction.Categories
+            3L -> RecordShortcut.SettingAction.Archive
+            4L -> RecordShortcut.SettingAction.DataEdit
             else -> RecordShortcut.SettingAction.Multitasking
         }
     }
@@ -65,6 +68,9 @@ class RecordShortcutDataLocalMapper @Inject constructor() {
         return when (domain) {
             RecordShortcut.SettingAction.Multitasking -> 0L
             RecordShortcut.SettingAction.RetroactiveMode -> 1L
+            RecordShortcut.SettingAction.Categories -> 2L
+            RecordShortcut.SettingAction.Archive -> 3L
+            RecordShortcut.SettingAction.DataEdit -> 4L
         }
     }
 }

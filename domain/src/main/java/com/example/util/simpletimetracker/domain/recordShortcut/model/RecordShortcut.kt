@@ -33,5 +33,8 @@ data class RecordShortcut(
     enum class SettingAction {
         Multitasking,
         RetroactiveMode,
+        Categories,
+        Archive,
+        DataEdit,
     }
 }
