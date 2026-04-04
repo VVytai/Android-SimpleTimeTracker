@@ -3,8 +3,8 @@ package com.example.util.simpletimetracker.feature_change_running_record.viewMod
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.example.util.simpletimetracker.core.delegates.commentSelection.viewModelDelegate.CommentSelectionViewModelDelegateImpl
 import com.example.util.simpletimetracker.core.extension.set
-import com.example.util.simpletimetracker.core.interactor.RecordCommentSearchViewDataInteractor
 import com.example.util.simpletimetracker.core.interactor.RecordTagViewDataInteractor
 import com.example.util.simpletimetracker.core.interactor.RecordTypesViewDataInteractor
 import com.example.util.simpletimetracker.core.interactor.SnackBarMessageNavigationInteractor
@@ -12,7 +12,6 @@ import com.example.util.simpletimetracker.core.interactor.StatisticsDetailNaviga
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.domain.record.interactor.AddRunningRecordMediator
-import com.example.util.simpletimetracker.domain.favourite.interactor.FavouriteCommentInteractor
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.RecordInteractor
 import com.example.util.simpletimetracker.domain.recordTag.interactor.RecordTypeToTagInteractor
@@ -56,10 +55,8 @@ class ChangeRunningRecordViewModel @Inject constructor(
     recordInteractor: RecordInteractor,
     recordTagInteractor: RecordTagInteractor,
     recordTypeToTagInteractor: RecordTypeToTagInteractor,
-    favouriteCommentInteractor: FavouriteCommentInteractor,
     snackBarMessageNavigationInteractor: SnackBarMessageNavigationInteractor,
     needTagValueSelectionInteractor: NeedTagValueSelectionInteractor,
-    recordCommentSearchViewDataInteractor: RecordCommentSearchViewDataInteractor,
     private val router: Router,
     private val addRunningRecordMediator: AddRunningRecordMediator,
     private val removeRunningRecordMediator: RemoveRunningRecordMediator,
@@ -70,6 +67,7 @@ class ChangeRunningRecordViewModel @Inject constructor(
     private val changeRunningRecordMapper: ChangeRunningRecordMapper,
     private val updateRunningRecordsInteractor: UpdateRunningRecordsInteractor,
     private val addTagToTypeIfNotExistMediator: AddTagToTypeIfNotExistMediator,
+    private val commentSelectionViewModelDelegate: CommentSelectionViewModelDelegateImpl,
 ) : ChangeRecordBaseViewModel(
     router = router,
     snackBarMessageNavigationInteractor = snackBarMessageNavigationInteractor,
@@ -80,10 +78,9 @@ class ChangeRunningRecordViewModel @Inject constructor(
     recordInteractor = recordInteractor,
     recordTagInteractor = recordTagInteractor,
     recordTypeToTagInteractor = recordTypeToTagInteractor,
-    favouriteCommentInteractor = favouriteCommentInteractor,
     changeRecordActionsDelegate = changeRecordActionsDelegate,
     needTagValueSelectionInteractor = needTagValueSelectionInteractor,
-    recordCommentSearchViewDataInteractor = recordCommentSearchViewDataInteractor,
+    commentSelectionViewModelDelegate = commentSelectionViewModelDelegate,
 ) {
 
     lateinit var extra: ChangeRunningRecordParams
@@ -152,7 +149,7 @@ class ChangeRunningRecordViewModel @Inject constructor(
         addRunningRecordMediator.addAfterChange(
             typeId = newTypeId,
             timeStarted = newTimeStarted,
-            comment = newComment,
+            comment = commentSelectionViewModelDelegate.newComment,
             tags = newTags,
         )
         if (showAllTags) {
@@ -217,7 +214,7 @@ class ChangeRunningRecordViewModel @Inject constructor(
                 newTypeId = record.id.orZero()
                 newTimeStarted = record.timeStarted
                 newTimeEnded = System.currentTimeMillis()
-                newComment = record.comment
+                commentSelectionViewModelDelegate.newComment = record.comment
                 newTags = record.tags.toMutableList()
             }
             newTimeSplit = newTimeStarted
@@ -235,7 +232,7 @@ class ChangeRunningRecordViewModel @Inject constructor(
         val record = RunningRecord(
             id = newTypeId,
             timeStarted = newTimeStarted,
-            comment = newComment,
+            comment = commentSelectionViewModelDelegate.newComment,
             tags = newTags,
         )
 

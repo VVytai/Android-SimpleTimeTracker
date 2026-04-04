@@ -4,20 +4,17 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.util.simpletimetracker.core.base.BaseViewModel
+import com.example.util.simpletimetracker.core.delegates.commentSelection.viewModelDelegate.CommentSelectionViewModelDelegate
+import com.example.util.simpletimetracker.core.delegates.commentSelection.viewModelDelegate.CommentSelectionViewModelDelegateImpl
 import com.example.util.simpletimetracker.core.extension.set
-import com.example.util.simpletimetracker.core.interactor.RecordCommentSearchViewDataInteractor
 import com.example.util.simpletimetracker.core.interactor.RecordTagViewDataInteractor
 import com.example.util.simpletimetracker.core.interactor.RecordTypesViewDataInteractor
 import com.example.util.simpletimetracker.core.interactor.SnackBarMessageNavigationInteractor
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.core.view.ViewChooserStateDelegate
-import com.example.util.simpletimetracker.core.viewData.CommentFilterTypeViewData
 import com.example.util.simpletimetracker.domain.base.suspendLazy
 import com.example.util.simpletimetracker.domain.extension.addOrRemove
 import com.example.util.simpletimetracker.domain.extension.orZero
-import com.example.util.simpletimetracker.domain.favourite.interactor.FavouriteCommentInteractor
-import com.example.util.simpletimetracker.domain.favourite.model.FavouriteComment
-import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.domain.recordAction.interactor.RecordActionShortcutMediator
 import com.example.util.simpletimetracker.domain.recordShortcut.interactor.RecordShortcutInteractor
@@ -31,10 +28,7 @@ import com.example.util.simpletimetracker.domain.recordType.model.RecordType
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.buttonsRow.view.ButtonsRowViewData
 import com.example.util.simpletimetracker.feature_base_adapter.category.CategoryViewData
-import com.example.util.simpletimetracker.feature_base_adapter.recordComment.RecordCommentViewData
-import com.example.util.simpletimetracker.feature_base_adapter.recordFilter.FilterViewData
 import com.example.util.simpletimetracker.feature_base_adapter.recordType.RecordTypeViewData
-import com.example.util.simpletimetracker.feature_change_record.interactor.ChangeRecordViewDataInteractor
 import com.example.util.simpletimetracker.feature_change_shortcut.R
 import com.example.util.simpletimetracker.feature_change_shortcut.adapter.ChangeShortcutSettingActionViewData
 import com.example.util.simpletimetracker.feature_change_shortcut.interactor.ChangeShortcutViewDataInteractor
@@ -62,17 +56,15 @@ class ChangeShortcutViewModel @Inject constructor(
     private val recordTagInteractor: RecordTagInteractor,
     private val recordTypesViewDataInteractor: RecordTypesViewDataInteractor,
     private val recordTagViewDataInteractor: RecordTagViewDataInteractor,
-    private val recordCommentSearchViewDataInteractor: RecordCommentSearchViewDataInteractor,
-    private val changeRecordViewDataInteractor: ChangeRecordViewDataInteractor,
-    private val favouriteCommentInteractor: FavouriteCommentInteractor,
-    private val prefsInteractor: PrefsInteractor,
     private val recordTypeToTagInteractor: RecordTypeToTagInteractor,
     private val needTagValueSelectionInteractor: NeedTagValueSelectionInteractor,
     private val shortcutsDataUpdateInteractor: ShortcutsDataUpdateInteractor,
     private val viewDataInteractor: ChangeShortcutViewDataInteractor,
     private val viewDataMapper: ChangeShortcutViewDataMapper,
     private val snackBarMessageNavigationInteractor: SnackBarMessageNavigationInteractor,
-) : BaseViewModel() {
+    private val commentSelectionViewModelDelegate: CommentSelectionViewModelDelegateImpl,
+) : BaseViewModel(),
+    CommentSelectionViewModelDelegate by commentSelectionViewModelDelegate {
 
     lateinit var extra: ChangeShortcutParams
 
@@ -85,7 +77,6 @@ class ChangeShortcutViewModel @Inject constructor(
     )
     val types: LiveData<List<ViewHolderType>> = MutableLiveData(emptyList())
     val tags: LiveData<List<ViewHolderType>> = MutableLiveData(emptyList())
-    val comments: LiveData<List<ViewHolderType>> = MutableLiveData(emptyList())
     val settingActions: LiveData<List<ViewHolderType>> = MutableLiveData(emptyList())
     val deleteButtonEnabled: LiveData<Boolean> = MutableLiveData(true)
     val saveButtonEnabled: LiveData<Boolean> = MutableLiveData(true)
@@ -97,13 +88,15 @@ class ChangeShortcutViewModel @Inject constructor(
 
     private var initialized: Boolean = false
     private var updateJob: Job? = null
-    private var commentLoadJob: Job? = null
     private val shortcutId: Long get() = (extra as? ChangeShortcutParams.Change)?.id.orZero()
     private var targetMode: RecordShortcut.TargetMode = RecordShortcut.TargetMode.Record
     private var recordTypeId: Long? = null
     private var recordTags: List<RecordBase.Tag> = emptyList()
-    private var recordComment: String = ""
     private var settingAction: RecordShortcut.SettingAction? = null
+
+    init {
+        commentSelectionViewModelDelegate.attach(getCommentSelectionDelegateParent())
+    }
 
     fun initialize() {
         if (initialized) return
@@ -146,7 +139,7 @@ class ChangeShortcutViewModel @Inject constructor(
                 recordTags = emptyList()
                 updateViewData()
                 updateTagsViewData()
-                updateCommentsViewData()
+                commentSelectionViewModelDelegate.updateCommentsViewData()
             }
 
             onTypeChooserClick()
@@ -197,44 +190,6 @@ class ChangeShortcutViewModel @Inject constructor(
         }
     }
 
-    fun onCommentClick(item: RecordCommentViewData) {
-        viewModelScope.launch {
-            if (item.text == recordComment) return@launch
-            recordComment = item.text
-            updateViewData()
-            updateCommentsViewData()
-        }
-    }
-
-    fun onCommentFilterClick(item: FilterViewData) = viewModelScope.launch {
-        val data = item.type as? CommentFilterTypeViewData ?: return@launch
-        val type = recordCommentSearchViewDataInteractor.map(data)
-        val newFilters = prefsInteractor.getHiddenCommentFilters().toMutableSet()
-        newFilters.addOrRemove(type)
-        prefsInteractor.setHiddenCommentFilters(newFilters)
-        updateCommentsViewData()
-    }
-
-    fun onFavouriteCommentClick() {
-        if (recordComment.isEmpty()) return
-        viewModelScope.launch {
-            favouriteCommentInteractor.get(recordComment)
-                ?.let { favouriteCommentInteractor.remove(it.id) }
-                ?: run {
-                    val favourite = FavouriteComment(comment = recordComment)
-                    favouriteCommentInteractor.add(favourite)
-                }
-            updateCommentsViewData()
-        }
-    }
-
-    fun onCommentChange(comment: String) {
-        if (recordComment == comment) return
-        recordComment = comment
-        updateViewData()
-        updateCommentsViewData(fromCommentChange = true)
-    }
-
     fun onSettingActionClick(data: ChangeShortcutSettingActionViewData) {
         val action = data.action
         if (settingAction == action) return
@@ -243,11 +198,9 @@ class ChangeShortcutViewModel @Inject constructor(
         closeChoosers()
     }
 
-    // TODO move tag and comment to delegates
-    // TODO remove change_record_feature from gradle deps
+    // TODO move tag to delegates
     // TODO add ShortcutView and replace preview with it, so hint would be visible
     // TODO add more settings
-    // TODO add tests
     fun onSaveClick() {
         val target = buildTarget() ?: return
         saveButtonEnabled.set(false)
@@ -305,7 +258,7 @@ class ChangeShortcutViewModel @Inject constructor(
             targetMode = targetMode,
             recordTypeId = recordTypeId,
             recordTags = recordTags,
-            comment = recordComment,
+            comment = commentSelectionViewModelDelegate.newComment,
             settingAction = settingAction,
         )
         val target = viewDataInteractor.buildTarget(params)
@@ -370,6 +323,16 @@ class ChangeShortcutViewModel @Inject constructor(
         )
     }
 
+    private fun getCommentSelectionDelegateParent(): CommentSelectionViewModelDelegate.Parent {
+        return object : CommentSelectionViewModelDelegate.Parent {
+            override fun getParams(): CommentSelectionViewModelDelegate.Parent.Params =
+                CommentSelectionViewModelDelegate.Parent.Params(recordTypeId = recordTypeId)
+
+            override suspend fun onCommentClick() = updateViewData()
+            override fun onCommentChange() = updateViewData()
+        }
+    }
+
     private suspend fun initializeData() {
         recordShortcutInteractor.get(shortcutId)?.let { shortcut ->
             val target = shortcut.target
@@ -378,7 +341,7 @@ class ChangeShortcutViewModel @Inject constructor(
                 is RecordShortcut.Target.Record -> {
                     recordTypeId = target.typeId
                     recordTags = target.tags
-                    recordComment = target.comment
+                    commentSelectionViewModelDelegate.newComment = target.comment
                 }
                 is RecordShortcut.Target.Setting -> {
                     settingAction = target.action
@@ -391,7 +354,7 @@ class ChangeShortcutViewModel @Inject constructor(
         updateTypesViewData()
         updateTagsViewData()
         updateActionsViewData()
-        updateCommentsViewData()
+        commentSelectionViewModelDelegate.updateCommentsViewData()
     }
 
     private fun updateViewData() {
@@ -402,7 +365,7 @@ class ChangeShortcutViewModel @Inject constructor(
                     targetMode = targetMode,
                     recordTypeId = recordTypeId,
                     recordTags = recordTags,
-                    comment = recordComment,
+                    comment = commentSelectionViewModelDelegate.newComment,
                     settingAction = settingAction,
                 ),
                 typesMap = typesCache().associateBy(RecordType::id),
@@ -429,20 +392,6 @@ class ChangeShortcutViewModel @Inject constructor(
             showAllTagsButton = false,
         )
         tags.set(data.data)
-    }
-
-    private fun updateCommentsViewData(
-        fromCommentChange: Boolean = false,
-    ) {
-        commentLoadJob?.cancel()
-        commentLoadJob = viewModelScope.launch {
-            val data = changeRecordViewDataInteractor.getCommentsViewData(
-                comment = recordComment,
-                typeId = recordTypeId.orZero(),
-                fromCommentChange = fromCommentChange,
-            )
-            comments.set(data)
-        }
     }
 
     private fun updateActionsViewData() {

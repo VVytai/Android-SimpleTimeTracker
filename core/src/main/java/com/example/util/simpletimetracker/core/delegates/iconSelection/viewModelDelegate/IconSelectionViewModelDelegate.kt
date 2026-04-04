@@ -12,6 +12,7 @@ import com.example.util.simpletimetracker.core.delegates.iconSelection.viewData.
 import com.example.util.simpletimetracker.core.delegates.iconSelection.viewData.IconSelectionSwitchViewData
 import com.example.util.simpletimetracker.core.delegates.iconSelection.viewData.IconSelectionViewData
 import com.example.util.simpletimetracker.core.delegates.iconSelection.viewData.IconSelectionScrollViewData
+import com.example.util.simpletimetracker.core.extension.lazySuspend
 import com.example.util.simpletimetracker.core.extension.set
 import com.example.util.simpletimetracker.core.mapper.IconEmojiMapper
 import com.example.util.simpletimetracker.feature_base_adapter.buttonsRow.view.ButtonsRowViewData
@@ -73,26 +74,17 @@ class IconSelectionViewModelDelegateImpl @Inject constructor(
 ) : IconSelectionViewModelDelegate,
     ViewModelDelegate() {
 
-    override val icons: LiveData<IconSelectionStateViewData> by lazy {
-        return@lazy MutableLiveData<IconSelectionStateViewData>().let { initial ->
-            delegateScope.launch { initial.value = loadIconsViewData() }
-            initial
-        }
+    override val icons: LiveData<IconSelectionStateViewData> by lazySuspend {
+        loadIconsViewData()
     }
-    override val iconCategories: LiveData<List<ViewHolderType>> by lazy {
-        return@lazy MutableLiveData<List<ViewHolderType>>().let { initial ->
-            delegateScope.launch { initial.value = loadIconCategoriesViewData(selectedIndex = 0) }
-            initial
-        }
+    override val iconCategories: LiveData<List<ViewHolderType>> by lazySuspend {
+        loadIconCategoriesViewData(selectedIndex = 0)
     }
-    override val iconsTypeViewData: LiveData<List<ViewHolderType>> by lazy {
-        return@lazy MutableLiveData(loadIconsTypeViewData())
+    override val iconsTypeViewData: LiveData<List<ViewHolderType>> by lazySuspend {
+        loadIconsTypeViewData()
     }
-    override val iconSelectorViewData: LiveData<IconSelectionSelectorStateViewData> by lazy {
-        return@lazy MutableLiveData<IconSelectionSelectorStateViewData>().let { initial ->
-            delegateScope.launch { initial.value = loadIconSelectorViewData() }
-            initial
-        }
+    override val iconSelectorViewData: LiveData<IconSelectionSelectorStateViewData> by lazySuspend {
+        loadIconSelectorViewData()
     }
     override val iconsScrollPosition: LiveData<IconSelectionScrollViewData> = MutableLiveData()
     override val expandIconTypeSwitch: LiveData<Unit> = MutableLiveData()

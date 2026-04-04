@@ -16,7 +16,6 @@ android {
 
 dependencies {
     implementation(project(":core"))
-    implementation(project(":feature_change_record"))
     implementation(libs.google.dagger)
     ksp(libs.kapt.dagger)
 }

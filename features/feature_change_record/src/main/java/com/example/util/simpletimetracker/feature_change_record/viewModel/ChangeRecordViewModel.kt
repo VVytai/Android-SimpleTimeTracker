@@ -4,8 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.util.simpletimetracker.core.base.SingleLiveEvent
+import com.example.util.simpletimetracker.core.delegates.commentSelection.viewModelDelegate.CommentSelectionViewModelDelegateImpl
 import com.example.util.simpletimetracker.core.extension.set
-import com.example.util.simpletimetracker.core.interactor.RecordCommentSearchViewDataInteractor
 import com.example.util.simpletimetracker.core.interactor.RecordTagViewDataInteractor
 import com.example.util.simpletimetracker.core.interactor.RecordTypesViewDataInteractor
 import com.example.util.simpletimetracker.core.interactor.SnackBarMessageNavigationInteractor
@@ -14,7 +14,6 @@ import com.example.util.simpletimetracker.core.mapper.TimeMapper
 import com.example.util.simpletimetracker.domain.base.UNTRACKED_ITEM_ID
 import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.domain.record.interactor.AddRecordMediator
-import com.example.util.simpletimetracker.domain.favourite.interactor.FavouriteCommentInteractor
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.RecordInteractor
 import com.example.util.simpletimetracker.domain.recordTag.interactor.RecordTypeToTagInteractor
@@ -46,9 +45,7 @@ class ChangeRecordViewModel @Inject constructor(
     changeRecordActionsDelegate: ChangeRecordActionsDelegateImpl,
     recordTagInteractor: RecordTagInteractor,
     recordTypeToTagInteractor: RecordTypeToTagInteractor,
-    favouriteCommentInteractor: FavouriteCommentInteractor,
     needTagValueSelectionInteractor: NeedTagValueSelectionInteractor,
-    recordCommentSearchViewDataInteractor: RecordCommentSearchViewDataInteractor,
     private val prefsInteractor: PrefsInteractor,
     private val router: Router,
     private val recordInteractor: RecordInteractor,
@@ -58,6 +55,7 @@ class ChangeRecordViewModel @Inject constructor(
     private val timeMapper: TimeMapper,
     private val statisticsDetailNavigationInteractor: StatisticsDetailNavigationInteractor,
     private val addTagToTypeIfNotExistMediator: AddTagToTypeIfNotExistMediator,
+    private val commentSelectionViewModelDelegate: CommentSelectionViewModelDelegateImpl,
 ) : ChangeRecordBaseViewModel(
     router = router,
     snackBarMessageNavigationInteractor = snackBarMessageNavigationInteractor,
@@ -68,10 +66,9 @@ class ChangeRecordViewModel @Inject constructor(
     recordInteractor = recordInteractor,
     recordTagInteractor = recordTagInteractor,
     recordTypeToTagInteractor = recordTypeToTagInteractor,
-    favouriteCommentInteractor = favouriteCommentInteractor,
     changeRecordActionsDelegate = changeRecordActionsDelegate,
     needTagValueSelectionInteractor = needTagValueSelectionInteractor,
-    recordCommentSearchViewDataInteractor = recordCommentSearchViewDataInteractor,
+    commentSelectionViewModelDelegate = commentSelectionViewModelDelegate,
 ) {
 
     lateinit var extra: ChangeRecordParams
@@ -146,7 +143,7 @@ class ChangeRecordViewModel @Inject constructor(
             typeId = newTypeId,
             timeStarted = newTimeStarted,
             timeEnded = newTimeEnded,
-            comment = newComment,
+            comment = commentSelectionViewModelDelegate.newComment,
             tags = newTags,
         ).let {
             addRecordMediator.add(it)
@@ -222,7 +219,7 @@ class ChangeRecordViewModel @Inject constructor(
                     newTypeId = record.typeId.orZero()
                     newTimeStarted = record.timeStarted
                     newTimeEnded = record.timeEnded
-                    newComment = record.comment
+                    commentSelectionViewModelDelegate.newComment = record.comment
                     newTags = record.tags
                 }
             }
@@ -250,7 +247,7 @@ class ChangeRecordViewModel @Inject constructor(
             typeId = newTypeId,
             timeStarted = newTimeStarted,
             timeEnded = newTimeEnded,
-            comment = newComment,
+            comment = commentSelectionViewModelDelegate.newComment,
             tags = newTags,
         )
 

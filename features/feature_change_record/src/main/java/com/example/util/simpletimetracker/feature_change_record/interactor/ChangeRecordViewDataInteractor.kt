@@ -1,18 +1,14 @@
 package com.example.util.simpletimetracker.feature_change_record.interactor
 
-import com.example.util.simpletimetracker.core.interactor.RecordCommentSearchViewDataInteractor
-import com.example.util.simpletimetracker.core.mapper.ColorMapper
 import com.example.util.simpletimetracker.core.mapper.TimeMapper
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.core.view.timeAdjustment.TimeAdjustmentView
-import com.example.util.simpletimetracker.domain.favourite.interactor.FavouriteCommentInteractor
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.record.model.Record
 import com.example.util.simpletimetracker.domain.recordTag.interactor.RecordTagInteractor
 import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTypeInteractor
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_change_record.R
-import com.example.util.simpletimetracker.feature_change_record.adapter.ChangeRecordCommentFieldViewData
 import com.example.util.simpletimetracker.feature_change_record.mapper.ChangeRecordViewDataMapper
 import com.example.util.simpletimetracker.feature_change_record.model.ChangeRecordDateTimeFieldsState
 import com.example.util.simpletimetracker.feature_change_record.viewData.ChangeRecordViewData
@@ -22,12 +18,9 @@ class ChangeRecordViewDataInteractor @Inject constructor(
     private val prefsInteractor: PrefsInteractor,
     private val recordTypeInteractor: RecordTypeInteractor,
     private val recordTagInteractor: RecordTagInteractor,
-    private val favouriteCommentInteractor: FavouriteCommentInteractor,
     private val changeRecordViewDataMapper: ChangeRecordViewDataMapper,
     private val resourceRepo: ResourceRepo,
     private val timeMapper: TimeMapper,
-    private val colorMapper: ColorMapper,
-    private val recordCommentSearchViewDataInteractor: RecordCommentSearchViewDataInteractor,
 ) {
 
     suspend fun getPreviewViewData(
@@ -52,36 +45,6 @@ class ChangeRecordViewDataInteractor @Inject constructor(
             showSeconds = showSeconds,
             dateTimeFieldState = dateTimeFieldState,
         )
-    }
-
-    // TODO replace fav to text button?
-    suspend fun getCommentsViewData(
-        comment: String,
-        typeId: Long,
-        fromCommentChange: Boolean,
-    ): List<ViewHolderType> {
-        val items = mutableListOf<ViewHolderType>()
-        val isDarkTheme = prefsInteractor.getDarkMode()
-        val isFavourite = favouriteCommentInteractor.get(comment) != null
-
-        ChangeRecordCommentFieldViewData(
-            // Only one at the time.
-            id = 1L,
-            // Do not update text if update coming from typing.
-            text = if (fromCommentChange) null else comment,
-            iconColor = if (isFavourite) {
-                resourceRepo.getColor(R.color.colorSecondary)
-            } else {
-                colorMapper.toInactiveColor(isDarkTheme)
-            },
-        ).let(items::add)
-
-        items += recordCommentSearchViewDataInteractor.getViewData(
-            comment = comment,
-            typeId = typeId,
-        )
-
-        return items
     }
 
     fun getTimeAdjustmentItems(

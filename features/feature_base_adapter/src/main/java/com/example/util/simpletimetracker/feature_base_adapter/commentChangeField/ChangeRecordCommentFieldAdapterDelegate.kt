@@ -1,4 +1,4 @@
-package com.example.util.simpletimetracker.feature_change_record.adapter
+package com.example.util.simpletimetracker.feature_base_adapter.commentChangeField
 
 import android.content.res.ColorStateList
 import android.text.TextWatcher
@@ -8,8 +8,8 @@ import androidx.core.widget.doAfterTextChanged
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.createRecyclerBindingAdapterDelegate
 import com.example.util.simpletimetracker.feature_views.extension.setOnClick
-import com.example.util.simpletimetracker.feature_change_record.adapter.ChangeRecordCommentFieldViewData as ViewData
-import com.example.util.simpletimetracker.feature_change_record.databinding.ChangeRecordCommentFieldItemBinding as Binding
+import com.example.util.simpletimetracker.feature_base_adapter.commentChangeField.ChangeRecordCommentFieldViewData as ViewData
+import com.example.util.simpletimetracker.feature_base_adapter.databinding.ChangeRecordCommentFieldItemBinding as Binding
 
 fun createChangeRecordCommentFieldAdapterDelegate(
     afterTextChange: (String) -> Unit,

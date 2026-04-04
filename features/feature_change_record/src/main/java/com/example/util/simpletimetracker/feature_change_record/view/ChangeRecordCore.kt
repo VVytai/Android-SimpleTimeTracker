@@ -10,9 +10,9 @@ import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
 import com.example.util.simpletimetracker.core.base.BaseFragment
+import com.example.util.simpletimetracker.core.delegates.commentSelection.viewDelegate.CommentSelectionViewDelegate
 import com.example.util.simpletimetracker.core.extension.addOnBackPressedListener
 import com.example.util.simpletimetracker.core.extension.hideKeyboard
-import com.example.util.simpletimetracker.core.extension.observeOnce
 import com.example.util.simpletimetracker.core.extension.showKeyboard
 import com.example.util.simpletimetracker.core.utils.setChooserColor
 import com.example.util.simpletimetracker.core.view.LinearLayoutManagerWithExtraLayoutSpace
@@ -20,8 +20,10 @@ import com.example.util.simpletimetracker.core.viewData.ChangeRecordDateTimeStat
 import com.example.util.simpletimetracker.domain.extension.orFalse
 import com.example.util.simpletimetracker.feature_base_adapter.BaseRecyclerAdapter
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
+import com.example.util.simpletimetracker.feature_base_adapter.button.createButtonAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.category.createCategoryAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.category.createCategoryAddAdapterDelegate
+import com.example.util.simpletimetracker.feature_base_adapter.category.createCategoryShowAllAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.divider.createDividerAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.empty.createEmptyAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.hint.createHintAccentAdapterDelegate
@@ -30,13 +32,7 @@ import com.example.util.simpletimetracker.feature_base_adapter.hintBig.createHin
 import com.example.util.simpletimetracker.feature_base_adapter.info.createInfoAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.recordType.createRecordTypeAdapterDelegate
 import com.example.util.simpletimetracker.feature_change_record.R
-import com.example.util.simpletimetracker.feature_base_adapter.button.createButtonAdapterDelegate
-import com.example.util.simpletimetracker.feature_base_adapter.category.createCategoryShowAllAdapterDelegate
-import com.example.util.simpletimetracker.feature_base_adapter.emptySpace.createEmptySpaceAdapterDelegate
 import com.example.util.simpletimetracker.feature_change_record.adapter.createChangeRecordChangePreviewAdapterDelegate
-import com.example.util.simpletimetracker.feature_base_adapter.recordComment.createRecordCommentAdapterDelegate
-import com.example.util.simpletimetracker.feature_base_adapter.recordFilter.createFilterAdapterDelegate
-import com.example.util.simpletimetracker.feature_change_record.adapter.createChangeRecordCommentFieldAdapterDelegate
 import com.example.util.simpletimetracker.feature_change_record.adapter.createChangeRecordSliderAdapterDelegate
 import com.example.util.simpletimetracker.feature_change_record.adapter.createChangeRecordTimeAdjustmentAdapterDelegate
 import com.example.util.simpletimetracker.feature_change_record.adapter.createChangeRecordTimeDoublePreviewAdapterDelegate
@@ -91,22 +87,6 @@ class ChangeRecordCore(
             createEmptyAdapterDelegate(),
         )
     }
-    private val commentsAdapter: BaseRecyclerAdapter by lazy {
-        BaseRecyclerAdapter(
-            createHintAdapterDelegate(),
-            createEmptySpaceAdapterDelegate(),
-            createChangeRecordCommentFieldAdapterDelegate(
-                afterTextChange = viewModel::onCommentChange,
-                onFavouriteClick = viewModel::onFavouriteCommentClick,
-            ),
-            createRecordCommentAdapterDelegate(
-                onItemClick = viewModel::onCommentClick,
-            ),
-            createFilterAdapterDelegate(
-                onClick = viewModel::onCommentFilterClick,
-            ),
-        )
-    }
     private val actionsAdapter: BaseRecyclerAdapter by lazy {
         BaseRecyclerAdapter(
             createDividerAdapterDelegate(),
@@ -124,6 +104,10 @@ class ChangeRecordCore(
             createButtonAdapterDelegate(viewModel::onItemButtonClick),
             createChangeRecordSliderAdapterDelegate(viewModel::onSliderValueChanged),
         )
+    }
+
+    private val commentsDelegate by lazy {
+        CommentSelectionViewDelegate(viewModel)
     }
 
     fun initUi(
@@ -147,14 +131,7 @@ class ChangeRecordCore(
             }
             adapter = categoriesAdapter
         }
-        rvChangeRecordComments.apply {
-            layoutManager = FlexboxLayoutManager(context).apply {
-                flexDirection = FlexDirection.ROW
-                justifyContent = JustifyContent.CENTER
-                flexWrap = FlexWrap.WRAP
-            }
-            adapter = commentsAdapter
-        }
+        commentsDelegate.initUi(rvChangeRecordComments)
         rvChangeRecordAction.apply {
             layoutManager = LinearLayoutManagerWithExtraLayoutSpace(context)
             adapter = actionsAdapter
@@ -182,35 +159,20 @@ class ChangeRecordCore(
     fun <T : ViewBinding> initViewModel(
         fragment: BaseFragment<T>,
         binding: ChangeRecordCoreLayoutBinding,
-    ) {
-        fragment.initCoreViewModel(binding)
-    }
-
-    private fun <T : ViewBinding> BaseFragment<T>.initCoreViewModel(
-        binding: ChangeRecordCoreLayoutBinding,
-    ) = with(binding) {
-        with(viewModel) {
-            statsIconVisibility.observeOnce(
-                owner = viewLifecycleOwner,
-                observer = binding.btnChangeRecordStatistics::isVisible::set,
-            )
-            deleteIconVisibility.observeOnce(
-                owner = viewLifecycleOwner,
-                observer = binding.btnChangeRecordDelete::visible::set,
-            )
-            timeEndedVisibility.observeOnce(
-                owner = viewLifecycleOwner,
-                observer = { setTimeEndedVisibility(it, binding) },
-            )
+    ) = with(viewModel) {
+        with(fragment) {
+            statsIconVisibility.observeOnce(binding.btnChangeRecordStatistics::isVisible::set)
+            deleteIconVisibility.observeOnce(binding.btnChangeRecordDelete::visible::set)
+            timeEndedVisibility.observeOnce { setTimeEndedVisibility(it, binding) }
             types.observe(typesAdapter::replace)
             categories.observe { updateCategories(it, binding) }
             saveButtonEnabled.observe { enableModifyingButtons(it, binding) }
-            timeStartedAdjustmentItems.observe(containerChangeRecordTimeStartedAdjust.adapter::replace)
-            timeEndedAdjustmentItems.observe(containerChangeRecordTimeEndedAdjust.adapter::replace)
+            timeStartedAdjustmentItems.observe(binding.containerChangeRecordTimeStartedAdjust.adapter::replace)
+            timeEndedAdjustmentItems.observe(binding.containerChangeRecordTimeEndedAdjust.adapter::replace)
             chooserState.observe { updateChooserState(it, binding) }
             keyboardVisibility.observe { onKeyboardVisibility(binding, it) }
-            comments.observe(commentsAdapter::replace)
             actionsViewData.observe(::setActionsViewData)
+            commentsDelegate.initViewModel(this)
         }
     }
 

@@ -4,19 +4,17 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.util.simpletimetracker.core.delegates.commentSelection.viewModelDelegate.CommentSelectionViewModelDelegate
+import com.example.util.simpletimetracker.core.delegates.commentSelection.viewModelDelegate.CommentSelectionViewModelDelegateImpl
 import com.example.util.simpletimetracker.core.extension.set
 import com.example.util.simpletimetracker.core.extension.toParams
-import com.example.util.simpletimetracker.core.interactor.RecordCommentSearchViewDataInteractor
 import com.example.util.simpletimetracker.core.interactor.RecordTagViewDataInteractor
 import com.example.util.simpletimetracker.core.interactor.RecordTypesViewDataInteractor
 import com.example.util.simpletimetracker.core.interactor.SnackBarMessageNavigationInteractor
 import com.example.util.simpletimetracker.core.view.timeAdjustment.TimeAdjustmentView
-import com.example.util.simpletimetracker.core.viewData.CommentFilterTypeViewData
 import com.example.util.simpletimetracker.domain.extension.addOrRemove
 import com.example.util.simpletimetracker.domain.extension.dropSeconds
 import com.example.util.simpletimetracker.domain.extension.orFalse
-import com.example.util.simpletimetracker.domain.favourite.interactor.FavouriteCommentInteractor
-import com.example.util.simpletimetracker.domain.favourite.model.FavouriteComment
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.RecordInteractor
 import com.example.util.simpletimetracker.domain.record.model.Record
@@ -27,8 +25,6 @@ import com.example.util.simpletimetracker.domain.recordTag.interactor.RecordType
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.button.ButtonViewData
 import com.example.util.simpletimetracker.feature_base_adapter.category.CategoryViewData
-import com.example.util.simpletimetracker.feature_base_adapter.recordComment.RecordCommentViewData
-import com.example.util.simpletimetracker.feature_base_adapter.recordFilter.FilterViewData
 import com.example.util.simpletimetracker.feature_base_adapter.recordType.RecordTypeViewData
 import com.example.util.simpletimetracker.feature_change_record.R
 import com.example.util.simpletimetracker.feature_change_record.adapter.ChangeRecordChangePreviewViewData
@@ -54,7 +50,6 @@ import com.example.util.simpletimetracker.navigation.params.screen.DateTimeDialo
 import com.example.util.simpletimetracker.navigation.params.screen.DateTimeDialogType
 import com.example.util.simpletimetracker.navigation.params.screen.DurationDialogParams
 import com.example.util.simpletimetracker.navigation.params.screen.RecordTagValueSelectionParams
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
@@ -69,11 +64,11 @@ abstract class ChangeRecordBaseViewModel(
     private val recordInteractor: RecordInteractor,
     private val recordTagInteractor: RecordTagInteractor,
     private val recordTypeToTagInteractor: RecordTypeToTagInteractor,
-    private val favouriteCommentInteractor: FavouriteCommentInteractor,
     private val changeRecordActionsDelegate: ChangeRecordActionsDelegateImpl,
     private val needTagValueSelectionInteractor: NeedTagValueSelectionInteractor,
-    private val recordCommentSearchViewDataInteractor: RecordCommentSearchViewDataInteractor,
-) : ViewModel() {
+    private val commentSelectionViewModelDelegate: CommentSelectionViewModelDelegateImpl,
+) : ViewModel(),
+    CommentSelectionViewModelDelegate by commentSelectionViewModelDelegate {
 
     val types: LiveData<List<ViewHolderType>> by lazy {
         return@lazy MutableLiveData<List<ViewHolderType>>().let { initial ->
@@ -86,15 +81,6 @@ abstract class ChangeRecordBaseViewModel(
             viewModelScope.launch {
                 initializePreviewViewData()
                 initial.value = loadCategoriesViewData()
-            }
-            initial
-        }
-    }
-    val comments: LiveData<List<ViewHolderType>> by lazy {
-        return@lazy MutableLiveData<List<ViewHolderType>>().let { initial ->
-            viewModelScope.launch {
-                initializePreviewViewData()
-                initial.value = loadCommentsViewData(fromCommentChange = false)
             }
             initial
         }
@@ -122,7 +108,6 @@ abstract class ChangeRecordBaseViewModel(
     protected var newTimeEnded: Long = 0
     protected var newTimeStarted: Long = 0
     protected var newTimeSplit: Long = 0
-    protected var newComment: String = ""
     protected var newTags: List<RecordBase.Tag> = emptyList()
     protected var originalRecordId: Long = 0
     protected var originalTypeId: Long = 0
@@ -153,7 +138,6 @@ abstract class ChangeRecordBaseViewModel(
     protected abstract val isStatisticsButtonVisible: Boolean
 
     private var prevRecord: Record? = null
-    private var searchLoadJob: Job? = null
 
     init {
         val bridge = ChangeRecordDelegateBridge(
@@ -161,6 +145,7 @@ abstract class ChangeRecordBaseViewModel(
             paramsProvider = getDelegateParamsProvider(),
         )
         changeRecordActionsDelegate.attach(bridge)
+        commentSelectionViewModelDelegate.attach(getCommentSelectionDelegateParent())
     }
 
     override fun onCleared() {
@@ -169,6 +154,7 @@ abstract class ChangeRecordBaseViewModel(
     }
 
     protected open suspend fun initializePreviewViewData() {
+        commentSelectionViewModelDelegate.updateCommentsViewData()
         // Don't wait for the completion.
         viewModelScope.launch { initializeActions() }
     }
@@ -300,7 +286,7 @@ abstract class ChangeRecordBaseViewModel(
                     updatePreview()
                     updateCategoriesViewData()
                 }
-                updateCommentsViewData()
+                commentSelectionViewModelDelegate.updateCommentsViewData()
                 updateActionsData()
             }
 
@@ -383,49 +369,6 @@ abstract class ChangeRecordBaseViewModel(
     fun onShowAllTagsClick() = viewModelScope.launch {
         showAllTags = true
         updateCategoriesViewData()
-    }
-
-    fun onCommentClick(item: RecordCommentViewData) {
-        viewModelScope.launch {
-            if (item.text != newComment) {
-                newComment = item.text
-                updatePreview()
-                updateCommentsViewData()
-            }
-        }
-    }
-
-    fun onCommentFilterClick(item: FilterViewData) = viewModelScope.launch {
-        val data = item.type as? CommentFilterTypeViewData ?: return@launch
-        val type = recordCommentSearchViewDataInteractor.map(data)
-        val newFilters = prefsInteractor.getHiddenCommentFilters().toMutableSet()
-        newFilters.addOrRemove(type)
-        prefsInteractor.setHiddenCommentFilters(newFilters.toSet())
-        updateCommentsViewData()
-    }
-
-    fun onCommentChange(comment: String) {
-        viewModelScope.launch {
-            if (comment != newComment) {
-                newComment = comment
-                updatePreview()
-                updateCommentsViewData(fromCommentChange = true)
-            }
-        }
-    }
-
-    fun onFavouriteCommentClick() {
-        if (newComment.isEmpty()) return
-
-        viewModelScope.launch {
-            favouriteCommentInteractor.get(newComment)
-                ?.let { favouriteCommentInteractor.remove(it.id) }
-                ?: run {
-                    val new = FavouriteComment(comment = newComment)
-                    favouriteCommentInteractor.add(new)
-                }
-            updateCommentsViewData()
-        }
     }
 
     fun onDateTimeSet(timestamp: Long, tag: String?) {
@@ -813,6 +756,16 @@ abstract class ChangeRecordBaseViewModel(
         updateActionsData()
     }
 
+    private fun getCommentSelectionDelegateParent(): CommentSelectionViewModelDelegate.Parent {
+        return object : CommentSelectionViewModelDelegate.Parent {
+            override fun getParams(): CommentSelectionViewModelDelegate.Parent.Params =
+                CommentSelectionViewModelDelegate.Parent.Params(recordTypeId = newTypeId)
+
+            override suspend fun onCommentClick() = updatePreview()
+            override fun onCommentChange(): Unit = viewModelScope.launch { updatePreview() }.let {}
+        }
+    }
+
     private fun getDelegateActionsConsumer(): ChangeRecordDelegateBridge.ActionConsumer {
         return object : ChangeRecordDelegateBridge.ActionConsumer {
             override suspend fun onAction(action: Action) {
@@ -850,7 +803,7 @@ abstract class ChangeRecordBaseViewModel(
                         newTypeId = newTypeId,
                         newTimeStarted = newTimeStarted,
                         newTimeEnded = newTimeEnded,
-                        newComment = newComment,
+                        newComment = commentSelectionViewModelDelegate.newComment,
                         newTags = newTags,
                         isButtonEnabled = saveButtonEnabled.value.orFalse(),
                     ),
@@ -950,25 +903,6 @@ abstract class ChangeRecordBaseViewModel(
         }
         return changeRecordViewDataInteractor.getTimeAdjustmentItems(
             dateTimeFieldState = state,
-        )
-    }
-
-    private fun updateCommentsViewData(
-        fromCommentChange: Boolean = false,
-    ) {
-        searchLoadJob?.cancel()
-        searchLoadJob = viewModelScope.launch {
-            comments.set(loadCommentsViewData(fromCommentChange))
-        }
-    }
-
-    private suspend fun loadCommentsViewData(
-        fromCommentChange: Boolean,
-    ): List<ViewHolderType> {
-        return changeRecordViewDataInteractor.getCommentsViewData(
-            comment = newComment,
-            typeId = newTypeId,
-            fromCommentChange = fromCommentChange,
         )
     }
 

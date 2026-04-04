@@ -10,6 +10,7 @@ import androidx.core.view.isVisible
 import androidx.core.view.postDelayed
 import androidx.fragment.app.viewModels
 import com.example.util.simpletimetracker.core.base.BaseFragment
+import com.example.util.simpletimetracker.core.delegates.commentSelection.viewDelegate.CommentSelectionViewDelegate
 import com.example.util.simpletimetracker.core.dialog.OnTagValueSelectedListener
 import com.example.util.simpletimetracker.core.dialog.StandardDialogListener
 import com.example.util.simpletimetracker.core.extension.addOnBackPressedListener
@@ -23,16 +24,14 @@ import com.example.util.simpletimetracker.core.view.LinearLayoutManagerWithExtra
 import com.example.util.simpletimetracker.core.view.ViewChooserStateDelegate
 import com.example.util.simpletimetracker.domain.extension.orFalse
 import com.example.util.simpletimetracker.feature_base_adapter.BaseRecyclerAdapter
+import com.example.util.simpletimetracker.feature_base_adapter.R
 import com.example.util.simpletimetracker.feature_base_adapter.category.CategoryViewData
 import com.example.util.simpletimetracker.feature_base_adapter.category.createCategoryAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.divider.createDividerAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.emptySpace.createEmptySpaceAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.hint.createHintAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.info.createInfoAdapterDelegate
-import com.example.util.simpletimetracker.feature_base_adapter.recordComment.createRecordCommentAdapterDelegate
-import com.example.util.simpletimetracker.feature_base_adapter.recordFilter.createFilterAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.recordType.createRecordTypeAdapterDelegate
-import com.example.util.simpletimetracker.feature_change_record.adapter.createChangeRecordCommentFieldAdapterDelegate
 import com.example.util.simpletimetracker.feature_change_shortcut.adapter.createChangeShortcutSettingActionAdapterDelegate
 import com.example.util.simpletimetracker.feature_change_shortcut.databinding.FragmentChangeShortcutBinding
 import com.example.util.simpletimetracker.feature_change_shortcut.viewData.ChangeShortcutChooserState.Activity
@@ -51,7 +50,6 @@ import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
 import dagger.hilt.android.AndroidEntryPoint
-import com.example.util.simpletimetracker.feature_change_record.R as ChangeRecordR
 
 @AndroidEntryPoint
 class ChangeShortcutFragment :
@@ -83,28 +81,15 @@ class ChangeShortcutFragment :
             ),
         )
     }
-    private val commentsAdapter: BaseRecyclerAdapter by lazy {
-        BaseRecyclerAdapter(
-            createHintAdapterDelegate(),
-            createEmptySpaceAdapterDelegate(),
-            createChangeRecordCommentFieldAdapterDelegate(
-                afterTextChange = viewModel::onCommentChange,
-                onFavouriteClick = viewModel::onFavouriteCommentClick,
-            ),
-            createRecordCommentAdapterDelegate(
-                onItemClick = viewModel::onCommentClick,
-            ),
-            createFilterAdapterDelegate(
-                onClick = viewModel::onCommentFilterClick,
-            ),
-        )
-    }
     private val settingActionAdapter: BaseRecyclerAdapter by lazy {
         BaseRecyclerAdapter(
             createChangeShortcutSettingActionAdapterDelegate(
                 onClick = viewModel::onSettingActionClick,
             ),
         )
+    }
+    private val commentsDelegate by lazy {
+        CommentSelectionViewDelegate(viewModel)
     }
     private var typeColorAnimator: ValueAnimator? = null
     private val params: ChangeShortcutParams by fragmentArgumentDelegate(
@@ -128,7 +113,7 @@ class ChangeShortcutFragment :
         }
 
         rvChangeShortcutType.apply {
-            layoutManager = FlexboxLayoutManager(requireContext()).apply {
+            layoutManager = FlexboxLayoutManager(context).apply {
                 flexDirection = FlexDirection.ROW
                 justifyContent = JustifyContent.CENTER
                 flexWrap = FlexWrap.WRAP
@@ -137,7 +122,7 @@ class ChangeShortcutFragment :
         }
 
         rvChangeShortcutTags.apply {
-            layoutManager = FlexboxLayoutManager(requireContext()).apply {
+            layoutManager = FlexboxLayoutManager(context).apply {
                 flexDirection = FlexDirection.ROW
                 justifyContent = JustifyContent.CENTER
                 flexWrap = FlexWrap.WRAP
@@ -145,14 +130,7 @@ class ChangeShortcutFragment :
             adapter = tagsAdapter
         }
 
-        rvChangeShortcutComments.apply {
-            layoutManager = FlexboxLayoutManager(requireContext()).apply {
-                flexDirection = FlexDirection.ROW
-                justifyContent = JustifyContent.CENTER
-                flexWrap = FlexWrap.WRAP
-            }
-            adapter = commentsAdapter
-        }
+        commentsDelegate.initUi(rvChangeShortcutComments)
 
         rvChangeShortcutSettingAction.apply {
             layoutManager = LinearLayoutManagerWithExtraLayoutSpace(context)
@@ -180,10 +158,10 @@ class ChangeShortcutFragment :
             viewData.observe(::setViewData)
             types.observe(typesAdapter::replace)
             tags.observe(tagsAdapter::replace)
-            comments.observe(commentsAdapter::replace)
             settingActions.observe(settingActionAdapter::replace)
             chooserState.observe(::setChooserState)
             keyboardVisibility.observe(::setKeyboardVisibility)
+            commentsDelegate.initViewModel(this@ChangeShortcutFragment)
             viewModel.initialize()
         }
     }
@@ -289,7 +267,7 @@ class ChangeShortcutFragment :
     private fun setKeyboardVisibility(visible: Boolean) {
         if (visible) {
             binding.rvChangeShortcutComments.postDelayed(500) {
-                view?.findViewById<EditText>(ChangeRecordR.id.etChangeRecordCommentField)
+                view?.findViewById<EditText>(R.id.etChangeRecordCommentField)
                     ?.let(::showKeyboard)
             }
         } else {
