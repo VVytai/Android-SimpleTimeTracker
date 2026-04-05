@@ -64,6 +64,10 @@ class GoalsViewModel @Inject constructor(
     fun onVisible() {
         isVisible = true
         startUpdate()
+        viewModelScope.launch {
+            dateSelectorViewModelDelegate.setup()
+            dateSelectorViewModelDelegate.updatePosition(currentShift)
+        }
     }
 
     fun onHidden() {
