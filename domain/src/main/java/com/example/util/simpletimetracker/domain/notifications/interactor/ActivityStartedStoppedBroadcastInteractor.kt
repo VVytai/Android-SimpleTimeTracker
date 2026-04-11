@@ -14,6 +14,7 @@ interface ActivityStartedStoppedBroadcastInteractor {
         typeId: Long,
         tagIds: List<Long>,
         comment: String,
+        timeStarted: Long,
     )
 
     suspend fun onGoalReached(

@@ -11,10 +11,10 @@ import com.example.util.simpletimetracker.core.utils.EXTRA_GOAL_TYPE
 import com.example.util.simpletimetracker.core.utils.EXTRA_GOAL_VALUE
 import com.example.util.simpletimetracker.core.utils.EXTRA_RECORD_COMMENT
 import com.example.util.simpletimetracker.core.utils.EXTRA_RECORD_TAG_NAME
+import com.example.util.simpletimetracker.core.utils.EXTRA_RECORD_TIME_STARTED
 import com.example.util.simpletimetracker.core.utils.EXTRA_RECORD_TYPE_ICON
 import com.example.util.simpletimetracker.core.utils.EXTRA_RECORD_TYPE_NOTE
 import com.example.util.simpletimetracker.domain.category.interactor.CategoryInteractor
-import com.example.util.simpletimetracker.domain.category.model.Category
 import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.domain.notifications.interactor.ActivityStartedStoppedBroadcastInteractor
 import com.example.util.simpletimetracker.domain.notifications.model.ExternalEventGoalType
@@ -49,6 +49,7 @@ class ActivityStartedStoppedBroadcastInteractorImpl @Inject constructor(
             tagNames = getTagNames(tagIds),
             note = type.note,
             icon = type.icon,
+            timeStarted = null,
         )
     }
 
@@ -56,6 +57,7 @@ class ActivityStartedStoppedBroadcastInteractorImpl @Inject constructor(
         typeId: Long,
         tagIds: List<Long>,
         comment: String,
+        timeStarted: Long,
     ) {
         if (!prefsInteractor.getAutomatedTrackingSendEvents()) return
 
@@ -67,6 +69,7 @@ class ActivityStartedStoppedBroadcastInteractorImpl @Inject constructor(
             tagNames = getTagNames(tagIds),
             note = type.note,
             icon = type.icon,
+            timeStarted = timeStarted,
         )
     }
 
@@ -101,6 +104,7 @@ class ActivityStartedStoppedBroadcastInteractorImpl @Inject constructor(
         tagNames: List<String>,
         note: String,
         icon: String,
+        timeStarted: Long?,
     ) {
         val tagsString = tagNames.joinToString(separator = ",")
         Intent().apply {
@@ -110,6 +114,7 @@ class ActivityStartedStoppedBroadcastInteractorImpl @Inject constructor(
             if (tagNames.isNotEmpty()) putExtra(EXTRA_RECORD_TAG_NAME, tagsString)
             if (note.isNotEmpty()) putExtra(EXTRA_RECORD_TYPE_NOTE, note)
             if (icon.isNotEmpty()) putExtra(EXTRA_RECORD_TYPE_ICON, icon)
+            if (timeStarted != null) putExtra(EXTRA_RECORD_TIME_STARTED, timeStarted)
         }.let(context::sendBroadcast)
     }
 

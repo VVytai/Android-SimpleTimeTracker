@@ -42,6 +42,7 @@ class RemoveRunningRecordMediator @Inject constructor(
             typeId = runningRecord.id,
             tagIds = runningRecord.tags.map(RecordBase.Tag::tagId),
             comment = runningRecord.comment,
+            timeStarted = runningRecord.timeStarted,
         )
         remove(
             typeId = runningRecord.id,
