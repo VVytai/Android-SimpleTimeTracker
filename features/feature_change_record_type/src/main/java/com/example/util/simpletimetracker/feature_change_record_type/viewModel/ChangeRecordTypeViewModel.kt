@@ -18,6 +18,7 @@ import com.example.util.simpletimetracker.core.mapper.RecordTypeViewDataMapper
 import com.example.util.simpletimetracker.core.mapper.TimeMapper
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.core.view.ViewChooserStateDelegate
+import com.example.util.simpletimetracker.domain.base.UNCATEGORIZED_ITEM_ID
 import com.example.util.simpletimetracker.domain.category.interactor.RecordTypeCategoryInteractor
 import com.example.util.simpletimetracker.domain.color.model.AppColor
 import com.example.util.simpletimetracker.domain.extension.addOrRemove
@@ -178,12 +179,17 @@ class ChangeRecordTypeViewModel @Inject constructor(
 
     fun onCategoryClick(item: CategoryViewData) {
         viewModelScope.launch {
-            newCategories.addOrRemove(item.id)
+            if (item.id == UNCATEGORIZED_ITEM_ID) {
+                newCategories.clear()
+            } else {
+                newCategories.addOrRemove(item.id)
+            }
             updateCategoriesViewData()
         }
     }
 
     fun onCategoryLongClick(item: CategoryViewData, sharedElements: Pair<Any, String>) {
+        if (item.id == UNCATEGORIZED_ITEM_ID) return
         router.navigate(
             data = ChangeCategoryFromChangeActivityParams(
                 ChangeTagData.Change(

@@ -876,7 +876,7 @@ abstract class ChangeRecordBaseViewModel(
             showAddButton = true,
             showHint = true,
             showArchived = false,
-            showUntaggedButton = true,
+            showUntaggedButton = newTags.isNotEmpty(),
             showAllTagsButton = true,
         ).let {
             ChangeRecordTagsViewData(

@@ -387,7 +387,7 @@ class ChangeShortcutViewModel @Inject constructor(
             showAddButton = false,
             showHint = true,
             showArchived = false,
-            showUntaggedButton = true,
+            showUntaggedButton = recordTags.isNotEmpty(),
             showAllTagsButton = false,
         )
         tags.set(data.data)

@@ -3,6 +3,7 @@ package com.example.util.simpletimetracker.feature_change_record_type.interactor
 import com.example.util.simpletimetracker.core.mapper.CategoryViewDataMapper
 import com.example.util.simpletimetracker.core.mapper.CommonViewDataMapper
 import com.example.util.simpletimetracker.domain.category.interactor.CategoryInteractor
+import com.example.util.simpletimetracker.domain.extension.addBetweenEach
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.divider.DividerViewData
@@ -25,35 +26,49 @@ class ChangeRecordTypeViewDataInteractor @Inject constructor(
         return if (categories.isNotEmpty()) {
             val selected = categories.filter { it.id in selectedCategories }
             val available = categories.filter { it.id !in selectedCategories }
-            val viewData = mutableListOf<ViewHolderType>()
 
-            categoryViewDataMapper.mapToCategoryHint().let(viewData::add)
+            // Main hint
+            val hintData = listOf(categoryViewDataMapper.mapToCategoryHint())
 
-            DividerViewData("divider_hint".hashCode().toLong())
-                .let(viewData::add)
-
-            commonViewDataMapper.mapSelectedHint(
-                isEmpty = selected.isEmpty(),
-            ).let(viewData::add)
-
-            selected.map {
+            // Selected
+            val selectedData = mutableListOf<ViewHolderType>()
+            selectedData += commonViewDataMapper.mapSelectedHint(isEmpty = selected.isEmpty())
+            selectedData += selected.map {
                 categoryViewDataMapper.mapCategory(
                     category = it,
                     isDarkTheme = isDarkTheme,
                 )
-            }.let(viewData::addAll)
+            }
 
-            DividerViewData("divider_available".hashCode().toLong())
-                .let(viewData::add)
-
-            available.map {
+            // Available
+            val availableData = available.map {
                 categoryViewDataMapper.mapCategory(
                     category = it,
                     isDarkTheme = isDarkTheme,
                 )
-            }.let(viewData::addAll)
+            }
 
-            categoryViewDataMapper.mapToTypeTagAddItem(isDarkTheme).let(viewData::add)
+            // Buttons
+            val buttonsViewData = mutableListOf<ViewHolderType>()
+            if (selected.isNotEmpty()) {
+                buttonsViewData += categoryViewDataMapper.mapToUncategorizedItem(
+                    isFiltered = false,
+                    isDarkTheme = isDarkTheme,
+                )
+            }
+            buttonsViewData += categoryViewDataMapper.mapToTypeTagAddItem(isDarkTheme)
+
+            // All
+            val viewData = listOf(
+                hintData,
+                selectedData,
+                availableData,
+                buttonsViewData,
+            ).filter {
+                it.isNotEmpty()
+            }.addBetweenEach { index ->
+                listOf(DividerViewData(index.toLong()))
+            }.flatten()
 
             ChangeRecordTypeCategoriesViewData(
                 selectedCount = selected.size,
