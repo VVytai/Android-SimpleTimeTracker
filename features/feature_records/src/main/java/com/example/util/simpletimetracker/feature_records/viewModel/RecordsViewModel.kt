@@ -17,6 +17,7 @@ import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteracto
 import com.example.util.simpletimetracker.domain.record.interactor.RecordsContainerMultiselectInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.RecordsShareUpdateInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.RecordsUpdateInteractor
+import com.example.util.simpletimetracker.domain.record.interactor.RunningRecordInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.UpdateRunningRecordsInteractor
 import com.example.util.simpletimetracker.domain.record.model.MultiSelectedRecordId
 import com.example.util.simpletimetracker.domain.statistics.model.ChartFilterType
@@ -48,6 +49,7 @@ class RecordsViewModel @Inject constructor(
     private val router: Router,
     private val recordsViewDataInteractor: RecordsViewDataInteractor,
     private val prefsInteractor: PrefsInteractor,
+    private val runningRecordInteractor: RunningRecordInteractor,
     private val recordsUpdateInteractor: RecordsUpdateInteractor,
     private val recordsShareUpdateInteractor: RecordsShareUpdateInteractor,
     private val sharingInteractor: SharingInteractor,
@@ -98,6 +100,7 @@ class RecordsViewModel @Inject constructor(
         item: RunningRecordViewData,
         sharedElements: Pair<Any, String>? = null,
     ) = viewModelScope.launch {
+        if (runningRecordInteractor.get(item.id) == null) return@launch
         if (recordsContainerMultiselectInteractor.isEnabled) {
             onMultiselectRunningRecordClick(item)
             return@launch
