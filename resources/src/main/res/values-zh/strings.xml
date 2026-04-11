@@ -532,6 +532,7 @@ csv 文件必须包含以逗号分隔的这些列：<br/>
     <string name="statistics_detail_record_time">记录时间</string>
     <string name="statistics_detail_first_record">首次</string>
     <string name="statistics_detail_last_record">最新</string>
+    <string name="statistics_detail_record_span">跨度</string>
     <string name="statistics_detail_time_since">已过时间</string>
     <string name="statistics_detail_streaks">连续记录</string>
     <string name="statistics_detail_streaks_longest">最长</string>

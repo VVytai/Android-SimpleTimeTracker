@@ -115,6 +115,7 @@ open class BaseUiTest {
             .get(iconEmojiMapper.getAvailableEmojiCategories(hasFavourites = false).last())
             ?.last()?.emojiCode.orEmpty()
 
+    val dayString: String by lazy { getString(R.string.time_day) }
     val hourString: String by lazy { getString(R.string.time_hour) }
     val minuteString: String by lazy { getString(R.string.time_minute) }
     val secondString: String by lazy { getString(R.string.time_second) }

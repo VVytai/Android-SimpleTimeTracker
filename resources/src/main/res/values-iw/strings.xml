@@ -532,6 +532,7 @@
     <string name="statistics_detail_record_time">זמן שיא</string>
     <string name="statistics_detail_first_record">ראשון</string>
     <string name="statistics_detail_last_record">אחרון</string>
+    <string name="statistics_detail_record_span">טווח</string>
     <string name="statistics_detail_time_since">זמן שעבר</string>
     <string name="statistics_detail_streaks">סדרה</string>
     <string name="statistics_detail_streaks_longest">הכי ארוכה</string>

@@ -532,6 +532,7 @@ Exempel:<br/>
     <string name="statistics_detail_record_time">Händelsetid</string>
     <string name="statistics_detail_first_record">Första</string>
     <string name="statistics_detail_last_record">Senaste</string>
+    <string name="statistics_detail_record_span">Tidsspann</string>
     <string name="statistics_detail_time_since">Tid sedan</string>
     <string name="statistics_detail_streaks">Serier</string>
     <string name="statistics_detail_streaks_longest">Längsta</string>

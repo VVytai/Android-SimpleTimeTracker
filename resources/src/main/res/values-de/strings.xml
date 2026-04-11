@@ -532,6 +532,7 @@ Beispiel:<br/>
     <string name="statistics_detail_record_time">Rekordzeit</string>
     <string name="statistics_detail_first_record">Erste</string>
     <string name="statistics_detail_last_record">Letzte</string>
+    <string name="statistics_detail_record_span">Zeitraum</string>
     <string name="statistics_detail_time_since">Zeit seit</string>
     <string name="statistics_detail_streaks">Serie</string>
     <string name="statistics_detail_streaks_longest">Längste</string>

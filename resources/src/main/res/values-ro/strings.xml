@@ -532,6 +532,7 @@ Examplu:<br/>
     <string name="statistics_detail_record_time">Timpul înregistrării</string>
     <string name="statistics_detail_first_record">Primul</string>
     <string name="statistics_detail_last_record">Ultimul</string>
+    <string name="statistics_detail_record_span">Perioadă</string>
     <string name="statistics_detail_time_since">Timp de la</string>
     <string name="statistics_detail_streaks">Serie</string>
     <string name="statistics_detail_streaks_longest">Cel mai lung</string>

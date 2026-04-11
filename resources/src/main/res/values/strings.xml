@@ -532,6 +532,7 @@ Example:<br/>
     <string name="statistics_detail_record_time">Record time</string>
     <string name="statistics_detail_first_record">First</string>
     <string name="statistics_detail_last_record">Last</string>
+    <string name="statistics_detail_record_span">Span</string>
     <string name="statistics_detail_time_since">Time since</string>
     <string name="statistics_detail_streaks">Series</string>
     <string name="statistics_detail_streaks_longest">Longest</string>

@@ -532,6 +532,7 @@ Exemple:<br/>
     <string name="statistics_detail_record_time">Hora d\'enregistrament</string>
     <string name="statistics_detail_first_record">Primer</string>
     <string name="statistics_detail_last_record">Últim</string>
+    <string name="statistics_detail_record_span">Període</string>
     <string name="statistics_detail_time_since">Temps transcorregut</string>
     <string name="statistics_detail_streaks">Sèrie</string>
     <string name="statistics_detail_streaks_longest">Més llarga</string>

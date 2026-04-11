@@ -532,6 +532,7 @@ Contoh:<br/>
     <string name="statistics_detail_record_time">Waktu rekor</string>
     <string name="statistics_detail_first_record">Pertama</string>
     <string name="statistics_detail_last_record">Terakhir</string>
+    <string name="statistics_detail_record_span">Rentang</string>
     <string name="statistics_detail_time_since">Waktu sejak</string>
     <string name="statistics_detail_streaks">Seri</string>
     <string name="statistics_detail_streaks_longest">Terlama</string>

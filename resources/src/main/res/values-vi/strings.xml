@@ -532,6 +532,7 @@ Ví dụ:<br/>
     <string name="statistics_detail_record_time">Thời gian bản ghi</string>
     <string name="statistics_detail_first_record">Đầu tiên</string>
     <string name="statistics_detail_last_record">Cuối cùng</string>
+    <string name="statistics_detail_record_span">Khoảng thời gian</string>
     <string name="statistics_detail_time_since">Thời gian kể từ</string>
     <string name="statistics_detail_streaks">Loạt</string>
     <string name="statistics_detail_streaks_longest">Dài nhất</string>

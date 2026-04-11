@@ -1479,7 +1479,7 @@ class StatisticsDetailTest : BaseUiTest() {
             ),
         )
 
-        scrollStatDetailRecyclerToTag(StatisticsDetailBlock.Average)
+        scrollStatDetailRecyclerToTag(StatisticsDetailBlock.Dates)
         checkCard(coreR.string.statistics_detail_first_record, "-")
         checkCard(coreR.string.statistics_detail_last_record, "-")
 

@@ -532,6 +532,7 @@
     <string name="statistics_detail_record_time">Час запису</string>
     <string name="statistics_detail_first_record">Перший</string>
     <string name="statistics_detail_last_record">Останній</string>
+    <string name="statistics_detail_record_span">Період</string>
     <string name="statistics_detail_time_since">Час, що минув</string>
     <string name="statistics_detail_streaks">Серія</string>
     <string name="statistics_detail_streaks_longest">Найдовша</string>

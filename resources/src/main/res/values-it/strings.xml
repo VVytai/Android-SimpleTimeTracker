@@ -532,6 +532,7 @@ Esempio:<br/>
     <string name="statistics_detail_record_time">Tempo di registrazione</string>
     <string name="statistics_detail_first_record">Prima</string>
     <string name="statistics_detail_last_record">Ultima</string>
+    <string name="statistics_detail_record_span">Intervallo</string>
     <string name="statistics_detail_time_since">Tempo trascorso</string>
     <string name="statistics_detail_streaks">Serie</string>
     <string name="statistics_detail_streaks_longest">Più lunga</string>

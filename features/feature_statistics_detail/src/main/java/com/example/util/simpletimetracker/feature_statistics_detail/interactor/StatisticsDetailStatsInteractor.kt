@@ -117,6 +117,13 @@ class StatisticsDetailStatsInteractor @Inject constructor(
 
         val firstRecordData = recordsSorted.firstOrNull()?.timeStarted
         val lastRecordData = recordsSorted.lastOrNull()?.timeEnded
+        val compareFirstRecordData = compareRecordsSorted.firstOrNull()?.timeStarted
+        val compareLastRecordData = compareRecordsSorted.lastOrNull()?.timeEnded
+        val recordSpanData = if (firstRecordData != null && lastRecordData != null) {
+            lastRecordData - firstRecordData
+        } else {
+            null
+        }
 
         val emptyValue by lazy {
             resourceRepo.getString(R.string.statistics_detail_empty)
@@ -173,16 +180,12 @@ class StatisticsDetailStatsInteractor @Inject constructor(
             return result.toString()
         }
 
-        fun getTimeSinceMessage(timestamp: Long): String {
+        fun getTimeSinceMessage(timestamp: Long, span: Long?): String {
             val result = StringBuilder()
             result.append(resourceRepo.getString(R.string.statistics_detail_time_since))
             result.append("\n")
             val interval = System.currentTimeMillis() - timestamp
-            val timeSince = timeMapper.formatInterval(
-                interval = interval,
-                forceSeconds = showSeconds,
-                durationFormat = durationFormat,
-            )
+            val timeSince = formatInterval(interval)
             val timeSinceInDays = timeMapper.formatInterval(
                 interval = interval,
                 forceSeconds = showSeconds,
@@ -192,6 +195,22 @@ class StatisticsDetailStatsInteractor @Inject constructor(
             if (timeSince != timeSinceInDays) {
                 result.append("\n")
                 result.append("($timeSinceInDays)")
+            }
+            if (span != null) {
+                result.append("\n\n")
+                result.append(resourceRepo.getString(R.string.statistics_detail_record_span))
+                result.append("\n")
+                val spanData = formatInterval(span)
+                val spanDataInDays = timeMapper.formatInterval(
+                    interval = span,
+                    forceSeconds = showSeconds,
+                    durationFormat = DurationFormat.DAYS,
+                )
+                result.append(spanData)
+                if (spanData != spanDataInDays) {
+                    result.append("\n")
+                    result.append("($spanDataInDays)")
+                }
             }
 
             return result.toString()
@@ -228,18 +247,20 @@ class StatisticsDetailStatsInteractor @Inject constructor(
                 ?.let(::processLengthHint),
             firstRecord = firstRecordData
                 .let(::formatDateTimeYear),
-            compareFirstRecord = compareRecordsSorted.firstOrNull()?.timeStarted
+            compareFirstRecord = compareFirstRecordData
                 .let(::formatDateTimeYear)
                 .let(::processComparisonString),
             lastRecord = lastRecordData
                 .let(::formatDateTimeYear),
-            compareLastRecord = compareRecordsSorted.lastOrNull()?.timeEnded
+            compareLastRecord = compareLastRecordData
                 .let(::formatDateTimeYear)
                 .let(::processComparisonString),
-            firstRecordClickMessage = firstRecordData
-                ?.let(::getTimeSinceMessage),
-            lastRecordClickMessage = lastRecordData
-                ?.let(::getTimeSinceMessage),
+            firstRecordClickMessage = firstRecordData?.let {
+                getTimeSinceMessage(it, recordSpanData)
+            },
+            lastRecordClickMessage = lastRecordData?.let {
+                getTimeSinceMessage(it, recordSpanData)
+            },
         )
     }
 
