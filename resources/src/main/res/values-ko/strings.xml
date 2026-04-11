@@ -314,7 +314,7 @@
     <string name="settings_display_title">디스플레이 설정</string>
     <string name="settings_additional_title">추가 설정</string>
     <string name="settings_notification_title">알림 설정</string>
-    <string name="settings_backup_title">백업 설정</string>
+    <string name="settings_backup_title">백업</string>
     <string name="settings_export_title">내보내기 및 가져오기</string>
     <string name="settings_sort_order">활동 정렬</string>
     <string name="settings_sort_order_category">카테고리 정렬</string>

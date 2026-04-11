@@ -314,7 +314,7 @@ Pozwala to zobaczyć, ile czasu spędzasz na produktywnych i nieproduktywnych ak
     <string name="settings_display_title">Ustawienia wyświetlania</string>
     <string name="settings_additional_title">Dodatkowe ustawienia</string>
     <string name="settings_notification_title">Ustawienia powiadomień</string>
-    <string name="settings_backup_title">Ustawienia kopii zapasowej</string>
+    <string name="settings_backup_title">Kopia zapasowa</string>
     <string name="settings_export_title">Eksport i import</string>
     <string name="settings_sort_order">Sortowanie aktywności</string>
     <string name="settings_sort_order_category">Sortowanie kategorii</string>

@@ -314,7 +314,7 @@ Detta gör att du kan se hur mycket tid du spenderar på produktiva kontra icke-
     <string name="settings_display_title">Bildskärmsinställningar</string>
     <string name="settings_additional_title">Ytterligare inställningar</string>
     <string name="settings_notification_title">Aviseringsinställningar</string>
-    <string name="settings_backup_title">Säkerhetskopieringsinställningar</string>
+    <string name="settings_backup_title">Säkerhetskopiering</string>
     <string name="settings_export_title">Exportera och importera</string>
     <string name="settings_sort_order">Sortera aktiviteter efter</string>
     <string name="settings_sort_order_category">Sortera kategorier</string>

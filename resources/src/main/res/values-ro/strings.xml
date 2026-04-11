@@ -314,7 +314,7 @@ Acest lucru îți permite să vezi cât timp petreci în activități productive
     <string name="settings_display_title">Afișează setările</string>
     <string name="settings_additional_title">Setări adiționale</string>
     <string name="settings_notification_title">Setări notificări</string>
-    <string name="settings_backup_title">Setări Backup</string>
+    <string name="settings_backup_title">Backup</string>
     <string name="settings_export_title">Exportă și importă</string>
     <string name="settings_sort_order">Sortează activitățile</string>
     <string name="settings_sort_order_category">Sortați categoriile</string>

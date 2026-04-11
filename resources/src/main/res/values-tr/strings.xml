@@ -314,7 +314,7 @@ Bu, genel olarak verimli ve verimsiz aktivitelere ne kadar zaman harcadığını
     <string name="settings_display_title">Görüntü ayarları</string>
     <string name="settings_additional_title">Ek ayarlar</string>
     <string name="settings_notification_title">Bildirim ayarları</string>
-    <string name="settings_backup_title">Yedekleme ayarları</string>
+    <string name="settings_backup_title">Yedekleme</string>
     <string name="settings_export_title">Ihracat ve ithalat</string>
     <string name="settings_sort_order">Aktiviteleri sırala</string>
     <string name="settings_sort_order_category">Kategorileri sırala</string>

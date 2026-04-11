@@ -314,7 +314,7 @@
     <string name="settings_display_title">Thiết đặt hiển thị</string>
     <string name="settings_additional_title">Thiết đặt bổ sung</string>
     <string name="settings_notification_title">Thiết đặt thông báo</string>
-    <string name="settings_backup_title">Thiết đặt sao lưu</string>
+    <string name="settings_backup_title">Sao lưu</string>
     <string name="settings_export_title">Xuất và nhập</string>
     <string name="settings_sort_order">Sắp xếp hoạt động</string>
     <string name="settings_sort_order_category">Sắp xếp danh mục</string>

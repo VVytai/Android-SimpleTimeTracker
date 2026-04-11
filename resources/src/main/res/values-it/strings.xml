@@ -314,7 +314,7 @@ I <b>tag</b> ti permettono di aggiungere maggiori dettagli a un\'attività speci
     <string name="settings_display_title">Impostazioni di visualizzazione</string>
     <string name="settings_additional_title">Altre impostazioni</string>
     <string name="settings_notification_title">Impostazioni di notifica</string>
-    <string name="settings_backup_title">Impostazioni di backup</string>
+    <string name="settings_backup_title">Backup</string>
     <string name="settings_export_title">Esportare e importare</string>
     <string name="settings_sort_order">Ordina attività</string>
     <string name="settings_sort_order_category">Ordina le categorie</string>

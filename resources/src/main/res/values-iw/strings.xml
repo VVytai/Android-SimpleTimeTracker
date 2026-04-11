@@ -314,7 +314,7 @@
     <string name="settings_display_title">הגדרות תצוגה</string>
     <string name="settings_additional_title">הגדרות נוספות</string>
     <string name="settings_notification_title">הגדרות התראה</string>
-    <string name="settings_backup_title">הגדרות גיבוי</string>
+    <string name="settings_backup_title">גיבוי</string>
     <string name="settings_export_title">ייצוא וייבוא</string>
     <string name="settings_sort_order">מיון פעילויות</string>
     <string name="settings_sort_order_category">מיון קטגוריות</string>

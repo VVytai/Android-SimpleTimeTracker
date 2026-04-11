@@ -314,7 +314,7 @@ Lokhu kukuvumela ukuthi ubone isikhathi osichitha emisebenzini esebenzayo nezing
     <string name="settings_display_title">Izilungiselelo zokubonisa</string>
     <string name="settings_additional_title">Izilungiselelo ezengeziwe</string>
     <string name="settings_notification_title">Izilungiselelo zesaziso</string>
-    <string name="settings_backup_title">Izilungiselelo zokugcina ikhophi</string>
+    <string name="settings_backup_title">Isipele</string>
     <string name="settings_export_title">Ukuthekelisa nokungenisa</string>
     <string name="settings_sort_order">Hlela imisebenzi</string>
     <string name="settings_sort_order_category">Hlela izigaba</string>

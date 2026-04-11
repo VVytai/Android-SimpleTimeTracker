@@ -314,7 +314,7 @@ Isto permite-lhe ver quanto tempo está a gastar em atividades produtivas versus
     <string name="settings_display_title">Definições de visualização</string>
     <string name="settings_additional_title">Definições adicionais</string>
     <string name="settings_notification_title">Definições das notificações</string>
-    <string name="settings_backup_title">Definições da cópia de segurança</string>
+    <string name="settings_backup_title">Cópia de segurança</string>
     <string name="settings_export_title">Exportar e importar</string>
     <string name="settings_sort_order">Organizar atividades</string>
     <string name="settings_sort_order_category">Organizar categorias</string>
