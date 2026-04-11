@@ -10,7 +10,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.util.simpletimetracker.utils.BaseUiTest
 import com.example.util.simpletimetracker.utils.NavUtils
-import com.example.util.simpletimetracker.utils.checkViewDoesNotExist
 import com.example.util.simpletimetracker.utils.checkViewIsDisplayed
 import com.example.util.simpletimetracker.utils.clickOnRecyclerItem
 import com.example.util.simpletimetracker.utils.clickOnView
@@ -52,22 +51,34 @@ class RecordActionsDuplicateTest : BaseUiTest() {
         testUtils.addRunningRecord(name)
         Thread.sleep(1000)
 
-        // Running record - not shown
+        // Running record - shown
         tryAction {
             longClickOnView(
-                allOf(withId(baseR.id.viewRunningRecordItem), hasDescendant(withText(name)), isCompletelyDisplayed()),
+                allOf(
+                    withId(baseR.id.viewRunningRecordItem),
+                    hasDescendant(withText(name)),
+                    isCompletelyDisplayed(),
+                ),
             )
         }
         onView(withText(coreR.string.change_record_actions_hint)).perform(nestedScrollTo())
         clickOnViewWithText(coreR.string.change_record_actions_hint)
-        checkViewDoesNotExist(withText(coreR.string.change_record_duplicate))
+        scrollRecyclerToView(
+            changeRecordR.id.rvChangeRecordAction,
+            hasDescendant(withText(coreR.string.change_record_duplicate)),
+        )
+        checkViewIsDisplayed(withText(coreR.string.change_record_duplicate))
         pressBack()
         pressBack()
 
         // Record - shown
         NavUtils.openRecordsScreen()
         clickOnView(
-            allOf(withId(baseR.id.viewRecordItem), hasDescendant(withText(name)), isCompletelyDisplayed()),
+            allOf(
+                withId(baseR.id.viewRecordItem),
+                hasDescendant(withText(name)),
+                isCompletelyDisplayed(),
+            ),
         )
         onView(withText(coreR.string.change_record_actions_hint)).perform(nestedScrollTo())
         clickOnViewWithText(coreR.string.change_record_actions_hint)
@@ -76,6 +87,55 @@ class RecordActionsDuplicateTest : BaseUiTest() {
             hasDescendant(withText(coreR.string.change_record_duplicate)),
         )
         checkViewIsDisplayed(withText(coreR.string.change_record_duplicate))
+    }
+
+    @Test
+    fun duplicateRunningRecord() {
+        val nameA = "NameA"
+        val tag = "Tag"
+        val comment = "Some_comment"
+        val timeStarted = System.currentTimeMillis() - TimeUnit.MINUTES.toMillis(30)
+        val timeStartedPreview = timeStarted.formatTime()
+        val timeEndedPreview = System.currentTimeMillis().formatTime()
+        val fullName = "$nameA - $tag"
+
+        // Setup
+        testUtils.addActivity(nameA)
+        testUtils.addRecordTag(tag, typeName = nameA)
+        testUtils.addRunningRecord(
+            typeName = nameA,
+            timeStarted = timeStarted,
+            tagNames = listOf(tag),
+            comment = comment,
+        )
+        runBlocking { prefsInteractor.setAllowMultitasking(true) }
+
+        // Duplicate running to same type
+        NavUtils.openRecordsScreen()
+        longClickOnView(allOf(withText(fullName), isCompletelyDisplayed()))
+        clickOnViewWithText(coreR.string.change_record_duplicate)
+
+        tryAction {
+            checkViewIsDisplayed(
+                allOf(
+                    withId(baseR.id.viewRunningRecordItem),
+                    hasDescendant(withText(fullName)),
+                    hasDescendant(withText(timeStartedPreview)),
+                    hasDescendant(withText(comment)),
+                    isCompletelyDisplayed(),
+                ),
+            )
+            checkViewIsDisplayed(
+                allOf(
+                    withId(baseR.id.viewRecordItem),
+                    hasDescendant(withText(fullName)),
+                    hasDescendant(withText(timeStartedPreview)),
+                    hasDescendant(withText(timeEndedPreview)),
+                    hasDescendant(withText(comment)),
+                    isCompletelyDisplayed(),
+                ),
+            )
+        }
     }
 
     @Test

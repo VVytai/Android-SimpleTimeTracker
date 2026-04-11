@@ -100,7 +100,7 @@ class RecordQuickActionsTest : BaseUiTest() {
         checkViewIsDisplayed(withText(R.string.archive_dialog_delete))
         checkViewDoesNotExist(withText(R.string.change_record_continue))
         checkViewDoesNotExist(withText(R.string.change_record_repeat))
-        checkViewDoesNotExist(withText(R.string.change_record_duplicate))
+        checkViewIsDisplayed(withText(R.string.change_record_duplicate))
         checkViewDoesNotExist(withText(R.string.change_record_move))
         checkViewIsDisplayed(withText(R.string.change_record_multiselect))
         checkViewIsDisplayed(withText(R.string.data_edit_change_activity))

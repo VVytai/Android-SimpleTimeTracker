@@ -398,7 +398,7 @@ class RecordsViewDataInteractor @Inject constructor(
         }
 
         return filterRecords(
-            records = trackedRecordsData + runningRecordsData,
+            records = runningRecordsData + trackedRecordsData, // Timers should be first for correct sort.
             chartFilterType = filterType,
             filteredIds = filteredIds,
             lazyRecordTypeCategories = recordTypeCategories,

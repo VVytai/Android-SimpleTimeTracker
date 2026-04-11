@@ -95,6 +95,7 @@ class ChangeRunningRecordViewModel @Inject constructor(
     override val showTimeEndedOnAdjustPreview: Boolean get() = false
     override val isTimeEndedAvailable: Boolean get() = false
     override val isAdditionalActionsAvailable: Boolean get() = false
+    override val isDuplicateActionAvailable: Boolean get() = true
     override val isDeleteButtonVisible: Boolean get() = true
     override val isStatisticsButtonVisible: Boolean get() = true
 

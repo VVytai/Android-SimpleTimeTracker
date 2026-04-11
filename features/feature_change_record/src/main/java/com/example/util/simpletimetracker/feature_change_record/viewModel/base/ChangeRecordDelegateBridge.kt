@@ -66,6 +66,7 @@ class ChangeRecordDelegateBridge(
 
         data class DuplicateParams(
             val isAvailable: Boolean,
+            val newTimeEnded: Long,
         )
 
         data class MoveParams(

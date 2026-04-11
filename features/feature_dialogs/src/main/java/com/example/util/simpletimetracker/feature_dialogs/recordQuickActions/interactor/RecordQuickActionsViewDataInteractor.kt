@@ -228,6 +228,7 @@ class RecordQuickActionsViewDataInteractor @Inject constructor(
             is Type.RecordRunning -> listOfNotNull(
                 RecordQuickActionsButton.STATISTICS,
                 RecordQuickActionsButton.DELETE,
+                RecordQuickActionsButton.DUPLICATE,
                 RecordQuickActionsButton.STOP,
                 RecordQuickActionsButton.MULTISELECT,
                 RecordQuickActionsButton.CHANGE_ACTIVITY,

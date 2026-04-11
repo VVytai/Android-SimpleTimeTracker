@@ -134,6 +134,7 @@ abstract class ChangeRecordBaseViewModel(
     protected abstract val adjustNextRecordAvailable: Boolean
     protected abstract val isTimeEndedAvailable: Boolean
     protected abstract val isAdditionalActionsAvailable: Boolean
+    protected abstract val isDuplicateActionAvailable: Boolean
     protected abstract val isDeleteButtonVisible: Boolean
     protected abstract val isStatisticsButtonVisible: Boolean
 
@@ -813,7 +814,8 @@ abstract class ChangeRecordBaseViewModel(
                         showTimeEndedOnSplitPreview = showTimeEndedOnSplitPreview,
                     ),
                     duplicateParams = ViewDataParams.DuplicateParams(
-                        isAvailable = isAdditionalActionsAvailable,
+                        isAvailable = isDuplicateActionAvailable,
+                        newTimeEnded = previewTimeEnded,
                     ),
                     moveParams = ViewDataParams.MoveParams(
                         isAvailable = isAdditionalActionsAvailable,

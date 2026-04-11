@@ -40,7 +40,7 @@ class ChangeRecordActionsDuplicateDelegate @Inject constructor(
         recordActionDuplicateMediator.execute(
             typeId = params.baseParams.newTypeId,
             timeStarted = params.baseParams.newTimeStarted,
-            timeEnded = params.baseParams.newTimeEnded,
+            timeEnded = params.duplicateParams.newTimeEnded,
             comment = params.baseParams.newComment,
             tagIds = params.baseParams.newTags,
         )

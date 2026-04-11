@@ -83,6 +83,7 @@ class ChangeRecordViewModel @Inject constructor(
     override val adjustNextRecordAvailable: Boolean get() = true
     override val isTimeEndedAvailable: Boolean get() = true
     override val isAdditionalActionsAvailable: Boolean get() = true
+    override val isDuplicateActionAvailable: Boolean get() = true
     override val isDeleteButtonVisible: Boolean get() = recordId.orZero() != 0L
     override val isStatisticsButtonVisible: Boolean
         get() = extra is ChangeRecordParams.Tracked ||
