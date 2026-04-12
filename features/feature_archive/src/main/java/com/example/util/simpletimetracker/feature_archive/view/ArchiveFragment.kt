@@ -73,7 +73,7 @@ class ArchiveFragment :
         }
 
         btnArchiveOptions.doOnApplyWindowInsetsListener {
-            val navBarHeight = it.getNavBarInsets().bottom.pxToDp()
+            val navBarHeight = getNavBarInsets().pxToDp()
             viewModel.onChangeInsets(navBarHeight = navBarHeight)
             setMargins(bottom = navBarHeight)
         }

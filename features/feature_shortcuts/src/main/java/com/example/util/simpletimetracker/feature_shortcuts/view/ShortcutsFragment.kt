@@ -58,7 +58,7 @@ class ShortcutsFragment : BaseFragment<Binding>() {
         }
 
         view?.doOnApplyWindowInsetsListener {
-            viewModel.onChangeInsets(navBarHeight = it.getNavBarInsets().bottom.pxToDp())
+            viewModel.onChangeInsets(navBarHeight = getNavBarInsets().pxToDp())
         }
     }
 

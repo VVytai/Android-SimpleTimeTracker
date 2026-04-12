@@ -116,10 +116,7 @@ abstract class BaseBottomSheetFragment<T : ViewBinding> : BottomSheetDialogFragm
                 findViewById<View>(com.google.android.material.R.id.container)?.apply {
                     fitsSystemWindows = false
                     doOnApplyWindowInsetsListener {
-                        updatePadding(
-                            top = it.getStatusBarInsets().top,
-                            bottom = 0,
-                        )
+                        updatePadding(top = getStatusBarInsets(), bottom = 0)
                     }
                 }
 

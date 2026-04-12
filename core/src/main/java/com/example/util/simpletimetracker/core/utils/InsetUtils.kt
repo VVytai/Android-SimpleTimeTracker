@@ -1,11 +1,11 @@
 package com.example.util.simpletimetracker.core.utils
 
 import android.view.View
-import androidx.core.graphics.Insets
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import com.example.util.simpletimetracker.core.manager.KeyboardVisibilityManager
+import com.example.util.simpletimetracker.domain.extension.orZero
 
 // Can update padding or margin, which would be more appropriate.
 fun View.doOnApplyWindowInsetsListener(block: View.(WindowInsetsCompat) -> Unit) {
@@ -17,31 +17,22 @@ fun View.doOnApplyWindowInsetsListener(block: View.(WindowInsetsCompat) -> Unit)
     }
 }
 
-fun View.applySystemBarInsets() {
-    doOnApplyWindowInsetsListener {
-        val insets = it.getSystemBarInsets()
-        updatePadding(top = insets.top, bottom = insets.bottom)
-    }
-}
-
 fun View.applyStatusBarInsets() {
-    doOnApplyWindowInsetsListener { updatePadding(top = it.getStatusBarInsets().top) }
+    doOnApplyWindowInsetsListener { updatePadding(top = getStatusBarInsets()) }
 }
 
 fun View.applyNavBarInsets() {
-    doOnApplyWindowInsetsListener { updatePadding(bottom = it.getNavBarInsets().bottom) }
+    doOnApplyWindowInsetsListener { updatePadding(bottom = getNavBarInsets()) }
 }
 
-fun WindowInsetsCompat.getStatusBarInsets(): Insets {
-    return getInsets(WindowInsetsCompat.Type.statusBars())
+fun View.getStatusBarInsets(): Int {
+    return ViewCompat.getRootWindowInsets(this)
+        ?.getInsets(WindowInsetsCompat.Type.statusBars())?.top.orZero()
 }
 
-fun WindowInsetsCompat.getNavBarInsets(): Insets {
-    return getInsets(WindowInsetsCompat.Type.navigationBars())
-}
-
-fun WindowInsetsCompat.getSystemBarInsets(): Insets {
-    return getInsets(WindowInsetsCompat.Type.systemBars())
+fun View.getNavBarInsets(): Int {
+    return ViewCompat.getRootWindowInsets(this)
+        ?.getInsets(WindowInsetsCompat.Type.navigationBars())?.bottom.orZero()
 }
 
 // Need windowSoftInputMode="adjustResize" on activity in order to work on api < 30.
