@@ -30,6 +30,10 @@
     <string name="settings_french_language" translatable="false">Français</string>
     <string name="settings_french_tag" translatable="false">fr</string>
 
+    <string name="settings_galician_translators" translatable="false">ninjum</string>
+    <string name="settings_galician_language" translatable="false">Galego</string>
+    <string name="settings_galician_tag" translatable="false">gl</string>
+
     <string name="settings_hebrew_translators" translatable="false">codokie</string>
     <string name="settings_hebrew_language" translatable="false">עברית</string>
     <string name="settings_hebrew_tag" translatable="false">iw</string>

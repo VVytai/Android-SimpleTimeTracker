@@ -46,7 +46,7 @@
     <string name="range_select_range">Seleccionar intervalo</string>
     <string name="range_back_to_today">Voltar a hoxe</string>
 
-        <plurals name="range_last">
+    <plurals name="range_last">
         <item quantity="zero">Os derradeiros %s días</item>
         <item quantity="one">O derradeiro %s día</item>
         <item quantity="two">Os derradeiros %s días</item>
@@ -235,11 +235,11 @@ Isto permíteche ver canto tempo estás dedicando a actividades produtivas front
     <string name="change_complex_rule_choose_condition">Elixe condicións</string>
     <string name="change_complex_tag_value_dialog_message">Elixe cando establecer o valor</string>
     <string name="change_complex_tag_value_set_later">Ao comezar</string>
- <!--  Activity suggestions  -->
+
+    <!--  Activity suggestions  -->
     <string name="activity_suggestions_hint">Amosa suxerencias para a próxima actividade en función da actividade actual ou a derradeira</string>
     <string name="activity_suggestions_calculate">Calcular a partir de estatísticas</string>
     <string name="activity_suggestions_select_activity_hint">Amosaranse suxerencias para actividades escollidas.</string>
-   
 
     <!--  Activity filters  -->
     <string name="change_activity_filters_hint">Filtros de actividade</string>
@@ -532,6 +532,7 @@ Exemplo:<br/>
     <string name="statistics_detail_record_time">Hora do rexistro</string>
     <string name="statistics_detail_first_record">Primeiro</string>
     <string name="statistics_detail_last_record">Derradeiro</string>
+    <string name="statistics_detail_record_span">Período</string>
     <string name="statistics_detail_time_since">Tempo transcorrido</string>
     <string name="statistics_detail_streaks">Racha</string>
     <string name="statistics_detail_streaks_longest">Máis longa</string>
@@ -562,7 +563,7 @@ Exemplo:<br/>
         <item quantity="one">Rexistro</item>
         <!--        <item quantity="two">Registros</item>-->
         <!--        <item quantity="few">Registros</item>-->
-        <item quantity="many">Rexistros</item>
+        <!--        <item quantity="many">Rexistros</item>-->
         <item quantity="other">Rexistros</item>
     </plurals>
 
