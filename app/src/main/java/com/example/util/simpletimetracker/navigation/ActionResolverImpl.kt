@@ -3,7 +3,6 @@ package com.example.util.simpletimetracker.navigation
 import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Intent
-import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 import androidx.activity.ComponentActivity
@@ -23,6 +22,7 @@ import com.example.util.simpletimetracker.navigation.params.action.SendEmailPara
 import com.example.util.simpletimetracker.navigation.params.action.ShareFileParams
 import timber.log.Timber
 import javax.inject.Inject
+import androidx.core.net.toUri
 
 class ActionResolverImpl @Inject constructor(
     private val resultContainer: ResultContainer,
@@ -53,17 +53,17 @@ class ActionResolverImpl @Inject constructor(
     }
 
     private fun openMarket(activity: Activity?, params: OpenMarketParams) {
-        val uri = Uri.parse(MARKET_INTENT + params.packageName)
+        val uri = (MARKET_INTENT + params.packageName).toUri()
         val intent = Intent(Intent.ACTION_VIEW, uri)
         intent.setPackage(MARKET_PACKAGE)
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
 
         try {
             activity?.startActivity(intent)
-        } catch (e: ActivityNotFoundException) {
+        } catch (_: ActivityNotFoundException) {
             Intent(
                 Intent.ACTION_VIEW,
-                Uri.parse(MARKET_LINK + params.packageName),
+                (MARKET_LINK + params.packageName).toUri(),
             ).apply {
                 intent.setPackage(MARKET_PACKAGE)
             }.let {
@@ -76,14 +76,14 @@ class ActionResolverImpl @Inject constructor(
         activity?.startActivity(
             Intent(
                 Intent.ACTION_VIEW,
-                Uri.parse(params.link),
+                params.link.toUri(),
             ),
         )
     }
 
     private fun sendEmail(activity: Activity?, params: SendEmailParams) {
         val intent = Intent(Intent.ACTION_SENDTO).apply {
-            data = Uri.parse(EMAIL_URI)
+            data = EMAIL_URI.toUri()
             params.email?.let { putExtra(Intent.EXTRA_EMAIL, arrayOf(it)) }
             params.subject?.let { putExtra(Intent.EXTRA_SUBJECT, it) }
             params.body?.let { putExtra(Intent.EXTRA_TEXT, it) }
@@ -92,7 +92,7 @@ class ActionResolverImpl @Inject constructor(
 
         try {
             activity?.startActivity(Intent.createChooser(intent, params.chooserTitle))
-        } catch (e: ActivityNotFoundException) {
+        } catch (_: ActivityNotFoundException) {
             params.notHandledCallback?.invoke()
         }
     }
@@ -126,35 +126,34 @@ class ActionResolverImpl @Inject constructor(
 
     private fun openSystemSettings(activity: Activity?, data: OpenSystemSettings) {
         val packageName by lazy { applicationDataProvider.getPackageName() }
+        val intent = Intent()
 
-        // TODO refactor
         when (data) {
             is OpenSystemSettings.ExactAlarms -> runCatching {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                    val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    intent.data = Uri.parse("package:$packageName")
-                    activity?.startActivity(intent)
+                    intent.action = Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM
+                    intent.data = "package:$packageName".toUri()
                 }
             }
 
             is OpenSystemSettings.Notifications -> runCatching {
-                val intent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
-                        .apply { putExtra(Settings.EXTRA_APP_PACKAGE, packageName) }
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    intent.action = Settings.ACTION_APP_NOTIFICATION_SETTINGS
+                    intent.putExtra(Settings.EXTRA_APP_PACKAGE, packageName)
                 } else {
-                    Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-                        .apply { this.data = Uri.parse("package:$packageName") }
+                    intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+                    intent.data = "package:$packageName".toUri()
                 }
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                activity?.startActivity(intent)
             }
         }
+
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        runCatching { activity?.startActivity(intent) }
     }
 
     private fun shareFile(activity: Activity?, data: ShareFileParams) {
         try {
-            val uri = Uri.parse(data.uriString)
+            val uri = data.uriString.toUri()
             val type = allowDiskRead { data.type ?: activity?.contentResolver?.getType(uri) }
             val intent = Intent(Intent.ACTION_SEND).apply {
                 setDataAndType(uri, type)
@@ -162,7 +161,7 @@ class ActionResolverImpl @Inject constructor(
                 addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             }
             activity?.startActivity(Intent.createChooser(intent, null))
-        } catch (e: ActivityNotFoundException) {
+        } catch (_: ActivityNotFoundException) {
             data.notHandledCallback.invoke()
         }
     }

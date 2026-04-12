@@ -113,7 +113,7 @@ class StatisticsDetailAdjacentActivitiesInteractor @Inject constructor(
             firstDayOfWeek = firstDayOfWeek,
             startOfDayShift = startOfDayShift,
         )
-        return if (range.timeStarted == 0L && range.timeEnded == 0L) {
+        return if (range.isUndefined) {
             recordInteractor.getAll()
         } else {
             recordInteractor.getFromRange(range)

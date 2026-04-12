@@ -33,7 +33,7 @@ class GetUntrackedRecordsInteractorImpl @Inject constructor(
         val maxEnd = System.currentTimeMillis().dropMillis()
 
         // If range is all records - calculate from first records to current time.
-        val actualRange = if (range.timeStarted == 0L && range.timeEnded == 0L) {
+        val actualRange = if (range.isUndefined) {
             Range(timeStarted = minStart, timeEnded = maxEnd)
         } else {
             range

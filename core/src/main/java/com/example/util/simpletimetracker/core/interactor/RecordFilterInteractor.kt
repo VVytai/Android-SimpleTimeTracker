@@ -222,7 +222,7 @@ class RecordFilterInteractor @Inject constructor(
         fun RecordBase.selectedByDate(): Boolean {
             if (ranges.isEmpty()) return true
             // Overall range.
-            if (ranges.any { it.timeStarted == 0L && it.timeEnded == 0L }) return true
+            if (ranges.any { it.isUndefined }) return true
             return ranges.any { range -> timeStarted < range.timeEnded && timeEnded > range.timeStarted }
         }
 
@@ -349,7 +349,7 @@ class RecordFilterInteractor @Inject constructor(
         range: Range,
         runningRecords: List<RunningRecord>,
     ): List<RecordBase> {
-        val records = if (range.timeStarted == 0L && range.timeEnded == 0L) {
+        val records = if (range.isUndefined) {
             interactor.getAll() + runningRecords
         } else {
             interactor.getFromRange(range) +

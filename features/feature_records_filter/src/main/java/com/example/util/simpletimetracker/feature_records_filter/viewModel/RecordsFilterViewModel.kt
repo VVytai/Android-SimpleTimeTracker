@@ -933,9 +933,9 @@ class RecordsFilterViewModel @Inject constructor(
                     filters = filters,
                     extra = extra,
                     isDeleteEnabled = isDeleteFavouriteEnabled,
-                    recordTypes = getTypesCache().associateBy { it.id },
-                    categories = getCategoriesCache().associateBy { it.id },
-                    recordTags = getTagsCache().associateBy { it.id },
+                    recordTypes = getTypesCache(),
+                    categories = getCategoriesCache(),
+                    recordTags = getTagsCache(),
                 )
             }
         }

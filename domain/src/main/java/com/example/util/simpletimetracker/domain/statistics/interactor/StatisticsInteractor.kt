@@ -123,7 +123,7 @@ class StatisticsInteractor @Inject constructor(
     }
 
     private fun rangeIsAllRecords(range: Range): Boolean {
-        return range.timeStarted == 0L && range.timeEnded == 0L
+        return range.isUndefined
     }
 
     private fun mapStatisticsItem(

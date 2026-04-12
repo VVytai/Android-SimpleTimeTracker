@@ -133,7 +133,10 @@ class StatisticsDetailRangeViewModelDelegate @Inject constructor(
         ).let(router::navigate)
     }
 
-    // TODO add custom range reopen same as last days
+    // TODO add custom range reopen same as last days?
+    //  Currently if some last days number is selected, it is preselected on switching to other range and back.
+    //  Custom range when switched to other range and back is always reset to current data.
+    //  This could be a valid usecase though.
     private fun onSelectLastDaysClick() = delegateScope.launch {
         DurationDialogParams(
             tag = LAST_DAYS_COUNT_TAG,

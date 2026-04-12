@@ -345,7 +345,7 @@ class StatisticsDetailGoalsViewDataMapper @Inject constructor(
             firstDayOfWeek = firstDayOfWeek,
             startOfDayShift = startOfDayShift,
         )
-        val recordsFromRange = if (range.timeStarted == 0L && range.timeEnded == 0L) {
+        val recordsFromRange = if (range.isUndefined) {
             records
         } else {
             rangeMapper.getRecordsFromRange(records, range)

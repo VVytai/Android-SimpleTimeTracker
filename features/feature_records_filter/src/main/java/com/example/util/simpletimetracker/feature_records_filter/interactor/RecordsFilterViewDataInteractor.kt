@@ -937,14 +937,13 @@ class RecordsFilterViewDataInteractor @Inject constructor(
     // TODO FILTER handle activity/category/tag removal?
     // TODO FILTER selectable filter on top, change text "Filter" to star icon.
     // TODO FILTER add icons to activities/tags.
-    // TODO FILTER order activities/categories/tags.
     suspend fun getFavouriteFiltersSelectionViewData(
         filters: List<RecordsFilter>,
         extra: RecordsFilterParams,
         isDeleteEnabled: Boolean,
-        recordTypes: Map<Long, RecordType>,
-        categories: Map<Long, Category>,
-        recordTags: Map<Long, RecordTag>,
+        recordTypes: List<RecordType>,
+        categories: List<Category>,
+        recordTags: List<RecordTag>,
     ): List<ViewHolderType> {
         val result: MutableList<ViewHolderType> = mutableListOf()
         val isDarkTheme = prefsInteractor.getDarkMode()
@@ -954,6 +953,12 @@ class RecordsFilterViewDataInteractor @Inject constructor(
         val currentAvailableFilters = filterAvailableFilters(extra, filters)
         val isSaveEnabled = currentAvailableFilters.isNotEmpty()
         val filters = favouriteRecordsFilterInteractor.getAll()
+        val recordTypesMap = recordTypes.associateBy { it.id }
+        val recordTypesOrder = recordTypes.map { it.id }
+        val categoriesMap = categories.associateBy { it.id }
+        val categoriesOrder = categories.map { it.id }
+        val recordTagsMap = recordTags.associateBy { it.id }
+        val recordTagsOrder = recordTags.map { it.id }
 
         fun mapActiveColor(isActive: Boolean): Int {
             return if (isActive) {
@@ -973,9 +978,12 @@ class RecordsFilterViewDataInteractor @Inject constructor(
                     startOfDayShift = startOfDayShift,
                     firstDayOfWeek = firstDayOfWeek,
                     isDarkTheme = isDarkTheme,
-                    recordTypes = recordTypes,
-                    categories = categories,
-                    recordTags = recordTags,
+                    recordTypes = recordTypesMap,
+                    recordTypesOrder = recordTypesOrder,
+                    categories = categoriesMap,
+                    categoriesOrder = categoriesOrder,
+                    recordTags = recordTagsMap,
+                    recordTagsOrder = recordTagsOrder,
                 )
             }.addBetweenEach {
                 "\n"

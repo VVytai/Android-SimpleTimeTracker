@@ -86,7 +86,7 @@ class StatisticsDetailDataDistributionInteractor @Inject constructor(
             mode = dataDistributionMode,
             graph = dataDistributionGraph,
             selectedItemId = selectedItemId,
-            records = if (range.timeStarted == 0L && range.timeEnded == 0L) {
+            records = if (range.isUndefined) {
                 records
             } else {
                 rangeMapper.getRecordsFromRange(records, range)

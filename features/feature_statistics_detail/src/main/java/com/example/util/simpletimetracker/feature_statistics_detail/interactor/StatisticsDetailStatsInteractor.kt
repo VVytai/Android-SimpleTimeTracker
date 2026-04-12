@@ -50,13 +50,13 @@ class StatisticsDetailStatsInteractor @Inject constructor(
         )
 
         return@withContext mapStatsData(
-            records = if (range.timeStarted == 0L && range.timeEnded == 0L) {
+            records = if (range.isUndefined) {
                 records
             } else {
                 rangeMapper.getRecordsFromRange(records, range)
                     .map { rangeMapper.clampRecordToRange(it, range) }
             },
-            compareRecords = if (range.timeStarted == 0L && range.timeEnded == 0L) {
+            compareRecords = if (range.isUndefined) {
                 compareRecords
             } else {
                 rangeMapper.getRecordsFromRange(compareRecords, range)

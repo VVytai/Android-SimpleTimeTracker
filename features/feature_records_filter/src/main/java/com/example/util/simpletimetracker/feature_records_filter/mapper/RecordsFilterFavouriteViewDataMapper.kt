@@ -36,8 +36,11 @@ class RecordsFilterFavouriteViewDataMapper @Inject constructor(
         firstDayOfWeek: DayOfWeek,
         isDarkTheme: Boolean,
         recordTypes: Map<Long, RecordType>,
+        recordTypesOrder: List<Long>,
         categories: Map<Long, Category>,
+        categoriesOrder: List<Long>,
         recordTags: Map<Long, RecordTag>,
+        recordTagsOrder: List<Long>,
     ): CharSequence {
         val exclude = resourceRepo.getString(R.string.records_filter_exclude)
         val unknownText = "?"
@@ -143,20 +146,32 @@ class RecordsFilterFavouriteViewDataMapper @Inject constructor(
             )
             is RecordsFilter.Activity -> {
                 mapItems(
-                    selected = filter.selected.map(::mapActivityItem),
-                    filtered = filter.filtered.map(::mapActivityItem),
+                    selected = filter.selected
+                        .sortActivities(recordTypesOrder)
+                        .map(::mapActivityItem),
+                    filtered = filter.filtered
+                        .sortActivities(recordTypesOrder)
+                        .map(::mapActivityItem),
                 )
             }
             is RecordsFilter.Category -> {
                 mapItems(
-                    selected = filter.selected.map(::mapCategoryItem),
-                    filtered = filter.filtered.map(::mapCategoryItem),
+                    selected = filter.selected
+                        .sortCategories(categoriesOrder)
+                        .map(::mapCategoryItem),
+                    filtered = filter.filtered
+                        .sortCategories(categoriesOrder)
+                        .map(::mapCategoryItem),
                 )
             }
             is RecordsFilter.Tags -> {
                 mapItems(
-                    selected = filter.selected.map(::mapTagItem),
-                    filtered = filter.filtered.map(::mapTagItem),
+                    selected = filter.selected
+                        .sortTags(recordTagsOrder)
+                        .map(::mapTagItem),
+                    filtered = filter.filtered
+                        .sortTags(recordTagsOrder)
+                        .map(::mapTagItem),
                 )
             }
             is RecordsFilter.DaysOfWeek -> {
@@ -171,6 +186,34 @@ class RecordsFilterFavouriteViewDataMapper @Inject constructor(
             append(filterName)
             if (filterValue.isNotEmpty()) {
                 append(" ").append(filterValue)
+            }
+        }
+    }
+
+    private fun List<Long>.sortActivities(
+        order: List<Long>,
+    ): List<Long> {
+        return this.sortedBy { order.indexOf(it) }
+    }
+
+    private fun List<RecordsFilter.CategoryItem>.sortCategories(
+        order: List<Long>,
+    ): List<RecordsFilter.CategoryItem> {
+        return this.sortedBy {
+            when (it) {
+                is RecordsFilter.CategoryItem.Categorized -> order.indexOf(it.categoryId)
+                is RecordsFilter.CategoryItem.Uncategorized -> Int.MAX_VALUE
+            }
+        }
+    }
+
+    private fun List<RecordsFilter.TagItem>.sortTags(
+        order: List<Long>,
+    ): List<RecordsFilter.TagItem> {
+        return this.sortedBy {
+            when (it) {
+                is RecordsFilter.TagItem.Tagged -> order.indexOf(it.tagId)
+                is RecordsFilter.TagItem.Untagged -> Int.MAX_VALUE
             }
         }
     }

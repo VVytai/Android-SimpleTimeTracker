@@ -305,7 +305,7 @@ class StatisticsDetailStreaksInteractor @Inject constructor(
         }
         // Pair of day start to data on this day (duration or count).
         val durations: List<Pair<Long, Long>> = getRanges(
-            range = if (range.timeStarted == 0L && range.timeEnded == 0L) {
+            range = if (range.isUndefined) {
                 Range(
                     timeStarted = records.minByOrNull { it.timeStarted }
                         ?.timeStarted
