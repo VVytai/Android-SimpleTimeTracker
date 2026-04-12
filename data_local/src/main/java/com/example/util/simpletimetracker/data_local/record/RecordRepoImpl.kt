@@ -68,6 +68,16 @@ class RecordRepoImpl @Inject constructor(
         recordDao.searchAnyComments().map(::mapItem)
     }
 
+    override suspend fun getTagged(tagIds: List<Long>): List<Record> = withContext(Dispatchers.IO) {
+        logDataAccess("getTagged")
+        recordDao.getTagged(tagIds).map(::mapItem)
+    }
+
+    override suspend fun getUntagged(): List<Record> = withContext(Dispatchers.IO) {
+        logDataAccess("getUntagged")
+        recordDao.getUntagged().map(::mapItem)
+    }
+
     override suspend fun get(id: Long): Record? = mutex.withLockedCache(
         logMessage = "get",
         accessCache = { recordCache[id] },

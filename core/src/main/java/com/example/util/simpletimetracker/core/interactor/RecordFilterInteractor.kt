@@ -130,8 +130,6 @@ class RecordFilterInteractor @Inject constructor(
         val durations: List<Range> = filters.getDuration()?.let(::listOf).orEmpty()
         val duplicationItems: List<RecordsFilter.DuplicationsItem> = filters.getDuplicationItems()
 
-        // TODO Use different queries for optimization.
-        // TODO by tag (tagged, untagged).
         val records: List<RecordBase> = when {
             hasUntracked -> {
                 val range = definedRanges.firstOrNull() ?: Range(0, 0)
@@ -176,6 +174,13 @@ class RecordFilterInteractor @Inject constructor(
             }
             selectedAnyComment -> {
                 interactor.getWithParams(GetParam.AnyComment)
+            }
+            selectedTagItems.isNotEmpty() -> {
+                val tagged = selectedTaggedIds.takeIf { it.isNotEmpty() }
+                    ?.let { interactor.getWithParams(GetParam.Tagged(it)) }.orEmpty()
+                val untagged = selectedUntagged.takeIf { it }
+                    ?.let { interactor.getWithParams(GetParam.Untagged) }.orEmpty()
+                tagged + untagged
             }
             else -> interactor.getAll()
         }.let {

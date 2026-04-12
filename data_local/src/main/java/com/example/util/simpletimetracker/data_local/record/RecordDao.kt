@@ -38,6 +38,14 @@ interface RecordDao {
     suspend fun searchAnyComments(): List<RecordWithRecordTagsDBO>
 
     @Transaction
+    @Query("SELECT * FROM records WHERE EXISTS(SELECT 1 FROM recordToRecordTag WHERE record_id = records.id AND record_tag_id IN (:tagIds))")
+    suspend fun getTagged(tagIds: List<Long>): List<RecordWithRecordTagsDBO>
+
+    @Transaction
+    @Query("SELECT * FROM records WHERE NOT EXISTS(SELECT 1 FROM recordToRecordTag WHERE record_id = records.id)")
+    suspend fun getUntagged(): List<RecordWithRecordTagsDBO>
+
+    @Transaction
     @Query("SELECT * FROM records WHERE id = :id LIMIT 1")
     suspend fun get(id: Long): RecordWithRecordTagsDBO?
 

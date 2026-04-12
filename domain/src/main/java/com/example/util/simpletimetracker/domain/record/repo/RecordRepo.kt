@@ -19,6 +19,10 @@ interface RecordRepo {
 
     suspend fun searchAnyComments(): List<Record>
 
+    suspend fun getTagged(tagIds: List<Long>): List<Record>
+
+    suspend fun getUntagged(): List<Record>
+
     suspend fun get(id: Long): Record?
 
     suspend fun getFromRange(range: Range): List<Record>
