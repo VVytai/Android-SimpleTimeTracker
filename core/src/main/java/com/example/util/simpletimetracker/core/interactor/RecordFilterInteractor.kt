@@ -131,6 +131,7 @@ class RecordFilterInteractor @Inject constructor(
         val manuallyFilteredItems: Map<RecordsFilter.ManuallyFilteredItem, Boolean> = filters.getManuallyFilteredItems()
         val daysOfWeek: Set<DayOfWeek> = filters.getDaysOfWeek()
         val timeOfDay: Range? = filters.getTimeOfDay()
+        val timeOfDayRanges: List<Range> = timeOfDay?.let(::getTimeOfDayRanges).orEmpty()
         val durations: List<Range> = filters.getDuration()?.let(::listOf).orEmpty()
         val duplicationItems: List<RecordsFilter.DuplicationsItem> = filters.getDuplicationItems()
 
@@ -238,9 +239,8 @@ class RecordFilterInteractor @Inject constructor(
 
         fun RecordBase.selectedByTag(): Boolean {
             if (selectedTagItems.isEmpty()) return true
-            val tagIds = tags.map(RecordBase.Tag::tagId)
-            return if (tagIds.isNotEmpty()) {
-                tagIds.any { tagId -> tagId in selectedTaggedIds }
+            return if (tags.isNotEmpty()) {
+                tags.any { tag -> tag.tagId in selectedTaggedIds }
             } else {
                 selectedUntagged
             }
@@ -248,9 +248,8 @@ class RecordFilterInteractor @Inject constructor(
 
         fun RecordBase.filteredByTag(): Boolean {
             if (filteredTagItems.isEmpty()) return false
-            val tagIds = tags.map(RecordBase.Tag::tagId)
-            return if (tagIds.isNotEmpty()) {
-                tagIds.any { tagId -> tagId in filteredTaggedIds }
+            return if (tags.isNotEmpty()) {
+                tags.any { tag -> tag.tagId in filteredTaggedIds }
             } else {
                 filteredUntagged
             }
@@ -323,11 +322,6 @@ class RecordFilterInteractor @Inject constructor(
             } else {
                 listOf(Range(0, recordEnd), Range(recordStart, dayInMillis))
             }
-            val timeOfDayRanges = if (timeOfDay.timeStarted <= timeOfDay.timeEnded) {
-                listOf(Range(timeOfDay.timeStarted, timeOfDay.timeEnded))
-            } else {
-                listOf(Range(0, timeOfDay.timeEnded), Range(timeOfDay.timeStarted, dayInMillis))
-            }
 
             return recordRanges.any { recordRange ->
                 timeOfDayRanges.any { it.isOverlappingWith(recordRange) }
@@ -366,6 +360,19 @@ class RecordFilterInteractor @Inject constructor(
                 rangeMapper.getRunningRecordsFromRange(runningRecords, range)
         }
         return records
+    }
+
+    private fun getTimeOfDayRanges(timeOfDay: Range): List<Range> {
+        return if (timeOfDay.timeStarted <= timeOfDay.timeEnded) {
+            listOf(
+                Range(timeOfDay.timeStarted, timeOfDay.timeEnded),
+            )
+        } else {
+            listOf(
+                Range(0, timeOfDay.timeEnded),
+                Range(timeOfDay.timeStarted, dayInMillis),
+            )
+        }
     }
 
     companion object {

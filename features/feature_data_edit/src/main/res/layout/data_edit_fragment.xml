@@ -376,7 +376,6 @@
                 style="@style/AppButtonActive"
                 android:layout_width="match_parent"
                 android:layout_marginHorizontal="8dp"
-                android:foreground="?selectableItemBackground"
                 android:text="@string/change_record_duplicate"
                 app:layout_constraintTop_toBottomOf="@id/dividerDataEditChange"
                 tools:ignore="UnusedAttribute" />
