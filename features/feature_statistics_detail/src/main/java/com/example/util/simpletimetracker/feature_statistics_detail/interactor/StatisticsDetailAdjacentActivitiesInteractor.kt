@@ -8,6 +8,7 @@ import com.example.util.simpletimetracker.domain.record.extension.getTypeIds
 import com.example.util.simpletimetracker.domain.record.interactor.CalculateAdjacentActivitiesInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.CalculateAdjacentActivitiesInteractor.CalculationResult
 import com.example.util.simpletimetracker.domain.record.interactor.RecordInteractor
+import com.example.util.simpletimetracker.domain.record.interactor.RecordInteractor.GetParam
 import com.example.util.simpletimetracker.domain.record.model.Record
 import com.example.util.simpletimetracker.domain.record.model.RecordsFilter
 import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTypeInteractor
@@ -116,7 +117,7 @@ class StatisticsDetailAdjacentActivitiesInteractor @Inject constructor(
         return if (range.isUndefined) {
             recordInteractor.getAll()
         } else {
-            recordInteractor.getFromRange(range)
+            recordInteractor.getWithParams(GetParam.FromRange(range))
         }
     }
 

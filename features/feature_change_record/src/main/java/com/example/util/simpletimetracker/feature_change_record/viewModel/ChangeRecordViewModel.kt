@@ -20,6 +20,7 @@ import com.example.util.simpletimetracker.domain.recordTag.interactor.RecordType
 import com.example.util.simpletimetracker.domain.notifications.interactor.UpdateExternalViewsInteractor
 import com.example.util.simpletimetracker.domain.statistics.model.ChartFilterType
 import com.example.util.simpletimetracker.domain.daysOfWeek.model.DayOfWeek
+import com.example.util.simpletimetracker.domain.record.interactor.RecordInteractor.GetParam
 import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
 import com.example.util.simpletimetracker.domain.record.model.Record
 import com.example.util.simpletimetracker.domain.record.model.RecordBase
@@ -192,7 +193,7 @@ class ChangeRecordViewModel @Inject constructor(
             firstDayOfWeek = DayOfWeek.MONDAY, // Doesn't matter for days.
             startOfDayShift = prefsInteractor.getStartOfDayShift(),
         )
-        recordInteractor.getFromRange(range)
+        recordInteractor.getWithParams(GetParam.FromRange(range))
     }
 
     private fun getInitialTimeEnded(daysFromToday: Int): Long {

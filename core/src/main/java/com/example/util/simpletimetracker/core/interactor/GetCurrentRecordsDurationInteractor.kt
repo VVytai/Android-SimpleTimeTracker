@@ -1,6 +1,7 @@
 package com.example.util.simpletimetracker.core.interactor
 
 import com.example.util.simpletimetracker.domain.record.interactor.RecordInteractor
+import com.example.util.simpletimetracker.domain.record.interactor.RecordInteractor.GetParam
 import com.example.util.simpletimetracker.domain.record.mapper.RangeMapper
 import com.example.util.simpletimetracker.domain.record.model.Range
 import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
@@ -74,7 +75,7 @@ class GetCurrentRecordsDurationInteractor @Inject constructor(
     ): Map<Long, Result> {
         val range = getRange(rangeLength)
         // TODO TAG GOAL improve records load for big ranges (month)?
-        val rangeRecords = recordInteractor.getFromRange(range)
+        val rangeRecords = recordInteractor.getWithParams(GetParam.FromRange(range))
 
         return tagIds.associateWith { tagId ->
             getRangeCurrent(
@@ -157,16 +158,12 @@ class GetCurrentRecordsDurationInteractor @Inject constructor(
         typeIds: List<Long>,
     ): List<Record> {
         // Use getFromRange to hit cache.
-        return if (rangeLength is RangeLength.Day) {
-            recordInteractor.getFromRange(
-                range = range,
-            )
+        val params = if (rangeLength is RangeLength.Day) {
+            GetParam.FromRange(range)
         } else {
-            recordInteractor.getFromRangeByType(
-                typeIds = typeIds,
-                range = range,
-            )
+            GetParam.FromRangeByType(typeIds, range)
         }
+        return recordInteractor.getWithParams(params)
     }
 
     data class Result(

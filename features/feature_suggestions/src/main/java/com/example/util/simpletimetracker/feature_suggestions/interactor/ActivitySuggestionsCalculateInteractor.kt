@@ -4,6 +4,7 @@ import com.example.util.simpletimetracker.core.mapper.TimeMapper
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.CalculateAdjacentActivitiesInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.RecordInteractor
+import com.example.util.simpletimetracker.domain.record.interactor.RecordInteractor.GetParam
 import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
 import javax.inject.Inject
 
@@ -24,7 +25,7 @@ class ActivitySuggestionsCalculateInteractor @Inject constructor(
             firstDayOfWeek = prefsInteractor.getFirstDayOfWeek(),
             startOfDayShift = prefsInteractor.getStartOfDayShift(),
         )
-        val records = recordInteractor.getFromRange(range)
+        val records = recordInteractor.getWithParams(GetParam.FromRange(range))
 
         val data = calculateAdjacentActivitiesInteractor.calculateNextActivities(
             typeIds = typeIds,

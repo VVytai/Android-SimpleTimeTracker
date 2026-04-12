@@ -7,6 +7,7 @@ import com.example.util.simpletimetracker.domain.record.mapper.RangeMapper
 import com.example.util.simpletimetracker.domain.record.model.Range
 import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.domain.record.interactor.RecordInteractor
+import com.example.util.simpletimetracker.domain.record.interactor.RecordInteractor.GetParam
 import com.example.util.simpletimetracker.domain.record.interactor.RunningRecordInteractor
 import com.example.util.simpletimetracker.domain.record.model.Record
 import com.example.util.simpletimetracker.domain.statistics.model.Statistics
@@ -37,7 +38,7 @@ class StatisticsInteractor @Inject constructor(
         return if (rangeIsAllRecords(range)) {
             recordInteractor.getAll() + runningRecords
         } else {
-            recordInteractor.getFromRange(range) +
+            recordInteractor.getWithParams(GetParam.FromRange(range)) +
                 rangeMapper.getRunningRecordsFromRange(runningRecords, range)
         }
     }

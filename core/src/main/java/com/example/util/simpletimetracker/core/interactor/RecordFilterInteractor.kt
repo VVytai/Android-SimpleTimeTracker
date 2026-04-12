@@ -37,6 +37,7 @@ import com.example.util.simpletimetracker.domain.record.extension.hasSelectedCat
 import com.example.util.simpletimetracker.domain.record.extension.toManuallyFilteredItem
 import com.example.util.simpletimetracker.domain.record.interactor.GetDuplicatedRecordsInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.GetUntrackedRecordsInteractor
+import com.example.util.simpletimetracker.domain.record.interactor.RecordInteractor.GetParam
 import com.example.util.simpletimetracker.domain.record.model.MultitaskRecord
 import com.example.util.simpletimetracker.domain.record.model.Range
 import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
@@ -146,7 +147,7 @@ class RecordFilterInteractor @Inject constructor(
             typeIds.isNotEmpty() && definedRanges.isNotEmpty() -> {
                 val result = mutableMapOf<Long, Record>()
                 definedRanges
-                    .map { interactor.getFromRangeByType(typeIds, it) }
+                    .map { interactor.getWithParams(GetParam.FromRangeByType(typeIds, it)) }
                     .flatten()
                     .forEach { result[it.id] = it }
                 result.values.toList()
@@ -154,27 +155,27 @@ class RecordFilterInteractor @Inject constructor(
             typeIds.isNotEmpty() && comments.isNotEmpty() -> {
                 val result = mutableMapOf<Long, Record>()
                 comments
-                    .map { interactor.searchByTypeWithComment(typeIds, it) }
+                    .map { interactor.getWithParams(GetParam.TypeWithComment(typeIds, it)) }
                     .flatten()
                     .forEach { result[it.id] = it }
                 result.values.toList()
             }
             typeIds.isNotEmpty() -> {
-                interactor.getByType(typeIds)
+                interactor.getWithParams(GetParam.Type(typeIds))
             }
             definedRanges.isNotEmpty() -> {
                 val result = mutableMapOf<Long, Record>()
                 definedRanges
-                    .map { interactor.getFromRange(it) }
+                    .map { interactor.getWithParams(GetParam.FromRange(it)) }
                     .flatten()
                     .forEach { result[it.id] = it }
                 result.values.toList()
             }
             comments.isNotEmpty() -> {
-                interactor.searchComment(comments.firstOrNull().orEmpty())
+                interactor.getWithParams(GetParam.Comment(comments.firstOrNull().orEmpty()))
             }
             selectedAnyComment -> {
-                interactor.searchAnyComments()
+                interactor.getWithParams(GetParam.AnyComment)
             }
             else -> interactor.getAll()
         }.let {
@@ -352,7 +353,7 @@ class RecordFilterInteractor @Inject constructor(
         val records = if (range.isUndefined) {
             interactor.getAll() + runningRecords
         } else {
-            interactor.getFromRange(range) +
+            interactor.getWithParams(GetParam.FromRange(range)) +
                 rangeMapper.getRunningRecordsFromRange(runningRecords, range)
         }
         return records

@@ -8,6 +8,7 @@ import com.example.util.simpletimetracker.domain.base.CommentFilterType
 import com.example.util.simpletimetracker.domain.favourite.interactor.FavouriteCommentInteractor
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.RecordInteractor
+import com.example.util.simpletimetracker.domain.record.interactor.RecordInteractor.GetParam
 import com.example.util.simpletimetracker.domain.record.interactor.RunningRecordInteractor
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.emptySpace.EmptySpaceViewData
@@ -108,7 +109,7 @@ class RecordCommentSearchViewDataInteractor @Inject constructor(
         comment: String,
     ): List<ViewHolderType> {
         return if (comment.isNotEmpty()) {
-            recordInteractor.searchComment(comment)
+            recordInteractor.getWithParams(GetParam.Comment(comment))
                 .sortedByDescending { it.timeStarted }
                 .distinctBy { it.comment }
                 .take(SIMILAR_COMMENTS_TO_SHOW)
@@ -131,7 +132,7 @@ class RecordCommentSearchViewDataInteractor @Inject constructor(
     ): List<ViewHolderType> {
         data class Data(val timeStarted: Long, val comment: String)
 
-        val records = recordInteractor.getByTypeWithAnyComment(listOf(typeId))
+        val records = recordInteractor.getWithParams(GetParam.TypeWithAnyComment(listOf(typeId)))
             .map { Data(it.timeStarted, it.comment) }
         val runningRecords = runningRecordInteractor.getAll()
             .filter { it.id == typeId && it.comment.isNotEmpty() }

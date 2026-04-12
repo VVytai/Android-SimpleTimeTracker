@@ -9,6 +9,7 @@ import com.example.util.simpletimetracker.domain.extension.plusAssign
 import com.example.util.simpletimetracker.domain.record.interactor.AddRecordMediator
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.RecordInteractor
+import com.example.util.simpletimetracker.domain.record.interactor.RecordInteractor.GetParam
 import com.example.util.simpletimetracker.domain.record.interactor.RemoveRecordMediator
 import com.example.util.simpletimetracker.domain.record.model.Range
 import com.example.util.simpletimetracker.domain.record.model.Record
@@ -332,7 +333,7 @@ class ChangeRecordActionsAdjustDelegate @Inject constructor(
         }
 
         val recordRange = Range(timeStarted = newTimeStarted, timeEnded = newTimeEnded)
-        val adjacentRecords = recordInteractor.getFromRange(recordRange)
+        val adjacentRecords = recordInteractor.getWithParams(GetParam.FromRange(recordRange))
             .sortedByDescending { it.timeStarted }
 
         val previousRecords = adjacentRecords

@@ -29,6 +29,7 @@ import com.example.util.simpletimetracker.domain.recordType.model.RecordType
 import com.example.util.simpletimetracker.domain.recordType.model.RecordTypeGoal
 import com.example.util.simpletimetracker.domain.record.model.RunningRecord
 import com.example.util.simpletimetracker.domain.record.interactor.GetUntrackedRecordsInteractor
+import com.example.util.simpletimetracker.domain.record.interactor.RecordInteractor.GetParam
 import com.example.util.simpletimetracker.domain.record.interactor.RecordsContainerMultiselectInteractor
 import com.example.util.simpletimetracker.domain.record.model.MultiSelectedRecordId
 import com.example.util.simpletimetracker.domain.record.model.RecordBase
@@ -113,7 +114,7 @@ class RecordsViewDataInteractor @Inject constructor(
                 firstDayOfWeek = DayOfWeek.MONDAY, // Doesn't matter for days.
                 startOfDayShift = startOfDayShift,
             )
-            val records = recordInteractor.getFromRange(range)
+            val records = recordInteractor.getWithParams(GetParam.FromRange(range))
 
             val data = getRecordsViewData(
                 records = records,

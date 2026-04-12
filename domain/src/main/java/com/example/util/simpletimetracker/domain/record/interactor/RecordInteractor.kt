@@ -21,24 +21,16 @@ class RecordInteractor @Inject constructor(
         return recordRepo.getAll()
     }
 
-    suspend fun getByType(typeIds: List<Long>): List<Record> {
-        return recordRepo.getByType(typeIds)
-    }
-
-    suspend fun getByTypeWithAnyComment(typeIds: List<Long>): List<Record> {
-        return recordRepo.getByTypeWithAnyComment(typeIds)
-    }
-
-    suspend fun searchComment(text: String): List<Record> {
-        return recordRepo.searchComment(text)
-    }
-
-    suspend fun searchByTypeWithComment(typeIds: List<Long>, text: String): List<Record> {
-        return recordRepo.searchByTypeWithComment(typeIds, text)
-    }
-
-    suspend fun searchAnyComments(): List<Record> {
-        return recordRepo.searchAnyComments()
+    suspend fun getWithParams(param: GetParam): List<Record> {
+        return when (param) {
+            is GetParam.Type -> recordRepo.getByType(param.ids)
+            is GetParam.TypeWithAnyComment -> recordRepo.getByTypeWithAnyComment(param.ids)
+            is GetParam.TypeWithComment -> recordRepo.searchByTypeWithComment(param.ids, param.text)
+            is GetParam.Comment -> recordRepo.searchComment(param.text)
+            is GetParam.AnyComment -> recordRepo.searchAnyComments()
+            is GetParam.FromRange -> recordRepo.getFromRange(param.range)
+            is GetParam.FromRangeByType -> recordRepo.getFromRangeByType(param.ids, param.range)
+        }
     }
 
     suspend fun get(id: Long): Record? {
@@ -66,14 +58,6 @@ class RecordInteractor @Inject constructor(
     suspend fun getAllNext(timeStarted: Long): List<Record> {
         val prev = recordRepo.getNext(timeStarted) ?: return emptyList()
         return recordRepo.getByTimeStarted(prev.timeStarted)
-    }
-
-    suspend fun getFromRange(range: Range): List<Record> {
-        return recordRepo.getFromRange(range)
-    }
-
-    suspend fun getFromRangeByType(typeIds: List<Long>, range: Range): List<Record> {
-        return recordRepo.getFromRangeByType(typeIds, range)
     }
 
     suspend fun addFromRunning(
@@ -133,5 +117,15 @@ class RecordInteractor @Inject constructor(
     ) {
         recordToRecordTagRepo.removeAllByRecordId(recordId)
         recordToRecordTagRepo.addRecordTags(recordId, tags)
+    }
+
+    sealed interface GetParam {
+        data class Type(val ids: List<Long>) : GetParam
+        data class TypeWithAnyComment(val ids: List<Long>) : GetParam
+        data class TypeWithComment(val ids: List<Long>, val text: String) : GetParam
+        data class Comment(val text: String) : GetParam
+        data object AnyComment : GetParam
+        data class FromRange(val range: Range) : GetParam
+        data class FromRangeByType(val ids: List<Long>, val range: Range) : GetParam
     }
 }

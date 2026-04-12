@@ -6,6 +6,7 @@ import com.example.util.simpletimetracker.core.mapper.RecordTypeViewDataMapper
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.RecordInteractor
+import com.example.util.simpletimetracker.domain.record.interactor.RecordInteractor.GetParam
 import com.example.util.simpletimetracker.domain.recordTag.interactor.RecordTagInteractor
 import com.example.util.simpletimetracker.domain.recordTag.interactor.RecordToRecordTagInteractor
 import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTypeInteractor
@@ -39,7 +40,7 @@ class ArchiveDialogViewDataInteractor @Inject constructor(
             checkState = GoalCheckmarkView.CheckState.HIDDEN,
             isComplete = false,
         )
-        val recordsCount = recordInteractor.getByType(listOf(typeId)).size
+        val recordsCount = recordInteractor.getWithParams(GetParam.Type(listOf(typeId))).size
 
         return mutableListOf<ViewHolderType>().apply {
             item.let(::add)
