@@ -19,11 +19,11 @@ interface RecordDao {
 
     @Transaction
     @Query("SELECT * FROM records WHERE type_id IN (:typesIds)")
-    suspend fun getByType(typesIds: List<Long>): List<RecordWithRecordTagsDBO>
+    suspend fun getByType(typesIds: Set<Long>): List<RecordWithRecordTagsDBO>
 
     @Transaction
     @Query("SELECT * FROM records WHERE type_id IN (:typesIds) AND comment != \"\"")
-    suspend fun getByTypeWithAnyComment(typesIds: List<Long>): List<RecordWithRecordTagsDBO>
+    suspend fun getByTypeWithAnyComment(typesIds: Set<Long>): List<RecordWithRecordTagsDBO>
 
     @Transaction
     @Query("SELECT * FROM records WHERE instr(lower(comment), lower(:text)) > 0")
@@ -31,7 +31,7 @@ interface RecordDao {
 
     @Transaction
     @Query("SELECT * FROM records WHERE type_id IN (:typesIds) AND instr(lower(comment), lower(:text)) > 0")
-    suspend fun searchByTypeWithComment(typesIds: List<Long>, text: String): List<RecordWithRecordTagsDBO>
+    suspend fun searchByTypeWithComment(typesIds: Set<Long>, text: String): List<RecordWithRecordTagsDBO>
 
     @Transaction
     @Query("SELECT * FROM records WHERE comment != \"\"")
@@ -39,7 +39,7 @@ interface RecordDao {
 
     @Transaction
     @Query("SELECT * FROM records WHERE EXISTS(SELECT 1 FROM recordToRecordTag WHERE record_id = records.id AND record_tag_id IN (:tagIds))")
-    suspend fun getTagged(tagIds: List<Long>): List<RecordWithRecordTagsDBO>
+    suspend fun getTagged(tagIds: Set<Long>): List<RecordWithRecordTagsDBO>
 
     @Transaction
     @Query("SELECT * FROM records WHERE NOT EXISTS(SELECT 1 FROM recordToRecordTag WHERE record_id = records.id)")
@@ -55,7 +55,7 @@ interface RecordDao {
 
     @Transaction
     @Query("SELECT * FROM records WHERE type_id IN (:typesIds) AND time_started < :end AND time_ended > :start")
-    suspend fun getFromRangeByType(typesIds: List<Long>, start: Long, end: Long): List<RecordWithRecordTagsDBO>
+    suspend fun getFromRangeByType(typesIds: Set<Long>, start: Long, end: Long): List<RecordWithRecordTagsDBO>
 
     @Transaction
     @Query(

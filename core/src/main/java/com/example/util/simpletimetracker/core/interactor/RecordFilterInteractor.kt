@@ -22,6 +22,7 @@ import com.example.util.simpletimetracker.domain.record.interactor.GetMultitaskR
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.RecordInteractor
 import com.example.util.simpletimetracker.domain.category.interactor.RecordTypeCategoryInteractor
+import com.example.util.simpletimetracker.domain.category.model.RecordTypeCategory
 import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTypeInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.RunningRecordInteractor
 import com.example.util.simpletimetracker.domain.record.mapper.RangeMapper
@@ -45,6 +46,7 @@ import com.example.util.simpletimetracker.domain.record.model.Record
 import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.domain.record.model.RecordsFilter
 import com.example.util.simpletimetracker.domain.record.model.RunningRecord
+import com.example.util.simpletimetracker.domain.recordType.model.RecordType
 import java.util.Calendar
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -93,22 +95,24 @@ class RecordFilterInteractor @Inject constructor(
 
         val startOfDayShift = prefsInteractor.getStartOfDayShift()
         val calendar: Calendar = Calendar.getInstance()
-        val typeIds: List<Long> = when {
+        var types: List<RecordType>? = null
+        var typeCategories: List<RecordTypeCategory>? = null
+        val typeIds: Set<Long> = when {
             filters.hasSelectedCategoryFilter() -> {
-                val types = recordTypeInteractor.getAll()
-                val typeCategories = recordTypeCategoryInteractor.getAll()
+                types = recordTypeInteractor.getAll()
+                typeCategories = recordTypeCategoryInteractor.getAll()
                 filters.getAllTypeIds(types, typeCategories)
             }
             else -> filters.getTypeIds()
-        }
-        val filteredTypeIds: List<Long> = when {
+        }.toSet()
+        val filteredTypeIds: Set<Long> = when {
             filters.hasFilteredCategoryFilter() -> {
-                val types = recordTypeInteractor.getAll()
-                val typeCategories = recordTypeCategoryInteractor.getAll()
+                types = types ?: recordTypeInteractor.getAll()
+                typeCategories = typeCategories ?: recordTypeCategoryInteractor.getAll()
                 filters.getAllFilteredTypeIds(types, typeCategories)
             }
             else -> filters.getFilteredTypeIds()
-        }
+        }.toSet()
         val hasUntracked: Boolean = filters.hasUntrackedFilter()
         val hasMultitask: Boolean = filters.hasMultitaskFilter()
         val runningRecords = runningRecordInteractor.getAll()
@@ -119,10 +123,10 @@ class RecordFilterInteractor @Inject constructor(
         val ranges: List<Range> = filters.getDate()?.let { getRange(it) }?.let(::listOf).orEmpty()
         val definedRanges = ranges.filter { it.timeStarted != 0L && it.timeEnded != 0L }
         val selectedTagItems: List<RecordsFilter.TagItem> = filters.getSelectedTags()
-        val selectedTaggedIds: List<Long> = selectedTagItems.getTaggedIds()
+        val selectedTaggedIds: Set<Long> = selectedTagItems.getTaggedIds().toSet()
         val selectedUntagged: Boolean = selectedTagItems.hasUntaggedItem()
         val filteredTagItems: List<RecordsFilter.TagItem> = filters.getFilteredTags()
-        val filteredTaggedIds: List<Long> = filteredTagItems.getTaggedIds()
+        val filteredTaggedIds: Set<Long> = filteredTagItems.getTaggedIds().toSet()
         val filteredUntagged: Boolean = filteredTagItems.hasUntaggedItem()
         val manuallyFilteredItems: Map<RecordsFilter.ManuallyFilteredItem, Boolean> = filters.getManuallyFilteredItems()
         val daysOfWeek: Set<DayOfWeek> = filters.getDaysOfWeek()

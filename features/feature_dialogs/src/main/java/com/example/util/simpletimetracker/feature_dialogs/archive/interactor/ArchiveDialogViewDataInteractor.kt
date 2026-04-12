@@ -40,7 +40,7 @@ class ArchiveDialogViewDataInteractor @Inject constructor(
             checkState = GoalCheckmarkView.CheckState.HIDDEN,
             isComplete = false,
         )
-        val recordsCount = recordInteractor.getWithParams(GetParam.Type(listOf(typeId))).size
+        val recordsCount = recordInteractor.getWithParams(GetParam.Type(setOf(typeId))).size
 
         return mutableListOf<ViewHolderType>().apply {
             item.let(::add)

@@ -117,7 +117,7 @@ class NotificationActivitySwitchInteractorImpl @Inject constructor(
         ).groupBy { it.idData.value }
         val allDailyCurrents = if (goals.isNotEmpty()) {
             getCurrentRecordsDurationInteractor.getAllDailyCurrents(
-                typeIds = recordTypes.keys.toList(),
+                typeIds = recordTypes.keys,
                 runningRecords = runningRecords,
             )
         } else {

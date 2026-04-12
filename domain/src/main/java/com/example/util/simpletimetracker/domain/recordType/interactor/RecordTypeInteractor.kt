@@ -66,7 +66,7 @@ class RecordTypeInteractor @Inject constructor(
     }
 
     suspend fun remove(id: Long) {
-        val recordsToRemove = recordRepo.getByType(listOf(id)).map { it.id }
+        val recordsToRemove = recordRepo.getByType(setOf(id)).map { it.id }
         recordsToRemove.forEach { recordId ->
             recordToRecordTagRepo.removeAllByRecordId(recordId) // TODO do better?
         }

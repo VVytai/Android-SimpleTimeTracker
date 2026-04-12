@@ -122,14 +122,14 @@ class RecordInteractor @Inject constructor(
     }
 
     sealed interface GetParam {
-        data class Type(val ids: List<Long>) : GetParam
-        data class TypeWithAnyComment(val ids: List<Long>) : GetParam
-        data class TypeWithComment(val ids: List<Long>, val text: String) : GetParam
+        data class Type(val ids: Set<Long>) : GetParam
+        data class TypeWithAnyComment(val ids: Set<Long>) : GetParam
+        data class TypeWithComment(val ids: Set<Long>, val text: String) : GetParam
         data class Comment(val text: String) : GetParam
         data object AnyComment : GetParam
-        data class Tagged(val ids: List<Long>) : GetParam
+        data class Tagged(val ids: Set<Long>) : GetParam
         data object Untagged : GetParam
         data class FromRange(val range: Range) : GetParam
-        data class FromRangeByType(val ids: List<Long>, val range: Range) : GetParam
+        data class FromRangeByType(val ids: Set<Long>, val range: Range) : GetParam
     }
 }

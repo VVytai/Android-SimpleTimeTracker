@@ -103,7 +103,7 @@ class NotificationTypeInteractorImpl @Inject constructor(
             ).groupBy { it.idData.value }
             val allDailyCurrents = if (goals.isNotEmpty()) {
                 getCurrentRecordsDurationInteractor.getAllDailyCurrents(
-                    typeIds = recordTypes.keys.toList(),
+                    typeIds = recordTypes.keys,
                     runningRecords = runningRecords,
                 )
             } else {
@@ -180,7 +180,7 @@ class NotificationTypeInteractorImpl @Inject constructor(
         val controls = if (showControls) {
             val allDailyCurrents = if (goals.isNotEmpty()) {
                 getCurrentRecordsDurationInteractor.getAllDailyCurrents(
-                    typeIds = recordTypes.keys.toList(),
+                    typeIds = recordTypes.keys,
                     runningRecords = runningRecords,
                 )
             } else {

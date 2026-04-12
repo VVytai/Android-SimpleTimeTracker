@@ -38,12 +38,12 @@ class RecordRepoImpl @Inject constructor(
         recordDao.getAll().map(::mapItem)
     }
 
-    override suspend fun getByType(typeIds: List<Long>): List<Record> = withContext(Dispatchers.IO) {
+    override suspend fun getByType(typeIds: Set<Long>): List<Record> = withContext(Dispatchers.IO) {
         logDataAccess("getByType")
         recordDao.getByType(typeIds).map(::mapItem)
     }
 
-    override suspend fun getByTypeWithAnyComment(typeIds: List<Long>): List<Record> = withContext(Dispatchers.IO) {
+    override suspend fun getByTypeWithAnyComment(typeIds: Set<Long>): List<Record> = withContext(Dispatchers.IO) {
         logDataAccess("getByTypeWithAnyComment")
         recordDao.getByTypeWithAnyComment(typeIds).map(::mapItem)
     }
@@ -56,7 +56,7 @@ class RecordRepoImpl @Inject constructor(
     }
 
     override suspend fun searchByTypeWithComment(
-        typeIds: List<Long>,
+        typeIds: Set<Long>,
         text: String,
     ): List<Record> = withContext(Dispatchers.IO) {
         logDataAccess("searchByTypeWithComment")
@@ -68,7 +68,7 @@ class RecordRepoImpl @Inject constructor(
         recordDao.searchAnyComments().map(::mapItem)
     }
 
-    override suspend fun getTagged(tagIds: List<Long>): List<Record> = withContext(Dispatchers.IO) {
+    override suspend fun getTagged(tagIds: Set<Long>): List<Record> = withContext(Dispatchers.IO) {
         logDataAccess("getTagged")
         recordDao.getTagged(tagIds).map(::mapItem)
     }
@@ -89,7 +89,7 @@ class RecordRepoImpl @Inject constructor(
         val cacheKey = GetFromRangeKey(range)
         return mutex.withLockedCache(
             logMessage = "getFromRange",
-            accessCache = { getFromRangeCache.get(cacheKey) },
+            accessCache = { getFromRangeCache[cacheKey] },
             accessSource = {
                 recordDao.getFromRange(
                     start = range.timeStarted,
@@ -100,7 +100,7 @@ class RecordRepoImpl @Inject constructor(
         )
     }
 
-    override suspend fun getFromRangeByType(typeIds: List<Long>, range: Range): List<Record> {
+    override suspend fun getFromRangeByType(typeIds: Set<Long>, range: Range): List<Record> {
         val cacheKey = GetFromRangeByTypeKey(typeIds, range)
         return mutex.withLockedCache(
             logMessage = "getFromRangeByType",
@@ -229,7 +229,7 @@ class RecordRepoImpl @Inject constructor(
     }
 
     private data class GetFromRangeByTypeKey(
-        val typeIds: List<Long>,
+        val typeIds: Set<Long>,
         val range: Range,
     )
 

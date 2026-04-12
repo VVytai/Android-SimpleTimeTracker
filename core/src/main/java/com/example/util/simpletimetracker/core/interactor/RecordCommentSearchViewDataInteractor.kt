@@ -132,7 +132,7 @@ class RecordCommentSearchViewDataInteractor @Inject constructor(
     ): List<ViewHolderType> {
         data class Data(val timeStarted: Long, val comment: String)
 
-        val records = recordInteractor.getWithParams(GetParam.TypeWithAnyComment(listOf(typeId)))
+        val records = recordInteractor.getWithParams(GetParam.TypeWithAnyComment(setOf(typeId)))
             .map { Data(it.timeStarted, it.comment) }
         val runningRecords = runningRecordInteractor.getAll()
             .filter { it.id == typeId && it.comment.isNotEmpty() }

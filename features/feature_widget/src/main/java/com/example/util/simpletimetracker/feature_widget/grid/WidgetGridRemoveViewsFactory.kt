@@ -92,7 +92,7 @@ class WidgetGridRemoveViewsFactory @Inject constructor(
             .groupBy { it.idData.value }
         val allDailyCurrents = if (goals.isNotEmpty()) {
             getCurrentRecordsDurationInteractor.getAllDailyCurrents(
-                typeIds = recordTypes.map(RecordType::id),
+                typeIds = recordTypes.map(RecordType::id).toSet(),
                 runningRecords = runningRecords,
             )
         } else {

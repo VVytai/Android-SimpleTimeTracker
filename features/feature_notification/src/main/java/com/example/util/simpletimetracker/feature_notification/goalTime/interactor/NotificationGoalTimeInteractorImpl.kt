@@ -239,7 +239,7 @@ class NotificationGoalTimeInteractorImpl @Inject constructor(
         if (rangeGoals.isEmpty()) return
 
         val allTypeIdsFromTheseCategories = categoriesWithThisTypes.values
-            .flatten().toSet().toList()
+            .flatten().toSet()
         val allCurrents = if (goalRange is Range.Session) {
             allTypeIdsFromTheseCategories.associateWith { typeId ->
                 runningRecords

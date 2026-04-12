@@ -9,17 +9,17 @@ interface RecordRepo {
 
     suspend fun getAll(): List<Record>
 
-    suspend fun getByType(typeIds: List<Long>): List<Record>
+    suspend fun getByType(typeIds: Set<Long>): List<Record>
 
-    suspend fun getByTypeWithAnyComment(typeIds: List<Long>): List<Record>
+    suspend fun getByTypeWithAnyComment(typeIds: Set<Long>): List<Record>
 
     suspend fun searchComment(text: String): List<Record>
 
-    suspend fun searchByTypeWithComment(typeIds: List<Long>, text: String): List<Record>
+    suspend fun searchByTypeWithComment(typeIds: Set<Long>, text: String): List<Record>
 
     suspend fun searchAnyComments(): List<Record>
 
-    suspend fun getTagged(tagIds: List<Long>): List<Record>
+    suspend fun getTagged(tagIds: Set<Long>): List<Record>
 
     suspend fun getUntagged(): List<Record>
 
@@ -27,7 +27,7 @@ interface RecordRepo {
 
     suspend fun getFromRange(range: Range): List<Record>
 
-    suspend fun getFromRangeByType(typeIds: List<Long>, range: Range): List<Record>
+    suspend fun getFromRangeByType(typeIds: Set<Long>, range: Range): List<Record>
 
     suspend fun getPrev(timeStarted: Long, ignoreTypeIds: List<Long> = emptyList()): Record?
 

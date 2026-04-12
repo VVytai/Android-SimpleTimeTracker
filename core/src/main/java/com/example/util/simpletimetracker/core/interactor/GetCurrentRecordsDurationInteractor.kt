@@ -25,7 +25,7 @@ class GetCurrentRecordsDurationInteractor @Inject constructor(
     }
 
     suspend fun getAllCurrents(
-        typeIds: List<Long>,
+        typeIds: Set<Long>,
         runningRecords: List<RunningRecord>,
         rangeLength: RangeLength,
     ): Map<Long, Result> {
@@ -55,7 +55,7 @@ class GetCurrentRecordsDurationInteractor @Inject constructor(
         val rangeRecords = getRangeRecords(
             rangeLength = rangeLength,
             range = range,
-            typeIds = recordTypeCategories.values.flatten().distinct(),
+            typeIds = recordTypeCategories.values.flatten().toSet(),
         )
 
         return recordTypeCategories.mapValues { (_, typeIds) ->
@@ -88,7 +88,7 @@ class GetCurrentRecordsDurationInteractor @Inject constructor(
     }
 
     suspend fun getAllDailyCurrents(
-        typeIds: List<Long>,
+        typeIds: Set<Long>,
         runningRecords: List<RunningRecord>,
     ): Map<Long, Result> {
         return getAllCurrents(
@@ -107,7 +107,7 @@ class GetCurrentRecordsDurationInteractor @Inject constructor(
         val rangeRecords = getRangeRecords(
             rangeLength = rangeLength,
             range = range,
-            typeIds = listOf(typeId),
+            typeIds = setOf(typeId),
         )
 
         return getRangeCurrent(
@@ -155,7 +155,7 @@ class GetCurrentRecordsDurationInteractor @Inject constructor(
     private suspend fun getRangeRecords(
         rangeLength: RangeLength,
         range: Range,
-        typeIds: List<Long>,
+        typeIds: Set<Long>,
     ): List<Record> {
         // Use getFromRange to hit cache.
         val params = if (rangeLength is RangeLength.Day) {

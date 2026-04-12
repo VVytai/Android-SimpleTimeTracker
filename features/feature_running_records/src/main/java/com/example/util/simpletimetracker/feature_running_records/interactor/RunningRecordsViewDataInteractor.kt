@@ -78,7 +78,7 @@ class RunningRecordsViewDataInteractor @Inject constructor(
             .groupBy { it.idData.value }
         val allDailyCurrents = if (goals.isNotEmpty()) {
             getCurrentRecordsDurationInteractor.getAllDailyCurrents(
-                typeIds = recordTypesMap.keys.toList(),
+                typeIds = recordTypesMap.keys,
                 runningRecords = runningRecords,
             )
         } else {
