@@ -236,8 +236,8 @@ class RecordActionsSplitTest : BaseUiTest() {
             allOf(
                 withId(R.id.btn_change_record_preview_before_action),
                 hasSibling(hasDescendant(withText(firstName))),
-                isCompletelyDisplayed()
-            )
+                isCompletelyDisplayed(),
+            ),
         )
         clickOnViewWithText(secondName)
 

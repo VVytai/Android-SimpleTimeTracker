@@ -7,6 +7,7 @@ import com.example.util.simpletimetracker.domain.recordTag.repo.RecordTagRepo
 import com.example.util.simpletimetracker.domain.recordTag.repo.RecordToRecordTagRepo
 import com.example.util.simpletimetracker.domain.category.repo.RecordTypeCategoryRepo
 import com.example.util.simpletimetracker.domain.complexRule.interactor.ComplexRuleInteractor
+import com.example.util.simpletimetracker.domain.favourite.repo.RecordTypeToFavouriteCommentRepo
 import com.example.util.simpletimetracker.domain.recordType.model.CardOrder
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.recordTag.repo.RecordTypeToDefaultTagRepo
@@ -29,6 +30,7 @@ class RecordTypeInteractor @Inject constructor(
     private val recordTypeCategoryRepo: RecordTypeCategoryRepo,
     private val recordTypeToTagRepo: RecordTypeToTagRepo,
     private val recordTypeToDefaultTagRepo: RecordTypeToDefaultTagRepo,
+    private val recordTypeToFavouriteCommentRepo: RecordTypeToFavouriteCommentRepo,
     private val recordTypeGoalInteractor: RecordTypeGoalInteractor,
     private val complexRuleInteractor: ComplexRuleInteractor,
     private val activityFilterInteractor: ActivityFilterInteractor,
@@ -109,6 +111,7 @@ class RecordTypeInteractor @Inject constructor(
         recordTypeCategoryRepo.removeAllByType(id)
         recordTypeToTagRepo.removeAllByType(id)
         recordTypeToDefaultTagRepo.removeAllByType(id)
+        recordTypeToFavouriteCommentRepo.removeAllByType(id)
         recordTypeGoalInteractor.removeByType(id)
         complexRuleInteractor.removeTypeId(id)
         activityFilterInteractor.removeTypeId(id)

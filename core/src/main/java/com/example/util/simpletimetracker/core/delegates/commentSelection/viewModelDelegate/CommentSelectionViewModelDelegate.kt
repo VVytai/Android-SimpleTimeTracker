@@ -10,6 +10,7 @@ import com.example.util.simpletimetracker.core.viewData.CommentFilterTypeViewDat
 import com.example.util.simpletimetracker.domain.extension.addOrRemove
 import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.domain.favourite.interactor.FavouriteCommentInteractor
+import com.example.util.simpletimetracker.domain.favourite.interactor.RecordTypeToFavouriteCommentInteractor
 import com.example.util.simpletimetracker.domain.favourite.model.FavouriteComment
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
@@ -18,6 +19,7 @@ import com.example.util.simpletimetracker.feature_base_adapter.recordFilter.Filt
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.text.get
 
 interface CommentSelectionViewModelDelegate {
     val comments: LiveData<List<ViewHolderType>>
@@ -26,6 +28,7 @@ interface CommentSelectionViewModelDelegate {
     fun onCommentChange(comment: String)
     fun onCommentFilterClick(item: FilterViewData)
     fun onFavouriteCommentClick()
+    fun onFavouriteCommentLongClick()
     fun onCommentClick(item: RecordCommentViewData)
 
     interface Parent {
@@ -43,6 +46,7 @@ class CommentSelectionViewModelDelegateImpl @Inject constructor(
     private val commentSelectionDelegateViewDataInteractor: CommentSelectionDelegateViewDataInteractor,
     private val recordCommentSearchViewDataInteractor: RecordCommentSearchViewDataInteractor,
     private val favouriteCommentInteractor: FavouriteCommentInteractor,
+    private val recordTypeToFavouriteCommentInteractor: RecordTypeToFavouriteCommentInteractor,
     private val prefsInteractor: PrefsInteractor,
 ) :
     CommentSelectionViewModelDelegate,
@@ -81,13 +85,38 @@ class CommentSelectionViewModelDelegateImpl @Inject constructor(
 
     override fun onFavouriteCommentClick() {
         if (newComment.isEmpty()) return
+
         delegateScope.launch {
-            favouriteCommentInteractor.get(newComment)
-                ?.let { favouriteCommentInteractor.remove(it.id) }
+            favouriteCommentInteractor.get(newComment)?.id
+                ?.let { favouriteCommentInteractor.remove(it) }
                 ?: run {
-                    val favourite = FavouriteComment(comment = newComment)
-                    favouriteCommentInteractor.add(favourite)
+                    val new = FavouriteComment(comment = newComment)
+                    favouriteCommentInteractor.add(new)
                 }
+            updateCommentsViewData()
+        }
+    }
+
+    override fun onFavouriteCommentLongClick() {
+        if (newComment.isEmpty()) return
+
+        delegateScope.launch {
+            val favouriteCommentId = favouriteCommentInteractor.get(newComment)?.id
+                ?.also { favouriteCommentInteractor.remove(it) }
+                ?: run {
+                    val new = FavouriteComment(comment = newComment)
+                    favouriteCommentInteractor.add(new)
+                }
+            val recordTypes = recordTypeToFavouriteCommentInteractor.getTypes(favouriteCommentId)
+
+            val newTypeId = parent?.getParams()?.recordTypeId
+            if (newTypeId != null && newTypeId != 0L) {
+                if (newTypeId in recordTypes) {
+                    recordTypeToFavouriteCommentInteractor.removeTypes(favouriteCommentId, listOf(newTypeId))
+                } else {
+                    recordTypeToFavouriteCommentInteractor.addTypes(favouriteCommentId, listOf(newTypeId))
+                }
+            }
             updateCommentsViewData()
         }
     }

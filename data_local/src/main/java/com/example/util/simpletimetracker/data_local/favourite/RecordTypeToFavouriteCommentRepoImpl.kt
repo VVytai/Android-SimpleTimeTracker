@@ -24,12 +24,6 @@ class RecordTypeToFavouriteCommentRepoImpl @Inject constructor(
         afterSourceAccess = { cache = it },
     )
 
-    override suspend fun getCommentIdsByType(typeId: Long): Set<Long> = mutex.withLockedCache(
-        logMessage = "getCommentIdsByType",
-        accessCache = { cache?.filter { it.recordTypeId == typeId }?.map { it.commentId }?.toSet() },
-        accessSource = { dao.getCommentIdsByType(typeId).toSet() },
-    )
-
     override suspend fun getTypeIdsByComment(commentId: Long): Set<Long> = mutex.withLockedCache(
         logMessage = "getTypeIdsByComment",
         accessCache = { cache?.filter { it.commentId == commentId }?.map { it.recordTypeId }?.toSet() },
@@ -51,16 +45,6 @@ class RecordTypeToFavouriteCommentRepoImpl @Inject constructor(
         accessSource = {
             typeIds.map {
                 mapper.map(typeId = it, commentId = commentId)
-            }.let { dao.insert(it) }
-        },
-        afterSourceAccess = { cache = null },
-    )
-
-    override suspend fun addComments(typeId: Long, commentIds: List<Long>) = mutex.withLockedCache(
-        logMessage = "addComments",
-        accessSource = {
-            commentIds.map {
-                mapper.map(typeId = typeId, commentId = it)
             }.let { dao.insert(it) }
         },
         afterSourceAccess = { cache = null },

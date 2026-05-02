@@ -13,20 +13,12 @@ class RecordTypeToFavouriteCommentInteractor @Inject constructor(
         return repo.getAll()
     }
 
-    suspend fun getComments(typeId: Long): Set<Long> {
-        return repo.getCommentIdsByType(typeId)
-    }
-
     suspend fun getTypes(commentId: Long): Set<Long> {
         return repo.getTypeIdsByComment(commentId)
     }
 
     suspend fun addTypes(commentId: Long, typeIds: List<Long>) {
         repo.addTypes(commentId, typeIds)
-    }
-
-    suspend fun addComments(typeId: Long, commentIds: List<Long>) {
-        repo.addComments(typeId, commentIds)
     }
 
     suspend fun removeTypes(commentId: Long, typeIds: List<Long>) {

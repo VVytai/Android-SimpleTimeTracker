@@ -1,8 +1,8 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 33,
-    "identityHash": "5c9e418319a4bd7703fb8f8212bd3147",
+    "version": 34,
+    "identityHash": "c16bd7b4dda63b31d2968910724821b8",
     "entities": [
       {
         "tableName": "records",
@@ -547,6 +547,33 @@
         "foreignKeys": []
       },
       {
+        "tableName": "recordTypeToFavouriteComment",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`record_type_id` INTEGER NOT NULL, `comment_id` INTEGER NOT NULL, PRIMARY KEY(`record_type_id`, `comment_id`))",
+        "fields": [
+          {
+            "fieldPath": "recordTypeId",
+            "columnName": "record_type_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "commentId",
+            "columnName": "comment_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "record_type_id",
+            "comment_id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
         "tableName": "recordTypeGoals",
         "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `owner_id` INTEGER NOT NULL, `owner_type` INTEGER NOT NULL, `range` INTEGER NOT NULL, `type` INTEGER NOT NULL, `goalType` INTEGER NOT NULL, `value` INTEGER NOT NULL, `days_of_week` TEXT NOT NULL)",
         "fields": [
@@ -976,7 +1003,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '5c9e418319a4bd7703fb8f8212bd3147')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'c16bd7b4dda63b31d2968910724821b8')"
     ]
   }
 }

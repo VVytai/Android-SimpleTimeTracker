@@ -12,9 +12,6 @@ interface RecordTypeToFavouriteCommentDao {
     @Query("SELECT * FROM recordTypeToFavouriteComment")
     suspend fun getAll(): List<RecordTypeToFavouriteCommentDBO>
 
-    @Query("SELECT comment_id FROM recordTypeToFavouriteComment WHERE record_type_id = :typeId")
-    suspend fun getCommentIdsByType(typeId: Long): List<Long>
-
     @Query("SELECT record_type_id FROM recordTypeToFavouriteComment WHERE comment_id = :commentId")
     suspend fun getTypeIdsByComment(commentId: Long): List<Long>
 
