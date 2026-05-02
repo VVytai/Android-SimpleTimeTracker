@@ -4,6 +4,7 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.action.GeneralLocation
 import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
+import androidx.test.espresso.matcher.ViewMatchers.hasSibling
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -201,6 +202,70 @@ class RecordActionsSplitTest : BaseUiTest() {
     }
 
     @Test
+    fun recordSplitChangeActivityBefore() {
+        val firstName = "First"
+        val secondName = "Second"
+        val calendar = Calendar.getInstance()
+        val comment = "Some_comment"
+        val tag = "Tag"
+        val fullName = "$firstName - $tag"
+
+        // Add data
+        val timeStartedTimestamp = calendar.getMillis(hour = 15, minute = 0)
+        val timeEndedTimestamp = calendar.getMillis(hour = 16, minute = 0)
+        testUtils.addActivity(name = firstName, color = firstColor, icon = firstIcon)
+        testUtils.addActivity(name = secondName, color = lastColor, icon = lastIcon)
+        testUtils.addRecordTag(tag)
+        testUtils.addRecord(
+            typeName = firstName,
+            timeStarted = timeStartedTimestamp,
+            timeEnded = timeEndedTimestamp,
+            tagNames = listOf(tag),
+            comment = comment,
+        )
+
+        // Open split action
+        NavUtils.openRecordsScreen()
+        clickOnView(allOf(withText(fullName), isCompletelyDisplayed()))
+        onView(withText(coreR.string.change_record_actions_hint)).perform(nestedScrollTo())
+        clickOnViewWithText(coreR.string.change_record_actions_hint)
+
+        // Change activity for the first split part
+        clickOnAdjustment("+30")
+        clickOnView(
+            allOf(
+                withId(R.id.btn_change_record_preview_before_action),
+                hasSibling(hasDescendant(withText(firstName))),
+                isCompletelyDisplayed()
+            )
+        )
+        clickOnViewWithText(secondName)
+
+        // Split
+        clickOnViewWithText(coreR.string.change_record_split)
+
+        // Check that two records created with different activities
+        checkRecord(
+            name = secondName,
+            timeStartedPreview = timeStartedTimestamp.formatTime(),
+            timeEndedPreview = (timeStartedTimestamp + TimeUnit.MINUTES.toMillis(30)).formatTime(),
+            timeRangePreview = TimeUnit.MINUTES.toMillis(30).formatInterval(),
+            comment = comment,
+            color = lastColor,
+            icon = lastIcon,
+        )
+        checkRecord(
+            name = fullName,
+            timeStartedPreview = (timeStartedTimestamp + TimeUnit.MINUTES.toMillis(30)).formatTime(),
+            timeEndedPreview = timeEndedTimestamp.formatTime(),
+            timeRangePreview = TimeUnit.MINUTES.toMillis(30).formatInterval(),
+            comment = comment,
+            color = firstColor,
+            icon = firstIcon,
+        )
+    }
+
+    @Test
     fun recordUntrackedSplit() {
         val name = "Name"
 
@@ -361,13 +426,15 @@ class RecordActionsSplitTest : BaseUiTest() {
         timeEndedPreview: String,
         timeRangePreview: String,
         comment: String,
+        color: Int? = null,
+        icon: Int? = null,
     ) {
         checkViewIsDisplayed(
             allOf(
                 withId(baseR.id.viewRecordItem),
-                withCardColor(firstColor),
+                withCardColor(color ?: firstColor),
                 hasDescendant(withText(name)),
-                hasDescendant(withTag(firstIcon)),
+                hasDescendant(withTag(icon ?: firstIcon)),
                 hasDescendant(withText(timeStartedPreview)),
                 hasDescendant(withText(timeEndedPreview)),
                 hasDescendant(withText(timeRangePreview)),

@@ -11,6 +11,7 @@ import com.example.util.simpletimetracker.core.extension.toParams
 import com.example.util.simpletimetracker.core.interactor.RecordTagViewDataInteractor
 import com.example.util.simpletimetracker.core.interactor.RecordTypesViewDataInteractor
 import com.example.util.simpletimetracker.core.interactor.SnackBarMessageNavigationInteractor
+import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.core.view.timeAdjustment.TimeAdjustmentView
 import com.example.util.simpletimetracker.domain.extension.addOrRemove
 import com.example.util.simpletimetracker.domain.extension.dropSeconds
@@ -50,12 +51,14 @@ import com.example.util.simpletimetracker.navigation.params.screen.DateTimeDialo
 import com.example.util.simpletimetracker.navigation.params.screen.DateTimeDialogType
 import com.example.util.simpletimetracker.navigation.params.screen.DurationDialogParams
 import com.example.util.simpletimetracker.navigation.params.screen.RecordTagValueSelectionParams
+import com.example.util.simpletimetracker.navigation.params.screen.TypesSelectionDialogParams
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 
 abstract class ChangeRecordBaseViewModel(
     private val router: Router,
+    private val resourceRepo: ResourceRepo,
     private val snackBarMessageNavigationInteractor: SnackBarMessageNavigationInteractor,
     private val prefsInteractor: PrefsInteractor,
     private val recordTypesViewDataInteractor: RecordTypesViewDataInteractor,
@@ -108,10 +111,11 @@ abstract class ChangeRecordBaseViewModel(
     protected var newTimeEnded: Long = 0
     protected var newTimeStarted: Long = 0
     protected var newTimeSplit: Long = 0
+    protected var newSplitBeforeTypeId: Long? = null
     protected var newTags: List<RecordBase.Tag> = emptyList()
     protected var originalRecordId: Long = 0
     protected var originalTypeId: Long = 0
-    protected var originalTagIds: List<Long> = emptyList()
+    protected var originalTags: List<RecordBase.Tag> = emptyList()
     protected var originalTimeStarted: Long = 0
     protected var originalTimeEnded: Long = 0
     protected var dateTimeState = ChangeRecordDateTimeFieldsState(
@@ -268,6 +272,22 @@ abstract class ChangeRecordBaseViewModel(
         changeRecordActionsDelegate.onChangePreviewCheckClick(item)
     }
 
+    fun onChangePreviewBeforeActionClick() {
+        TypesSelectionDialogParams(
+            tag = SPLIT_BEFORE_TYPE_SELECTION,
+            title = resourceRepo.getString(R.string.change_record_message_choose_type),
+            subtitle = "",
+            type = TypesSelectionDialogParams.Type.Activity,
+            selectedTypeIds = emptyList(),
+            selectedTagValues = emptyList(),
+            selectedTagValueOnStart = emptyList(),
+            isMultiSelectAvailable = false,
+            idsShouldBeVisible = emptyList(),
+            showHints = false,
+            allowTagValueSelection = false,
+        ).let(router::navigate)
+    }
+
     fun onSaveClick() {
         onRecordChangeButtonClick(
             onProceed = ::onSaveClickDelegate,
@@ -337,6 +357,15 @@ abstract class ChangeRecordBaseViewModel(
             updatePreview()
             updateCategoriesViewData()
         }
+    }
+
+    fun onDataSelected(
+        tag: String?,
+        dataIds: List<Long>,
+    ) {
+        if (tag != SPLIT_BEFORE_TYPE_SELECTION) return
+        newSplitBeforeTypeId = dataIds.firstOrNull()
+        updateActionsData()
     }
 
     fun onCategoryLongClick(item: CategoryViewData, sharedElements: Pair<Any, String>) {
@@ -810,8 +839,11 @@ abstract class ChangeRecordBaseViewModel(
                     ),
                     splitParams = ViewDataParams.SplitParams(
                         newTimeSplit = newTimeSplit,
+                        newBeforeTypeId = newSplitBeforeTypeId,
                         splitPreviewTimeEnded = previewTimeEnded,
                         showTimeEndedOnSplitPreview = showTimeEndedOnSplitPreview,
+                        originalTypeId = originalTypeId,
+                        originalTags = originalTags,
                     ),
                     duplicateParams = ViewDataParams.DuplicateParams(
                         isAvailable = isDuplicateActionAvailable,
@@ -913,5 +945,6 @@ abstract class ChangeRecordBaseViewModel(
         private const val TIME_ENDED_TAG = "time_ended_tag"
         private const val TIME_SPLIT_TAG = "time_split_tag"
         private const val CHANGE_RECORD_TAG_VALUE_SELECTION = "CHANGE_RECORD_TAG_VALUE_SELECTION"
+        private const val SPLIT_BEFORE_TYPE_SELECTION = "SPLIT_BEFORE_TYPE_SELECTION"
     }
 }

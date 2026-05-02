@@ -53,14 +53,25 @@ class ChangeRecordActionsSplitDelegate @Inject constructor(
 
     suspend fun onSplitClickDelegate() {
         val params = bridge?.getParams() ?: return
+        val firstTypeId = params.splitParams.newBeforeTypeId
+        val newBeforeTags = when (firstTypeId) {
+            // Override type not selected - use same tags.
+            null -> params.baseParams.newTags
+            // Override same as new type - use same tags.
+            params.baseParams.newTypeId -> params.baseParams.newTags
+            // Override same as original - use original tags.
+            params.splitParams.originalTypeId -> params.splitParams.originalTags
+            // Override to new type - use empty tags.
+            else -> emptyList()
+        }
 
         Record(
             id = 0L, // Zero id creates new record
-            typeId = params.baseParams.newTypeId,
+            typeId = firstTypeId ?: params.baseParams.newTypeId,
             timeStarted = params.baseParams.newTimeStarted,
             timeEnded = params.splitParams.newTimeSplit,
             comment = params.baseParams.newComment,
-            tags = params.baseParams.newTags,
+            tags = newBeforeTags,
         ).let {
             addRecordMediator.add(it)
         }
@@ -71,7 +82,8 @@ class ChangeRecordActionsSplitDelegate @Inject constructor(
         val params = bridge?.getParams()
             ?: return emptyList()
         val newTimeSplit = params.splitParams.newTimeSplit
-        val newTypeId = params.baseParams.newTypeId
+        val firstTypeId = params.splitParams.newBeforeTypeId ?: params.baseParams.newTypeId
+        val secondTypeId = params.baseParams.newTypeId
         val newTimeStarted = params.baseParams.newTimeStarted
         val newTimeEnded = params.splitParams.splitPreviewTimeEnded
         val showTimeEnded = params.splitParams.showTimeEndedOnSplitPreview
@@ -97,7 +109,8 @@ class ChangeRecordActionsSplitDelegate @Inject constructor(
             value = TimeUnit.MILLISECONDS.toSeconds(newTimeSplit - newTimeStarted).toFloat(),
         )
         val previewData = loadSplitPreviewViewData(
-            newTypeId = newTypeId,
+            firstTypeId = firstTypeId,
+            secondTypeId = secondTypeId,
             newTimeStarted = newTimeStarted,
             newTimeSplit = newTimeSplit,
             newTimeEnded = newTimeEnded,
@@ -112,6 +125,7 @@ class ChangeRecordActionsSplitDelegate @Inject constructor(
             isRemoveVisible = false,
             isCheckVisible = false,
             isCompareVisible = false,
+            isBeforeActionVisible = true,
         )
         result += changeRecordViewDataMapper.mapRecordActionButton(
             action = action,
@@ -134,7 +148,8 @@ class ChangeRecordActionsSplitDelegate @Inject constructor(
     }
 
     private suspend fun loadSplitPreviewViewData(
-        newTypeId: Long,
+        firstTypeId: Long,
+        secondTypeId: Long,
         newTimeStarted: Long,
         newTimeSplit: Long,
         newTimeEnded: Long,
@@ -145,7 +160,7 @@ class ChangeRecordActionsSplitDelegate @Inject constructor(
             end = ChangeRecordDateTimeFieldsState.State.DateTime,
         )
         val firstRecord = Record(
-            typeId = newTypeId,
+            typeId = firstTypeId,
             timeStarted = newTimeStarted,
             timeEnded = newTimeSplit,
             comment = "",
@@ -154,7 +169,7 @@ class ChangeRecordActionsSplitDelegate @Inject constructor(
             changeRecordViewDataInteractor.getPreviewViewData(it, dateTimeFieldState)
         }
         val secondRecord = Record(
-            typeId = newTypeId,
+            typeId = secondTypeId,
             timeStarted = newTimeSplit,
             timeEnded = newTimeEnded,
             comment = "",

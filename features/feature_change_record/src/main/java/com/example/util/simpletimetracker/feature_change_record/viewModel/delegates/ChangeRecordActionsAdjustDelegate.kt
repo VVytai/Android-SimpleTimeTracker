@@ -125,6 +125,7 @@ class ChangeRecordActionsAdjustDelegate @Inject constructor(
             isRemoveVisible = false,
             isCheckVisible = false,
             isCompareVisible = true,
+            isBeforeActionVisible = false,
         )
         result += ChangeRecordTimeDoublePreviewViewData(
             block = ChangeRecordActionsBlock.AdjustTimePreview,
@@ -281,6 +282,7 @@ class ChangeRecordActionsAdjustDelegate @Inject constructor(
                 isRemoveVisible = isRemoveVisible,
                 isCheckVisible = true,
                 isCompareVisible = true,
+                isBeforeActionVisible = false,
             )
         }
 

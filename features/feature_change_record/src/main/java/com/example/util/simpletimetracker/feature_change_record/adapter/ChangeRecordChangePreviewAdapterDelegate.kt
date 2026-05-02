@@ -4,15 +4,16 @@ import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.createRecyclerBindingAdapterDelegate
-import com.example.util.simpletimetracker.feature_change_record.utils.setData
 import com.example.util.simpletimetracker.feature_change_record.viewData.ChangeRecordSimpleViewData
-import com.example.util.simpletimetracker.feature_views.extension.setMargins
+import com.example.util.simpletimetracker.feature_change_record.utils.setData
 import com.example.util.simpletimetracker.feature_views.extension.setOnClick
+import com.example.util.simpletimetracker.feature_views.extension.setMargins
 import com.example.util.simpletimetracker.feature_change_record.adapter.ChangeRecordChangePreviewViewData as ViewData
 import com.example.util.simpletimetracker.feature_change_record.databinding.ChangeRecordPreviewItemBinding as Binding
 
 fun createChangeRecordChangePreviewAdapterDelegate(
     onCheckboxClicked: (ViewData) -> Unit,
+    onBeforeActionClicked: () -> Unit,
 ) = createRecyclerBindingAdapterDelegate<ViewData, Binding>(
     Binding::inflate,
 ) { binding, item, _ ->
@@ -23,6 +24,7 @@ fun createChangeRecordChangePreviewAdapterDelegate(
         root.setMargins(top = item.marginTopDp)
         ivChangeRecordPreviewCompare.isInvisible = !item.isCompareVisible
         checkChangeRecordPreviewItem.isVisible = item.isCheckVisible
+        btnChangeRecordPreviewBeforeAction.isVisible = item.isBeforeActionVisible
         viewChangeRecordPreviewBefore.setData(item.before)
         viewChangeRecordPreviewAfter.setData(item.after)
         viewChangeRecordPreviewRemoved.isVisible = item.isRemoveVisible
@@ -33,6 +35,7 @@ fun createChangeRecordChangePreviewAdapterDelegate(
         }
 
         checkChangeRecordPreviewItem.setOnClick { onCheckboxClicked(item) }
+        btnChangeRecordPreviewBeforeAction.setOnClick { onBeforeActionClicked() }
     }
 }
 
@@ -45,6 +48,7 @@ data class ChangeRecordChangePreviewViewData(
     val isRemoveVisible: Boolean,
     val isCheckVisible: Boolean,
     val isCompareVisible: Boolean,
+    val isBeforeActionVisible: Boolean,
 ) : ViewHolderType {
 
     override fun getUniqueId(): Long = id

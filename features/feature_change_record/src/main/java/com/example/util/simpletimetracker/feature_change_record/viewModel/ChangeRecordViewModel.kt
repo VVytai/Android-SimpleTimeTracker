@@ -11,6 +11,7 @@ import com.example.util.simpletimetracker.core.interactor.RecordTypesViewDataInt
 import com.example.util.simpletimetracker.core.interactor.SnackBarMessageNavigationInteractor
 import com.example.util.simpletimetracker.core.interactor.StatisticsDetailNavigationInteractor
 import com.example.util.simpletimetracker.core.mapper.TimeMapper
+import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.domain.base.UNTRACKED_ITEM_ID
 import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.domain.record.interactor.AddRecordMediator
@@ -40,6 +41,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ChangeRecordViewModel @Inject constructor(
+    resourceRepo: ResourceRepo,
     recordTypesViewDataInteractor: RecordTypesViewDataInteractor,
     recordTagViewDataInteractor: RecordTagViewDataInteractor,
     snackBarMessageNavigationInteractor: SnackBarMessageNavigationInteractor,
@@ -59,6 +61,7 @@ class ChangeRecordViewModel @Inject constructor(
     private val commentSelectionViewModelDelegate: CommentSelectionViewModelDelegateImpl,
 ) : ChangeRecordBaseViewModel(
     router = router,
+    resourceRepo = resourceRepo,
     snackBarMessageNavigationInteractor = snackBarMessageNavigationInteractor,
     prefsInteractor = prefsInteractor,
     recordTypesViewDataInteractor = recordTypesViewDataInteractor,
@@ -160,7 +163,7 @@ class ChangeRecordViewModel @Inject constructor(
             externalViewsInteractor.onRecordChangeType(listOf(originalTypeId))
         }
         val newTagIds = newTags.map(RecordBase.Tag::tagId)
-        val removedTagIds = originalTagIds.filter { it !in newTagIds }
+        val removedTagIds = originalTags.map { it.tagId }.filter { it !in newTagIds }
         if (removedTagIds.isNotEmpty()) {
             externalViewsInteractor.onRecordChangeTags(removedTagIds)
         }
@@ -238,7 +241,7 @@ class ChangeRecordViewModel @Inject constructor(
         newTimeSplit = newTimeStarted
         originalRecordId = recordId.orZero()
         originalTypeId = newTypeId
-        originalTagIds = newTags.map(RecordBase.Tag::tagId)
+        originalTags = newTags.toList() // Creates a copy.
         originalTimeStarted = newTimeStarted
         originalTimeEnded = newTimeEnded
         super.initializePreviewViewData()

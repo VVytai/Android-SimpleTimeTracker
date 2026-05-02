@@ -17,6 +17,24 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:itemName="Item" />
 
+    <androidx.cardview.widget.CardView
+        android:id="@+id/btn_change_record_preview_before_action"
+        style="@style/EditScreenControlButtonCard"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@id/viewChangeRecordPreviewBefore"
+        app:layout_constraintTop_toTopOf="@id/viewChangeRecordPreviewBefore"
+        tools:visibility="visible">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivButtonIcon"
+            style="@style/EditScreenControlButtonImage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/data_edit_change_activity"
+            app:srcCompat="@drawable/action_change_item" />
+
+    </androidx.cardview.widget.CardView>
+
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/ivChangeRecordPreviewCompare"
         android:layout_width="16dp"

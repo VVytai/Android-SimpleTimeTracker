@@ -11,11 +11,13 @@ import com.example.util.simpletimetracker.core.di.BaseViewModelFactory
 import com.example.util.simpletimetracker.core.dialog.DateTimeDialogListener
 import com.example.util.simpletimetracker.core.dialog.DurationDialogListener
 import com.example.util.simpletimetracker.core.dialog.OnTagValueSelectedListener
+import com.example.util.simpletimetracker.core.dialog.TypesSelectionDialogListener
 import com.example.util.simpletimetracker.core.extension.setSharedTransitions
 import com.example.util.simpletimetracker.core.extension.toViewData
 import com.example.util.simpletimetracker.core.sharedViewModel.RemoveRecordViewModel
 import com.example.util.simpletimetracker.core.utils.InsetConfiguration
 import com.example.util.simpletimetracker.core.utils.fragmentArgumentDelegate
+import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.feature_base_adapter.record.RecordViewData
 import com.example.util.simpletimetracker.feature_change_record.viewData.ChangeRecordViewData
 import com.example.util.simpletimetracker.feature_change_record.viewModel.ChangeRecordViewModel
@@ -33,6 +35,7 @@ class ChangeRecordFragment :
     BaseFragment<Binding>(),
     DateTimeDialogListener,
     DurationDialogListener,
+    TypesSelectionDialogListener,
     OnTagValueSelectedListener {
 
     override val inflater: (LayoutInflater, ViewGroup?, Boolean) -> Binding =
@@ -121,6 +124,15 @@ class ChangeRecordFragment :
 
     override fun onTagValueSelected(params: RecordTagValueSelectionParams, data: Double) {
         viewModel.onCategoryValueSelected(params, data)
+    }
+
+    override fun onDataSelected(
+        tag: String?,
+        dataIds: List<Long>,
+        tagValues: List<RecordBase.Tag>,
+        selectValueOnStartTagIds: List<Long>,
+    ) {
+        viewModel.onDataSelected(tag, dataIds)
     }
 
     private fun setPreview() = when (extra) {

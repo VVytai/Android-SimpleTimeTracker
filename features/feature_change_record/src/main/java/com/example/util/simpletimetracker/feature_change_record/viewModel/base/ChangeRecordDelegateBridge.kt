@@ -60,8 +60,11 @@ class ChangeRecordDelegateBridge(
 
         data class SplitParams(
             val newTimeSplit: Long,
+            val newBeforeTypeId: Long?,
             val splitPreviewTimeEnded: Long,
             val showTimeEndedOnSplitPreview: Boolean,
+            val originalTypeId: Long,
+            val originalTags: List<RecordBase.Tag>,
         )
 
         data class DuplicateParams(

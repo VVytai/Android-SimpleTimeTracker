@@ -92,7 +92,10 @@ class ChangeRecordCore(
             createDividerAdapterDelegate(),
             createHintAdapterDelegate(),
             createHintAccentAdapterDelegate(),
-            createChangeRecordChangePreviewAdapterDelegate(viewModel::onChangePreviewCheckClick),
+            createChangeRecordChangePreviewAdapterDelegate(
+                onCheckboxClicked = viewModel::onChangePreviewCheckClick,
+                onBeforeActionClicked = viewModel::onChangePreviewBeforeActionClick,
+            ),
             createChangeRecordTimePreviewAdapterDelegate(viewModel::onItemTimePreviewClick),
             createChangeRecordTimeDoublePreviewAdapterDelegate(
                 onTimeStartedClick = viewModel::onItemTimeStartedClick,

@@ -70,6 +70,7 @@ class ChangeRunningRecordViewModel @Inject constructor(
     private val commentSelectionViewModelDelegate: CommentSelectionViewModelDelegateImpl,
 ) : ChangeRecordBaseViewModel(
     router = router,
+    resourceRepo = resourceRepo,
     snackBarMessageNavigationInteractor = snackBarMessageNavigationInteractor,
     prefsInteractor = prefsInteractor,
     recordTypesViewDataInteractor = recordTypesViewDataInteractor,
@@ -220,7 +221,7 @@ class ChangeRunningRecordViewModel @Inject constructor(
             }
             newTimeSplit = newTimeStarted
             originalTypeId = newTypeId
-            originalTagIds = newTags.map(RecordBase.Tag::tagId)
+            originalTags = newTags.toList() // Creates a copy.
             originalTimeStarted = newTimeStarted
             originalTimeEnded = newTimeEnded
             super.initializePreviewViewData()
