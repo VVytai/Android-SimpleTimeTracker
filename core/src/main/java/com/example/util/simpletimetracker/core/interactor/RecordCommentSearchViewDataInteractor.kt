@@ -6,7 +6,7 @@ import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.core.viewData.CommentFilterTypeViewData
 import com.example.util.simpletimetracker.domain.base.CommentFilterType
 import com.example.util.simpletimetracker.domain.favourite.interactor.FavouriteCommentInteractor
-import com.example.util.simpletimetracker.domain.favourite.interactor.RecordTypeToFavouriteCommentInteractor
+import com.example.util.simpletimetracker.domain.favourite.interactor.FilterFavouriteCommentsInteractor
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.RecordInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.RecordInteractor.GetParam
@@ -26,7 +26,7 @@ class RecordCommentSearchViewDataInteractor @Inject constructor(
     private val prefsInteractor: PrefsInteractor,
     private val recordInteractor: RecordInteractor,
     private val favouriteCommentInteractor: FavouriteCommentInteractor,
-    private val recordTypeToFavouriteCommentInteractor: RecordTypeToFavouriteCommentInteractor,
+    private val filterFavouriteCommentsInteractor: FilterFavouriteCommentsInteractor,
     private val runningRecordInteractor: RunningRecordInteractor,
 ) {
 
@@ -128,7 +128,7 @@ class RecordCommentSearchViewDataInteractor @Inject constructor(
         typeId: Long,
     ): List<ViewHolderType> {
         val comments = favouriteCommentInteractor.getAll()
-        return recordTypeToFavouriteCommentInteractor.filterFavourites(typeId, comments)
+        return filterFavouriteCommentsInteractor.execute(typeId, comments)
             .map { RecordCommentViewData.Favourite(it.comment) }
     }
 

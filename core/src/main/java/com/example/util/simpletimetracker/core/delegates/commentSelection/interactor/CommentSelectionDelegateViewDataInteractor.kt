@@ -4,18 +4,15 @@ import com.example.util.simpletimetracker.core.R
 import com.example.util.simpletimetracker.core.interactor.RecordCommentSearchViewDataInteractor
 import com.example.util.simpletimetracker.core.mapper.ColorMapper
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
-import com.example.util.simpletimetracker.domain.favourite.interactor.FavouriteCommentInteractor
-import com.example.util.simpletimetracker.domain.favourite.interactor.RecordTypeToFavouriteCommentInteractor
+import com.example.util.simpletimetracker.domain.favourite.interactor.IsCommentFavouriteInteractor
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.commentChangeField.ChangeRecordCommentFieldViewData
 import javax.inject.Inject
-import kotlin.text.get
 
 class CommentSelectionDelegateViewDataInteractor @Inject constructor(
     private val prefsInteractor: PrefsInteractor,
-    private val favouriteCommentInteractor: FavouriteCommentInteractor,
-    private val recordTypeToFavouriteCommentInteractor: RecordTypeToFavouriteCommentInteractor,
+    private val isCommentFavouriteInteractor: IsCommentFavouriteInteractor,
     private val resourceRepo: ResourceRepo,
     private val colorMapper: ColorMapper,
     private val recordCommentSearchViewDataInteractor: RecordCommentSearchViewDataInteractor,
@@ -29,15 +26,7 @@ class CommentSelectionDelegateViewDataInteractor @Inject constructor(
     ): List<ViewHolderType> {
         val items = mutableListOf<ViewHolderType>()
         val isDarkTheme = prefsInteractor.getDarkMode()
-        val favouriteComment = favouriteCommentInteractor.get(comment)
-        val isFavourite = if (favouriteComment != null) {
-            recordTypeToFavouriteCommentInteractor.filterFavourites(
-                typeId = typeId,
-                comments = listOf(favouriteComment),
-            ).isNotEmpty()
-        } else {
-            false
-        }
+        val isFavourite = isCommentFavouriteInteractor.execute(comment, typeId)
 
         ChangeRecordCommentFieldViewData(
             // Only one at the time.

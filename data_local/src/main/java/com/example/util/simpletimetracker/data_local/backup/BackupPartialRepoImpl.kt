@@ -203,9 +203,11 @@ class BackupPartialRepoImpl @Inject constructor(
             ).let { activityFilterRepo.add(it) }
         }
         params.data.favouriteComments.values.getNotExistingValues().forEach { favComment ->
-            favComment.copy(
+            val originalId = favComment.id
+            val addedId = favComment.copy(
                 id = 0,
             ).let { favouriteCommentRepo.add(it) }
+            originalFavouriteCommentIdToAddedId[originalId] = addedId
         }
         params.data.typeToFavouriteComment.getNotExistingValues().forEach { typeToComment ->
             val newTypeId = originalTypeIdToAddedId[typeToComment.recordTypeId]
