@@ -14,6 +14,7 @@ import com.example.util.simpletimetracker.feature_change_record.databinding.Chan
 fun createChangeRecordChangePreviewAdapterDelegate(
     onCheckboxClicked: (ViewData) -> Unit,
     onBeforeActionClicked: () -> Unit,
+    onAfterActionClicked: () -> Unit,
 ) = createRecyclerBindingAdapterDelegate<ViewData, Binding>(
     Binding::inflate,
 ) { binding, item, _ ->
@@ -25,6 +26,7 @@ fun createChangeRecordChangePreviewAdapterDelegate(
         ivChangeRecordPreviewCompare.isInvisible = !item.isCompareVisible
         checkChangeRecordPreviewItem.isVisible = item.isCheckVisible
         btnChangeRecordPreviewBeforeAction.isVisible = item.isBeforeActionVisible
+        btnChangeRecordPreviewAfterAction.isVisible = item.isAfterActionVisible
         viewChangeRecordPreviewBefore.setData(item.before)
         viewChangeRecordPreviewAfter.setData(item.after)
         viewChangeRecordPreviewRemoved.isVisible = item.isRemoveVisible
@@ -36,6 +38,7 @@ fun createChangeRecordChangePreviewAdapterDelegate(
 
         checkChangeRecordPreviewItem.setOnClick { onCheckboxClicked(item) }
         btnChangeRecordPreviewBeforeAction.setOnClick { onBeforeActionClicked() }
+        btnChangeRecordPreviewAfterAction.setOnClick { onAfterActionClicked() }
     }
 }
 
@@ -49,6 +52,7 @@ data class ChangeRecordChangePreviewViewData(
     val isCheckVisible: Boolean,
     val isCompareVisible: Boolean,
     val isBeforeActionVisible: Boolean,
+    val isAfterActionVisible: Boolean,
 ) : ViewHolderType {
 
     override fun getUniqueId(): Long = id

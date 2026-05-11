@@ -95,6 +95,7 @@ class ChangeRecordCore(
             createChangeRecordChangePreviewAdapterDelegate(
                 onCheckboxClicked = viewModel::onChangePreviewCheckClick,
                 onBeforeActionClicked = viewModel::onChangePreviewBeforeActionClick,
+                onAfterActionClicked = viewModel::onChangePreviewAfterActionClick,
             ),
             createChangeRecordTimePreviewAdapterDelegate(viewModel::onItemTimePreviewClick),
             createChangeRecordTimeDoublePreviewAdapterDelegate(

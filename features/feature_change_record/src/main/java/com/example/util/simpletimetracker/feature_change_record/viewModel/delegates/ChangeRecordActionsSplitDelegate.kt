@@ -126,6 +126,7 @@ class ChangeRecordActionsSplitDelegate @Inject constructor(
             isCheckVisible = false,
             isCompareVisible = false,
             isBeforeActionVisible = true,
+            isAfterActionVisible = true,
         )
         result += changeRecordViewDataMapper.mapRecordActionButton(
             action = action,

@@ -68,6 +68,7 @@ class ChangeRecordActionsMergeDelegate @Inject constructor(
                 isCheckVisible = false,
                 isCompareVisible = true,
                 isBeforeActionVisible = false,
+                isAfterActionVisible = false,
             )
             result += changeRecordViewDataMapper.mapRecordActionButton(
                 action = action,

@@ -273,19 +273,11 @@ abstract class ChangeRecordBaseViewModel(
     }
 
     fun onChangePreviewBeforeActionClick() {
-        TypesSelectionDialogParams(
-            tag = SPLIT_BEFORE_TYPE_SELECTION,
-            title = resourceRepo.getString(R.string.change_record_message_choose_type),
-            subtitle = "",
-            type = TypesSelectionDialogParams.Type.Activity,
-            selectedTypeIds = emptyList(),
-            selectedTagValues = emptyList(),
-            selectedTagValueOnStart = emptyList(),
-            isMultiSelectAvailable = false,
-            idsShouldBeVisible = emptyList(),
-            showHints = false,
-            allowTagValueSelection = false,
-        ).let(router::navigate)
+        openSplitTypeSelection(tag = SPLIT_BEFORE_TYPE_SELECTION)
+    }
+
+    fun onChangePreviewAfterActionClick() {
+        openSplitTypeSelection(tag = SPLIT_AFTER_TYPE_SELECTION)
     }
 
     fun onSaveClick() {
@@ -300,17 +292,7 @@ abstract class ChangeRecordBaseViewModel(
 
     fun onTypeClick(item: RecordTypeViewData) {
         viewModelScope.launch {
-            if (item.id != newTypeId) {
-                newTypeId = item.id
-                newTags = emptyList()
-                viewModelScope.launch {
-                    updatePreview()
-                    updateCategoriesViewData()
-                }
-                commentSelectionViewModelDelegate.updateCommentsViewData()
-                updateActionsData()
-            }
-
+            onMainTypeSelected(item.id)
             // Close type selection after type is selected
             onTypeChooserClick()
             openTagSelectionIfNeeded()
@@ -363,9 +345,20 @@ abstract class ChangeRecordBaseViewModel(
         tag: String?,
         dataIds: List<Long>,
     ) {
-        if (tag != SPLIT_BEFORE_TYPE_SELECTION) return
-        newSplitBeforeTypeId = dataIds.firstOrNull()
-        updateActionsData()
+        val selectedTypeId = dataIds.firstOrNull() ?: return
+        when (tag) {
+            SPLIT_BEFORE_TYPE_SELECTION -> {
+                newSplitBeforeTypeId = selectedTypeId
+                updateActionsData()
+            }
+            SPLIT_AFTER_TYPE_SELECTION -> {
+                if (selectedTypeId != newTypeId) {
+                    newSplitBeforeTypeId = newTypeId
+                    onMainTypeSelected(selectedTypeId)
+                }
+            }
+            else -> Unit
+        }
     }
 
     fun onCategoryLongClick(item: CategoryViewData, sharedElements: Pair<Any, String>) {
@@ -786,6 +779,34 @@ abstract class ChangeRecordBaseViewModel(
         updateActionsData()
     }
 
+    private fun openSplitTypeSelection(tag: String) {
+        TypesSelectionDialogParams(
+            tag = tag,
+            title = resourceRepo.getString(R.string.change_record_message_choose_type),
+            subtitle = "",
+            type = TypesSelectionDialogParams.Type.Activity,
+            selectedTypeIds = emptyList(),
+            selectedTagValues = emptyList(),
+            selectedTagValueOnStart = emptyList(),
+            isMultiSelectAvailable = false,
+            idsShouldBeVisible = emptyList(),
+            showHints = false,
+            allowTagValueSelection = false,
+        ).let(router::navigate)
+    }
+
+    private fun onMainTypeSelected(typeId: Long) {
+        if (typeId == newTypeId) return
+        newTypeId = typeId
+        newTags = emptyList()
+        viewModelScope.launch {
+            updatePreview()
+            updateCategoriesViewData()
+        }
+        commentSelectionViewModelDelegate.updateCommentsViewData()
+        updateActionsData()
+    }
+
     private fun getCommentSelectionDelegateParent(): CommentSelectionViewModelDelegate.Parent {
         return object : CommentSelectionViewModelDelegate.Parent {
             override fun getParams(): CommentSelectionViewModelDelegate.Parent.Params =
@@ -946,5 +967,6 @@ abstract class ChangeRecordBaseViewModel(
         private const val TIME_SPLIT_TAG = "time_split_tag"
         private const val CHANGE_RECORD_TAG_VALUE_SELECTION = "CHANGE_RECORD_TAG_VALUE_SELECTION"
         private const val SPLIT_BEFORE_TYPE_SELECTION = "SPLIT_BEFORE_TYPE_SELECTION"
+        private const val SPLIT_AFTER_TYPE_SELECTION = "SPLIT_AFTER_TYPE_SELECTION"
     }
 }
