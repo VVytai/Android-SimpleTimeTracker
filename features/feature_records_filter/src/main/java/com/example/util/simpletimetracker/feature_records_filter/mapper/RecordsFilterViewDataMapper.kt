@@ -212,7 +212,7 @@ class RecordsFilterViewDataMapper @Inject constructor(
                 colorMapper.toInactiveColor(isDarkTheme)
             },
             selected = enabled,
-            removeBtnVisible = false,
+            isBtnVisible = false,
         )
     }
 
@@ -245,7 +245,7 @@ class RecordsFilterViewDataMapper @Inject constructor(
                 colorMapper.toInactiveColor(isDarkTheme)
             },
             selected = enabled,
-            removeBtnVisible = false,
+            isBtnVisible = false,
         )
     }
 
@@ -283,7 +283,7 @@ class RecordsFilterViewDataMapper @Inject constructor(
                 colorMapper.toInactiveColor(isDarkTheme)
             },
             selected = enabled,
-            removeBtnVisible = false,
+            isBtnVisible = false,
         )
     }
 
@@ -321,7 +321,7 @@ class RecordsFilterViewDataMapper @Inject constructor(
                 colorMapper.toInactiveColor(isDarkTheme)
             },
             selected = enabled,
-            removeBtnVisible = false,
+            isBtnVisible = false,
         )
     }
 
@@ -352,7 +352,7 @@ class RecordsFilterViewDataMapper @Inject constructor(
                 colorMapper.toInactiveColor(isDarkTheme)
             },
             selected = selected,
-            removeBtnVisible = false,
+            isBtnVisible = false,
         )
     }
 

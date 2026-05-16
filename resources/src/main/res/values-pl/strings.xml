@@ -145,6 +145,7 @@ Pozwala to zobaczyć, ile czasu spędzasz na produktywnych i nieproduktywnych ak
     <string name="change_record_last_comments_hint">Ostatni komentarz</string>
     <string name="change_record_favourite_comments_hint">Ulubione</string>
     <string name="change_record_favourite_comments_hint_long">Ulubione komentarze</string>
+    <string name="change_record_favourite_activity_selection">Ulubione tylko dla wybranych aktywności</string>
     <string name="change_record_similar_comments_hint">Podobne komentarze</string>
     <string name="change_record_categories_empty">Brak dodanych tagów</string>
     <string name="change_record_save">Zapisz</string>

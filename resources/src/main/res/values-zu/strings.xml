@@ -145,6 +145,7 @@ Lokhu kukuvumela ukuthi ubone isikhathi osichitha emisebenzini esebenzayo nezing
     <string name="change_record_last_comments_hint">Amazwana okugcina</string>
     <string name="change_record_favourite_comments_hint">Okuthandwayo</string>
     <string name="change_record_favourite_comments_hint_long">Amazwana athandwayo</string>
+    <string name="change_record_favourite_activity_selection">Intandokazi kuphela yemisebenzi ekhethiwe</string>
     <string name="change_record_similar_comments_hint">Amazwana afanayo</string>
     <string name="change_record_categories_empty">Awakafakwa amathegi</string>
     <string name="change_record_save">Londoloza</string>

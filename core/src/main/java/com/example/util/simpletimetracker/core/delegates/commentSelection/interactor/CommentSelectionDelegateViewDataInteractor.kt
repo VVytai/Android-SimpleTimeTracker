@@ -43,6 +43,7 @@ class CommentSelectionDelegateViewDataInteractor @Inject constructor(
         items += recordCommentSearchViewDataInteractor.getViewData(
             comment = comment,
             typeId = typeId,
+            isSettingsAvailable = true,
         )
 
         return items

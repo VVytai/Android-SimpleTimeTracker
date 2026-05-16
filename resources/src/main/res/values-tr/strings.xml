@@ -145,6 +145,7 @@ Bu, genel olarak verimli ve verimsiz aktivitelere ne kadar zaman harcadığını
     <string name="change_record_last_comments_hint">Son yorumlar</string>
     <string name="change_record_favourite_comments_hint">Favori</string>
     <string name="change_record_favourite_comments_hint_long">Favori yorumlar</string>
+    <string name="change_record_favourite_activity_selection">Yalnızca seçilen aktiviteler için favori</string>
     <string name="change_record_similar_comments_hint">Benzer yorumlar</string>
     <string name="change_record_categories_empty">Kayıt etiketi eklenmedi</string>
     <string name="change_record_save">Kaydet</string>

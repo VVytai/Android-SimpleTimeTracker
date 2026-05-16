@@ -3,6 +3,7 @@ package com.example.util.simpletimetracker.core.interactor
 import com.example.util.simpletimetracker.core.R
 import com.example.util.simpletimetracker.core.mapper.ColorMapper
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
+import com.example.util.simpletimetracker.core.viewData.CommentFilterSettingsTypeViewData
 import com.example.util.simpletimetracker.core.viewData.CommentFilterTypeViewData
 import com.example.util.simpletimetracker.domain.base.CommentFilterType
 import com.example.util.simpletimetracker.domain.favourite.interactor.FavouriteCommentInteractor
@@ -33,6 +34,7 @@ class RecordCommentSearchViewDataInteractor @Inject constructor(
     suspend fun getViewData(
         comment: String,
         typeId: Long,
+        isSettingsAvailable: Boolean,
     ): List<ViewHolderType> = withContext(Dispatchers.Default) {
         val disabledFilters = prefsInteractor.getHiddenCommentFilters()
         val result = mutableListOf<ViewHolderType>()
@@ -47,10 +49,14 @@ class RecordCommentSearchViewDataInteractor @Inject constructor(
             last = last,
             disabledFilters = disabledFilters,
         )
+        val settings = getFiltersSettings(
+            comment = comment,
+            isSettingsAvailable = isSettingsAvailable,
+        )
 
         val needToShowHint = filters.filter { it.selected }.size > 1
 
-        result += filters
+        result += (filters + settings)
         if (CommentFilterType.Similar !in disabledFilters) {
             result += addHint(similar, needToShowHint, R.string.change_record_similar_comments_hint)
         }
@@ -105,6 +111,22 @@ class RecordCommentSearchViewDataInteractor @Inject constructor(
         }
 
         return result
+    }
+
+    private suspend fun getFiltersSettings(
+        comment: String,
+        isSettingsAvailable: Boolean,
+    ): List<FilterViewData> {
+        val isSettingsVisible = isSettingsAvailable &&
+            favouriteCommentInteractor.get(comment) != null
+
+        return if (isSettingsVisible) {
+            mapFilterSettingsViewData(
+                isDarkTheme = prefsInteractor.getDarkMode(),
+            ).let(::listOf)
+        } else {
+            emptyList()
+        }
     }
 
     private suspend fun getSimilarData(
@@ -173,7 +195,22 @@ class RecordCommentSearchViewDataInteractor @Inject constructor(
                 colorMapper.toInactiveColor(isDarkTheme)
             },
             selected = selected,
-            removeBtnVisible = false,
+            isBtnVisible = false,
+        )
+    }
+
+    private fun mapFilterSettingsViewData(
+        isDarkTheme: Boolean,
+    ): FilterViewData {
+        val type = CommentFilterSettingsTypeViewData
+        return FilterViewData(
+            id = type.hashCode().toLong(),
+            type = type,
+            name = "",
+            color = colorMapper.toInactiveColor(isDarkTheme),
+            selected = false,
+            isBtnVisible = true,
+            customBtnIconResId = R.drawable.ic_settings,
         )
     }
 

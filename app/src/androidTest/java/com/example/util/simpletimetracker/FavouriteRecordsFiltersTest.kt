@@ -524,7 +524,7 @@ class FavouriteRecordsFiltersTest : BaseUiTest() {
         clickOnView(
             allOf(
                 hasSibling(withSubstring(getString(textResId))),
-                withId(baseR.id.ivFilterItemRemove),
+                withId(baseR.id.ivFilterItemButton),
                 isCompletelyDisplayed(),
             ),
         )

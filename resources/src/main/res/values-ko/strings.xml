@@ -145,6 +145,7 @@
     <string name="change_record_last_comments_hint">이전 코멘트</string>
     <string name="change_record_favourite_comments_hint">자주쓰는 코멘트</string>
     <string name="change_record_favourite_comments_hint_long">즐겨찾는 댓글</string>
+    <string name="change_record_favourite_activity_selection">선택한 활동에만 즐겨찾기</string>
     <string name="change_record_similar_comments_hint">비슷한 댓글</string>
     <string name="change_record_categories_empty">기록 태그 없음</string>
     <string name="change_record_save">저장</string>

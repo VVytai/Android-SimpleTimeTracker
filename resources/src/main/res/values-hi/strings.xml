@@ -145,6 +145,7 @@
     <string name="change_record_last_comments_hint">अंतिम टिप्पणियाँ</string>
     <string name="change_record_favourite_comments_hint">पसंदीदा</string>
     <string name="change_record_favourite_comments_hint_long">पसंदीदा टिप्पणियाँ</string>
+    <string name="change_record_favourite_activity_selection">केवल चुनी गई गतिविधियों के लिए पसंदीदा</string>
     <string name="change_record_similar_comments_hint">समान टिप्पणियाँ</string>
     <string name="change_record_categories_empty">कोई रिकॉर्ड टैग नहीं जोड़ा गया</string>
     <string name="change_record_save">बचाना</string>

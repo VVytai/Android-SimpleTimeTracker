@@ -145,6 +145,7 @@ Ini memungkinkan Anda melihat berapa banyak waktu yang dihabiskan untuk aktivita
     <string name="change_record_last_comments_hint">Komentar terakhir</string>
     <string name="change_record_favourite_comments_hint">Favorit</string>
     <string name="change_record_favourite_comments_hint_long">Komentar favorit</string>
+    <string name="change_record_favourite_activity_selection">Favorit hanya untuk aktivitas yang dipilih</string>
     <string name="change_record_similar_comments_hint">Komentar serupa</string>
     <string name="change_record_categories_empty">Tidak ada label rekaman yang ditambahkan</string>
     <string name="change_record_save">Simpan</string>

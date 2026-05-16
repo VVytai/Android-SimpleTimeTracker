@@ -386,7 +386,7 @@ class RecordsFilterViewDataInteractor @Inject constructor(
                 } else {
                     colorMapper.toInactiveColor(isDarkTheme)
                 },
-                removeBtnVisible = enabled,
+                isBtnVisible = enabled,
                 selected = selected,
             )
         }

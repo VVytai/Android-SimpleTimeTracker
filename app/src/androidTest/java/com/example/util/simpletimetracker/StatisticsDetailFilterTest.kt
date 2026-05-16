@@ -218,7 +218,7 @@ class StatisticsDetailFilterTest : BaseUiTest() {
         clickOnView(
             allOf(
                 hasSibling(withSubstring(getString(coreR.string.activity_hint))),
-                withId(baseR.id.ivFilterItemRemove),
+                withId(baseR.id.ivFilterItemButton),
                 isCompletelyDisplayed(),
             ),
         )
@@ -313,7 +313,7 @@ class StatisticsDetailFilterTest : BaseUiTest() {
         clickOnView(
             allOf(
                 hasSibling(withSubstring(getString(R.string.record_tag_hint))),
-                withId(baseR.id.ivFilterItemRemove),
+                withId(baseR.id.ivFilterItemButton),
             ),
         )
         clickOnView(withSubstring(getString(R.string.record_tag_hint)))
@@ -395,7 +395,7 @@ class StatisticsDetailFilterTest : BaseUiTest() {
         clickOnView(
             allOf(
                 hasSibling(withSubstring(getString(R.string.record_tag_hint))),
-                withId(baseR.id.ivFilterItemRemove),
+                withId(baseR.id.ivFilterItemButton),
             ),
         )
         clickOnView(withSubstring(getString(R.string.record_tag_hint)))
@@ -415,7 +415,7 @@ class StatisticsDetailFilterTest : BaseUiTest() {
         clickOnView(
             allOf(
                 hasSibling(withSubstring(getString(coreR.string.activity_hint))),
-                withId(baseR.id.ivFilterItemRemove),
+                withId(baseR.id.ivFilterItemButton),
                 isCompletelyDisplayed(),
             ),
         )

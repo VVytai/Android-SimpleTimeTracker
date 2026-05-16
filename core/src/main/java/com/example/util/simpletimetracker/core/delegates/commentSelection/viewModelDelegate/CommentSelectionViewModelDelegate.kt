@@ -6,6 +6,8 @@ import com.example.util.simpletimetracker.core.base.ViewModelDelegate
 import com.example.util.simpletimetracker.core.delegates.commentSelection.interactor.CommentSelectionDelegateViewDataInteractor
 import com.example.util.simpletimetracker.core.extension.set
 import com.example.util.simpletimetracker.core.interactor.RecordCommentSearchViewDataInteractor
+import com.example.util.simpletimetracker.core.repo.ResourceRepo
+import com.example.util.simpletimetracker.core.viewData.CommentFilterSettingsTypeViewData
 import com.example.util.simpletimetracker.core.viewData.CommentFilterTypeViewData
 import com.example.util.simpletimetracker.domain.extension.addOrRemove
 import com.example.util.simpletimetracker.domain.extension.orZero
@@ -14,9 +16,12 @@ import com.example.util.simpletimetracker.domain.favourite.interactor.IsCommentF
 import com.example.util.simpletimetracker.domain.favourite.interactor.RecordTypeToFavouriteCommentInteractor
 import com.example.util.simpletimetracker.domain.favourite.model.FavouriteComment
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
+import com.example.util.simpletimetracker.feature_base_adapter.R
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.recordComment.RecordCommentViewData
 import com.example.util.simpletimetracker.feature_base_adapter.recordFilter.FilterViewData
+import com.example.util.simpletimetracker.navigation.Router
+import com.example.util.simpletimetracker.navigation.params.screen.TypesSelectionDialogParams
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -28,7 +33,6 @@ interface CommentSelectionViewModelDelegate {
     fun onCommentChange(comment: String)
     fun onCommentFilterClick(item: FilterViewData)
     fun onFavouriteCommentClick()
-    fun onFavouriteCommentLongClick()
     fun onCommentClick(item: RecordCommentViewData)
 
     interface Parent {
@@ -43,6 +47,8 @@ interface CommentSelectionViewModelDelegate {
 }
 
 class CommentSelectionViewModelDelegateImpl @Inject constructor(
+    private val router: Router,
+    private val resourceRepo: ResourceRepo,
     private val commentSelectionDelegateViewDataInteractor: CommentSelectionDelegateViewDataInteractor,
     private val recordCommentSearchViewDataInteractor: RecordCommentSearchViewDataInteractor,
     private val favouriteCommentInteractor: FavouriteCommentInteractor,
@@ -75,6 +81,10 @@ class CommentSelectionViewModelDelegateImpl @Inject constructor(
 
     override fun onCommentFilterClick(item: FilterViewData) {
         delegateScope.launch {
+            if (item.type is CommentFilterSettingsTypeViewData) {
+                openSettings()
+                return@launch
+            }
             val data = item.type as? CommentFilterTypeViewData ?: return@launch
             val type = recordCommentSearchViewDataInteractor.map(data)
             val newFilters = prefsInteractor.getHiddenCommentFilters().toMutableSet()
@@ -85,21 +95,6 @@ class CommentSelectionViewModelDelegateImpl @Inject constructor(
     }
 
     override fun onFavouriteCommentClick() {
-        if (newComment.isEmpty()) return
-
-        delegateScope.launch {
-            val newTypeId = parent?.getParams()?.recordTypeId.orZero()
-            val isFavourite = isCommentFavouriteInteractor.execute(newComment, newTypeId)
-            if (isFavourite) {
-                removeComment(newComment, 0L)
-            } else {
-                addComment(newComment, 0L)
-            }
-            updateCommentsViewData()
-        }
-    }
-
-    override fun onFavouriteCommentLongClick() {
         if (newComment.isEmpty()) return
 
         delegateScope.launch {
@@ -121,6 +116,30 @@ class CommentSelectionViewModelDelegateImpl @Inject constructor(
         updateCommentsViewData(fromCommentChange = true)
     }
 
+    private fun openSettings() {
+        delegateScope.launch {
+            val comment = favouriteCommentInteractor.get(newComment) ?: return@launch
+            val selectedTypeIds = recordTypeToFavouriteCommentInteractor.getTypes(comment.id)
+
+            TypesSelectionDialogParams(
+                tag = COMMENT_SELECTION_FAV_ACTIVITIES_TAG,
+                title = resourceRepo.getString(R.string.change_record_favourite_activity_selection),
+                subtitle = "",
+                type = TypesSelectionDialogParams.Type.Activity,
+                selectedTypeIds = selectedTypeIds.toList(),
+                selectedTagValues = emptyList(),
+                selectedTagValueOnStart = emptyList(),
+                isMultiSelectAvailable = true,
+                idsShouldBeVisible = emptyList(),
+                showHints = true,
+                allowTagValueSelection = false,
+            ).let(router::navigate)
+        }
+    }
+
+    // If no activity selected - tag is general - remove it.
+    // If assigned only to this activity - remove it.
+    // If assigned to other activities - remove only this activity.
     private suspend fun removeComment(comment: String, typeId: Long) {
         val comment = favouriteCommentInteractor.get(comment) ?: return
         if (typeId == 0L) {
@@ -143,12 +162,17 @@ class CommentSelectionViewModelDelegateImpl @Inject constructor(
         }
     }
 
+    // If not existing - add new as general.
+    // If existing and general - shouldn't be possible.
+    // If existing and not general and no type selected - make it general.
+    // If existing and not general and type selected - add current type.
     private suspend fun addComment(comment: String, typeId: Long) {
         val existingComment = favouriteCommentInteractor.get(comment)
         val commentId = if (existingComment == null) {
-            // Does not exist - create.
+            // Does not exist - create as general.
             val new = FavouriteComment(comment = comment)
             favouriteCommentInteractor.add(new)
+            return
         } else {
             // Already exist.
             existingComment.id
@@ -174,6 +198,20 @@ class CommentSelectionViewModelDelegateImpl @Inject constructor(
         }
     }
 
+    fun onDataSelected(
+        tag: String?,
+        dataIds: List<Long>,
+    ) = delegateScope.launch {
+        when (tag) {
+            COMMENT_SELECTION_FAV_ACTIVITIES_TAG -> {
+                val comment = favouriteCommentInteractor.get(newComment) ?: return@launch
+                recordTypeToFavouriteCommentInteractor.removeAll(comment.id)
+                recordTypeToFavouriteCommentInteractor.addTypes(comment.id, dataIds)
+                updateCommentsViewData()
+            }
+        }
+    }
+
     private suspend fun loadCommentsViewData(
         fromCommentChange: Boolean,
     ): List<ViewHolderType> {
@@ -182,5 +220,9 @@ class CommentSelectionViewModelDelegateImpl @Inject constructor(
             typeId = parent?.getParams()?.recordTypeId.orZero(),
             fromCommentChange = fromCommentChange,
         )
+    }
+
+    companion object {
+        private const val COMMENT_SELECTION_FAV_ACTIVITIES_TAG = "COMMENT_SELECTION_FAV_ACTIVITIES_TAG"
     }
 }

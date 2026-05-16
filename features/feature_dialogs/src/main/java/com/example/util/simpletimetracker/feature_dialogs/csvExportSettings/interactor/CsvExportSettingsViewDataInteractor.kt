@@ -121,7 +121,7 @@ class CsvExportSettingsViewDataInteractor @Inject constructor(
                 colorMapper.toInactiveColor(isDarkTheme)
             },
             selected = selected,
-            removeBtnVisible = false,
+            isBtnVisible = false,
         )
     }
 

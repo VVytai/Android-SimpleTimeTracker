@@ -145,6 +145,7 @@
     <string name="change_record_last_comments_hint">آخر التعليقات</string>
     <string name="change_record_favourite_comments_hint">المفضلة</string>
     <string name="change_record_favourite_comments_hint_long">التعليقات المفضلة</string>
+    <string name="change_record_favourite_activity_selection">المفضلة فقط للأنشطة المحددة</string>
     <string name="change_record_similar_comments_hint">تعليقات مماثلة</string>
     <string name="change_record_categories_empty">لم تضاف وسوم متتبعة</string>
     <string name="change_record_save">حفظ</string>

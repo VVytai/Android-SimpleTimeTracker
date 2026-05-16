@@ -145,6 +145,7 @@ Això et permet veure quant de temps dediques a activitats productives versus no
     <string name="change_record_last_comments_hint">Últims comentaris</string>
     <string name="change_record_favourite_comments_hint">Favorit</string>
     <string name="change_record_favourite_comments_hint_long">Comentaris preferits</string>
+    <string name="change_record_favourite_activity_selection">Preferit només per a activitats seleccionades</string>
     <string name="change_record_similar_comments_hint">Comentaris semblants</string>
     <string name="change_record_categories_empty">No s\'han afegit etiquetes</string>
     <string name="change_record_save">Desa</string>

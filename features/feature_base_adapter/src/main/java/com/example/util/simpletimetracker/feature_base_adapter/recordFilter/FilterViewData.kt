@@ -1,6 +1,7 @@
 package com.example.util.simpletimetracker.feature_base_adapter.recordFilter
 
 import androidx.annotation.ColorInt
+import androidx.annotation.DrawableRes
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 
 data class FilterViewData(
@@ -9,7 +10,8 @@ data class FilterViewData(
     val name: String,
     @ColorInt val color: Int,
     val selected: Boolean,
-    val removeBtnVisible: Boolean,
+    val isBtnVisible: Boolean,
+    @DrawableRes val customBtnIconResId: Int? = null,
 ) : ViewHolderType {
 
     override fun getUniqueId(): Long = id

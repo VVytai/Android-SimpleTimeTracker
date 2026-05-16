@@ -41,7 +41,7 @@
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvFilterItemName"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="28dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="4dp"
                 android:gravity="center"
@@ -50,23 +50,27 @@
                 android:textColor="?appLightTextColor"
                 app:layout_constrainedWidth="true"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/ivFilterItemRemove"
+                app:layout_constraintEnd_toStartOf="@id/ivFilterItemButton"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_goneMarginEnd="10dp"
-                tools:text="Filter name" />
+                tools:text="Filter name"
+                tools:visibility="visible" />
 
             <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/ivFilterItemRemove"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:id="@+id/ivFilterItemButton"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
                 android:layout_marginEnd="2dp"
                 android:background="?selectableItemBackgroundBorderless"
+                android:padding="2dp"
                 android:tint="?appLightTextColor"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/tvFilterItemName"
                 app:layout_constraintTop_toTopOf="parent"
+                app:layout_goneMarginStart="2dp"
                 app:srcCompat="@drawable/ic_remove"
                 tools:visibility="visible" />
 

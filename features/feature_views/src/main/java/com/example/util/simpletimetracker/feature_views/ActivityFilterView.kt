@@ -35,7 +35,7 @@ class ActivityFilterView @JvmOverloads constructor(
                 }
             }
 
-        binding.ivFilterItemRemove.isVisible = false
+        binding.ivFilterItemButton.isVisible = false
         binding.tvFilterItemName.textSize = 12f
         val paddingVertical = 6.dpToPx()
         binding.tvFilterItemName.updatePadding(top = paddingVertical, bottom = paddingVertical)

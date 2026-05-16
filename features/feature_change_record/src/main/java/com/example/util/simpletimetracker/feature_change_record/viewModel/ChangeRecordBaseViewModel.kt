@@ -345,19 +345,22 @@ abstract class ChangeRecordBaseViewModel(
         tag: String?,
         dataIds: List<Long>,
     ) {
-        val selectedTypeId = dataIds.firstOrNull() ?: return
         when (tag) {
             SPLIT_BEFORE_TYPE_SELECTION -> {
+                val selectedTypeId = dataIds.firstOrNull() ?: return
                 newSplitBeforeTypeId = selectedTypeId
                 updateActionsData()
             }
             SPLIT_AFTER_TYPE_SELECTION -> {
+                val selectedTypeId = dataIds.firstOrNull() ?: return
                 if (selectedTypeId != newTypeId) {
                     newSplitBeforeTypeId = newTypeId
                     onMainTypeSelected(selectedTypeId)
                 }
             }
-            else -> Unit
+            else -> {
+                commentSelectionViewModelDelegate.onDataSelected(tag, dataIds)
+            }
         }
     }
 

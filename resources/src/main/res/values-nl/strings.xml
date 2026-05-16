@@ -145,6 +145,7 @@ Dit stelt je in staat om te zien hoeveel tijd je in totaal besteedt aan producti
     <string name="change_record_last_comments_hint">Laatste opmerkingen</string>
     <string name="change_record_favourite_comments_hint">Favoriet</string>
     <string name="change_record_favourite_comments_hint_long">Favoriete opmerkingen</string>
+    <string name="change_record_favourite_activity_selection">Favoriet alleen voor geselecteerde activiteiten</string>
     <string name="change_record_similar_comments_hint">Soortgelijke opmerkingen</string>
     <string name="change_record_categories_empty">Geen opname labels toegevoegd</string>
     <string name="change_record_save">Opslaan</string>

@@ -54,7 +54,7 @@ class PartialRestoreViewDataInteractor @Inject constructor(
                 type = type,
                 name = name,
                 color = color,
-                removeBtnVisible = selected,
+                isBtnVisible = selected,
                 selected = selected,
             )
         }.ifEmpty {

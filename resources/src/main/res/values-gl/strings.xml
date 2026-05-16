@@ -145,6 +145,7 @@ Isto permíteche ver canto tempo estás dedicando a actividades produtivas front
     <string name="change_record_last_comments_hint">Derradeiros comentarios</string>
     <string name="change_record_favourite_comments_hint">Favorito</string>
     <string name="change_record_favourite_comments_hint_long">Comentarios favoritos</string>
+    <string name="change_record_favourite_activity_selection">Favorito só para actividades seleccionadas</string>
     <string name="change_record_similar_comments_hint">Comentarios semellantes</string>
     <string name="change_record_categories_empty">Non se engadiron etiquetas</string>
     <string name="change_record_save">Gardar</string>

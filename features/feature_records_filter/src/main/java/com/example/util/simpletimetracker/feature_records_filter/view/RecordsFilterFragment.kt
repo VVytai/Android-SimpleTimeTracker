@@ -69,7 +69,7 @@ class RecordsFilterFragment :
             createLoaderAdapterDelegate(),
             createFilterAdapterDelegate(
                 onClick = viewModel::onFilterClick,
-                onRemoveClick = viewModel::onFilterRemoveClick,
+                onButtonClick = viewModel::onFilterRemoveClick,
             ),
         )
     }

@@ -145,6 +145,7 @@
     <string name="change_record_last_comments_hint">最新备注</string>
     <string name="change_record_favourite_comments_hint">已收藏</string>
     <string name="change_record_favourite_comments_hint_long">收藏备注</string>
+    <string name="change_record_favourite_activity_selection">仅对所选活动设为收藏</string>
     <string name="change_record_similar_comments_hint">类似备注</string>
     <string name="change_record_categories_empty">没有新增记录标签</string>
     <string name="change_record_save">保存</string>

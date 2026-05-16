@@ -49,6 +49,7 @@ class RecordTagSelectionViewDataInteractor @Inject constructor(
             result += recordCommentSearchViewDataInteractor.getViewData(
                 comment = comment,
                 typeId = typeId,
+                isSettingsAvailable = false,
             )
         }
 

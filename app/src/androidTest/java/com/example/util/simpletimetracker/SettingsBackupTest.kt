@@ -844,7 +844,7 @@ class SettingsBackupTest : BaseUiTest() {
     }
 
     private fun removeFilter(@StringRes textResId: Int) {
-        clickOnView(allOf(hasSibling(withSubstring(getString(textResId))), withId(R.id.ivFilterItemRemove)))
+        clickOnView(allOf(hasSibling(withSubstring(getString(textResId))), withId(R.id.ivFilterItemButton)))
     }
 
     private fun Calendar.getMillis(hour: Int, minute: Int): Long {
