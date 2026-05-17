@@ -20,6 +20,7 @@ import com.example.util.simpletimetracker.domain.darkMode.interactor.ThemeChange
 import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.AddRunningRecordMediator
+import com.example.util.simpletimetracker.domain.record.interactor.RecordInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.RemoveRunningRecordMediator
 import com.example.util.simpletimetracker.domain.record.interactor.RunningRecordInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.UpdateRunningRecordsInteractor
@@ -67,6 +68,7 @@ class RunningRecordsViewModel @Inject constructor(
     private val addRunningRecordMediator: AddRunningRecordMediator,
     private val removeRunningRecordMediator: RemoveRunningRecordMediator,
     private val runningRecordInteractor: RunningRecordInteractor,
+    private val recordInteractor: RecordInteractor,
     private val recordRepeatInteractor: RecordRepeatInteractor,
     private val recordShortcutInteractor: RecordShortcutInteractor,
     private val runningRecordsViewDataInteractor: RunningRecordsViewDataInteractor,
@@ -222,7 +224,7 @@ class RunningRecordsViewModel @Inject constructor(
     ) = viewModelScope.launch {
         val startByLongClick = prefsInteractor.getStartTimerByLongClick()
         if (!startByLongClick) {
-            // Do nothing.
+            onRecordStart(item)
         } else {
             onRecordEdit(item)
         }
@@ -235,8 +237,20 @@ class RunningRecordsViewModel @Inject constructor(
         if (!startByLongClick) {
             onRecordEdit(item)
         } else {
-            // Do nothing.
+            onRecordStart(item)
         }
+    }
+
+    private suspend fun onRecordStart(
+        item: RecordWithHintViewData,
+    ) {
+        val prevRecord = recordInteractor.get(item.record.id) ?: return
+        addRunningRecordMediator.startTimer(
+            typeId = prevRecord.typeId,
+            tags = prevRecord.tags,
+            comment = prevRecord.comment,
+        )
+        updateRunningRecords()
     }
 
     private suspend fun onRecordEdit(
