@@ -238,8 +238,7 @@ class AddRunningRecordMediator @Inject constructor(
         prevRecords: SuspendLazy<List<Record>>,
     ) {
         val prevRecord = processRulesInteractor.getPrevRecordToMergeWith(params.typeId, prevRecords)
-        val sameTags = prevRecord?.tags.orEmpty().sortedBy { it.tagId } == params.tags.sortedBy { it.tagId }
-        val shouldMerge = sameTags || params.tags.isEmpty()
+        val shouldMerge = prevRecord?.tags.orEmpty().sortedBy { it.tagId } == params.tags.sortedBy { it.tagId }
 
         val record = if (prevRecord != null && shouldMerge) {
             Record(
