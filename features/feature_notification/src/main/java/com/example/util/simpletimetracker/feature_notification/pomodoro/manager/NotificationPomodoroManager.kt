@@ -13,13 +13,14 @@ import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.example.util.simpletimetracker.core.extension.allowVmViolations
-import com.example.util.simpletimetracker.feature_views.extension.getBitmapFromView
-import com.example.util.simpletimetracker.feature_views.extension.measureExactly
 import com.example.util.simpletimetracker.core.mapper.ColorMapper
 import com.example.util.simpletimetracker.core.utils.PendingIntents
-import com.example.util.simpletimetracker.feature_views.viewData.RecordTypeIcon
+import com.example.util.simpletimetracker.domain.pomodoro.model.PomodoroCycleType
 import com.example.util.simpletimetracker.feature_notification.R
 import com.example.util.simpletimetracker.feature_notification.recordType.customView.NotificationIconView
+import com.example.util.simpletimetracker.feature_views.extension.getBitmapFromView
+import com.example.util.simpletimetracker.feature_views.extension.measureExactly
+import com.example.util.simpletimetracker.feature_views.viewData.RecordTypeIcon
 import com.example.util.simpletimetracker.navigation.Router
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
@@ -43,7 +44,7 @@ class NotificationPomodoroManager @Inject constructor(
 
     fun show(params: NotificationPomodoroParams) {
         val notification: Notification = buildNotification(params)
-        createAndroidNotificationChannel()
+        createAndroidNotificationChannels()
         notificationManager.notify(NOTIFICATION_TAG, NOTIFICATION_ID, notification)
     }
 
@@ -65,7 +66,9 @@ class NotificationPomodoroManager @Inject constructor(
             PendingIntents.getFlags(),
         )
 
-        return NotificationCompat.Builder(context, NOTIFICATIONS_CHANNEL_ID)
+        val channelId = getChannelId(params.cycleType)
+
+        return NotificationCompat.Builder(context, channelId)
             .setContentTitle(params.title)
             .setContentText(params.subtitle)
             .setSmallIcon(R.drawable.ic_notification)
@@ -77,14 +80,34 @@ class NotificationPomodoroManager @Inject constructor(
             .build()
     }
 
-    private fun createAndroidNotificationChannel() {
+    private fun createAndroidNotificationChannels() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
-                NOTIFICATIONS_CHANNEL_ID,
-                NOTIFICATIONS_CHANNEL_NAME,
-                NotificationManager.IMPORTANCE_DEFAULT,
+            val channels = listOf(
+                NotificationChannel(
+                    NOTIFICATIONS_CHANNEL_ID_FOCUS,
+                    NOTIFICATIONS_CHANNEL_NAME_FOCUS,
+                    NotificationManager.IMPORTANCE_DEFAULT,
+                ),
+                NotificationChannel(
+                    NOTIFICATIONS_CHANNEL_ID_BREAK,
+                    NOTIFICATIONS_CHANNEL_NAME_BREAK,
+                    NotificationManager.IMPORTANCE_DEFAULT,
+                ),
+                NotificationChannel(
+                    NOTIFICATIONS_CHANNEL_ID_LONG_BREAK,
+                    NOTIFICATIONS_CHANNEL_NAME_LONG_BREAK,
+                    NotificationManager.IMPORTANCE_DEFAULT,
+                ),
             )
-            notificationManager.createNotificationChannel(channel)
+            notificationManager.createNotificationChannels(channels)
+        }
+    }
+
+    private fun getChannelId(cycleType: PomodoroCycleType): String {
+        return when (cycleType) {
+            is PomodoroCycleType.Focus -> NOTIFICATIONS_CHANNEL_ID_FOCUS
+            is PomodoroCycleType.Break -> NOTIFICATIONS_CHANNEL_ID_BREAK
+            is PomodoroCycleType.LongBreak -> NOTIFICATIONS_CHANNEL_ID_LONG_BREAK
         }
     }
 
@@ -103,8 +126,14 @@ class NotificationPomodoroManager @Inject constructor(
     }
 
     companion object {
-        private const val NOTIFICATIONS_CHANNEL_ID = "POMODORO"
-        private const val NOTIFICATIONS_CHANNEL_NAME = "Pomodoro"
+        private const val NOTIFICATIONS_CHANNEL_ID_FOCUS = "POMODORO_FOCUS"
+        private const val NOTIFICATIONS_CHANNEL_NAME_FOCUS = "Pomodoro Focus"
+
+        private const val NOTIFICATIONS_CHANNEL_ID_BREAK = "POMODORO_BREAK"
+        private const val NOTIFICATIONS_CHANNEL_NAME_BREAK = "Pomodoro Break"
+
+        private const val NOTIFICATIONS_CHANNEL_ID_LONG_BREAK = "POMODORO_LONG_BREAK"
+        private const val NOTIFICATIONS_CHANNEL_NAME_LONG_BREAK = "Pomodoro Long Break"
 
         private const val NOTIFICATION_TAG = "pomodoro_tag"
         private const val NOTIFICATION_ID = 0

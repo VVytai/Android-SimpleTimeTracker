@@ -28,6 +28,7 @@ class ShowPomodoroNotificationInteractor @Inject constructor(
                 cycleType = cycleType,
                 settings = getPomodoroSettingsInteractor.execute(),
             ),
+            cycleType = cycleType,
             isDarkTheme = prefsInteractor.getDarkMode(),
         ).let(manager::show)
     }
