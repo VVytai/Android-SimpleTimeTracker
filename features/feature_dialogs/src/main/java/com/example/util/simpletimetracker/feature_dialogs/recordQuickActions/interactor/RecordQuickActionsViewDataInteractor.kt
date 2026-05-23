@@ -3,6 +3,7 @@ package com.example.util.simpletimetracker.feature_dialogs.recordQuickActions.in
 import android.text.SpannableStringBuilder
 import androidx.core.text.bold
 import com.example.util.simpletimetracker.core.extension.toViewData
+import com.example.util.simpletimetracker.core.mapper.CommonViewDataMapper
 import com.example.util.simpletimetracker.core.mapper.RecordQuickActionMapper
 import com.example.util.simpletimetracker.core.mapper.RecordViewDataMapper
 import com.example.util.simpletimetracker.core.mapper.TimeMapper
@@ -31,6 +32,7 @@ import javax.inject.Inject
 class RecordQuickActionsViewDataInteractor @Inject constructor(
     private val timeMapper: TimeMapper,
     private val resourceRepo: ResourceRepo,
+    private val commonViewDataMapper: CommonViewDataMapper,
     private val recordViewDataMapper: RecordViewDataMapper,
     private val prefsInteractor: PrefsInteractor,
     private val recordInteractor: RecordInteractor,
@@ -410,20 +412,8 @@ class RecordQuickActionsViewDataInteractor @Inject constructor(
     }
 
     private fun mapMultiSelectHint(): RecordQuickActionsState.Hint.MultiSelect {
-        // Ex. "Selected: 5 Records"
-        val recordsSelectedCount = recordsContainerMultiselectInteractor.selectedRecordIds.size
-        val recordsSelectedString = resourceRepo.getString(
-            R.string.separator_template,
-            recordsSelectedCount,
-            resourceRepo.getQuantityString(
-                R.plurals.statistics_detail_times_tracked,
-                recordsSelectedCount,
-            ).lowercase(),
-        )
-        val text = resourceRepo.getString(
-            R.string.separator_template,
-            resourceRepo.getString(R.string.something_selected),
-            recordsSelectedString,
+        val text = commonViewDataMapper.mapRecordsCountHint(
+            count = recordsContainerMultiselectInteractor.selectedRecordIds.size
         )
         return RecordQuickActionsState.Hint.MultiSelect(text)
     }

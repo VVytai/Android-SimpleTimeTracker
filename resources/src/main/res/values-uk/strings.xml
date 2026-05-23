@@ -14,8 +14,8 @@
     <string name="record_tag_hint">Теги записів</string>
     <string name="record_tag_hint_short">Теги</string>
     <string name="nothing_selected">Нічого не обрано</string>
-    <string name="something_selected">Обрано:</string>
-    <string name="something_preselected">Попередньо вибрано:</string>
+    <string name="something_selected">Обрано</string>
+    <string name="something_preselected">Попередньо вибрано</string>
     <string name="select_all">Обрати все</string>
     <string name="select_nothing">Нічого не обирати</string>
     <string name="no_data">Немає даних</string>

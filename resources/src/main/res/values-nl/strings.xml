@@ -14,8 +14,8 @@
     <string name="record_tag_hint">Opname labels</string>
     <string name="record_tag_hint_short">Labels</string>
     <string name="nothing_selected">Niets geselecteerd</string>
-    <string name="something_selected">Geselecteerd:</string>
-    <string name="something_preselected">Vooraf geselecteerd:</string>
+    <string name="something_selected">Geselecteerd</string>
+    <string name="something_preselected">Vooraf geselecteerd</string>
     <string name="select_all">Selecteer alles</string>
     <string name="select_nothing">Selecteer niets</string>
     <string name="no_data">Geen gegevens</string>

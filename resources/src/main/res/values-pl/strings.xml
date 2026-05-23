@@ -14,8 +14,8 @@
     <string name="record_tag_hint">Tagi aktywności</string>
     <string name="record_tag_hint_short">Tagi</string>
     <string name="nothing_selected">Nic nie wybrano</string>
-    <string name="something_selected">Wybrane:</string>
-    <string name="something_preselected">Wstępnie wybrane:</string>
+    <string name="something_selected">Wybrane</string>
+    <string name="something_preselected">Wstępnie wybrane</string>
     <string name="select_all">Wybierz wszystko</string>
     <string name="select_nothing">Odznacz wszystko</string>
     <string name="no_data">Brak danych</string>

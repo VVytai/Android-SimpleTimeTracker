@@ -14,8 +14,8 @@
     <string name="record_tag_hint">Thẻ bản ghi</string>
     <string name="record_tag_hint_short">Thẻ</string>
     <string name="nothing_selected">Chưa chọn gì</string>
-    <string name="something_selected">Đã chọn:</string>
-    <string name="something_preselected">Đã chọn trước:</string>
+    <string name="something_selected">Đã chọn</string>
+    <string name="something_preselected">Đã chọn trước</string>
     <string name="select_all">Chọn tất cả</string>
     <string name="select_nothing">Không chọn gì</string>
     <string name="no_data">Không dữ liệu</string>

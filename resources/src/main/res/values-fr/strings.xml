@@ -14,8 +14,8 @@
     <string name="record_tag_hint">Étiquettes d\'enregistrement</string>
     <string name="record_tag_hint_short">Étiquette(s)</string>
     <string name="nothing_selected">Aucun élément sélectionné</string>
-    <string name="something_selected">Sélectionné :</string>
-    <string name="something_preselected">Présélectionné :</string>
+    <string name="something_selected">Sélectionné</string>
+    <string name="something_preselected">Présélectionné</string>
     <string name="select_all">Tout sélectionner</string>
     <string name="select_nothing">Effacer la sélection</string>
     <string name="no_data">Aucun enregistrement</string>

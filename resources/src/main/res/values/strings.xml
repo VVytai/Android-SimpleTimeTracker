@@ -14,8 +14,8 @@
     <string name="record_tag_hint">Record tags</string>
     <string name="record_tag_hint_short">Tags</string>
     <string name="nothing_selected">Nothing selected</string>
-    <string name="something_selected">Selected:</string>
-    <string name="something_preselected">Preselected:</string>
+    <string name="something_selected">Selected</string>
+    <string name="something_preselected">Preselected</string>
     <string name="select_all">Select all</string>
     <string name="select_nothing">Select nothing</string>
     <string name="no_data">No data</string>

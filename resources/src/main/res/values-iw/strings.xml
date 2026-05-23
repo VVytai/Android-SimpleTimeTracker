@@ -14,8 +14,8 @@
     <string name="record_tag_hint">תגיות רשומה</string>
     <string name="record_tag_hint_short">תגיות</string>
     <string name="nothing_selected">לא נבחר כלום</string>
-    <string name="something_selected">נבחרו:</string>
-    <string name="something_preselected">נבחר מראש:</string>
+    <string name="something_selected">נבחרו</string>
+    <string name="something_preselected">נבחר מראש</string>
     <string name="select_all">בחר הכל</string>
     <string name="select_nothing">בחר כלום</string>
     <string name="no_data">אין נתונים</string>

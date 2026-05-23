@@ -2,6 +2,7 @@ package com.example.util.simpletimetracker.feature_records_filter.mapper
 
 import androidx.annotation.ColorInt
 import com.example.util.simpletimetracker.core.mapper.ColorMapper
+import com.example.util.simpletimetracker.core.mapper.CommonViewDataMapper
 import com.example.util.simpletimetracker.core.mapper.RangeTitleMapper
 import com.example.util.simpletimetracker.core.mapper.TimeMapper
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
@@ -40,6 +41,7 @@ class RecordsFilterViewDataMapper @Inject constructor(
     private val timeMapper: TimeMapper,
     private val colorMapper: ColorMapper,
     private val rangeTitleMapper: RangeTitleMapper,
+    private val commonViewDataMapper: CommonViewDataMapper,
 ) {
 
     fun mapInitialFilter(
@@ -53,15 +55,11 @@ class RecordsFilterViewDataMapper @Inject constructor(
         count: Int,
         filterSelected: Boolean,
     ): String {
-        if (!filterSelected) return extra.title
-
-        val selected = resourceRepo.getString(R.string.something_selected)
-        val recordsString: String = resourceRepo.getQuantityString(
-            R.plurals.statistics_detail_times_tracked,
-            count,
-        ).lowercase()
-
-        return "$selected $count $recordsString"
+        return if (!filterSelected) {
+            extra.title
+        } else {
+            commonViewDataMapper.mapRecordsCountHint(count)
+        }
     }
 
     fun mapInactiveFilterName(

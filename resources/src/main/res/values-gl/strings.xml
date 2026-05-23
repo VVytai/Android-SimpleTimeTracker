@@ -14,8 +14,8 @@
     <string name="record_tag_hint">Etiquetas de rexistro</string>
     <string name="record_tag_hint_short">Etiquetas</string>
     <string name="nothing_selected">Nada seleccionado</string>
-    <string name="something_selected">Seleccionado:</string>
-    <string name="something_preselected">Preseleccionado:</string>
+    <string name="something_selected">Seleccionado</string>
+    <string name="something_preselected">Preseleccionado</string>
     <string name="select_all">Seleccionar todo</string>
     <string name="select_nothing">Non seleccionar nada</string>
     <string name="no_data">Sen datos</string>
