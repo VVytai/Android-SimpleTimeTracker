@@ -103,7 +103,7 @@ class CsvRepoImpl @Inject constructor(
             try {
                 fileOutputStream?.close()
                 fileDescriptor?.close()
-            } catch (e: IOException) {
+            } catch (_: IOException) {
                 // Do nothing
             }
         }
@@ -121,15 +121,23 @@ class CsvRepoImpl @Inject constructor(
             reader = inputStream?.let(::InputStreamReader)?.let(::BufferedReader)
 
             var line = ""
+            var nextPart: String
             var addedRecords = 0L
             val currentTypes = recordTypeRepo.getAll()
             val newAddedTypes = mutableListOf<RecordType>()
 
             // Read data
             while (reader?.readLine()?.also { line = it } != null) {
-                line = line.removePrefix("\"")
-                val typeName = line.substringBefore(delimiter = "\"", missingDelimiterValue = "")
-                line = line.removePrefix("$typeName\",")
+                val typeName: String
+                if (line.startsWith(QUOTE)) {
+                    line = line.removePrefix("\"")
+                    typeName = line.substringBefore(delimiter = QUOTE, missingDelimiterValue = "")
+                    nextPart = line.removePrefix("$typeName$QUOTE,")
+                } else {
+                    typeName = line.substringBefore(delimiter = ",", missingDelimiterValue = "")
+                    nextPart = line.removePrefix("$typeName,")
+                }
+                line = nextPart
 
                 val timeStartedString = line.substringBefore(delimiter = ",", missingDelimiterValue = "")
                 val timeStarted = parseDateTime(timeStartedString)
@@ -139,8 +147,14 @@ class CsvRepoImpl @Inject constructor(
                 val timeEnded = parseDateTime(timeEndedString)
                 line = line.removePrefix("$timeEndedString,")
 
-                line = line.removePrefix("\"")
-                val comment = line.substringBefore(delimiter = "\"", missingDelimiterValue = "")
+                val comment: String
+                if (line.startsWith(QUOTE)) {
+                    line = line.removePrefix(QUOTE)
+                    comment = line.substringBefore(delimiter = QUOTE, missingDelimiterValue = "")
+                } else {
+                    // If comment is last column and there is no comma - take whole line.
+                    comment = line.substringBefore(delimiter = ",", missingDelimiterValue = line)
+                }
 
                 if (
                     typeName.isNotEmpty() &&
@@ -186,7 +200,7 @@ class CsvRepoImpl @Inject constructor(
             try {
                 inputStream?.close()
                 reader?.close()
-            } catch (e: IOException) {
+            } catch (_: IOException) {
                 // Do nothing
             }
         }
@@ -264,6 +278,7 @@ class CsvRepoImpl @Inject constructor(
     }
 
     companion object {
+        private const val QUOTE = "\""
         private const val CSV_HEADER =
             "activity name,time started,time ended,comment,categories,record tags,duration,duration minutes\n"
     }
