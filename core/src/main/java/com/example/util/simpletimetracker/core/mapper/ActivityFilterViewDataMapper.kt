@@ -90,10 +90,12 @@ class ActivityFilterViewDataMapper @Inject constructor(
         color: AppColor,
         isDarkTheme: Boolean,
     ): Int {
-        return colorMapper.toFilteredColor(
-            color = color,
-            isDarkTheme = isDarkTheme,
-            isFiltered = !selected,
-        )
+        return when {
+            selected -> colorMapper.mapToColorInt(color, isDarkTheme)
+            isDarkTheme -> colorMapper.toFilteredColor(true)
+            // Override only filtered color for light theme,
+            // default filtered color is too bright, name not readable.
+            else -> resourceRepo.getThemedAttr(R.attr.appInactiveColor, false)
+        }
     }
 }
