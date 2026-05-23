@@ -6,7 +6,7 @@ import androidx.fragment.app.viewModels
 import com.example.util.simpletimetracker.core.base.BaseFragment
 import com.example.util.simpletimetracker.core.utils.InsetConfiguration
 import com.example.util.simpletimetracker.core.utils.doOnApplyWindowInsetsListener
-import com.example.util.simpletimetracker.core.utils.getNavBarInsets
+import com.example.util.simpletimetracker.core.utils.getNavBarInsetsBottom
 import com.example.util.simpletimetracker.feature_base_adapter.BaseRecyclerAdapter
 import com.example.util.simpletimetracker.feature_base_adapter.button.createButtonAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.empty.createEmptyAdapterDelegate
@@ -58,7 +58,7 @@ class ShortcutsFragment : BaseFragment<Binding>() {
         }
 
         view?.doOnApplyWindowInsetsListener {
-            viewModel.onChangeInsets(navBarHeight = getNavBarInsets().pxToDp())
+            viewModel.onChangeInsets(navBarHeight = it.getNavBarInsetsBottom().pxToDp())
         }
     }
 

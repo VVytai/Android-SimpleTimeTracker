@@ -11,7 +11,7 @@ import com.example.util.simpletimetracker.core.dialog.OptionsListDialogListener
 import com.example.util.simpletimetracker.core.dialog.StandardDialogListener
 import com.example.util.simpletimetracker.core.utils.InsetConfiguration
 import com.example.util.simpletimetracker.core.utils.doOnApplyWindowInsetsListener
-import com.example.util.simpletimetracker.core.utils.getNavBarInsets
+import com.example.util.simpletimetracker.core.utils.getNavBarInsetsBottom
 import com.example.util.simpletimetracker.feature_archive.viewData.ArchiveSearchState
 import com.example.util.simpletimetracker.feature_archive.viewModel.ArchiveViewModel
 import com.example.util.simpletimetracker.feature_base_adapter.BaseRecyclerAdapter
@@ -73,7 +73,7 @@ class ArchiveFragment :
         }
 
         btnArchiveOptions.doOnApplyWindowInsetsListener {
-            val navBarHeight = getNavBarInsets().pxToDp()
+            val navBarHeight = it.getNavBarInsetsBottom().pxToDp()
             viewModel.onChangeInsets(navBarHeight = navBarHeight)
             setMargins(bottom = navBarHeight)
         }

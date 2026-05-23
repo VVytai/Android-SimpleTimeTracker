@@ -12,7 +12,7 @@ import com.example.util.simpletimetracker.core.dialog.StandardDialogListener
 import com.example.util.simpletimetracker.core.sharedViewModel.MainTabsViewModel
 import com.example.util.simpletimetracker.core.utils.InsetConfiguration
 import com.example.util.simpletimetracker.core.utils.doOnApplyWindowInsetsListener
-import com.example.util.simpletimetracker.core.utils.getNavBarInsets
+import com.example.util.simpletimetracker.core.utils.getNavBarInsetsBottom
 import com.example.util.simpletimetracker.core.utils.updateRunningRecordPreview
 import com.example.util.simpletimetracker.core.viewData.RecordTypeSuggestionType
 import com.example.util.simpletimetracker.domain.record.interactor.UpdateRunningRecordsInteractor
@@ -125,7 +125,7 @@ class RunningRecordsFragment :
         }
 
         view?.doOnApplyWindowInsetsListener {
-            viewModel.onChangeInsets(navBarHeight = getNavBarInsets().pxToDp())
+            viewModel.onChangeInsets(navBarHeight = it.getNavBarInsetsBottom().pxToDp())
         }
 
         setOnPreDrawListener {

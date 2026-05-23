@@ -5,34 +5,46 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import com.example.util.simpletimetracker.core.manager.KeyboardVisibilityManager
-import com.example.util.simpletimetracker.domain.extension.orZero
 
 // Can update padding or margin, which would be more appropriate.
 fun View.doOnApplyWindowInsetsListener(block: View.(WindowInsetsCompat) -> Unit) {
-    ViewCompat.setOnApplyWindowInsetsListener(this) { _, windowInsets ->
+    ViewCompat.setOnApplyWindowInsetsListener(this) { view, windowInsets ->
         // All setOnApplyWindowInsetsListener listeners should call Keyboard manager.
         KeyboardVisibilityManager.onInsetsChanged(windowInsets)
-        block(windowInsets)
+        view.block(windowInsets)
         windowInsets
+    }
+
+    if (isAttachedToWindow) {
+        ViewCompat.requestApplyInsets(this)
+    } else {
+        addOnAttachStateChangeListener(
+            object : View.OnAttachStateChangeListener {
+                override fun onViewAttachedToWindow(view: View) {
+                    view.removeOnAttachStateChangeListener(this)
+                    ViewCompat.requestApplyInsets(view)
+                }
+
+                override fun onViewDetachedFromWindow(view: View) = Unit
+            },
+        )
     }
 }
 
 fun View.applyStatusBarInsets() {
-    doOnApplyWindowInsetsListener { updatePadding(top = getStatusBarInsets()) }
+    doOnApplyWindowInsetsListener { updatePadding(top = it.getStatusBarInsetsTop()) }
 }
 
 fun View.applyNavBarInsets() {
-    doOnApplyWindowInsetsListener { updatePadding(bottom = getNavBarInsets()) }
+    doOnApplyWindowInsetsListener { updatePadding(bottom = it.getNavBarInsetsBottom()) }
 }
 
-fun View.getStatusBarInsets(): Int {
-    return ViewCompat.getRootWindowInsets(this)
-        ?.getInsets(WindowInsetsCompat.Type.statusBars())?.top.orZero()
+fun WindowInsetsCompat.getStatusBarInsetsTop(): Int {
+    return getInsets(WindowInsetsCompat.Type.statusBars()).top
 }
 
-fun View.getNavBarInsets(): Int {
-    return ViewCompat.getRootWindowInsets(this)
-        ?.getInsets(WindowInsetsCompat.Type.navigationBars())?.bottom.orZero()
+fun WindowInsetsCompat.getNavBarInsetsBottom(): Int {
+    return getInsets(WindowInsetsCompat.Type.navigationBars()).bottom
 }
 
 // Need windowSoftInputMode="adjustResize" on activity in order to work on api < 30.

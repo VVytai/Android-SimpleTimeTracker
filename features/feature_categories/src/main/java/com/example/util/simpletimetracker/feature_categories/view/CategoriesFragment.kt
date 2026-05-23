@@ -11,7 +11,7 @@ import com.example.util.simpletimetracker.core.dialog.OptionsListDialogListener
 import com.example.util.simpletimetracker.core.dialog.TypesSelectionDialogListener
 import com.example.util.simpletimetracker.core.utils.InsetConfiguration
 import com.example.util.simpletimetracker.core.utils.doOnApplyWindowInsetsListener
-import com.example.util.simpletimetracker.core.utils.getNavBarInsets
+import com.example.util.simpletimetracker.core.utils.getNavBarInsetsBottom
 import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.domain.statistics.model.ChartFilterType
 import com.example.util.simpletimetracker.feature_base_adapter.BaseRecyclerAdapter
@@ -79,7 +79,7 @@ class CategoriesFragment :
         }
 
         btnCategoriesOptions.doOnApplyWindowInsetsListener {
-            val navBarHeight = getNavBarInsets().pxToDp()
+            val navBarHeight = it.getNavBarInsetsBottom().pxToDp()
             viewModel.onChangeInsets(navBarHeight = navBarHeight)
             setMargins(bottom = navBarHeight)
         }

@@ -10,7 +10,7 @@ import com.example.util.simpletimetracker.core.base.BaseFragment
 import com.example.util.simpletimetracker.core.dialog.OnTagSelectedListener
 import com.example.util.simpletimetracker.core.utils.InsetConfiguration
 import com.example.util.simpletimetracker.core.utils.doOnApplyWindowInsetsListener
-import com.example.util.simpletimetracker.core.utils.getNavBarInsets
+import com.example.util.simpletimetracker.core.utils.getNavBarInsetsBottom
 import com.example.util.simpletimetracker.core.viewData.RecordTypeSuggestionType
 import com.example.util.simpletimetracker.feature_base_adapter.BaseRecyclerAdapter
 import com.example.util.simpletimetracker.feature_base_adapter.activityFilter.createActivityFilterAdapterDelegate
@@ -74,7 +74,7 @@ class WidgetUniversalFragment :
         }
 
         view?.doOnApplyWindowInsetsListener {
-            viewModel.onChangeInsets(navBarHeight = getNavBarInsets().pxToDp())
+            viewModel.onChangeInsets(navBarHeight = it.getNavBarInsetsBottom().pxToDp())
         }
     }
 

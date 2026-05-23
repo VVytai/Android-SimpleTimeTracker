@@ -999,6 +999,7 @@ class AddRunningRecordMediatorTest {
     fun retroactiveMergeKeepData(): Unit = runBlocking {
         // Given
         `when`(prefsInteractor.getRetroactiveTrackingMode()).thenReturn(true)
+        `when`(recordTagInteractor.getAll()).thenReturn(listOf(recordTag(tagId)))
         `when`(recordInteractor.getAllPrev(any())).thenReturn(
             listOf(
                 Record(
@@ -1015,7 +1016,7 @@ class AddRunningRecordMediatorTest {
         // When
         subject.startTimer(
             typeId = typeId,
-            tags = emptyList(),
+            tags = listOf(tag(tagId)),
             comment = "",
             timeStarted = AddRunningRecordMediator.StartTime.TakeCurrent,
             updateNotificationSwitch = true,
@@ -1159,6 +1160,7 @@ class AddRunningRecordMediatorTest {
         // Given
         `when`(prefsInteractor.getRetroactiveTrackingMode()).thenReturn(true)
         `when`(prefsInteractor.getAllowMultitasking()).thenReturn(true)
+        `when`(recordTagInteractor.getAll()).thenReturn(listOf(recordTag(tagId), recordTag(tagId2)))
         `when`(recordInteractor.getAllPrev(any())).thenReturn(
             listOf(
                 Record(

@@ -14,7 +14,7 @@ import androidx.viewbinding.ViewBinding
 import com.example.util.simpletimetracker.core.R
 import com.example.util.simpletimetracker.core.utils.applyNavBarInsets
 import com.example.util.simpletimetracker.core.utils.doOnApplyWindowInsetsListener
-import com.example.util.simpletimetracker.core.utils.getStatusBarInsets
+import com.example.util.simpletimetracker.core.utils.getStatusBarInsetsTop
 import com.example.util.simpletimetracker.navigation.Router
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -116,7 +116,7 @@ abstract class BaseBottomSheetFragment<T : ViewBinding> : BottomSheetDialogFragm
                 findViewById<View>(com.google.android.material.R.id.container)?.apply {
                     fitsSystemWindows = false
                     doOnApplyWindowInsetsListener {
-                        updatePadding(top = getStatusBarInsets(), bottom = 0)
+                        updatePadding(top = it.getStatusBarInsetsTop(), bottom = 0)
                     }
                 }
 
