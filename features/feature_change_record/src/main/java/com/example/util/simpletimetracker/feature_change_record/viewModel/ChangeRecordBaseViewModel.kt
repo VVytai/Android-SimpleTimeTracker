@@ -929,12 +929,14 @@ abstract class ChangeRecordBaseViewModel(
             typeIds = listOf(newTypeId),
             showAllTags = showAllTags,
             multipleChoiceAvailable = true,
-            showAddButton = true,
             showBigEmptyHint = true,
             showHint = true,
             showArchived = false,
-            showUntaggedButton = newTags.isNotEmpty(),
-            showAllTagsButton = true,
+            buttons = listOfNotNull(
+                RecordTagViewDataInteractor.Button.ADD,
+                RecordTagViewDataInteractor.Button.ALL_TAGS,
+                RecordTagViewDataInteractor.Button.UNTAGGED.takeIf { newTags.isNotEmpty() },
+            ),
         ).let {
             ChangeRecordTagsViewData(
                 selectedCount = it.selectedCount,

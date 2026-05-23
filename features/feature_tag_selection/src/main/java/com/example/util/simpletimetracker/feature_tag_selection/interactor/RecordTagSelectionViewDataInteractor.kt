@@ -77,12 +77,13 @@ class RecordTagSelectionViewDataInteractor @Inject constructor(
                 typeIds = listOf(typeId),
                 showAllTags = showAllTags,
                 multipleChoiceAvailable = multipleChoiceAvailable,
-                showAddButton = false,
                 showBigEmptyHint = false,
                 showHint = false,
                 showArchived = false,
-                showUntaggedButton = true,
-                showAllTagsButton = true,
+                buttons = listOf(
+                    RecordTagViewDataInteractor.Button.UNTAGGED,
+                    RecordTagViewDataInteractor.Button.ALL_TAGS,
+                )
             ).data
         }
 

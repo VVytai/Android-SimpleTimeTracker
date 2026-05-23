@@ -100,12 +100,10 @@ class DataEditTagSelectionViewModel @Inject constructor(
             typeIds = extra.typeIds,
             showAllTags = false,
             multipleChoiceAvailable = true,
-            showAddButton = false,
             showBigEmptyHint = false,
             showHint = false,
             showArchived = true,
-            showUntaggedButton = false,
-            showAllTagsButton = false,
+            buttons = emptyList(),
         ).data.let(result::addAll)
 
         return result

@@ -384,12 +384,12 @@ class ChangeShortcutViewModel @Inject constructor(
             typeIds = listOf(recordTypeId.orZero()),
             showAllTags = false,
             multipleChoiceAvailable = true,
-            showAddButton = false,
             showBigEmptyHint = false,
             showHint = true,
             showArchived = false,
-            showUntaggedButton = recordTags.isNotEmpty(),
-            showAllTagsButton = false,
+            buttons = listOfNotNull(
+                RecordTagViewDataInteractor.Button.UNTAGGED.takeIf { recordTags.isNotEmpty() }
+            )
         )
         tags.set(data.data)
     }

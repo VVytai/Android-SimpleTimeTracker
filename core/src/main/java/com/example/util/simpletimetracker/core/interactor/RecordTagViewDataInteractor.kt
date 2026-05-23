@@ -35,12 +35,10 @@ class RecordTagViewDataInteractor @Inject constructor(
         typeIds: List<Long>,
         showAllTags: Boolean,
         multipleChoiceAvailable: Boolean,
-        showAddButton: Boolean,
         showBigEmptyHint: Boolean,
         showHint: Boolean,
         showArchived: Boolean,
-        showUntaggedButton: Boolean,
-        showAllTagsButton: Boolean,
+        buttons: List<Button>,
     ): Result {
         fun List<RecordTag>.filterArchived(): List<RecordTag> {
             return if (showArchived) this else this.filterNot { it.archived }
@@ -48,6 +46,7 @@ class RecordTagViewDataInteractor @Inject constructor(
 
         val isDarkTheme = prefsInteractor.getDarkMode()
         val allTags = recordTagInteractor.getAll().filterArchived()
+        val showAddButton = Button.ADD in buttons
 
         if (allTags.isEmpty()) {
             return mapEmpty(
@@ -60,7 +59,6 @@ class RecordTagViewDataInteractor @Inject constructor(
         val recordTags = getSelectableTagsInteractor.execute(*typeIds.toLongArray()).filterArchived()
         val recordTagIds = recordTags.map { it.id }
         val tagsFromOtherActivities = allTags.filter { it.id !in recordTagIds }
-        val hasMoreTags = tagsFromOtherActivities.isNotEmpty()
         val types = recordTypeInteractor.getAll().associateBy { it.id }
 
         val selectedTagsMap = selectedTags.associateBy { it.tagId }
@@ -141,13 +139,13 @@ class RecordTagViewDataInteractor @Inject constructor(
 
         // Buttons
         val buttonsViewData = mutableListOf<ViewHolderType>()
-        if (showUntaggedButton) {
+        if (Button.UNTAGGED in buttons) {
             buttonsViewData += categoryViewDataMapper.mapToUntaggedItem(
                 isDarkTheme = isDarkTheme,
                 isFiltered = false,
             )
         }
-        if (showAllTagsButton && !showAllTags && hasMoreTags) {
+        if (Button.ALL_TAGS in buttons && !showAllTags && tagsFromOtherActivities.isNotEmpty()) {
             buttonsViewData += categoryViewDataMapper.mapToRecordTagShowAllItem(
                 isDarkTheme = isDarkTheme,
             )
@@ -208,4 +206,8 @@ class RecordTagViewDataInteractor @Inject constructor(
         val selectedCount: Int,
         val data: List<ViewHolderType>,
     )
+
+    enum class Button {
+        ADD, UNTAGGED, ALL_TAGS,
+    }
 }
