@@ -4,6 +4,7 @@ import com.example.util.simpletimetracker.core.mapper.CategoryViewDataMapper
 import com.example.util.simpletimetracker.core.mapper.CommonViewDataMapper
 import com.example.util.simpletimetracker.domain.category.interactor.CategoryInteractor
 import com.example.util.simpletimetracker.domain.extension.addBetweenEach
+import com.example.util.simpletimetracker.domain.extension.plusAssign
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.divider.DividerViewData
@@ -28,24 +29,34 @@ class ChangeRecordTypeViewDataInteractor @Inject constructor(
             val available = categories.filter { it.id !in selectedCategories }
 
             // Main hint
-            val hintData = listOf(categoryViewDataMapper.mapToCategoryHint())
+            val hintData = if (selected.isEmpty()) {
+                listOf(categoryViewDataMapper.mapToCategoryHint())
+            } else {
+                emptyList()
+            }
 
             // Selected
             val selectedData = mutableListOf<ViewHolderType>()
-            selectedData += commonViewDataMapper.mapSelectedHint(isEmpty = selected.isEmpty())
-            selectedData += selected.map {
-                categoryViewDataMapper.mapCategory(
-                    category = it,
-                    isDarkTheme = isDarkTheme,
-                )
+            if (selected.isNotEmpty()) {
+                selectedData += commonViewDataMapper.mapSelected()
+                selectedData += selected.map {
+                    categoryViewDataMapper.mapCategory(
+                        category = it,
+                        isDarkTheme = isDarkTheme,
+                    )
+                }
             }
 
             // Available
-            val availableData = available.map {
-                categoryViewDataMapper.mapCategory(
-                    category = it,
-                    isDarkTheme = isDarkTheme,
-                )
+            val availableData = mutableListOf<ViewHolderType>()
+            if (available.isNotEmpty()) {
+                availableData += commonViewDataMapper.mapAvailable()
+                availableData += available.map {
+                    categoryViewDataMapper.mapCategory(
+                        category = it,
+                        isDarkTheme = isDarkTheme,
+                    )
+                }
             }
 
             // Buttons

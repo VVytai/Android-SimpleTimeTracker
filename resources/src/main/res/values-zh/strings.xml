@@ -15,6 +15,7 @@
     <string name="record_tag_hint_short">标签</string>
     <string name="nothing_selected">未选择任何内容</string>
     <string name="something_selected">已选择</string>
+    <string name="something_available">可用</string>
     <string name="something_preselected">已预选</string>
     <string name="select_all">全选</string>
     <string name="select_nothing">不选择任何内容</string>

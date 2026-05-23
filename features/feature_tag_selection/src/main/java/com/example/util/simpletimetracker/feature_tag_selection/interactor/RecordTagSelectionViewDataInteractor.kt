@@ -78,6 +78,7 @@ class RecordTagSelectionViewDataInteractor @Inject constructor(
                 showAllTags = showAllTags,
                 multipleChoiceAvailable = multipleChoiceAvailable,
                 showAddButton = false,
+                showBigEmptyHint = false,
                 showHint = false,
                 showArchived = false,
                 showUntaggedButton = true,

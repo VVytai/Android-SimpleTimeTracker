@@ -413,7 +413,7 @@ class RecordQuickActionsViewDataInteractor @Inject constructor(
 
     private fun mapMultiSelectHint(): RecordQuickActionsState.Hint.MultiSelect {
         val text = commonViewDataMapper.mapRecordsCountHint(
-            count = recordsContainerMultiselectInteractor.selectedRecordIds.size
+            count = recordsContainerMultiselectInteractor.selectedRecordIds.size,
         )
         return RecordQuickActionsState.Hint.MultiSelect(text)
     }

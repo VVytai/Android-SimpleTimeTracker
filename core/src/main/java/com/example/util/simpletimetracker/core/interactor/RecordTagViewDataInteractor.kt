@@ -15,7 +15,6 @@ import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTyp
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.divider.DividerViewData
 import com.example.util.simpletimetracker.feature_base_adapter.hint.HintViewData
-import com.example.util.simpletimetracker.feature_base_adapter.info.InfoViewData
 import javax.inject.Inject
 
 class RecordTagViewDataInteractor @Inject constructor(
@@ -28,6 +27,8 @@ class RecordTagViewDataInteractor @Inject constructor(
     private val commonViewDataMapper: CommonViewDataMapper,
 ) {
 
+    // TODO also change selection in other places
+    // TODO remove InfoViewData and mapSelectedHint in CommonViewDataMapper
     // typeId is empty - show all tags.
     suspend fun getViewData(
         selectedTags: List<RecordBase.Tag>,
@@ -35,6 +36,7 @@ class RecordTagViewDataInteractor @Inject constructor(
         showAllTags: Boolean,
         multipleChoiceAvailable: Boolean,
         showAddButton: Boolean,
+        showBigEmptyHint: Boolean,
         showHint: Boolean,
         showArchived: Boolean,
         showUntaggedButton: Boolean,
@@ -49,6 +51,7 @@ class RecordTagViewDataInteractor @Inject constructor(
 
         if (allTags.isEmpty()) {
             return mapEmpty(
+                showBigEmptyHint = showBigEmptyHint,
                 showAddButton = showAddButton,
                 isDarkTheme = isDarkTheme,
             )
@@ -71,7 +74,7 @@ class RecordTagViewDataInteractor @Inject constructor(
         }
 
         // Hint
-        val hintViewData = if (showHint) {
+        val hintViewData = if (showHint && selected.isEmpty()) {
             listOf(categoryViewDataMapper.mapToRecordTagHint())
         } else {
             emptyList()
@@ -79,29 +82,34 @@ class RecordTagViewDataInteractor @Inject constructor(
 
         // Selected
         val selectedViewData = mutableListOf<ViewHolderType>()
-        if (multipleChoiceAvailable) {
-            selectedViewData += commonViewDataMapper.mapSelectedHint(
-                isEmpty = selected.isEmpty(),
-            )
-        } else if (selected.isNotEmpty()) {
-            selectedViewData += InfoViewData(
-                text = resourceRepo.getString(R.string.something_preselected),
-            )
-        }
-        selectedViewData += selected.map {
-            categoryViewDataMapper.mapRecordTagWithValue(
-                tag = it,
-                tagData = selectedTagsMap[it.id],
-                types = types,
-                isDarkTheme = isDarkTheme,
-            )
+        if (selected.isNotEmpty()) {
+            selectedViewData += if (multipleChoiceAvailable) {
+                commonViewDataMapper.mapSelected()
+            } else {
+                commonViewDataMapper.mapPreselected()
+            }
+            selectedViewData += selected.map {
+                categoryViewDataMapper.mapRecordTagWithValue(
+                    tag = it,
+                    tagData = selectedTagsMap[it.id],
+                    types = types,
+                    isDarkTheme = isDarkTheme,
+                )
+            }
         }
 
         // Available
         val availableViewData = mutableListOf<ViewHolderType>()
+        if (available.isNotEmpty()) {
+            availableViewData += commonViewDataMapper.mapAvailable()
+        }
         categoryViewDataMapper.groupToTagGroups(available).forEach { (groupName, tags) ->
             if (groupName.isNotEmpty()) {
-                availableViewData += InfoViewData(text = groupName)
+                availableViewData += HintViewData(
+                    text = groupName,
+                    paddingTop = 0,
+                    paddingBottom = 0,
+                )
             }
 
             availableViewData += tags.map {
@@ -118,6 +126,8 @@ class RecordTagViewDataInteractor @Inject constructor(
         if (availableFromOtherActivities.isNotEmpty()) {
             availableFromOtherViewData += HintViewData(
                 text = resourceRepo.getString(R.string.change_record_tag_from_other_activity),
+                paddingTop = 0,
+                paddingBottom = 0,
             )
 
             availableFromOtherViewData += availableFromOtherActivities.map {
@@ -164,7 +174,9 @@ class RecordTagViewDataInteractor @Inject constructor(
                     null
                 }
             },
-        ).flatten()
+        ).flatten().takeIf {
+            it.isNotEmpty()
+        } ?: listOf(commonViewDataMapper.mapSelectedHint(isEmpty = true))
 
         return Result(
             selectedCount = selected.size,
@@ -173,11 +185,12 @@ class RecordTagViewDataInteractor @Inject constructor(
     }
 
     private suspend fun mapEmpty(
+        showBigEmptyHint: Boolean,
         showAddButton: Boolean,
         isDarkTheme: Boolean,
     ): Result {
         val viewData = mutableListOf<ViewHolderType>()
-        viewData += if (showAddButton && recordTagInteractor.isEmpty()) {
+        viewData += if (showBigEmptyHint && recordTagInteractor.isEmpty()) {
             categoryViewDataMapper.mapToTagsFirstHint()
         } else {
             categoryViewDataMapper.mapToRecordTagsEmpty()

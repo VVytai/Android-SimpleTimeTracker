@@ -930,6 +930,7 @@ abstract class ChangeRecordBaseViewModel(
             showAllTags = showAllTags,
             multipleChoiceAvailable = true,
             showAddButton = true,
+            showBigEmptyHint = true,
             showHint = true,
             showArchived = false,
             showUntaggedButton = newTags.isNotEmpty(),
