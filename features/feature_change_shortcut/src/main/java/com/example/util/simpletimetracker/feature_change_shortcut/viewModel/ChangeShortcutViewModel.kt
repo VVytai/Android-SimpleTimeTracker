@@ -387,6 +387,8 @@ class ChangeShortcutViewModel @Inject constructor(
             showBigEmptyHint = false,
             showHint = true,
             showArchived = false,
+            searchText = "",
+            fromSearchChange = false,
             buttons = listOfNotNull(
                 RecordTagViewDataInteractor.Button.UNTAGGED.takeIf { recordTags.isNotEmpty() },
             ),

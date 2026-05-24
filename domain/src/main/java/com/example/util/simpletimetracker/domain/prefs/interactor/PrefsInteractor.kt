@@ -1028,6 +1028,14 @@ class PrefsInteractor @Inject constructor(
         prefsRepo.isArchiveSearchEnabled = value
     }
 
+    suspend fun getIsTagSearchEnabled(): Boolean = withContext(Dispatchers.IO) {
+        prefsRepo.isTagSearchEnabled
+    }
+
+    suspend fun setIsTagSearchEnabled(value: Boolean) = withContext(Dispatchers.IO) {
+        prefsRepo.isTagSearchEnabled = value
+    }
+
     suspend fun getHiddenCommentFilters(): Set<CommentFilterType> = withContext(Dispatchers.IO) {
         fun map(data: String): CommentFilterType? {
             return when (data.toIntOrNull()) {

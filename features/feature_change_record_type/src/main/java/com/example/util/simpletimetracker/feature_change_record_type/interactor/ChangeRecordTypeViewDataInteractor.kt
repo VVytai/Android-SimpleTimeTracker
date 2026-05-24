@@ -67,7 +67,10 @@ class ChangeRecordTypeViewDataInteractor @Inject constructor(
                     isDarkTheme = isDarkTheme,
                 )
             }
-            buttonsViewData += categoryViewDataMapper.mapToTypeTagAddItem(isDarkTheme)
+            buttonsViewData += categoryViewDataMapper.mapToTypeTagAddItem(
+                useShortName = true,
+                isDarkTheme = isDarkTheme,
+            )
 
             // All
             val viewData = listOf(
@@ -90,7 +93,10 @@ class ChangeRecordTypeViewDataInteractor @Inject constructor(
                 selectedCount = 0,
                 viewData = listOf(
                     categoryViewDataMapper.mapToCategoriesFirstHint(),
-                    categoryViewDataMapper.mapToTypeTagAddItem(isDarkTheme),
+                    categoryViewDataMapper.mapToTypeTagAddItem(
+                        useShortName = true,
+                        isDarkTheme = isDarkTheme,
+                    ),
                 ),
             )
         }

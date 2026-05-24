@@ -80,6 +80,8 @@ class RecordTagSelectionViewDataInteractor @Inject constructor(
                 showBigEmptyHint = false,
                 showHint = false,
                 showArchived = false,
+                searchText = "",
+                fromSearchChange = false,
                 buttons = listOf(
                     RecordTagViewDataInteractor.Button.UNTAGGED,
                     RecordTagViewDataInteractor.Button.ALL_TAGS,

@@ -80,7 +80,8 @@ inline fun <T> List<T>.search(
     crossinline searchableContent: T.() -> String,
 ): List<T> {
     return if (text.isNotEmpty()) {
-        this.filter { text in it.searchableContent().lowercase() }
+        val normalizedText = text.lowercase()
+        this.filter { normalizedText in it.searchableContent().lowercase() }
     } else {
         this
     }

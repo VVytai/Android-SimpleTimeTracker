@@ -6,6 +6,7 @@ import com.example.util.simpletimetracker.core.mapper.CommonViewDataMapper
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.domain.extension.addBetweenEach
 import com.example.util.simpletimetracker.domain.extension.plusAssign
+import com.example.util.simpletimetracker.domain.extension.search
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.domain.recordTag.interactor.GetSelectableTagsInteractor
@@ -13,6 +14,7 @@ import com.example.util.simpletimetracker.domain.recordTag.interactor.RecordTagI
 import com.example.util.simpletimetracker.domain.recordTag.model.RecordTag
 import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTypeInteractor
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
+import com.example.util.simpletimetracker.feature_base_adapter.commentField.CommentFieldViewData
 import com.example.util.simpletimetracker.feature_base_adapter.divider.DividerViewData
 import com.example.util.simpletimetracker.feature_base_adapter.emptySpace.EmptySpaceViewData
 import com.example.util.simpletimetracker.feature_base_adapter.hint.HintViewData
@@ -30,6 +32,10 @@ class RecordTagViewDataInteractor @Inject constructor(
 
     // TODO also change selection in other places
     // TODO remove InfoViewData and mapSelectedHint in CommonViewDataMapper
+    // TODO change ShowAll to toggle, to be able to disable it
+    // TODO add tag search to other entry points
+    // TODO add shortcut to start timer from tag selection when activity selection
+    // TODO add icon to ShowAll?
     // typeId is empty - show all tags.
     suspend fun getViewData(
         selectedTags: List<RecordBase.Tag>,
@@ -39,6 +45,8 @@ class RecordTagViewDataInteractor @Inject constructor(
         showBigEmptyHint: Boolean,
         showHint: Boolean,
         showArchived: Boolean,
+        searchText: String,
+        fromSearchChange: Boolean,
         buttons: List<Button>,
     ): Result {
         fun List<RecordTag>.filterArchived(): List<RecordTag> {
@@ -46,6 +54,7 @@ class RecordTagViewDataInteractor @Inject constructor(
         }
 
         val isDarkTheme = prefsInteractor.getDarkMode()
+        val isSearchEnabled = prefsInteractor.getIsTagSearchEnabled() && Button.SEARCH in buttons
         val allTags = recordTagInteractor.getAll().filterArchived()
         val showAddButton = Button.ADD in buttons
 
@@ -59,13 +68,20 @@ class RecordTagViewDataInteractor @Inject constructor(
 
         val recordTags = getSelectableTagsInteractor.execute(*typeIds.toLongArray()).filterArchived()
         val recordTagIds = recordTags.map { it.id }
-        val tagsFromOtherActivities = allTags.filter { it.id !in recordTagIds }
         val types = recordTypeInteractor.getAll().associateBy { it.id }
-
+        val actualSearchText = if (isSearchEnabled) searchText else ""
         val selectedTagsMap = selectedTags.associateBy { it.tagId }
         val selectedTagIds = selectedTagsMap.keys
-        val selected = allTags.filter { it.id in selectedTagIds }
-        val available = recordTags.filter { it.id !in selectedTagIds }
+        val selectedBeforeSearch = allTags
+            .filter { it.id in selectedTagIds }
+        val selected = selectedBeforeSearch
+            .search(text = actualSearchText) { name }
+        val available = recordTags
+            .filter { it.id !in selectedTagIds }
+            .search(text = actualSearchText) { name }
+        val tagsFromOtherActivities = allTags
+            .filter { it.id !in recordTagIds }
+            .search(text = actualSearchText) { name }
         val availableFromOtherActivities = if (showAllTags) {
             tagsFromOtherActivities.filter { it.id !in selectedTagIds }
         } else {
@@ -80,8 +96,21 @@ class RecordTagViewDataInteractor @Inject constructor(
             ),
         )
 
+        val searchViewData = if (isSearchEnabled) {
+            CommentFieldViewData(
+                id = "tag_selection_search".hashCode().toLong(),
+                text = if (fromSearchChange) null else actualSearchText,
+                marginTopDp = -3,
+                marginHorizontal = 8,
+                hint = resourceRepo.getString(R.string.search_hint),
+                valueType = CommentFieldViewData.ValueType.TextSingleLine,
+            ).let(::listOf)
+        } else {
+            emptyList()
+        }
+
         // Hint
-        val hintViewData = if (showHint && selected.isEmpty()) {
+        val hintViewData = if (showHint && selected.isEmpty() && !isSearchEnabled) {
             listOf(categoryViewDataMapper.mapToRecordTagHint())
         } else {
             emptyList()
@@ -159,12 +188,22 @@ class RecordTagViewDataInteractor @Inject constructor(
                 isDarkTheme = isDarkTheme,
             )
         }
+        if (Button.SEARCH in buttons) {
+            buttonsViewData += categoryViewDataMapper.mapToTagSearchItem(
+                isEnabled = isSearchEnabled,
+                isDarkTheme = isDarkTheme,
+            )
+        }
         if (showAddButton) {
-            buttonsViewData += categoryViewDataMapper.mapToRecordTagAddItem(isDarkTheme)
+            buttonsViewData += categoryViewDataMapper.mapToRecordTagAddItem(
+                useShortName = true,
+                isDarkTheme = isDarkTheme,
+            )
         }
 
         // All
         val viewData = listOf(
+            searchViewData to true,
             hintViewData to true,
             selectedViewData to true,
             availableViewData to true,
@@ -190,7 +229,7 @@ class RecordTagViewDataInteractor @Inject constructor(
         } ?: listOf(commonViewDataMapper.mapSelectedHint(isEmpty = true))
 
         return Result(
-            selectedCount = selected.size,
+            selectedCount = selectedBeforeSearch.size,
             data = viewData,
         )
     }
@@ -207,7 +246,10 @@ class RecordTagViewDataInteractor @Inject constructor(
             categoryViewDataMapper.mapToRecordTagsEmpty()
         }
         if (showAddButton) {
-            viewData += categoryViewDataMapper.mapToRecordTagAddItem(isDarkTheme)
+            viewData += categoryViewDataMapper.mapToRecordTagAddItem(
+                useShortName = true,
+                isDarkTheme = isDarkTheme,
+            )
         }
         return Result(
             selectedCount = 0,
@@ -224,5 +266,6 @@ class RecordTagViewDataInteractor @Inject constructor(
         ADD,
         UNTAGGED,
         ALL_TAGS,
+        SEARCH,
     }
 }

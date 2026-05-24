@@ -103,6 +103,8 @@ class DataEditTagSelectionViewModel @Inject constructor(
             showBigEmptyHint = false,
             showHint = false,
             showArchived = true,
+            searchText = "",
+            fromSearchChange = false,
             buttons = emptyList(),
         ).data.let(result::addAll)
 

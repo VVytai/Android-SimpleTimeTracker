@@ -203,12 +203,26 @@ class CategoryViewDataMapper @Inject constructor(
         )
     }
 
-    fun mapToTypeTagAddItem(isDarkTheme: Boolean): CategoryAddViewData {
-        return map(type = CategoryAddViewData.Type.AddCategory, isDarkTheme = isDarkTheme)
+    fun mapToTypeTagAddItem(
+        useShortName: Boolean,
+        isDarkTheme: Boolean,
+    ): CategoryAddViewData {
+        return map(
+            useShortName = useShortName,
+            type = CategoryAddViewData.Type.AddCategory,
+            isDarkTheme = isDarkTheme,
+        )
     }
 
-    fun mapToRecordTagAddItem(isDarkTheme: Boolean): CategoryAddViewData {
-        return map(type = CategoryAddViewData.Type.AddTag, isDarkTheme = isDarkTheme)
+    fun mapToRecordTagAddItem(
+        useShortName: Boolean,
+        isDarkTheme: Boolean,
+    ): CategoryAddViewData {
+        return map(
+            useShortName = useShortName,
+            type = CategoryAddViewData.Type.AddTag,
+            isDarkTheme = isDarkTheme,
+        )
     }
 
     fun mapToRecordTagShowAllItem(isDarkTheme: Boolean): CategoryAddViewData {
@@ -216,6 +230,23 @@ class CategoryViewDataMapper @Inject constructor(
             type = CategoryAddViewData.Type.ShowAll,
             name = resourceRepo.getString(R.string.types_filter_show_all),
             color = colorMapper.toInactiveColor(isDarkTheme),
+            icon = null,
+        )
+    }
+
+    fun mapToTagSearchItem(
+        isEnabled: Boolean,
+        isDarkTheme: Boolean,
+    ): CategoryAddViewData {
+        return CategoryAddViewData(
+            type = CategoryAddViewData.Type.EnableSearch,
+            name = resourceRepo.getString(R.string.search_hint),
+            color = if (isEnabled) {
+                colorMapper.toActiveColor(isDarkTheme)
+            } else {
+                colorMapper.toInactiveColor(isDarkTheme)
+            },
+            icon = RecordTypeIcon.Image(R.drawable.search),
         )
     }
 
@@ -257,10 +288,15 @@ class CategoryViewDataMapper @Inject constructor(
         )
     }
 
-    private fun map(type: CategoryAddViewData.Type, isDarkTheme: Boolean): CategoryAddViewData {
-        val name = when (type) {
-            CategoryAddViewData.Type.AddCategory -> R.string.categories_add_category
-            CategoryAddViewData.Type.AddTag -> R.string.categories_add_record_tag
+    private fun map(
+        useShortName: Boolean,
+        type: CategoryAddViewData.Type,
+        isDarkTheme: Boolean,
+    ): CategoryAddViewData {
+        val name = when {
+            useShortName -> R.string.running_records_add_type
+            type is CategoryAddViewData.Type.AddCategory -> R.string.categories_add_category
+            type is CategoryAddViewData.Type.AddTag -> R.string.categories_add_record_tag
             else -> 0
         }.let(resourceRepo::getString)
 
@@ -268,6 +304,7 @@ class CategoryViewDataMapper @Inject constructor(
             type = type,
             name = name,
             color = colorMapper.toInactiveColor(isDarkTheme),
+            icon = RecordTypeIcon.Image(R.drawable.add),
         )
     }
 

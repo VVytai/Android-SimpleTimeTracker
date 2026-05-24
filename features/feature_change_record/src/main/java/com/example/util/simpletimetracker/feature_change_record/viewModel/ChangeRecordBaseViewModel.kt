@@ -53,6 +53,7 @@ import com.example.util.simpletimetracker.navigation.params.screen.DateTimeDialo
 import com.example.util.simpletimetracker.navigation.params.screen.DurationDialogParams
 import com.example.util.simpletimetracker.navigation.params.screen.RecordTagValueSelectionParams
 import com.example.util.simpletimetracker.navigation.params.screen.TypesSelectionDialogParams
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
@@ -84,7 +85,7 @@ abstract class ChangeRecordBaseViewModel(
         return@lazy MutableLiveData<ChangeRecordTagsViewData>().let { initial ->
             viewModelScope.launch {
                 initializePreviewViewData()
-                initial.value = loadCategoriesViewData()
+                initial.value = loadCategoriesViewData(fromSearchChange = false)
             }
             initial
         }
@@ -144,6 +145,8 @@ abstract class ChangeRecordBaseViewModel(
     protected abstract val isStatisticsButtonVisible: Boolean
 
     private var prevRecord: Record? = null
+    private var searchJob: Job? = null
+    private var searchText: String = ""
 
     init {
         val bridge = ChangeRecordDelegateBridge(
@@ -397,6 +400,23 @@ abstract class ChangeRecordBaseViewModel(
             is CategoryAddViewData.Type.ShowAll -> viewModelScope.launch {
                 showAllTags = true
                 updateCategoriesViewData()
+            }
+            is CategoryAddViewData.Type.EnableSearch -> viewModelScope.launch {
+                val current = prefsInteractor.getIsTagSearchEnabled()
+                prefsInteractor.setIsTagSearchEnabled(!current)
+                updateCategoriesViewData()
+            }
+        }
+    }
+
+    fun onSearchTextChange(text: String) {
+        if (text != searchText) {
+            searchJob?.cancel()
+            searchJob = viewModelScope.launch {
+                searchText = text
+                // Do not delay on clear.
+                if (text.isNotEmpty()) delay(500)
+                updateCategoriesViewData(fromValueChange = true)
             }
         }
     }
@@ -922,12 +942,16 @@ abstract class ChangeRecordBaseViewModel(
         return recordTypesViewDataInteractor.getTypesViewData()
     }
 
-    protected suspend fun updateCategoriesViewData() {
-        val data = loadCategoriesViewData()
+    protected suspend fun updateCategoriesViewData(
+        fromValueChange: Boolean = false,
+    ) {
+        val data = loadCategoriesViewData(fromValueChange)
         categories.set(data)
     }
 
-    private suspend fun loadCategoriesViewData(): ChangeRecordTagsViewData {
+    private suspend fun loadCategoriesViewData(
+        fromSearchChange: Boolean,
+    ): ChangeRecordTagsViewData {
         return recordTagViewDataInteractor.getViewData(
             selectedTags = newTags,
             typeIds = listOf(newTypeId),
@@ -936,9 +960,12 @@ abstract class ChangeRecordBaseViewModel(
             showBigEmptyHint = true,
             showHint = true,
             showArchived = false,
+            searchText = searchText,
+            fromSearchChange = fromSearchChange,
             buttons = listOfNotNull(
                 RecordTagViewDataInteractor.Button.ADD,
                 RecordTagViewDataInteractor.Button.ALL_TAGS,
+                RecordTagViewDataInteractor.Button.SEARCH,
                 RecordTagViewDataInteractor.Button.UNTAGGED.takeIf { newTags.isNotEmpty() },
             ),
         ).let {

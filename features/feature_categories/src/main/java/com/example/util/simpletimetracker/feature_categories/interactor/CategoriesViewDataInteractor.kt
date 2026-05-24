@@ -163,7 +163,10 @@ class CategoriesViewDataInteractor @Inject constructor(
             )
         }
 
-        result += categoryViewDataMapper.mapToTypeTagAddItem(isDarkTheme)
+        result += categoryViewDataMapper.mapToTypeTagAddItem(
+            useShortName = false,
+            isDarkTheme = isDarkTheme,
+        )
 
         return@withContext result
     }
@@ -207,7 +210,10 @@ class CategoriesViewDataInteractor @Inject constructor(
             )
         }
 
-        result += categoryViewDataMapper.mapToRecordTagAddItem(isDarkTheme)
+        result += categoryViewDataMapper.mapToRecordTagAddItem(
+            useShortName = false,
+            isDarkTheme = isDarkTheme,
+        )
 
         return@withContext result
     }
@@ -398,7 +404,10 @@ class CategoriesViewDataInteractor @Inject constructor(
             )
         }
 
-        items += categoryViewDataMapper.mapToTypeTagAddItem(data.isDarkTheme)
+        items += categoryViewDataMapper.mapToTypeTagAddItem(
+            useShortName = false,
+            isDarkTheme = data.isDarkTheme,
+        )
         return items
     }
 
@@ -532,7 +541,10 @@ class CategoriesViewDataInteractor @Inject constructor(
             )
         }
 
-        items += categoryViewDataMapper.mapToRecordTagAddItem(data.isDarkTheme)
+        items += categoryViewDataMapper.mapToRecordTagAddItem(
+            useShortName = false,
+            isDarkTheme = data.isDarkTheme,
+        )
         return items
     }
 
