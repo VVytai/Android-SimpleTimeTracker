@@ -124,7 +124,6 @@ abstract class ChangeRecordBaseViewModel(
         start = ChangeRecordDateTimeFieldsState.State.DateTime,
         end = ChangeRecordDateTimeFieldsState.State.DateTime,
     )
-    protected var showAllTags: Boolean = false
 
     protected abstract suspend fun updatePreview()
     protected abstract fun getChangeCategoryParams(data: ChangeTagData): ChangeRecordTagFromScreen
@@ -398,7 +397,8 @@ abstract class ChangeRecordBaseViewModel(
                 )
             }
             is CategoryAddViewData.Type.ShowAll -> viewModelScope.launch {
-                showAllTags = true
+                val current = prefsInteractor.getIsShowAllTagsEnabled()
+                prefsInteractor.setIsShowAllTagsEnabled(!current)
                 updateCategoriesViewData()
             }
             is CategoryAddViewData.Type.EnableSearch -> viewModelScope.launch {
@@ -955,7 +955,6 @@ abstract class ChangeRecordBaseViewModel(
         return recordTagViewDataInteractor.getViewData(
             selectedTags = newTags,
             typeIds = listOf(newTypeId),
-            showAllTags = showAllTags,
             multipleChoiceAvailable = true,
             showBigEmptyHint = true,
             showHint = true,

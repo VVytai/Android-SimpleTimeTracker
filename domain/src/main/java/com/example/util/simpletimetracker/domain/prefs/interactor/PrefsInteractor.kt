@@ -1036,6 +1036,14 @@ class PrefsInteractor @Inject constructor(
         prefsRepo.isTagSearchEnabled = value
     }
 
+    suspend fun getIsShowAllTagsEnabled(): Boolean = withContext(Dispatchers.IO) {
+        prefsRepo.isShowAllTagsEnabled
+    }
+
+    suspend fun setIsShowAllTagsEnabled(value: Boolean) = withContext(Dispatchers.IO) {
+        prefsRepo.isShowAllTagsEnabled = value
+    }
+
     suspend fun getHiddenCommentFilters(): Set<CommentFilterType> = withContext(Dispatchers.IO) {
         fun map(data: String): CommentFilterType? {
             return when (data.toIntOrNull()) {

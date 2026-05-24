@@ -32,15 +32,12 @@ class RecordTagViewDataInteractor @Inject constructor(
 
     // TODO also change selection in other places
     // TODO remove InfoViewData and mapSelectedHint in CommonViewDataMapper
-    // TODO change ShowAll to toggle, to be able to disable it
     // TODO add tag search to other entry points
     // TODO add shortcut to start timer from tag selection when activity selection
-    // TODO add icon to ShowAll?
     // typeId is empty - show all tags.
     suspend fun getViewData(
         selectedTags: List<RecordBase.Tag>,
         typeIds: List<Long>,
-        showAllTags: Boolean,
         multipleChoiceAvailable: Boolean,
         showBigEmptyHint: Boolean,
         showHint: Boolean,
@@ -55,6 +52,7 @@ class RecordTagViewDataInteractor @Inject constructor(
 
         val isDarkTheme = prefsInteractor.getDarkMode()
         val isSearchEnabled = prefsInteractor.getIsTagSearchEnabled() && Button.SEARCH in buttons
+        val showAllTags = prefsInteractor.getIsShowAllTagsEnabled() && Button.ALL_TAGS in buttons
         val allTags = recordTagInteractor.getAll().filterArchived()
         val showAddButton = Button.ADD in buttons
 
@@ -183,8 +181,9 @@ class RecordTagViewDataInteractor @Inject constructor(
                 isFiltered = false,
             )
         }
-        if (Button.ALL_TAGS in buttons && !showAllTags && tagsFromOtherActivities.isNotEmpty()) {
+        if (Button.ALL_TAGS in buttons && tagsFromOtherActivities.isNotEmpty()) {
             buttonsViewData += categoryViewDataMapper.mapToRecordTagShowAllItem(
+                isEnabled = showAllTags,
                 isDarkTheme = isDarkTheme,
             )
         }

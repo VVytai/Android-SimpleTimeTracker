@@ -1,10 +1,8 @@
 package com.example.util.simpletimetracker.domain.recordTag.interactor
 
-import com.example.util.simpletimetracker.domain.recordTag.model.RecordTag
 import javax.inject.Inject
 
 class AddTagToTypeIfNotExistMediator @Inject constructor(
-    private val recordTagInteractor: RecordTagInteractor,
     private val recordTypeToTagInteractor: RecordTypeToTagInteractor,
 ) {
 
@@ -12,18 +10,14 @@ class AddTagToTypeIfNotExistMediator @Inject constructor(
         typeId: Long,
         tagIds: List<Long>,
     ) {
-        val allTags = recordTagInteractor.getAll().map(RecordTag::id)
-        val typesToTags = recordTypeToTagInteractor.getAll()
-
-        val currentTyped = typesToTags
-            .mapNotNull { if (it.recordTypeId == typeId) it.tagId else null }
-            .distinct()
-        val typedTags = typesToTags
-            .map { it.tagId }
-            .distinct()
-        val untyped = allTags.filter { it !in typedTags }
-
-        val needToAdd = tagIds.filter { it !in currentTyped && it !in untyped }
+        val assignedTags = recordTypeToTagInteractor.getTags(typeId)
+        val needToAdd = tagIds.filter { tagId ->
+            // Already assignable.
+            if (tagId in assignedTags) return@filter false
+            val assignedToTypes = recordTypeToTagInteractor.getTypes(tagId)
+            // General tag - no need to assign.
+            return@filter assignedToTypes.isNotEmpty()
+        }
         recordTypeToTagInteractor.addTags(typeId, needToAdd)
     }
 }

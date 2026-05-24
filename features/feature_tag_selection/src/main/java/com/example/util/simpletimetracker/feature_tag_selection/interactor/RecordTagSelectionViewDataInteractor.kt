@@ -21,7 +21,6 @@ class RecordTagSelectionViewDataInteractor @Inject constructor(
     suspend fun getViewData(
         extra: RecordTagSelectionParams,
         selectedTags: List<RecordBase.Tag>,
-        showAllTags: Boolean,
         multipleChoiceAvailable: Boolean,
         comment: String,
         fromCommentChange: Boolean,
@@ -75,7 +74,6 @@ class RecordTagSelectionViewDataInteractor @Inject constructor(
             result += recordTagViewDataInteractor.getViewData(
                 selectedTags = selectedTags,
                 typeIds = listOf(typeId),
-                showAllTags = showAllTags,
                 multipleChoiceAvailable = multipleChoiceAvailable,
                 showBigEmptyHint = false,
                 showHint = false,

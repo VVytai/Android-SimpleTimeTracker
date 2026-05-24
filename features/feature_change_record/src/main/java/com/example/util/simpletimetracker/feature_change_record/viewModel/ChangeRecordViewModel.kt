@@ -153,12 +153,10 @@ class ChangeRecordViewModel @Inject constructor(
         ).let {
             addRecordMediator.add(it)
         }
-        if (showAllTags) {
-            addTagToTypeIfNotExistMediator.execute(
-                typeId = newTypeId,
-                tagIds = newTags.map(RecordBase.Tag::tagId),
-            )
-        }
+        addTagToTypeIfNotExistMediator.execute(
+            typeId = newTypeId,
+            tagIds = newTags.map(RecordBase.Tag::tagId),
+        )
         if (newTypeId != originalTypeId) {
             externalViewsInteractor.onRecordChangeType(listOf(originalTypeId))
         }

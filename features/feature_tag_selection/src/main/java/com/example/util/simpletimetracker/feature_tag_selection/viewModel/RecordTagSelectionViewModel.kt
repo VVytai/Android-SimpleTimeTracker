@@ -86,10 +86,6 @@ class RecordTagSelectionViewModel @Inject constructor(
     private var searchLoadJob: Job? = null
     private var isMultipleChoiceAvailable: Boolean = true
 
-    // Keep in mind that tags would be added to new types only if show all was selected before,
-    // for optimisation reasons, to not call on every save.
-    private var showAllTags: Boolean = false
-
     fun onCategoryClick(item: CategoryViewData) {
         viewModelScope.launch {
             when (item) {
@@ -141,7 +137,8 @@ class RecordTagSelectionViewModel @Inject constructor(
     fun onCategorySpecialClick(viewData: CategoryAddViewData) {
         when (viewData.type) {
             is CategoryAddViewData.Type.ShowAll -> viewModelScope.launch {
-                showAllTags = true
+                val current = prefsInteractor.getIsShowAllTagsEnabled()
+                prefsInteractor.setIsShowAllTagsEnabled(!current)
                 updateViewData()
             }
         }
@@ -187,12 +184,10 @@ class RecordTagSelectionViewModel @Inject constructor(
             comment = newComment,
             useSelectedTags = true,
         )
-        if (showAllTags) {
-            addTagToTypeIfNotExistMediator.execute(
-                typeId = extra.typeId,
-                tagIds = newTags.map(RecordBase.Tag::tagId),
-            )
-        }
+        addTagToTypeIfNotExistMediator.execute(
+            typeId = extra.typeId,
+            tagIds = newTags.map(RecordBase.Tag::tagId),
+        )
         saveClicked.set(Unit)
     }
 
@@ -242,7 +237,6 @@ class RecordTagSelectionViewModel @Inject constructor(
         return viewDataInteractor.getViewData(
             extra = extra,
             selectedTags = newTags,
-            showAllTags = showAllTags,
             multipleChoiceAvailable = isMultipleChoiceAvailable,
             comment = newComment,
             fromCommentChange = fromCommentChange,

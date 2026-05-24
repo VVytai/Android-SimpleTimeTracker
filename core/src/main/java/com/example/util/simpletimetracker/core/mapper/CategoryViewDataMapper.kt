@@ -187,7 +187,7 @@ class CategoryViewDataMapper @Inject constructor(
         isDarkTheme: Boolean,
     ): CategoryViewData {
         return CategoryViewData.Record.Tagged(
-            id = ARCHIVED_BUTTON_ITEM_ID,
+            id = ARCHIVED_BUTTON_ITEM_ID, // TODO use special item instead
             name = R.string.settings_archive
                 .let(resourceRepo::getString),
             icon = RecordTypeIcon.Image(R.drawable.archive),
@@ -195,11 +195,7 @@ class CategoryViewDataMapper @Inject constructor(
                 isDarkTheme = isDarkTheme,
                 isFiltered = false,
             ),
-            color = if (isEnabled) {
-                colorMapper.toActiveColor(isDarkTheme)
-            } else {
-                colorMapper.toInactiveColor(isDarkTheme)
-            },
+            color = mapEnabledColor(isEnabled = isEnabled, isDarkTheme = isDarkTheme),
         )
     }
 
@@ -225,12 +221,19 @@ class CategoryViewDataMapper @Inject constructor(
         )
     }
 
-    fun mapToRecordTagShowAllItem(isDarkTheme: Boolean): CategoryAddViewData {
+    fun mapToRecordTagShowAllItem(
+        isEnabled: Boolean,
+        isDarkTheme: Boolean,
+    ): CategoryAddViewData {
         return CategoryAddViewData(
             type = CategoryAddViewData.Type.ShowAll,
             name = resourceRepo.getString(R.string.types_filter_show_all),
-            color = colorMapper.toInactiveColor(isDarkTheme),
-            icon = null,
+            color = mapEnabledColor(isEnabled = isEnabled, isDarkTheme = isDarkTheme),
+            icon = if (isEnabled) {
+                RecordTypeIcon.Image(R.drawable.hide)
+            } else {
+                RecordTypeIcon.Image(R.drawable.show)
+            },
         )
     }
 
@@ -241,11 +244,7 @@ class CategoryViewDataMapper @Inject constructor(
         return CategoryAddViewData(
             type = CategoryAddViewData.Type.EnableSearch,
             name = resourceRepo.getString(R.string.search_hint),
-            color = if (isEnabled) {
-                colorMapper.toActiveColor(isDarkTheme)
-            } else {
-                colorMapper.toInactiveColor(isDarkTheme)
-            },
+            color = mapEnabledColor(isEnabled = isEnabled, isDarkTheme = isDarkTheme),
             icon = RecordTypeIcon.Image(R.drawable.search),
         )
     }
@@ -312,5 +311,16 @@ class CategoryViewDataMapper @Inject constructor(
         tag: RecordTag,
     ): String {
         return tag.name.substringBefore("::", "")
+    }
+
+    private fun mapEnabledColor(
+        isEnabled: Boolean,
+        isDarkTheme: Boolean,
+    ): Int {
+        return if (isEnabled) {
+            colorMapper.toActiveColor(isDarkTheme)
+        } else {
+            colorMapper.toInactiveColor(isDarkTheme)
+        }
     }
 }

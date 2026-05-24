@@ -382,7 +382,6 @@ class ChangeShortcutViewModel @Inject constructor(
         val data = recordTagViewDataInteractor.getViewData(
             selectedTags = recordTags,
             typeIds = listOf(recordTypeId.orZero()),
-            showAllTags = false,
             multipleChoiceAvailable = true,
             showBigEmptyHint = false,
             showHint = true,

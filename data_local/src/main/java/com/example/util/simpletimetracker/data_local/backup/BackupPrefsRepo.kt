@@ -92,6 +92,7 @@ import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Compani
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_ENABLE_SEARCH_ON_MAIN
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_HIDDEN_COMMENT_FILTERS
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_HIDDEN_CONTAINER_OPTIONS
+import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_IS_SHOW_ALL_TAG_ENABLED
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_IS_TAG_SEARCH_ENABLED
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_START_TIMER_BY_LONG_CLICK
 import com.example.util.simpletimetracker.data_local.prefs.PrefsRepoImpl.Companion.KEY_POMODORO_SHOW_MORE_CONTROLS
@@ -247,6 +248,7 @@ class BackupPrefsRepo @Inject constructor(
             PrefsProcessor(KEY_IS_CATEGORIES_RELATIONS_ENABLED, ::isCategoriesRelationsEnabled),
             PrefsProcessor(KEY_IS_ARCHIVE_SEARCH_ENABLED, ::isArchiveSearchEnabled),
             PrefsProcessor(KEY_IS_TAG_SEARCH_ENABLED, ::isTagSearchEnabled),
+            PrefsProcessor(KEY_IS_SHOW_ALL_TAG_ENABLED, ::isShowAllTagsEnabled),
             PrefsProcessor(KEY_HIDDEN_COMMENT_FILTERS, ::hiddenCommentFilters),
             PrefsProcessor(KEY_DURATION_SUGGESTIONS_WAS_PREPOPULATED, ::durationSuggestionsWasPrepopulated),
             PrefsProcessor(KEY_TYPE_ADDITIONAL_FIELDS_SHOWN, ::typeAdditionalFieldsShown),

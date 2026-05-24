@@ -447,6 +447,10 @@ class PrefsRepoImpl @Inject constructor(
         KEY_IS_TAG_SEARCH_ENABLED, false,
     )
 
+    override var isShowAllTagsEnabled: Boolean by prefs.delegate(
+        KEY_IS_SHOW_ALL_TAG_ENABLED, false,
+    )
+
     override var hiddenCommentFilters: Set<String> by prefs.delegate(
         KEY_HIDDEN_COMMENT_FILTERS, emptySet(),
     )
@@ -808,6 +812,7 @@ class PrefsRepoImpl @Inject constructor(
         const val KEY_IS_CATEGORIES_RELATIONS_ENABLED = "isCategoriesRelationsEnabled"
         const val KEY_IS_ARCHIVE_SEARCH_ENABLED = "isArchiveSearchEnabled"
         const val KEY_IS_TAG_SEARCH_ENABLED = "isTagSearchEnabled"
+        const val KEY_IS_SHOW_ALL_TAG_ENABLED = "isShowAllTagsEnabled"
         const val KEY_HIDDEN_COMMENT_FILTERS = "hiddenCommentFilters"
         const val KEY_DURATION_SUGGESTIONS_WAS_PREPOPULATED = "durationSuggestionsWasPrepopulated"
         const val KEY_TYPE_ADDITIONAL_FIELDS_SHOWN = "typeAdditionalFieldsShown"

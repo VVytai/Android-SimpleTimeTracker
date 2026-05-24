@@ -154,12 +154,10 @@ class ChangeRunningRecordViewModel @Inject constructor(
             comment = commentSelectionViewModelDelegate.newComment,
             tags = newTags,
         )
-        if (showAllTags) {
-            addTagToTypeIfNotExistMediator.execute(
-                typeId = newTypeId,
-                tagIds = newTags.map(RecordBase.Tag::tagId),
-            )
-        }
+        addTagToTypeIfNotExistMediator.execute(
+            typeId = newTypeId,
+            tagIds = newTags.map(RecordBase.Tag::tagId),
+        )
         doAfter()
         sendPreviewUpdate(fullUpdate = true)
         router.back()
