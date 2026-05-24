@@ -23,7 +23,6 @@ import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.button.createButtonAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.category.createCategoryAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.category.createCategoryAddAdapterDelegate
-import com.example.util.simpletimetracker.feature_base_adapter.category.createCategoryShowAllAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.divider.createDividerAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.empty.createEmptyAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.emptySpace.createEmptySpaceAdapterDelegate
@@ -76,10 +75,7 @@ class ChangeRecordCore(
                 onLongClickWithTransition = viewModel::onCategoryLongClick,
             ),
             createCategoryAddAdapterDelegate(
-                onItemClick = { viewModel.onAddCategoryClick() },
-            ),
-            createCategoryShowAllAdapterDelegate(
-                onItemClick = { viewModel.onShowAllTagsClick() },
+                onItemClick = viewModel::onCategorySpecialClick,
             ),
             createDividerAdapterDelegate(),
             createInfoAdapterDelegate(),

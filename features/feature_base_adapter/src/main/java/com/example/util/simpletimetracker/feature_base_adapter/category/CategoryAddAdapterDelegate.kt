@@ -24,7 +24,7 @@ fun createCategoryAddAdapterDelegate(
 }
 
 class CategoryAddViewData(
-    val type: TagType,
+    val type: Type,
     val name: String,
     @ColorInt val color: Int,
 ) : ViewHolderType {
@@ -34,4 +34,10 @@ class CategoryAddViewData(
 
     override fun isValidType(other: ViewHolderType): Boolean =
         other is ViewData && other.type == type
+
+    interface Type {
+        data object AddTag : Type
+        data object AddCategory : Type
+        data object ShowAll : Type
+    }
 }

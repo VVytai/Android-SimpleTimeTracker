@@ -17,7 +17,6 @@ import com.example.util.simpletimetracker.domain.recordType.model.RecordType
 import com.example.util.simpletimetracker.domain.statistics.model.ChartFilterType
 import com.example.util.simpletimetracker.feature_base_adapter.category.CategoryAddViewData
 import com.example.util.simpletimetracker.feature_base_adapter.category.CategoryViewData
-import com.example.util.simpletimetracker.feature_base_adapter.category.TagType
 import com.example.util.simpletimetracker.feature_base_adapter.loader.LoaderViewData
 import com.example.util.simpletimetracker.feature_categories.R
 import com.example.util.simpletimetracker.feature_categories.interactor.CategoriesViewDataInteractor
@@ -99,8 +98,9 @@ class CategoriesViewModel @Inject constructor(
 
     fun onAddCategoryClick(viewData: CategoryAddViewData) {
         val params = when (viewData.type) {
-            TagType.RECORD_TYPE -> ::ChangeCategoryFromTagsParams
-            TagType.RECORD -> ::ChangeRecordTagFromTagsParams
+            is CategoryAddViewData.Type.AddCategory -> ::ChangeCategoryFromTagsParams
+            is CategoryAddViewData.Type.AddTag -> ::ChangeRecordTagFromTagsParams
+            else -> return
         }
 
         router.navigate(

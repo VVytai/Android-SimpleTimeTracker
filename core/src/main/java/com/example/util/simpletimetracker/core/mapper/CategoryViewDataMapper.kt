@@ -11,9 +11,7 @@ import com.example.util.simpletimetracker.domain.recordTag.model.RecordTag
 import com.example.util.simpletimetracker.domain.recordType.model.RecordType
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.category.CategoryAddViewData
-import com.example.util.simpletimetracker.feature_base_adapter.category.CategoryShowAllViewData
 import com.example.util.simpletimetracker.feature_base_adapter.category.CategoryViewData
-import com.example.util.simpletimetracker.feature_base_adapter.category.TagType
 import com.example.util.simpletimetracker.feature_base_adapter.empty.EmptyViewData
 import com.example.util.simpletimetracker.feature_base_adapter.hint.HintViewData
 import com.example.util.simpletimetracker.feature_base_adapter.hintBig.HintBigViewData
@@ -206,15 +204,16 @@ class CategoryViewDataMapper @Inject constructor(
     }
 
     fun mapToTypeTagAddItem(isDarkTheme: Boolean): CategoryAddViewData {
-        return map(type = TagType.RECORD_TYPE, isDarkTheme = isDarkTheme)
+        return map(type = CategoryAddViewData.Type.AddCategory, isDarkTheme = isDarkTheme)
     }
 
     fun mapToRecordTagAddItem(isDarkTheme: Boolean): CategoryAddViewData {
-        return map(type = TagType.RECORD, isDarkTheme = isDarkTheme)
+        return map(type = CategoryAddViewData.Type.AddTag, isDarkTheme = isDarkTheme)
     }
 
-    fun mapToRecordTagShowAllItem(isDarkTheme: Boolean): CategoryShowAllViewData {
-        return CategoryShowAllViewData(
+    fun mapToRecordTagShowAllItem(isDarkTheme: Boolean): CategoryAddViewData {
+        return CategoryAddViewData(
+            type = CategoryAddViewData.Type.ShowAll,
             name = resourceRepo.getString(R.string.types_filter_show_all),
             color = colorMapper.toInactiveColor(isDarkTheme),
         )
@@ -258,10 +257,11 @@ class CategoryViewDataMapper @Inject constructor(
         )
     }
 
-    private fun map(type: TagType, isDarkTheme: Boolean): CategoryAddViewData {
+    private fun map(type: CategoryAddViewData.Type, isDarkTheme: Boolean): CategoryAddViewData {
         val name = when (type) {
-            TagType.RECORD_TYPE -> R.string.categories_add_category
-            TagType.RECORD -> R.string.categories_add_record_tag
+            CategoryAddViewData.Type.AddCategory -> R.string.categories_add_category
+            CategoryAddViewData.Type.AddTag -> R.string.categories_add_record_tag
+            else -> 0
         }.let(resourceRepo::getString)
 
         return CategoryAddViewData(

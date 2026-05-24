@@ -17,6 +17,7 @@ import com.example.util.simpletimetracker.domain.recordTag.interactor.AddTagToTy
 import com.example.util.simpletimetracker.domain.recordTag.interactor.NeedTagValueSelectionInteractor
 import com.example.util.simpletimetracker.domain.recordTag.interactor.RecordTagInteractor
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
+import com.example.util.simpletimetracker.feature_base_adapter.category.CategoryAddViewData
 import com.example.util.simpletimetracker.feature_base_adapter.category.CategoryViewData
 import com.example.util.simpletimetracker.feature_base_adapter.loader.LoaderViewData
 import com.example.util.simpletimetracker.feature_base_adapter.recordComment.RecordCommentViewData
@@ -137,9 +138,13 @@ class RecordTagSelectionViewModel @Inject constructor(
         }
     }
 
-    fun onShowAllTagsClick() = viewModelScope.launch {
-        showAllTags = true
-        updateViewData()
+    fun onCategorySpecialClick(viewData: CategoryAddViewData) {
+        when (viewData.type) {
+            is CategoryAddViewData.Type.ShowAll -> viewModelScope.launch {
+                showAllTags = true
+                updateViewData()
+            }
+        }
     }
 
     fun onSaveClick() {

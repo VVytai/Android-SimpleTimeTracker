@@ -388,8 +388,8 @@ class ChangeShortcutViewModel @Inject constructor(
             showHint = true,
             showArchived = false,
             buttons = listOfNotNull(
-                RecordTagViewDataInteractor.Button.UNTAGGED.takeIf { recordTags.isNotEmpty() }
-            )
+                RecordTagViewDataInteractor.Button.UNTAGGED.takeIf { recordTags.isNotEmpty() },
+            ),
         )
         tags.set(data.data)
     }

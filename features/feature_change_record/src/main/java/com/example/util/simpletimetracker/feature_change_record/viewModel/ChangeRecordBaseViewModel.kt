@@ -25,6 +25,7 @@ import com.example.util.simpletimetracker.domain.recordTag.interactor.RecordTagI
 import com.example.util.simpletimetracker.domain.recordTag.interactor.RecordTypeToTagInteractor
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.button.ButtonViewData
+import com.example.util.simpletimetracker.feature_base_adapter.category.CategoryAddViewData
 import com.example.util.simpletimetracker.feature_base_adapter.category.CategoryViewData
 import com.example.util.simpletimetracker.feature_base_adapter.recordType.RecordTypeViewData
 import com.example.util.simpletimetracker.feature_change_record.R
@@ -383,18 +384,21 @@ abstract class ChangeRecordBaseViewModel(
         )
     }
 
-    fun onAddCategoryClick() {
-        val preselectedTypeId: Long? = newTypeId.takeUnless { it == 0L }
-        router.navigate(
-            data = getChangeCategoryParams(
-                ChangeTagData.New(preselectedTypeId),
-            ),
-        )
-    }
-
-    fun onShowAllTagsClick() = viewModelScope.launch {
-        showAllTags = true
-        updateCategoriesViewData()
+    fun onCategorySpecialClick(viewData: CategoryAddViewData) {
+        when (viewData.type) {
+            is CategoryAddViewData.Type.AddTag -> {
+                val preselectedTypeId: Long? = newTypeId.takeUnless { it == 0L }
+                router.navigate(
+                    data = getChangeCategoryParams(
+                        ChangeTagData.New(preselectedTypeId),
+                    ),
+                )
+            }
+            is CategoryAddViewData.Type.ShowAll -> viewModelScope.launch {
+                showAllTags = true
+                updateCategoriesViewData()
+            }
+        }
     }
 
     fun onDateTimeSet(timestamp: Long, tag: String?) {

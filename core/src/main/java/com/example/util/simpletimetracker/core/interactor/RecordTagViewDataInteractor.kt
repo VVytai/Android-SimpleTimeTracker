@@ -77,7 +77,7 @@ class RecordTagViewDataInteractor @Inject constructor(
             EmptySpaceViewData(
                 id = 0,
                 width = EmptySpaceViewData.ViewDimension.MatchParent,
-            )
+            ),
         )
 
         // Hint
@@ -221,6 +221,8 @@ class RecordTagViewDataInteractor @Inject constructor(
     )
 
     enum class Button {
-        ADD, UNTAGGED, ALL_TAGS,
+        ADD,
+        UNTAGGED,
+        ALL_TAGS,
     }
 }

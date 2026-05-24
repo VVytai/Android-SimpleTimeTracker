@@ -83,7 +83,7 @@ class RecordTagSelectionViewDataInteractor @Inject constructor(
                 buttons = listOf(
                     RecordTagViewDataInteractor.Button.UNTAGGED,
                     RecordTagViewDataInteractor.Button.ALL_TAGS,
-                )
+                ),
             ).data
         }
 
