@@ -26,6 +26,7 @@ import com.example.util.simpletimetracker.feature_base_adapter.category.createCa
 import com.example.util.simpletimetracker.feature_base_adapter.category.createCategoryShowAllAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.divider.createDividerAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.empty.createEmptyAdapterDelegate
+import com.example.util.simpletimetracker.feature_base_adapter.emptySpace.createEmptySpaceAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.hint.createHintAccentAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.hint.createHintAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.hintBig.createHintBigAdapterDelegate
@@ -85,6 +86,7 @@ class ChangeRecordCore(
             createHintAdapterDelegate(),
             createHintBigAdapterDelegate(),
             createEmptyAdapterDelegate(),
+            createEmptySpaceAdapterDelegate(),
         )
     }
     private val actionsAdapter: BaseRecyclerAdapter by lazy {

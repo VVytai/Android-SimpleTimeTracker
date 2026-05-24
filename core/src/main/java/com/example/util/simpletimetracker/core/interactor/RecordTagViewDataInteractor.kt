@@ -14,6 +14,7 @@ import com.example.util.simpletimetracker.domain.recordTag.model.RecordTag
 import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTypeInteractor
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.divider.DividerViewData
+import com.example.util.simpletimetracker.feature_base_adapter.emptySpace.EmptySpaceViewData
 import com.example.util.simpletimetracker.feature_base_adapter.hint.HintViewData
 import javax.inject.Inject
 
@@ -70,6 +71,14 @@ class RecordTagViewDataInteractor @Inject constructor(
         } else {
             emptyList()
         }
+
+        // Dummy
+        val emptyViewData = listOf(
+            EmptySpaceViewData(
+                id = 0,
+                width = EmptySpaceViewData.ViewDimension.MatchParent,
+            )
+        )
 
         // Hint
         val hintViewData = if (showHint && selected.isEmpty()) {
@@ -174,6 +183,10 @@ class RecordTagViewDataInteractor @Inject constructor(
             },
         ).flatten().takeIf {
             it.isNotEmpty()
+        }?.let {
+            // Add empty invisible item, otherwise when HintViewData as a first item disappears,
+            // whole list collapses to zero height.
+            emptyViewData + it
         } ?: listOf(commonViewDataMapper.mapSelectedHint(isEmpty = true))
 
         return Result(
