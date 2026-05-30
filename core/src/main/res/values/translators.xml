@@ -70,6 +70,10 @@
     <string name="settings_swedish_language" translatable="false">Svenska</string>
     <string name="settings_swedish_tag" translatable="false">sv</string>
 
+    <string name="settings_tamil_translators" translatable="false">Spacechase</string>
+    <string name="settings_tamil_language" translatable="false">தமிழ்</string>
+    <string name="settings_tamil_tag" translatable="false">ta</string>
+
     <string name="settings_turkish_translators" translatable="false">Evren Çakan</string>
     <string name="settings_turkish_language" translatable="false">Türkçe</string>
     <string name="settings_turkish_tag" translatable="false">tr</string>

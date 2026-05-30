@@ -46,6 +46,7 @@ class LanguageInteractor @Inject constructor(
             is AppLanguage.Romanian -> R.string.settings_romanian_language
             is AppLanguage.Russian -> R.string.settings_russian_language
             is AppLanguage.Swedish -> R.string.settings_swedish_language
+            is AppLanguage.Tamil -> R.string.settings_tamil_language
             is AppLanguage.Vietnamese -> R.string.settings_vietnamese_language
             is AppLanguage.Turkish -> R.string.settings_turkish_language
             is AppLanguage.Ukrainian -> R.string.settings_ukrainian_language
@@ -79,6 +80,7 @@ class LanguageInteractor @Inject constructor(
             is AppLanguage.Romanian -> R.string.settings_romanian_tag
             is AppLanguage.Russian -> R.string.settings_russian_tag
             is AppLanguage.Swedish -> R.string.settings_swedish_tag
+            is AppLanguage.Tamil -> R.string.settings_tamil_tag
             is AppLanguage.Vietnamese -> R.string.settings_vietnamese_tag
             is AppLanguage.Turkish -> R.string.settings_turkish_tag
             is AppLanguage.Ukrainian -> R.string.settings_ukrainian_tag
@@ -114,6 +116,7 @@ class LanguageInteractor @Inject constructor(
             is AppLanguage.Romanian -> R.string.settings_romanian_translators
             is AppLanguage.Russian -> R.string.settings_russian_translators
             is AppLanguage.Swedish -> R.string.settings_swedish_translators
+            is AppLanguage.Tamil -> R.string.settings_tamil_translators
             is AppLanguage.Vietnamese -> R.string.settings_vietnamese_translators
             is AppLanguage.Turkish -> R.string.settings_turkish_translators
             is AppLanguage.Ukrainian -> R.string.settings_ukrainian_translators
@@ -156,6 +159,7 @@ class LanguageInteractor @Inject constructor(
             AppLanguage.Romanian,
             AppLanguage.Russian,
             AppLanguage.Swedish,
+            AppLanguage.Tamil,
             AppLanguage.Vietnamese,
             AppLanguage.Turkish,
             AppLanguage.Ukrainian,

@@ -24,6 +24,7 @@ sealed interface AppLanguage {
     object Romanian : AppLanguage
     object Russian : AppLanguage
     object Swedish : AppLanguage
+    object Tamil : AppLanguage
     object Vietnamese : AppLanguage
     object Turkish : AppLanguage
     object Ukrainian : AppLanguage
