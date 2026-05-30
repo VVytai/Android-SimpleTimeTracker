@@ -8,6 +8,7 @@ import com.example.util.simpletimetracker.core.extension.set
 import com.example.util.simpletimetracker.core.extension.toModel
 import com.example.util.simpletimetracker.core.interactor.IsMultipleTagChoiceAvailableInteractor
 import com.example.util.simpletimetracker.core.interactor.RecordCommentSearchViewDataInteractor
+import com.example.util.simpletimetracker.core.interactor.RecordTagViewDataInteractor
 import com.example.util.simpletimetracker.core.viewData.CommentFilterTypeViewData
 import com.example.util.simpletimetracker.domain.extension.addOrRemove
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
@@ -19,6 +20,7 @@ import com.example.util.simpletimetracker.domain.recordTag.interactor.RecordTagI
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.category.CategoryAddViewData
 import com.example.util.simpletimetracker.feature_base_adapter.category.CategoryViewData
+import com.example.util.simpletimetracker.feature_base_adapter.commentField.CommentFieldViewData
 import com.example.util.simpletimetracker.feature_base_adapter.loader.LoaderViewData
 import com.example.util.simpletimetracker.feature_base_adapter.recordComment.RecordCommentViewData
 import com.example.util.simpletimetracker.feature_base_adapter.recordFilter.FilterViewData
@@ -72,7 +74,10 @@ class RecordTagSelectionViewModel @Inject constructor(
         return@lazy MutableLiveData<List<ViewHolderType>>().let { initial ->
             viewModelScope.launch {
                 initial.value = listOf(LoaderViewData())
-                initial.value = loadViewData(fromCommentChange = false)
+                initial.value = loadViewData(
+                    fromCommentChange = false,
+                    fromSearchChange = false,
+                )
             }
             initial
         }
@@ -85,6 +90,7 @@ class RecordTagSelectionViewModel @Inject constructor(
     private var initialDataLoaded: Boolean = false
     private var searchLoadJob: Job? = null
     private var isMultipleChoiceAvailable: Boolean = true
+    private var tagSearchText: String = ""
 
     fun onCategoryClick(item: CategoryViewData) {
         viewModelScope.launch {
@@ -141,6 +147,11 @@ class RecordTagSelectionViewModel @Inject constructor(
                 prefsInteractor.setIsShowAllTagsEnabled(!current)
                 updateViewData()
             }
+            is CategoryAddViewData.Type.EnableSearch -> viewModelScope.launch {
+                val current = prefsInteractor.getIsTagSearchEnabled()
+                prefsInteractor.setIsTagSearchEnabled(!current)
+                updateViewData()
+            }
         }
     }
 
@@ -166,10 +177,21 @@ class RecordTagSelectionViewModel @Inject constructor(
         updateViewData()
     }
 
-    fun onCommentChange(comment: String) {
-        if (comment != newComment) {
-            newComment = comment
-            updateViewData(fromCommentChange = true)
+    fun onCommentChange(viewData: CommentFieldViewData, text: String) {
+        when (viewData.type) {
+            is CommentFieldViewData.Type.Default -> {
+                if (text != newComment) {
+                    newComment = text
+                    updateViewData(fromCommentChange = true)
+                }
+            }
+            is RecordTagViewDataInteractor.CommentFieldType -> {
+                if (text != tagSearchText) {
+                    tagSearchText = text
+                    // Do not delay on clear.
+                    updateViewData(fromSearchChange = true, delayUpdate = text.isNotEmpty())
+                }
+            }
         }
     }
 
@@ -221,16 +243,23 @@ class RecordTagSelectionViewModel @Inject constructor(
 
     private fun updateViewData(
         fromCommentChange: Boolean = false,
+        fromSearchChange: Boolean = false,
+        delayUpdate: Boolean = false,
     ) {
         searchLoadJob?.cancel()
         searchLoadJob = viewModelScope.launch {
-            val data = loadViewData(fromCommentChange)
+            if (delayUpdate) delay(500)
+            val data = loadViewData(
+                fromCommentChange = fromCommentChange,
+                fromSearchChange = fromSearchChange,
+            )
             viewData.set(data)
         }
     }
 
     private suspend fun loadViewData(
         fromCommentChange: Boolean,
+        fromSearchChange: Boolean,
     ): List<ViewHolderType> {
         initializeData()
 
@@ -239,7 +268,9 @@ class RecordTagSelectionViewModel @Inject constructor(
             selectedTags = newTags,
             multipleChoiceAvailable = isMultipleChoiceAvailable,
             comment = newComment,
+            tagSearch = tagSearchText,
             fromCommentChange = fromCommentChange,
+            fromSearchChange = fromSearchChange,
         )
     }
 

@@ -3,15 +3,18 @@ package com.example.util.simpletimetracker.feature_base_adapter.commentField
 import android.text.InputType
 import android.text.TextWatcher
 import android.view.inputmethod.EditorInfo
+import android.widget.EditText
 import androidx.core.widget.doAfterTextChanged
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.createRecyclerBindingAdapterDelegate
 import com.example.util.simpletimetracker.feature_views.extension.setMargins
 import com.example.util.simpletimetracker.feature_base_adapter.commentField.CommentFieldViewData as ViewData
 import com.example.util.simpletimetracker.feature_base_adapter.databinding.ItemCommentFieldBinding as Binding
+import java.util.WeakHashMap
 
 fun createCommentFieldAdapterDelegate(
-    afterTextChange: (String) -> Unit,
+    afterTextChange: (String) -> Unit = {},
+    afterTextChangeWithViewData: (ViewData, String) -> Unit = { _, _ -> },
     onKeyboardButtonClick: (() -> Unit)? = null,
 ) = createRecyclerBindingAdapterDelegate<ViewData, Binding>(
     Binding::inflate,
@@ -19,6 +22,9 @@ fun createCommentFieldAdapterDelegate(
 
     with(binding) {
         item as ViewData
+
+        textWatchers.remove(etCommentItemField)
+            ?.let(etCommentItemField::removeTextChangedListener)
 
         etCommentItemField.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -52,8 +58,10 @@ fun createCommentFieldAdapterDelegate(
             start = item.marginHorizontal,
             end = item.marginHorizontal,
         )
-        etCommentItemField.removeTextChangedListener(textWatcher)
-        textWatcher = etCommentItemField.doAfterTextChanged { afterTextChange(it.toString()) }
+        textWatchers[etCommentItemField] = etCommentItemField.doAfterTextChanged {
+            afterTextChange(it.toString())
+            afterTextChangeWithViewData(item, it.toString())
+        }
     }
 }
 
@@ -64,6 +72,7 @@ data class CommentFieldViewData(
     val marginHorizontal: Int,
     val hint: String,
     val valueType: ValueType,
+    val type: Type = Type.Default,
 ) : ViewHolderType {
 
     override fun getUniqueId(): Long = id
@@ -76,7 +85,11 @@ data class CommentFieldViewData(
         data object TextSingleLine : ValueType
         data object NumberDecimal : ValueType
     }
+
+    interface Type {
+        object Default : Type
+    }
 }
 
 // Avoids setting several watchers and calling onChange several times.
-private var textWatcher: TextWatcher? = null
+private val textWatchers: MutableMap<EditText, TextWatcher> = WeakHashMap()

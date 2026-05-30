@@ -30,10 +30,9 @@ class RecordTagViewDataInteractor @Inject constructor(
     private val commonViewDataMapper: CommonViewDataMapper,
 ) {
 
-    // TODO also change selection in other places
-    // TODO remove InfoViewData and mapSelectedHint in CommonViewDataMapper
-    // TODO add tag search to other entry points
-    // TODO add shortcut to start timer from tag selection when activity selection
+    // TODO also change selection in other places (add Selected / Available hints etc).
+    // TODO remove InfoViewData and mapSelectedHint in CommonViewDataMapper.
+    // TODO add shortcut to start timer from tag selection when activity selection.
     // typeId is empty - show all tags.
     suspend fun getViewData(
         selectedTags: List<RecordBase.Tag>,
@@ -102,6 +101,7 @@ class RecordTagViewDataInteractor @Inject constructor(
                 marginHorizontal = 8,
                 hint = resourceRepo.getString(R.string.search_hint),
                 valueType = CommentFieldViewData.ValueType.TextSingleLine,
+                type = CommentFieldType,
             ).let(::listOf)
         } else {
             emptyList()
@@ -267,4 +267,6 @@ class RecordTagViewDataInteractor @Inject constructor(
         ALL_TAGS,
         SEARCH,
     }
+
+    data object CommentFieldType : CommentFieldViewData.Type
 }

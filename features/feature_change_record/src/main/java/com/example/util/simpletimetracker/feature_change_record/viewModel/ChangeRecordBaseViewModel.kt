@@ -144,8 +144,8 @@ abstract class ChangeRecordBaseViewModel(
     protected abstract val isStatisticsButtonVisible: Boolean
 
     private var prevRecord: Record? = null
-    private var searchJob: Job? = null
-    private var searchText: String = ""
+    private var tagSearchJob: Job? = null
+    private var tagSearchText: String = ""
 
     init {
         val bridge = ChangeRecordDelegateBridge(
@@ -410,10 +410,10 @@ abstract class ChangeRecordBaseViewModel(
     }
 
     fun onSearchTextChange(text: String) {
-        if (text != searchText) {
-            searchJob?.cancel()
-            searchJob = viewModelScope.launch {
-                searchText = text
+        if (text != tagSearchText) {
+            tagSearchJob?.cancel()
+            tagSearchJob = viewModelScope.launch {
+                tagSearchText = text
                 // Do not delay on clear.
                 if (text.isNotEmpty()) delay(500)
                 updateCategoriesViewData(fromValueChange = true)
@@ -959,7 +959,7 @@ abstract class ChangeRecordBaseViewModel(
             showBigEmptyHint = true,
             showHint = true,
             showArchived = false,
-            searchText = searchText,
+            searchText = tagSearchText,
             fromSearchChange = fromSearchChange,
             buttons = listOfNotNull(
                 RecordTagViewDataInteractor.Button.ADD,

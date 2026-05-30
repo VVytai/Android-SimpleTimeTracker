@@ -63,7 +63,7 @@ class RecordTagSelectionFragment :
             createHintAdapterDelegate(),
             createEmptyAdapterDelegate(),
             createEmptySpaceAdapterDelegate(),
-            createCommentFieldAdapterDelegate(viewModel::onCommentChange),
+            createCommentFieldAdapterDelegate(afterTextChangeWithViewData = viewModel::onCommentChange),
             createRecordTagSelectionTextAdapterDelegate(),
             createRecordCommentAdapterDelegate(viewModel::onCommentClick),
             createFilterAdapterDelegate(viewModel::onCommentFilterClick),

@@ -23,7 +23,9 @@ class RecordTagSelectionViewDataInteractor @Inject constructor(
         selectedTags: List<RecordBase.Tag>,
         multipleChoiceAvailable: Boolean,
         comment: String,
+        tagSearch: String,
         fromCommentChange: Boolean,
+        fromSearchChange: Boolean,
     ): List<ViewHolderType> {
         val typeId = extra.typeId
         val shouldShowCommentSelection = RecordTagSelectionParams.FieldParam.Comment in extra.fields
@@ -78,10 +80,11 @@ class RecordTagSelectionViewDataInteractor @Inject constructor(
                 showBigEmptyHint = false,
                 showHint = false,
                 showArchived = false,
-                searchText = "",
-                fromSearchChange = false,
+                searchText = tagSearch,
+                fromSearchChange = fromSearchChange,
                 buttons = listOf(
                     RecordTagViewDataInteractor.Button.UNTAGGED,
+                    RecordTagViewDataInteractor.Button.SEARCH,
                     RecordTagViewDataInteractor.Button.ALL_TAGS,
                 ),
             ).data
