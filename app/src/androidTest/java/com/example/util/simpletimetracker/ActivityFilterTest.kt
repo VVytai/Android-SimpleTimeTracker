@@ -383,12 +383,12 @@ class ActivityFilterTest : BaseUiTest() {
         Thread.sleep(1000)
 
         // Check filtering
-        tryAction { checkFilter(filterByActivity1, viewsR.color.colorFiltered) }
-        checkFilter(filterByActivity2, viewsR.color.colorFiltered)
-        checkFilter(filterByCategory1, viewsR.color.colorFiltered)
-        checkFilter(filterByCategory2, viewsR.color.colorFiltered)
-        checkFilter(filterByCategoryAll, viewsR.color.colorFiltered)
-        checkFilter(filterEmpty, viewsR.color.colorFiltered)
+        tryAction { checkFilter(filterByActivity1, viewsR.color.colorInactive) }
+        checkFilter(filterByActivity2, viewsR.color.colorInactive)
+        checkFilter(filterByCategory1, viewsR.color.colorInactive)
+        checkFilter(filterByCategory2, viewsR.color.colorInactive)
+        checkFilter(filterByCategoryAll, viewsR.color.colorInactive)
+        checkFilter(filterEmpty, viewsR.color.colorInactive)
         checkTypes(displayed = availableTypes, available = availableTypes)
 
         clickOnViewWithText(filterByActivity1)
@@ -516,14 +516,14 @@ class ActivityFilterTest : BaseUiTest() {
         Thread.sleep(1000)
 
         // Check filtering
-        tryAction { checkFilter(filter1, viewsR.color.colorFiltered) }
-        checkFilter(filter2, viewsR.color.colorFiltered)
+        tryAction { checkFilter(filter1, viewsR.color.colorInactive) }
+        checkFilter(filter2, viewsR.color.colorInactive)
         checkTypes(displayed = availableTypes, available = availableTypes)
 
         // Select two
         clickOnViewWithText(filter1)
         checkFilter(filter1, firstColor)
-        checkFilter(filter2, viewsR.color.colorFiltered)
+        checkFilter(filter2, viewsR.color.colorInactive)
         checkTypes(displayed = listOf(typeName1), available = availableTypes)
         clickOnViewWithText(filter2)
         checkFilter(filter1, firstColor)
@@ -538,17 +538,17 @@ class ActivityFilterTest : BaseUiTest() {
         // Check
         clickOnViewWithText(filter1)
         checkFilter(filter1, firstColor)
-        checkFilter(filter2, viewsR.color.colorFiltered)
+        checkFilter(filter2, viewsR.color.colorInactive)
         checkTypes(displayed = listOf(typeName1), available = availableTypes)
 
         clickOnViewWithText(filter2)
-        checkFilter(filter1, viewsR.color.colorFiltered)
+        checkFilter(filter1, viewsR.color.colorInactive)
         checkFilter(filter2, lastColor)
         checkTypes(displayed = listOf(typeName2), available = availableTypes)
 
         clickOnViewWithText(filter1)
         checkFilter(filter1, firstColor)
-        checkFilter(filter2, viewsR.color.colorFiltered)
+        checkFilter(filter2, viewsR.color.colorInactive)
         checkTypes(displayed = listOf(typeName1), available = availableTypes)
         clickOnViewWithText(filter1)
 
@@ -558,7 +558,7 @@ class ActivityFilterTest : BaseUiTest() {
         // Check
         clickOnViewWithText(filter1)
         checkFilter(filter1, firstColor)
-        checkFilter(filter2, viewsR.color.colorFiltered)
+        checkFilter(filter2, viewsR.color.colorInactive)
         checkTypes(displayed = listOf(typeName1), available = availableTypes)
         clickOnViewWithText(filter2)
         checkFilter(filter1, firstColor)
@@ -689,19 +689,19 @@ class ActivityFilterTest : BaseUiTest() {
         checkViewIsDisplayed(withText(category1))
         checkViewIsDisplayed(withText(category2))
         checkViewIsDisplayed(withText(filter))
-        checkFilter(category1, viewsR.color.colorFiltered)
-        checkFilter(category2, viewsR.color.colorFiltered)
+        checkFilter(category1, viewsR.color.colorInactive)
+        checkFilter(category2, viewsR.color.colorInactive)
         checkTypes(displayed = listOf(type1, type2), available = availableTypes)
 
         // Check filtering
         clickOnViewWithText(category1)
         checkFilter(category1, firstColor)
-        checkFilter(category2, viewsR.color.colorFiltered)
+        checkFilter(category2, viewsR.color.colorInactive)
         checkTypes(displayed = listOf(type1), available = availableTypes)
 
         clickOnViewWithText(category1)
         clickOnViewWithText(category2)
-        checkFilter(category1, viewsR.color.colorFiltered)
+        checkFilter(category1, viewsR.color.colorInactive)
         checkFilter(category2, lastColor)
         checkTypes(displayed = listOf(type2), available = availableTypes)
 

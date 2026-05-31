@@ -59,7 +59,8 @@ class RecordViewDataMapper @Inject constructor(
             ),
             duration = timeMapper.formatInterval(
                 interval = mapDuration(
-                    record = record,
+                    timeStarted = record.timeStarted,
+                    timeEnded = record.timeEnded,
                     showSeconds = showSeconds,
                 ),
                 forceSeconds = showSeconds,
@@ -186,17 +187,6 @@ class RecordViewDataMapper @Inject constructor(
                 .append(dateHint),
             infoIconVisible = true,
             closeIconVisible = false,
-        )
-    }
-
-    fun mapDuration(
-        record: Record,
-        showSeconds: Boolean,
-    ): Long {
-        return mapDuration(
-            timeStarted = record.timeStarted,
-            timeEnded = record.timeEnded,
-            showSeconds = showSeconds,
         )
     }
 

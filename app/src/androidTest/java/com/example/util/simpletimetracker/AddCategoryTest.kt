@@ -211,7 +211,7 @@ class AddCategoryTest : BaseUiTest() {
         // Add category
         Thread.sleep(1000)
         clickOnViewWithText(coreR.string.category_hint)
-        clickOnViewWithText(coreR.string.categories_add_category)
+        clickOnViewWithText(coreR.string.running_records_add_type)
         typeTextIntoView(changeCategoryR.id.etChangeCategoryName, categoryName1)
         closeSoftKeyboard()
 

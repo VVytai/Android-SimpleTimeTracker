@@ -119,9 +119,9 @@ class AddRecordTypeTest : BaseUiTest() {
         checkViewIsDisplayed(withId(changeRecordTypeR.id.rvChangeRecordTypeCategories))
         checkViewIsDisplayed(withText(categoryName1))
         checkViewIsDisplayed(withText(categoryName2))
-        checkViewIsDisplayed(withText(coreR.string.nothing_selected))
-        onView(withText(categoryName1)).check(isCompletelyBelow(withText(coreR.string.nothing_selected)))
-        onView(withText(categoryName2)).check(isCompletelyBelow(withText(coreR.string.nothing_selected)))
+        checkViewDoesNotExist(withText(coreR.string.something_selected))
+        onView(withText(categoryName1)).check(isCompletelyBelow(withText(coreR.string.something_available)))
+        onView(withText(categoryName2)).check(isCompletelyBelow(withText(coreR.string.something_available)))
         onView(withText(categoryName2)).check(isTopAlignedWith(withText(categoryName1)))
 
         // Selecting category
@@ -136,9 +136,9 @@ class AddRecordTypeTest : BaseUiTest() {
 
         clickOnRecyclerItem(changeRecordTypeR.id.rvChangeRecordTypeCategories, withText(categoryName1))
         clickOnRecyclerItem(changeRecordTypeR.id.rvChangeRecordTypeCategories, withText(categoryName2))
-        checkViewIsDisplayed(withText(coreR.string.nothing_selected))
-        onView(withText(categoryName1)).check(isCompletelyBelow(withText(coreR.string.nothing_selected)))
-        onView(withText(categoryName2)).check(isCompletelyBelow(withText(coreR.string.nothing_selected)))
+        checkViewDoesNotExist(withText(coreR.string.something_selected))
+        onView(withText(categoryName1)).check(isCompletelyBelow(withText(coreR.string.something_available)))
+        onView(withText(categoryName2)).check(isCompletelyBelow(withText(coreR.string.something_available)))
         onView(withText(categoryName2)).check(isTopAlignedWith(withText(categoryName1)))
 
         clickOnRecyclerItem(changeRecordTypeR.id.rvChangeRecordTypeCategories, withText(categoryName1))

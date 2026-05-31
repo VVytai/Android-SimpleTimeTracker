@@ -275,7 +275,7 @@ class SettingsBackupTest : BaseUiTest() {
         checkActivityFilters(
             activityFilterList.mapIndexed { index, data ->
                 if (index == 0) {
-                    data.copy(color = ColorTestData.Res(R.color.colorFiltered))
+                    data.copy(color = ColorTestData.Res(R.color.colorInactive))
                 } else {
                     data
                 }

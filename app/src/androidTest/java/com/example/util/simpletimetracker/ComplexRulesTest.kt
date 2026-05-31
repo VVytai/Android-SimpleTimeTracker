@@ -662,7 +662,7 @@ class ComplexRulesTest : BaseUiTest() {
         // Check tag value selection
         NavUtils.openRunningRecordsScreen()
         clickOnViewWithText(typeName)
-        checkViewIsDisplayed(withText(tagName))
+        tryAction { checkViewIsDisplayed(withText(tagName)) }
         checkViewIsDisplayed(withId(dialogsR.id.btnRecordTagSelectionSave))
     }
 

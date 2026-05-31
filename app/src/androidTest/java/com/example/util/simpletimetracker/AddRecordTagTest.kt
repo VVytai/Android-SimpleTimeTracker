@@ -548,7 +548,7 @@ class AddRecordTagTest : BaseUiTest() {
         NavUtils.openRecordsScreen()
         clickOnView(allOf(withText(typeName), isCompletelyDisplayed()))
         clickOnViewWithId(changeRecordR.id.fieldChangeRecordCategory)
-        clickOnViewWithText(coreR.string.categories_add_record_tag)
+        clickOnViewWithText(coreR.string.running_records_add_type)
 
         // Activity already selected
         checkPreviewUpdated(withCardColor(lastColor))
@@ -586,7 +586,7 @@ class AddRecordTagTest : BaseUiTest() {
 
         // Add category
         clickOnViewWithId(changeRecordR.id.fieldChangeRecordCategory)
-        clickOnViewWithText(coreR.string.categories_add_record_tag)
+        clickOnViewWithText(coreR.string.running_records_add_type)
         typeTextIntoView(changeRecordTagR.id.etChangeRecordTagName, tagName1)
         closeSoftKeyboard()
         clickOnViewWithText(coreR.string.change_category_save)
