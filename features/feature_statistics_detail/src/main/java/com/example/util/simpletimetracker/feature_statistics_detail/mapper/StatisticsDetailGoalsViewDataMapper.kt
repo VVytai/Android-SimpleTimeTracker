@@ -7,6 +7,7 @@ import com.example.util.simpletimetracker.domain.daysOfWeek.model.DayOfWeek
 import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.domain.record.mapper.RangeMapper
 import com.example.util.simpletimetracker.domain.record.model.RecordBase
+import com.example.util.simpletimetracker.domain.recordType.extension.isReached
 import com.example.util.simpletimetracker.domain.recordType.extension.value
 import com.example.util.simpletimetracker.domain.recordType.model.RecordTypeGoal
 import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
@@ -305,7 +306,11 @@ class StatisticsDetailGoalsViewDataMapper @Inject constructor(
             } else {
                 totalDuration - goalValue
             }
-            val color = if (goalDuration >= 0) positiveColor else negativeColor
+            val isReached = goalSubtype.isReached(
+                current = goalDuration,
+                goalValue = 0L,
+            )
+            val color = if (isReached) positiveColor else negativeColor
             ChartBarDataDuration(
                 rangeStart = dataPart.rangeStart,
                 legend = dataPart.legend,

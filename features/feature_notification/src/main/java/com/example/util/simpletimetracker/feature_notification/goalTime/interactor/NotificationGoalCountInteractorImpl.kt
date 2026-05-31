@@ -140,7 +140,7 @@ class NotificationGoalCountInteractorImpl @Inject constructor(
             rangeLength = goalRange.toRangeLength() ?: return,
         ).count
 
-        if (current == goal.value) {
+        if (shouldNotifyOnCountValue(goal, current)) {
             show(
                 idData = RecordTypeGoal.IdData.Type(typeId),
                 goalRange = goalRange,
@@ -166,7 +166,7 @@ class NotificationGoalCountInteractorImpl @Inject constructor(
         rangeGoals.forEach { goal ->
             val categoryId = goal.idData.value
             val current = allCurrents[categoryId]?.count.orZero()
-            if (current == goal.value) {
+            if (shouldNotifyOnCountValue(goal, current)) {
                 show(
                     idData = RecordTypeGoal.IdData.Category(categoryId),
                     goalRange = goalRange,
@@ -194,7 +194,7 @@ class NotificationGoalCountInteractorImpl @Inject constructor(
         rangeGoals.forEach { goal ->
             val tagId = goal.idData.value
             val current = allCurrents[tagId]?.count.orZero()
-            if (current == goal.value) {
+            if (shouldNotifyOnCountValue(goal, current)) {
                 show(
                     idData = RecordTypeGoal.IdData.Tag(tagId),
                     goalRange = goalRange,
@@ -236,5 +236,15 @@ class NotificationGoalCountInteractorImpl @Inject constructor(
 
     private fun getAllGoalRanges(): List<Range> {
         return listOf(Range.Daily, Range.Weekly, Range.Monthly)
+    }
+
+    private fun shouldNotifyOnCountValue(
+        goal: RecordTypeGoal,
+        current: Long,
+    ): Boolean {
+        return when (goal.subtype) {
+            is RecordTypeGoal.Subtype.Goal -> current == goal.value
+            is RecordTypeGoal.Subtype.Limit -> current == goal.value + 1
+        }
     }
 }

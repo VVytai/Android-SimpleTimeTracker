@@ -9,6 +9,7 @@ import com.example.util.simpletimetracker.domain.base.ARCHIVED_BUTTON_ITEM_ID
 import com.example.util.simpletimetracker.domain.recordType.extension.getDaily
 import com.example.util.simpletimetracker.domain.extension.orFalse
 import com.example.util.simpletimetracker.domain.extension.orZero
+import com.example.util.simpletimetracker.domain.recordType.extension.isReached
 import com.example.util.simpletimetracker.domain.recordType.extension.value
 import com.example.util.simpletimetracker.domain.color.model.AppColor
 import com.example.util.simpletimetracker.domain.recordType.model.RecordType
@@ -206,13 +207,12 @@ class RecordTypeViewDataMapper @Inject constructor(
             is RecordTypeGoal.Type.Count -> dailyCurrent?.count.orZero()
             else -> 0
         }
-        val valueLeft = goalValue - current
         val isLimit = goal?.subtype == RecordTypeGoal.Subtype.Limit
 
         // TODO GOAL detailed stats, excess graph, count deficit when should have a goal.
         // TODO GOAL streaks, skip count days when should not have a goal (daily goals).
         return if (goal != null) {
-            if (valueLeft <= 0L) {
+            if (goal.subtype.isReached(current, goalValue)) {
                 if (isLimit) {
                     GoalCheckmarkView.CheckState.LIMIT_REACHED
                 } else {

@@ -7,6 +7,7 @@ import com.example.util.simpletimetracker.core.viewData.StatisticsDataHolder
 import com.example.util.simpletimetracker.domain.base.DurationFormat
 import com.example.util.simpletimetracker.domain.extension.orFalse
 import com.example.util.simpletimetracker.domain.extension.orZero
+import com.example.util.simpletimetracker.domain.recordType.extension.isReached
 import com.example.util.simpletimetracker.domain.recordType.extension.value
 import com.example.util.simpletimetracker.domain.recordType.model.RecordType
 import com.example.util.simpletimetracker.domain.recordType.model.RecordTypeGoal
@@ -63,8 +64,11 @@ class GoalViewDataMapper @Inject constructor(
         }
 
         val valueLeft = goalValue - current
-        val complete = valueLeft <= 0L
-        val durationLeftString = if (complete) {
+        val reached = goal.subtype.isReached(
+            current = current,
+            goalValue = goalValue,
+        )
+        val durationLeftString = if (reached) {
             typeString
         } else {
             val formatted = when (goal.type) {
@@ -82,8 +86,8 @@ class GoalViewDataMapper @Inject constructor(
         }
 
         val state = when {
-            complete && goal.subtype is RecordTypeGoal.Subtype.Goal -> GoalTimeViewData.Subtype.Goal
-            complete && goal.subtype is RecordTypeGoal.Subtype.Limit -> GoalTimeViewData.Subtype.Limit
+            reached && goal.subtype is RecordTypeGoal.Subtype.Goal -> GoalTimeViewData.Subtype.Goal
+            reached && goal.subtype is RecordTypeGoal.Subtype.Limit -> GoalTimeViewData.Subtype.Limit
             else -> GoalTimeViewData.Subtype.Hidden
         }
 
@@ -194,9 +198,10 @@ class GoalViewDataMapper @Inject constructor(
             is RecordTypeGoal.Type.Duration -> statistics?.data?.duration.orZero()
             is RecordTypeGoal.Type.Count -> statistics?.data?.count.orZero()
         }
-
         val goalSubtype = goal.subtype
-        val goalState = if (goalValue - current <= 0L) {
+        val isReached = goalSubtype.isReached(current = current, goalValue = goalValue)
+
+        val goalState = if (isReached) {
             when (goalSubtype) {
                 is RecordTypeGoal.Subtype.Goal -> GoalCheckmarkView.CheckState.GOAL_REACHED
                 is RecordTypeGoal.Subtype.Limit -> GoalCheckmarkView.CheckState.LIMIT_REACHED

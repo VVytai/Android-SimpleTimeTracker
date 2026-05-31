@@ -3,6 +3,7 @@ package com.example.util.simpletimetracker.feature_notification.goalTime.interac
 import com.example.util.simpletimetracker.core.interactor.FilterGoalsByDayOfWeekInteractor
 import com.example.util.simpletimetracker.core.interactor.GetCurrentRecordsDurationInteractor
 import com.example.util.simpletimetracker.domain.extension.orZero
+import com.example.util.simpletimetracker.domain.recordType.extension.isReached
 import com.example.util.simpletimetracker.domain.recordType.extension.value
 import com.example.util.simpletimetracker.domain.notifications.interactor.NotificationGoalRangeEndInteractor
 import com.example.util.simpletimetracker.domain.notifications.interactor.NotificationGoalTimeInteractor
@@ -206,9 +207,9 @@ class NotificationGoalTimeInteractorImpl @Inject constructor(
         runningRecord: RunningRecord,
     ) {
         val rangeGoals = filterGoalsFromRange(goalRange, goals)
-        val goal = rangeGoals.firstOrNull().value * 1000
+        val goal = rangeGoals.firstOrNull()
 
-        if (goal > 0) {
+        if (goal != null) {
             val current = if (goalRange is Range.Session) {
                 System.currentTimeMillis() - runningRecord.timeStarted
             } else {
@@ -219,9 +220,13 @@ class NotificationGoalTimeInteractorImpl @Inject constructor(
                 ).duration
             }
 
-            if (goal > current) {
+            val durationMillisFromNow = goal.getDurationMillisUntilReached(
+                current = current,
+                runningRecordsCount = 1,
+            )
+            if (durationMillisFromNow != null) {
                 scheduler.schedule(
-                    durationMillisFromNow = goal - current,
+                    durationMillisFromNow = durationMillisFromNow,
                     idData = idData,
                     goalRange = goalRange,
                 )
@@ -272,13 +277,13 @@ class NotificationGoalTimeInteractorImpl @Inject constructor(
 
         rangeGoals.forEach { goal ->
             val categoryId = goal.idData.value
-            val current = thisRangeCurrents[categoryId].orZero()
-            val goalValue = goal.value * 1000
-            if (goalValue > current) {
-                val count = thisRangeRunningCounts[categoryId].orZero()
-                    .takeUnless { it == 0 } ?: return@forEach
+            val durationMillisFromNow = goal.getDurationMillisUntilReached(
+                current = thisRangeCurrents[categoryId].orZero(),
+                runningRecordsCount = thisRangeRunningCounts[categoryId].orZero(),
+            )
+            if (durationMillisFromNow != null) {
                 scheduler.schedule(
-                    durationMillisFromNow = (goalValue - current) / count,
+                    durationMillisFromNow = durationMillisFromNow,
                     idData = RecordTypeGoal.IdData.Category(categoryId),
                     goalRange = goalRange,
                 )
@@ -325,13 +330,13 @@ class NotificationGoalTimeInteractorImpl @Inject constructor(
 
         rangeGoals.forEach { goal ->
             val tagId = goal.idData.value
-            val current = thisRangeCurrents[tagId].orZero()
-            val goalValue = goal.value * 1000
-            if (goalValue > current) {
-                val count = thisRangeRunningCounts[tagId].orZero()
-                    .takeUnless { it == 0 } ?: return@forEach
+            val durationMillisFromNow = goal.getDurationMillisUntilReached(
+                current = thisRangeCurrents[tagId].orZero(),
+                runningRecordsCount = thisRangeRunningCounts[tagId].orZero(),
+            )
+            if (durationMillisFromNow != null) {
                 scheduler.schedule(
-                    durationMillisFromNow = (goalValue - current) / count,
+                    durationMillisFromNow = durationMillisFromNow,
                     idData = RecordTypeGoal.IdData.Tag(tagId),
                     goalRange = goalRange,
                 )
@@ -352,6 +357,22 @@ class NotificationGoalTimeInteractorImpl @Inject constructor(
             is Range.Daily -> this.range is Range.Daily
             is Range.Weekly -> this.range is Range.Weekly
             is Range.Monthly -> this.range is Range.Monthly
+        }
+    }
+
+    private fun RecordTypeGoal.getDurationMillisUntilReached(
+        current: Long,
+        runningRecordsCount: Int,
+    ): Long? {
+        val count = runningRecordsCount.takeIf { it > 0 } ?: return null
+        val goalValue = value * 1000
+        val isReached = subtype.isReached(current = current, goalValue = goalValue)
+        if (isReached) return null
+
+        val durationMillisUntilGoalValue = (goalValue - current) / count
+        return when (subtype) {
+            is RecordTypeGoal.Subtype.Goal -> durationMillisUntilGoalValue
+            is RecordTypeGoal.Subtype.Limit -> durationMillisUntilGoalValue + 1
         }
     }
 

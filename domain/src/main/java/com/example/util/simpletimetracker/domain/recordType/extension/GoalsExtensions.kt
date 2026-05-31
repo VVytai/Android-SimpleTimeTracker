@@ -90,4 +90,25 @@ fun List<RecordTypeGoal>.filterDaysOfWeek(dayOfWeek: DayOfWeek): List<RecordType
     }
 }
 
+fun RecordTypeGoal.Subtype.isReached(
+    current: Long,
+    goalValue: Long,
+): Boolean {
+    return when (this) {
+        is RecordTypeGoal.Subtype.Goal -> current >= goalValue
+        is RecordTypeGoal.Subtype.Limit -> current > goalValue
+    }
+}
+
+fun RecordTypeGoal.Subtype.isSuccessful(
+    current: Long,
+    goalValue: Long,
+): Boolean {
+    val isReached = isReached(current = current, goalValue = goalValue)
+    return when (this) {
+        is RecordTypeGoal.Subtype.Goal -> isReached
+        is RecordTypeGoal.Subtype.Limit -> !isReached
+    }
+}
+
 val RecordTypeGoal?.value: Long get() = this?.type?.value.orZero()

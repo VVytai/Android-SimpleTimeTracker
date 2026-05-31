@@ -13,6 +13,7 @@ import com.example.util.simpletimetracker.domain.daysOfWeek.model.DayOfWeek
 import com.example.util.simpletimetracker.domain.record.model.Range
 import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
 import com.example.util.simpletimetracker.domain.record.model.RecordBase
+import com.example.util.simpletimetracker.domain.recordType.extension.isSuccessful
 import com.example.util.simpletimetracker.domain.recordType.model.RecordTypeGoal
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_statistics_detail.R
@@ -354,17 +355,17 @@ class StatisticsDetailStreaksInteractor @Inject constructor(
         var streakEnd: Long = 0
         durations.forEachIndexed { index, duration ->
             val isInPast = duration.first < todayRange.timeEnded
-            val isReached = when (goalSubtype) {
-                is RecordTypeGoal.Subtype.Goal -> duration.second >= goalValue
-                is RecordTypeGoal.Subtype.Limit -> duration.second <= goalValue
-            } && isInPast
+            val isSuccessful = goalSubtype.isSuccessful(
+                current = duration.second,
+                goalValue = goalValue,
+            ) && isInPast
             val isLast = index == durations.size - 1
-            if (isReached) {
+            if (isSuccessful) {
                 counter++
                 if (streakStart == 0L) streakStart = duration.first
                 streakEnd = duration.first
             }
-            if (!isReached || isLast) {
+            if (!isSuccessful || isLast) {
                 // Series of one day makes no sense.
                 if (counter > 1) {
                     data += IntermediateData.Streak(
@@ -376,7 +377,7 @@ class StatisticsDetailStreaksInteractor @Inject constructor(
                 }
                 if (counter > longestStreak) longestStreak = counter
             }
-            if (!isReached && !isLast) {
+            if (!isSuccessful && !isLast) {
                 counter = 0
                 streakStart = 0
                 streakEnd = 0
@@ -543,17 +544,17 @@ class StatisticsDetailStreaksInteractor @Inject constructor(
         return dummyDays + data
             .map {
                 val isInPast = it.first < todayRange.timeEnded
-                val isReached = when (goalSubtype) {
-                    is RecordTypeGoal.Subtype.Goal -> it.second >= goalValue
-                    is RecordTypeGoal.Subtype.Limit -> it.second <= goalValue
-                } && isInPast
+                val isSuccessful = goalSubtype.isSuccessful(
+                    current = it.second,
+                    goalValue = goalValue,
+                ) && isInPast
                 val rangeStart = calendar.shiftTimeStamp(it.first, -startOfDayShift)
                 val monthLegend = if (!isCalendarShownInOneRow) {
                     timeMapper.formatShortMonth(rangeStart)
                 } else {
                     ""
                 }
-                if (isReached) {
+                if (isSuccessful) {
                     val colorLevel = mapColorLevel(
                         dataValueRangeStep = dataValueRangeStep,
                         value = it.second,
