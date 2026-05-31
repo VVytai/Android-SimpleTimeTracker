@@ -296,6 +296,7 @@ Pozwala to zobaczyć, ile czasu spędzasz na produktywnych i nieproduktywnych ak
     <string name="records_all_sort_order">Posortuj rekordy</string>
     <string name="records_all_sort_time_started">Czas rozpoczęcia</string>
     <string name="records_all_sort_duration">Czas trwania</string>
+    <string name="records_all_days_without_records">Dni bez wpisów - %s</string>
 
     <!--  Running records  -->
     <string name="running_records_types_empty">Aby rozpocząć śledzenie, dodaj aktywność, klikając przycisk %s lub użyj domyślnych, klikając przycisk %s</string>

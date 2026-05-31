@@ -296,6 +296,7 @@
     <string name="records_all_sort_order">பதிவுகளை வரிசைப்படுத்து</string>
     <string name="records_all_sort_time_started">தொடங்கிய நேரம்</string>
     <string name="records_all_sort_duration">கால அளவு</string>
+    <string name="records_all_days_without_records">பதிவுகள் இல்லாத நாட்கள் - %s</string>
 
     <!--  Running records  -->
     <string name="running_records_types_empty">கண்காணிப்பைத் தொடங்க, %s பொத்தானை அழுத்தி செயல்பாடுகளைச் சேர்க்கவும் அல்லது %s பொத்தானை அழுத்தி இயல்புநிலை முன்னமைவுகளைப் பயன்படுத்தவும்</string>

@@ -296,6 +296,7 @@
     <string name="records_all_sort_order">計測記録をソート</string>
     <string name="records_all_sort_time_started">時間の開始</string>
     <string name="records_all_sort_duration">期間</string>
+    <string name="records_all_days_without_records">記録のない日数 - %s</string>
 
     <!--  Running records  -->
     <string name="running_records_types_empty">追跡を開始するには、%s ボタンをクリックしてアクティビティを追加するか、%s ボタンをクリックしてデフォルトのプリセットを使用します。</string>

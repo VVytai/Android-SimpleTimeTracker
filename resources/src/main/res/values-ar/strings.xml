@@ -296,6 +296,7 @@
     <string name="records_all_sort_order">فرز التتبعات</string>
     <string name="records_all_sort_time_started">بدأ الوقت</string>
     <string name="records_all_sort_duration">مدة</string>
+    <string name="records_all_days_without_records">أيام بدون سجلات - %s</string>
 
     <!--  Running records  -->
     <string name="running_records_types_empty">لبدء التتبع ، أضف الأنشطة بالنقر فوق الزر %s أو استخدم الإعدادات المسبقة الافتراضية بالنقر فوق الزر %s</string>

@@ -296,6 +296,7 @@
     <string name="records_all_sort_order">기록 정렬</string>
     <string name="records_all_sort_time_started">시작한 시간</string>
     <string name="records_all_sort_duration">기간</string>
+    <string name="records_all_days_without_records">기록이 없는 날짜 - %s</string>
 
     <!--  Running records  -->
     <string name="running_records_types_empty">기록을 시작하기 위해 %s 버튼을 눌러 활동을 추가하거나 %s 버튼을 눌러 기본 템플릿을 사용하세요</string>

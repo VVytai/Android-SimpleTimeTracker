@@ -18,6 +18,7 @@ import com.example.util.simpletimetracker.feature_base_adapter.loader.createLoad
 import com.example.util.simpletimetracker.feature_base_adapter.multitaskRecord.createMultitaskRecordAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.record.createRecordAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.recordsDateDivider.createRecordsDateDividerAdapterDelegate
+import com.example.util.simpletimetracker.feature_base_adapter.recordsDateDivider.createRecordsDaysBetweenDividerAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.runningRecord.createRunningRecordAdapterDelegate
 import com.example.util.simpletimetracker.feature_records_all.viewData.RecordsAllSortOrderViewData
 import com.example.util.simpletimetracker.feature_records_all.viewData.RecordsAllViewDataState
@@ -57,6 +58,7 @@ class RecordsAllFragment : BaseFragment<Binding>() {
             createRecordAdapterDelegate(throttle(viewModel::onRecordClick)),
             createMultitaskRecordAdapterDelegate(),
             createRecordsDateDividerAdapterDelegate(),
+            createRecordsDaysBetweenDividerAdapterDelegate(),
             createEmptyAdapterDelegate(),
             createLoaderAdapterDelegate(),
         )

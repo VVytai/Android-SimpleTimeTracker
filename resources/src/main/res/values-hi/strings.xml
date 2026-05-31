@@ -296,6 +296,7 @@
     <string name="records_all_sort_order">क्रमबद्ध अभिलेख</string>
     <string name="records_all_sort_time_started">समय शुरू हुआ</string>
     <string name="records_all_sort_duration">अवधि</string>
+    <string name="records_all_days_without_records">रिकॉर्ड के बिना दिन - %s</string>
 
     <!--  Running records  -->
     <string name="running_records_types_empty">ट्रैकिंग शुरू करने के लिए, %s बटन पर क्लिक करके गतिविधियाँ जोड़ें या %s बटन पर क्लिक करके डिफ़ॉल्ट प्रीसेट का उपयोग करें</string>

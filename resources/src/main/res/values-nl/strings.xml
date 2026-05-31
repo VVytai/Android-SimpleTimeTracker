@@ -296,6 +296,7 @@ Dit stelt je in staat om te zien hoeveel tijd je in totaal besteedt aan producti
     <string name="records_all_sort_order">Records sorteren</string>
     <string name="records_all_sort_time_started">Tijd begonnen</string>
     <string name="records_all_sort_duration">Looptijd</string>
+    <string name="records_all_days_without_records">Dagen zonder registraties - %s</string>
 
     <!--  Running records  -->
     <string name="running_records_types_empty">Om het volgen te starten, voegt u activiteiten toe door op de %s-knop te klikken of gebruikt u standaardinstellingen door op de %s-knop te klikken</string>

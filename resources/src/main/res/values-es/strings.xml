@@ -296,6 +296,7 @@ Esto te permite ver cuánto tiempo estás dedicando a actividades productivas fr
     <string name="records_all_sort_order">Ordenar los registros</string>
     <string name="records_all_sort_time_started">Tiempo de inicio</string>
     <string name="records_all_sort_duration">Duración</string>
+    <string name="records_all_days_without_records">Días sin registros - %s</string>
 
     <!--  Running records  -->
     <string name="running_records_types_empty">Para comenzar a rastrear, agregue actividades haciendo clic en el botón %s o use los ajustes preestablecidos predeterminados haciendo clic en el botón %s</string>

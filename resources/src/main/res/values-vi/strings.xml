@@ -296,6 +296,7 @@
     <string name="records_all_sort_order">Sắp xếp bản ghi</string>
     <string name="records_all_sort_time_started">Thời gian bắt đầu</string>
     <string name="records_all_sort_duration">Thời lượng</string>
+    <string name="records_all_days_without_records">Số ngày không có bản ghi - %s</string>
 
     <!--  Running records  -->
     <string name="running_records_types_empty">Để bắt đầu theo dõi, hãy thêm hoạt động bằng cách nhấp vào nút %s hoặc sử dụng thiết đặt trước mặc định bằng cách nhấp vào nút %s</string>

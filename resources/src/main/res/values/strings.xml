@@ -296,6 +296,7 @@ This allows you to see how much time you\'re spending on productive versus unpro
     <string name="records_all_sort_order">Sort records</string>
     <string name="records_all_sort_time_started">Time started</string>
     <string name="records_all_sort_duration">Duration</string>
+    <string name="records_all_days_without_records">Days without records - %s</string>
 
     <!--  Running records  -->
     <string name="running_records_types_empty">To start tracking, add activities by clicking on %s button or use default presets by clicking on %s button</string>

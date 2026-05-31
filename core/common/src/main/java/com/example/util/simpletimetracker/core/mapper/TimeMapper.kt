@@ -158,6 +158,7 @@ class TimeMapper @Inject constructor(
         toTime: Long,
         range: RangeLength,
         firstDayOfWeek: DayOfWeek,
+        calendar: Calendar = Calendar.getInstance(),
     ): Long {
         val calendarStep = when (range) {
             is RangeLength.Day -> Calendar.DAY_OF_YEAR
@@ -169,7 +170,6 @@ class TimeMapper @Inject constructor(
             is RangeLength.Last -> return 0
         }
 
-        val calendar = Calendar.getInstance()
         var result = 0L
 
         calendar.firstDayOfWeek = toCalendarDayOfWeek(firstDayOfWeek)

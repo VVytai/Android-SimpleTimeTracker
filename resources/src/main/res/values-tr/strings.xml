@@ -296,6 +296,7 @@ Bu, genel olarak verimli ve verimsiz aktivitelere ne kadar zaman harcadığını
     <string name="records_all_sort_order">Kayıtları sırala</string>
     <string name="records_all_sort_time_started">Başlangıç zamanı</string>
     <string name="records_all_sort_duration">Süre</string>
+    <string name="records_all_days_without_records">Kayıt olmayan günler - %s</string>
 
     <!--  Running records  -->
     <string name="running_records_types_empty">İzlemeye başlamak için %s düğmesine tıklayarak etkinlikler ekleyin veya %s düğmesine tıklayarak varsayılan ön ayarları kullanın</string>

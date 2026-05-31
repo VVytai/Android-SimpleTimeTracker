@@ -296,6 +296,7 @@
     <string name="records_all_sort_order">Сортировка</string>
     <string name="records_all_sort_time_started">Дата</string>
     <string name="records_all_sort_duration">Продолж.</string>
+    <string name="records_all_days_without_records">Дней без записей — %s</string>
 
     <!--  Running records  -->
     <string name="running_records_types_empty">Чтобы начать отслеживание, добавьте активности нажав кнопку %s, или используйте предустановки по умолчанию нажав кнопку %s</string>

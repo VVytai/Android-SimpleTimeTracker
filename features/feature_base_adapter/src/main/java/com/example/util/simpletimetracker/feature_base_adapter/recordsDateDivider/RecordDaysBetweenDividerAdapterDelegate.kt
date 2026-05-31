@@ -2,10 +2,10 @@ package com.example.util.simpletimetracker.feature_base_adapter.recordsDateDivid
 
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.createRecyclerBindingAdapterDelegate
-import com.example.util.simpletimetracker.feature_base_adapter.databinding.ItemRecordsDateDividerLayoutBinding as Binding
-import com.example.util.simpletimetracker.feature_base_adapter.recordsDateDivider.RecordsDateDividerViewData as ViewData
+import com.example.util.simpletimetracker.feature_base_adapter.databinding.ItemRecordsDaysBetweenDividerLayoutBinding as Binding
+import com.example.util.simpletimetracker.feature_base_adapter.recordsDateDivider.RecordsDaysBetweenDividerViewData as ViewData
 
-fun createRecordsDateDividerAdapterDelegate() = createRecyclerBindingAdapterDelegate<ViewData, Binding>(
+fun createRecordsDaysBetweenDividerAdapterDelegate() = createRecyclerBindingAdapterDelegate<ViewData, Binding>(
     Binding::inflate,
 ) { binding, item, _ ->
 
@@ -16,11 +16,12 @@ fun createRecordsDateDividerAdapterDelegate() = createRecyclerBindingAdapterDele
     }
 }
 
-data class RecordsDateDividerViewData(
+data class RecordsDaysBetweenDividerViewData(
+    val id: Long,
     val message: String,
 ) : ViewHolderType {
 
-    override fun getUniqueId(): Long = message.hashCode().toLong()
+    override fun getUniqueId(): Long = id
 
     override fun isValidType(other: ViewHolderType): Boolean = other is ViewData
 }

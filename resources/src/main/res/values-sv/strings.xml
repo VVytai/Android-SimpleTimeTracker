@@ -296,6 +296,7 @@ Detta gör att du kan se hur mycket tid du spenderar på produktiva kontra icke-
     <string name="records_all_sort_order">Sortera händelser</string>
     <string name="records_all_sort_time_started">Starttid</string>
     <string name="records_all_sort_duration">Varaktighet</string>
+    <string name="records_all_days_without_records">Dagar utan registreringar - %s</string>
 
     <!--  Running records  -->
     <string name="running_records_types_empty">För att börja spåra, lägg till aktiviteter genom att klicka på %s-knappen eller använd standardförinställningar genom att klicka på %s-knappen</string>

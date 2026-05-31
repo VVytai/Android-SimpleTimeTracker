@@ -41,6 +41,7 @@ class RecordsAllViewDataInteractor @Inject constructor(
         val useMilitaryTime = prefsInteractor.getUseMilitaryTimeFormat()
         val durationFormat = prefsInteractor.getDurationFormat()
         val showSeconds = prefsInteractor.getShowSeconds()
+        val firstDayOfWeek = prefsInteractor.getFirstDayOfWeek()
         val recordTypes = recordTypeInteractor.getAll().associateBy(RecordType::id)
         val recordTags = recordTagInteractor.getAll()
         val goals = recordTypeGoalInteractor.getAllTypeGoals().groupBy { it.idData.value }
@@ -113,7 +114,10 @@ class RecordsAllViewDataInteractor @Inject constructor(
             .map { (timeStarted, _, record) -> timeStarted to record }
             .let { viewData ->
                 if (sortOrder == RecordsAllSortOrder.TIME_STARTED) {
-                    dateDividerViewDataMapper.addDateViewData(viewData)
+                    dateDividerViewDataMapper.addDateViewData(
+                        viewData = viewData,
+                        addDaysBetween = DateDividerViewDataMapper.DaysBetween.Shown(firstDayOfWeek),
+                    )
                 } else {
                     viewData.map { it.second }
                 }

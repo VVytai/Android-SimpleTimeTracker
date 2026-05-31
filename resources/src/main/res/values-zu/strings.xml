@@ -296,6 +296,7 @@ Lokhu kukuvumela ukuthi ubone isikhathi osichitha emisebenzini esebenzayo nezing
     <string name="records_all_sort_order">Hlela amarekhodi</string>
     <string name="records_all_sort_time_started">Isikhathi sokuqala</string>
     <string name="records_all_sort_duration">Isikhathi esiphelele</string>
+    <string name="records_all_days_without_records">Izinsuku ezingenawo amarekhodi - %s</string>
 
     <!--  Running records  -->
     <string name="running_records_types_empty">Ukuze uqale ukulandelela, engeza imisebenzi ngokuchofoza inkinobho ethi %s noma usebenzise izilungiselelo ezenzakalayo ngokuchofoza inkinobho ethi %s</string>

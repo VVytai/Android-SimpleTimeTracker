@@ -296,6 +296,7 @@ Isto permíteche ver canto tempo estás dedicando a actividades produtivas front
     <string name="records_all_sort_order">Ordenar os rexistros</string>
     <string name="records_all_sort_time_started">Tempo de comenzo</string>
     <string name="records_all_sort_duration">Duración</string>
+    <string name="records_all_days_without_records">Días sen rexistros - %s</string>
 
     <!--  Running records  -->
     <string name="running_records_types_empty">Para comezar a rexistrar, engade actividades facendo clic no botón %s ou usa os axustes predeterminados facendo clic no botón %s</string>

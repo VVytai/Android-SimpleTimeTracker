@@ -296,6 +296,7 @@
     <string name="records_all_sort_order">מיין רשומות</string>
     <string name="records_all_sort_time_started">זמן התחלה</string>
     <string name="records_all_sort_duration">משך</string>
+    <string name="records_all_days_without_records">ימים ללא רשומות - %s</string>
 
     <!--  Running records  -->
     <string name="running_records_types_empty">כדי להתחיל מעקב, הוסף פעילויות על ידי לחיצה על כפתור %s או השתמש בקביעות ברירת מחדל על ידי לחיצה על כפתור %s</string>

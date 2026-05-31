@@ -296,6 +296,7 @@ Acest lucru îți permite să vezi cât timp petreci în activități productive
     <string name="records_all_sort_order">Sortează înregistrările</string>
     <string name="records_all_sort_time_started">Ora de început</string>
     <string name="records_all_sort_duration">Durata</string>
+    <string name="records_all_days_without_records">Zile fără înregistrări - %s</string>
 
     <!--  Running records  -->
     <string name="running_records_types_empty">Pentru a începe urmărirea, adaugă activitatea prin apăsarea butonului %s sau folosește setările de bază apăsând butonul %s</string>

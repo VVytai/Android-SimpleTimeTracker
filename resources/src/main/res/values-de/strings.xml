@@ -296,6 +296,7 @@ Dies ermöglicht es dir, zu sehen, wie viel Zeit du insgesamt für produktive ve
     <string name="records_all_sort_order">Einträge sortieren</string>
     <string name="records_all_sort_time_started">Zeit gestartet</string>
     <string name="records_all_sort_duration">Dauer</string>
+    <string name="records_all_days_without_records">Tage ohne Einträge – %s</string>
 
     <!--  Running records  -->
     <string name="running_records_types_empty">Um mit der Verfolgung zu beginnen, fügen Sie Aktivitäten hinzu, indem Sie auf die Schaltfläche %s klicken, oder verwenden Sie Standardvoreinstellungen, indem Sie auf die Schaltfläche %s klicken</string>

@@ -296,6 +296,7 @@
     <string name="records_all_sort_order">مرتب کردن تاریخچه ها</string>
     <string name="records_all_sort_time_started">زمان شروع</string>
     <string name="records_all_sort_duration">طول مدت</string>
+    <string name="records_all_days_without_records">روزهای بدون رکورد - %s</string>
 
     <!--  Running records  -->
     <string name="running_records_types_empty">برای شروع ردیابی، با کلیک بر روی دکمه %s فعالیت ها را اضافه کنید یا با کلیک بر روی دکمه %s از تنظیمات پیش فرض استفاده کنید</string>

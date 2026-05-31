@@ -296,6 +296,7 @@ Això et permet veure quant de temps dediques a activitats productives versus no
     <string name="records_all_sort_order">Endreça els enregistraments</string>
     <string name="records_all_sort_time_started">Temps d\'inici</string>
     <string name="records_all_sort_duration">Durada</string>
+    <string name="records_all_days_without_records">Dies sense registres - %s</string>
 
     <!--  Running records  -->
     <string name="running_records_types_empty">Per començar el seguiment, afegiu activitats fent clic al botó %s o utilitzeu els valors predeterminats fent clic al botó %s</string>

@@ -296,6 +296,7 @@ Isto permite-lhe ver quanto tempo está a gastar em atividades produtivas versus
     <string name="records_all_sort_order">Organizar registos</string>
     <string name="records_all_sort_time_started">Hora de início</string>
     <string name="records_all_sort_duration">Duração</string>
+    <string name="records_all_days_without_records">Dias sem registos - %s</string>
 
     <!--  Running records  -->
     <string name="running_records_types_empty">Para iniciar o registo, adicionar atividades clicando no botão %s ou usar as definições padrão clicando no botão %s</string>

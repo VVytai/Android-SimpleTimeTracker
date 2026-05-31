@@ -296,6 +296,7 @@
     <string name="records_all_sort_order">Сортувати записи</string>
     <string name="records_all_sort_time_started">Початок</string>
     <string name="records_all_sort_duration">Тривалість</string>
+    <string name="records_all_days_without_records">Днів без записів — %s</string>
 
     <!--  Running records  -->
     <string name="running_records_types_empty">Щоб розпочати відстеження, додайте дії, натиснувши кнопку %s, або використайте стандартні налаштування, натиснувши кнопку %s</string>

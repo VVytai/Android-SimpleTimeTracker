@@ -296,6 +296,7 @@
     <string name="records_all_sort_order">排序紀錄</string>
     <string name="records_all_sort_time_started">開始時間</string>
     <string name="records_all_sort_duration">期間</string>
+    <string name="records_all_days_without_records">無記錄天數 - %s</string>
 
     <!--  Running records  -->
     <string name="running_records_types_empty">要開始跟踪，請單擊 %s 按鈕添加活動，或單擊 %s 按鈕使用默認預設</string>
