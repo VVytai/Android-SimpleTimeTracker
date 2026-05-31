@@ -1,4 +1,4 @@
-package com.example.util.simpletimetracker.feature_settings.viewData
+package com.example.util.simpletimetracker.feature_settings.api
 
 import com.example.util.simpletimetracker.feature_views.spinner.CustomSpinner
 

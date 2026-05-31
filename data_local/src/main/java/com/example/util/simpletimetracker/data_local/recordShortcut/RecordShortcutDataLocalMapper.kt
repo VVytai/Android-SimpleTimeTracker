@@ -60,6 +60,7 @@ class RecordShortcutDataLocalMapper @Inject constructor() {
             2L -> RecordShortcut.SettingAction.Categories
             3L -> RecordShortcut.SettingAction.Archive
             4L -> RecordShortcut.SettingAction.DataEdit
+            5L -> RecordShortcut.SettingAction.SortActivities
             else -> RecordShortcut.SettingAction.Multitasking
         }
     }
@@ -71,6 +72,7 @@ class RecordShortcutDataLocalMapper @Inject constructor() {
             RecordShortcut.SettingAction.Categories -> 2L
             RecordShortcut.SettingAction.Archive -> 3L
             RecordShortcut.SettingAction.DataEdit -> 4L
+            RecordShortcut.SettingAction.SortActivities -> 5L
         }
     }
 }

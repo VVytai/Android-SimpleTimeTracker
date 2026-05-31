@@ -9,7 +9,6 @@ import com.example.util.simpletimetracker.core.extension.set
 import com.example.util.simpletimetracker.core.extension.toPreview
 import com.example.util.simpletimetracker.core.extension.toParams
 import com.example.util.simpletimetracker.core.interactor.GetChangeRecordNavigationParamsInteractor
-import com.example.util.simpletimetracker.core.interactor.OnSettingsShortcutClickInteractor
 import com.example.util.simpletimetracker.core.interactor.RecordRepeatInteractor
 import com.example.util.simpletimetracker.core.model.NavigationTab
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
@@ -26,9 +25,6 @@ import com.example.util.simpletimetracker.domain.record.interactor.RunningRecord
 import com.example.util.simpletimetracker.domain.record.interactor.UpdateRunningRecordsInteractor
 import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.domain.record.model.RecordDataSelectionDialogResult
-import com.example.util.simpletimetracker.domain.recordAction.interactor.RecordActionRepeatMediator
-import com.example.util.simpletimetracker.domain.recordShortcut.interactor.RecordShortcutInteractor
-import com.example.util.simpletimetracker.domain.recordShortcut.model.RecordShortcut
 import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTypeInteractor
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.activityFilter.ActivityFilterAddViewData
@@ -40,7 +36,9 @@ import com.example.util.simpletimetracker.feature_base_adapter.recordType.Record
 import com.example.util.simpletimetracker.feature_base_adapter.recordTypeSpecial.RunningRecordTypeSpecialViewData
 import com.example.util.simpletimetracker.feature_base_adapter.recordWithHint.RecordWithHintViewData
 import com.example.util.simpletimetracker.feature_base_adapter.runningRecord.RunningRecordViewData
+import com.example.util.simpletimetracker.feature_dialogs.cardOrder.interactor.CardOrderChangedInteractor
 import com.example.util.simpletimetracker.feature_running_records.R
+import com.example.util.simpletimetracker.feature_running_records.api.OnShortcutClickInteractor
 import com.example.util.simpletimetracker.feature_running_records.interactor.RunningRecordsViewDataInteractor
 import com.example.util.simpletimetracker.navigation.Router
 import com.example.util.simpletimetracker.navigation.params.screen.ChangeActivityFilterParams
@@ -70,7 +68,6 @@ class RunningRecordsViewModel @Inject constructor(
     private val runningRecordInteractor: RunningRecordInteractor,
     private val recordInteractor: RecordInteractor,
     private val recordRepeatInteractor: RecordRepeatInteractor,
-    private val recordShortcutInteractor: RecordShortcutInteractor,
     private val runningRecordsViewDataInteractor: RunningRecordsViewDataInteractor,
     private val changeSelectedActivityFilterMediator: ChangeSelectedActivityFilterMediator,
     private val prefsInteractor: PrefsInteractor,
@@ -78,8 +75,8 @@ class RunningRecordsViewModel @Inject constructor(
     private val recordTypeInteractor: RecordTypeInteractor,
     private val getChangeRecordNavigationParamsInteractor: GetChangeRecordNavigationParamsInteractor,
     private val themeChangedInteractor: ThemeChangedInteractor,
-    private val recordActionRepeatMediator: RecordActionRepeatMediator,
-    private val onSettingsShortcutClickInteractor: OnSettingsShortcutClickInteractor,
+    private val onShortcutClickInteractor: OnShortcutClickInteractor,
+    private val cardOrderChangedInteractor: CardOrderChangedInteractor,
 ) : BaseViewModel() {
 
     override var delayDataLoad: Boolean = false
@@ -406,20 +403,19 @@ class RunningRecordsViewModel @Inject constructor(
         }
     }
 
+    fun onShortcutSpinnerPositionSelected(block: RecordShortcutViewData, position: Int) = viewModelScope.launch {
+        onShortcutClickInteractor.onSpinnerPositionSelected(block, position)
+        updateRunningRecords()
+    }
+
+    fun onShortcutButtonClick(
+        item: RecordShortcutViewData,
+    ) {
+        onShortcutClickInteractor.onButtonClick(item)
+    }
+
     private suspend fun onShortcutStart(item: RecordShortcutViewData) {
-        val shortcut = recordShortcutInteractor.get(item.id) ?: return
-        when (val target = shortcut.target) {
-            is RecordShortcut.Target.Record -> {
-                recordActionRepeatMediator.execute(
-                    typeId = target.typeId,
-                    comment = target.comment,
-                    tags = target.tags,
-                )
-            }
-            is RecordShortcut.Target.Setting -> {
-                onSettingsShortcutClickInteractor.execute(target.action)
-            }
-        }
+        onShortcutClickInteractor.execute(item)
         updateRunningRecords()
     }
 
@@ -535,6 +531,9 @@ class RunningRecordsViewModel @Inject constructor(
         }
         viewModelScope.launch {
             themeChangedInteractor.themeChanged.collect { updateRunningRecords() }
+        }
+        viewModelScope.launch {
+            cardOrderChangedInteractor.update.collect { updateRunningRecords() }
         }
     }
 

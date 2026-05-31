@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import com.example.util.simpletimetracker.core.base.ViewModelDelegate
 import com.example.util.simpletimetracker.core.extension.lazySuspend
 import com.example.util.simpletimetracker.core.extension.set
-import com.example.util.simpletimetracker.core.interactor.OnSettingsShortcutClickInteractor
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.domain.extension.flip
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
@@ -12,6 +11,7 @@ import com.example.util.simpletimetracker.domain.notifications.interactor.Update
 import com.example.util.simpletimetracker.domain.record.interactor.RecordsContainerUpdateInteractor
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_settings.R
+import com.example.util.simpletimetracker.feature_settings.api.OnSettingChangedInteractor
 import com.example.util.simpletimetracker.feature_settings.api.SettingsBlock
 import com.example.util.simpletimetracker.feature_settings.interactor.SettingsAdditionalViewDataInteractor
 import com.example.util.simpletimetracker.feature_settings.mapper.SettingsAutomatedTrackingMapper
@@ -35,7 +35,7 @@ class SettingsAdditionalViewModelDelegate @Inject constructor(
     private val settingsMapper: SettingsMapper,
     private val settingsAutomatedTrackingMapper: SettingsAutomatedTrackingMapper,
     private val settingsAdditionalViewDataInteractor: SettingsAdditionalViewDataInteractor,
-    private val onSettingsShortcutClickInteractor: OnSettingsShortcutClickInteractor,
+    private val onSettingChangedInteractor: OnSettingChangedInteractor,
     private val externalViewsInteractor: UpdateExternalViewsInteractor,
     private val recordsContainerUpdateInteractor: RecordsContainerUpdateInteractor,
 ) : ViewModelDelegate() {
@@ -170,7 +170,7 @@ class SettingsAdditionalViewModelDelegate @Inject constructor(
             val newValue = !prefsInteractor.getRetroactiveTrackingMode()
             prefsInteractor.setRetroactiveTrackingMode(newValue)
             parent?.updateContent()
-            onSettingsShortcutClickInteractor.onRetroactiveTrackingModeChange()
+            onSettingChangedInteractor.onRetroactiveTrackingModeChange()
         }
     }
 

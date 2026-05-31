@@ -94,6 +94,8 @@ class RunningRecordsFragment :
             createRecordShortcutAdapterDelegate(
                 onClickWithTransition = throttle(viewModel::onShortcutClick),
                 onLongClickWithTransition = throttle(viewModel::onShortcutLongClick),
+                onSpinnerPositionSelected = viewModel::onShortcutSpinnerPositionSelected,
+                onButtonClicked = viewModel::onShortcutButtonClick,
             ),
             createRunningRecordTypeSpecialAdapterDelegate(
                 onItemClick = throttle(viewModel::onSpecialRecordTypeClick),

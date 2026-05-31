@@ -14,6 +14,7 @@ import com.example.util.simpletimetracker.domain.recordTag.model.CardTagOrder
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_settings.R
 import com.example.util.simpletimetracker.feature_settings.api.SettingsBlock
+import com.example.util.simpletimetracker.feature_settings.api.SettingsOrderChangeInteractor
 import com.example.util.simpletimetracker.feature_settings.interactor.SettingsDisplayViewDataInteractor
 import com.example.util.simpletimetracker.feature_settings.mapper.SettingsMapper
 import com.example.util.simpletimetracker.feature_settings.model.CustomizeOptionsMenuListItem
@@ -38,6 +39,7 @@ class SettingsDisplayViewModelDelegate @Inject constructor(
     private val pomodoroStopInteractor: PomodoroStopInteractor,
     private val recordsContainerUpdateInteractor: RecordsContainerUpdateInteractor,
     private val updateRunningRecordsInteractor: UpdateRunningRecordsInteractor,
+    private val settingsOrderChangeInteractor: SettingsOrderChangeInteractor,
 ) : ViewModelDelegate() {
 
     private var parent: SettingsParent? = null
@@ -178,26 +180,20 @@ class SettingsDisplayViewModelDelegate @Inject constructor(
     }
 
     private fun onCardOrderManualClick() {
-        openOrderDialog(
-            type = CardOrderDialogParams.Type.RecordType(
-                order = CardOrder.MANUAL,
-            ),
+        settingsOrderChangeInteractor.openOrderDialog(
+            type = CardOrderDialogParams.Type.RecordType(CardOrder.MANUAL),
         )
     }
 
     private fun onCategoryOrderManualClick() {
-        openOrderDialog(
-            type = CardOrderDialogParams.Type.Category(
-                order = CardOrder.MANUAL,
-            ),
+        settingsOrderChangeInteractor.openOrderDialog(
+            type = CardOrderDialogParams.Type.Category(CardOrder.MANUAL),
         )
     }
 
     private fun onTagOrderManualClick() {
-        openOrderDialog(
-            type = CardOrderDialogParams.Type.Tag(
-                order = CardTagOrder.MANUAL,
-            ),
+        settingsOrderChangeInteractor.openOrderDialog(
+            type = CardOrderDialogParams.Type.Tag(CardTagOrder.MANUAL),
         )
     }
 
@@ -471,36 +467,8 @@ class SettingsDisplayViewModelDelegate @Inject constructor(
         type: CardOrderDialogParams.Type,
     ) {
         delegateScope.launch {
-            when (type) {
-                is CardOrderDialogParams.Type.RecordType -> {
-                    val currentOrder = prefsInteractor.getCardOrder()
-                    val newOrder = type.order
-                    if (newOrder == currentOrder) return@launch
-                    if (newOrder == CardOrder.MANUAL) openOrderDialog(type.copy(order = currentOrder))
-                    prefsInteractor.setCardOrder(newOrder)
-                }
-                is CardOrderDialogParams.Type.Category -> {
-                    val currentOrder = prefsInteractor.getCategoryOrder()
-                    val newOrder = type.order
-                    if (newOrder == currentOrder) return@launch
-                    if (newOrder == CardOrder.MANUAL) openOrderDialog(type.copy(order = currentOrder))
-                    prefsInteractor.setCategoryOrder(newOrder)
-                }
-                is CardOrderDialogParams.Type.Tag -> {
-                    val currentOrder = prefsInteractor.getTagOrder()
-                    val newOrder = type.order
-                    if (newOrder == currentOrder) return@launch
-                    if (newOrder == CardTagOrder.MANUAL) openOrderDialog(type.copy(order = currentOrder))
-                    prefsInteractor.setTagOrder(newOrder)
-                }
-            }
+            settingsOrderChangeInteractor.onOrderSelected(type)
             parent?.updateContent()
         }
-    }
-
-    private fun openOrderDialog(
-        type: CardOrderDialogParams.Type,
-    ) {
-        router.navigate(CardOrderDialogParams(type))
     }
 }

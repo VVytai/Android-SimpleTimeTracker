@@ -36,5 +36,6 @@ data class RecordShortcut(
         Categories,
         Archive,
         DataEdit,
+        SortActivities,
     }
 }

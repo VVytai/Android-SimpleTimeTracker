@@ -17,6 +17,9 @@ android {
 
 dependencies {
     implementation(project(":core"))
+    implementation(project(":feature_dialogs")) // TODO add api module
+    implementation(project(":feature_running_records:api"))
+    implementation(project(":feature_settings:api"))
     implementation(libs.google.dagger)
     ksp(libs.kapt.dagger)
 }

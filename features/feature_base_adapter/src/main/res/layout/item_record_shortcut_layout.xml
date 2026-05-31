@@ -12,8 +12,7 @@
         android:layout_marginStart="4dp"
         android:layout_marginEnd="4dp"
         app:cardElevation="@dimen/record_type_card_elevation"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/spaceRecordShortcutButtonItem"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Space
@@ -46,6 +45,54 @@
             android:textSize="11sp"
             app:autoSizeTextType="none"
             tools:text="@string/change_record_shortcut" />
+
+    </androidx.cardview.widget.CardView>
+
+    <!--  Elevation one dp bigger than background card elevation  -->
+    <com.example.util.simpletimetracker.feature_views.spinner.CustomSpinner
+        android:id="@+id/spinnerItemSettings"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:alpha="0"
+        android:translationZ="5dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/viewRecordShortcutItem"
+        app:layout_constraintEnd_toEndOf="@id/viewRecordShortcutItem"
+        app:layout_constraintStart_toStartOf="@id/viewRecordShortcutItem"
+        app:layout_constraintTop_toTopOf="@id/viewRecordShortcutItem"
+        tools:visibility="visible" />
+
+    <Space
+        android:id="@+id/spaceRecordShortcutButtonItem"
+        android:layout_width="20dp"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/btnItemSettings"
+        style="@style/SettingsCard"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:foreground="?selectableItemBackground"
+        android:visibility="gone"
+        app:cardBackgroundColor="?appButtonOnCardBackgroundColor"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="h,1:1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="center"
+            android:src="@drawable/ic_settings"
+            android:tint="?appInactiveColor"
+            tools:ignore="ContentDescription" />
 
     </androidx.cardview.widget.CardView>
 

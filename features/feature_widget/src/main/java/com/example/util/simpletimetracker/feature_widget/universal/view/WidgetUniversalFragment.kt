@@ -53,7 +53,11 @@ class WidgetUniversalFragment :
             createRecordTypeAdapterDelegate(viewModel::onRecordTypeClick),
             createRecordTypeSuggestionAdapterDelegate(RecordTypeSuggestionType, viewModel::onRecordTypeClick),
             createRunningRecordTypeSpecialAdapterDelegate(viewModel::onSpecialRecordTypeClick),
-            createRecordShortcutAdapterDelegate(viewModel::onShortcutClick),
+            createRecordShortcutAdapterDelegate(
+                onClick = viewModel::onShortcutClick,
+                onSpinnerPositionSelected = viewModel::onShortcutSpinnerPositionSelected,
+                onButtonClicked = viewModel::onShortcutButtonClick,
+            ),
             createButtonAdapterDelegate(viewModel::onButtonClick),
             createEmptySpaceAdapterDelegate(),
             createDividerAdapterDelegate(),

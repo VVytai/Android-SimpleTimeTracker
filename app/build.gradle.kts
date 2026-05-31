@@ -101,6 +101,7 @@ dependencies {
     implementation(project(":resources"))
     implementation(project(":feature_main"))
     implementation(project(":feature_running_records"))
+    implementation(project(":feature_running_records:api"))
     implementation(project(":feature_change_record_type"))
     implementation(project(":feature_records"))
     implementation(project(":feature_records_all"))

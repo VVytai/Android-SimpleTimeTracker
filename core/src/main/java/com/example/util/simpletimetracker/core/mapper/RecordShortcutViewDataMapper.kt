@@ -8,6 +8,7 @@ import com.example.util.simpletimetracker.domain.recordTag.model.RecordTag
 import com.example.util.simpletimetracker.domain.recordType.model.RecordType
 import com.example.util.simpletimetracker.feature_base_adapter.category.CategoryViewData
 import com.example.util.simpletimetracker.feature_base_adapter.recordShortcut.RecordShortcutViewData
+import com.example.util.simpletimetracker.feature_base_adapter.recordShortcut.RecordShortcutViewData.SpinnerData
 import com.example.util.simpletimetracker.feature_views.viewData.RecordTypeIcon
 import javax.inject.Inject
 
@@ -25,6 +26,7 @@ class RecordShortcutViewDataMapper @Inject constructor(
         isDarkTheme: Boolean,
         isFiltered: Boolean,
         isEnabled: Boolean,
+        spinnerData: SpinnerData? = null,
     ): RecordShortcutViewData {
         return when (val target = shortcut.target) {
             is RecordShortcut.Target.Record -> {
@@ -44,6 +46,7 @@ class RecordShortcutViewDataMapper @Inject constructor(
                     isDarkTheme = isDarkTheme,
                     isFiltered = isFiltered,
                     isEnabled = isEnabled,
+                    spinnerData = spinnerData,
                 )
             }
         }
@@ -56,6 +59,7 @@ class RecordShortcutViewDataMapper @Inject constructor(
             RecordShortcut.SettingAction.Categories -> R.string.categories_title
             RecordShortcut.SettingAction.Archive -> R.string.settings_archive
             RecordShortcut.SettingAction.DataEdit -> R.string.settings_data_edit
+            RecordShortcut.SettingAction.SortActivities -> R.string.settings_sort_activity
         }.let(resourceRepo::getString)
     }
 
@@ -120,12 +124,19 @@ class RecordShortcutViewDataMapper @Inject constructor(
         isDarkTheme: Boolean,
         isFiltered: Boolean,
         isEnabled: Boolean,
+        spinnerData: SpinnerData?,
     ): RecordShortcutViewData {
         val icon: RecordTypeIcon? = null
+        val name = mapActionTitle(shortcut.action)
 
         val data = CategoryViewData.Record.Tagged(
             id = id,
-            name = mapActionTitle(shortcut.action),
+            name = if (spinnerData != null) {
+                val namePostfix = spinnerData.items.getOrNull(spinnerData.selectedPosition)?.text.orEmpty()
+                "$name $namePostfix"
+            } else {
+                name
+            },
             iconColor = colorMapper.toIconColor(
                 isDarkTheme = isDarkTheme,
                 isFiltered = isFiltered,
@@ -143,6 +154,7 @@ class RecordShortcutViewDataMapper @Inject constructor(
             id = id,
             hint = resourceRepo.getString(R.string.shortcut_navigation_settings),
             data = data,
+            spinnerData = spinnerData,
         )
     }
 }

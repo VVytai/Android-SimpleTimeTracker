@@ -16,6 +16,7 @@ import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.category.CategoryViewData
 import com.example.util.simpletimetracker.feature_base_adapter.loader.LoaderViewData
 import com.example.util.simpletimetracker.feature_base_adapter.recordType.RecordTypeViewData
+import com.example.util.simpletimetracker.feature_dialogs.cardOrder.interactor.CardOrderChangedInteractor
 import com.example.util.simpletimetracker.feature_views.GoalCheckmarkView
 import com.example.util.simpletimetracker.navigation.params.screen.CardOrderDialogParams
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -31,6 +32,7 @@ class CardOrderViewModel @Inject constructor(
     private val prefsInteractor: PrefsInteractor,
     private val recordTypeViewDataMapper: RecordTypeViewDataMapper,
     private val categoryViewDataMapper: CategoryViewDataMapper,
+    private val cardOrderChangedInteractor: CardOrderChangedInteractor,
 ) : ViewModel() {
 
     lateinit var extra: CardOrderDialogParams
@@ -62,6 +64,7 @@ class CardOrderViewModel @Inject constructor(
                 {
                     prefsInteractor.setCardOrder(CardOrder.MANUAL)
                     prefsInteractor.setCardOrderManual(it)
+                    cardOrderChangedInteractor.sendUpdate()
                 }
             }
             is CardOrderDialogParams.Type.Category -> {

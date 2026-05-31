@@ -18,8 +18,9 @@ import com.example.util.simpletimetracker.domain.recordTag.model.CardTagOrder
 import com.example.util.simpletimetracker.domain.recordType.model.CardOrder
 import com.example.util.simpletimetracker.domain.widget.model.WidgetTransparencyPercent
 import com.example.util.simpletimetracker.feature_settings.R
+import com.example.util.simpletimetracker.feature_settings.api.CardOrderViewData
+import com.example.util.simpletimetracker.feature_settings.api.SettingsCardOrderMapper
 import com.example.util.simpletimetracker.feature_settings.model.CustomizeOptionsMenuListItem
-import com.example.util.simpletimetracker.feature_settings.viewData.CardOrderViewData
 import com.example.util.simpletimetracker.feature_settings.viewData.DarkModeViewData
 import com.example.util.simpletimetracker.feature_settings.viewData.DaysInCalendarViewData
 import com.example.util.simpletimetracker.feature_settings.viewData.DurationFormatViewData
@@ -42,7 +43,7 @@ class SettingsMapper @Inject constructor(
     private val languageInteractor: LanguageInteractor,
     private val daysInCalendarMapper: DaysInCalendarMapper,
     private val fileExportDateTimeFormatMapper: FileExportDateTimeFormatMapper,
-) {
+) : SettingsCardOrderMapper {
 
     private val cardOrderList: List<CardOrder> = listOf(
         CardOrder.NAME,
@@ -105,7 +106,7 @@ class SettingsMapper @Inject constructor(
     private val exportDateTimeFormatList: List<ExportDateTimeFormat> =
         fileExportDateTimeFormatMapper.getAvailableFormats()
 
-    fun toCardOrderViewData(currentOrder: CardOrder): CardOrderViewData {
+    override fun toCardOrderViewData(currentOrder: CardOrder): CardOrderViewData {
         return CardOrderViewData(
             items = cardOrderList
                 .map(::toCardOrderName)
@@ -125,7 +126,7 @@ class SettingsMapper @Inject constructor(
         )
     }
 
-    fun toCardOrder(position: Int): CardOrder {
+    override fun toCardOrder(position: Int): CardOrder {
         return cardOrderList.getOrElse(position) { cardOrderList.first() }
     }
 

@@ -6,7 +6,6 @@ import com.example.util.simpletimetracker.core.interactor.ActivitySuggestionView
 import com.example.util.simpletimetracker.core.interactor.FilterGoalsByDayOfWeekInteractor
 import com.example.util.simpletimetracker.core.interactor.GetCurrentRecordsDurationInteractor
 import com.example.util.simpletimetracker.core.interactor.GetRunningRecordViewDataMediator
-import com.example.util.simpletimetracker.core.interactor.RecordsShortcutsViewDataInteractor
 import com.example.util.simpletimetracker.core.mapper.RecordTypeViewDataMapper
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.domain.extension.addBetweenEach
@@ -44,7 +43,7 @@ class RunningRecordsViewDataInteractor @Inject constructor(
     private val getCurrentRecordsDurationInteractor: GetCurrentRecordsDurationInteractor,
     private val filterGoalsByDayOfWeekInteractor: FilterGoalsByDayOfWeekInteractor,
     private val activitySuggestionViewDataInteractor: ActivitySuggestionViewDataInteractor,
-    private val recordsShortcutsViewDataInteractor: RecordsShortcutsViewDataInteractor,
+    private val recordsShortcutsViewDataInteractor: RecordsShortcutsViewDataInteractorImpl,
 ) {
 
     suspend fun getViewData(
