@@ -4,8 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.util.simpletimetracker.core.delegates.colorSelection.ColorSelectionViewModelDelegate
-import com.example.util.simpletimetracker.core.delegates.colorSelection.ColorSelectionViewModelDelegateImpl
 import com.example.util.simpletimetracker.domain.extension.addOrRemove
 import com.example.util.simpletimetracker.core.extension.set
 import com.example.util.simpletimetracker.core.extension.trimIfNotBlank
@@ -27,6 +25,7 @@ import com.example.util.simpletimetracker.feature_change_activity_filter.mapper.
 import com.example.util.simpletimetracker.feature_change_activity_filter.viewData.ChangeActivityFilterChooserState
 import com.example.util.simpletimetracker.feature_change_activity_filter.viewData.ChangeActivityFilterTypeSwitchViewData
 import com.example.util.simpletimetracker.feature_change_activity_filter.viewData.ChangeActivityFilterTypesViewData
+import com.example.util.simpletimetracker.feature_color_selection.api.ColorSelectionViewModelDelegate
 import com.example.util.simpletimetracker.navigation.Router
 import com.example.util.simpletimetracker.navigation.params.screen.ChangeActivityFilterParams
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -42,9 +41,9 @@ class ChangeActivityFilterViewModel @Inject constructor(
     private val activityFilterViewDataMapper: ActivityFilterViewDataMapper,
     private val changeActivityFilterMapper: ChangeActivityFilterMapper,
     private val snackBarMessageNavigationInteractor: SnackBarMessageNavigationInteractor,
-    private val colorSelectionViewModelDelegateImpl: ColorSelectionViewModelDelegateImpl,
+    private val colorSelectionViewModelDelegate: ColorSelectionViewModelDelegate,
 ) : ViewModel(),
-    ColorSelectionViewModelDelegate by colorSelectionViewModelDelegateImpl {
+    ColorSelectionViewModelDelegate by colorSelectionViewModelDelegate {
 
     lateinit var extra: ChangeActivityFilterParams
 
@@ -99,11 +98,11 @@ class ChangeActivityFilterViewModel @Inject constructor(
     private var wasSelected: Boolean = true
 
     init {
-        colorSelectionViewModelDelegateImpl.attach(getColorSelectionDelegateParent())
+        colorSelectionViewModelDelegate.attach(getColorSelectionDelegateParent())
     }
 
     override fun onCleared() {
-        colorSelectionViewModelDelegateImpl.clear()
+        colorSelectionViewModelDelegate.clearDelegate()
         super.onCleared()
     }
 
@@ -173,7 +172,7 @@ class ChangeActivityFilterViewModel @Inject constructor(
                 selectedIds = newSelectedIds,
                 type = newType,
                 name = newName.trimIfNotBlank(),
-                color = colorSelectionViewModelDelegateImpl.newColor,
+                color = colorSelectionViewModelDelegate.newColor,
                 selected = wasSelected,
             ).let {
                 activityFilterInteractor.add(it)
@@ -219,9 +218,9 @@ class ChangeActivityFilterViewModel @Inject constructor(
         if (extra is ChangeActivityFilterParams.Change) {
             activityFilterInteractor.get(filterId)?.let {
                 newName = it.name
-                colorSelectionViewModelDelegateImpl.newColor = it.color
+                colorSelectionViewModelDelegate.newColor = it.color
                 wasSelected = it.selected
-                colorSelectionViewModelDelegateImpl.update()
+                colorSelectionViewModelDelegate.update()
             }
         }
     }
@@ -261,7 +260,7 @@ class ChangeActivityFilterViewModel @Inject constructor(
             selectedIds = newSelectedIds,
             type = newType,
             name = newName,
-            color = colorSelectionViewModelDelegateImpl.newColor,
+            color = colorSelectionViewModelDelegate.newColor,
             selected = true,
         ).let {
             activityFilterViewDataMapper.mapFiltered(

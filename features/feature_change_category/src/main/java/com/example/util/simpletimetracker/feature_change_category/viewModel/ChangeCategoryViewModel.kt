@@ -5,8 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.util.simpletimetracker.core.base.BaseViewModel
 import com.example.util.simpletimetracker.core.base.ViewModelDelegate
-import com.example.util.simpletimetracker.core.delegates.colorSelection.ColorSelectionViewModelDelegate
-import com.example.util.simpletimetracker.core.delegates.colorSelection.ColorSelectionViewModelDelegateImpl
 import com.example.util.simpletimetracker.core.extension.set
 import com.example.util.simpletimetracker.core.extension.trimIfNotBlank
 import com.example.util.simpletimetracker.core.interactor.SnackBarMessageNavigationInteractor
@@ -30,6 +28,7 @@ import com.example.util.simpletimetracker.feature_change_category.viewData.Chang
 import com.example.util.simpletimetracker.feature_change_category.viewData.ChangeCategoryChooserState
 import com.example.util.simpletimetracker.feature_change_category.viewData.ChangeCategoryFieldsState
 import com.example.util.simpletimetracker.feature_change_goals.api.GoalsViewModelDelegate
+import com.example.util.simpletimetracker.feature_color_selection.api.ColorSelectionViewModelDelegate
 import com.example.util.simpletimetracker.navigation.Router
 import com.example.util.simpletimetracker.navigation.params.screen.ChangeTagData
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -49,10 +48,10 @@ class ChangeCategoryViewModel @Inject constructor(
     private val goalsViewModelDelegate: GoalsViewModelDelegate,
     private val statisticsDetailNavigationInteractor: StatisticsDetailNavigationInteractor,
     private val externalViewsInteractor: UpdateExternalViewsInteractor,
-    private val colorSelectionViewModelDelegateImpl: ColorSelectionViewModelDelegateImpl,
+    private val colorSelectionViewModelDelegate: ColorSelectionViewModelDelegate,
 ) : BaseViewModel(),
     GoalsViewModelDelegate by goalsViewModelDelegate,
-    ColorSelectionViewModelDelegate by colorSelectionViewModelDelegateImpl {
+    ColorSelectionViewModelDelegate by colorSelectionViewModelDelegate {
 
     lateinit var extra: ChangeTagData
 
@@ -107,12 +106,12 @@ class ChangeCategoryViewModel @Inject constructor(
     private var newNote: String = ""
 
     init {
-        colorSelectionViewModelDelegateImpl.attach(getColorSelectionDelegateParent())
+        colorSelectionViewModelDelegate.attach(getColorSelectionDelegateParent())
     }
 
     override fun onCleared() {
         (goalsViewModelDelegate as? ViewModelDelegate)?.clear()
-        colorSelectionViewModelDelegateImpl.clear()
+        colorSelectionViewModelDelegate.clearDelegate()
         super.onCleared()
     }
 
@@ -220,7 +219,7 @@ class ChangeCategoryViewModel @Inject constructor(
             Category(
                 id = categoryId,
                 name = newName.trimIfNotBlank(),
-                color = colorSelectionViewModelDelegateImpl.newColor,
+                color = colorSelectionViewModelDelegate.newColor,
                 note = newNote,
             ).let {
                 val addedId = categoryInteractor.add(it)
@@ -320,9 +319,9 @@ class ChangeCategoryViewModel @Inject constructor(
             ?.let {
                 newName = it.name
                 newNote = it.note
-                colorSelectionViewModelDelegateImpl.newColor = it.color
+                colorSelectionViewModelDelegate.newColor = it.color
                 goalsViewModelDelegate.initialize(RecordTypeGoal.IdData.Category(it.id))
-                colorSelectionViewModelDelegateImpl.update()
+                colorSelectionViewModelDelegate.update()
                 updateNoteState()
             }
     }
@@ -332,7 +331,7 @@ class ChangeCategoryViewModel @Inject constructor(
 
         return Category(
             name = newName,
-            color = colorSelectionViewModelDelegateImpl.newColor,
+            color = colorSelectionViewModelDelegate.newColor,
             note = newNote,
         ).let { categoryViewDataMapper.mapCategory(it, isDarkTheme) }
     }
@@ -342,7 +341,7 @@ class ChangeCategoryViewModel @Inject constructor(
 
         return Category(
             name = newName,
-            color = colorSelectionViewModelDelegateImpl.newColor,
+            color = colorSelectionViewModelDelegate.newColor,
             note = newNote,
         ).let { categoryViewDataMapper.mapCategory(it, isDarkTheme) }
     }

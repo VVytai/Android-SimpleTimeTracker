@@ -134,6 +134,8 @@ dependencies {
     implementation(project(":feature_change_goals"))
     implementation(project(":feature_change_goals:api"))
     implementation(project(":feature_change_goals:views"))
+    implementation(project(":feature_color_selection"))
+    implementation(project(":feature_color_selection:api"))
     "playImplementation"(project(":feature_wear"))
 
     implementation(libs.androidx.room)

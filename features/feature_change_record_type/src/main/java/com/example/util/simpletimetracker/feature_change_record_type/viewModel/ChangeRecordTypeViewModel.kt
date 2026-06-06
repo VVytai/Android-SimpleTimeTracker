@@ -5,8 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.util.simpletimetracker.core.base.BaseViewModel
 import com.example.util.simpletimetracker.core.base.ViewModelDelegate
-import com.example.util.simpletimetracker.core.delegates.colorSelection.ColorSelectionViewModelDelegate
-import com.example.util.simpletimetracker.core.delegates.colorSelection.ColorSelectionViewModelDelegateImpl
 import com.example.util.simpletimetracker.core.delegates.iconSelection.viewModelDelegate.IconSelectionViewModelDelegate
 import com.example.util.simpletimetracker.core.delegates.iconSelection.viewModelDelegate.IconSelectionViewModelDelegateImpl
 import com.example.util.simpletimetracker.core.extension.lazySuspend
@@ -41,6 +39,7 @@ import com.example.util.simpletimetracker.feature_change_record_type.viewData.Ch
 import com.example.util.simpletimetracker.feature_change_record_type.viewData.ChangeRecordTypeCategoriesViewData
 import com.example.util.simpletimetracker.feature_change_record_type.viewData.ChangeRecordTypeChooserState
 import com.example.util.simpletimetracker.feature_change_record_type.viewData.ChangeRecordTypeFieldsState
+import com.example.util.simpletimetracker.feature_color_selection.api.ColorSelectionViewModelDelegate
 import com.example.util.simpletimetracker.navigation.Router
 import com.example.util.simpletimetracker.navigation.params.screen.ChangeCategoryFromChangeActivityParams
 import com.example.util.simpletimetracker.navigation.params.screen.ChangeRecordTypeParams
@@ -69,11 +68,11 @@ class ChangeRecordTypeViewModel @Inject constructor(
     private val statisticsDetailNavigationInteractor: StatisticsDetailNavigationInteractor,
     private val removeRecordTypeMediator: RemoveRecordTypeMediator,
     private val goalsViewModelDelegate: GoalsViewModelDelegate,
-    private val colorSelectionViewModelDelegateImpl: ColorSelectionViewModelDelegateImpl,
+    private val colorSelectionViewModelDelegate: ColorSelectionViewModelDelegate,
     private val iconSelectionViewModelDelegateImpl: IconSelectionViewModelDelegateImpl,
 ) : BaseViewModel(),
     GoalsViewModelDelegate by goalsViewModelDelegate,
-    ColorSelectionViewModelDelegate by colorSelectionViewModelDelegateImpl,
+    ColorSelectionViewModelDelegate by colorSelectionViewModelDelegate,
     IconSelectionViewModelDelegate by iconSelectionViewModelDelegateImpl {
 
     lateinit var extra: ChangeRecordTypeParams
@@ -118,13 +117,13 @@ class ChangeRecordTypeViewModel @Inject constructor(
     private var newNote: String = ""
 
     init {
-        colorSelectionViewModelDelegateImpl.attach(getColorSelectionDelegateParent())
+        colorSelectionViewModelDelegate.attach(getColorSelectionDelegateParent())
         iconSelectionViewModelDelegateImpl.attach(getIconSelectionDelegateParent())
     }
 
     override fun onCleared() {
         (goalsViewModelDelegate as? ViewModelDelegate)?.clear()
-        colorSelectionViewModelDelegateImpl.clear()
+        colorSelectionViewModelDelegate.clearDelegate()
         iconSelectionViewModelDelegateImpl.clear()
         super.onCleared()
     }
@@ -375,7 +374,7 @@ class ChangeRecordTypeViewModel @Inject constructor(
             id = recordTypeId,
             name = newName.trimIfNotBlank(),
             icon = iconSelectionViewModelDelegateImpl.newIcon,
-            color = colorSelectionViewModelDelegateImpl.newColor,
+            color = colorSelectionViewModelDelegate.newColor,
             defaultDuration = newDefaultDuration,
             note = newNote,
         )
@@ -405,10 +404,10 @@ class ChangeRecordTypeViewModel @Inject constructor(
             newDefaultDuration = it.defaultDuration
             newNote = it.note
             iconSelectionViewModelDelegateImpl.newIcon = it.icon
-            colorSelectionViewModelDelegateImpl.newColor = it.color
+            colorSelectionViewModelDelegate.newColor = it.color
             goalsViewModelDelegate.initialize(RecordTypeGoal.IdData.Type(it.id))
             iconSelectionViewModelDelegateImpl.update()
-            colorSelectionViewModelDelegateImpl.update()
+            colorSelectionViewModelDelegate.update()
             updateAdditionalState()
             updateNoteState()
         }
@@ -442,7 +441,7 @@ class ChangeRecordTypeViewModel @Inject constructor(
             }
 
             override fun getColor(): AppColor {
-                return colorSelectionViewModelDelegateImpl.newColor
+                return colorSelectionViewModelDelegate.newColor
             }
         }
     }
@@ -467,7 +466,7 @@ class ChangeRecordTypeViewModel @Inject constructor(
         return RecordType(
             name = newName,
             icon = iconSelectionViewModelDelegateImpl.newIcon,
-            color = colorSelectionViewModelDelegateImpl.newColor,
+            color = colorSelectionViewModelDelegate.newColor,
             defaultDuration = newDefaultDuration,
             note = newNote,
         ).let { recordTypeViewDataMapper.map(it, numberOfCards, isDarkTheme) }
