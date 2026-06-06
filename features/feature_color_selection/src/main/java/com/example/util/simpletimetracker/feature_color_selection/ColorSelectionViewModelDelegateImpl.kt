@@ -1,4 +1,4 @@
-package com.example.util.simpletimetracker.core.delegates.colorSelection
+package com.example.util.simpletimetracker.feature_color_selection
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -12,27 +12,11 @@ import com.example.util.simpletimetracker.domain.color.model.AppColor
 import com.example.util.simpletimetracker.domain.favourite.model.FavouriteColor
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.color.ColorViewData
+import com.example.util.simpletimetracker.feature_color_selection.api.ColorSelectionViewModelDelegate
 import com.example.util.simpletimetracker.navigation.Router
 import com.example.util.simpletimetracker.navigation.params.screen.ColorSelectionDialogParams
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-
-// TODO move to module
-interface ColorSelectionViewModelDelegate {
-    val colors: LiveData<List<ViewHolderType>>
-
-    fun attach(parent: Parent)
-    fun onColorClick(item: ColorViewData)
-    fun onColorPaletteClick()
-    fun onColorFavouriteClick()
-    fun onCustomColorSelected(colorInt: Int)
-
-    interface Parent {
-        suspend fun update()
-        fun onColorSelected() = Unit
-        suspend fun isColorSelectedCheck(): Boolean = true
-    }
-}
 
 class ColorSelectionViewModelDelegateImpl @Inject constructor(
     private val router: Router,
@@ -48,7 +32,7 @@ class ColorSelectionViewModelDelegateImpl @Inject constructor(
             initial
         }
     }
-    var newColor: AppColor = AppColor(
+    override var newColor: AppColor = AppColor(
         colorId = (0..ColorMapper.colorsNumber).random(),
         colorInt = "",
     )
@@ -59,7 +43,11 @@ class ColorSelectionViewModelDelegateImpl @Inject constructor(
         this.parent = parent
     }
 
-    suspend fun update() {
+    override fun clearDelegate() {
+        clear()
+    }
+
+    override suspend fun update() {
         updateColors()
     }
 
