@@ -1,9 +1,7 @@
 package com.example.util.simpletimetracker.feature_comment_selection.di
 
-import com.example.util.simpletimetracker.feature_comment_selection.api.CommentSelectionViewDelegate
 import com.example.util.simpletimetracker.feature_comment_selection.api.CommentSelectionViewDelegateProvider
 import com.example.util.simpletimetracker.feature_comment_selection.api.CommentSelectionViewModelDelegate
-import com.example.util.simpletimetracker.feature_comment_selection.viewDelegate.CommentSelectionViewDelegateImpl
 import com.example.util.simpletimetracker.feature_comment_selection.viewDelegate.CommentSelectionViewDelegateProviderImpl
 import com.example.util.simpletimetracker.feature_comment_selection.viewModelDelegate.CommentSelectionViewModelDelegateImpl
 import dagger.Binds
@@ -17,9 +15,6 @@ interface FeatureModule {
 
     @Binds
     fun bindCommentSelectionViewModelDelegate(impl: CommentSelectionViewModelDelegateImpl): CommentSelectionViewModelDelegate
-
-    @Binds
-    fun bindCommentSelectionViewDelegate(impl: CommentSelectionViewDelegateImpl): CommentSelectionViewDelegate
 
     @Binds
     fun bindCommentSelectionViewDelegateProvider(impl: CommentSelectionViewDelegateProviderImpl): CommentSelectionViewDelegateProvider

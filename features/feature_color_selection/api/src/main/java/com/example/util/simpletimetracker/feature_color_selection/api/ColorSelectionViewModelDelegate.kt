@@ -10,8 +10,8 @@ interface ColorSelectionViewModelDelegate {
     var newColor: AppColor
 
     fun attach(parent: Parent)
-    fun clearDelegate()
-    suspend fun update()
+    fun clearColorDelegate()
+    suspend fun updateColorViewData()
     fun onColorClick(item: ColorViewData)
     fun onColorPaletteClick()
     fun onColorFavouriteClick()

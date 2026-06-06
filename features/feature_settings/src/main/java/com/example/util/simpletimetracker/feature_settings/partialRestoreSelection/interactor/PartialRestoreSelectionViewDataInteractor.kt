@@ -1,6 +1,5 @@
 package com.example.util.simpletimetracker.feature_settings.partialRestoreSelection.interactor
 
-import com.example.util.simpletimetracker.core.delegates.iconSelection.mapper.IconSelectionMapper
 import com.example.util.simpletimetracker.core.mapper.ActivityFilterViewDataMapper
 import com.example.util.simpletimetracker.core.mapper.ActivitySuggestionViewDataMapper
 import com.example.util.simpletimetracker.core.mapper.CategoryViewDataMapper
@@ -26,6 +25,7 @@ import com.example.util.simpletimetracker.domain.recordType.model.RecordType
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.category.CategoryViewData
 import com.example.util.simpletimetracker.feature_base_adapter.color.ColorViewData
+import com.example.util.simpletimetracker.feature_icon_selection.api.mapper.IconSelectionMapper
 import com.example.util.simpletimetracker.feature_settings.partialRestore.model.PartialRestoreFilterType
 import com.example.util.simpletimetracker.feature_settings.partialRestoreSelection.model.PartialRestoreSelectionDialogParams
 import com.example.util.simpletimetracker.feature_views.GoalCheckmarkView

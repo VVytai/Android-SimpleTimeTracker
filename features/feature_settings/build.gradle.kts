@@ -22,6 +22,7 @@ dependencies {
     implementation(project(":feature_records:api"))
     implementation(project(":feature_statistics:api"))
     implementation(project(":feature_statistics_detail:api"))
+    implementation(project(":feature_icon_selection:api"))
     implementation(libs.google.dagger)
     ksp(libs.kapt.dagger)
 }

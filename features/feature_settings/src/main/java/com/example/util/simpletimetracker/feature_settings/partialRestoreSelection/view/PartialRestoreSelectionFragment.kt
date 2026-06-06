@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import com.example.util.simpletimetracker.core.base.BaseBottomSheetFragment
-import com.example.util.simpletimetracker.core.delegates.iconSelection.adapter.createIconSelectionAdapterDelegate
 import com.example.util.simpletimetracker.core.extension.blockContentScroll
 import com.example.util.simpletimetracker.core.extension.findListener
 import com.example.util.simpletimetracker.core.extension.observeOnce
@@ -25,9 +24,9 @@ import com.example.util.simpletimetracker.feature_base_adapter.record.createReco
 import com.example.util.simpletimetracker.feature_base_adapter.recordShortcut.createRecordShortcutAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.recordType.createRecordTypeAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.recordsDateDivider.createRecordsDateDividerAdapterDelegate
-import com.example.util.simpletimetracker.feature_settings.partialRestoreSelection.viewModel.PartialRestoreSelectionViewModel
 import com.example.util.simpletimetracker.feature_settings.partialRestoreSelection.model.PartialRestoreSelectionDialogListener
 import com.example.util.simpletimetracker.feature_settings.partialRestoreSelection.model.PartialRestoreSelectionDialogParams
+import com.example.util.simpletimetracker.feature_settings.partialRestoreSelection.viewModel.PartialRestoreSelectionViewModel
 import com.example.util.simpletimetracker.feature_views.extension.setOnClick
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
@@ -54,7 +53,9 @@ class PartialRestoreSelectionFragment : BaseBottomSheetFragment<Binding>() {
                 onDisableClick = {}, // Do nothing.
             ),
             createActivitySuggestionAdapterDelegate(viewModel::onActivitySuggestionClick),
-            createIconSelectionAdapterDelegate(viewModel::onIconClick),
+            viewModel.iconSelectionViewDelegateProvider.provideIconSelectionAdapterDelegate(
+                onIconItemClick = viewModel::onIconClick,
+            ),
             createEmojiAdapterDelegate(viewModel::onEmojiClick),
             createColorAdapterDelegate(viewModel::onColorClick),
             createRecordAdapterDelegate(viewModel::onRecordClick),

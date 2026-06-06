@@ -123,6 +123,7 @@
     │   ├── feature_date_edit                 # Data edit screen.
     │   ├── feature_dialogs                   # Dialogs.
     │   ├── feature_goals                     # Separate screen for goals.
+    │   ├── feature_icon_selection            # Delegate for icon selection.
     │   ├── feature_main                      # Main screen with tabs.
     │   ├── feature_notification              # Notifications.
     │   ├── feature_pomodoro                  # Pomodoro mode.

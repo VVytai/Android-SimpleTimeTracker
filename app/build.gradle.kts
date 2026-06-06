@@ -138,6 +138,8 @@ dependencies {
     implementation(project(":feature_color_selection:api"))
     implementation(project(":feature_comment_selection"))
     implementation(project(":feature_comment_selection:api"))
+    implementation(project(":feature_icon_selection"))
+    implementation(project(":feature_icon_selection:api"))
     "playImplementation"(project(":feature_wear"))
 
     implementation(libs.androidx.room)

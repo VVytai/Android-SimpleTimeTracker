@@ -111,7 +111,7 @@ class ChangeCategoryViewModel @Inject constructor(
 
     override fun onCleared() {
         (goalsViewModelDelegate as? ViewModelDelegate)?.clear()
-        colorSelectionViewModelDelegate.clearDelegate()
+        colorSelectionViewModelDelegate.clearColorDelegate()
         super.onCleared()
     }
 
@@ -321,7 +321,7 @@ class ChangeCategoryViewModel @Inject constructor(
                 newNote = it.note
                 colorSelectionViewModelDelegate.newColor = it.color
                 goalsViewModelDelegate.initialize(RecordTypeGoal.IdData.Category(it.id))
-                colorSelectionViewModelDelegate.update()
+                colorSelectionViewModelDelegate.updateColorViewData()
                 updateNoteState()
             }
     }

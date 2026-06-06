@@ -5,8 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.util.simpletimetracker.core.base.BaseViewModel
 import com.example.util.simpletimetracker.core.base.ViewModelDelegate
-import com.example.util.simpletimetracker.core.delegates.iconSelection.viewModelDelegate.IconSelectionViewModelDelegate
-import com.example.util.simpletimetracker.core.delegates.iconSelection.viewModelDelegate.IconSelectionViewModelDelegateImpl
 import com.example.util.simpletimetracker.core.extension.set
 import com.example.util.simpletimetracker.core.extension.trimIfNotBlank
 import com.example.util.simpletimetracker.core.interactor.SnackBarMessageNavigationInteractor
@@ -42,6 +40,7 @@ import com.example.util.simpletimetracker.feature_change_record_tag.viewData.Cha
 import com.example.util.simpletimetracker.feature_change_record_tag.viewData.ChangeRecordTagValueTypeViewData
 import com.example.util.simpletimetracker.feature_change_record_tag.viewData.ChangeRecordTagValueViewData
 import com.example.util.simpletimetracker.feature_color_selection.api.ColorSelectionViewModelDelegate
+import com.example.util.simpletimetracker.feature_icon_selection.api.IconSelectionViewModelDelegate
 import com.example.util.simpletimetracker.navigation.Router
 import com.example.util.simpletimetracker.navigation.params.screen.ChangeTagData
 import com.example.util.simpletimetracker.navigation.params.screen.StandardDialogParams
@@ -67,7 +66,7 @@ class ChangeRecordTagViewModel @Inject constructor(
     private val externalViewsInteractor: UpdateExternalViewsInteractor,
     private val goalsViewModelDelegate: GoalsViewModelDelegate,
     private val colorSelectionViewModelDelegate: ColorSelectionViewModelDelegate,
-    private val iconSelectionViewModelDelegateImpl: IconSelectionViewModelDelegateImpl,
+    private val iconSelectionViewModelDelegateImpl: IconSelectionViewModelDelegate,
 ) : BaseViewModel(),
     GoalsViewModelDelegate by goalsViewModelDelegate,
     ColorSelectionViewModelDelegate by colorSelectionViewModelDelegate,
@@ -157,8 +156,8 @@ class ChangeRecordTagViewModel @Inject constructor(
 
     override fun onCleared() {
         (goalsViewModelDelegate as? ViewModelDelegate)?.clear()
-        colorSelectionViewModelDelegate.clearDelegate()
-        iconSelectionViewModelDelegateImpl.clear()
+        colorSelectionViewModelDelegate.clearColorDelegate()
+        iconSelectionViewModelDelegateImpl.clearIconDelegate()
         super.onCleared()
     }
 
@@ -252,7 +251,7 @@ class ChangeRecordTagViewModel @Inject constructor(
         iconSelectionViewModelDelegateImpl.newIcon = type.icon
         colorSelectionViewModelDelegate.newColor = type.color
         newIconColorSource = type.id
-        colorSelectionViewModelDelegate.update()
+        colorSelectionViewModelDelegate.updateColorViewData()
         updatePreview()
         updateIconColorSourceSelected()
     }
@@ -475,8 +474,8 @@ class ChangeRecordTagViewModel @Inject constructor(
                     newNote = it.note
                     newValueType = it.valueType
                     newValueSuffix = it.valueSuffix
-                    iconSelectionViewModelDelegateImpl.update()
-                    colorSelectionViewModelDelegate.update()
+                    iconSelectionViewModelDelegateImpl.updateIconViewData()
+                    colorSelectionViewModelDelegate.updateColorViewData()
                     updateIconColorSourceSelected()
                     updateNoteState()
                     updateValueState()
@@ -487,8 +486,8 @@ class ChangeRecordTagViewModel @Inject constructor(
                     iconSelectionViewModelDelegateImpl.newIcon = type.icon
                     colorSelectionViewModelDelegate.newColor = type.color
                     newIconColorSource = type.id
-                    iconSelectionViewModelDelegateImpl.update()
-                    colorSelectionViewModelDelegate.update()
+                    iconSelectionViewModelDelegateImpl.updateIconViewData()
+                    colorSelectionViewModelDelegate.updateColorViewData()
                     updateIconColorSourceSelected()
                 }
             }
@@ -500,7 +499,7 @@ class ChangeRecordTagViewModel @Inject constructor(
             override suspend fun update() {
                 updatePreview()
                 updateIconColorSourceSelected()
-                iconSelectionViewModelDelegateImpl.update()
+                iconSelectionViewModelDelegateImpl.updateIconViewData()
             }
 
             override fun onColorSelected() {

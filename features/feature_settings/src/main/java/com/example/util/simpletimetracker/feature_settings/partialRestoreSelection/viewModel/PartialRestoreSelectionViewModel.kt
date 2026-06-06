@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.util.simpletimetracker.core.delegates.iconSelection.viewData.IconSelectionViewData
 import com.example.util.simpletimetracker.core.extension.set
 import com.example.util.simpletimetracker.domain.activityFilter.model.ActivityFilterType
 import com.example.util.simpletimetracker.domain.extension.addOrRemove
@@ -20,6 +19,8 @@ import com.example.util.simpletimetracker.feature_base_adapter.loader.LoaderView
 import com.example.util.simpletimetracker.feature_base_adapter.record.RecordViewData
 import com.example.util.simpletimetracker.feature_base_adapter.recordShortcut.RecordShortcutViewData
 import com.example.util.simpletimetracker.feature_base_adapter.recordType.RecordTypeViewData
+import com.example.util.simpletimetracker.feature_icon_selection.api.viewData.IconSelectionViewData
+import com.example.util.simpletimetracker.feature_icon_selection.api.viewDelegate.IconSelectionViewDelegateProvider
 import com.example.util.simpletimetracker.feature_settings.partialRestore.utils.getIds
 import com.example.util.simpletimetracker.feature_settings.partialRestoreSelection.interactor.PartialRestoreSelectionViewDataInteractor
 import com.example.util.simpletimetracker.feature_settings.partialRestoreSelection.model.PartialRestoreSelectionDialogParams
@@ -30,6 +31,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PartialRestoreSelectionViewModel @Inject constructor(
+    val iconSelectionViewDelegateProvider: IconSelectionViewDelegateProvider,
     private val partialRestoreSelectionViewDataInteractor: PartialRestoreSelectionViewDataInteractor,
     private val settingsFileWorkDelegate: SettingsFileWorkDelegate,
 ) : ViewModel() {

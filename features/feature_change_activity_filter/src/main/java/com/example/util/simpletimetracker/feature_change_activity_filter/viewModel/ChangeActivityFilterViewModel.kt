@@ -102,7 +102,7 @@ class ChangeActivityFilterViewModel @Inject constructor(
     }
 
     override fun onCleared() {
-        colorSelectionViewModelDelegate.clearDelegate()
+        colorSelectionViewModelDelegate.clearColorDelegate()
         super.onCleared()
     }
 
@@ -220,7 +220,7 @@ class ChangeActivityFilterViewModel @Inject constructor(
                 newName = it.name
                 colorSelectionViewModelDelegate.newColor = it.color
                 wasSelected = it.selected
-                colorSelectionViewModelDelegate.update()
+                colorSelectionViewModelDelegate.updateColorViewData()
             }
         }
     }

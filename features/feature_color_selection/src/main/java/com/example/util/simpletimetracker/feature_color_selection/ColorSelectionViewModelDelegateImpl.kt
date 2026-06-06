@@ -43,11 +43,11 @@ class ColorSelectionViewModelDelegateImpl @Inject constructor(
         this.parent = parent
     }
 
-    override fun clearDelegate() {
+    override fun clearColorDelegate() {
         clear()
     }
 
-    override suspend fun update() {
+    override suspend fun updateColorViewData() {
         updateColors()
     }
 

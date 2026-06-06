@@ -15,10 +15,6 @@ import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.util.simpletimetracker.core.base.BaseFragment
-import com.example.util.simpletimetracker.core.delegates.iconSelection.adapter.createIconSelectionAdapterDelegate
-import com.example.util.simpletimetracker.core.delegates.iconSelection.adapter.createIconSelectionCategoryAdapterDelegate
-import com.example.util.simpletimetracker.core.delegates.iconSelection.adapter.createIconSelectionCategoryInfoAdapterDelegate
-import com.example.util.simpletimetracker.core.delegates.iconSelection.viewDelegate.IconSelectionViewDelegate
 import com.example.util.simpletimetracker.core.dialog.ColorSelectionDialogListener
 import com.example.util.simpletimetracker.core.dialog.DurationDialogListener
 import com.example.util.simpletimetracker.core.dialog.EmojiSelectionDialogListener
@@ -60,6 +56,8 @@ import com.example.util.simpletimetracker.feature_change_record_type.viewData.Ch
 import com.example.util.simpletimetracker.feature_change_record_type.viewData.ChangeRecordTypeChooserState.Icon
 import com.example.util.simpletimetracker.feature_change_record_type.viewData.ChangeRecordTypeFieldsState
 import com.example.util.simpletimetracker.feature_change_record_type.viewModel.ChangeRecordTypeViewModel
+import com.example.util.simpletimetracker.feature_icon_selection.api.viewDelegate.IconSelectionViewDelegate
+import com.example.util.simpletimetracker.feature_icon_selection.api.viewDelegate.IconSelectionViewDelegateProvider
 import com.example.util.simpletimetracker.feature_views.extension.animateColor
 import com.example.util.simpletimetracker.feature_views.extension.dpToPx
 import com.example.util.simpletimetracker.feature_views.extension.setOnClick
@@ -92,7 +90,13 @@ class ChangeRecordTypeFragment :
     @Inject
     lateinit var deviceRepo: DeviceRepo
 
+    @Inject
+    lateinit var iconSelectionViewDelegateProvider: IconSelectionViewDelegateProvider
+
     private val viewModel: ChangeRecordTypeViewModel by viewModels()
+    private val iconSelectionViewDelegate by lazy {
+        iconSelectionViewDelegateProvider.provide(viewModel, binding.containerChangeRecordTypeIcon)
+    }
 
     private val colorsAdapter: BaseRecyclerAdapter by lazy {
         BaseRecyclerAdapter(
@@ -100,22 +104,6 @@ class ChangeRecordTypeFragment :
             createColorPaletteAdapterDelegate(viewModel::onColorPaletteClick),
             createColorFavouriteAdapterDelegate(viewModel::onColorFavouriteClick),
             createHintAdapterDelegate(),
-        )
-    }
-    private val iconsAdapter: BaseRecyclerAdapter by lazy {
-        BaseRecyclerAdapter(
-            createLoaderAdapterDelegate(),
-            createIconSelectionAdapterDelegate(viewModel::onIconClick),
-            createEmojiAdapterDelegate(viewModel::onEmojiClick),
-            createIconSelectionCategoryInfoAdapterDelegate(),
-        )
-    }
-    private val iconCategoriesAdapter: BaseRecyclerAdapter by lazy {
-        BaseRecyclerAdapter(
-            createIconSelectionCategoryAdapterDelegate {
-                viewModel.onIconCategoryClick(it)
-                binding.containerChangeRecordTypeIcon.rvIconSelection.stopScroll()
-            },
         )
     }
     private val categoriesAdapter: BaseRecyclerAdapter by lazy {
@@ -168,13 +156,11 @@ class ChangeRecordTypeFragment :
             adapter = colorsAdapter
         }
 
-        iconsLayoutManager = IconSelectionViewDelegate.initUi(
+        iconsLayoutManager = iconSelectionViewDelegate.initUi(
             context = requireContext(),
             resources = resources,
             deviceRepo = deviceRepo,
             layout = containerChangeRecordTypeIcon,
-            iconsAdapter = iconsAdapter,
-            iconCategoriesAdapter = iconCategoriesAdapter,
         )
 
         rvChangeRecordTypeCategories.apply {
@@ -210,7 +196,7 @@ class ChangeRecordTypeFragment :
         tvChangeRecordTypeMoreFields.setOnClick(viewModel::onMoreFieldsClick)
         layoutChangeRecordTypeAdditional.groupChangeRecordTypeAdditionalDefaultDurationSelector
             .setOnClick(viewModel::onDefaultDurationClick)
-        IconSelectionViewDelegate.initUx(
+        iconSelectionViewDelegate.initUx(
             viewModel = viewModel,
             layout = containerChangeRecordTypeIcon,
             iconsLayoutManager = iconsLayoutManager,
@@ -246,12 +232,10 @@ class ChangeRecordTypeFragment :
             keyboardVisibility.observe { visible ->
                 if (visible) showKeyboard(etChangeRecordTypeName) else hideKeyboard()
             }
-            IconSelectionViewDelegate.initViewModel(
+            iconSelectionViewDelegate.initViewModel(
                 fragment = this@ChangeRecordTypeFragment,
                 viewModel = viewModel,
                 layout = containerChangeRecordTypeIcon,
-                iconsAdapter = iconsAdapter,
-                iconCategoriesAdapter = iconCategoriesAdapter,
                 iconsLayoutManager = iconsLayoutManager,
             )
         }
@@ -275,7 +259,7 @@ class ChangeRecordTypeFragment :
     }
 
     override fun onDestroyView() {
-        IconSelectionViewDelegate.onDestroyView(
+        iconSelectionViewDelegate.onDestroyView(
             textWatcher = iconTextWatcher,
             layout = binding.containerChangeRecordTypeIcon,
         )
@@ -314,7 +298,7 @@ class ChangeRecordTypeFragment :
     private fun updateUi(item: RecordTypeViewData) = with(binding) {
         etChangeRecordTypeName.setText(item.name)
         etChangeRecordTypeName.setSelection(item.name.length)
-        iconTextWatcher = IconSelectionViewDelegate.updateUi(
+        iconTextWatcher = iconSelectionViewDelegate.updateUi(
             icon = item.iconId,
             viewModel = viewModel,
             layout = containerChangeRecordTypeIcon,

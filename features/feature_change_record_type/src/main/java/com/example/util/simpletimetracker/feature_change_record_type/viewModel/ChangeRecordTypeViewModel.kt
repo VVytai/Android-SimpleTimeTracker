@@ -5,8 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.util.simpletimetracker.core.base.BaseViewModel
 import com.example.util.simpletimetracker.core.base.ViewModelDelegate
-import com.example.util.simpletimetracker.core.delegates.iconSelection.viewModelDelegate.IconSelectionViewModelDelegate
-import com.example.util.simpletimetracker.core.delegates.iconSelection.viewModelDelegate.IconSelectionViewModelDelegateImpl
 import com.example.util.simpletimetracker.core.extension.lazySuspend
 import com.example.util.simpletimetracker.core.extension.set
 import com.example.util.simpletimetracker.core.extension.trimIfNotBlank
@@ -40,6 +38,7 @@ import com.example.util.simpletimetracker.feature_change_record_type.viewData.Ch
 import com.example.util.simpletimetracker.feature_change_record_type.viewData.ChangeRecordTypeChooserState
 import com.example.util.simpletimetracker.feature_change_record_type.viewData.ChangeRecordTypeFieldsState
 import com.example.util.simpletimetracker.feature_color_selection.api.ColorSelectionViewModelDelegate
+import com.example.util.simpletimetracker.feature_icon_selection.api.IconSelectionViewModelDelegate
 import com.example.util.simpletimetracker.navigation.Router
 import com.example.util.simpletimetracker.navigation.params.screen.ChangeCategoryFromChangeActivityParams
 import com.example.util.simpletimetracker.navigation.params.screen.ChangeRecordTypeParams
@@ -69,7 +68,7 @@ class ChangeRecordTypeViewModel @Inject constructor(
     private val removeRecordTypeMediator: RemoveRecordTypeMediator,
     private val goalsViewModelDelegate: GoalsViewModelDelegate,
     private val colorSelectionViewModelDelegate: ColorSelectionViewModelDelegate,
-    private val iconSelectionViewModelDelegateImpl: IconSelectionViewModelDelegateImpl,
+    private val iconSelectionViewModelDelegateImpl: IconSelectionViewModelDelegate,
 ) : BaseViewModel(),
     GoalsViewModelDelegate by goalsViewModelDelegate,
     ColorSelectionViewModelDelegate by colorSelectionViewModelDelegate,
@@ -123,8 +122,8 @@ class ChangeRecordTypeViewModel @Inject constructor(
 
     override fun onCleared() {
         (goalsViewModelDelegate as? ViewModelDelegate)?.clear()
-        colorSelectionViewModelDelegate.clearDelegate()
-        iconSelectionViewModelDelegateImpl.clear()
+        colorSelectionViewModelDelegate.clearColorDelegate()
+        iconSelectionViewModelDelegateImpl.clearIconDelegate()
         super.onCleared()
     }
 
@@ -406,8 +405,8 @@ class ChangeRecordTypeViewModel @Inject constructor(
             iconSelectionViewModelDelegateImpl.newIcon = it.icon
             colorSelectionViewModelDelegate.newColor = it.color
             goalsViewModelDelegate.initialize(RecordTypeGoal.IdData.Type(it.id))
-            iconSelectionViewModelDelegateImpl.update()
-            colorSelectionViewModelDelegate.update()
+            iconSelectionViewModelDelegateImpl.updateIconViewData()
+            colorSelectionViewModelDelegate.updateColorViewData()
             updateAdditionalState()
             updateNoteState()
         }
@@ -425,7 +424,7 @@ class ChangeRecordTypeViewModel @Inject constructor(
         return object : ColorSelectionViewModelDelegate.Parent {
             override suspend fun update() {
                 updateRecordPreviewViewData()
-                iconSelectionViewModelDelegateImpl.update()
+                iconSelectionViewModelDelegateImpl.updateIconViewData()
             }
         }
     }
