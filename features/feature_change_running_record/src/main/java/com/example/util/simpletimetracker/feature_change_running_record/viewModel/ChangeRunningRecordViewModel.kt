@@ -3,7 +3,6 @@ package com.example.util.simpletimetracker.feature_change_running_record.viewMod
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.example.util.simpletimetracker.core.delegates.commentSelection.viewModelDelegate.CommentSelectionViewModelDelegateImpl
 import com.example.util.simpletimetracker.core.extension.set
 import com.example.util.simpletimetracker.core.interactor.RecordTagViewDataInteractor
 import com.example.util.simpletimetracker.core.interactor.RecordTypesViewDataInteractor
@@ -32,6 +31,7 @@ import com.example.util.simpletimetracker.feature_change_running_record.R
 import com.example.util.simpletimetracker.feature_change_running_record.interactor.ChangeRunningRecordViewDataInteractor
 import com.example.util.simpletimetracker.feature_change_running_record.mapper.ChangeRunningRecordMapper
 import com.example.util.simpletimetracker.feature_change_running_record.viewData.ChangeRunningRecordViewData
+import com.example.util.simpletimetracker.feature_comment_selection.api.CommentSelectionViewModelDelegate
 import com.example.util.simpletimetracker.navigation.Router
 import com.example.util.simpletimetracker.navigation.params.notification.SnackBarParams
 import com.example.util.simpletimetracker.navigation.params.screen.ChangeRecordTagFromChangeRunningRecordParams
@@ -67,7 +67,7 @@ class ChangeRunningRecordViewModel @Inject constructor(
     private val changeRunningRecordMapper: ChangeRunningRecordMapper,
     private val updateRunningRecordsInteractor: UpdateRunningRecordsInteractor,
     private val addTagToTypeIfNotExistMediator: AddTagToTypeIfNotExistMediator,
-    private val commentSelectionViewModelDelegate: CommentSelectionViewModelDelegateImpl,
+    private val commentSelectionViewModelDelegate: CommentSelectionViewModelDelegate,
 ) : ChangeRecordBaseViewModel(
     router = router,
     resourceRepo = resourceRepo,

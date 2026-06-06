@@ -118,6 +118,7 @@
     │   ├── feature_change_running_record     # Edit timer screen.
     │   ├── feature_change_shortcut           # Edit shortcut screen.
     │   ├── feature_color_selection           # Delegate for color selection.
+    │   ├── feature_comment_selection         # Delegate for comment selection.
     │   ├── feature_complex_rules             # Screen for complex rules list.
     │   ├── feature_date_edit                 # Data edit screen.
     │   ├── feature_dialogs                   # Dialogs.

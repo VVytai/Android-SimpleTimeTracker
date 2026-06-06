@@ -16,7 +16,8 @@ android {
 
 dependencies {
     implementation(project(":core"))
-    implementation(project(":feature_change_record"))
+    implementation(project(":feature_change_record")) // TODO add api module
+    implementation(project(":feature_comment_selection:api"))
     implementation(libs.google.dagger)
     ksp(libs.kapt.dagger)
 }

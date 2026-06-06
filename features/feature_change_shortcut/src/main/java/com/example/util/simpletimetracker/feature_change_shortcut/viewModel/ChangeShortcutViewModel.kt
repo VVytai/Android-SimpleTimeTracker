@@ -4,8 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.util.simpletimetracker.core.base.BaseViewModel
-import com.example.util.simpletimetracker.core.delegates.commentSelection.viewModelDelegate.CommentSelectionViewModelDelegate
-import com.example.util.simpletimetracker.core.delegates.commentSelection.viewModelDelegate.CommentSelectionViewModelDelegateImpl
 import com.example.util.simpletimetracker.core.extension.set
 import com.example.util.simpletimetracker.core.interactor.RecordTagViewDataInteractor
 import com.example.util.simpletimetracker.core.interactor.RecordTypesViewDataInteractor
@@ -36,6 +34,7 @@ import com.example.util.simpletimetracker.feature_change_shortcut.mapper.ChangeS
 import com.example.util.simpletimetracker.feature_change_shortcut.viewData.ChangeShortcutChooserState
 import com.example.util.simpletimetracker.feature_change_shortcut.viewData.ChangeShortcutViewData
 import com.example.util.simpletimetracker.feature_change_shortcut.viewData.ChangeShortcutViewData.TargetModeButtonViewData
+import com.example.util.simpletimetracker.feature_comment_selection.api.CommentSelectionViewModelDelegate
 import com.example.util.simpletimetracker.navigation.Router
 import com.example.util.simpletimetracker.navigation.params.screen.ChangeShortcutParams
 import com.example.util.simpletimetracker.navigation.params.screen.RecordTagValueSelectionParams
@@ -62,7 +61,7 @@ class ChangeShortcutViewModel @Inject constructor(
     private val viewDataInteractor: ChangeShortcutViewDataInteractor,
     private val viewDataMapper: ChangeShortcutViewDataMapper,
     private val snackBarMessageNavigationInteractor: SnackBarMessageNavigationInteractor,
-    private val commentSelectionViewModelDelegate: CommentSelectionViewModelDelegateImpl,
+    private val commentSelectionViewModelDelegate: CommentSelectionViewModelDelegate,
 ) : BaseViewModel(),
     CommentSelectionViewModelDelegate by commentSelectionViewModelDelegate {
 

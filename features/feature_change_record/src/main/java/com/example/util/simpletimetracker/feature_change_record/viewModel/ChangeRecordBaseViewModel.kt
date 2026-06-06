@@ -4,8 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.util.simpletimetracker.core.delegates.commentSelection.viewModelDelegate.CommentSelectionViewModelDelegate
-import com.example.util.simpletimetracker.core.delegates.commentSelection.viewModelDelegate.CommentSelectionViewModelDelegateImpl
 import com.example.util.simpletimetracker.core.extension.set
 import com.example.util.simpletimetracker.core.extension.toParams
 import com.example.util.simpletimetracker.core.interactor.RecordTagViewDataInteractor
@@ -45,6 +43,7 @@ import com.example.util.simpletimetracker.feature_change_record.viewModel.base.C
 import com.example.util.simpletimetracker.feature_change_record.viewModel.base.ChangeRecordDelegateBridge.Action
 import com.example.util.simpletimetracker.feature_change_record.viewModel.base.ChangeRecordDelegateBridge.ViewDataParams
 import com.example.util.simpletimetracker.feature_change_record.viewModel.delegates.ChangeRecordActionsMoveDelegate
+import com.example.util.simpletimetracker.feature_comment_selection.api.CommentSelectionViewModelDelegate
 import com.example.util.simpletimetracker.navigation.Router
 import com.example.util.simpletimetracker.navigation.params.screen.ChangeRecordTagFromScreen
 import com.example.util.simpletimetracker.navigation.params.screen.ChangeTagData
@@ -71,7 +70,7 @@ abstract class ChangeRecordBaseViewModel(
     private val recordTypeToTagInteractor: RecordTypeToTagInteractor,
     private val changeRecordActionsDelegate: ChangeRecordActionsDelegateImpl,
     private val needTagValueSelectionInteractor: NeedTagValueSelectionInteractor,
-    private val commentSelectionViewModelDelegate: CommentSelectionViewModelDelegateImpl,
+    private val commentSelectionViewModelDelegate: CommentSelectionViewModelDelegate,
 ) : ViewModel(),
     CommentSelectionViewModelDelegate by commentSelectionViewModelDelegate {
 
@@ -362,7 +361,7 @@ abstract class ChangeRecordBaseViewModel(
                 }
             }
             else -> {
-                commentSelectionViewModelDelegate.onDataSelected(tag, dataIds)
+                commentSelectionViewModelDelegate.onDelegateDataSelected(tag, dataIds)
             }
         }
     }

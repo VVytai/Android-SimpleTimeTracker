@@ -4,19 +4,15 @@ import com.example.util.simpletimetracker.applyAndroidLibrary
 plugins {
     alias(libs.plugins.gradleLibrary)
     alias(libs.plugins.kotlin)
-    alias(libs.plugins.ksp)
-    alias(libs.plugins.hilt)
+    alias(libs.plugins.kotlinParcelize)
 }
 
 applyAndroidLibrary()
 
 android {
-    namespace = "${Base.namespace}.feature_change_shortcut"
+    namespace = "${Base.namespace}.feature_comment_selection.api"
 }
 
 dependencies {
     implementation(project(":core"))
-    implementation(project(":feature_comment_selection:api"))
-    implementation(libs.google.dagger)
-    ksp(libs.kapt.dagger)
 }

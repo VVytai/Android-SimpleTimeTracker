@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.util.simpletimetracker.core.base.SingleLiveEvent
-import com.example.util.simpletimetracker.core.delegates.commentSelection.viewModelDelegate.CommentSelectionViewModelDelegateImpl
 import com.example.util.simpletimetracker.core.extension.set
 import com.example.util.simpletimetracker.core.interactor.RecordTagViewDataInteractor
 import com.example.util.simpletimetracker.core.interactor.RecordTypesViewDataInteractor
@@ -30,6 +29,7 @@ import com.example.util.simpletimetracker.domain.recordTag.interactor.NeedTagVal
 import com.example.util.simpletimetracker.domain.recordTag.interactor.RecordTagInteractor
 import com.example.util.simpletimetracker.feature_change_record.interactor.ChangeRecordViewDataInteractor
 import com.example.util.simpletimetracker.feature_change_record.viewData.ChangeRecordViewData
+import com.example.util.simpletimetracker.feature_comment_selection.api.CommentSelectionViewModelDelegate
 import com.example.util.simpletimetracker.navigation.Router
 import com.example.util.simpletimetracker.navigation.params.screen.ChangeRecordParams
 import com.example.util.simpletimetracker.navigation.params.screen.ChangeRecordTagFromChangeRecordParams
@@ -58,7 +58,7 @@ class ChangeRecordViewModel @Inject constructor(
     private val timeMapper: TimeMapper,
     private val statisticsDetailNavigationInteractor: StatisticsDetailNavigationInteractor,
     private val addTagToTypeIfNotExistMediator: AddTagToTypeIfNotExistMediator,
-    private val commentSelectionViewModelDelegate: CommentSelectionViewModelDelegateImpl,
+    private val commentSelectionViewModelDelegate: CommentSelectionViewModelDelegate,
 ) : ChangeRecordBaseViewModel(
     router = router,
     resourceRepo = resourceRepo,

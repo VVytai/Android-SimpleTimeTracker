@@ -21,6 +21,7 @@ import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.feature_base_adapter.record.RecordViewData
 import com.example.util.simpletimetracker.feature_change_record.viewData.ChangeRecordViewData
 import com.example.util.simpletimetracker.feature_change_record.viewModel.ChangeRecordViewModel
+import com.example.util.simpletimetracker.feature_comment_selection.api.CommentSelectionViewDelegateProvider
 import com.example.util.simpletimetracker.feature_views.extension.animateColor
 import com.example.util.simpletimetracker.feature_views.extension.setOnClick
 import com.example.util.simpletimetracker.navigation.params.screen.ChangeRecordParams
@@ -47,13 +48,16 @@ class ChangeRecordFragment :
     @Inject
     lateinit var removeRecordViewModelFactory: BaseViewModelFactory<RemoveRecordViewModel>
 
+    @Inject
+    lateinit var commentDelegateProvider: CommentSelectionViewDelegateProvider
+
     private val viewModel: ChangeRecordViewModel by viewModels()
     private val removeRecordViewModel: RemoveRecordViewModel by activityViewModels(
         factoryProducer = { removeRecordViewModelFactory },
     )
 
     private var typeColorAnimator: ValueAnimator? = null
-    private val core by lazy { ChangeRecordCore(viewModel = viewModel) }
+    private val core by lazy { ChangeRecordCore(viewModel, commentDelegateProvider) }
 
     private val extra: ChangeRecordParams by fragmentArgumentDelegate(
         key = ARGS_PARAMS, default = ChangeRecordParams.New(0),

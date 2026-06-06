@@ -1,24 +1,24 @@
-package com.example.util.simpletimetracker.core.delegates.commentSelection.viewDelegate
+package com.example.util.simpletimetracker.feature_comment_selection.viewDelegate
 
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import com.example.util.simpletimetracker.core.base.BaseFragment
-import com.example.util.simpletimetracker.core.delegates.commentSelection.viewModelDelegate.CommentSelectionViewModelDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.BaseRecyclerAdapter
 import com.example.util.simpletimetracker.feature_base_adapter.commentChangeField.createChangeRecordCommentFieldAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.emptySpace.createEmptySpaceAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.hint.createHintAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.recordComment.createRecordCommentAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.recordFilter.createFilterAdapterDelegate
+import com.example.util.simpletimetracker.feature_comment_selection.api.CommentSelectionViewDelegate
+import com.example.util.simpletimetracker.feature_comment_selection.api.CommentSelectionViewModelDelegate
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
-import kotlin.text.replace
 
-class CommentSelectionViewDelegate(
+class CommentSelectionViewDelegateImpl(
     private val viewModel: CommentSelectionViewModelDelegate,
-) {
+) : CommentSelectionViewDelegate {
 
     private val commentsAdapter: BaseRecyclerAdapter by lazy {
         BaseRecyclerAdapter(
@@ -38,7 +38,7 @@ class CommentSelectionViewDelegate(
         )
     }
 
-    fun initUi(
+    override fun initUi(
         recycler: RecyclerView,
     ) {
         recycler.apply {
@@ -51,7 +51,7 @@ class CommentSelectionViewDelegate(
         }
     }
 
-    fun <T : ViewBinding> initViewModel(
+    override fun <T : ViewBinding> initViewModel(
         fragment: BaseFragment<T>,
     ) = with(viewModel) {
         with(fragment) {

@@ -20,6 +20,7 @@ import com.example.util.simpletimetracker.feature_base_adapter.runningRecord.Run
 import com.example.util.simpletimetracker.feature_change_record.view.ChangeRecordCore
 import com.example.util.simpletimetracker.feature_change_running_record.viewData.ChangeRunningRecordViewData
 import com.example.util.simpletimetracker.feature_change_running_record.viewModel.ChangeRunningRecordViewModel
+import com.example.util.simpletimetracker.feature_comment_selection.api.CommentSelectionViewDelegateProvider
 import com.example.util.simpletimetracker.feature_views.GoalCheckmarkView.CheckState
 import com.example.util.simpletimetracker.feature_views.extension.animateColor
 import com.example.util.simpletimetracker.feature_views.extension.setOnClick
@@ -49,10 +50,13 @@ class ChangeRunningRecordFragment :
     @Inject
     lateinit var router: Router
 
+    @Inject
+    lateinit var commentDelegateProvider: CommentSelectionViewDelegateProvider
+
     private val viewModel: ChangeRunningRecordViewModel by viewModels()
 
     private var typeColorAnimator: ValueAnimator? = null
-    private val core by lazy { ChangeRecordCore(viewModel = viewModel) }
+    private val core by lazy { ChangeRecordCore(viewModel, commentDelegateProvider) }
 
     private val params: ChangeRunningRecordParams by fragmentArgumentDelegate(
         key = ARGS_PARAMS, default = ChangeRunningRecordParams.Empty,

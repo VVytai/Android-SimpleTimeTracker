@@ -1,4 +1,4 @@
-package com.example.util.simpletimetracker.core.delegates.commentSelection.interactor
+package com.example.util.simpletimetracker.feature_comment_selection.interactor
 
 import com.example.util.simpletimetracker.core.R
 import com.example.util.simpletimetracker.core.interactor.RecordCommentSearchViewDataInteractor

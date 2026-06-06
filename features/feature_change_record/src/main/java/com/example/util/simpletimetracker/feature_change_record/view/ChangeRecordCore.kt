@@ -10,7 +10,6 @@ import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
 import com.example.util.simpletimetracker.core.base.BaseFragment
-import com.example.util.simpletimetracker.core.delegates.commentSelection.viewDelegate.CommentSelectionViewDelegate
 import com.example.util.simpletimetracker.core.extension.addOnBackPressedListener
 import com.example.util.simpletimetracker.core.extension.hideKeyboard
 import com.example.util.simpletimetracker.core.extension.showKeyboard
@@ -47,6 +46,7 @@ import com.example.util.simpletimetracker.feature_change_record.viewData.ChangeR
 import com.example.util.simpletimetracker.feature_change_record.viewData.ChangeRecordChooserState.State.Tag
 import com.example.util.simpletimetracker.feature_change_record.viewData.ChangeRecordTagsViewData
 import com.example.util.simpletimetracker.feature_change_record.viewModel.ChangeRecordBaseViewModel
+import com.example.util.simpletimetracker.feature_comment_selection.api.CommentSelectionViewDelegateProvider
 import com.example.util.simpletimetracker.feature_views.extension.dpToPx
 import com.example.util.simpletimetracker.feature_views.extension.postDelayed
 import com.example.util.simpletimetracker.feature_views.extension.rotateDown
@@ -61,6 +61,7 @@ import com.google.android.flexbox.JustifyContent
 
 class ChangeRecordCore(
     private val viewModel: ChangeRecordBaseViewModel,
+    private val commentDelegateProvider: CommentSelectionViewDelegateProvider,
 ) {
 
     private val typesAdapter: BaseRecyclerAdapter by lazy {
@@ -113,7 +114,7 @@ class ChangeRecordCore(
     }
 
     private val commentsDelegate by lazy {
-        CommentSelectionViewDelegate(viewModel)
+        commentDelegateProvider.provide(viewModel)
     }
 
     fun initUi(

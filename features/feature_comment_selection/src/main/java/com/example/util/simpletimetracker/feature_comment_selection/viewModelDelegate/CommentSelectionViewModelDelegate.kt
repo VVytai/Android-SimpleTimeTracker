@@ -1,9 +1,9 @@
-package com.example.util.simpletimetracker.core.delegates.commentSelection.viewModelDelegate
+package com.example.util.simpletimetracker.feature_comment_selection.viewModelDelegate
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.util.simpletimetracker.core.base.ViewModelDelegate
-import com.example.util.simpletimetracker.core.delegates.commentSelection.interactor.CommentSelectionDelegateViewDataInteractor
+import com.example.util.simpletimetracker.feature_comment_selection.interactor.CommentSelectionDelegateViewDataInteractor
 import com.example.util.simpletimetracker.core.extension.set
 import com.example.util.simpletimetracker.core.interactor.RecordCommentSearchViewDataInteractor
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
@@ -20,31 +20,12 @@ import com.example.util.simpletimetracker.feature_base_adapter.R
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.recordComment.RecordCommentViewData
 import com.example.util.simpletimetracker.feature_base_adapter.recordFilter.FilterViewData
+import com.example.util.simpletimetracker.feature_comment_selection.api.CommentSelectionViewModelDelegate
 import com.example.util.simpletimetracker.navigation.Router
 import com.example.util.simpletimetracker.navigation.params.screen.TypesSelectionDialogParams
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-
-interface CommentSelectionViewModelDelegate {
-    val comments: LiveData<List<ViewHolderType>>
-
-    fun attach(parent: Parent)
-    fun onCommentChange(comment: String)
-    fun onCommentFilterClick(item: FilterViewData)
-    fun onFavouriteCommentClick()
-    fun onCommentClick(item: RecordCommentViewData)
-
-    interface Parent {
-        fun getParams(): Params
-        suspend fun onCommentClick()
-        fun onCommentChange()
-
-        data class Params(
-            val recordTypeId: Long?,
-        )
-    }
-}
 
 class CommentSelectionViewModelDelegateImpl @Inject constructor(
     private val router: Router,
@@ -55,13 +36,12 @@ class CommentSelectionViewModelDelegateImpl @Inject constructor(
     private val recordTypeToFavouriteCommentInteractor: RecordTypeToFavouriteCommentInteractor,
     private val prefsInteractor: PrefsInteractor,
     private val isCommentFavouriteInteractor: IsCommentFavouriteInteractor,
-) :
-    CommentSelectionViewModelDelegate,
+) : CommentSelectionViewModelDelegate,
     ViewModelDelegate() {
 
     override val comments: LiveData<List<ViewHolderType>> = MutableLiveData(emptyList())
 
-    var newComment: String = ""
+    override var newComment: String = ""
 
     private var parent: CommentSelectionViewModelDelegate.Parent? = null
     private var commentLoadJob: Job? = null
@@ -189,8 +169,8 @@ class CommentSelectionViewModelDelegateImpl @Inject constructor(
         }
     }
 
-    fun updateCommentsViewData(
-        fromCommentChange: Boolean = false,
+    override fun updateCommentsViewData(
+        fromCommentChange: Boolean,
     ) {
         commentLoadJob?.cancel()
         commentLoadJob = delegateScope.launch {
@@ -198,16 +178,18 @@ class CommentSelectionViewModelDelegateImpl @Inject constructor(
         }
     }
 
-    fun onDataSelected(
+    override fun onDelegateDataSelected(
         tag: String?,
         dataIds: List<Long>,
-    ) = delegateScope.launch {
-        when (tag) {
-            COMMENT_SELECTION_FAV_ACTIVITIES_TAG -> {
-                val comment = favouriteCommentInteractor.get(newComment) ?: return@launch
-                recordTypeToFavouriteCommentInteractor.removeAll(comment.id)
-                recordTypeToFavouriteCommentInteractor.addTypes(comment.id, dataIds)
-                updateCommentsViewData()
+    ) {
+        delegateScope.launch {
+            when (tag) {
+                COMMENT_SELECTION_FAV_ACTIVITIES_TAG -> {
+                    val comment = favouriteCommentInteractor.get(newComment) ?: return@launch
+                    recordTypeToFavouriteCommentInteractor.removeAll(comment.id)
+                    recordTypeToFavouriteCommentInteractor.addTypes(comment.id, dataIds)
+                    updateCommentsViewData()
+                }
             }
         }
     }

@@ -10,7 +10,6 @@ import androidx.core.view.isVisible
 import androidx.core.view.postDelayed
 import androidx.fragment.app.viewModels
 import com.example.util.simpletimetracker.core.base.BaseFragment
-import com.example.util.simpletimetracker.core.delegates.commentSelection.viewDelegate.CommentSelectionViewDelegate
 import com.example.util.simpletimetracker.core.dialog.OnTagValueSelectedListener
 import com.example.util.simpletimetracker.core.dialog.StandardDialogListener
 import com.example.util.simpletimetracker.core.extension.addOnBackPressedListener
@@ -41,6 +40,7 @@ import com.example.util.simpletimetracker.feature_change_shortcut.viewData.Chang
 import com.example.util.simpletimetracker.feature_change_shortcut.viewData.ChangeShortcutChooserState.Tag
 import com.example.util.simpletimetracker.feature_change_shortcut.viewData.ChangeShortcutViewData
 import com.example.util.simpletimetracker.feature_change_shortcut.viewModel.ChangeShortcutViewModel
+import com.example.util.simpletimetracker.feature_comment_selection.api.CommentSelectionViewDelegateProvider
 import com.example.util.simpletimetracker.feature_views.extension.animateColor
 import com.example.util.simpletimetracker.feature_views.extension.setOnClick
 import com.example.util.simpletimetracker.navigation.params.screen.ChangeShortcutParams
@@ -50,6 +50,7 @@ import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class ChangeShortcutFragment :
@@ -62,6 +63,9 @@ class ChangeShortcutFragment :
 
     override var insetConfiguration: InsetConfiguration =
         InsetConfiguration.ApplyToView { binding.root }
+
+    @Inject
+    lateinit var commentDelegateProvider: CommentSelectionViewDelegateProvider
 
     private val viewModel: ChangeShortcutViewModel by viewModels()
 
@@ -89,7 +93,7 @@ class ChangeShortcutFragment :
         )
     }
     private val commentsDelegate by lazy {
-        CommentSelectionViewDelegate(viewModel)
+        commentDelegateProvider.provide(viewModel)
     }
     private var typeColorAnimator: ValueAnimator? = null
     private val params: ChangeShortcutParams by fragmentArgumentDelegate(
