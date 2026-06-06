@@ -146,6 +146,7 @@ class WearDataRepo @Inject constructor(
             filterType = filterType,
             filteredIds = filteredIds,
             range = range,
+            accountForSeconds = true,
         ).filterNot {
             it.id in filteredIds
         }

@@ -5,7 +5,6 @@ import androidx.core.text.bold
 import com.example.util.simpletimetracker.core.extension.toViewData
 import com.example.util.simpletimetracker.core.mapper.CommonViewDataMapper
 import com.example.util.simpletimetracker.core.mapper.RecordQuickActionMapper
-import com.example.util.simpletimetracker.core.mapper.RecordViewDataMapper
 import com.example.util.simpletimetracker.core.mapper.TimeMapper
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.domain.base.DurationFormat
@@ -13,6 +12,7 @@ import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteracto
 import com.example.util.simpletimetracker.domain.record.interactor.RecordInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.RecordsContainerMultiselectInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.RunningRecordInteractor
+import com.example.util.simpletimetracker.domain.record.mapper.DurationMapper
 import com.example.util.simpletimetracker.domain.record.model.MultiSelectedRecordId
 import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.domain.recordAction.model.RecordQuickAction
@@ -33,7 +33,7 @@ class RecordQuickActionsViewDataInteractor @Inject constructor(
     private val timeMapper: TimeMapper,
     private val resourceRepo: ResourceRepo,
     private val commonViewDataMapper: CommonViewDataMapper,
-    private val recordViewDataMapper: RecordViewDataMapper,
+    private val durationMapper: DurationMapper,
     private val prefsInteractor: PrefsInteractor,
     private val recordInteractor: RecordInteractor,
     private val runningRecordInteractor: RunningRecordInteractor,
@@ -351,7 +351,7 @@ class RecordQuickActionsViewDataInteractor @Inject constructor(
     ): RecordQuickActionsState.Hint.Record? {
         fun formatRecordDuration(timeStarted: Long, timeEnded: Long): String {
             return timeMapper.formatInterval(
-                interval = recordViewDataMapper.mapDuration(
+                interval = durationMapper.map(
                     timeStarted = timeStarted,
                     timeEnded = timeEnded,
                     showSeconds = showSeconds,

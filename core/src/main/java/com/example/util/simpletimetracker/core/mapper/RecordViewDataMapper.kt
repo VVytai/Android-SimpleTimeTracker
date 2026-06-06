@@ -4,7 +4,7 @@ import android.text.SpannableStringBuilder
 import com.example.util.simpletimetracker.core.R
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.domain.base.DurationFormat
-import com.example.util.simpletimetracker.domain.extension.dropSeconds
+import com.example.util.simpletimetracker.domain.record.mapper.DurationMapper
 import com.example.util.simpletimetracker.domain.record.model.Record
 import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.domain.recordTag.model.RecordTag
@@ -24,6 +24,7 @@ class RecordViewDataMapper @Inject constructor(
     private val iconMapper: IconMapper,
     private val colorMapper: ColorMapper,
     private val resourceRepo: ResourceRepo,
+    private val durationMapper: DurationMapper,
     private val recordTagFullNameMapper: RecordTagFullNameMapper,
 ) {
 
@@ -58,7 +59,7 @@ class RecordViewDataMapper @Inject constructor(
                 showSeconds = showSeconds,
             ),
             duration = timeMapper.formatInterval(
-                interval = mapDuration(
+                interval = durationMapper.map(
                     timeStarted = record.timeStarted,
                     timeEnded = record.timeEnded,
                     showSeconds = showSeconds,
@@ -118,7 +119,7 @@ class RecordViewDataMapper @Inject constructor(
             ),
             timeEndedTimestamp = timeEnded,
             duration = timeMapper.formatInterval(
-                interval = mapDuration(
+                interval = durationMapper.map(
                     timeStarted = timeStarted,
                     timeEnded = timeEnded,
                     showSeconds = showSeconds,
@@ -188,17 +189,5 @@ class RecordViewDataMapper @Inject constructor(
             infoIconVisible = true,
             closeIconVisible = false,
         )
-    }
-
-    fun mapDuration(
-        timeStarted: Long,
-        timeEnded: Long,
-        showSeconds: Boolean,
-    ): Long {
-        return if (showSeconds) {
-            timeEnded - timeStarted
-        } else {
-            timeEnded.dropSeconds() - timeStarted.dropSeconds()
-        }
     }
 }

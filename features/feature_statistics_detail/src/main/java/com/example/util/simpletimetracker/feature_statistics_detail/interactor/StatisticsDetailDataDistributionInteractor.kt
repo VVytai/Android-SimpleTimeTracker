@@ -180,7 +180,12 @@ class StatisticsDetailDataDistributionInteractor @Inject constructor(
                     addUncategorized = true,
                 )
             }
-        }.let(statisticsInteractor::getStatisticsData)
+        }.let {
+            statisticsInteractor.getStatisticsData(
+                allRecords = it,
+                showSeconds = false,
+            )
+        }
     }
 
     private fun mapItemsList(

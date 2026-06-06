@@ -80,6 +80,7 @@ class StatisticsViewDataInteractor @Inject constructor(
             filterType = filterType,
             filteredIds = filteredIds,
             range = range,
+            accountForSeconds = true,
         )
         val chart = statisticsChartViewDataInteractor.getChart(
             filterType = filterType,

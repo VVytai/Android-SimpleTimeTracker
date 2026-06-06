@@ -33,14 +33,17 @@ class StatisticsMediator @Inject constructor(
         filterType: ChartFilterType,
         filteredIds: List<Long>,
         range: Range,
+        accountForSeconds: Boolean,
     ): List<Statistics> {
         val showUntracked = prefsInteractor.getShowUntrackedInStatistics()
+        val showSeconds = accountForSeconds && prefsInteractor.getShowSeconds()
 
         return getFromRange(
             filterType = filterType,
             range = range,
             addUntracked = !filteredIds.contains(UNTRACKED_ITEM_ID) && showUntracked,
             addUncategorized = !filteredIds.contains(UNCATEGORIZED_ITEM_ID),
+            showSeconds = showSeconds,
         )
     }
 
@@ -104,12 +107,14 @@ class StatisticsMediator @Inject constructor(
         range: Range,
         addUntracked: Boolean,
         addUncategorized: Boolean,
+        showSeconds: Boolean,
     ): List<Statistics> {
         return when (filterType) {
             ChartFilterType.ACTIVITY -> {
                 statisticsInteractor.getFromRange(
                     range = range,
                     addUntracked = addUntracked,
+                    showSeconds = showSeconds,
                 )
             }
 
@@ -118,6 +123,7 @@ class StatisticsMediator @Inject constructor(
                     range = range,
                     addUntracked = addUntracked,
                     addUncategorized = addUncategorized,
+                    showSeconds = showSeconds,
                 )
             }
 
@@ -126,6 +132,7 @@ class StatisticsMediator @Inject constructor(
                     range = range,
                     addUntracked = addUntracked,
                     addUncategorized = addUncategorized,
+                    showSeconds = showSeconds,
                 )
             }
         }

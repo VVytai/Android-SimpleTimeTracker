@@ -174,6 +174,7 @@ class GoalsViewDataInteractor @Inject constructor(
                     filterType = filterType,
                     filteredIds = emptyList(),
                     range = range,
+                    accountForSeconds = false,
                 ),
                 data = when (filterType) {
                     ChartFilterType.ACTIVITY -> typeDataHolders

@@ -17,11 +17,21 @@ class StatisticsTagInteractor @Inject constructor(
         range: Range,
         addUntracked: Boolean,
         addUncategorized: Boolean,
+        showSeconds: Boolean,
     ): List<Statistics> = withContext(Dispatchers.IO) {
         val records = statisticsInteractor.getRecords(range)
-        val untrackedRecords = statisticsInteractor.getUntracked(range, records, addUntracked)
+        val untrackedRecords = statisticsInteractor.getUntracked(
+            range = range,
+            records = records,
+            addUntracked = addUntracked,
+            showSeconds = showSeconds,
+        )
         val recordsMap = getTagRecords(records + untrackedRecords, addUncategorized)
-        statisticsInteractor.getStatistics(range, recordsMap)
+        statisticsInteractor.getStatistics(
+            range = range,
+            records = recordsMap,
+            showSeconds = showSeconds,
+        )
     }
 
     fun getTagRecords(
