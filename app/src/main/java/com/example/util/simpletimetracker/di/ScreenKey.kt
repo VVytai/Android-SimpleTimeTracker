@@ -4,6 +4,6 @@ import com.example.util.simpletimetracker.navigation.params.screen.ScreenParams
 import dagger.MapKey
 import kotlin.reflect.KClass
 
-@Retention(AnnotationRetention.RUNTIME)
 @MapKey
+@Retention(AnnotationRetention.RUNTIME)
 annotation class ScreenKey(val value: KClass<out ScreenParams>)

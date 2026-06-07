@@ -2,6 +2,7 @@ package com.example.util.simpletimetracker.feature_main.provider
 
 import androidx.annotation.DrawableRes
 import com.example.util.simpletimetracker.core.model.NavigationTab
+import com.example.util.simpletimetracker.core.model.NavigationTabProvider
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.core.utils.SHORTCUT_NAVIGATION_RECORDS
 import com.example.util.simpletimetracker.core.utils.SHORTCUT_NAVIGATION_SETTINGS
@@ -13,6 +14,7 @@ import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 class MainTabsProvider @Inject constructor(
+    val tabProviders: Map<Class<out NavigationTab>, @JvmSuppressWildcards NavigationTabProvider>,
     private val resourceRepo: ResourceRepo,
     private val prefsInteractor: PrefsInteractor,
 ) {

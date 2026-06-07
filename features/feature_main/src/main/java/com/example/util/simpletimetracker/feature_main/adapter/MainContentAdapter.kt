@@ -3,25 +3,18 @@ package com.example.util.simpletimetracker.feature_main.adapter
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.util.simpletimetracker.core.model.NavigationTab
-import com.example.util.simpletimetracker.feature_goals.view.GoalsFragment
-import com.example.util.simpletimetracker.feature_records.view.RecordsContainerFragment
-import com.example.util.simpletimetracker.feature_running_records.view.RunningRecordsFragment
-import com.example.util.simpletimetracker.feature_settings.view.SettingsFragment
-import com.example.util.simpletimetracker.feature_statistics.view.StatisticsContainerFragment
+import com.example.util.simpletimetracker.core.model.NavigationTabProvider
 
 class MainContentAdapter(
     fragment: Fragment,
     tabs: List<NavigationTab>,
+    providers: Map<Class<out NavigationTab>, NavigationTabProvider>,
 ) : FragmentStateAdapter(fragment) {
 
-    private val fragments = tabs.map {
-        when (it) {
-            is NavigationTab.RunningRecords -> lazy { RunningRecordsFragment.newInstance() }
-            is NavigationTab.Records -> lazy { RecordsContainerFragment.newInstance() }
-            is NavigationTab.Statistics -> lazy { StatisticsContainerFragment.newInstance() }
-            is NavigationTab.Settings -> lazy { SettingsFragment.newInstance() }
-            is NavigationTab.Goals -> lazy { GoalsFragment.newInstance() }
-        }
+    private val fragments = tabs.mapNotNull {
+        providers[it::class.java]
+    }.map {
+        lazy { it.provide() }
     }
 
     override fun getItemCount(): Int =

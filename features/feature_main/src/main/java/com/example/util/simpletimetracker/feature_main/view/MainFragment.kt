@@ -88,6 +88,7 @@ class MainFragment : BaseFragment<Binding>() {
             MainContentAdapter(
                 fragment = this@MainFragment,
                 tabs = mainTabsProvider.tabsList,
+                providers = mainTabsProvider.tabProviders,
             ),
         )
         mainPager.offscreenPageLimit = 3 // Same as number of pages to avoid recreating.
