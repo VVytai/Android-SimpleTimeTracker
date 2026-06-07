@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.viewModels
 import com.example.util.simpletimetracker.core.base.BaseBottomSheetFragment
-import com.example.util.simpletimetracker.core.dialog.ColorSelectionDialogListener
+import com.example.util.simpletimetracker.feature_dialogs.api.ColorSelectionDialogListener
 import com.example.util.simpletimetracker.core.extension.getAllFragments
 import com.example.util.simpletimetracker.core.extension.setFullScreen
 import com.example.util.simpletimetracker.core.extension.setSkipCollapsed

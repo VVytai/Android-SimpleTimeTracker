@@ -7,7 +7,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import com.example.util.simpletimetracker.core.base.BaseBottomSheetFragment
-import com.example.util.simpletimetracker.core.dialog.ChartFilterDialogListener
+import com.example.util.simpletimetracker.feature_dialogs.api.ChartFilterDialogListener
 import com.example.util.simpletimetracker.core.extension.blockContentScroll
 import com.example.util.simpletimetracker.core.extension.findListener
 import com.example.util.simpletimetracker.core.extension.setSkipCollapsed

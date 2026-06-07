@@ -8,10 +8,10 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.example.util.simpletimetracker.core.base.BaseFragment
 import com.example.util.simpletimetracker.core.di.BaseViewModelFactory
-import com.example.util.simpletimetracker.core.dialog.DateTimeDialogListener
-import com.example.util.simpletimetracker.core.dialog.DurationDialogListener
-import com.example.util.simpletimetracker.core.dialog.OnTagValueSelectedListener
-import com.example.util.simpletimetracker.core.dialog.TypesSelectionDialogListener
+import com.example.util.simpletimetracker.feature_dialogs.api.DateTimeDialogListener
+import com.example.util.simpletimetracker.feature_dialogs.api.DurationDialogListener
+import com.example.util.simpletimetracker.feature_dialogs.api.OnTagValueSelectedListener
+import com.example.util.simpletimetracker.feature_dialogs.api.TypesSelectionDialogListener
 import com.example.util.simpletimetracker.core.extension.setSharedTransitions
 import com.example.util.simpletimetracker.core.extension.toViewData
 import com.example.util.simpletimetracker.core.sharedViewModel.RemoveRecordViewModel

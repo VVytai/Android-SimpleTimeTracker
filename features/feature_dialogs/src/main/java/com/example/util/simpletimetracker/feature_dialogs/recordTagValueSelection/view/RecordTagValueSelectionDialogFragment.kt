@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.EditText
 import androidx.fragment.app.viewModels
 import com.example.util.simpletimetracker.core.base.BaseBottomSheetFragment
-import com.example.util.simpletimetracker.core.dialog.OnTagValueSelectedListener
+import com.example.util.simpletimetracker.feature_dialogs.api.OnTagValueSelectedListener
 import com.example.util.simpletimetracker.core.extension.findListeners
 import com.example.util.simpletimetracker.core.extension.hideKeyboard
 import com.example.util.simpletimetracker.core.extension.setSkipCollapsed

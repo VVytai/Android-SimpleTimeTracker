@@ -9,8 +9,8 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.util.simpletimetracker.core.base.BaseFragment
 import com.example.util.simpletimetracker.core.di.BaseViewModelFactory
-import com.example.util.simpletimetracker.core.dialog.ChartFilterDialogListener
-import com.example.util.simpletimetracker.core.dialog.RecordQuickActionDialogListener
+import com.example.util.simpletimetracker.feature_dialogs.api.ChartFilterDialogListener
+import com.example.util.simpletimetracker.feature_dialogs.api.RecordQuickActionDialogListener
 import com.example.util.simpletimetracker.core.sharedViewModel.MainTabsViewModel
 import com.example.util.simpletimetracker.core.sharedViewModel.RemoveRecordViewModel
 import com.example.util.simpletimetracker.core.utils.InsetConfiguration

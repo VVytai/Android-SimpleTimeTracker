@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.commit
 import com.example.util.simpletimetracker.core.base.BaseFragment
-import com.example.util.simpletimetracker.core.dialog.OnTagSelectedListener
+import com.example.util.simpletimetracker.feature_dialogs.api.OnTagSelectedListener
 import com.example.util.simpletimetracker.core.utils.InsetConfiguration
 import com.example.util.simpletimetracker.feature_widget.R
 import com.example.util.simpletimetracker.navigation.ScreenFactory

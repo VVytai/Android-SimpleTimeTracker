@@ -10,9 +10,9 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.util.simpletimetracker.core.base.BaseBottomSheetFragment
 import com.example.util.simpletimetracker.core.di.BaseViewModelFactory
-import com.example.util.simpletimetracker.core.dialog.DateTimeDialogListener
-import com.example.util.simpletimetracker.core.dialog.RecordQuickActionDialogListener
-import com.example.util.simpletimetracker.core.dialog.TypesSelectionDialogListener
+import com.example.util.simpletimetracker.feature_dialogs.api.DateTimeDialogListener
+import com.example.util.simpletimetracker.feature_dialogs.api.RecordQuickActionDialogListener
+import com.example.util.simpletimetracker.feature_dialogs.api.TypesSelectionDialogListener
 import com.example.util.simpletimetracker.core.extension.findListener
 import com.example.util.simpletimetracker.core.extension.setSkipCollapsed
 import com.example.util.simpletimetracker.core.sharedViewModel.RemoveRecordViewModel

@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.example.util.simpletimetracker.core.base.BaseFragment
-import com.example.util.simpletimetracker.core.dialog.TypesSelectionDialogListener
+import com.example.util.simpletimetracker.feature_dialogs.api.TypesSelectionDialogListener
 import com.example.util.simpletimetracker.core.extension.onItemMoved
 import com.example.util.simpletimetracker.core.utils.ITEM_ALPHA_DEFAULT
 import com.example.util.simpletimetracker.core.utils.ITEM_ALPHA_SELECTED

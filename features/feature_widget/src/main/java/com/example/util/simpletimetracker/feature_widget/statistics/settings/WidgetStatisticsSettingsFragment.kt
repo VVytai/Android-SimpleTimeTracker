@@ -4,8 +4,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import com.example.util.simpletimetracker.core.base.BaseFragment
-import com.example.util.simpletimetracker.core.dialog.DurationDialogListener
-import com.example.util.simpletimetracker.core.dialog.OptionsListDialogListener
+import com.example.util.simpletimetracker.feature_dialogs.api.DurationDialogListener
+import com.example.util.simpletimetracker.feature_dialogs.api.OptionsListDialogListener
 import com.example.util.simpletimetracker.core.manager.ThemeManager
 import com.example.util.simpletimetracker.core.utils.InsetConfiguration
 import com.example.util.simpletimetracker.core.viewData.RangeSelectionOptionsListItem

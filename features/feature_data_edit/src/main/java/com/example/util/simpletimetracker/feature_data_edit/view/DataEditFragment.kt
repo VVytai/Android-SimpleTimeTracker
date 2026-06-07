@@ -7,8 +7,8 @@ import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.viewModels
 import com.example.util.simpletimetracker.core.base.BaseFragment
-import com.example.util.simpletimetracker.core.dialog.RecordsFilterListener
-import com.example.util.simpletimetracker.core.dialog.StandardDialogListener
+import com.example.util.simpletimetracker.feature_dialogs.api.RecordsFilterListener
+import com.example.util.simpletimetracker.feature_dialogs.api.StandardDialogListener
 import com.example.util.simpletimetracker.core.extension.hideKeyboard
 import com.example.util.simpletimetracker.core.extension.showKeyboard
 import com.example.util.simpletimetracker.core.utils.InsetConfiguration

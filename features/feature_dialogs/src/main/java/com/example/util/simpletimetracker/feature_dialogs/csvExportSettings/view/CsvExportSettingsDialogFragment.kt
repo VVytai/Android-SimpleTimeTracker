@@ -7,8 +7,8 @@ import android.view.ViewGroup
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.viewModels
 import com.example.util.simpletimetracker.core.base.BaseBottomSheetFragment
-import com.example.util.simpletimetracker.core.dialog.DataExportSettingsDialogListener
-import com.example.util.simpletimetracker.core.dialog.DateTimeDialogListener
+import com.example.util.simpletimetracker.feature_dialogs.api.DataExportSettingsDialogListener
+import com.example.util.simpletimetracker.feature_dialogs.api.DateTimeDialogListener
 import com.example.util.simpletimetracker.core.extension.findListener
 import com.example.util.simpletimetracker.core.extension.observeOnce
 import com.example.util.simpletimetracker.core.extension.setSkipCollapsed

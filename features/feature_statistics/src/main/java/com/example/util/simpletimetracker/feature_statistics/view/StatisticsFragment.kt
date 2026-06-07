@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.util.simpletimetracker.core.base.BaseFragment
 import com.example.util.simpletimetracker.core.di.BaseViewModelFactory
-import com.example.util.simpletimetracker.core.dialog.ChartFilterDialogListener
+import com.example.util.simpletimetracker.feature_dialogs.api.ChartFilterDialogListener
 import com.example.util.simpletimetracker.core.repo.DeviceRepo
 import com.example.util.simpletimetracker.core.sharedViewModel.MainTabsViewModel
 import com.example.util.simpletimetracker.core.utils.InsetConfiguration

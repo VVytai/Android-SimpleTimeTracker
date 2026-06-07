@@ -22,6 +22,7 @@ dependencies {
     implementation(project(":feature_settings:views"))
     implementation(project(":feature_records_filter:api"))
     implementation(project(":feature_date_selection:api"))
+    implementation(project(":feature_dialogs:api"))
     implementation(libs.google.dagger)
     ksp(libs.kapt.dagger)
 

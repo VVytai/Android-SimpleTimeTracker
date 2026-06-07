@@ -10,10 +10,10 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.util.simpletimetracker.core.base.BaseBottomSheetFragment
-import com.example.util.simpletimetracker.core.dialog.DateTimeDialogListener
-import com.example.util.simpletimetracker.core.dialog.DurationDialogListener
-import com.example.util.simpletimetracker.core.dialog.RecordsFilterListener
-import com.example.util.simpletimetracker.core.dialog.StandardDialogListener
+import com.example.util.simpletimetracker.feature_dialogs.api.DateTimeDialogListener
+import com.example.util.simpletimetracker.feature_dialogs.api.DurationDialogListener
+import com.example.util.simpletimetracker.feature_dialogs.api.RecordsFilterListener
+import com.example.util.simpletimetracker.feature_dialogs.api.StandardDialogListener
 import com.example.util.simpletimetracker.core.extension.blockContentScroll
 import com.example.util.simpletimetracker.core.extension.findListener
 import com.example.util.simpletimetracker.core.extension.hideKeyboard

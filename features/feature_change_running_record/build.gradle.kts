@@ -18,6 +18,7 @@ dependencies {
     implementation(project(":core"))
     implementation(project(":feature_change_record")) // TODO add api module
     implementation(project(":feature_comment_selection:api"))
+    implementation(project(":feature_dialogs:api"))
     implementation(libs.google.dagger)
     ksp(libs.kapt.dagger)
 }

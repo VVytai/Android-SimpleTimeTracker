@@ -7,9 +7,9 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import com.example.util.simpletimetracker.core.base.BaseBottomSheetFragment
-import com.example.util.simpletimetracker.core.dialog.OnTagValueSelectedListener
-import com.example.util.simpletimetracker.core.dialog.TypesSelectionDialogListener
-import com.example.util.simpletimetracker.core.dialog.StandardDialogListener
+import com.example.util.simpletimetracker.feature_dialogs.api.OnTagValueSelectedListener
+import com.example.util.simpletimetracker.feature_dialogs.api.TypesSelectionDialogListener
+import com.example.util.simpletimetracker.feature_dialogs.api.StandardDialogListener
 import com.example.util.simpletimetracker.core.extension.blockContentScroll
 import com.example.util.simpletimetracker.core.extension.findListener
 import com.example.util.simpletimetracker.core.extension.observeOnce

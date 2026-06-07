@@ -11,7 +11,7 @@ import androidx.core.view.updateLayoutParams
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.viewModels
 import com.example.util.simpletimetracker.core.base.BaseFragment
-import com.example.util.simpletimetracker.core.dialog.ColorSelectionDialogListener
+import com.example.util.simpletimetracker.feature_dialogs.api.ColorSelectionDialogListener
 import com.example.util.simpletimetracker.core.extension.addOnBackPressedListener
 import com.example.util.simpletimetracker.core.extension.hideKeyboard
 import com.example.util.simpletimetracker.core.extension.observeOnce

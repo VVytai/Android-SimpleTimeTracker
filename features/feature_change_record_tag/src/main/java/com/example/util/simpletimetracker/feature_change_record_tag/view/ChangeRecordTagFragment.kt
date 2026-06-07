@@ -16,11 +16,11 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.util.simpletimetracker.core.base.BaseFragment
-import com.example.util.simpletimetracker.core.dialog.ColorSelectionDialogListener
-import com.example.util.simpletimetracker.core.dialog.DurationDialogListener
-import com.example.util.simpletimetracker.core.dialog.EmojiSelectionDialogListener
-import com.example.util.simpletimetracker.core.dialog.StandardDialogListener
-import com.example.util.simpletimetracker.core.dialog.TypesSelectionDialogListener
+import com.example.util.simpletimetracker.feature_dialogs.api.ColorSelectionDialogListener
+import com.example.util.simpletimetracker.feature_dialogs.api.DurationDialogListener
+import com.example.util.simpletimetracker.feature_dialogs.api.EmojiSelectionDialogListener
+import com.example.util.simpletimetracker.feature_dialogs.api.StandardDialogListener
+import com.example.util.simpletimetracker.feature_dialogs.api.TypesSelectionDialogListener
 import com.example.util.simpletimetracker.core.extension.addOnBackPressedListener
 import com.example.util.simpletimetracker.core.extension.hideKeyboard
 import com.example.util.simpletimetracker.core.extension.observeOnce

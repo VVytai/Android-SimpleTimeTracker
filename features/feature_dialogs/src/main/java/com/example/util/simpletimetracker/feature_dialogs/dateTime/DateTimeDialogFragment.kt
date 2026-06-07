@@ -9,7 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDialogFragment
 import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
-import com.example.util.simpletimetracker.core.dialog.DateTimeDialogListener
+import com.example.util.simpletimetracker.feature_dialogs.api.DateTimeDialogListener
 import com.example.util.simpletimetracker.core.extension.getAllFragments
 import com.example.util.simpletimetracker.feature_views.extension.onTabSelected
 import com.example.util.simpletimetracker.feature_views.extension.visible

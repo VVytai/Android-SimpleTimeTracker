@@ -16,7 +16,7 @@ import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.category.CategoryViewData
 import com.example.util.simpletimetracker.feature_base_adapter.loader.LoaderViewData
 import com.example.util.simpletimetracker.feature_base_adapter.recordType.RecordTypeViewData
-import com.example.util.simpletimetracker.feature_dialogs.cardOrder.interactor.CardOrderChangedInteractor
+import com.example.util.simpletimetracker.feature_dialogs.api.interactor.CardOrderChangedInteractor
 import com.example.util.simpletimetracker.feature_views.GoalCheckmarkView
 import com.example.util.simpletimetracker.navigation.params.screen.CardOrderDialogParams
 import dagger.hilt.android.lifecycle.HiltViewModel

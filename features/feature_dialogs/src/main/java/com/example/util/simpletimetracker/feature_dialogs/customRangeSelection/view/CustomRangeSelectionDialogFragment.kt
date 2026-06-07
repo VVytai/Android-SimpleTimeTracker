@@ -8,8 +8,8 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.viewModels
 import com.example.util.simpletimetracker.core.base.BaseBottomSheetFragment
-import com.example.util.simpletimetracker.core.dialog.CustomRangeSelectionDialogListener
-import com.example.util.simpletimetracker.core.dialog.DateTimeDialogListener
+import com.example.util.simpletimetracker.feature_dialogs.api.CustomRangeSelectionDialogListener
+import com.example.util.simpletimetracker.feature_dialogs.api.DateTimeDialogListener
 import com.example.util.simpletimetracker.core.extension.getAllFragments
 import com.example.util.simpletimetracker.core.extension.observeOnce
 import com.example.util.simpletimetracker.core.extension.setSkipCollapsed

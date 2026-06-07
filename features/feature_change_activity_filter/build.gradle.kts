@@ -18,6 +18,7 @@ dependencies {
     implementation(project(":core"))
     implementation(project(":feature_views"))
     implementation(project(":feature_color_selection:api"))
+    implementation(project(":feature_dialogs:api"))
     implementation(libs.google.dagger)
     ksp(libs.kapt.dagger)
 }

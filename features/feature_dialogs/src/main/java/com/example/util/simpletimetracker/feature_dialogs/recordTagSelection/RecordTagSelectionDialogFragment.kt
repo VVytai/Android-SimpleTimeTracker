@@ -7,7 +7,7 @@ import androidx.core.view.descendants
 import androidx.fragment.app.commit
 import androidx.recyclerview.widget.RecyclerView
 import com.example.util.simpletimetracker.core.base.BaseBottomSheetFragment
-import com.example.util.simpletimetracker.core.dialog.OnTagSelectedListener
+import com.example.util.simpletimetracker.feature_dialogs.api.OnTagSelectedListener
 import com.example.util.simpletimetracker.core.extension.blockContentScrollByPosition
 import com.example.util.simpletimetracker.core.extension.setFullScreen
 import com.example.util.simpletimetracker.core.extension.setSkipCollapsed

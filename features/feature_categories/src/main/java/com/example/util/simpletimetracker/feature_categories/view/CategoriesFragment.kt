@@ -6,9 +6,9 @@ import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.viewModels
 import com.example.util.simpletimetracker.core.base.BaseFragment
-import com.example.util.simpletimetracker.core.dialog.ChartFilterDialogListener
-import com.example.util.simpletimetracker.core.dialog.OptionsListDialogListener
-import com.example.util.simpletimetracker.core.dialog.TypesSelectionDialogListener
+import com.example.util.simpletimetracker.feature_dialogs.api.ChartFilterDialogListener
+import com.example.util.simpletimetracker.feature_dialogs.api.OptionsListDialogListener
+import com.example.util.simpletimetracker.feature_dialogs.api.TypesSelectionDialogListener
 import com.example.util.simpletimetracker.core.utils.InsetConfiguration
 import com.example.util.simpletimetracker.core.utils.doOnApplyWindowInsetsListener
 import com.example.util.simpletimetracker.core.utils.getNavBarInsetsBottom

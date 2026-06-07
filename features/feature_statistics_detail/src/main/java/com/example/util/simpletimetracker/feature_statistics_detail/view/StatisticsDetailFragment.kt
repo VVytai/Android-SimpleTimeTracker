@@ -8,11 +8,11 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.util.simpletimetracker.core.base.BaseFragment
-import com.example.util.simpletimetracker.core.dialog.CustomRangeSelectionDialogListener
-import com.example.util.simpletimetracker.core.dialog.DateTimeDialogListener
-import com.example.util.simpletimetracker.core.dialog.DurationDialogListener
-import com.example.util.simpletimetracker.core.dialog.OptionsListDialogListener
-import com.example.util.simpletimetracker.core.dialog.RecordsFilterListener
+import com.example.util.simpletimetracker.feature_dialogs.api.CustomRangeSelectionDialogListener
+import com.example.util.simpletimetracker.feature_dialogs.api.DateTimeDialogListener
+import com.example.util.simpletimetracker.feature_dialogs.api.DurationDialogListener
+import com.example.util.simpletimetracker.feature_dialogs.api.OptionsListDialogListener
+import com.example.util.simpletimetracker.feature_dialogs.api.RecordsFilterListener
 import com.example.util.simpletimetracker.core.extension.addOnBackPressedListener
 import com.example.util.simpletimetracker.core.extension.onItemSwiped
 import com.example.util.simpletimetracker.core.extension.setSharedTransitions

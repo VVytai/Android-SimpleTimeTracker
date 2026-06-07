@@ -36,7 +36,7 @@ import com.example.util.simpletimetracker.feature_base_adapter.recordType.Record
 import com.example.util.simpletimetracker.feature_base_adapter.recordTypeSpecial.RunningRecordTypeSpecialViewData
 import com.example.util.simpletimetracker.feature_base_adapter.recordWithHint.RecordWithHintViewData
 import com.example.util.simpletimetracker.feature_base_adapter.runningRecord.RunningRecordViewData
-import com.example.util.simpletimetracker.feature_dialogs.cardOrder.interactor.CardOrderChangedInteractor
+import com.example.util.simpletimetracker.feature_dialogs.api.interactor.CardOrderChangedInteractor
 import com.example.util.simpletimetracker.feature_running_records.R
 import com.example.util.simpletimetracker.feature_running_records.api.OnShortcutClickInteractor
 import com.example.util.simpletimetracker.feature_running_records.interactor.RunningRecordsViewDataInteractor

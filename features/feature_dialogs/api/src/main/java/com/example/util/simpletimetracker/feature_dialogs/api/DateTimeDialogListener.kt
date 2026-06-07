@@ -1,4 +1,4 @@
-package com.example.util.simpletimetracker.core.dialog
+package com.example.util.simpletimetracker.feature_dialogs.api
 
 interface DateTimeDialogListener {
 

@@ -113,6 +113,7 @@ dependencies {
     implementation(project(":feature_settings:api"))
     implementation(project(":feature_settings:views"))
     implementation(project(":feature_dialogs"))
+    implementation(project(":feature_dialogs:api"))
     implementation(project(":feature_widget"))
     implementation(project(":feature_notification"))
     implementation(project(":feature_categories"))

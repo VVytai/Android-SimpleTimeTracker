@@ -16,11 +16,12 @@ android {
 
 dependencies {
     implementation(project(":core"))
-    implementation(project(":feature_running_records"))
+    implementation(project(":feature_running_records")) // TODO remove feature dependency
     implementation(project(":feature_records"))
     implementation(project(":feature_statistics"))
     implementation(project(":feature_settings"))
     implementation(project(":feature_goals"))
+    implementation(project(":feature_dialogs:api")) // TODO remove?
     implementation(libs.google.dagger)
     ksp(libs.kapt.dagger)
 }

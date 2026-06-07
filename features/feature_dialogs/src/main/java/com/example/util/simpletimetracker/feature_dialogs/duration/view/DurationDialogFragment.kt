@@ -10,7 +10,7 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import com.example.util.simpletimetracker.core.base.BaseBottomSheetFragment
-import com.example.util.simpletimetracker.core.dialog.DurationDialogListener
+import com.example.util.simpletimetracker.feature_dialogs.api.DurationDialogListener
 import com.example.util.simpletimetracker.core.extension.behavior
 import com.example.util.simpletimetracker.core.extension.findListeners
 import com.example.util.simpletimetracker.core.extension.observeOnce

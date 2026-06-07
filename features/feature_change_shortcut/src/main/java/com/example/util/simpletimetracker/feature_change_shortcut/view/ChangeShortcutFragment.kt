@@ -10,8 +10,8 @@ import androidx.core.view.isVisible
 import androidx.core.view.postDelayed
 import androidx.fragment.app.viewModels
 import com.example.util.simpletimetracker.core.base.BaseFragment
-import com.example.util.simpletimetracker.core.dialog.OnTagValueSelectedListener
-import com.example.util.simpletimetracker.core.dialog.StandardDialogListener
+import com.example.util.simpletimetracker.feature_dialogs.api.OnTagValueSelectedListener
+import com.example.util.simpletimetracker.feature_dialogs.api.StandardDialogListener
 import com.example.util.simpletimetracker.core.extension.addOnBackPressedListener
 import com.example.util.simpletimetracker.core.extension.hideKeyboard
 import com.example.util.simpletimetracker.core.extension.setSharedTransitions

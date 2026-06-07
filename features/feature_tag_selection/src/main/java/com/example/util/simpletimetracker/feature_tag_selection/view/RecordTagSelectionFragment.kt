@@ -8,8 +8,8 @@ import android.view.WindowManager
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.viewModels
 import com.example.util.simpletimetracker.core.base.BaseFragment
-import com.example.util.simpletimetracker.core.dialog.OnTagSelectedListener
-import com.example.util.simpletimetracker.core.dialog.OnTagValueSelectedListener
+import com.example.util.simpletimetracker.feature_dialogs.api.OnTagSelectedListener
+import com.example.util.simpletimetracker.feature_dialogs.api.OnTagValueSelectedListener
 import com.example.util.simpletimetracker.core.extension.findListeners
 import com.example.util.simpletimetracker.core.manager.KeyboardVisibilityManager
 import com.example.util.simpletimetracker.core.utils.InsetConfiguration

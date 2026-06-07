@@ -7,8 +7,8 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.example.util.simpletimetracker.core.base.BaseFragment
 import com.example.util.simpletimetracker.core.di.BaseViewModelFactory
-import com.example.util.simpletimetracker.core.dialog.OnTagSelectedListener
-import com.example.util.simpletimetracker.core.dialog.StandardDialogListener
+import com.example.util.simpletimetracker.feature_dialogs.api.OnTagSelectedListener
+import com.example.util.simpletimetracker.feature_dialogs.api.StandardDialogListener
 import com.example.util.simpletimetracker.core.sharedViewModel.MainTabsViewModel
 import com.example.util.simpletimetracker.core.utils.InsetConfiguration
 import com.example.util.simpletimetracker.core.utils.doOnApplyWindowInsetsListener
