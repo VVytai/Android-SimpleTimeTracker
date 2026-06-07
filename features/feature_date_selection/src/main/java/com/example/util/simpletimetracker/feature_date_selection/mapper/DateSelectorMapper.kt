@@ -1,10 +1,9 @@
-package com.example.util.simpletimetracker.core.delegates.dateSelector.mapper
+package com.example.util.simpletimetracker.feature_date_selection.mapper
 
 import com.example.util.simpletimetracker.core.mapper.CalendarToListShiftMapper
 import com.example.util.simpletimetracker.core.mapper.RangeTitleMapper
 import com.example.util.simpletimetracker.core.mapper.TimeMapper
 import com.example.util.simpletimetracker.domain.daysOfWeek.mapper.DaysInCalendarMapper
-import com.example.util.simpletimetracker.domain.daysOfWeek.model.DayOfWeek
 import com.example.util.simpletimetracker.domain.daysOfWeek.model.DaysInCalendar
 import com.example.util.simpletimetracker.domain.statistics.extension.canBeSwiped
 import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
@@ -12,16 +11,18 @@ import com.example.util.simpletimetracker.feature_base_adapter.InfiniteRecyclerA
 import com.example.util.simpletimetracker.feature_base_adapter.dateSelector.DateSelectorDayViewData
 import com.example.util.simpletimetracker.feature_base_adapter.dateSelector.DateSelectorRangeViewData
 import com.example.util.simpletimetracker.feature_base_adapter.dateSelector.DateSelectorSingleViewData
+import com.example.util.simpletimetracker.feature_date_selection.api.DateSelectorMapper
+import com.example.util.simpletimetracker.feature_date_selection.api.DateSelectorMapper.SetupData
 import javax.inject.Inject
 
-class DateSelectorMapper @Inject constructor(
+class DateSelectorMapperImpl @Inject constructor(
     private val timeMapper: TimeMapper,
     private val rangeTitleMapper: RangeTitleMapper,
     private val daysInCalendarMapper: DaysInCalendarMapper,
     private val calendarToListShiftMapper: CalendarToListShiftMapper,
-) : InfiniteRecyclerAdapter.DataProvider {
+) : DateSelectorMapper {
 
-    var currentSelectedPosition: Int = 0
+    override var currentSelectedPosition: Int = 0
 
     private var isInitialized: Boolean = false
     private var setupData: SetupData = SetupData.Empty
@@ -90,7 +91,7 @@ class DateSelectorMapper @Inject constructor(
         }
     }
 
-    fun setup(
+    override fun setup(
         setupData: SetupData,
     ) {
         this.setupData = setupData
@@ -198,42 +199,5 @@ class DateSelectorMapper @Inject constructor(
     ): Boolean {
         val calendarDayCount = daysInCalendarMapper.mapDaysCount(daysInCalendar)
         return isCalendarView && calendarDayCount > 1
-    }
-
-    data class SetupData(
-        val type: Type,
-        val startOfDayShift: Long,
-        val firstDayOfWeek: DayOfWeek,
-    ) {
-        sealed interface Type {
-            val optionsButton: Button
-
-            data class Records(
-                override val optionsButton: Button,
-                val isCalendarView: Boolean,
-                val daysInCalendar: DaysInCalendar,
-            ) : Type
-
-            data class Statistics(
-                override val optionsButton: Button,
-                val rangeLength: RangeLength,
-            ) : Type
-        }
-
-        sealed interface Button {
-            data object Hidden : Button
-            data class Visible(val iconResId: Int) : Button
-        }
-
-        companion object {
-            val Empty = SetupData(
-                type = Type.Statistics(
-                    optionsButton = Button.Hidden,
-                    rangeLength = RangeLength.Day,
-                ),
-                startOfDayShift = 0,
-                firstDayOfWeek = DayOfWeek.SUNDAY,
-            )
-        }
     }
 }

@@ -8,7 +8,6 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.util.simpletimetracker.core.base.BaseFragment
-import com.example.util.simpletimetracker.core.delegates.dateSelector.viewDelegate.DateSelectorViewDelegate
 import com.example.util.simpletimetracker.core.dialog.CustomRangeSelectionDialogListener
 import com.example.util.simpletimetracker.core.dialog.DateTimeDialogListener
 import com.example.util.simpletimetracker.core.dialog.DurationDialogListener
@@ -32,6 +31,7 @@ import com.example.util.simpletimetracker.feature_base_adapter.hint.createHintAd
 import com.example.util.simpletimetracker.feature_base_adapter.statistics.StatisticsSelectableViewData
 import com.example.util.simpletimetracker.feature_base_adapter.statistics.createStatisticsAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.statistics.createStatisticsSelectableAdapterDelegate
+import com.example.util.simpletimetracker.feature_date_selection.api.viewDelegate.DateSelectorViewDelegateProvider
 import com.example.util.simpletimetracker.feature_statistics_detail.R
 import com.example.util.simpletimetracker.feature_statistics_detail.adapter.createStatisticsDetailBarChartAdapterDelegate
 import com.example.util.simpletimetracker.feature_statistics_detail.adapter.createStatisticsDetailButtonAdapterDelegate
@@ -56,6 +56,7 @@ import com.example.util.simpletimetracker.navigation.params.screen.OptionsListPa
 import com.example.util.simpletimetracker.navigation.params.screen.RecordsFilterResultParams
 import com.example.util.simpletimetracker.navigation.params.screen.StatisticsDetailParams
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import com.example.util.simpletimetracker.feature_statistics_detail.databinding.StatisticsDetailFragmentBinding as Binding
 
 @AndroidEntryPoint
@@ -74,7 +75,17 @@ class StatisticsDetailFragment :
     override var insetConfiguration: InsetConfiguration =
         InsetConfiguration.ApplyToView { binding.root }
 
+    @Inject
+    lateinit var dateSelectorViewDelegateProvider: DateSelectorViewDelegateProvider
+
     private val viewModel: StatisticsDetailViewModel by viewModels()
+    private val dateSelectorViewDelegate by lazy {
+        dateSelectorViewDelegateProvider.provide(
+            viewModel = viewModel.dateSelectorViewModelDelegate,
+            binding = binding.containerDatesSelector,
+            fragment = this,
+        )
+    }
 
     private val contentAdapter: BaseRecyclerAdapter by lazy {
         BaseRecyclerAdapter(
@@ -117,11 +128,6 @@ class StatisticsDetailFragment :
             ),
         )
     }
-    private val dateSelectorViewHolder by lazy {
-        DateSelectorViewDelegate.getViewHolder(
-            viewModel = viewModel.dateSelectorViewModelDelegate,
-        )
-    }
     private val params: StatisticsDetailParams by fragmentArgumentDelegate(
         key = ARGS_PARAMS, default = StatisticsDetailParams.Empty,
     )
@@ -137,12 +143,7 @@ class StatisticsDetailFragment :
 
         rvStatisticsDetailContent.adapter = contentAdapter
 
-        DateSelectorViewDelegate.initUi(
-            fragment = this@StatisticsDetailFragment,
-            viewHolder = dateSelectorViewHolder,
-            viewModel = viewModel.dateSelectorViewModelDelegate,
-            binding = containerDatesSelector,
-        )
+        dateSelectorViewDelegate.initUi()
     }
 
     override fun initUx() = with(binding) {
@@ -151,9 +152,7 @@ class StatisticsDetailFragment :
             viewStatisticsDetailItem.isVisible = true
             viewModel.onBackPressed()
         }
-        DateSelectorViewDelegate.initUx(
-            fragment = this@StatisticsDetailFragment,
-            binding = binding.containerDatesSelector,
+        dateSelectorViewDelegate.initUx(
             onOptionsClick = viewModel::onOptionsClick,
             onOptionsLongClick = viewModel::onOptionsLongClick,
         )
@@ -177,12 +176,7 @@ class StatisticsDetailFragment :
         scrollToTop.observe { scrollToTop() } // TODO expand appbar on short list.
         content.observe(contentAdapter::replace)
         previewViewData.observe(::setPreviewViewData)
-        DateSelectorViewDelegate.initViewModel(
-            fragment = this@StatisticsDetailFragment,
-            viewHolder = dateSelectorViewHolder,
-            viewModel = viewModel.dateSelectorViewModelDelegate,
-            binding = binding.containerDatesSelector,
-        )
+        dateSelectorViewDelegate.initViewModel()
     }
 
     override fun onResume() {

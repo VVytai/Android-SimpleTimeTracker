@@ -6,7 +6,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.util.simpletimetracker.core.base.BaseFragment
-import com.example.util.simpletimetracker.core.delegates.dateSelector.viewDelegate.DateSelectorViewDelegate
 import com.example.util.simpletimetracker.core.dialog.DateTimeDialogListener
 import com.example.util.simpletimetracker.core.di.BaseViewModelFactory
 import com.example.util.simpletimetracker.core.sharedViewModel.MainTabsViewModel
@@ -16,6 +15,7 @@ import com.example.util.simpletimetracker.feature_base_adapter.hint.createHintAd
 import com.example.util.simpletimetracker.feature_base_adapter.hintBig.createHintBigAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.loader.createLoaderAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.statisticsGoal.createStatisticsGoalAdapterDelegate
+import com.example.util.simpletimetracker.feature_date_selection.api.viewDelegate.DateSelectorViewDelegateProvider
 import com.example.util.simpletimetracker.feature_goals.databinding.GoalsFragmentBinding as Binding
 import com.example.util.simpletimetracker.feature_goals.viewModel.GoalsViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -33,14 +33,18 @@ class GoalsFragment : BaseFragment<Binding>(), DateTimeDialogListener {
     @Inject
     lateinit var mainTabsViewModelFactory: BaseViewModelFactory<MainTabsViewModel>
 
+    @Inject
+    lateinit var dateSelectorViewDelegateProvider: DateSelectorViewDelegateProvider
+
     private val viewModel: GoalsViewModel by viewModels()
     private val mainTabsViewModel: MainTabsViewModel by activityViewModels(
         factoryProducer = { mainTabsViewModelFactory },
     )
-
-    private val dateSelectorViewHolder by lazy {
-        DateSelectorViewDelegate.getViewHolder(
+    private val dateSelectorViewDelegate by lazy {
+        dateSelectorViewDelegateProvider.provide(
             viewModel = viewModel.dateSelectorViewModelDelegate,
+            binding = binding.containerDatesSelector,
+            fragment = this
         )
     }
 
@@ -61,12 +65,7 @@ class GoalsFragment : BaseFragment<Binding>(), DateTimeDialogListener {
             adapter = goalsAdapter
         }
 
-        DateSelectorViewDelegate.initUi(
-            fragment = this@GoalsFragment,
-            viewHolder = dateSelectorViewHolder,
-            viewModel = viewModel.dateSelectorViewModelDelegate,
-            binding = containerDatesSelector,
-        )
+        dateSelectorViewDelegate.initUi()
         viewModel.initialize()
 
         setOnPreDrawListener {
@@ -75,10 +74,7 @@ class GoalsFragment : BaseFragment<Binding>(), DateTimeDialogListener {
     }
 
     override fun initUx() {
-        DateSelectorViewDelegate.initUx(
-            fragment = this,
-            binding = binding.containerDatesSelector,
-        )
+        dateSelectorViewDelegate.initUx()
     }
 
     override fun initViewModel() = with(binding) {
@@ -93,12 +89,7 @@ class GoalsFragment : BaseFragment<Binding>(), DateTimeDialogListener {
             tabReselected.observe(viewModel::onTabReselected)
             isNavBatAtTheBottom.observe(::updateInsetConfiguration)
         }
-        DateSelectorViewDelegate.initViewModel(
-            fragment = this@GoalsFragment,
-            viewHolder = dateSelectorViewHolder,
-            viewModel = viewModel.dateSelectorViewModelDelegate,
-            binding = containerDatesSelector,
-        )
+        dateSelectorViewDelegate.initViewModel()
     }
 
     override fun onResume() {

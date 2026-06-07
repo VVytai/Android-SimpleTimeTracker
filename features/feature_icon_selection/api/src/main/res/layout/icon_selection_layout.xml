@@ -58,7 +58,6 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_goneMarginEnd="8dp"
                 tools:itemCount="1"
-                tools:listitem="@layout/item_icon_selection_category_layout"
                 tools:visibility="visible" />
 
             <com.google.android.material.textfield.TextInputLayout
@@ -169,7 +168,6 @@
         android:visibility="gone"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
         tools:itemCount="30"
-        tools:listitem="@layout/item_icon_selection_layout"
         tools:visibility="visible" />
 
     <com.google.android.material.textfield.TextInputLayout

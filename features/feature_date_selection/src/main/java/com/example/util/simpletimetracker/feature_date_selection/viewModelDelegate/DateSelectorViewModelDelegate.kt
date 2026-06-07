@@ -1,47 +1,48 @@
-package com.example.util.simpletimetracker.core.delegates.dateSelector.viewModelDelegate
+package com.example.util.simpletimetracker.feature_date_selection.viewModelDelegate
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.util.simpletimetracker.core.base.SingleLiveEvent
 import com.example.util.simpletimetracker.core.base.ViewModelDelegate
-import com.example.util.simpletimetracker.core.delegates.dateSelector.mapper.DateSelectorMapper
-import com.example.util.simpletimetracker.core.delegates.dateSelector.viewData.DateSelectorButtonsViewData
-import com.example.util.simpletimetracker.core.delegates.dateSelector.viewData.DateSelectorScrollViewData
+import com.example.util.simpletimetracker.feature_date_selection.api.viewData.DateSelectorButtonsViewData
+import com.example.util.simpletimetracker.feature_date_selection.api.viewData.DateSelectorScrollViewData
 import com.example.util.simpletimetracker.core.extension.set
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.feature_base_adapter.InfiniteRecyclerAdapter
 import com.example.util.simpletimetracker.feature_base_adapter.R
+import com.example.util.simpletimetracker.feature_date_selection.api.DateSelectorMapper
+import com.example.util.simpletimetracker.feature_date_selection.api.DateSelectorViewModelDelegate
+import com.example.util.simpletimetracker.feature_date_selection.api.DateSelectorViewModelDelegate.Parent
 import com.example.util.simpletimetracker.navigation.params.screen.OptionsListParams
 import javax.inject.Inject
 
-class DateSelectorViewModelDelegate @Inject constructor(
-    val dataProvider: DateSelectorMapper,
+class DateSelectorViewModelDelegateImpl @Inject constructor(
+    override val dataProvider: DateSelectorMapper,
     private val prefsInteractor: PrefsInteractor,
-) : ViewModelDelegate() {
+) : DateSelectorViewModelDelegate, ViewModelDelegate() {
 
-    val dateScrollPosition: LiveData<DateSelectorScrollViewData> =
-        SingleLiveEvent<DateSelectorScrollViewData>()
-    val buttonsViewData: LiveData<DateSelectorButtonsViewData> = MutableLiveData()
-    val updateDatesViewData: LiveData<Unit> = SingleLiveEvent<Unit>()
-    val borderShadowsVisibility: LiveData<Boolean> = MutableLiveData()
+    override val dateScrollPosition: LiveData<DateSelectorScrollViewData> = SingleLiveEvent<DateSelectorScrollViewData>()
+    override val buttonsViewData: LiveData<DateSelectorButtonsViewData> = MutableLiveData()
+    override val updateDatesViewData: LiveData<Unit> = SingleLiveEvent<Unit>()
+    override val borderShadowsVisibility: LiveData<Boolean> = MutableLiveData()
 
     private var parent: Parent? = null
     private var animateScroll: Boolean = true
 
-    fun attach(parent: Parent) {
+    override fun attach(parent: Parent) {
         this.parent = parent
     }
 
-    suspend fun initialize(position: Int) {
+    override suspend fun initialize(position: Int) {
         setup()
         updatePosition(position)
     }
 
-    suspend fun setup() {
+    override suspend fun setup() {
         setupDatesSelector()
     }
 
-    fun onDateClick(item: InfiniteRecyclerAdapter.Data) {
+    override fun onDateClick(item: InfiniteRecyclerAdapter.Data) {
         if (parent?.currentPosition == item.position) {
             throttle { parent?.onDateClick() }.invoke()
         } else {
@@ -50,7 +51,7 @@ class DateSelectorViewModelDelegate @Inject constructor(
         }
     }
 
-    fun onDateLongClick(item: InfiniteRecyclerAdapter.Data) {
+    override fun onDateLongClick(item: InfiniteRecyclerAdapter.Data) {
         if (parent?.currentPosition == item.position) {
             parent?.updatePosition(0)
         } else {
@@ -58,13 +59,13 @@ class DateSelectorViewModelDelegate @Inject constructor(
         }
     }
 
-    fun onScrolledToDate(position: Int) {
+    override fun onScrolledToDate(position: Int) {
         if (position != parent?.currentPosition) {
             parent?.updatePosition(position)
         }
     }
 
-    fun updatePosition(shift: Int) {
+    override fun updatePosition(shift: Int) {
         dataProvider.currentSelectedPosition = shift
         updateDatesViewData.set(Unit)
         val scrollData = DateSelectorScrollViewData(position = shift, animate = animateScroll)
@@ -72,7 +73,7 @@ class DateSelectorViewModelDelegate @Inject constructor(
         dateScrollPosition.set(scrollData)
     }
 
-    fun getOptionsButton(
+    override fun getOptionsButton(
         options: List<OptionsListParams.Item>,
     ): DateSelectorMapper.SetupData.Button {
         return if (options.isEmpty()) {
@@ -116,13 +117,5 @@ class DateSelectorViewModelDelegate @Inject constructor(
             },
         )
         buttonsViewData.set(buttonsData)
-    }
-
-    interface Parent {
-        val currentPosition: Int
-
-        fun onDateClick()
-        fun updatePosition(newPosition: Int)
-        suspend fun getSetupData(): DateSelectorMapper.SetupData.Type
     }
 }

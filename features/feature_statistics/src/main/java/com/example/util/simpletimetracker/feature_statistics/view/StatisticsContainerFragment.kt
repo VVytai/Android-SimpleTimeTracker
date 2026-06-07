@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.example.util.simpletimetracker.core.base.BaseFragment
-import com.example.util.simpletimetracker.core.delegates.dateSelector.viewDelegate.DateSelectorViewDelegate
 import com.example.util.simpletimetracker.core.di.BaseViewModelFactory
 import com.example.util.simpletimetracker.core.dialog.CustomRangeSelectionDialogListener
 import com.example.util.simpletimetracker.core.dialog.DateTimeDialogListener
@@ -17,6 +16,7 @@ import com.example.util.simpletimetracker.core.utils.InsetConfiguration
 import com.example.util.simpletimetracker.core.view.SafeFragmentStateAdapter
 import com.example.util.simpletimetracker.core.viewData.RangeSelectionOptionsListItem
 import com.example.util.simpletimetracker.domain.record.model.Range
+import com.example.util.simpletimetracker.feature_date_selection.api.viewDelegate.DateSelectorViewDelegateProvider
 import com.example.util.simpletimetracker.feature_statistics.adapter.StatisticsContainerAdapter
 import com.example.util.simpletimetracker.feature_statistics.api.StatisticsContainerOptionsListItem
 import com.example.util.simpletimetracker.feature_statistics.viewModel.StatisticsContainerViewModel
@@ -41,13 +41,18 @@ class StatisticsContainerFragment :
     @Inject
     lateinit var mainTabsViewModelFactory: BaseViewModelFactory<MainTabsViewModel>
 
+    @Inject
+    lateinit var dateSelectorViewDelegateProvider: DateSelectorViewDelegateProvider
+
     private val viewModel: StatisticsContainerViewModel by viewModels()
     private val mainTabsViewModel: MainTabsViewModel by activityViewModels(
         factoryProducer = { mainTabsViewModelFactory },
     )
-    private val dateSelectorViewHolder by lazy {
-        DateSelectorViewDelegate.getViewHolder(
+    private val dateSelectorViewDelegate by lazy {
+        dateSelectorViewDelegateProvider.provide(
             viewModel = viewModel.dateSelectorViewModelDelegate,
+            binding = binding.containerDatesSelector,
+            fragment = this,
         )
     }
 
@@ -60,18 +65,11 @@ class StatisticsContainerFragment :
             isUserInputEnabled = false
             setCurrentItem(StatisticsContainerAdapter.FIRST, false)
         }
-        DateSelectorViewDelegate.initUi(
-            fragment = this@StatisticsContainerFragment,
-            viewHolder = dateSelectorViewHolder,
-            viewModel = viewModel.dateSelectorViewModelDelegate,
-            binding = containerDatesSelector,
-        )
+        dateSelectorViewDelegate.initUi()
     }
 
     override fun initUx() {
-        DateSelectorViewDelegate.initUx(
-            fragment = this,
-            binding = binding.containerDatesSelector,
+        dateSelectorViewDelegate.initUx(
             onOptionsClick = viewModel::onOptionsClick,
             onOptionsLongClick = viewModel::onOptionsLongClick,
         )
@@ -96,12 +94,7 @@ class StatisticsContainerFragment :
         with(mainTabsViewModel) {
             isNavBatAtTheBottom.observe(::updateInsetConfiguration)
         }
-        DateSelectorViewDelegate.initViewModel(
-            fragment = this,
-            viewHolder = dateSelectorViewHolder,
-            viewModel = viewModel.dateSelectorViewModelDelegate,
-            binding = binding.containerDatesSelector,
-        )
+        dateSelectorViewDelegate.initViewModel()
         viewModel.initialize()
     }
 

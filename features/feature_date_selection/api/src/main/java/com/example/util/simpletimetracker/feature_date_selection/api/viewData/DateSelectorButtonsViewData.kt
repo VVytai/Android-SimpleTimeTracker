@@ -1,4 +1,4 @@
-package com.example.util.simpletimetracker.core.delegates.dateSelector.viewData
+package com.example.util.simpletimetracker.feature_date_selection.api.viewData
 
 data class DateSelectorButtonsViewData(
     val addButton: Button,

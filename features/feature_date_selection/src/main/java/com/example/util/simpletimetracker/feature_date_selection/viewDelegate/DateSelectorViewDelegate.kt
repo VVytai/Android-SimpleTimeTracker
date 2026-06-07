@@ -1,4 +1,4 @@
-package com.example.util.simpletimetracker.core.delegates.dateSelector.viewDelegate
+package com.example.util.simpletimetracker.feature_date_selection.viewDelegate
 
 import android.annotation.SuppressLint
 import android.view.MotionEvent
@@ -13,42 +13,36 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import androidx.viewpager2.widget.ViewPager2
 import com.example.util.simpletimetracker.core.base.BaseFragment
-import com.example.util.simpletimetracker.core.databinding.DateSelectorLayoutBinding
-import com.example.util.simpletimetracker.core.delegates.dateSelector.viewData.DateSelectorButtonsViewData
-import com.example.util.simpletimetracker.core.delegates.dateSelector.viewModelDelegate.DateSelectorViewModelDelegate
 import com.example.util.simpletimetracker.core.extension.changeDragSensitivity
 import com.example.util.simpletimetracker.core.extension.horizontalSmoothScrollWithOffset
 import com.example.util.simpletimetracker.feature_base_adapter.InfiniteRecyclerAdapter
 import com.example.util.simpletimetracker.feature_base_adapter.dateSelector.createDateSelectorDayAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.dateSelector.createDateSelectorRangeAdapterDelegate
 import com.example.util.simpletimetracker.feature_base_adapter.dateSelector.createDateSelectorSingleAdapterDelegate
+import com.example.util.simpletimetracker.feature_date_selection.api.DateSelectorViewModelDelegate
+import com.example.util.simpletimetracker.feature_date_selection.api.databinding.DateSelectorLayoutBinding
+import com.example.util.simpletimetracker.feature_date_selection.api.viewData.DateSelectorButtonsViewData
+import com.example.util.simpletimetracker.feature_date_selection.api.viewDelegate.DateSelectorViewDelegate
+import com.example.util.simpletimetracker.feature_date_selection.api.viewDelegate.DateSelectorViewDelegate.ViewHolder
 import com.example.util.simpletimetracker.feature_views.extension.addOnScrollListenerAdapter
 import com.example.util.simpletimetracker.feature_views.extension.setOnClick
 import com.example.util.simpletimetracker.feature_views.extension.setOnLongClick
 import com.google.android.material.button.MaterialButton
 
-object DateSelectorViewDelegate {
+class DateSelectorViewDelegateImpl<T : ViewBinding>(
+    private val viewModel: DateSelectorViewModelDelegate,
+    private val binding: DateSelectorLayoutBinding,
+    private val fragment: BaseFragment<T>,
+) : DateSelectorViewDelegate {
 
-    interface ViewHolder {
-        val adapter: Lazy<InfiniteRecyclerAdapter>
-        val snapHelper: LinearSnapHelper
-    }
-
-    fun getViewHolder(
-        viewModel: DateSelectorViewModelDelegate,
-    ): ViewHolder {
-        return object : ViewHolder {
-            override val adapter: Lazy<InfiniteRecyclerAdapter> = lazy { getAdapter(viewModel) }
+    private val viewHolder: ViewHolder by lazy {
+        object : ViewHolder {
+            override val adapter: Lazy<InfiniteRecyclerAdapter> = lazy { getAdapter() }
             override val snapHelper: LinearSnapHelper = LinearSnapHelper()
         }
     }
 
-    fun initUi(
-        fragment: Fragment,
-        viewHolder: ViewHolder,
-        viewModel: DateSelectorViewModelDelegate,
-        binding: DateSelectorLayoutBinding,
-    ) {
+    override fun initUi() {
         fun onDatesScrolled(recyclerView: RecyclerView, newState: Int) {
             onDatesScrolled(
                 viewHolder = viewHolder,
@@ -70,24 +64,17 @@ object DateSelectorViewDelegate {
         }
     }
 
-    fun <T : ViewBinding> initUx(
-        fragment: BaseFragment<T>,
-        binding: DateSelectorLayoutBinding,
-        onRecordAddClick: () -> Unit = {},
-        onOptionsClick: () -> Unit = {},
-        onOptionsLongClick: () -> Unit = {},
+    override fun initUx(
+        onRecordAddClick: () -> Unit,
+        onOptionsClick: () -> Unit,
+        onOptionsLongClick: () -> Unit,
     ) = with(fragment) {
         binding.btnRecordsContainerAdd.setOnClick(throttle(onRecordAddClick))
         binding.btnRecordsContainerOptions.setOnClick(throttle(onOptionsClick))
         binding.btnRecordsContainerOptions.setOnLongClick(throttle(onOptionsLongClick))
     }
 
-    fun <T : ViewBinding> initViewModel(
-        fragment: BaseFragment<T>,
-        viewHolder: ViewHolder,
-        viewModel: DateSelectorViewModelDelegate,
-        binding: DateSelectorLayoutBinding,
-    ) = with(fragment) {
+    override fun initViewModel() = with(fragment) {
         viewModel.dateScrollPosition.observe { data ->
             doScrollToPosition(
                 viewHolder = viewHolder,
@@ -113,9 +100,7 @@ object DateSelectorViewDelegate {
         }
     }
 
-    private fun getAdapter(
-        viewModel: DateSelectorViewModelDelegate,
-    ): InfiniteRecyclerAdapter {
+    private fun getAdapter(): InfiniteRecyclerAdapter {
         return InfiniteRecyclerAdapter(
             dataProvider = viewModel.dataProvider,
             createDateSelectorDayAdapterDelegate(

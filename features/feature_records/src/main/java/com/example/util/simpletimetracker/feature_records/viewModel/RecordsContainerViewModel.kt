@@ -3,8 +3,6 @@ package com.example.util.simpletimetracker.feature_records.viewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.example.util.simpletimetracker.core.base.BaseViewModel
-import com.example.util.simpletimetracker.core.delegates.dateSelector.mapper.DateSelectorMapper
-import com.example.util.simpletimetracker.core.delegates.dateSelector.viewModelDelegate.DateSelectorViewModelDelegate
 import com.example.util.simpletimetracker.core.extension.lazySuspend
 import com.example.util.simpletimetracker.core.extension.set
 import com.example.util.simpletimetracker.core.extension.shiftTimeStamp
@@ -20,6 +18,8 @@ import com.example.util.simpletimetracker.domain.record.interactor.RecordsContai
 import com.example.util.simpletimetracker.domain.record.interactor.RecordsShareUpdateInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.RecordsUpdateInteractor
 import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
+import com.example.util.simpletimetracker.feature_date_selection.api.DateSelectorMapper
+import com.example.util.simpletimetracker.feature_date_selection.api.DateSelectorViewModelDelegate
 import com.example.util.simpletimetracker.feature_records.R
 import com.example.util.simpletimetracker.feature_records.api.RecordsContainerOptionsListMapper
 import com.example.util.simpletimetracker.feature_records.api.RecordsContainerOptionsListItem

@@ -2,7 +2,7 @@ package com.example.util.simpletimetracker.feature_icon_selection.adapter
 
 import com.example.util.simpletimetracker.feature_base_adapter.createRecyclerBindingAdapterDelegate
 import com.example.util.simpletimetracker.feature_views.extension.setOnClickWith
-import com.example.util.simpletimetracker.core.databinding.ItemIconSelectionLayoutBinding as Binding
+import com.example.util.simpletimetracker.feature_icon_selection.databinding.ItemIconSelectionLayoutBinding as Binding
 import com.example.util.simpletimetracker.feature_icon_selection.api.viewData.IconSelectionViewData as ViewData
 
 fun createIconSelectionAdapterDelegate(

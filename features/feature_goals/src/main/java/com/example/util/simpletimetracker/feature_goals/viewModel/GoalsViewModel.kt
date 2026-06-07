@@ -5,8 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.util.simpletimetracker.core.base.SingleLiveEvent
-import com.example.util.simpletimetracker.core.delegates.dateSelector.mapper.DateSelectorMapper
-import com.example.util.simpletimetracker.core.delegates.dateSelector.viewModelDelegate.DateSelectorViewModelDelegate
 import com.example.util.simpletimetracker.core.extension.set
 import com.example.util.simpletimetracker.core.extension.shiftTimeStamp
 import com.example.util.simpletimetracker.core.interactor.StatisticsDetailNavigationInteractor
@@ -19,6 +17,8 @@ import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.loader.LoaderViewData
 import com.example.util.simpletimetracker.feature_base_adapter.statisticsGoal.StatisticsGoalViewData
+import com.example.util.simpletimetracker.feature_date_selection.api.DateSelectorMapper
+import com.example.util.simpletimetracker.feature_date_selection.api.DateSelectorViewModelDelegate
 import com.example.util.simpletimetracker.feature_goals.interactor.GoalsViewDataInteractor
 import com.example.util.simpletimetracker.navigation.Router
 import com.example.util.simpletimetracker.navigation.params.screen.DateTimeDialogParams

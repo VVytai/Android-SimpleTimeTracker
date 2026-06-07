@@ -16,6 +16,7 @@ android {
 
 dependencies {
     implementation(project(":core"))
+    implementation(project(":feature_date_selection:api"))
     implementation(libs.google.dagger)
     ksp(libs.kapt.dagger)
 }

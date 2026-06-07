@@ -5,8 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.util.simpletimetracker.core.base.BaseViewModel
 import com.example.util.simpletimetracker.core.base.SingleLiveEvent
 import com.example.util.simpletimetracker.core.base.ViewModelDelegate
-import com.example.util.simpletimetracker.core.delegates.dateSelector.mapper.DateSelectorMapper
-import com.example.util.simpletimetracker.core.delegates.dateSelector.viewModelDelegate.DateSelectorViewModelDelegate
 import com.example.util.simpletimetracker.core.extension.lazySuspend
 import com.example.util.simpletimetracker.core.extension.set
 import com.example.util.simpletimetracker.core.extension.toParams
@@ -21,6 +19,8 @@ import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.buttonsRow.ButtonsRowItemViewData
 import com.example.util.simpletimetracker.feature_base_adapter.buttonsRow.view.ButtonsRowViewData
 import com.example.util.simpletimetracker.feature_base_adapter.statistics.StatisticsViewData
+import com.example.util.simpletimetracker.feature_date_selection.api.DateSelectorMapper
+import com.example.util.simpletimetracker.feature_date_selection.api.DateSelectorViewModelDelegate
 import com.example.util.simpletimetracker.feature_statistics_detail.adapter.StatisticsDetailBlock
 import com.example.util.simpletimetracker.feature_statistics_detail.adapter.StatisticsDetailPreviewsViewData
 import com.example.util.simpletimetracker.feature_statistics_detail.api.StatisticsDetailOptionsListMapper
