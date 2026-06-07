@@ -35,7 +35,7 @@ class IconSelectionMapper @Inject constructor(
     private val iconEmojiMapper: IconEmojiMapper,
     private val iconMapper: IconMapper,
     private val colorMapper: ColorMapper,
-): IconSelectionMapper {
+) : IconSelectionMapper {
 
     override fun mapFavouriteIconImages(
         favourites: List<FavouriteIcon>,

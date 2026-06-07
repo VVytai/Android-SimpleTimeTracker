@@ -44,7 +44,7 @@ class GoalsFragment : BaseFragment<Binding>(), DateTimeDialogListener {
         dateSelectorViewDelegateProvider.provide(
             viewModel = viewModel.dateSelectorViewModelDelegate,
             binding = binding.containerDatesSelector,
-            fragment = this
+            fragment = this,
         )
     }
 

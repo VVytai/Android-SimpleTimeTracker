@@ -5,7 +5,7 @@ import com.example.util.simpletimetracker.domain.daysOfWeek.model.DaysInCalendar
 import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
 import com.example.util.simpletimetracker.feature_base_adapter.InfiniteRecyclerAdapter
 
-interface DateSelectorMapper: InfiniteRecyclerAdapter.DataProvider {
+interface DateSelectorMapper : InfiniteRecyclerAdapter.DataProvider {
 
     var currentSelectedPosition: Int
 
