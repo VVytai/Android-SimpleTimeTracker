@@ -713,7 +713,7 @@ class StatisticsRangesTest : BaseUiTest() {
         clickOnViewWithId(dialogsR.id.btnCustomRangeSelection)
         val rangeTitle = calendar.apply {
             timeInMillis = System.currentTimeMillis()
-        }.get(Calendar.DAY_OF_MONTH).toString()
+        }.get(Calendar.DAY_OF_MONTH).toString().padDuration()
         checkViewIsDisplayed(
             allOf(
                 dateSelectorMatcher(0),

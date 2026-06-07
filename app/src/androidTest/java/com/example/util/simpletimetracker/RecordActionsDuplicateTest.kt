@@ -256,6 +256,7 @@ class RecordActionsDuplicateTest : BaseUiTest() {
         clickOnRecyclerItem(changeRecordR.id.rvChangeRecordType, withText(name))
         clickOnViewWithText(coreR.string.change_record_comment_field)
         typeTextIntoView(changeRecordR.id.etChangeRecordCommentField, comment)
+        Thread.sleep(500) // Wait for keyboard to open.
         clickOnViewWithText(coreR.string.change_record_comment_field)
 
         // Duplicate

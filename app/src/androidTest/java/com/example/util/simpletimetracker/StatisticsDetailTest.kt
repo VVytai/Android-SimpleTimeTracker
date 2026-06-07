@@ -466,7 +466,7 @@ class StatisticsDetailTest : BaseUiTest() {
         )
 
         // All records
-        checkAllRecords(4)
+        checkAllRecords(count = 4, viewCount = 5)
     }
 
     @Test
@@ -557,7 +557,7 @@ class StatisticsDetailTest : BaseUiTest() {
         )
 
         // All records
-        checkAllRecords(3)
+        checkAllRecords(count = 3, viewCount = 3)
 
         // Tag split
         scrollStatDetailRecyclerToTag(StatisticsDetailBlock.DataDistributionMode)
@@ -673,7 +673,7 @@ class StatisticsDetailTest : BaseUiTest() {
         )
 
         // All records
-        checkAllRecords(3)
+        checkAllRecords(count = 3, viewCount = 3)
 
         // Tag split
         scrollStatDetailRecyclerToTag(StatisticsDetailBlock.DataDistributionMode)
@@ -807,7 +807,7 @@ class StatisticsDetailTest : BaseUiTest() {
         )
 
         // All records
-        checkAllRecords(3)
+        checkAllRecords(count = 3, viewCount = 3)
 
         // Tag split
         scrollStatDetailRecyclerToTag(StatisticsDetailBlock.DataDistributionMode)
@@ -942,7 +942,7 @@ class StatisticsDetailTest : BaseUiTest() {
         )
 
         // All records
-        checkAllRecords(3)
+        checkAllRecords(count = 3, viewCount = 3)
 
         // Next year
         clickOnCurrentDate(1)
@@ -1043,7 +1043,7 @@ class StatisticsDetailTest : BaseUiTest() {
         )
 
         // All records
-        checkAllRecords(4)
+        checkAllRecords(count = 4, viewCount = 5)
 
         // Tag split
         scrollStatDetailRecyclerToTag(StatisticsDetailBlock.DataDistributionMode)
@@ -1486,10 +1486,13 @@ class StatisticsDetailTest : BaseUiTest() {
         checkViewDoesNotExist(withText(R.string.statistics_detail_data_split_hint))
     }
 
-    private fun checkAllRecords(count: Int) {
+    private fun checkAllRecords(count: Int, viewCount: Int) {
         scrollStatDetailRecyclerToTag(StatisticsDetailBlock.Total)
         clickOnStatDetailRecycler(withPluralText(R.plurals.statistics_detail_times_tracked, count))
-        tryAction { onView(withId(recordsAllR.id.rvRecordsAllList)).check(recyclerItemCount(count)) }
+        tryAction {
+            onView(withId(recordsAllR.id.rvRecordsAllList))
+                .check(recyclerItemCount(viewCount))
+        }
         pressBack()
     }
 

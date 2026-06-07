@@ -9,7 +9,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withClassName
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.example.util.simpletimetracker.domain.extension.padDuration
 import com.example.util.simpletimetracker.feature_dialogs.dateTime.CustomDatePicker
 import com.example.util.simpletimetracker.utils.BaseUiTest
 import com.example.util.simpletimetracker.utils.NavUtils
@@ -107,7 +106,7 @@ class RecordsRangesTest : BaseUiTest() {
         checkViewIsDisplayed(
             allOf(
                 dateSelectorMatcher(-1),
-                hasDescendant(withText(calendarPrev.get(Calendar.DAY_OF_MONTH).toString().padDuration())),
+                hasDescendant(withText(calendarPrev.get(Calendar.DAY_OF_MONTH).toString())),
             ),
         )
 
@@ -126,7 +125,7 @@ class RecordsRangesTest : BaseUiTest() {
         checkViewIsDisplayed(
             allOf(
                 dateSelectorMatcher(1),
-                hasDescendant(withText(calendarNext.get(Calendar.DAY_OF_MONTH).toString().padDuration())),
+                hasDescendant(withText(calendarNext.get(Calendar.DAY_OF_MONTH).toString())),
             ),
         )
     }
