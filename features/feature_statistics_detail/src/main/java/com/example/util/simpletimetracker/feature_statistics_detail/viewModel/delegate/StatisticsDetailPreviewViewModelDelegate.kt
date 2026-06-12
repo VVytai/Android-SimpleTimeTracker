@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import com.example.util.simpletimetracker.core.base.ViewModelDelegate
 import com.example.util.simpletimetracker.core.extension.lazySuspend
 import com.example.util.simpletimetracker.core.extension.set
+import com.example.util.simpletimetracker.domain.record.model.RecordsFilter
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_statistics_detail.interactor.StatisticsDetailPreviewInteractor
 import com.example.util.simpletimetracker.feature_statistics_detail.interactor.StatisticsDetailTotalRecordsSelectedInteractor
@@ -49,19 +50,17 @@ class StatisticsDetailPreviewViewModelDelegate @Inject constructor(
     private suspend fun loadViewData(): StatisticsDetailPreviewCompositeViewData? {
         val parent = parent ?: return null
         val currentFilter = parent.filter
-        val dateFilter = parent.getDateFilter()
-        val total = totalRecordsSelectedInteractor.execute(currentFilter)
+        val filtersWithoutDate = currentFilter.filter { it !is RecordsFilter.Date }
+        val total = totalRecordsSelectedInteractor.execute(filtersWithoutDate)
 
         val data = previewInteractor.getPreviewData(
-            filterParams = currentFilter.takeIf { it.isNotEmpty() }
-                ?.plus(dateFilter).orEmpty(),
+            filterParams = currentFilter,
             total = total,
             isExpanded = previewsExpanded,
             isForComparison = false,
         )
         val comparisonData = previewInteractor.getPreviewData(
-            filterParams = parent.comparisonFilter.takeIf { it.isNotEmpty() }
-                ?.plus(dateFilter).orEmpty(),
+            filterParams = parent.comparisonFilter,
             total = false,
             isExpanded = previewsComparisonExpanded,
             isForComparison = true,

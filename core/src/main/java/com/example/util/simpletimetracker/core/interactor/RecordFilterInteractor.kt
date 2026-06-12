@@ -41,7 +41,6 @@ import com.example.util.simpletimetracker.domain.record.interactor.GetUntrackedR
 import com.example.util.simpletimetracker.domain.record.interactor.RecordInteractor.GetParam
 import com.example.util.simpletimetracker.domain.record.model.MultitaskRecord
 import com.example.util.simpletimetracker.domain.record.model.Range
-import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
 import com.example.util.simpletimetracker.domain.record.model.Record
 import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.domain.record.model.RecordsFilter
@@ -65,13 +64,6 @@ class RecordFilterInteractor @Inject constructor(
     private val rangeMapper: RangeMapper,
     private val prefsInteractor: PrefsInteractor,
 ) {
-
-    fun mapDateFilter(
-        rangeLength: RangeLength,
-        rangePosition: Int,
-    ): RecordsFilter {
-        return RecordsFilter.Date(rangeLength, rangePosition)
-    }
 
     // RangeLength.All return empty range, need to check separately.
     suspend fun getRange(

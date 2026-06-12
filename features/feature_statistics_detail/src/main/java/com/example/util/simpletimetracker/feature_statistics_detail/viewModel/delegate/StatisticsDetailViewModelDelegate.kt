@@ -20,9 +20,9 @@ interface StatisticsDetailViewModelDelegate {
         val rangePosition: Int
 
         fun updateContent()
-        suspend fun onRangeChanged()
+        suspend fun onRangeChangedFromSelection(newRange: RangeLength)
+        fun onPositionChangedFromSelection(newPosition: Int)
         fun updateViewData()
-        fun getDateFilter(): List<RecordsFilter>
         suspend fun onFiltersChanged()
         fun onStatisticsHidden(id: Long, mode: DataDistributionMode)
         fun onStatisticsOtherHidden(id: Long, mode: DataDistributionMode)

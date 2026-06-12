@@ -67,9 +67,12 @@ class RecordsFilterExcludeInteractorImpl @Inject constructor(
     override suspend fun excludeOther(
         id: Long,
         type: ExcludeType,
+        currentFilters: List<RecordsFilter>,
     ): List<RecordsFilter> {
+        val date = currentFilters.filterIsInstance<RecordsFilter.Date>().firstOrNull()
+
         // Shouldn't be possible
-        if (id == UNTRACKED_ITEM_ID) return listOf(RecordsFilter.Untracked)
+        if (id == UNTRACKED_ITEM_ID) return listOfNotNull(RecordsFilter.Untracked, date)
 
         return when (type) {
             is ExcludeType.Activity -> {
@@ -91,6 +94,6 @@ class RecordsFilterExcludeInteractorImpl @Inject constructor(
                 }
                 RecordsFilter.Tags(selected = listOf(item), filtered = emptyList())
             }
-        }.let(::listOf)
+        }.let(::listOf) + listOfNotNull(date)
     }
 }

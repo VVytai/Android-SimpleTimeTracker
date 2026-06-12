@@ -6,9 +6,11 @@ import com.example.util.simpletimetracker.core.extension.toModel
 import com.example.util.simpletimetracker.core.extension.toParams
 import com.example.util.simpletimetracker.core.interactor.RecordFilterInteractor
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
+import com.example.util.simpletimetracker.domain.extension.removeIf
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.domain.record.model.RecordsFilter
+import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
 import com.example.util.simpletimetracker.feature_records_filter.api.RecordsFilterExcludeInteractor
 import com.example.util.simpletimetracker.feature_statistics_detail.R
 import com.example.util.simpletimetracker.feature_statistics_detail.model.DataDistributionMode
@@ -63,6 +65,7 @@ class StatisticsDetailFilterViewModelDelegate @Inject constructor(
             tag = FILTER_TAG,
             title = resourceRepo.getString(R.string.chart_filter_hint),
             filters = provideFilter(),
+            dateSelectionAvailable = true,
         )
     }
 
@@ -71,17 +74,28 @@ class StatisticsDetailFilterViewModelDelegate @Inject constructor(
             tag = COMPARE_TAG,
             title = resourceRepo.getString(R.string.types_compare_hint),
             filters = provideComparisonFilter(),
+            dateSelectionAvailable = false,
         )
     }
 
     fun onTypesFilterSelected(result: RecordsFilterResultParams) {
-        // Remove date filter, because it is applied separately.
-        val finalFilters = result.filters.filter { it !is RecordsFilter.Date }
+        val finalFilters = result.filters
 
         when (result.tag) {
-            FILTER_TAG -> filter = finalFilters
-            COMPARE_TAG -> comparisonFilter = finalFilters
+            // Reapply default date if date filter was removed.
+            FILTER_TAG -> {
+                filter = if (finalFilters.none { it is RecordsFilter.Date }) {
+                    finalFilters + getDefaultDateFilter()
+                } else {
+                    finalFilters
+                }
+            }
+            // Remove date filter, because it is taken from main filters.
+            COMPARE_TAG -> {
+                comparisonFilter = finalFilters.filter { it !is RecordsFilter.Date }
+            }
         }
+        if (result.tag == FILTER_TAG) updateSelectedRange()
 
         // Update is on dismiss.
     }
@@ -104,6 +118,7 @@ class StatisticsDetailFilterViewModelDelegate @Inject constructor(
         filter = recordsFilterExcludeInteractor.excludeOther(
             id = id,
             type = mapExcludeType(mode),
+            currentFilters = filter,
         )
         onFiltersChanged()
     }
@@ -133,6 +148,10 @@ class StatisticsDetailFilterViewModelDelegate @Inject constructor(
             val newFilter = recordsFilterExcludeInteractor.excludeOther(
                 id = item.id,
                 type = mapPreviewDataTypeToExcludeType(item.dataType) ?: return@launch,
+                currentFilters = when (item.type) {
+                    StatisticsDetailPreviewViewData.Type.FILTER -> filter
+                    StatisticsDetailPreviewViewData.Type.COMPARISON -> comparisonFilter
+                },
             )
             when (item.type) {
                 StatisticsDetailPreviewViewData.Type.FILTER -> filter = newFilter
@@ -140,6 +159,26 @@ class StatisticsDetailFilterViewModelDelegate @Inject constructor(
             }
             onFiltersChanged()
         }
+    }
+
+    fun onRangeChangedFromSelection(newRange: RangeLength) {
+        val newDate = RecordsFilter.Date(
+            range = newRange,
+            position = getCurrentDateFilter().position,
+        )
+        filter = filter.removeIf { it is RecordsFilter.Date } + newDate
+        // Do not reload cache on date change.
+        onFiltersChanged(reloadCache = false)
+    }
+
+    fun onPositionChangedFromSelection(newPosition: Int) {
+        val newDate = RecordsFilter.Date(
+            range = getCurrentDateFilter().range,
+            position = newPosition,
+        )
+        filter = filter.removeIf { it is RecordsFilter.Date } + newDate
+        // Do not reload cache on date change.
+        onFiltersChanged(reloadCache = false)
     }
 
     fun provideRecords(): List<RecordBase> {
@@ -151,17 +190,34 @@ class StatisticsDetailFilterViewModelDelegate @Inject constructor(
     }
 
     fun provideFilter(): List<RecordsFilter> {
-        return filter.filter { it !is RecordsFilter.Date }
+        return filter
     }
 
     fun provideComparisonFilter(): List<RecordsFilter> {
-        return comparisonFilter.filter { it !is RecordsFilter.Date }
+        return comparisonFilter
+            .takeIf { it.isNotEmpty() }
+            ?.plus(getCurrentDateFilter()).orEmpty()
     }
 
-    private fun onFiltersChanged() {
+    private fun updateSelectedRange() {
+        delegateScope.launch {
+            prefsInteractor.setStatisticsDetailRange(getCurrentDateFilter().range)
+        }
+    }
+
+    private fun getCurrentDateFilter(): RecordsFilter.Date {
+        return filter.filterIsInstance<RecordsFilter.Date>().firstOrNull()
+            ?: getDefaultDateFilter()
+    }
+
+    private fun getDefaultDateFilter(): RecordsFilter.Date {
+        return RecordsFilter.Date(RangeLength.All, 0)
+    }
+
+    private fun onFiltersChanged(reloadCache: Boolean = true) {
         loadJob?.cancel()
         loadJob = delegateScope.launch {
-            loadRecordsCache()
+            if (reloadCache) loadRecordsCache()
             parent?.onFiltersChanged()
         }
     }
@@ -170,15 +226,14 @@ class StatisticsDetailFilterViewModelDelegate @Inject constructor(
         tag: String,
         title: String,
         filters: List<RecordsFilter>,
+        dateSelectionAvailable: Boolean,
     ) {
-        val parent = parent ?: return
-
         router.navigate(
             RecordsFilterParams(
                 tag = tag,
                 title = title,
                 flags = RecordsFilterParams.Flags(
-                    dateSelectionAvailable = false,
+                    dateSelectionAvailable = dateSelectionAvailable,
                     untrackedSelectionAvailable = true,
                     multitaskSelectionAvailable = true,
                     duplicationsSelectionAvailable = false,
@@ -186,7 +241,6 @@ class StatisticsDetailFilterViewModelDelegate @Inject constructor(
                     addRunningRecords = true,
                 ),
                 filters = filters
-                    .plus(parent.getDateFilter())
                     .map(RecordsFilter::toParams).toList(),
                 defaultLastDaysNumber = prefsInteractor
                     .getStatisticsDetailLastDays(),
@@ -230,12 +284,21 @@ class StatisticsDetailFilterViewModelDelegate @Inject constructor(
 
     private suspend fun loadRecordsCache() {
         // Load all records without date filter for faster date selection.
-        records = recordFilterInteractor.getByFilter(filter)
-        compareRecords = recordFilterInteractor.getByFilter(comparisonFilter)
+        val filtersWithoutDate = filter
+            .filter { it !is RecordsFilter.Date }
+            .ifEmpty { listOf(getDefaultDateFilter()) }
+        val comparisonFiltersWithoutDate = comparisonFilter
+            .filter { it !is RecordsFilter.Date }
+        records = recordFilterInteractor.getByFilter(filtersWithoutDate)
+        compareRecords = recordFilterInteractor.getByFilter(comparisonFiltersWithoutDate)
     }
 
     private fun loadFilter(extra: StatisticsDetailParams): List<RecordsFilter> {
-        return extra.filter.map(RecordsFilterParam::toModel)
+        val date = RecordsFilter.Date(
+            range = extra.range.toModel(),
+            position = extra.shift,
+        )
+        return extra.filter.map(RecordsFilterParam::toModel) + date
     }
 
     companion object {

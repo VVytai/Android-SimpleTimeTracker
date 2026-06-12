@@ -115,7 +115,6 @@ class StatisticsDetailViewModel @Inject constructor(
     fun initialize(extra: StatisticsDetailParams) {
         if (this::extra.isInitialized) return
         this.extra = extra
-        rangeDelegate.initialize(extra)
         filterDelegate.initialize(extra)
         viewModelScope.launch {
             dateSelectorViewModelDelegate.initialize(rangeDelegate.provideRangePosition())
@@ -305,7 +304,6 @@ class StatisticsDetailViewModel @Inject constructor(
 
     private fun onRecordsClick() {
         val finalFilters = filterDelegate.provideFilter()
-            .plus(rangeDelegate.getDateFilter())
             .map(RecordsFilter::toParams).toList()
 
         router.navigate(RecordsAllParams(finalFilters))
@@ -325,9 +323,11 @@ class StatisticsDetailViewModel @Inject constructor(
         previewDelegate.updateViewData()
         statsDelegate.updateViewData()
         streaksDelegate.updateStreaksViewData()
+        streaksDelegate.updateStreaksGoalViewData()
         chartDelegate.updateViewData()
         dailyCalendarDelegate.updateViewData()
         splitChartDelegate.updateSplitChartViewData()
+        splitChartDelegate.updateSplitChartGroupingViewData()
         durationSplitDelegate.updateViewData()
         nextActivitiesDelegate.updateViewData()
         goalsDelegate.updateViewData()
@@ -385,26 +385,22 @@ class StatisticsDetailViewModel @Inject constructor(
                 this@StatisticsDetailViewModel.updateContent()
             }
 
-            override suspend fun onRangeChanged() {
-                dateSelectorViewModelDelegate.setup()
-                splitChartDelegate.updateSplitChartGroupingViewData()
-                streaksDelegate.updateStreaksGoalViewData()
-                dailyCalendarDelegate.updateViewData()
+            override suspend fun onRangeChangedFromSelection(newRange: RangeLength) {
+                filterDelegate.onRangeChangedFromSelection(newRange)
+            }
+
+            override fun onPositionChangedFromSelection(newPosition: Int) {
+                filterDelegate.onPositionChangedFromSelection(newPosition)
             }
 
             override fun updateViewData() {
                 this@StatisticsDetailViewModel.updateViewData()
             }
 
-            override fun getDateFilter(): List<RecordsFilter> {
-                return rangeDelegate.getDateFilter()
-            }
-
             override suspend fun onFiltersChanged() {
+                dateSelectorViewModelDelegate.setup()
                 streaksDelegate.onTypesFilterDismissed()
-                previewDelegate.updateViewData()
-                streaksDelegate.updateStreaksGoalViewData()
-                updateViewData()
+                this@StatisticsDetailViewModel.updateViewData()
             }
 
             override fun onStatisticsHidden(id: Long, mode: DataDistributionMode) {

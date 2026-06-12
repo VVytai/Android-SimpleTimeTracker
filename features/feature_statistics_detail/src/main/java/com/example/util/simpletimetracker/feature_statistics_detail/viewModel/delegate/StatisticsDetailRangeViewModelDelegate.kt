@@ -3,11 +3,11 @@ package com.example.util.simpletimetracker.feature_statistics_detail.viewModel.d
 import com.example.util.simpletimetracker.core.base.ViewModelDelegate
 import com.example.util.simpletimetracker.core.extension.shiftTimeStamp
 import com.example.util.simpletimetracker.core.extension.toModel
-import com.example.util.simpletimetracker.core.interactor.RecordFilterInteractor
 import com.example.util.simpletimetracker.core.mapper.RangeViewDataMapper
 import com.example.util.simpletimetracker.core.mapper.TimeMapper
 import com.example.util.simpletimetracker.core.viewData.RangeSelectionOptionsListItem
 import com.example.util.simpletimetracker.domain.daysOfWeek.interactor.GetProcessedLastDaysCountInteractor
+import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.record.model.Range
 import com.example.util.simpletimetracker.domain.record.model.RecordsFilter
@@ -17,7 +17,6 @@ import com.example.util.simpletimetracker.navigation.params.screen.CustomRangeSe
 import com.example.util.simpletimetracker.navigation.params.screen.DateTimeDialogParams
 import com.example.util.simpletimetracker.navigation.params.screen.DateTimeDialogType
 import com.example.util.simpletimetracker.navigation.params.screen.DurationDialogParams
-import com.example.util.simpletimetracker.navigation.params.screen.StatisticsDetailParams
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -26,21 +25,16 @@ class StatisticsDetailRangeViewModelDelegate @Inject constructor(
     private val rangeViewDataMapper: RangeViewDataMapper,
     private val prefsInteractor: PrefsInteractor,
     private val timeMapper: TimeMapper,
-    private val recordFilterInteractor: RecordFilterInteractor,
     private val getProcessedLastDaysCountInteractor: GetProcessedLastDaysCountInteractor,
 ) : StatisticsDetailViewModelDelegate, ViewModelDelegate() {
 
     private var parent: StatisticsDetailViewModelDelegate.Parent? = null
-    private var rangeLength: RangeLength = RangeLength.All
-    private var rangePosition: Int = 0
+    private val dateFilter get() = parent?.filter?.filterIsInstance<RecordsFilter.Date>()?.firstOrNull()
+    private val rangeLength: RangeLength get() = dateFilter?.range ?: RangeLength.All
+    private val rangePosition: Int get() = dateFilter?.position.orZero()
 
     override fun attach(parent: StatisticsDetailViewModelDelegate.Parent) {
         this.parent = parent
-    }
-
-    fun initialize(extra: StatisticsDetailParams) {
-        rangeLength = extra.range.toModel()
-        rangePosition = extra.shift
     }
 
     fun onBackToTodayClick() {
@@ -109,13 +103,6 @@ class StatisticsDetailRangeViewModelDelegate @Inject constructor(
         )
     }
 
-    fun getDateFilter(): List<RecordsFilter> {
-        return recordFilterInteractor.mapDateFilter(
-            rangeLength = rangeLength,
-            rangePosition = rangePosition,
-        ).let(::listOf)
-    }
-
     fun provideRangeLength(): RangeLength {
         return rangeLength
     }
@@ -165,15 +152,13 @@ class StatisticsDetailRangeViewModelDelegate @Inject constructor(
         prefsInteractor.setStatisticsDetailRange(newRange)
 
         if (newRange != rangeLength) {
-            rangeLength = newRange
-            parent?.onRangeChanged()
+            parent?.onRangeChangedFromSelection(newRange)
             updatePosition(0)
         }
     }
 
     fun updatePosition(newPosition: Int) {
-        rangePosition = newPosition
-        parent?.updateViewData()
+        parent?.onPositionChangedFromSelection(newPosition)
     }
 
     companion object {
