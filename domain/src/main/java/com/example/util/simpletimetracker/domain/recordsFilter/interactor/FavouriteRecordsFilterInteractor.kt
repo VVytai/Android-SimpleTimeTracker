@@ -1,6 +1,7 @@
 package com.example.util.simpletimetracker.domain.recordsFilter.interactor
 
 import com.example.util.simpletimetracker.domain.record.model.FavouriteRecordsFilter
+import com.example.util.simpletimetracker.domain.record.model.RecordsFilter
 import com.example.util.simpletimetracker.domain.recordsFilter.repo.FavouriteRecordsFilterRepo
 import javax.inject.Inject
 
@@ -17,7 +18,12 @@ class FavouriteRecordsFilterInteractor @Inject constructor(
     }
 
     suspend fun add(data: FavouriteRecordsFilter) {
-        repo.add(data)
+        val normalizedData = data.copy(
+            filter = data.filter.map {
+                if (it is RecordsFilter.Date) it.copy(position = 0) else it
+            },
+        )
+        repo.add(normalizedData)
     }
 
     suspend fun remove(id: Long) {
