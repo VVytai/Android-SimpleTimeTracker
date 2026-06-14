@@ -410,8 +410,11 @@ class RecordsFilterViewModel @Inject constructor(
                 ?: return@launch
 
             val dateFilter = filters.getDate()
-            filters = if (!extra.flags.dateSelectionAvailable && dateFilter != null) {
-                // Restore date for statistics detail.
+            filters = if (
+                (newFilter.getDate() == null || !extra.flags.dateSelectionAvailable) &&
+                dateFilter != null
+            ) {
+                // Keep the current date unless the favourite provides its own.
                 newFilter.plus(dateFilter)
             } else {
                 newFilter
