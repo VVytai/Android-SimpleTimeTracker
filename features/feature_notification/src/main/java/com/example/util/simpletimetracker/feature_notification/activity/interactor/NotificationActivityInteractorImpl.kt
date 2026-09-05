@@ -131,8 +131,12 @@ class NotificationActivityInteractorImpl @Inject constructor(
         }
     }
 
-    // Lifecycle recovery must not replay one-shot reminders. Any existing alarm is left alone
-    // on app start and naturally absent after reboot, restore, or package replacement.
+    // Lifecycle recovery must not replay one-shot reminders in order to not lose current
+    // timer. Any existing alarm is left alone on app start and naturally absent after
+    // reboot, restore, or package replacement. Recurrent needs to be rescheduled, otherwise
+    // they will stop firing altogether because they are scheduled only on timer start or
+    // setting change.
+    // TODO reschedule both recurrent and one-time? Will need recalculate from record time start.
     override suspend fun rescheduleRecurrent() = reminderMutex.withLock {
         scheduler.cancelLegacyAlarm()
 

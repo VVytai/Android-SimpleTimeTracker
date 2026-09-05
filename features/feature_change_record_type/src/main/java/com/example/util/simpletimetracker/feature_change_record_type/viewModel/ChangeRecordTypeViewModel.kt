@@ -278,9 +278,19 @@ class ChangeRecordTypeViewModel @Inject constructor(
         saveButtonEnabled.set(false)
         viewModelScope.launch {
             val addedId = saveRecordType()
-            saveCategories(addedId)
+            val addedCategories = newCategories - initialCategories
+            val removedCategories = initialCategories.toList() - newCategories.toSet()
+            saveCategories(
+                typeId = addedId,
+                addedCategories = addedCategories,
+                removedCategories = removedCategories,
+            )
             goalsViewModelDelegate.saveGoals(RecordTypeGoal.IdData.Type(addedId))
-            externalViewsInteractor.onTypeAddOrChange(addedId)
+            externalViewsInteractor.onTypeAddOrChange(
+                typeId = addedId,
+                initialCategories = initialCategories,
+                removedCategories = removedCategories.toSet(),
+            )
             keyboardVisibility.set(false)
             router.back()
         }
@@ -381,10 +391,11 @@ class ChangeRecordTypeViewModel @Inject constructor(
         return recordTypeInteractor.add(recordType)
     }
 
-    private suspend fun saveCategories(typeId: Long) {
-        val addedCategories = newCategories.filterNot { it in initialCategories }
-        val removedCategories = initialCategories.filterNot { it in newCategories }
-
+    private suspend fun saveCategories(
+        typeId: Long,
+        addedCategories: List<Long>,
+        removedCategories: List<Long>,
+    ) {
         recordTypeCategoryInteractor.addCategories(typeId, addedCategories)
         recordTypeCategoryInteractor.removeCategories(typeId, removedCategories)
     }
