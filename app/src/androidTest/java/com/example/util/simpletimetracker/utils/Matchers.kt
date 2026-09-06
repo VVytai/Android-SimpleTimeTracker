@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat
 import androidx.test.espresso.Root
 import androidx.test.espresso.matcher.BoundedMatcher
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withTagValue
 import com.example.util.simpletimetracker.R
@@ -145,4 +146,8 @@ fun selectedDateMatcher(): Matcher<View> {
         isCompletelyDisplayed(),
         withId(R.id.viewDateSelectorBackgroundSelected),
     )
+}
+
+fun inRecycler(id: Int): Matcher<View> {
+    return isDescendantOfA(withId(id))
 }

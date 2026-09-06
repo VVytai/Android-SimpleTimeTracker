@@ -4,6 +4,8 @@ import com.example.util.simpletimetracker.core.mapper.ColorMapper
 import com.example.util.simpletimetracker.core.mapper.IconImageMapper
 import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.domain.activityFilter.interactor.ActivityFilterInteractor
+import com.example.util.simpletimetracker.domain.activityReminder.interactor.ActivityReminderOverrideInteractor
+import com.example.util.simpletimetracker.domain.activityReminder.model.ActivityReminderOverride
 import com.example.util.simpletimetracker.domain.category.interactor.CategoryInteractor
 import com.example.util.simpletimetracker.domain.backup.interactor.ClearDataInteractor
 import com.example.util.simpletimetracker.domain.complexRule.interactor.ComplexRuleInteractor
@@ -55,6 +57,7 @@ class TestUtils @Inject constructor(
     private val recordTypeToTagInteractor: RecordTypeToTagInteractor,
     private val recordTypeToDefaultTagInteractor: RecordTypeToDefaultTagInteractor,
     private val activityFilterInteractor: ActivityFilterInteractor,
+    val activityReminderOverrideInteractor: ActivityReminderOverrideInteractor,
     private val recordTypeGoalInteractor: RecordTypeGoalInteractor,
     private val favouriteCommentInteractor: FavouriteCommentInteractor,
     private val favouriteIconInteractor: FavouriteIconInteractor,
@@ -413,6 +416,10 @@ class TestUtils @Inject constructor(
 
     fun addScheduledReminder(reminder: ScheduledReminder): Long = runBlocking {
         scheduledReminderInteractor.save(reminder)
+    }
+
+    fun addActivityReminderOverride(reminder: ActivityReminderOverride) = runBlocking {
+        activityReminderOverrideInteractor.save(reminder)
     }
 
     fun getScheduledReminder(id: Long): ScheduledReminder? = runBlocking {

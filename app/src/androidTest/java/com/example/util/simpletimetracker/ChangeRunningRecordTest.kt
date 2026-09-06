@@ -27,6 +27,7 @@ import com.example.util.simpletimetracker.utils.clickOnRecyclerItem
 import com.example.util.simpletimetracker.utils.clickOnView
 import com.example.util.simpletimetracker.utils.clickOnViewWithId
 import com.example.util.simpletimetracker.utils.clickOnViewWithText
+import com.example.util.simpletimetracker.utils.inRecycler
 import com.example.util.simpletimetracker.utils.longClickOnView
 import com.example.util.simpletimetracker.utils.tryAction
 import com.example.util.simpletimetracker.utils.typeTextIntoView
@@ -448,9 +449,9 @@ class ChangeRunningRecordTest : BaseUiTest() {
         clickOnViewWithText(coreR.string.change_record_comment_field)
         closeSoftKeyboard()
         checkViewIsDisplayed(withText(coreR.string.change_record_last_comments_hint))
-        checkViewDoesNotExist(withText(comment1))
-        checkViewIsDisplayed(withText(comment2))
-        checkViewIsDisplayed(withText(comment3))
+        checkViewDoesNotExist(allOf(inRecycler(changeRecordR.id.rvChangeRecordComments), withText(comment1)))
+        checkViewIsDisplayed(allOf(inRecycler(changeRecordR.id.rvChangeRecordComments), withText(comment2)))
+        checkViewIsDisplayed(allOf(inRecycler(changeRecordR.id.rvChangeRecordComments), withText(comment3)))
 
         // Select last comment
         clickOnViewWithText(comment2)
@@ -468,9 +469,9 @@ class ChangeRunningRecordTest : BaseUiTest() {
         clickOnViewWithText(coreR.string.change_record_comment_field)
         closeSoftKeyboard()
         checkViewDoesNotExist(withText(coreR.string.change_record_last_comments_hint))
-        checkViewDoesNotExist(withText(comment1))
-        checkViewDoesNotExist(withText(comment2))
-        checkViewDoesNotExist(withText(comment3))
+        checkViewDoesNotExist(allOf(inRecycler(changeRecordR.id.rvChangeRecordComments), withText(comment1)))
+        checkViewDoesNotExist(allOf(inRecycler(changeRecordR.id.rvChangeRecordComments), withText(comment2)))
+        checkViewDoesNotExist(allOf(inRecycler(changeRecordR.id.rvChangeRecordComments), withText(comment3)))
         clickOnViewWithText(coreR.string.change_record_comment_field)
     }
 

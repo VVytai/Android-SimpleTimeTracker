@@ -159,6 +159,7 @@ class RecordsRangesTest : BaseUiTest() {
 
         checkViewIsDisplayed(
             allOf(
+                isCompletelyDisplayed(),
                 withId(R.id.containerDateSelectorDay),
                 hasDescendant(withText(calendarPrev.get(Calendar.DAY_OF_MONTH).toString())),
             ),
@@ -180,6 +181,7 @@ class RecordsRangesTest : BaseUiTest() {
 
         checkViewIsDisplayed(
             allOf(
+                isCompletelyDisplayed(),
                 withId(R.id.containerDateSelectorDay),
                 hasDescendant(withText(calendarNext.get(Calendar.DAY_OF_MONTH).toString())),
             ),

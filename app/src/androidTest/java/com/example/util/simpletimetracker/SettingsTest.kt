@@ -109,6 +109,7 @@ class SettingsTest : BaseUiTest() {
         checkCheckboxIsNotChecked(settingsCheckboxBesideText(coreR.string.settings_show_untracked_time))
 
         // Untracked is not shown
+        pressBack()
         NavUtils.openRecordsScreen()
         checkViewDoesNotExist(
             allOf(withText(coreR.string.untracked_time_name), isCompletelyDisplayed()),
@@ -123,6 +124,7 @@ class SettingsTest : BaseUiTest() {
         checkCheckboxIsChecked(settingsCheckboxBesideText(coreR.string.settings_show_untracked_time))
 
         // Untracked is shown
+        pressBack()
         NavUtils.openRecordsScreen()
         checkViewIsDisplayed(allOf(withText(coreR.string.untracked_time_name), isCompletelyDisplayed()))
     }
@@ -152,6 +154,7 @@ class SettingsTest : BaseUiTest() {
         checkCheckboxIsNotChecked(settingsCheckboxBesideText(coreR.string.settings_show_untracked_time_statistics))
 
         // Untracked is not shown
+        pressBack()
         NavUtils.openStatisticsScreen()
         checkViewDoesNotExist(allOf(withText(coreR.string.untracked_time_name), isCompletelyDisplayed()))
 
@@ -171,6 +174,7 @@ class SettingsTest : BaseUiTest() {
         checkCheckboxIsChecked(settingsCheckboxBesideText(coreR.string.settings_show_untracked_time_statistics))
 
         // Untracked is shown
+        pressBack()
         NavUtils.openStatisticsScreen()
         checkViewIsDisplayed(allOf(withText(coreR.string.untracked_time_name), isCompletelyDisplayed()))
         checkViewIsDisplayed(allOf(withText(name), isCompletelyDisplayed()))
@@ -253,6 +257,7 @@ class SettingsTest : BaseUiTest() {
             ),
         )
 
+        pressBack()
         NavUtils.openRecordsScreen()
         clickOnPrevDate()
         checkItemCount(9)
@@ -272,6 +277,7 @@ class SettingsTest : BaseUiTest() {
         clickOnViewWithId(dialogsR.id.tvNumberKeyboard1)
         clickOnViewWithText(coreR.string.duration_dialog_save)
 
+        pressBack()
         NavUtils.openRecordsScreen()
         checkItemCount(6)
         checkRecordDuration(TimeUnit.HOURS.toMillis(20), displayed = true)
@@ -290,6 +296,7 @@ class SettingsTest : BaseUiTest() {
         clickOnViewWithId(dialogsR.id.tvNumberKeyboard1)
         clickOnViewWithText(coreR.string.duration_dialog_save)
 
+        pressBack()
         NavUtils.openRecordsScreen()
         checkItemCount(7)
         checkRecordDuration(TimeUnit.HOURS.toMillis(20), displayed = true)
@@ -354,6 +361,7 @@ class SettingsTest : BaseUiTest() {
             ),
         )
 
+        pressBack()
         NavUtils.openRecordsScreen()
         checkRecord(
             nameResId = coreR.string.untracked_time_name,
@@ -386,6 +394,7 @@ class SettingsTest : BaseUiTest() {
             ),
         )
 
+        pressBack()
         NavUtils.openRecordsScreen()
         checkRecord(
             nameResId = coreR.string.untracked_time_name,
