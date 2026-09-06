@@ -50,6 +50,7 @@ class RemindersViewDataInteractor @Inject constructor(
         result += HeaderViewData(
             section = RemindersHeader.Activity,
             text = resourceRepo.getString(R.string.notification_activity_title),
+            hint = resourceRepo.getString(R.string.activity_reminders_hint),
         )
         result += activityList.mapNotNull { activity ->
             val override = activityReminderOverrides[activity.id] ?: return@mapNotNull null

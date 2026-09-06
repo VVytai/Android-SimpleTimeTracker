@@ -140,6 +140,12 @@ class RemindersTest : BaseUiTest() {
         )
         checkViewIsDisplayed(
             allOf(
+                withId(baseAdapterR.id.tvHeaderItemHint),
+                withText(R.string.activity_reminders_hint),
+            ),
+        )
+        checkViewIsDisplayed(
+            allOf(
                 withId(baseAdapterR.id.tvHeaderItem),
                 withText(R.string.settings_reminders_title),
             ),
