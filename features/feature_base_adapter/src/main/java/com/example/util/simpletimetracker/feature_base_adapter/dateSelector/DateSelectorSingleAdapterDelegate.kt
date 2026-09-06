@@ -17,6 +17,11 @@ fun createDateSelectorSingleAdapterDelegate(
 
     with(binding) {
         item as ViewData
+        val animationState = tvDateSelectorAdditionalHint.getDateSelectorAnimationState()
+        val animateSelection = animationState.shouldAnimateSelection(
+            position = item.position,
+            isSelected = item.cardData.isSelected,
+        )
 
         root.updateLayoutParams {
             width = ViewGroup.LayoutParams.MATCH_PARENT
@@ -25,12 +30,17 @@ fun createDateSelectorSingleAdapterDelegate(
         setAdditionalHint(
             dayMonth = item.dayMonth,
             additionalText = tvDateSelectorAdditionalHint,
+            animateSelection = animateSelection,
+            animator = animationState::additionalHintAnimator,
         )
         setDayMoth(
             dayMonth = item.dayMonth,
             topText = tvDateSelectorTopText,
             bottomText = tvDateSelectorBottomText,
             increasedTextSize = item.cardData.increasedTextSize,
+            animateSelection = animateSelection,
+            topTextAnimator = animationState::topTextAnimator,
+            bottomTextAnimator = animationState::bottomTextAnimator,
         )
         root.setCardData(
             cardData = item.cardData,
@@ -44,6 +54,11 @@ fun createDateSelectorSingleAdapterDelegate(
         )
 
         root.setOnClickWith(item, onItemClick)
+
+        animationState.onBound(
+            position = item.position,
+            isSelected = item.cardData.isSelected,
+        )
     }
 }
 

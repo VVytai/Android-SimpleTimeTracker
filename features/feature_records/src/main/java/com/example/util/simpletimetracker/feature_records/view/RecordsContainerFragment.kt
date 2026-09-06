@@ -97,6 +97,11 @@ class RecordsContainerFragment :
         viewModel.initialize()
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.onVisible()
+    }
+
     override fun onDateTimeSet(timestamp: Long, tag: String?) {
         viewModel.onDateTimeSet(timestamp, tag)
     }

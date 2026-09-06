@@ -14,6 +14,7 @@ import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteracto
 import com.example.util.simpletimetracker.domain.recordType.extension.toRangeLength
 import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTypeGoalInteractor
 import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
+import com.example.util.simpletimetracker.feature_base_adapter.InfiniteRecyclerAdapter
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.loader.LoaderViewData
 import com.example.util.simpletimetracker.feature_base_adapter.statisticsGoal.StatisticsGoalViewData
@@ -58,19 +59,30 @@ class GoalsViewModel @Inject constructor(
 
     private var isVisible: Boolean = false
     private var timerJob: Job? = null
+    private var lastRenderedDateItem: InfiniteRecyclerAdapter.Data? = null
 
     fun initialize() {
         viewModelScope.launch {
             dateSelectorViewModelDelegate.initialize(currentShift)
+            lastRenderedDateItem = dateSelectorViewModelDelegate.dataProvider.getItem(currentShift)
         }
     }
 
     fun onVisible() {
         isVisible = true
         startUpdate()
+        val dataProvider = dateSelectorViewModelDelegate.dataProvider
+        if (!dataProvider.isInitialized()) return
+
+        // System date-change events refresh it at midnight, but a custom
+        // logical boundary such as 04:00 produces no system event.
+        // This will update date selector on date change.
         viewModelScope.launch {
             dateSelectorViewModelDelegate.setup()
-            dateSelectorViewModelDelegate.updatePosition(currentShift)
+            val currentItem = dataProvider.getItem(currentShift)
+            if (lastRenderedDateItem != currentItem) {
+                updateDateSelectorPosition(currentShift)
+            }
         }
     }
 
@@ -177,8 +189,13 @@ class GoalsViewModel @Inject constructor(
 
     private fun updatePosition(newPosition: Int) {
         currentShift = newPosition
-        dateSelectorViewModelDelegate.updatePosition(newPosition)
+        updateDateSelectorPosition(newPosition)
         updateStatistics()
+    }
+
+    private fun updateDateSelectorPosition(newPosition: Int) {
+        dateSelectorViewModelDelegate.updatePosition(newPosition)
+        lastRenderedDateItem = dateSelectorViewModelDelegate.dataProvider.getItem(newPosition)
     }
 
     private fun getDateSelectorDelegateParent(): DateSelectorViewModelDelegate.Parent {

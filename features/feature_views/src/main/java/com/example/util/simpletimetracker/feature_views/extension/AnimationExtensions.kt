@@ -1,13 +1,16 @@
 package com.example.util.simpletimetracker.feature_views.extension
 
 import android.animation.ArgbEvaluator
+import android.animation.Animator
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
+import android.util.TypedValue
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.Animation
 import android.view.animation.LinearInterpolator
 import android.view.animation.ScaleAnimation
+import android.widget.TextView
 import androidx.annotation.ColorInt
 
 fun View.rotate(from: Float, to: Float, duration: Long = 300) {
@@ -27,6 +30,33 @@ fun View.animateAlpha(isVisible: Boolean, duration: Long = 300) {
         this.duration = duration
         repeatCount = 0
         interpolator = LinearInterpolator()
+        start()
+    }
+}
+
+fun View.animateAlphaWithAnimator(isVisible: Boolean, duration: Long = 300): Animator {
+    val from = alpha
+    val to = if (isVisible) 1f else 0f
+
+    return ValueAnimator.ofFloat(from, to).apply {
+        this.duration = duration
+        addUpdateListener {
+            val value = it.animatedValue as? Float ?: return@addUpdateListener
+            alpha = value
+        }
+        start()
+    }
+}
+
+fun TextView.animateTextSize(to: Float, duration: Long = 300): Animator {
+    val from = textSize.pxToSp()
+
+    return ValueAnimator.ofFloat(from, to).apply {
+        this.duration = duration
+        addUpdateListener {
+            val value = it.animatedValue as? Float ?: return@addUpdateListener
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, value)
+        }
         start()
     }
 }

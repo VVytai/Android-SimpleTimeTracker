@@ -16,6 +16,7 @@ import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteracto
 import com.example.util.simpletimetracker.domain.record.interactor.StatisticsUpdateInteractor
 import com.example.util.simpletimetracker.domain.record.model.Range
 import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
+import com.example.util.simpletimetracker.feature_base_adapter.InfiniteRecyclerAdapter
 import com.example.util.simpletimetracker.feature_date_selection.api.DateSelectorMapper
 import com.example.util.simpletimetracker.feature_date_selection.api.DateSelectorViewModelDelegate
 import com.example.util.simpletimetracker.feature_statistics.api.StatisticsContainerOptionsListItem
@@ -47,6 +48,7 @@ class StatisticsContainerViewModel @Inject constructor(
     }
 
     private var rangeLength: RangeLength? = null
+    private var lastRenderedDateItem: InfiniteRecyclerAdapter.Data? = null
     private val currentPosition: Int get() = position.value.orZero()
 
     init {
@@ -57,14 +59,24 @@ class StatisticsContainerViewModel @Inject constructor(
     fun initialize() {
         viewModelScope.launch {
             dateSelectorViewModelDelegate.initialize(currentPosition)
+            lastRenderedDateItem = dateSelectorViewModelDelegate.dataProvider.getItem(currentPosition)
         }
     }
 
     fun onVisible() {
         // TODO update only when necessary?
+        val dataProvider = dateSelectorViewModelDelegate.dataProvider
+        if (!dataProvider.isInitialized()) return
+
+        // System date-change events refresh it at midnight, but a custom
+        // logical boundary such as 04:00 produces no system event.
+        // This will update date selector on date change.
         viewModelScope.launch {
             dateSelectorViewModelDelegate.setup()
-            dateSelectorViewModelDelegate.updatePosition(currentPosition)
+            val currentItem = dataProvider.getItem(currentPosition)
+            if (lastRenderedDateItem != currentItem) {
+                updateDateSelectorPosition(currentPosition)
+            }
         }
     }
 
@@ -162,7 +174,7 @@ class StatisticsContainerViewModel @Inject constructor(
         viewModelScope.launch {
             statisticsUpdateInteractor.dateTimeChanged.collect {
                 dateSelectorViewModelDelegate.setup()
-                dateSelectorViewModelDelegate.updatePosition(currentPosition)
+                updateDateSelectorPosition(currentPosition)
             }
         }
     }
@@ -266,8 +278,13 @@ class StatisticsContainerViewModel @Inject constructor(
     }
 
     private fun updatePosition(newPosition: Int) {
-        dateSelectorViewModelDelegate.updatePosition(newPosition)
+        updateDateSelectorPosition(newPosition)
         position.set(newPosition)
+    }
+
+    private fun updateDateSelectorPosition(newPosition: Int) {
+        dateSelectorViewModelDelegate.updatePosition(newPosition)
+        lastRenderedDateItem = dateSelectorViewModelDelegate.dataProvider.getItem(newPosition)
     }
 
     companion object {

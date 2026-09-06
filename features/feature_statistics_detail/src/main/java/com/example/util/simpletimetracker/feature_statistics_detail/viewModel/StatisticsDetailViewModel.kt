@@ -15,6 +15,7 @@ import com.example.util.simpletimetracker.domain.record.model.RecordBase
 import com.example.util.simpletimetracker.domain.record.model.RecordsFilter
 import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
 import com.example.util.simpletimetracker.domain.statistics.model.StatisticsDetailTagValueSettings
+import com.example.util.simpletimetracker.feature_base_adapter.InfiniteRecyclerAdapter
 import com.example.util.simpletimetracker.feature_base_adapter.ViewHolderType
 import com.example.util.simpletimetracker.feature_base_adapter.buttonsRow.ButtonsRowItemViewData
 import com.example.util.simpletimetracker.feature_base_adapter.buttonsRow.view.ButtonsRowViewData
@@ -84,6 +85,7 @@ class StatisticsDetailViewModel @Inject constructor(
 
     private lateinit var extra: StatisticsDetailParams
     private var scrolledToTop: Boolean = false
+    private var lastRenderedDateItem: InfiniteRecyclerAdapter.Data? = null
 
     private val delegates: List<StatisticsDetailViewModelDelegate> = listOf(
         previewDelegate,
@@ -117,16 +119,27 @@ class StatisticsDetailViewModel @Inject constructor(
         this.extra = extra
         delegates.forEach { it.initialize(extra) }
         viewModelScope.launch {
-            dateSelectorViewModelDelegate.initialize(rangeDelegate.provideRangePosition())
+            val currentPosition = rangeDelegate.provideRangePosition()
+            dateSelectorViewModelDelegate.initialize(currentPosition)
+            lastRenderedDateItem = dateSelectorViewModelDelegate.dataProvider.getItem(currentPosition)
         }
     }
 
     fun onVisible() {
         delegates.forEach { it.onVisible() }
-        // TODO update only when necessary?
+        val dataProvider = dateSelectorViewModelDelegate.dataProvider
+        if (!dataProvider.isInitialized()) return
+
+        // System date-change events refresh it at midnight, but a custom
+        // logical boundary such as 04:00 produces no system event.
+        // This will update date selector on date change.
         viewModelScope.launch {
             dateSelectorViewModelDelegate.setup()
-            dateSelectorViewModelDelegate.updatePosition(rangeDelegate.provideRangePosition())
+            val currentPosition = rangeDelegate.provideRangePosition()
+            val currentItem = dataProvider.getItem(currentPosition)
+            if (lastRenderedDateItem != currentItem) {
+                updateDateSelectorPosition(currentPosition)
+            }
         }
     }
 
@@ -269,7 +282,12 @@ class StatisticsDetailViewModel @Inject constructor(
 
     private fun updateViewData() {
         delegates.forEach { it.updateViewData() }
-        dateSelectorViewModelDelegate.updatePosition(rangeDelegate.provideRangePosition())
+        updateDateSelectorPosition(rangeDelegate.provideRangePosition())
+    }
+
+    private fun updateDateSelectorPosition(newPosition: Int) {
+        dateSelectorViewModelDelegate.updatePosition(newPosition)
+        lastRenderedDateItem = dateSelectorViewModelDelegate.dataProvider.getItem(newPosition)
     }
 
     private fun updateContent() {

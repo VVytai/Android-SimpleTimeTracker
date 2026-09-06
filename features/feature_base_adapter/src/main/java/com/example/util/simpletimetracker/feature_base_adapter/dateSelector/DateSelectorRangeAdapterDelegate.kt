@@ -17,23 +17,36 @@ fun createDateSelectorRangeAdapterDelegate(
 
     with(binding) {
         item as ViewData
+        val animationState = tvDateSelectorAdditionalHint.getDateSelectorAnimationState()
+        val animateSelection = animationState.shouldAnimateSelection(
+            position = item.position,
+            isSelected = item.cardData.isSelected,
+        )
 
         setTestTag(root, item)
         setAdditionalHint(
             dayMonth = item.dayMonth1,
             additionalText = tvDateSelectorAdditionalHint,
+            animateSelection = animateSelection,
+            animator = animationState::additionalHintAnimator,
         )
         setDayMoth(
             dayMonth = item.dayMonth1,
             topText = tvDateSelectorTopText1,
             bottomText = tvDateSelectorBottomText1,
             increasedTextSize = item.cardData.increasedTextSize,
+            animateSelection = animateSelection,
+            topTextAnimator = animationState::topTextAnimator,
+            bottomTextAnimator = animationState::bottomTextAnimator,
         )
         setDayMoth(
             dayMonth = item.dayMonth2,
             topText = tvDateSelectorTopText2,
             bottomText = tvDateSelectorBottomText2,
             increasedTextSize = item.cardData.increasedTextSize,
+            animateSelection = animateSelection,
+            topTextAnimator = animationState::topText2Animator,
+            bottomTextAnimator = animationState::bottomText2Animator,
         )
         root.setCardData(
             cardData = item.cardData,
@@ -50,6 +63,11 @@ fun createDateSelectorRangeAdapterDelegate(
 
         root.setOnClickWith(item, onItemClick)
         root.setOnLongClick { onItemLongClick(item) }
+
+        animationState.onBound(
+            position = item.position,
+            isSelected = item.cardData.isSelected,
+        )
     }
 }
 

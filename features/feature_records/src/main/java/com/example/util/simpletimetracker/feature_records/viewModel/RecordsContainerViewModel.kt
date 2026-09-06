@@ -18,6 +18,7 @@ import com.example.util.simpletimetracker.domain.record.interactor.RecordsContai
 import com.example.util.simpletimetracker.domain.record.interactor.RecordsShareUpdateInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.RecordsUpdateInteractor
 import com.example.util.simpletimetracker.domain.statistics.model.RangeLength
+import com.example.util.simpletimetracker.feature_base_adapter.InfiniteRecyclerAdapter
 import com.example.util.simpletimetracker.feature_date_selection.api.DateSelectorMapper
 import com.example.util.simpletimetracker.feature_date_selection.api.DateSelectorViewModelDelegate
 import com.example.util.simpletimetracker.feature_records.R
@@ -55,6 +56,7 @@ class RecordsContainerViewModel @Inject constructor(
         by lazySuspend { loadPosition(newPosition = 0, animate = false) }
 
     private var lastListShift: Int = 0
+    private var lastRenderedDateItem: InfiniteRecyclerAdapter.Data? = null
     private val currentPosition: Int get() = position.value?.position.orZero()
 
     init {
@@ -65,6 +67,23 @@ class RecordsContainerViewModel @Inject constructor(
     fun initialize() {
         viewModelScope.launch {
             dateSelectorViewModelDelegate.initialize(currentPosition)
+            lastRenderedDateItem = dateSelectorViewModelDelegate.dataProvider.getItem(currentPosition)
+        }
+    }
+
+    fun onVisible() {
+        val dataProvider = dateSelectorViewModelDelegate.dataProvider
+        if (!dataProvider.isInitialized()) return
+
+        // System date-change events refresh it at midnight, but a custom
+        // logical boundary such as 04:00 produces no system event.
+        // This will update date selector on date change.
+        viewModelScope.launch {
+            dateSelectorViewModelDelegate.setup()
+            val currentItem = dataProvider.getItem(currentPosition)
+            if (lastRenderedDateItem != currentItem) {
+                updateDateSelectorPosition(currentPosition)
+            }
         }
     }
 
@@ -190,7 +209,7 @@ class RecordsContainerViewModel @Inject constructor(
                 .collect {
                     viewModelScope.launch {
                         dateSelectorViewModelDelegate.setup()
-                        dateSelectorViewModelDelegate.updatePosition(currentPosition)
+                        updateDateSelectorPosition(currentPosition)
                     }
                 }
         }
@@ -291,9 +310,14 @@ class RecordsContainerViewModel @Inject constructor(
     ) {
         viewModelScope.launch {
             val data = loadPosition(shift, animate)
-            dateSelectorViewModelDelegate.updatePosition(shift)
+            updateDateSelectorPosition(shift)
             position.set(data)
         }
+    }
+
+    private fun updateDateSelectorPosition(newPosition: Int) {
+        dateSelectorViewModelDelegate.updatePosition(newPosition)
+        lastRenderedDateItem = dateSelectorViewModelDelegate.dataProvider.getItem(newPosition)
     }
 
     private suspend fun loadPosition(

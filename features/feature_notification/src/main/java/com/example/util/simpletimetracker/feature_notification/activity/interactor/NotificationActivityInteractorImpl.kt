@@ -216,8 +216,8 @@ class NotificationActivityInteractorImpl @Inject constructor(
         val runningRecord = runningRecordInteractor.get(activityId)
         val recordType = recordTypeInteractor.get(activityId)
         // Old activity-specific alarms must not fall back to the global rule.
-        val rule = (activityReminderOverrideRepo.get(activityId)?.mode as?
-            ActivityReminderOverride.Mode.Custom)?.rule
+        val mode = activityReminderOverrideRepo.get(activityId)?.mode
+        val rule = (mode as? ActivityReminderOverride.Mode.Custom)?.rule
         if (
             runningRecord == null ||
             recordType == null ||
