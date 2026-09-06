@@ -50,12 +50,12 @@ data class ActivityChipState(
     val hint: String = "",
 ) {
 
-    val uniqueId: UniqueId = UniqueId(id, type)
-
-    data class UniqueId(
-        private val id: Long,
-        private val type: ActivityChipType = ActivityChipType.Base,
-    )
+    val uniqueId: String = when (type) {
+        is ActivityChipType.Base -> "base:$id"
+        is ActivityChipType.Suggestion -> "suggestion:${type.isLast}:$id"
+        is ActivityChipType.Repeat -> "repeat:$id"
+        is ActivityChipType.Untracked -> "untracked:$id"
+    }
 
     sealed interface TimeHint {
         object None : TimeHint
