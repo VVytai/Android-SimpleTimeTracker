@@ -79,10 +79,7 @@ class GoalsViewModel @Inject constructor(
         // This will update date selector on date change.
         viewModelScope.launch {
             dateSelectorViewModelDelegate.setup()
-            val currentItem = dataProvider.getItem(currentShift)
-            if (lastRenderedDateItem != currentItem) {
-                updateDateSelectorPosition(currentShift)
-            }
+            updateDateSelectorPosition(currentShift)
         }
     }
 
@@ -194,8 +191,11 @@ class GoalsViewModel @Inject constructor(
     }
 
     private fun updateDateSelectorPosition(newPosition: Int) {
-        dateSelectorViewModelDelegate.updatePosition(newPosition)
-        lastRenderedDateItem = dateSelectorViewModelDelegate.dataProvider.getItem(newPosition)
+        val currentItem = dateSelectorViewModelDelegate.dataProvider.getItem(currentShift)
+        if (lastRenderedDateItem != currentItem) {
+            dateSelectorViewModelDelegate.updatePosition(newPosition)
+            lastRenderedDateItem = dateSelectorViewModelDelegate.dataProvider.getItem(newPosition)
+        }
     }
 
     private fun getDateSelectorDelegateParent(): DateSelectorViewModelDelegate.Parent {

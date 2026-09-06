@@ -80,10 +80,7 @@ class RecordsContainerViewModel @Inject constructor(
         // This will update date selector on date change.
         viewModelScope.launch {
             dateSelectorViewModelDelegate.setup()
-            val currentItem = dataProvider.getItem(currentPosition)
-            if (lastRenderedDateItem != currentItem) {
-                updateDateSelectorPosition(currentPosition)
-            }
+            updateDateSelectorPosition(currentPosition)
         }
     }
 
@@ -310,14 +307,17 @@ class RecordsContainerViewModel @Inject constructor(
     ) {
         viewModelScope.launch {
             val data = loadPosition(shift, animate)
-            updateDateSelectorPosition(shift)
             position.set(data)
+            updateDateSelectorPosition(shift)
         }
     }
 
     private fun updateDateSelectorPosition(newPosition: Int) {
-        dateSelectorViewModelDelegate.updatePosition(newPosition)
-        lastRenderedDateItem = dateSelectorViewModelDelegate.dataProvider.getItem(newPosition)
+        val currentItem = dateSelectorViewModelDelegate.dataProvider.getItem(currentPosition)
+        if (lastRenderedDateItem != currentItem) {
+            dateSelectorViewModelDelegate.updatePosition(newPosition)
+            lastRenderedDateItem = dateSelectorViewModelDelegate.dataProvider.getItem(newPosition)
+        }
     }
 
     private suspend fun loadPosition(

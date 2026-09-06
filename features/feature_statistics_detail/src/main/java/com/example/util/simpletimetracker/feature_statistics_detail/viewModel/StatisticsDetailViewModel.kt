@@ -135,11 +135,7 @@ class StatisticsDetailViewModel @Inject constructor(
         // This will update date selector on date change.
         viewModelScope.launch {
             dateSelectorViewModelDelegate.setup()
-            val currentPosition = rangeDelegate.provideRangePosition()
-            val currentItem = dataProvider.getItem(currentPosition)
-            if (lastRenderedDateItem != currentItem) {
-                updateDateSelectorPosition(currentPosition)
-            }
+            updateDateSelectorPosition(rangeDelegate.provideRangePosition())
         }
     }
 
@@ -286,8 +282,11 @@ class StatisticsDetailViewModel @Inject constructor(
     }
 
     private fun updateDateSelectorPosition(newPosition: Int) {
-        dateSelectorViewModelDelegate.updatePosition(newPosition)
-        lastRenderedDateItem = dateSelectorViewModelDelegate.dataProvider.getItem(newPosition)
+        val currentItem = dateSelectorViewModelDelegate.dataProvider.getItem(newPosition)
+        if (lastRenderedDateItem != currentItem) {
+            dateSelectorViewModelDelegate.updatePosition(newPosition)
+            lastRenderedDateItem = dateSelectorViewModelDelegate.dataProvider.getItem(newPosition)
+        }
     }
 
     private fun updateContent() {
