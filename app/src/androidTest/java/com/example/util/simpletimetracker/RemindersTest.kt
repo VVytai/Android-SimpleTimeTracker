@@ -400,8 +400,8 @@ class RemindersTest : BaseUiTest() {
         NavUtils.openSettingsNotifications()
         NavUtils.openRemindersScreen()
 
+        onView(withText("Weekly walk")).check(isCompletelyAbove(withText("Earlier")))
         onView(withText("Earlier")).check(isCompletelyAbove(withText("Later")))
-        onView(withText("Later")).check(isCompletelyAbove(withText("Weekly walk")))
         checkViewIsNotDisplayed(
             allOf(
                 withId(remindersR.id.tvReminderSummary),
