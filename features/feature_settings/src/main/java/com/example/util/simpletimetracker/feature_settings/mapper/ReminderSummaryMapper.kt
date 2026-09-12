@@ -1,5 +1,6 @@
 package com.example.util.simpletimetracker.feature_settings.mapper
 
+import com.example.util.simpletimetracker.core.mapper.ChangeReminderViewDataMapper
 import com.example.util.simpletimetracker.core.mapper.TimeMapper
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.domain.daysOfWeek.model.DayOfWeek
@@ -8,8 +9,8 @@ import javax.inject.Inject
 
 class ReminderSummaryMapper @Inject constructor(
     private val resourceRepo: ResourceRepo,
-    private val settingsMapper: SettingsMapper,
     private val timeMapper: TimeMapper,
+    private val changeReminderViewDataMapper: ChangeReminderViewDataMapper,
 ) {
 
     fun map(
@@ -25,12 +26,9 @@ class ReminderSummaryMapper @Inject constructor(
         } else {
             resourceRepo.getString(R.string.reminders_schedule_one_time)
         }
-        val doNotDisturbStart = settingsMapper.toStartOfDayText(
-            startOfDayShift = doNotDisturbStart,
-            useMilitaryTime = useMilitaryTime,
-        )
-        val doNotDisturbEnd = settingsMapper.toStartOfDayText(
-            startOfDayShift = doNotDisturbEnd,
+        val dnd = changeReminderViewDataMapper.mapDndHint(
+            doNotDisturbStartMillis = doNotDisturbStart,
+            doNotDisturbEndMillis = doNotDisturbEnd,
             useMilitaryTime = useMilitaryTime,
         )
         val days = timeMapper.formatDays(
@@ -38,11 +36,10 @@ class ReminderSummaryMapper @Inject constructor(
             selectedDaysOfWeek = selectedDaysOfWeek,
         ).takeIf(String::isNotEmpty)
 
-        // TODO if dnd is disabled (start equals end) - do not show it.
         return listOfNotNull(
             recurrentText,
             days,
-            "$doNotDisturbStart-$doNotDisturbEnd",
+            dnd,
         ).joinToString(separator = " · ")
     }
 }

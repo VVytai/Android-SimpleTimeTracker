@@ -1,5 +1,6 @@
 package com.example.util.simpletimetracker.feature_reminders.mapper
 
+import com.example.util.simpletimetracker.core.mapper.ChangeReminderViewDataMapper
 import com.example.util.simpletimetracker.core.mapper.ColorMapper
 import com.example.util.simpletimetracker.core.mapper.IconMapper
 import com.example.util.simpletimetracker.core.mapper.TimeMapper
@@ -16,7 +17,7 @@ class ActivityReminderViewDataMapper @Inject constructor(
     private val timeMapper: TimeMapper,
     private val iconMapper: IconMapper,
     private val colorMapper: ColorMapper,
-    private val remindersCommonViewDataMapper: RemindersCommonViewDataMapper,
+    private val changeReminderViewDataMapper: ChangeReminderViewDataMapper,
 ) {
 
     fun map(
@@ -78,7 +79,7 @@ class ActivityReminderViewDataMapper @Inject constructor(
             selectedDaysOfWeek = rule.applicableDaysOfWeek,
         ).takeIf(String::isNotEmpty)
 
-        val dnd = remindersCommonViewDataMapper.mapDndHint(
+        val dnd = changeReminderViewDataMapper.mapDndHint(
             doNotDisturbStartMillis = rule.doNotDisturbStartMillis,
             doNotDisturbEndMillis = rule.doNotDisturbEndMillis,
             useMilitaryTime = useMilitaryTime,

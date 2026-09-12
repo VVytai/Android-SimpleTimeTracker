@@ -26,7 +26,6 @@ class ReminderViewDataMapper @Inject constructor(
     private val colorMapper: ColorMapper,
     private val localDateMapper: LocalDateMapper,
     private val changeReminderViewDataMapper: ChangeReminderViewDataMapper,
-    private val remindersCommonViewDataMapper: RemindersCommonViewDataMapper,
 ) {
 
     fun mapAddItem(
@@ -86,7 +85,7 @@ class ReminderViewDataMapper @Inject constructor(
                 } else {
                     R.string.complex_rules_enable
                 }.let(resourceRepo::getString),
-            )
+            ),
         )
     }
 
@@ -95,7 +94,8 @@ class ReminderViewDataMapper @Inject constructor(
         useMilitaryTime: Boolean,
         firstDayOfWeek: DayOfWeek,
     ): String {
-        return when (schedule) {
+        // Specified type prevents accidental nulls.
+        val hints: List<String> = when (schedule) {
             is ScheduledReminder.Schedule.Weekly -> {
                 val time = formatTime(
                     timeOfDayMillis = schedule.timeOfDayMillis,
@@ -106,7 +106,7 @@ class ReminderViewDataMapper @Inject constructor(
                     selectedDaysOfWeek = schedule.daysOfWeek,
                 ).takeIf(String::isNotEmpty)
                     ?: resourceRepo.getString(R.string.reminders_schedule_daily)
-                listOf(days, time)
+                listOfNotNull(days, time)
             }
             is ScheduledReminder.Schedule.OneTime -> {
                 val timestamp = resolve(
@@ -118,7 +118,7 @@ class ReminderViewDataMapper @Inject constructor(
                     useMilitaryTime = useMilitaryTime,
                 )
                 val hint = resourceRepo.getString(R.string.reminders_schedule_one_time)
-                listOf(hint, dateTime)
+                listOfNotNull(hint, dateTime)
             }
             is ScheduledReminder.Schedule.Monthly -> {
                 val time = formatTime(
@@ -126,7 +126,7 @@ class ReminderViewDataMapper @Inject constructor(
                     useMilitaryTime = useMilitaryTime,
                 )
                 val hint = resourceRepo.getString(R.string.reminders_schedule_monthly)
-                listOf(hint, schedule.dayOfMonth, time)
+                listOfNotNull(hint, schedule.dayOfMonth.toString(), time)
             }
             is ScheduledReminder.Schedule.Hourly -> {
                 val hint = resourceRepo.getString(R.string.reminders_schedule_hourly)
@@ -149,14 +149,15 @@ class ReminderViewDataMapper @Inject constructor(
                     selectedDaysOfWeek = schedule.daysOfWeek,
                 ).takeIf(String::isNotEmpty)
                     ?: resourceRepo.getString(R.string.reminders_schedule_daily)
-                val dnd = remindersCommonViewDataMapper.mapDndHint(
+                val dnd = changeReminderViewDataMapper.mapDndHint(
                     doNotDisturbStartMillis = schedule.doNotDisturbStartMillis,
                     doNotDisturbEndMillis = schedule.doNotDisturbEndMillis,
                     useMilitaryTime = useMilitaryTime,
                 )
-                listOf(hint, interval, start, days, dnd)
+                listOfNotNull(hint, interval, start, days, dnd)
             }
-        }.joinToString(separator = " · ")
+        }
+        return hints.joinToString(separator = " · ")
     }
 
     private fun mapCondition(
