@@ -1,8 +1,11 @@
 package com.example.util.simpletimetracker.core.mapper
 
+import android.text.SpannableString
 import com.example.util.simpletimetracker.core.R
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.domain.utils.LocalDateMapper
+import com.example.util.simpletimetracker.feature_views.extension.setImageSpan
+import com.example.util.simpletimetracker.feature_views.extension.toSpannableString
 import java.time.LocalDate
 import java.util.TimeZone
 import javax.inject.Inject
@@ -13,12 +16,12 @@ class ChangeReminderViewDataMapper @Inject constructor(
     private val localDateMapper: LocalDateMapper,
 ) {
 
-    // TODO show icon - bell crossed, or circle with a minus
     fun mapDndHint(
         doNotDisturbStartMillis: Long,
         doNotDisturbEndMillis: Long,
         useMilitaryTime: Boolean,
-    ): String? {
+        iconColor: Int,
+    ): SpannableString? {
         if (doNotDisturbStartMillis == doNotDisturbEndMillis) return null
 
         fun formatTime(
@@ -33,10 +36,27 @@ class ChangeReminderViewDataMapper @Inject constructor(
             )
         }
 
-        return listOf(
+        val hint = listOf(
             formatTime(doNotDisturbStartMillis),
             formatTime(doNotDisturbEndMillis),
         ).joinToString(separator = "-")
+
+        val icon = resourceRepo.getDrawable(R.drawable.disabled)
+            ?.mutate()
+            ?.apply { setTint(iconColor) }
+
+        return hint
+            .let { IMAGE_TAG + it }
+            .toSpannableString()
+            .apply {
+                setImageSpan(
+                    start = indexOf(IMAGE_TAG),
+                    length = IMAGE_TAG.length,
+                    drawable = icon ?: return@apply,
+                    sizeDp = 16,
+                    isCentered = true,
+                )
+            }
     }
 
     fun formatTimeOfDay(
@@ -55,5 +75,9 @@ class ChangeReminderViewDataMapper @Inject constructor(
             useMilitaryTime = useMilitaryTime,
             showSeconds = false,
         )
+    }
+
+    companion object {
+        private const val IMAGE_TAG = "[IMAGE_TAG]"
     }
 }

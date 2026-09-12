@@ -10,6 +10,7 @@ import com.example.util.simpletimetracker.domain.daysOfWeek.model.DayOfWeek
 import com.example.util.simpletimetracker.domain.recordType.model.RecordType
 import com.example.util.simpletimetracker.feature_reminders.R
 import com.example.util.simpletimetracker.feature_reminders.viewData.ReminderViewData
+import com.example.util.simpletimetracker.feature_views.extension.joinToSpannable
 import javax.inject.Inject
 
 class ActivityReminderViewDataMapper @Inject constructor(
@@ -40,6 +41,7 @@ class ActivityReminderViewDataMapper @Inject constructor(
                 rule = mode.rule,
                 useMilitaryTime = useMilitaryTime,
                 firstDayOfWeek = firstDayOfWeek,
+                isDarkTheme = isDarkTheme,
             )
         }
 
@@ -67,7 +69,8 @@ class ActivityReminderViewDataMapper @Inject constructor(
         rule: ActivityReminderOverride.Rule,
         useMilitaryTime: Boolean,
         firstDayOfWeek: DayOfWeek,
-    ): String {
+        isDarkTheme: Boolean,
+    ): CharSequence {
         val recurrence = if (rule.recurrent) {
             resourceRepo.getString(R.string.settings_inactivity_reminder_recurrent)
         } else {
@@ -83,6 +86,7 @@ class ActivityReminderViewDataMapper @Inject constructor(
             doNotDisturbStartMillis = rule.doNotDisturbStartMillis,
             doNotDisturbEndMillis = rule.doNotDisturbEndMillis,
             useMilitaryTime = useMilitaryTime,
+            iconColor = resourceRepo.getThemedAttr(R.attr.appLightTextColor, isDarkTheme)
         )
 
         return listOfNotNull(
@@ -90,6 +94,6 @@ class ActivityReminderViewDataMapper @Inject constructor(
             recurrence,
             days,
             dnd,
-        ).joinToString(separator = " · ")
+        ).joinToSpannable(separator = " · ")
     }
 }

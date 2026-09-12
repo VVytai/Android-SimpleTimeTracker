@@ -14,6 +14,7 @@ import com.example.util.simpletimetracker.domain.utils.LocalDateMapper
 import com.example.util.simpletimetracker.feature_base_adapter.button.ButtonViewData
 import com.example.util.simpletimetracker.feature_reminders.viewData.ReminderViewData
 import com.example.util.simpletimetracker.feature_reminders.viewData.RemindersButtonViewData
+import com.example.util.simpletimetracker.feature_views.extension.joinToSpannable
 import java.time.LocalDate
 import java.util.TimeZone
 import javax.inject.Inject
@@ -57,6 +58,7 @@ class ReminderViewDataMapper @Inject constructor(
                 schedule = reminder.schedule,
                 useMilitaryTime = useMilitaryTime,
                 firstDayOfWeek = firstDayOfWeek,
+                isDarkTheme = isDarkTheme,
             ),
             summary = mapCondition(
                 condition = reminder.condition,
@@ -93,9 +95,10 @@ class ReminderViewDataMapper @Inject constructor(
         schedule: ScheduledReminder.Schedule,
         useMilitaryTime: Boolean,
         firstDayOfWeek: DayOfWeek,
-    ): String {
+        isDarkTheme: Boolean,
+    ): CharSequence {
         // Specified type prevents accidental nulls.
-        val hints: List<String> = when (schedule) {
+        val hints: List<CharSequence> = when (schedule) {
             is ScheduledReminder.Schedule.Weekly -> {
                 val time = formatTime(
                     timeOfDayMillis = schedule.timeOfDayMillis,
@@ -153,17 +156,18 @@ class ReminderViewDataMapper @Inject constructor(
                     doNotDisturbStartMillis = schedule.doNotDisturbStartMillis,
                     doNotDisturbEndMillis = schedule.doNotDisturbEndMillis,
                     useMilitaryTime = useMilitaryTime,
+                    iconColor = resourceRepo.getThemedAttr(R.attr.appLightTextColor, isDarkTheme),
                 )
                 listOfNotNull(hint, interval, start, days, dnd)
             }
         }
-        return hints.joinToString(separator = " · ")
+        return hints.joinToSpannable(separator = " · ")
     }
 
     private fun mapCondition(
         condition: ScheduledReminder.Condition,
         activity: RecordType?,
-    ): String {
+    ): CharSequence {
         return when (condition) {
             is ScheduledReminder.Condition.Always -> ""
             is ScheduledReminder.Condition.ActivityNotTrackedToday -> {

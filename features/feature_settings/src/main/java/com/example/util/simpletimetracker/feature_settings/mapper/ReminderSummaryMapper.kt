@@ -5,6 +5,7 @@ import com.example.util.simpletimetracker.core.mapper.TimeMapper
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.domain.daysOfWeek.model.DayOfWeek
 import com.example.util.simpletimetracker.feature_settings.R
+import com.example.util.simpletimetracker.feature_views.extension.joinToSpannable
 import javax.inject.Inject
 
 class ReminderSummaryMapper @Inject constructor(
@@ -20,7 +21,7 @@ class ReminderSummaryMapper @Inject constructor(
         selectedDaysOfWeek: Set<DayOfWeek>,
         firstDayOfWeek: DayOfWeek,
         useMilitaryTime: Boolean,
-    ): String {
+    ): CharSequence {
         val recurrentText = if (isRecurrent) {
             resourceRepo.getString(R.string.settings_inactivity_reminder_recurrent)
         } else {
@@ -30,6 +31,7 @@ class ReminderSummaryMapper @Inject constructor(
             doNotDisturbStartMillis = doNotDisturbStart,
             doNotDisturbEndMillis = doNotDisturbEnd,
             useMilitaryTime = useMilitaryTime,
+            iconColor = resourceRepo.getColor(R.color.textSecondary),
         )
         val days = timeMapper.formatDays(
             firstDayOfWeek = firstDayOfWeek,
@@ -40,6 +42,6 @@ class ReminderSummaryMapper @Inject constructor(
             recurrentText,
             days,
             dnd,
-        ).joinToString(separator = " · ")
+        ).joinToSpannable(separator = " · ")
     }
 }
