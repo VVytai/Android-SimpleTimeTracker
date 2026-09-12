@@ -45,14 +45,13 @@ class RemindersViewDataInteractor @Inject constructor(
             timeZone = TimeZone.getDefault(),
         )
 
-        val result = mutableListOf<ViewHolderType>()
-
-        result += HeaderViewData(
+        val activityReminders = mutableListOf<ViewHolderType>()
+        activityReminders += HeaderViewData(
             section = RemindersHeader.Activity,
             text = resourceRepo.getString(R.string.notification_activity_title),
             hint = resourceRepo.getString(R.string.activity_reminders_hint),
         )
-        result += activityList.mapNotNull { activity ->
+        activityReminders += activityList.mapNotNull { activity ->
             val override = activityReminderOverrides[activity.id] ?: return@mapNotNull null
             activityReminderViewDataMapper.map(
                 activity = activity,
@@ -62,15 +61,17 @@ class RemindersViewDataInteractor @Inject constructor(
                 firstDayOfWeek = firstDayOfWeek,
             )
         }
-        result += reminderViewDataMapper.mapAddItem(
+        activityReminders += reminderViewDataMapper.mapAddItem(
             id = RemindersButtonViewData.ACTIVITY,
             isDarkTheme = isDarkTheme,
         )
-        result += HeaderViewData(
+
+        val scheduledReminders = mutableListOf<ViewHolderType>()
+        scheduledReminders += HeaderViewData(
             section = RemindersHeader.Scheduled,
             text = resourceRepo.getString(R.string.settings_reminders_title),
         )
-        result += reminders.map { reminder ->
+        scheduledReminders += reminders.map { reminder ->
             val activityId = (reminder.condition as? ScheduledReminder.Condition.ActivityNotTrackedToday)
                 ?.activityId
             reminderViewDataMapper.map(
@@ -81,12 +82,15 @@ class RemindersViewDataInteractor @Inject constructor(
                 firstDayOfWeek = firstDayOfWeek,
             )
         }
-        result += reminderViewDataMapper.mapAddItem(
+        scheduledReminders += reminderViewDataMapper.mapAddItem(
             id = RemindersButtonViewData.SCHEDULED,
             isDarkTheme = isDarkTheme,
         )
 
-        return result
+        return listOf(
+            scheduledReminders,
+            activityReminders
+        ).flatten()
     }
 
     private suspend fun getReminders(
