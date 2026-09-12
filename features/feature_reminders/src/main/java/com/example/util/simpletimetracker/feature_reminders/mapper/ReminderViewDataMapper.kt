@@ -95,15 +95,13 @@ class ReminderViewDataMapper @Inject constructor(
                     timeOfDayMillis = schedule.timeOfDayMillis,
                     useMilitaryTime = useMilitaryTime,
                 )
-                if (schedule.daysOfWeek.size == DayOfWeek.entries.size) {
-                    val hint = resourceRepo.getString(R.string.reminders_schedule_daily)
-                    listOf(hint, time)
-                } else {
-                    val days = timeMapper.getWeekOrder(firstDayOfWeek)
-                        .filter(schedule.daysOfWeek::contains)
-                        .joinToString(separator = ", ", transform = timeMapper::toShortDayOfWeekName)
-                    listOf(days, time)
-                }
+                val days = timeMapper.formatDays(
+                    firstDayOfWeek = firstDayOfWeek,
+                    selectedDaysOfWeek = schedule.daysOfWeek,
+                ).takeIf {
+                    it.isNotEmpty()
+                } ?: resourceRepo.getString(R.string.reminders_schedule_daily)
+                listOf(days, time)
             }
             is ScheduledReminder.Schedule.OneTime -> {
                 val timestamp = resolve(

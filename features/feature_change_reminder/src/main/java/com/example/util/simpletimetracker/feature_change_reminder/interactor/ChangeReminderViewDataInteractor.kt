@@ -30,8 +30,8 @@ class ChangeReminderViewDataInteractor @Inject constructor(
     private val daysOfMonth = (1..ChangeReminderEditor.DAYS_IN_MONTH).toList()
 
     private val scheduleTypes = listOf(
-        ScheduleType.WEEKLY,
         ScheduleType.ONE_TIME,
+        ScheduleType.WEEKLY,
         ScheduleType.MONTHLY,
     )
 
