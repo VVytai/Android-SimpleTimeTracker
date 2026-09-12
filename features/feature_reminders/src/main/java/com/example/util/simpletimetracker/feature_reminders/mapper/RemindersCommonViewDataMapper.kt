@@ -19,7 +19,7 @@ class RemindersCommonViewDataMapper @Inject constructor(
         return listOf(
             formatTime(doNotDisturbStartMillis, useMilitaryTime),
             formatTime(doNotDisturbEndMillis, useMilitaryTime),
-        ).joinToString(separator = "–")
+        ).joinToString(separator = "-")
     }
 
     private fun formatTime(
