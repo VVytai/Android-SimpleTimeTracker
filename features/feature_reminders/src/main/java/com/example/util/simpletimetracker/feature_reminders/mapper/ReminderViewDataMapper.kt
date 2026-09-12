@@ -52,13 +52,14 @@ class ReminderViewDataMapper @Inject constructor(
     ): ReminderViewData {
         return ReminderViewData(
             id = reminder.id,
-            text = reminder.text,
-            scheduleSummary = mapSchedule(
+            type = ReminderViewData.Type.ScheduledReminder,
+            title = reminder.text,
+            subtitle = mapSchedule(
                 schedule = reminder.schedule,
                 useMilitaryTime = useMilitaryTime,
                 firstDayOfWeek = firstDayOfWeek,
             ),
-            conditionSummary = mapCondition(
+            summary = mapCondition(
                 condition = reminder.condition,
                 activity = activity,
             ),
@@ -68,22 +69,24 @@ class ReminderViewDataMapper @Inject constructor(
             } else {
                 colorMapper.toInactiveColor(isDarkTheme)
             },
-            enabledButtonColor = if (reminder.enabled) {
-                colorMapper.toInactiveColor(isDarkTheme)
-            } else {
-                colorMapper.toActiveColor(isDarkTheme)
-            },
-            enabledButtonText = if (reminder.enabled) {
-                R.string.complex_rules_disable
-            } else {
-                R.string.complex_rules_enable
-            }.let(resourceRepo::getString),
-            activityIcon = activity?.icon
+            icon = activity?.icon
                 ?.let(iconMapper::mapIcon),
-            activityColor = activity?.color
+            iconBackgroundColor = activity?.color
                 ?.let { colorMapper.mapToColorInt(it, isDarkTheme) }
                 ?: colorMapper.toInactiveColor(isDarkTheme),
-            activityIconColor = colorMapper.toIconColor(isDarkTheme),
+            iconColor = colorMapper.toIconColor(isDarkTheme),
+            button = ReminderViewData.Button(
+                enabledButtonColor = if (reminder.enabled) {
+                    colorMapper.toInactiveColor(isDarkTheme)
+                } else {
+                    colorMapper.toActiveColor(isDarkTheme)
+                },
+                enabledButtonText = if (reminder.enabled) {
+                    R.string.complex_rules_disable
+                } else {
+                    R.string.complex_rules_enable
+                }.let(resourceRepo::getString),
+            )
         )
     }
 

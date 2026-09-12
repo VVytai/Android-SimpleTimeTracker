@@ -8,7 +8,7 @@ import com.example.util.simpletimetracker.domain.activityReminder.model.Activity
 import com.example.util.simpletimetracker.domain.daysOfWeek.model.DayOfWeek
 import com.example.util.simpletimetracker.domain.recordType.model.RecordType
 import com.example.util.simpletimetracker.feature_reminders.R
-import com.example.util.simpletimetracker.feature_reminders.viewData.ActivityReminderViewData
+import com.example.util.simpletimetracker.feature_reminders.viewData.ReminderViewData
 import javax.inject.Inject
 
 class ActivityReminderViewDataMapper @Inject constructor(
@@ -25,7 +25,7 @@ class ActivityReminderViewDataMapper @Inject constructor(
         isDarkTheme: Boolean,
         useMilitaryTime: Boolean,
         firstDayOfWeek: DayOfWeek,
-    ): ActivityReminderViewData {
+    ): ReminderViewData {
         val mode = override.mode
         val modeText = when (mode) {
             is ActivityReminderOverride.Mode.Disabled -> R.string.activity_reminder_mode_disabled
@@ -42,19 +42,22 @@ class ActivityReminderViewDataMapper @Inject constructor(
             )
         }
 
-        return ActivityReminderViewData(
-            activityId = activity.id,
-            name = activity.name,
-            mode = modeText,
+        return ReminderViewData(
+            id = activity.id,
+            type = ReminderViewData.Type.ActivityReminder,
+            title = activity.name,
+            subtitle = modeText,
             summary = summary,
-            icon = iconMapper.mapIcon(activity.icon),
-            iconBackgroundColor = colorMapper.mapToColorInt(activity.color, isDarkTheme),
-            iconColor = colorMapper.toIconColor(isDarkTheme),
+            enabled = true,
             backgroundColor = if (!activity.hidden) {
                 colorMapper.toActiveColor(isDarkTheme)
             } else {
                 colorMapper.toInactiveColor(isDarkTheme)
             },
+            icon = iconMapper.mapIcon(activity.icon),
+            iconBackgroundColor = colorMapper.mapToColorInt(activity.color, isDarkTheme),
+            iconColor = colorMapper.toIconColor(isDarkTheme),
+            button = null,
         )
     }
 
