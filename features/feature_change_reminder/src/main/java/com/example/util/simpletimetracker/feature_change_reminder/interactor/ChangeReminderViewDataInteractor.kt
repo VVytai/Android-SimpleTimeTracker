@@ -1,5 +1,6 @@
 package com.example.util.simpletimetracker.feature_change_reminder.interactor
 
+import com.example.util.simpletimetracker.core.mapper.ChangeReminderViewDataMapper
 import com.example.util.simpletimetracker.core.mapper.DayOfWeekViewDataMapper
 import com.example.util.simpletimetracker.core.mapper.TimeMapper
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
@@ -7,7 +8,7 @@ import com.example.util.simpletimetracker.domain.base.CurrentTimestampProvider
 import com.example.util.simpletimetracker.domain.extension.toLocalDateTime
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.recordType.model.RecordType
-import com.example.util.simpletimetracker.domain.scheduledReminder.interactor.ScheduledReminderOccurrenceCalculator
+import com.example.util.simpletimetracker.domain.utils.LocalDateMapper
 import com.example.util.simpletimetracker.feature_base_adapter.dayOfWeek.DayOfWeekViewData
 import com.example.util.simpletimetracker.feature_change_reminder.R
 import com.example.util.simpletimetracker.feature_change_reminder.model.ChangeReminderEditor
@@ -21,16 +22,18 @@ import javax.inject.Inject
 class ChangeReminderViewDataInteractor @Inject constructor(
     private val prefsInteractor: PrefsInteractor,
     private val currentTimestampProvider: CurrentTimestampProvider,
-    private val occurrenceCalculator: ScheduledReminderOccurrenceCalculator,
     private val dayOfWeekViewDataMapper: DayOfWeekViewDataMapper,
     private val timeMapper: TimeMapper,
     private val resourceRepo: ResourceRepo,
+    private val localDateMapper: LocalDateMapper,
+    private val changeReminderViewDataMapper: ChangeReminderViewDataMapper,
 ) {
 
     private val daysOfMonth = (1..ChangeReminderEditor.DAYS_IN_MONTH).toList()
 
     private val scheduleTypes = listOf(
         ScheduleType.ONE_TIME,
+        ScheduleType.HOURLY,
         ScheduleType.WEEKLY,
         ScheduleType.MONTHLY,
     )
@@ -48,17 +51,17 @@ class ChangeReminderViewDataInteractor @Inject constructor(
         val timeZone = TimeZone.getDefault()
         val useMilitaryTime = prefsInteractor.getUseMilitaryTimeFormat()
         val currentTimestamp = currentTimestampProvider.get()
-        val dateTimestamp = occurrenceCalculator.resolveLocalDateTime(
-            dateEpochDay = editor.oneTimeDate,
+        val dateTimestamp = localDateMapper.resolveDateTime(
+            dateEpochDay = editor.date,
             timeOfDayMillis = editor.timeOfDayMillis,
             timeZone = timeZone,
-        ).takeUnless { it == 0L } ?: currentTimestamp
+        ) ?: currentTimestamp
         val today = currentTimestamp.toLocalDateTime(timeZone).toLocalDate()
-        val timeTimestamp = occurrenceCalculator.resolveLocalDateTime(
-            dateEpochDay = today.toEpochDay(),
+        val timeTimestamp = localDateMapper.resolveDateTime(
+            date = today,
             timeOfDayMillis = editor.timeOfDayMillis,
             timeZone = timeZone,
-        ).takeUnless { it == 0L } ?: currentTimestamp
+        ) ?: currentTimestamp
         val activityName = selectedActivity?.name
             ?: resourceRepo.getString(R.string.change_record_message_choose_type)
 
@@ -77,6 +80,19 @@ class ChangeReminderViewDataInteractor @Inject constructor(
                 time = timeTimestamp,
                 useMilitaryTime = useMilitaryTime,
                 showSeconds = false,
+            ),
+            intervalText = timeMapper.formatDuration(editor.intervalSeconds),
+            doNotDisturbStartText = changeReminderViewDataMapper.formatTimeOfDay(
+                millis = editor.doNotDisturbStartMillis,
+                useMilitaryTime = useMilitaryTime,
+                date = today,
+                timeZone = timeZone,
+            ),
+            doNotDisturbEndText = changeReminderViewDataMapper.formatTimeOfDay(
+                millis = editor.doNotDisturbEndMillis,
+                useMilitaryTime = useMilitaryTime,
+                date = today,
+                timeZone = timeZone,
             ),
             conditionType = editor.conditionType,
             activityName = activityName,
@@ -103,6 +119,7 @@ class ChangeReminderViewDataInteractor @Inject constructor(
                 ScheduleType.WEEKLY -> R.string.reminders_schedule_weekly
                 ScheduleType.ONE_TIME -> R.string.reminders_schedule_one_time
                 ScheduleType.MONTHLY -> R.string.reminders_schedule_monthly
+                ScheduleType.HOURLY -> R.string.reminders_schedule_hourly
             }
             CustomSpinner.CustomSpinnerTextItem(resourceRepo.getString(textRes))
         }

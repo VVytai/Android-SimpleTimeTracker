@@ -696,6 +696,7 @@ CSV ファイルには、カンマで区切られた次の列が含まれてい�
     <string name="reminders_schedule_weekly">毎週</string>
     <string name="reminders_schedule_one_time">1回のみ</string>
     <string name="reminders_schedule_monthly">毎月</string>
+    <string name="reminders_schedule_hourly">1時間ごと</string>
     <string name="reminders_condition_activity_not_tracked">今日アクティビティが記録されていないとき</string>
     <string name="activity_reminders_hint">グローバルなアクティビティリマインダー設定を上書きします</string>
     <string name="activity_reminder_mode">リマインダーモード</string>
@@ -708,11 +709,13 @@ CSV ファイルには、カンマで区切られた次の列が含まれてい�
     <string name="change_reminder_message">メッセージ</string>
     <string name="change_reminder_schedule">スケジュール</string>
     <string name="change_reminder_day_of_month">日付</string>
+    <string name="change_reminder_interval">間隔</string>
     <string name="change_reminder_condition">表示条件</string>
     <string name="change_reminder_condition_always">常に</string>
     <string name="change_reminder_message_prefill">%sを忘れずに。</string>
     <string name="change_reminder_message_required">リマインダーのメッセージを入力してください</string>
     <string name="change_reminder_future_required">未来の時刻を選択してください</string>
+    <string name="change_reminder_interval_required">0より大きい間隔を設定してください</string>
     <string name="change_reminder_removed">リマインダーを削除しました</string>
 
     <!--  Wear  -->

@@ -1,4 +1,4 @@
-package com.example.util.simpletimetracker.feature_notification.core
+package com.example.util.simpletimetracker.domain.scheduledReminder.interactor
 
 import com.example.util.simpletimetracker.domain.daysOfWeek.model.DayOfWeek
 import com.example.util.simpletimetracker.domain.extension.isValidTimeOfDay
@@ -22,11 +22,25 @@ class GetDoNotDisturbHandledScheduleInteractor @Inject constructor(
         nowTimestamp: Long,
     ): Long? {
         if (reminderDurationSeconds <= 0L) return null
+
+        return execute(
+            timestamp = reminderDurationSeconds * 1000L + nowTimestamp,
+            dndStart = dndStart,
+            dndEnd = dndEnd,
+            activeDaysOfWeek = activeDaysOfWeek,
+            timeZone = TimeZone.getDefault(),
+        )
+    }
+
+    fun execute(
+        timestamp: Long,
+        dndStart: Long,
+        dndEnd: Long,
+        activeDaysOfWeek: Set<DayOfWeek>,
+        timeZone: TimeZone,
+    ): Long? {
         if (activeDaysOfWeek.isEmpty()) return null
         if (!dndStart.isValidTimeOfDay() || !dndEnd.isValidTimeOfDay()) return null
-
-        val timeZone = TimeZone.getDefault()
-        val timestamp = reminderDurationSeconds * 1000L + nowTimestamp
 
         val dndHandledTimestamp = applyDoNotDisturb(timestamp, dndStart, dndEnd, timeZone)
             ?: return null
@@ -42,7 +56,7 @@ class GetDoNotDisturbHandledScheduleInteractor @Inject constructor(
                 val startOfDay = localDateMapper.resolveDateTime(
                     date = nextSelectedDay,
                     timeOfDayMillis = 0L,
-                    timeZone = TimeZone.getDefault(),
+                    timeZone = timeZone,
                 ) ?: return null
                 return applyDoNotDisturb(startOfDay, dndStart, dndEnd, timeZone)
             }
@@ -51,35 +65,33 @@ class GetDoNotDisturbHandledScheduleInteractor @Inject constructor(
         return null
     }
 
-    private fun applyDoNotDisturb(
+    @Suppress("ConvertTwoComparisonsToRangeCheck")
+    fun applyDoNotDisturb(
         timestamp: Long,
         dndStart: Long,
         dndEnd: Long,
         timeZone: TimeZone,
     ): Long? {
-        val dateTime = timestamp.toLocalDateTime(TimeZone.getDefault())
-        val normalizedTimestamp = TimeUnit.NANOSECONDS.toMillis(dateTime.toLocalTime().toNanoOfDay())
+        if (dndStart == dndEnd) return timestamp
+        val dateTime = timestamp.toLocalDateTime(timeZone)
+        val timeOfDay = TimeUnit.NANOSECONDS.toMillis(dateTime.toLocalTime().toNanoOfDay())
 
-        if (dndStart <= dndEnd) {
+        val endDate = when {
             // If ex. dnd is between 01:00 and 09:00 on the current day - set to 09:00
-            if (normalizedTimestamp in dndStart..dndEnd) {
-                return localDateMapper.resolveDateTime(dateTime.toLocalDate(), dndEnd, timeZone)
-            }
-        } else {
+            dndStart < dndEnd && timeOfDay in dndStart until dndEnd -> dateTime.toLocalDate()
             // If ex. dnd is between 22:00 and 06:00:
-
             // Between 00:00 and 06:00 - set to 06:00.
-            if (normalizedTimestamp <= dndEnd) {
-                return localDateMapper.resolveDateTime(dateTime.toLocalDate(), dndEnd, timeZone)
-            }
+            dndStart > dndEnd && timeOfDay < dndEnd -> dateTime.toLocalDate()
             // Between 22:00 and 24:00 - set to 06:00 next day.
-            if (normalizedTimestamp >= dndStart) {
-                val nextDay = dateTime.toLocalDate().plusDays(1)
-                return localDateMapper.resolveDateTime(nextDay, dndEnd, timeZone)
-            }
+            dndStart > dndEnd && timeOfDay >= dndStart -> dateTime.toLocalDate().plusDays(1)
+            else -> return timestamp
         }
 
-        return timestamp
+        return localDateMapper.resolveDateTime(
+            date = endDate,
+            timeOfDayMillis = dndEnd,
+            timeZone = timeZone,
+        )
     }
 
     private fun LocalDate.getDomainDayOfWeek(): DayOfWeek {

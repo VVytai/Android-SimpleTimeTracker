@@ -1,5 +1,6 @@
 package com.example.util.simpletimetracker.feature_change_reminder.interactor
 
+import com.example.util.simpletimetracker.core.mapper.ChangeReminderViewDataMapper
 import com.example.util.simpletimetracker.core.mapper.DayOfWeekViewDataMapper
 import com.example.util.simpletimetracker.core.mapper.TimeMapper
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
@@ -7,7 +8,6 @@ import com.example.util.simpletimetracker.domain.base.CurrentTimestampProvider
 import com.example.util.simpletimetracker.domain.extension.toLocalDateTime
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.recordType.model.RecordType
-import com.example.util.simpletimetracker.domain.utils.LocalDateMapper
 import com.example.util.simpletimetracker.feature_base_adapter.dayOfWeek.DayOfWeekViewData
 import com.example.util.simpletimetracker.feature_change_reminder.R
 import com.example.util.simpletimetracker.feature_change_reminder.model.ChangeActivityReminderEditor
@@ -23,7 +23,7 @@ class ChangeActivityReminderViewDataInteractor @Inject constructor(
     private val timeMapper: TimeMapper,
     private val dayOfWeekViewDataMapper: DayOfWeekViewDataMapper,
     private val currentTimestampProvider: CurrentTimestampProvider,
-    private val localDateMapper: LocalDateMapper,
+    private val changeReminderViewDataMapper: ChangeReminderViewDataMapper,
 ) {
 
     val modes = listOf(
@@ -38,7 +38,9 @@ class ChangeActivityReminderViewDataInteractor @Inject constructor(
         activitySelectionEnabled: Boolean,
         deleteVisible: Boolean,
     ): ChangeActivityReminderViewData {
+        val timeZone = TimeZone.getDefault()
         val useMilitaryTime = prefsInteractor.getUseMilitaryTimeFormat()
+        val date = currentTimestampProvider.get().toLocalDateTime(timeZone).toLocalDate()
 
         return ChangeActivityReminderViewData(
             activityName = activity?.name
@@ -57,13 +59,17 @@ class ChangeActivityReminderViewDataInteractor @Inject constructor(
                 width = DayOfWeekViewData.Width.MatchParent,
                 paddingHorizontalDp = 4,
             ),
-            doNotDisturbStartText = formatTimeOfDay(
+            doNotDisturbStartText = changeReminderViewDataMapper.formatTimeOfDay(
                 millis = editor.doNotDisturbStartMillis,
                 useMilitaryTime = useMilitaryTime,
+                date = date,
+                timeZone = timeZone,
             ),
-            doNotDisturbEndText = formatTimeOfDay(
+            doNotDisturbEndText = changeReminderViewDataMapper.formatTimeOfDay(
                 millis = editor.doNotDisturbEndMillis,
                 useMilitaryTime = useMilitaryTime,
+                date = date,
+                timeZone = timeZone,
             ),
             controlsEnabled = controlsEnabled,
             deleteVisible = deleteVisible,
@@ -72,21 +78,6 @@ class ChangeActivityReminderViewDataInteractor @Inject constructor(
 
     fun mapMode(position: Int): Mode? {
         return modes.getOrNull(position)
-    }
-
-    private fun formatTimeOfDay(millis: Long, useMilitaryTime: Boolean): String {
-        val timeZone = TimeZone.getDefault()
-        val date = currentTimestampProvider.get().toLocalDateTime(timeZone).toLocalDate()
-        val timestamp = localDateMapper.resolveDateTime(
-            date = date,
-            timeOfDayMillis = millis,
-            timeZone = timeZone,
-        ) ?: return resourceRepo.getString(R.string.no_data)
-        return timeMapper.formatTime(
-            time = timestamp,
-            useMilitaryTime = useMilitaryTime,
-            showSeconds = false,
-        )
     }
 
     private fun mapModeItems(): List<CustomSpinner.CustomSpinnerTextItem> {

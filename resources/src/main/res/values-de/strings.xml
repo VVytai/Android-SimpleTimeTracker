@@ -696,6 +696,7 @@ Beispiel:<br/>
     <string name="reminders_schedule_weekly">Wöchentlich</string>
     <string name="reminders_schedule_one_time">Einmal</string>
     <string name="reminders_schedule_monthly">Monatlich</string>
+    <string name="reminders_schedule_hourly">Stündlich</string>
     <string name="reminders_condition_activity_not_tracked">Wenn die Aktivität heute nicht erfasst wurde</string>
     <string name="activity_reminders_hint">Überschreibt die globale Einstellung für Aktivitätserinnerungen</string>
     <string name="activity_reminder_mode">Erinnerungsmodus</string>
@@ -708,11 +709,13 @@ Beispiel:<br/>
     <string name="change_reminder_message">Nachricht</string>
     <string name="change_reminder_schedule">Zeitplan</string>
     <string name="change_reminder_day_of_month">Tag des Monats</string>
+    <string name="change_reminder_interval">Intervall</string>
     <string name="change_reminder_condition">Anzeigebedingung</string>
     <string name="change_reminder_condition_always">Immer</string>
     <string name="change_reminder_message_prefill">Vergiss nicht, %s zu erledigen.</string>
     <string name="change_reminder_message_required">Gib eine Erinnerungsnachricht ein</string>
     <string name="change_reminder_future_required">Wähle einen Zeitpunkt in der Zukunft</string>
+    <string name="change_reminder_interval_required">Lege ein Intervall größer als null fest</string>
     <string name="change_reminder_removed">Erinnerung entfernt</string>
 
     <!--  Wear  -->

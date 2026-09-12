@@ -696,6 +696,7 @@
     <string name="reminders_schedule_weekly">أسبوعيًا</string>
     <string name="reminders_schedule_one_time">مرة واحدة</string>
     <string name="reminders_schedule_monthly">شهريًا</string>
+    <string name="reminders_schedule_hourly">كل ساعة</string>
     <string name="reminders_condition_activity_not_tracked">عندما لا يتم تتبع النشاط اليوم</string>
     <string name="activity_reminders_hint">يتجاوز إعداد تذكير النشاط العام</string>
     <string name="activity_reminder_mode">وضع التذكير</string>
@@ -708,11 +709,13 @@
     <string name="change_reminder_message">الرسالة</string>
     <string name="change_reminder_schedule">الجدول</string>
     <string name="change_reminder_day_of_month">يوم من الشهر</string>
+    <string name="change_reminder_interval">الفاصل الزمني</string>
     <string name="change_reminder_condition">شرط العرض</string>
     <string name="change_reminder_condition_always">دائمًا</string>
     <string name="change_reminder_message_prefill">لا تنسَ القيام بـ %s.</string>
     <string name="change_reminder_message_required">أدخل رسالة التذكير</string>
     <string name="change_reminder_future_required">اختر وقتًا في المستقبل</string>
+    <string name="change_reminder_interval_required">عيّن فاصلاً زمنيًا أكبر من صفر</string>
     <string name="change_reminder_removed">تمت إزالة التذكير</string>
 
     <!--  Wear  -->

@@ -7,11 +7,8 @@ import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.domain.activityReminder.model.ActivityReminderOverride
 import com.example.util.simpletimetracker.domain.daysOfWeek.model.DayOfWeek
 import com.example.util.simpletimetracker.domain.recordType.model.RecordType
-import com.example.util.simpletimetracker.domain.utils.LocalDateMapper
 import com.example.util.simpletimetracker.feature_reminders.R
 import com.example.util.simpletimetracker.feature_reminders.viewData.ActivityReminderViewData
-import java.time.LocalDate
-import java.util.TimeZone
 import javax.inject.Inject
 
 class ActivityReminderViewDataMapper @Inject constructor(
@@ -19,7 +16,7 @@ class ActivityReminderViewDataMapper @Inject constructor(
     private val timeMapper: TimeMapper,
     private val iconMapper: IconMapper,
     private val colorMapper: ColorMapper,
-    private val localDateMapper: LocalDateMapper,
+    private val remindersCommonViewDataMapper: RemindersCommonViewDataMapper,
 ) {
 
     fun map(
@@ -78,9 +75,11 @@ class ActivityReminderViewDataMapper @Inject constructor(
             selectedDaysOfWeek = rule.applicableDaysOfWeek,
         ).takeIf(String::isNotEmpty)
 
-        val dndStart = formatTimeOfDay(rule.doNotDisturbStartMillis, useMilitaryTime)
-        val dndEnd = formatTimeOfDay(rule.doNotDisturbEndMillis, useMilitaryTime)
-        val dnd = "$dndStart-$dndEnd"
+        val dnd = remindersCommonViewDataMapper.mapDndHint(
+            doNotDisturbStartMillis = rule.doNotDisturbStartMillis,
+            doNotDisturbEndMillis = rule.doNotDisturbEndMillis,
+            useMilitaryTime = useMilitaryTime,
+        )
 
         return listOfNotNull(
             timeMapper.formatDuration(rule.durationSeconds),
@@ -88,24 +87,5 @@ class ActivityReminderViewDataMapper @Inject constructor(
             days,
             dnd,
         ).joinToString(separator = " · ")
-    }
-
-    private fun formatTimeOfDay(
-        timeOfDayMillis: Long,
-        useMilitaryTime: Boolean,
-    ): String {
-        val timeZone = TimeZone.getDefault()
-        val date = LocalDate.now(timeZone.toZoneId())
-        val timestamp = localDateMapper.resolveDateTime(
-            date = date,
-            timeOfDayMillis = timeOfDayMillis,
-            timeZone = timeZone,
-        ) ?: return resourceRepo.getString(R.string.no_data)
-
-        return timeMapper.formatTime(
-            time = timestamp,
-            useMilitaryTime = useMilitaryTime,
-            showSeconds = false,
-        )
     }
 }

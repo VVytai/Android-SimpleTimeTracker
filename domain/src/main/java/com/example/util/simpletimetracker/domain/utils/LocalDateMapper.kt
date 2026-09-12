@@ -11,6 +11,20 @@ import javax.inject.Inject
 class LocalDateMapper @Inject constructor() {
 
     fun resolveDateTime(
+        dateEpochDay: Long,
+        timeOfDayMillis: Long,
+        timeZone: TimeZone,
+    ): Long? {
+        val date = dateEpochDay.ofEpochDaySafe() ?: return null
+
+        return resolveDateTime(
+            date = date,
+            timeOfDayMillis = timeOfDayMillis,
+            timeZone = timeZone,
+        )
+    }
+
+    fun resolveDateTime(
         date: LocalDate,
         timeOfDayMillis: Long,
         timeZone: TimeZone,
@@ -32,5 +46,11 @@ class LocalDateMapper @Inject constructor() {
         } catch (_: ArithmeticException) {
             null
         }
+    }
+
+    // LocalDate.ofEpochDay throws DateTimeException if the epoch-day value is
+    // outside LocalDate’s supported range (-999999999-01-01 through +999999999-12-31).
+    private fun Long.ofEpochDaySafe(): LocalDate? {
+        return runCatching { LocalDate.ofEpochDay(this) }.getOrNull()
     }
 }

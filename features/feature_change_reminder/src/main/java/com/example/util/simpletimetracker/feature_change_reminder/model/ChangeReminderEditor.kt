@@ -2,10 +2,11 @@ package com.example.util.simpletimetracker.feature_change_reminder.model
 
 import com.example.util.simpletimetracker.domain.daysOfWeek.model.DayOfWeek
 import com.example.util.simpletimetracker.domain.extension.addOrRemove
+import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.domain.extension.toLocalDateTime
 import com.example.util.simpletimetracker.domain.recordType.model.RecordType
-import com.example.util.simpletimetracker.domain.scheduledReminder.interactor.ScheduledReminderOccurrenceCalculator
 import com.example.util.simpletimetracker.domain.scheduledReminder.model.ScheduledReminder
+import com.example.util.simpletimetracker.domain.utils.LocalDateMapper
 import java.time.LocalDate
 import java.util.TimeZone
 import java.util.concurrent.TimeUnit
@@ -17,9 +18,12 @@ class ChangeReminderEditor private constructor(
     private var messageTouched: Boolean,
     var scheduleType: ScheduleType,
     var daysOfWeek: Set<DayOfWeek>,
-    var oneTimeDate: Long,
+    var date: Long,
     var dayOfMonth: Int,
     var timeOfDayMillis: Long,
+    var intervalSeconds: Long,
+    var doNotDisturbStartMillis: Long,
+    var doNotDisturbEndMillis: Long,
     var conditionType: ConditionType,
     var activityId: Long?,
 ) {
@@ -59,7 +63,7 @@ class ChangeReminderEditor private constructor(
 
     fun validate(
         nowTimestamp: Long,
-        occurrenceCalculator: ScheduledReminderOccurrenceCalculator,
+        localDateMapper: LocalDateMapper,
     ): ValidationResult {
         if (message.trim().isEmpty()) {
             return ValidationResult.Error(ValidationError.MESSAGE_REQUIRED)
@@ -74,19 +78,33 @@ class ChangeReminderEditor private constructor(
                 ScheduledReminder.Schedule.Weekly(daysOfWeek, timeOfDayMillis)
             }
             ScheduleType.ONE_TIME -> {
-                val expectedTimestamp = occurrenceCalculator.resolveLocalDateTime(
-                    dateEpochDay = oneTimeDate,
+                val expectedTimestamp = localDateMapper.resolveDateTime(
+                    dateEpochDay = date,
                     timeOfDayMillis = timeOfDayMillis,
                     timeZone = TimeZone.getDefault(),
-                )
+                ).orZero()
                 if (expectedTimestamp <= nowTimestamp) {
                     return ValidationResult.Error(ValidationError.FUTURE_REQUIRED)
                 }
-                ScheduledReminder.Schedule.OneTime(oneTimeDate, timeOfDayMillis)
+                ScheduledReminder.Schedule.OneTime(date, timeOfDayMillis)
             }
             ScheduleType.MONTHLY -> {
                 if (dayOfMonth !in 1..DAYS_IN_MONTH) dayOfMonth = 1
                 ScheduledReminder.Schedule.Monthly(dayOfMonth, timeOfDayMillis)
+            }
+            ScheduleType.HOURLY -> {
+                if (intervalSeconds <= 0L) {
+                    return ValidationResult.Error(ValidationError.INTERVAL_REQUIRED)
+                }
+                if (daysOfWeek.isEmpty()) daysOfWeek = DayOfWeek.entries.toSet()
+                ScheduledReminder.Schedule.Hourly(
+                    intervalSeconds = intervalSeconds,
+                    startDate = date,
+                    timeOfDayMillis = timeOfDayMillis,
+                    daysOfWeek = daysOfWeek,
+                    doNotDisturbStartMillis = doNotDisturbStartMillis,
+                    doNotDisturbEndMillis = doNotDisturbEndMillis,
+                )
             }
         }
 
@@ -111,9 +129,13 @@ class ChangeReminderEditor private constructor(
         )
     }
 
-    enum class ScheduleType { WEEKLY, ONE_TIME, MONTHLY }
+    enum class ScheduleType { WEEKLY, ONE_TIME, MONTHLY, HOURLY }
     enum class ConditionType { ALWAYS, NOT_TRACKED }
-    enum class ValidationError { MESSAGE_REQUIRED, FUTURE_REQUIRED }
+    enum class ValidationError {
+        MESSAGE_REQUIRED,
+        FUTURE_REQUIRED,
+        INTERVAL_REQUIRED,
+    }
 
     sealed interface ValidationResult {
         data class Valid(val reminder: ScheduledReminder) : ValidationResult
@@ -139,11 +161,14 @@ class ChangeReminderEditor private constructor(
                 enabled = true,
                 message = "",
                 messageTouched = false,
-                scheduleType = ScheduleType.WEEKLY,
+                scheduleType = ScheduleType.ONE_TIME,
                 daysOfWeek = DayOfWeek.entries.toSet(),
-                oneTimeDate = tomorrow.toEpochDay(),
+                date = tomorrow.toEpochDay(),
                 dayOfMonth = tomorrow.dayOfMonth,
                 timeOfDayMillis = TimeUnit.HOURS.toMillis(9),
+                intervalSeconds = TimeUnit.HOURS.toSeconds(1),
+                doNotDisturbStartMillis = 0L,
+                doNotDisturbEndMillis = TimeUnit.HOURS.toMillis(8),
                 conditionType = ConditionType.ALWAYS,
                 activityId = null,
             )
@@ -156,8 +181,11 @@ class ChangeReminderEditor private constructor(
             val tomorrow = getTomorrow(nowTimestamp)
             val scheduleType: ScheduleType
             var daysOfWeek = DayOfWeek.entries.toSet()
-            var oneTimeDate = tomorrow.toEpochDay()
+            var date = tomorrow.toEpochDay()
             var dayOfMonth = tomorrow.dayOfMonth
+            var intervalSeconds = TimeUnit.HOURS.toSeconds(1)
+            var doNotDisturbStartMillis = 0L
+            var doNotDisturbEndMillis = TimeUnit.HOURS.toMillis(8)
 
             when (val schedule = reminder.schedule) {
                 is ScheduledReminder.Schedule.Weekly -> {
@@ -166,11 +194,19 @@ class ChangeReminderEditor private constructor(
                 }
                 is ScheduledReminder.Schedule.OneTime -> {
                     scheduleType = ScheduleType.ONE_TIME
-                    oneTimeDate = schedule.oneTimeDate
+                    date = schedule.oneTimeDate
                 }
                 is ScheduledReminder.Schedule.Monthly -> {
                     scheduleType = ScheduleType.MONTHLY
                     dayOfMonth = schedule.dayOfMonth
+                }
+                is ScheduledReminder.Schedule.Hourly -> {
+                    scheduleType = ScheduleType.HOURLY
+                    daysOfWeek = schedule.daysOfWeek
+                    date = schedule.startDate
+                    intervalSeconds = schedule.intervalSeconds
+                    doNotDisturbStartMillis = schedule.doNotDisturbStartMillis
+                    doNotDisturbEndMillis = schedule.doNotDisturbEndMillis
                 }
             }
             val condition = reminder.condition as? ScheduledReminder.Condition.ActivityNotTrackedToday
@@ -181,9 +217,12 @@ class ChangeReminderEditor private constructor(
                 messageTouched = true,
                 scheduleType = scheduleType,
                 daysOfWeek = daysOfWeek,
-                oneTimeDate = oneTimeDate,
+                date = date,
                 dayOfMonth = dayOfMonth,
                 timeOfDayMillis = reminder.schedule.timeOfDayMillis,
+                intervalSeconds = intervalSeconds,
+                doNotDisturbStartMillis = doNotDisturbStartMillis,
+                doNotDisturbEndMillis = doNotDisturbEndMillis,
                 conditionType = if (condition == null) {
                     ConditionType.ALWAYS
                 } else {

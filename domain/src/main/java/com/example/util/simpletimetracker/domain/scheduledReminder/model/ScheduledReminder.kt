@@ -29,6 +29,15 @@ data class ScheduledReminder(
             val dayOfMonth: Int,
             override val timeOfDayMillis: Long,
         ) : Schedule
+
+        data class Hourly(
+            val intervalSeconds: Long,
+            val startDate: Long,
+            val daysOfWeek: Set<DayOfWeek>,
+            val doNotDisturbStartMillis: Long,
+            val doNotDisturbEndMillis: Long,
+            override val timeOfDayMillis: Long,
+        ) : Schedule
     }
 
     sealed interface Condition {

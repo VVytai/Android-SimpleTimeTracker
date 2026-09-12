@@ -44,6 +44,7 @@ class AppDatabaseMigrations {
                 migration_33_34,
                 migration_34_35,
                 migration_35_36,
+                migration_36_37,
             )
 
         private val migration_1_2 = object : Migration(1, 2) {
@@ -449,6 +450,20 @@ class AppDatabaseMigrations {
                 )
                 database.execSQL(
                     "CREATE INDEX IF NOT EXISTS `index_activityReminderRules_activity_id` ON `activityReminderRules` (`activity_id`)",
+                )
+            }
+        }
+
+        private val migration_36_37 = object : Migration(36, 37) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL(
+                    "ALTER TABLE scheduledReminders ADD COLUMN interval_seconds INTEGER",
+                )
+                database.execSQL(
+                    "ALTER TABLE scheduledReminders ADD COLUMN dnd_start_millis INTEGER",
+                )
+                database.execSQL(
+                    "ALTER TABLE scheduledReminders ADD COLUMN dnd_end_millis INTEGER",
                 )
             }
         }

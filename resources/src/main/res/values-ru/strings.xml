@@ -696,6 +696,7 @@ CSV-файл должен содержать следующие столбцы, 
     <string name="reminders_schedule_weekly">Еженедельно</string>
     <string name="reminders_schedule_one_time">Один раз</string>
     <string name="reminders_schedule_monthly">Ежемесячно</string>
+    <string name="reminders_schedule_hourly">Каждый час</string>
     <string name="reminders_condition_activity_not_tracked">Если активность сегодня не отслеживалась</string>
     <string name="activity_reminders_hint">Переопределяет общую настройку напоминаний об активности</string>
     <string name="activity_reminder_mode">Режим напоминания</string>
@@ -708,11 +709,13 @@ CSV-файл должен содержать следующие столбцы, 
     <string name="change_reminder_message">Сообщение</string>
     <string name="change_reminder_schedule">Расписание</string>
     <string name="change_reminder_day_of_month">День месяца</string>
+    <string name="change_reminder_interval">Интервал</string>
     <string name="change_reminder_condition">Условие показа</string>
     <string name="change_reminder_condition_always">Всегда</string>
     <string name="change_reminder_message_prefill">Не забудьте выполнить %s.</string>
     <string name="change_reminder_message_required">Введите текст напоминания</string>
     <string name="change_reminder_future_required">Выберите время в будущем</string>
+    <string name="change_reminder_interval_required">Укажите интервал больше нуля</string>
     <string name="change_reminder_removed">Напоминание удалено</string>
 
     <!--  Wear  -->

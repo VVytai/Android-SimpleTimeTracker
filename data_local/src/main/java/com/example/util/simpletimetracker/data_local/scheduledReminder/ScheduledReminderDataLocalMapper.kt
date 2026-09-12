@@ -16,12 +16,20 @@ class ScheduledReminderDataLocalMapper @Inject constructor(
                 timeOfDayMillis = dbo.timeOfDayMillis,
             )
             SCHEDULE_ONE_TIME -> ScheduledReminder.Schedule.OneTime(
-                oneTimeDate = dbo.oneTimeDate.orZero(),
+                oneTimeDate = dbo.date.orZero(),
                 timeOfDayMillis = dbo.timeOfDayMillis,
             )
             SCHEDULE_MONTHLY -> ScheduledReminder.Schedule.Monthly(
                 dayOfMonth = dbo.monthlyDayOfMonth.orZero(),
                 timeOfDayMillis = dbo.timeOfDayMillis,
+            )
+            SCHEDULE_HOURLY -> ScheduledReminder.Schedule.Hourly(
+                intervalSeconds = dbo.intervalSeconds.orZero(),
+                startDate = dbo.date.orZero(),
+                timeOfDayMillis = dbo.timeOfDayMillis,
+                daysOfWeek = dbo.weekdays?.let(daysOfWeekDataLocalMapper::mapDaysOfWeek).orEmpty(),
+                doNotDisturbStartMillis = dbo.doNotDisturbStartMillis.orZero(),
+                doNotDisturbEndMillis = dbo.doNotDisturbEndMillis.orZero(),
             )
             else -> ScheduledReminder.Schedule.Weekly(
                 daysOfWeek = emptySet(),
@@ -54,6 +62,9 @@ class ScheduledReminderDataLocalMapper @Inject constructor(
         val weekdays: String?
         val oneTimeDate: Long?
         val monthlyDayOfMonth: Int?
+        val hourlyIntervalSeconds: Long?
+        val hourlyDoNotDisturbStartMillis: Long?
+        val hourlyDoNotDisturbEndMillis: Long?
 
         when (val schedule = domain.schedule) {
             is ScheduledReminder.Schedule.Weekly -> {
@@ -62,6 +73,9 @@ class ScheduledReminderDataLocalMapper @Inject constructor(
                 weekdays = daysOfWeekDataLocalMapper.mapDaysOfWeek(schedule.daysOfWeek)
                 oneTimeDate = null
                 monthlyDayOfMonth = null
+                hourlyIntervalSeconds = null
+                hourlyDoNotDisturbStartMillis = null
+                hourlyDoNotDisturbEndMillis = null
             }
             is ScheduledReminder.Schedule.OneTime -> {
                 scheduleType = SCHEDULE_ONE_TIME
@@ -69,6 +83,9 @@ class ScheduledReminderDataLocalMapper @Inject constructor(
                 weekdays = null
                 oneTimeDate = schedule.oneTimeDate
                 monthlyDayOfMonth = null
+                hourlyIntervalSeconds = null
+                hourlyDoNotDisturbStartMillis = null
+                hourlyDoNotDisturbEndMillis = null
             }
             is ScheduledReminder.Schedule.Monthly -> {
                 scheduleType = SCHEDULE_MONTHLY
@@ -76,6 +93,19 @@ class ScheduledReminderDataLocalMapper @Inject constructor(
                 weekdays = null
                 oneTimeDate = null
                 monthlyDayOfMonth = schedule.dayOfMonth
+                hourlyIntervalSeconds = null
+                hourlyDoNotDisturbStartMillis = null
+                hourlyDoNotDisturbEndMillis = null
+            }
+            is ScheduledReminder.Schedule.Hourly -> {
+                scheduleType = SCHEDULE_HOURLY
+                timeOfDayMillis = schedule.timeOfDayMillis
+                weekdays = daysOfWeekDataLocalMapper.mapDaysOfWeek(schedule.daysOfWeek)
+                oneTimeDate = schedule.startDate
+                monthlyDayOfMonth = null
+                hourlyIntervalSeconds = schedule.intervalSeconds
+                hourlyDoNotDisturbStartMillis = schedule.doNotDisturbStartMillis
+                hourlyDoNotDisturbEndMillis = schedule.doNotDisturbEndMillis
             }
         }
 
@@ -99,8 +129,11 @@ class ScheduledReminderDataLocalMapper @Inject constructor(
             scheduleType = scheduleType,
             timeOfDayMillis = timeOfDayMillis,
             weekdays = weekdays,
-            oneTimeDate = oneTimeDate,
+            date = oneTimeDate,
             monthlyDayOfMonth = monthlyDayOfMonth,
+            intervalSeconds = hourlyIntervalSeconds,
+            doNotDisturbStartMillis = hourlyDoNotDisturbStartMillis,
+            doNotDisturbEndMillis = hourlyDoNotDisturbEndMillis,
             conditionType = conditionType,
             activityId = activityId,
         )
@@ -110,6 +143,7 @@ class ScheduledReminderDataLocalMapper @Inject constructor(
         internal const val SCHEDULE_WEEKLY = 0
         internal const val SCHEDULE_ONE_TIME = 1
         internal const val SCHEDULE_MONTHLY = 2
+        internal const val SCHEDULE_HOURLY = 3
 
         internal const val CONDITION_ALWAYS = 0
         internal const val CONDITION_ACTIVITY_NOT_TRACKED = 1

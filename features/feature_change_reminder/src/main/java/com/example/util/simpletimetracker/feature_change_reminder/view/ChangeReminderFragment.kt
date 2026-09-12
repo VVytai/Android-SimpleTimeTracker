@@ -19,6 +19,7 @@ import com.example.util.simpletimetracker.feature_change_reminder.model.ChangeRe
 import com.example.util.simpletimetracker.feature_change_reminder.viewData.ChangeReminderViewData
 import com.example.util.simpletimetracker.feature_change_reminder.viewModel.ChangeReminderViewModel
 import com.example.util.simpletimetracker.feature_dialogs.api.DateTimeDialogListener
+import com.example.util.simpletimetracker.feature_dialogs.api.DurationDialogListener
 import com.example.util.simpletimetracker.feature_dialogs.api.TypesSelectionDialogListener
 import com.example.util.simpletimetracker.feature_views.extension.setOnClick
 import com.example.util.simpletimetracker.navigation.params.screen.ARGS_PARAMS
@@ -32,6 +33,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class ChangeReminderFragment :
     BaseFragment<Binding>(),
+    DurationDialogListener,
     DateTimeDialogListener,
     TypesSelectionDialogListener {
 
@@ -71,6 +73,9 @@ class ChangeReminderFragment :
         spinnerChangeReminderDayOfMonth.onPositionSelected = viewModel::onDayOfMonthSelected
         tvChangeReminderDate.setOnClick(viewModel::onDateClick)
         tvChangeReminderTime.setOnClick(viewModel::onTimeClick)
+        fieldChangeReminderInterval.setOnClick(viewModel::onIntervalClick)
+        tvChangeReminderDndStart.setOnClick(viewModel::onDoNotDisturbStartClick)
+        tvChangeReminderDndEnd.setOnClick(viewModel::onDoNotDisturbEndClick)
         btnChangeReminderActivity.setOnClick(viewModel::onActivityClick)
         btnChangeReminderSave.setOnClick(viewModel::onSaveClick)
         btnChangeReminderDelete.setOnClick(viewModel::onDeleteClick)
@@ -82,6 +87,10 @@ class ChangeReminderFragment :
 
     override fun onDateTimeSet(timestamp: Long, tag: String?) {
         viewModel.onDateTimeSet(timestamp, tag)
+    }
+
+    override fun onDurationSet(durationSeconds: Long, tag: String?) {
+        viewModel.onDurationSet(durationSeconds, tag)
     }
 
     override fun onDataSelected(
@@ -122,33 +131,45 @@ class ChangeReminderFragment :
             .getOrNull(data.conditionSelectedPosition)?.text.orEmpty()
 
         // Days of week
-        containerChangeReminderWeekdays.isVisible = data.scheduleType == ScheduleType.WEEKLY
+        containerChangeReminderWeekdays.isVisible = data.scheduleType == ScheduleType.WEEKLY ||
+            data.scheduleType == ScheduleType.HOURLY
         daysAdapter.replace(data.daysOfWeek)
 
         // Date and time
-        val isOneTimeSchedule = data.scheduleType == ScheduleType.ONE_TIME
-        tvChangeReminderDate.isVisible = isOneTimeSchedule
+        val hasDate = data.scheduleType == ScheduleType.ONE_TIME ||
+            data.scheduleType == ScheduleType.HOURLY
+        tvChangeReminderDate.isVisible = hasDate
 
         tvChangeReminderDate.text = data.dateText
         tvChangeReminderTime.text = data.timeText
         btnChangeReminderActivity.text = data.activityName
 
         tvChangeReminderDate.gravity = Gravity.CENTER_VERTICAL or Gravity.END
-        tvChangeReminderTime.gravity = if (isOneTimeSchedule) {
+        tvChangeReminderTime.gravity = if (hasDate) {
             Gravity.CENTER_VERTICAL or Gravity.START
         } else {
             Gravity.CENTER
         }
         tvChangeReminderFirstHint.setText(
-            if (isOneTimeSchedule) R.string.date_time_dialog_date else R.string.date_time_dialog_time,
+            when (data.scheduleType) {
+                ScheduleType.ONE_TIME -> R.string.date_time_dialog_date
+                ScheduleType.HOURLY -> R.string.change_record_date_time_start
+                else -> R.string.date_time_dialog_time
+            },
         )
-        tvChangeReminderFirstHint.labelFor = if (isOneTimeSchedule) {
+        tvChangeReminderFirstHint.labelFor = if (hasDate) {
             tvChangeReminderDate.id
         } else {
             tvChangeReminderTime.id
         }
         tvChangeReminderFirstHint.isVisible = true
-        tvChangeReminderSecondHint.isVisible = isOneTimeSchedule
+        tvChangeReminderSecondHint.isVisible = hasDate
+
+        // Hourly interval and do not disturb
+        containerChangeReminderHourly.isVisible = data.scheduleType == ScheduleType.HOURLY
+        tvChangeReminderIntervalValue.text = data.intervalText
+        tvChangeReminderDndStart.text = data.doNotDisturbStartText
+        tvChangeReminderDndEnd.text = data.doNotDisturbEndText
 
         // Day of month
         containerChangeReminderDayOfMonth.isVisible = data.scheduleType == ScheduleType.MONTHLY
@@ -171,6 +192,9 @@ class ChangeReminderFragment :
         fieldChangeReminderDayOfMonth.isEnabled = data.controlsEnabled
         tvChangeReminderTime.isEnabled = data.controlsEnabled
         fieldChangeReminderCondition.isEnabled = data.controlsEnabled
+        fieldChangeReminderInterval.isEnabled = data.controlsEnabled
+        tvChangeReminderDndStart.isEnabled = data.controlsEnabled
+        tvChangeReminderDndEnd.isEnabled = data.controlsEnabled
         btnChangeReminderActivity.isEnabled = data.controlsEnabled
         btnChangeReminderSave.isEnabled = data.controlsEnabled
         btnChangeReminderDelete.isEnabled = data.controlsEnabled

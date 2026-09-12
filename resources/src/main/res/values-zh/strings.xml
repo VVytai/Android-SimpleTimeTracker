@@ -696,6 +696,7 @@ csv 文件必须包含以逗号分隔的这些列：<br/>
     <string name="reminders_schedule_weekly">每周</string>
     <string name="reminders_schedule_one_time">仅一次</string>
     <string name="reminders_schedule_monthly">每月</string>
+    <string name="reminders_schedule_hourly">每小时</string>
     <string name="reminders_condition_activity_not_tracked">当今天尚未记录该活动时</string>
     <string name="activity_reminders_hint">覆盖全局活动提醒设置</string>
     <string name="activity_reminder_mode">提醒模式</string>
@@ -708,11 +709,13 @@ csv 文件必须包含以逗号分隔的这些列：<br/>
     <string name="change_reminder_message">消息</string>
     <string name="change_reminder_schedule">计划</string>
     <string name="change_reminder_day_of_month">每月日期</string>
+    <string name="change_reminder_interval">间隔</string>
     <string name="change_reminder_condition">显示条件</string>
     <string name="change_reminder_condition_always">始终</string>
     <string name="change_reminder_message_prefill">别忘了进行 %s。</string>
     <string name="change_reminder_message_required">请输入提醒消息</string>
     <string name="change_reminder_future_required">请选择未来的时间</string>
+    <string name="change_reminder_interval_required">设置大于零的间隔</string>
     <string name="change_reminder_removed">提醒已删除</string>
 
     <!--  Wear  -->

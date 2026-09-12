@@ -16,9 +16,9 @@ import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteracto
 import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTypeInteractor
 import com.example.util.simpletimetracker.domain.recordType.model.RecordType
 import com.example.util.simpletimetracker.domain.scheduledReminder.interactor.ScheduledReminderInteractor
-import com.example.util.simpletimetracker.domain.scheduledReminder.interactor.ScheduledReminderOccurrenceCalculator
 import com.example.util.simpletimetracker.domain.scheduledReminder.interactor.ScheduledRemindersDataUpdateInteractor
 import com.example.util.simpletimetracker.domain.scheduledReminder.model.ScheduledReminder
+import com.example.util.simpletimetracker.domain.utils.LocalDateMapper
 import com.example.util.simpletimetracker.feature_base_adapter.dayOfWeek.DayOfWeekViewData
 import com.example.util.simpletimetracker.feature_change_reminder.R
 import com.example.util.simpletimetracker.feature_change_reminder.interactor.ChangeReminderViewDataInteractor
@@ -32,6 +32,7 @@ import com.example.util.simpletimetracker.navigation.params.screen.ARGS_PARAMS
 import com.example.util.simpletimetracker.navigation.params.screen.ChangeReminderParams
 import com.example.util.simpletimetracker.navigation.params.screen.DateTimeDialogParams
 import com.example.util.simpletimetracker.navigation.params.screen.DateTimeDialogType
+import com.example.util.simpletimetracker.navigation.params.screen.DurationDialogParams
 import com.example.util.simpletimetracker.navigation.params.screen.TypesSelectionDialogParams
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -50,7 +51,7 @@ class ChangeReminderViewModel @Inject constructor(
     private val recordTypeInteractor: RecordTypeInteractor,
     private val prefsInteractor: PrefsInteractor,
     private val currentTimestampProvider: CurrentTimestampProvider,
-    private val occurrenceCalculator: ScheduledReminderOccurrenceCalculator,
+    private val localDateMapper: LocalDateMapper,
     private val resourceRepo: ResourceRepo,
     private val snackBarMessageNavigationInteractor: SnackBarMessageNavigationInteractor,
     private val checkNotificationsPermissionInteractor: CheckNotificationsPermissionInteractor,
@@ -120,11 +121,11 @@ class ChangeReminderViewModel @Inject constructor(
     }
 
     fun onDateClick() = viewModelScope.launch {
-        val timestamp = occurrenceCalculator.resolveLocalDateTime(
-            dateEpochDay = editor.oneTimeDate,
+        val timestamp = localDateMapper.resolveDateTime(
+            dateEpochDay = editor.date,
             timeOfDayMillis = editor.timeOfDayMillis,
             timeZone = TimeZone.getDefault(),
-        ).takeUnless { it == 0L } ?: currentTimestampProvider.get()
+        ) ?: currentTimestampProvider.get()
         router.navigate(
             DateTimeDialogParams(
                 tag = DATE_TAG,
@@ -139,11 +140,11 @@ class ChangeReminderViewModel @Inject constructor(
     fun onTimeClick() = viewModelScope.launch {
         val timeZone = TimeZone.getDefault()
         val today = currentTimestampProvider.get().toLocalDateTime(timeZone).toLocalDate()
-        val timestamp = occurrenceCalculator.resolveLocalDateTime(
-            dateEpochDay = today.toEpochDay(),
+        val timestamp = localDateMapper.resolveDateTime(
+            date = today,
             timeOfDayMillis = editor.timeOfDayMillis,
             timeZone = timeZone,
-        ).takeUnless { it == 0L } ?: currentTimestampProvider.get()
+        ) ?: currentTimestampProvider.get()
         router.navigate(
             DateTimeDialogParams(
                 tag = TIME_TAG,
@@ -157,10 +158,36 @@ class ChangeReminderViewModel @Inject constructor(
     fun onDateTimeSet(timestamp: Long, tag: String?) {
         val dateTime = timestamp.toLocalDateTime(TimeZone.getDefault())
         when (tag) {
-            DATE_TAG -> editor.oneTimeDate = dateTime.toLocalDate().toEpochDay()
+            DATE_TAG -> editor.date = dateTime.toLocalDate().toEpochDay()
             TIME_TAG -> editor.timeOfDayMillis = dateTime.toLocalTime().toMillisOfDay()
+            DND_START_TAG -> editor.doNotDisturbStartMillis = dateTime.toLocalTime().toMillisOfDay()
+            DND_END_TAG -> editor.doNotDisturbEndMillis = dateTime.toLocalTime().toMillisOfDay()
+            else -> return
         }
         updateViewData()
+    }
+
+    fun onIntervalClick() {
+        DurationDialogParams(
+            tag = INTERVAL_TAG,
+            value = DurationDialogParams.Value.DurationSeconds(editor.intervalSeconds),
+            hideDisableButton = true,
+            showSeconds = false,
+        ).let(router::navigate)
+    }
+
+    fun onDurationSet(durationSeconds: Long, tag: String?) {
+        if (tag != INTERVAL_TAG) return
+        editor.intervalSeconds = durationSeconds
+        updateViewData()
+    }
+
+    fun onDoNotDisturbStartClick() {
+        openTimeDialog(DND_START_TAG, editor.doNotDisturbStartMillis)
+    }
+
+    fun onDoNotDisturbEndClick() {
+        openTimeDialog(DND_END_TAG, editor.doNotDisturbEndMillis)
     }
 
     fun onActivityClick() {
@@ -199,7 +226,7 @@ class ChangeReminderViewModel @Inject constructor(
         if (!controlsEnabled) return@launch
         val result = editor.validate(
             nowTimestamp = currentTimestampProvider.get(),
-            occurrenceCalculator = occurrenceCalculator,
+            localDateMapper = localDateMapper,
         )
         when (result) {
             is ValidationResult.Error -> showValidationError(result.error)
@@ -243,6 +270,7 @@ class ChangeReminderViewModel @Inject constructor(
         val stringRes = when (error) {
             ValidationError.MESSAGE_REQUIRED -> R.string.change_reminder_message_required
             ValidationError.FUTURE_REQUIRED -> R.string.change_reminder_future_required
+            ValidationError.INTERVAL_REQUIRED -> R.string.change_reminder_interval_required
         }
         snackBarMessageNavigationInteractor.showMessage(stringRes)
     }
@@ -250,6 +278,24 @@ class ChangeReminderViewModel @Inject constructor(
     private fun LocalTime.toMillisOfDay(): Long {
         return TimeUnit.HOURS.toMillis(hour.toLong()) +
             TimeUnit.MINUTES.toMillis(minute.toLong())
+    }
+
+    private fun openTimeDialog(tag: String, timeOfDayMillis: Long) = viewModelScope.launch {
+        val timeZone = TimeZone.getDefault()
+        val date = currentTimestampProvider.get().toLocalDateTime(timeZone).toLocalDate()
+        val timestamp = localDateMapper.resolveDateTime(
+            date = date,
+            timeOfDayMillis = timeOfDayMillis,
+            timeZone = timeZone,
+        ) ?: currentTimestampProvider.get()
+        router.navigate(
+            DateTimeDialogParams(
+                tag = tag,
+                timestamp = timestamp,
+                type = DateTimeDialogType.TIME,
+                useMilitaryTime = prefsInteractor.getUseMilitaryTimeFormat(),
+            ),
+        )
     }
 
     private suspend fun initializeData() {
@@ -288,6 +334,9 @@ class ChangeReminderViewModel @Inject constructor(
     private companion object {
         const val DATE_TAG = "change_reminder_date"
         const val TIME_TAG = "change_reminder_time"
+        const val INTERVAL_TAG = "change_reminder_interval"
+        const val DND_START_TAG = "change_reminder_dnd_start"
+        const val DND_END_TAG = "change_reminder_dnd_end"
         const val ACTIVITY_TAG = "change_reminder_activity"
     }
 }

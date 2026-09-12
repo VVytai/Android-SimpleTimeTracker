@@ -696,6 +696,7 @@ Isibonelo:<br/>
     <string name="reminders_schedule_weekly">Masonto onke</string>
     <string name="reminders_schedule_one_time">Kanye</string>
     <string name="reminders_schedule_monthly">Nyanga zonke</string>
+    <string name="reminders_schedule_hourly">Njalo ngehora</string>
     <string name="reminders_condition_activity_not_tracked">Uma umsebenzi ungakalandelelwa namuhla</string>
     <string name="activity_reminders_hint">Sibhala ngaphezu kwesilungiselelo somhlaba wonke sesikhumbuzi somsebenzi</string>
     <string name="activity_reminder_mode">Imodi yesikhumbuzi</string>
@@ -708,11 +709,13 @@ Isibonelo:<br/>
     <string name="change_reminder_message">Umlayezo</string>
     <string name="change_reminder_schedule">Ishejuli</string>
     <string name="change_reminder_day_of_month">Usuku lwenyanga</string>
+    <string name="change_reminder_interval">Isikhawu</string>
     <string name="change_reminder_condition">Umbandela wokubonisa</string>
     <string name="change_reminder_condition_always">Njalo</string>
     <string name="change_reminder_message_prefill">Ungakhohlwa ukwenza %s.</string>
     <string name="change_reminder_message_required">Faka umlayezo wesikhumbuzi</string>
     <string name="change_reminder_future_required">Khetha isikhathi esizayo</string>
+    <string name="change_reminder_interval_required">Setha isikhawu esikhulu kunoziro</string>
     <string name="change_reminder_removed">Isikhumbuzi sisusiwe</string>
 
     <!--  Wear  -->

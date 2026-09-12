@@ -696,6 +696,7 @@
     <string name="reminders_schedule_weekly">Щотижня</string>
     <string name="reminders_schedule_one_time">Один раз</string>
     <string name="reminders_schedule_monthly">Щомісяця</string>
+    <string name="reminders_schedule_hourly">Щогодини</string>
     <string name="reminders_condition_activity_not_tracked">Якщо активність сьогодні не відстежувалася</string>
     <string name="activity_reminders_hint">Перевизначає загальне налаштування нагадувань про активність</string>
     <string name="activity_reminder_mode">Режим нагадування</string>
@@ -708,11 +709,13 @@
     <string name="change_reminder_message">Повідомлення</string>
     <string name="change_reminder_schedule">Розклад</string>
     <string name="change_reminder_day_of_month">День місяця</string>
+    <string name="change_reminder_interval">Інтервал</string>
     <string name="change_reminder_condition">Умова показу</string>
     <string name="change_reminder_condition_always">Завжди</string>
     <string name="change_reminder_message_prefill">Не забудьте виконати %s.</string>
     <string name="change_reminder_message_required">Введіть текст нагадування</string>
     <string name="change_reminder_future_required">Виберіть час у майбутньому</string>
+    <string name="change_reminder_interval_required">Установіть інтервал, більший за нуль</string>
     <string name="change_reminder_removed">Нагадування видалено</string>
 
     <!--  Wear  -->

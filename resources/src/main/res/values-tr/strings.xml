@@ -696,6 +696,7 @@ CSV dosyası virgülle ayrılmış şu sütunları içermelidir:<br/>
     <string name="reminders_schedule_weekly">Haftalık</string>
     <string name="reminders_schedule_one_time">Bir kez</string>
     <string name="reminders_schedule_monthly">Aylık</string>
+    <string name="reminders_schedule_hourly">Saatlik</string>
     <string name="reminders_condition_activity_not_tracked">Etkinlik bugün takip edilmediğinde</string>
     <string name="activity_reminders_hint">Genel etkinlik hatırlatıcısı ayarını geçersiz kılar</string>
     <string name="activity_reminder_mode">Hatırlatıcı modu</string>
@@ -708,11 +709,13 @@ CSV dosyası virgülle ayrılmış şu sütunları içermelidir:<br/>
     <string name="change_reminder_message">Mesaj</string>
     <string name="change_reminder_schedule">Program</string>
     <string name="change_reminder_day_of_month">Ayın günü</string>
+    <string name="change_reminder_interval">Aralık</string>
     <string name="change_reminder_condition">Görüntüleme koşulu</string>
     <string name="change_reminder_condition_always">Her zaman</string>
     <string name="change_reminder_message_prefill">%s yapmayı unutmayın.</string>
     <string name="change_reminder_message_required">Bir hatırlatıcı mesajı girin</string>
     <string name="change_reminder_future_required">Gelecekte bir zaman seçin</string>
+    <string name="change_reminder_interval_required">Sıfırdan büyük bir aralık ayarlayın</string>
     <string name="change_reminder_removed">Hatırlatıcı kaldırıldı</string>
 
     <!--  Wear  -->

@@ -16,11 +16,11 @@ import com.example.util.simpletimetracker.domain.record.interactor.RunningRecord
 import com.example.util.simpletimetracker.domain.record.model.RunningRecord
 import com.example.util.simpletimetracker.domain.recordType.interactor.RecordTypeInteractor
 import com.example.util.simpletimetracker.domain.recordType.model.RecordType
+import com.example.util.simpletimetracker.domain.scheduledReminder.interactor.GetDoNotDisturbHandledScheduleInteractor
 import com.example.util.simpletimetracker.feature_notification.R
 import com.example.util.simpletimetracker.feature_notification.activity.manager.NotificationActivityManager
 import com.example.util.simpletimetracker.feature_notification.activity.manager.NotificationActivityParams
 import com.example.util.simpletimetracker.feature_notification.activity.scheduler.NotificationActivityScheduler
-import com.example.util.simpletimetracker.feature_notification.core.GetDoNotDisturbHandledScheduleInteractor
 import com.example.util.simpletimetracker.feature_views.viewData.RecordTypeIcon
 import java.util.TimeZone
 import javax.inject.Inject

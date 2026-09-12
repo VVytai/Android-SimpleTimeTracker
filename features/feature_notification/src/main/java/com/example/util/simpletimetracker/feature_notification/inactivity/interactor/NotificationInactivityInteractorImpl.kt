@@ -4,8 +4,8 @@ import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.domain.notifications.interactor.NotificationInactivityInteractor
 import com.example.util.simpletimetracker.domain.prefs.interactor.PrefsInteractor
 import com.example.util.simpletimetracker.domain.record.interactor.RunningRecordInteractor
+import com.example.util.simpletimetracker.domain.scheduledReminder.interactor.GetDoNotDisturbHandledScheduleInteractor
 import com.example.util.simpletimetracker.feature_notification.R
-import com.example.util.simpletimetracker.feature_notification.core.GetDoNotDisturbHandledScheduleInteractor
 import com.example.util.simpletimetracker.feature_notification.inactivity.manager.NotificationInactivityManager
 import com.example.util.simpletimetracker.feature_notification.inactivity.manager.NotificationInactivityParams
 import com.example.util.simpletimetracker.feature_notification.inactivity.scheduler.NotificationInactivityScheduler

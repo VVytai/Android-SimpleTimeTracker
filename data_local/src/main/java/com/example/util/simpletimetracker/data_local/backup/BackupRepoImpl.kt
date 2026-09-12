@@ -781,10 +781,13 @@ class BackupRepoImpl @Inject constructor(
             dbo.scheduleType.toString(),
             dbo.timeOfDayMillis.toString(),
             dbo.weekdays.orEmpty(),
-            dbo.oneTimeDate?.toString().orEmpty(),
+            dbo.date?.toString().orEmpty(),
             dbo.monthlyDayOfMonth?.toString().orEmpty(),
             dbo.conditionType.toString(),
             dbo.activityId?.toString().orEmpty(),
+            dbo.intervalSeconds?.toString().orEmpty(),
+            dbo.doNotDisturbStartMillis?.toString().orEmpty(),
+            dbo.doNotDisturbEndMillis?.toString().orEmpty(),
         ).joinToString(separator = "\t", postfix = "\n")
     }
 
@@ -1181,10 +1184,13 @@ class BackupRepoImpl @Inject constructor(
             scheduleType = parts.getOrNull(4)?.toIntOrNull().orZero(),
             timeOfDayMillis = parts.getOrNull(5)?.toLongOrNull().orZero(),
             weekdays = parts.getOrNull(6)?.takeUnless(String::isEmpty),
-            oneTimeDate = parts.getOrNull(7)?.toLongOrNull(),
+            date = parts.getOrNull(7)?.toLongOrNull(),
             monthlyDayOfMonth = parts.getOrNull(8)?.toIntOrNull(),
             conditionType = parts.getOrNull(9)?.toIntOrNull().orZero(),
             activityId = parts.getOrNull(10)?.toLongOrNull(),
+            intervalSeconds = parts.getOrNull(11)?.toLongOrNull(),
+            doNotDisturbStartMillis = parts.getOrNull(12)?.toLongOrNull(),
+            doNotDisturbEndMillis = parts.getOrNull(13)?.toLongOrNull(),
         )
         // TODO use data local mappers in other places? Avoids mapping duplication.
         return scheduledReminderDataLocalMapper.map(dbo)

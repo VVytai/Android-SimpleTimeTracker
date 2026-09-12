@@ -696,6 +696,7 @@
     <string name="reminders_schedule_weekly">வாரந்தோறும்</string>
     <string name="reminders_schedule_one_time">ஒரு முறை</string>
     <string name="reminders_schedule_monthly">மாதந்தோறும்</string>
+    <string name="reminders_schedule_hourly">ஒவ்வொரு மணிநேரமும்</string>
     <string name="reminders_condition_activity_not_tracked">இன்று செயல்பாடு கண்காணிக்கப்படாதபோது</string>
     <string name="activity_reminders_hint">உலகளாவிய செயல்பாட்டு நினைவூட்டல் அமைப்பை மீறும்</string>
     <string name="activity_reminder_mode">நினைவூட்டல் பயன்முறை</string>
@@ -708,11 +709,13 @@
     <string name="change_reminder_message">செய்தி</string>
     <string name="change_reminder_schedule">அட்டவணை</string>
     <string name="change_reminder_day_of_month">மாதத்தின் நாள்</string>
+    <string name="change_reminder_interval">இடைவெளி</string>
     <string name="change_reminder_condition">காட்சி நிபந்தனை</string>
     <string name="change_reminder_condition_always">எப்போதும்</string>
     <string name="change_reminder_message_prefill">%s செய்ய மறக்காதீர்கள்.</string>
     <string name="change_reminder_message_required">நினைவூட்டல் செய்தியை உள்ளிடவும்</string>
     <string name="change_reminder_future_required">எதிர்கால நேரத்தைத் தேர்ந்தெடுக்கவும்</string>
+    <string name="change_reminder_interval_required">பூஜ்ஜியத்தை விட அதிகமான இடைவெளியை அமைக்கவும்</string>
     <string name="change_reminder_removed">நினைவூட்டல் அகற்றப்பட்டது</string>
 
     <!--  Wear  -->

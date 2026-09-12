@@ -6,12 +6,12 @@ import com.example.util.simpletimetracker.domain.extension.toDomainDayOfWeek
 import com.example.util.simpletimetracker.domain.extension.toLocalDateTime
 import com.example.util.simpletimetracker.domain.scheduledReminder.model.ScheduledReminder
 import com.example.util.simpletimetracker.domain.utils.LocalDateMapper
-import java.time.LocalDate
 import java.util.TimeZone
 import javax.inject.Inject
 
 class ScheduledReminderOccurrenceCalculator @Inject constructor(
     private val localDateMapper: LocalDateMapper,
+    private val getDoNotDisturbHandledScheduleInteractor: GetDoNotDisturbHandledScheduleInteractor,
 ) {
 
     /**
@@ -40,6 +40,11 @@ class ScheduledReminderOccurrenceCalculator @Inject constructor(
                 nowTimestamp = nowTimestamp,
                 timeZone = timeZone,
             )
+            is ScheduledReminder.Schedule.Hourly -> calculateHourly(
+                schedule = schedule,
+                nowTimestamp = nowTimestamp,
+                timeZone = timeZone,
+            )
         }
     }
 
@@ -57,12 +62,13 @@ class ScheduledReminderOccurrenceCalculator @Inject constructor(
         return when (schedule) {
             is ScheduledReminder.Schedule.OneTime -> {
                 if (!schedule.timeOfDayMillis.isValidTimeOfDay()) return false
-                resolveLocalDateTime(
+                localDateMapper.resolveDateTime(
                     dateEpochDay = schedule.oneTimeDate,
                     timeOfDayMillis = schedule.timeOfDayMillis,
                     timeZone = timeZone,
                 ) == expectedOccurrenceTimestamp
             }
+            is ScheduledReminder.Schedule.Hourly,
             is ScheduledReminder.Schedule.Weekly,
             is ScheduledReminder.Schedule.Monthly,
             -> calculateNext(
@@ -75,6 +81,54 @@ class ScheduledReminderOccurrenceCalculator @Inject constructor(
                 catchUpOverdueOneTime = false,
             )?.expectedOccurrenceTimestamp == expectedOccurrenceTimestamp
         }
+    }
+
+    private fun calculateHourly(
+        schedule: ScheduledReminder.Schedule.Hourly,
+        nowTimestamp: Long,
+        timeZone: TimeZone,
+    ): Occurrence? {
+        if (schedule.daysOfWeek.isEmpty()) return null
+        if (!schedule.timeOfDayMillis.isValidTimeOfDay()) return null
+        if (!schedule.doNotDisturbStartMillis.isValidTimeOfDay()) return null
+        if (!schedule.doNotDisturbEndMillis.isValidTimeOfDay()) return null
+        if (schedule.intervalSeconds <= 0L) return null
+
+        val intervalMillis = schedule.intervalSeconds * 1000L
+        val startTimestamp = localDateMapper.resolveDateTime(
+            dateEpochDay = schedule.startDate,
+            timeOfDayMillis = schedule.timeOfDayMillis,
+            timeZone = timeZone,
+        ) ?: return null
+        val firstGridOccurrence = startTimestamp + intervalMillis
+
+        fun applyHourlyRestrictions(timestamp: Long): Long? {
+            return getDoNotDisturbHandledScheduleInteractor.execute(
+                timestamp = timestamp,
+                dndStart = schedule.doNotDisturbStartMillis,
+                dndEnd = schedule.doNotDisturbEndMillis,
+                activeDaysOfWeek = schedule.daysOfWeek,
+                timeZone = timeZone,
+            )
+        }
+
+        val occurrence = if (firstGridOccurrence > nowTimestamp) {
+            applyHourlyRestrictions(firstGridOccurrence)
+        } else {
+            val elapsedSinceStart = nowTimestamp - startTimestamp
+            val gridOccurrenceAtOrBeforeNow = nowTimestamp - elapsedSinceStart % intervalMillis
+            val restrictedCurrentOccurrence = applyHourlyRestrictions(gridOccurrenceAtOrBeforeNow)
+            if (restrictedCurrentOccurrence != null && restrictedCurrentOccurrence > nowTimestamp) {
+                restrictedCurrentOccurrence
+            } else {
+                applyHourlyRestrictions(gridOccurrenceAtOrBeforeNow + intervalMillis)
+            }
+        } ?: return null
+
+        return Occurrence(
+            triggerTimestamp = occurrence,
+            expectedOccurrenceTimestamp = occurrence,
+        )
     }
 
     private fun calculateWeekly(
@@ -91,11 +145,11 @@ class ScheduledReminderOccurrenceCalculator @Inject constructor(
         repeat(DAYS_IN_WEEK + 1) {
             val dayOfWeek = dateCursor.dayOfWeek.toDomainDayOfWeek()
             if (dayOfWeek in schedule.daysOfWeek) {
-                val timestamp = resolveLocalDateTime(
+                val timestamp = localDateMapper.resolveDateTime(
                     dateEpochDay = dateCursor.toEpochDay(),
                     timeOfDayMillis = schedule.timeOfDayMillis,
                     timeZone = timeZone,
-                )
+                ).orZero()
                 // Found next week day to schedule.
                 if (timestamp > nowTimestamp) {
                     return Occurrence(
@@ -118,12 +172,11 @@ class ScheduledReminderOccurrenceCalculator @Inject constructor(
     ): Occurrence? {
         if (!schedule.timeOfDayMillis.isValidTimeOfDay()) return null
 
-        val expectedTimestamp = resolveLocalDateTime(
+        val expectedTimestamp = localDateMapper.resolveDateTime(
             dateEpochDay = schedule.oneTimeDate,
             timeOfDayMillis = schedule.timeOfDayMillis,
             timeZone = timeZone,
-        )
-        if (expectedTimestamp == 0L) return null
+        ) ?: return null
 
         return when {
             expectedTimestamp > nowTimestamp -> Occurrence(
@@ -155,11 +208,11 @@ class ScheduledReminderOccurrenceCalculator @Inject constructor(
             val date = monthCursor.withDayOfMonth(
                 schedule.dayOfMonth.coerceAtMost(monthCursor.lengthOfMonth()),
             )
-            val timestamp = resolveLocalDateTime(
+            val timestamp = localDateMapper.resolveDateTime(
                 dateEpochDay = date.toEpochDay(),
                 timeOfDayMillis = schedule.timeOfDayMillis,
                 timeZone = timeZone,
-            )
+            ).orZero()
             // Found next month to schedule.
             if (timestamp > nowTimestamp) {
                 return Occurrence(
@@ -171,22 +224,6 @@ class ScheduledReminderOccurrenceCalculator @Inject constructor(
         }
 
         return null
-    }
-
-    fun resolveLocalDateTime(
-        dateEpochDay: Long,
-        timeOfDayMillis: Long,
-        timeZone: TimeZone,
-    ): Long {
-        val date = runCatching {
-            LocalDate.ofEpochDay(dateEpochDay)
-        }.getOrNull() ?: return 0L
-
-        return localDateMapper.resolveDateTime(
-            date = date,
-            timeOfDayMillis = timeOfDayMillis,
-            timeZone = timeZone,
-        ).orZero()
     }
 
     data class Occurrence(

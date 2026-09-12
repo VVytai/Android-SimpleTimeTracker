@@ -1,20 +1,21 @@
 package com.example.util.simpletimetracker.feature_reminders.mapper
 
 import com.example.util.simpletimetracker.core.R
+import com.example.util.simpletimetracker.core.mapper.ChangeReminderViewDataMapper
 import com.example.util.simpletimetracker.core.mapper.ColorMapper
 import com.example.util.simpletimetracker.core.mapper.IconMapper
 import com.example.util.simpletimetracker.core.mapper.TimeMapper
 import com.example.util.simpletimetracker.core.repo.ResourceRepo
 import com.example.util.simpletimetracker.domain.daysOfWeek.model.DayOfWeek
+import com.example.util.simpletimetracker.domain.extension.orZero
 import com.example.util.simpletimetracker.domain.recordType.model.RecordType
-import com.example.util.simpletimetracker.domain.scheduledReminder.interactor.ScheduledReminderOccurrenceCalculator
 import com.example.util.simpletimetracker.domain.scheduledReminder.model.ScheduledReminder
+import com.example.util.simpletimetracker.domain.utils.LocalDateMapper
 import com.example.util.simpletimetracker.feature_base_adapter.button.ButtonViewData
 import com.example.util.simpletimetracker.feature_reminders.viewData.ReminderViewData
 import com.example.util.simpletimetracker.feature_reminders.viewData.RemindersButtonViewData
 import java.time.LocalDate
 import java.util.TimeZone
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import com.example.util.simpletimetracker.core.R as coreR
 
@@ -23,7 +24,9 @@ class ReminderViewDataMapper @Inject constructor(
     private val timeMapper: TimeMapper,
     private val iconMapper: IconMapper,
     private val colorMapper: ColorMapper,
-    private val scheduledReminderOccurrenceCalculator: ScheduledReminderOccurrenceCalculator,
+    private val localDateMapper: LocalDateMapper,
+    private val changeReminderViewDataMapper: ChangeReminderViewDataMapper,
+    private val remindersCommonViewDataMapper: RemindersCommonViewDataMapper,
 ) {
 
     fun mapAddItem(
@@ -98,9 +101,8 @@ class ReminderViewDataMapper @Inject constructor(
                 val days = timeMapper.formatDays(
                     firstDayOfWeek = firstDayOfWeek,
                     selectedDaysOfWeek = schedule.daysOfWeek,
-                ).takeIf {
-                    it.isNotEmpty()
-                } ?: resourceRepo.getString(R.string.reminders_schedule_daily)
+                ).takeIf(String::isNotEmpty)
+                    ?: resourceRepo.getString(R.string.reminders_schedule_daily)
                 listOf(days, time)
             }
             is ScheduledReminder.Schedule.OneTime -> {
@@ -122,6 +124,34 @@ class ReminderViewDataMapper @Inject constructor(
                 )
                 val hint = resourceRepo.getString(R.string.reminders_schedule_monthly)
                 listOf(hint, schedule.dayOfMonth, time)
+            }
+            is ScheduledReminder.Schedule.Hourly -> {
+                val hint = resourceRepo.getString(R.string.reminders_schedule_hourly)
+                val interval = timeMapper.formatDuration(schedule.intervalSeconds)
+                val startTimestamp = resolve(
+                    dateEpochDay = schedule.startDate,
+                    timeOfDayMillis = schedule.timeOfDayMillis,
+                )
+                val start = resourceRepo.getString(
+                    R.string.separator_template,
+                    resourceRepo.getString(R.string.change_record_date_time_start),
+                    timeMapper.formatDateTime(
+                        time = startTimestamp,
+                        useMilitaryTime = useMilitaryTime,
+                        showSeconds = false,
+                    ),
+                )
+                val days = timeMapper.formatDays(
+                    firstDayOfWeek = firstDayOfWeek,
+                    selectedDaysOfWeek = schedule.daysOfWeek,
+                ).takeIf(String::isNotEmpty)
+                    ?: resourceRepo.getString(R.string.reminders_schedule_daily)
+                val dnd = remindersCommonViewDataMapper.mapDndHint(
+                    doNotDisturbStartMillis = schedule.doNotDisturbStartMillis,
+                    doNotDisturbEndMillis = schedule.doNotDisturbEndMillis,
+                    useMilitaryTime = useMilitaryTime,
+                )
+                listOf(hint, interval, start, days, dnd)
             }
         }.joinToString(separator = " · ")
     }
@@ -145,24 +175,20 @@ class ReminderViewDataMapper @Inject constructor(
         timeOfDayMillis: Long,
         useMilitaryTime: Boolean,
     ): String {
-        val timestamp = resolve(
-            dateEpochDay = LocalDate.now(TimeZone.getDefault().toZoneId()).toEpochDay(),
-            timeOfDayMillis = timeOfDayMillis,
-        )
-        return timeMapper.formatTime(
-            time = timestamp,
+        val timeZone = TimeZone.getDefault()
+        return changeReminderViewDataMapper.formatTimeOfDay(
+            millis = timeOfDayMillis,
             useMilitaryTime = useMilitaryTime,
-            showSeconds = false,
+            date = LocalDate.now(timeZone.toZoneId()),
+            timeZone = timeZone,
         )
     }
 
     private fun resolve(dateEpochDay: Long, timeOfDayMillis: Long): Long {
-        val timeOfDayMillis = timeOfDayMillis.coerceIn(0, TimeUnit.DAYS.toMillis(1) - 1)
-
-        return scheduledReminderOccurrenceCalculator.resolveLocalDateTime(
+        return localDateMapper.resolveDateTime(
             dateEpochDay = dateEpochDay,
             timeOfDayMillis = timeOfDayMillis,
             timeZone = TimeZone.getDefault(),
-        )
+        ).orZero()
     }
 }

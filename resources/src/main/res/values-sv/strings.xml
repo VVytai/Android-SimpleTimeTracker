@@ -696,6 +696,7 @@ Exempel:<br/>
     <string name="reminders_schedule_weekly">Varje vecka</string>
     <string name="reminders_schedule_one_time">En gång</string>
     <string name="reminders_schedule_monthly">Månadsvis</string>
+    <string name="reminders_schedule_hourly">Varje timme</string>
     <string name="reminders_condition_activity_not_tracked">När aktiviteten inte har spårats idag</string>
     <string name="activity_reminders_hint">Åsidosätter den globala inställningen för aktivitetspåminnelser</string>
     <string name="activity_reminder_mode">Påminnelseläge</string>
@@ -708,11 +709,13 @@ Exempel:<br/>
     <string name="change_reminder_message">Meddelande</string>
     <string name="change_reminder_schedule">Schema</string>
     <string name="change_reminder_day_of_month">Dag i månaden</string>
+    <string name="change_reminder_interval">Intervall</string>
     <string name="change_reminder_condition">Visningsvillkor</string>
     <string name="change_reminder_condition_always">Alltid</string>
     <string name="change_reminder_message_prefill">Glöm inte att göra %s.</string>
     <string name="change_reminder_message_required">Ange ett påminnelsemeddelande</string>
     <string name="change_reminder_future_required">Välj en tid i framtiden</string>
+    <string name="change_reminder_interval_required">Ange ett intervall större än noll</string>
     <string name="change_reminder_removed">Påminnelsen har tagits bort</string>
 
     <!--  Wear  -->

@@ -696,6 +696,7 @@
     <string name="reminders_schedule_weekly">هفتگی</string>
     <string name="reminders_schedule_one_time">یک‌بار</string>
     <string name="reminders_schedule_monthly">ماهانه</string>
+    <string name="reminders_schedule_hourly">ساعتی</string>
     <string name="reminders_condition_activity_not_tracked">وقتی فعالیت امروز ثبت نشده باشد</string>
     <string name="activity_reminders_hint">تنظیم سراسری یادآور فعالیت را لغو می‌کند</string>
     <string name="activity_reminder_mode">حالت یادآوری</string>
@@ -708,11 +709,13 @@
     <string name="change_reminder_message">پیام</string>
     <string name="change_reminder_schedule">زمان‌بندی</string>
     <string name="change_reminder_day_of_month">روز ماه</string>
+    <string name="change_reminder_interval">فاصله زمانی</string>
     <string name="change_reminder_condition">شرط نمایش</string>
     <string name="change_reminder_condition_always">همیشه</string>
     <string name="change_reminder_message_prefill">انجام %s را فراموش نکنید.</string>
     <string name="change_reminder_message_required">پیام یادآوری را وارد کنید</string>
     <string name="change_reminder_future_required">زمانی در آینده انتخاب کنید</string>
+    <string name="change_reminder_interval_required">فاصله زمانی را بیشتر از صفر تنظیم کنید</string>
     <string name="change_reminder_removed">یادآوری حذف شد</string>
 
     <!--  Wear  -->

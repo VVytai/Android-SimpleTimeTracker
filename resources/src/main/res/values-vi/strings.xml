@@ -696,6 +696,7 @@ Ví dụ:<br/>
     <string name="reminders_schedule_weekly">Hàng tuần</string>
     <string name="reminders_schedule_one_time">Một lần</string>
     <string name="reminders_schedule_monthly">Hàng tháng</string>
+    <string name="reminders_schedule_hourly">Hàng giờ</string>
     <string name="reminders_condition_activity_not_tracked">Khi hoạt động chưa được theo dõi hôm nay</string>
     <string name="activity_reminders_hint">Ghi đè cài đặt lời nhắc hoạt động chung</string>
     <string name="activity_reminder_mode">Chế độ nhắc nhở</string>
@@ -708,11 +709,13 @@ Ví dụ:<br/>
     <string name="change_reminder_message">Tin nhắn</string>
     <string name="change_reminder_schedule">Lịch</string>
     <string name="change_reminder_day_of_month">Ngày trong tháng</string>
+    <string name="change_reminder_interval">Khoảng thời gian</string>
     <string name="change_reminder_condition">Điều kiện hiển thị</string>
     <string name="change_reminder_condition_always">Luôn luôn</string>
     <string name="change_reminder_message_prefill">Đừng quên thực hiện %s.</string>
     <string name="change_reminder_message_required">Nhập nội dung nhắc nhở</string>
     <string name="change_reminder_future_required">Chọn thời gian trong tương lai</string>
+    <string name="change_reminder_interval_required">Đặt khoảng thời gian lớn hơn 0</string>
     <string name="change_reminder_removed">Đã xóa lời nhắc</string>
 
     <!--  Wear  -->

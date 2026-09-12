@@ -86,6 +86,7 @@ class ScheduledReminderNotificationInteractorImpl @Inject constructor(
             }
             is ScheduledReminder.Schedule.Weekly,
             is ScheduledReminder.Schedule.Monthly,
+            is ScheduledReminder.Schedule.Hourly,
             -> schedule(reminder.id)
         }
     }

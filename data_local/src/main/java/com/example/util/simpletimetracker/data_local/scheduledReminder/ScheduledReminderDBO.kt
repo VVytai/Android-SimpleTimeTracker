@@ -20,6 +20,7 @@ data class ScheduledReminderDBO(
     // weekly 0
     // ome time 1
     // monthly 2
+    // hourly 3
     @ColumnInfo(name = "schedule_type")
     val scheduleType: Int,
 
@@ -33,10 +34,19 @@ data class ScheduledReminderDBO(
     val weekdays: String?,
 
     @ColumnInfo(name = "one_time_local_epoch_day")
-    val oneTimeDate: Long?,
+    val date: Long?,
 
     @ColumnInfo(name = "monthly_day_of_month")
     val monthlyDayOfMonth: Int?,
+
+    @ColumnInfo(name = "interval_seconds")
+    val intervalSeconds: Long?,
+
+    @ColumnInfo(name = "dnd_start_millis")
+    val doNotDisturbStartMillis: Long?,
+
+    @ColumnInfo(name = "dnd_end_millis")
+    val doNotDisturbEndMillis: Long?,
 
     // always 0
     // activity mot tracked 1
